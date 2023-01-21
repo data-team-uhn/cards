@@ -56,12 +56,16 @@ public abstract class AnswersEditor extends DefaultEditor
     // actual parent node of those properties, so we must manually keep track of the current node.
     protected final NodeBuilder currentNodeBuilder;
 
-    // This holds a Resource resolver that should be used to retrieve user data
-    protected final ResourceResolver resolver;
-
-    // This resolver factory should be used to retrieve and service resolvers that may be needed.
-    // This factory may not have access to data that the current user should have access to due to backend calls.
     protected final ResourceResolverFactory rrf;
+
+    /** The current user session. */
+    protected final Session currentSession;
+
+    /**
+     * A session that has access to all the questionnaire questions and can access restricted questions. This session
+     * should not be used for accessing any user data.
+     */
+    protected Session serviceSession;
 
     protected final QuestionnaireUtils questionnaireUtils;
 
@@ -77,25 +81,22 @@ public abstract class AnswersEditor extends DefaultEditor
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
-     * @param resolver the resource resolver which can provide access to JCR sessions
+     * @param currentSession the current user session
+     * @param rrf the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
-     * @param rrf a resource resolver factory used to obtain access to service sessions. Can be null
      */
-    public AnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolver resolver,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final ResourceResolverFactory rrf)
+    public AnswersEditor(final NodeBuilder nodeBuilder, final Session currentSession, final ResourceResolverFactory rrf,
+        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.questionnaireUtils = questionnaireUtils;
         this.formUtils = formUtils;
         this.answerChangeTracker = getAnswerChangeTracker();
         this.shouldRunOnLeave = false;
-
+        this.currentSession = currentSession;
         this.rrf = rrf;
-        this.resolver = resolver;
-        if (this.resolver != null) {
-            this.isFormNode = this.formUtils.isForm(nodeBuilder);
-        }
+        this.isFormNode = this.formUtils.isForm(nodeBuilder);
     }
 
     protected abstract Logger getLogger();
@@ -134,8 +135,16 @@ public abstract class AnswersEditor extends DefaultEditor
             return;
         }
 
-        if (this.resolver != null) {
-            handleLeave(after);
+        try (ResourceResolver serviceResolver =
+            this.rrf.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, getServiceName()))) {
+            if (serviceResolver != null) {
+                this.serviceSession = serviceResolver.adaptTo(Session.class);
+                handleLeave(after);
+            }
+        } catch (LoginException e) {
+            // Should not happen
+        } finally {
+            this.serviceSession = null;
         }
     }
 
@@ -145,19 +154,7 @@ public abstract class AnswersEditor extends DefaultEditor
     {
         final String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
         try {
-            Session serviceSession = null;
-            if (this.rrf != null) {
-                try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(
-                    Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, this.getServiceName())))
-                {
-                    serviceSession = serviceResolver == null ? null : serviceResolver.adaptTo(Session.class);
-                } catch (LoginException e) {
-                    // Could not get a service session: leave as null
-                }
-            }
-            return serviceSession == null
-                ? this.resolver.adaptTo(Session.class).getNodeByIdentifier(questionnaireId)
-                : serviceSession.getNodeByIdentifier(questionnaireId);
+            return this.serviceSession.getNodeByIdentifier(questionnaireId);
         } catch (RepositoryException e) {
             return null;
         }
@@ -211,7 +208,7 @@ public abstract class AnswersEditor extends DefaultEditor
                     // New node, insert all required properties
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                     currentNode.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
-                    currentNode.setProperty("jcr:createdBy", this.resolver.adaptTo(Session.class).getUserID(),
+                    currentNode.setProperty("jcr:createdBy", this.currentSession.getUserID(),
                         Type.NAME);
                     String questionReference = questionTree.getNode().getIdentifier();
                     currentNode.setProperty(FormUtils.QUESTION_PROPERTY, questionReference, Type.REFERENCE);

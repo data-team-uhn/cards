@@ -16,6 +16,8 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import javax.jcr.Session;
+
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -66,8 +68,8 @@ public class ReferenceAnswersEditorProvider implements EditorProvider
         final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
         if (resolver != null) {
             // Each ReferenceEditor maintains a state, so a new instance must be returned each time
-            return new ReferenceAnswersEditor(builder, resolver, this.questionnaireUtils, this.formUtils,
-                this.subjectUtils, null);
+            return new ReferenceAnswersEditor(builder, resolver.adaptTo(Session.class), this.rrf,
+                this.questionnaireUtils, this.formUtils, this.subjectUtils);
         }
         return null;
     }

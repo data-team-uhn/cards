@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jackrabbit.oak.api.Type;
@@ -33,7 +34,6 @@ import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.ChildNodeEntry;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,17 +57,17 @@ public class ComputedAnswersEditor extends AnswersEditor
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
-     * @param resolver the resource resolver which can provide access to JCR sessions
+     * @param currentSession the current user session
+     * @param rrf the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param expressionUtils for evaluating the computed questions
-     * @param rrf a resource resolver factory used to obtain access to service sessions. Can be null
      */
-    public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolver resolver,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final ExpressionUtils expressionUtils,
-        final ResourceResolverFactory rrf)
+    public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final Session currentSession,
+        final ResourceResolverFactory rrf, final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils,
+        final ExpressionUtils expressionUtils)
     {
-        super(nodeBuilder, resolver, questionnaireUtils, formUtils, rrf);
+        super(nodeBuilder, currentSession, rrf, questionnaireUtils, formUtils);
         this.expressionUtils = expressionUtils;
     }
 
@@ -93,7 +93,7 @@ public class ComputedAnswersEditor extends AnswersEditor
     protected ComputedAnswersEditor getNewEditor(String name)
     {
         return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-            this.resolver, this.questionnaireUtils, this.formUtils, this.expressionUtils, this.rrf);
+            this.currentSession, this.rrf, this.questionnaireUtils, this.formUtils, this.expressionUtils);
     }
 
     @Override

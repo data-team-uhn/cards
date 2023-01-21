@@ -33,7 +33,6 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,17 +56,17 @@ public class ReferenceAnswersEditor extends AnswersEditor
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
-     * @param resolver the resource resolver factory which can provide access to JCR sessions
+     * @param currentSession the current user session
+     * @param rrf the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param subjectUtils for working with subject data
-     * @param rrf a resource resolver factory used to obtain access to service sessions. Can be null
      */
-    public ReferenceAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolver resolver,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, SubjectUtils subjectUtils,
-        ResourceResolverFactory rrf)
+    public ReferenceAnswersEditor(final NodeBuilder nodeBuilder, final Session currentSession,
+        final ResourceResolverFactory rrf, final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils,
+        final SubjectUtils subjectUtils)
     {
-        super(nodeBuilder, resolver, questionnaireUtils, formUtils, rrf);
+        super(nodeBuilder, currentSession, rrf, questionnaireUtils, formUtils);
         this.subjectUtils = subjectUtils;
     }
 
@@ -92,8 +91,8 @@ public class ReferenceAnswersEditor extends AnswersEditor
     @Override
     protected ReferenceAnswersEditor getNewEditor(String name)
     {
-        return new ReferenceAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-            this.resolver, this.questionnaireUtils, this.formUtils, this.subjectUtils, this.rrf);
+        return new ReferenceAnswersEditor(this.currentNodeBuilder.getChildNode(name), this.currentSession,
+            this.rrf, this.questionnaireUtils, this.formUtils, this.subjectUtils);
     }
 
     @Override
@@ -177,8 +176,8 @@ public class ReferenceAnswersEditor extends AnswersEditor
         Node subject = this.formUtils.getSubject(form);
         try {
             Collection<Node> answers =
-                this.formUtils.findAllSubjectRelatedAnswers(subject, this.resolver.adaptTo(Session.class)
-                    .getNode(questionPath), EnumSet.allOf(FormUtils.SearchType.class));
+                this.formUtils.findAllSubjectRelatedAnswers(subject, this.serviceSession.getNode(questionPath),
+                    EnumSet.allOf(FormUtils.SearchType.class));
             if (!answers.isEmpty()) {
                 Object value = this.formUtils.getValue(answers.iterator().next());
                 if (value != null) {
