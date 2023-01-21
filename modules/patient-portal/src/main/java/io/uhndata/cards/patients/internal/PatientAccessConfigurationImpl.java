@@ -43,7 +43,7 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements PatientAccessConfiguration
 {
     /** The location of the configuration node for patient auth. */
-    private static final String CONFIG_NODE = "/Survey/PatientIdentification";
+    private static final String CONFIG_NODE = "/Survey/PatientAccess";
 
     /** Property on config node for whether or not tokenless auth is enabled. */
     private static final String TOKENLESS_AUTH_ENABLED_PROP = "tokenlessAuthEnabled";

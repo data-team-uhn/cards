@@ -28,7 +28,7 @@ import Footer from "./Footer.jsx";
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
-const CONFIG = "/Survey/PatientIdentification.json";
+const CONFIG = "/Survey/PatientAccess.json";
 
 function PatientPortalHomepage (props) {
   // Current user and associated subject

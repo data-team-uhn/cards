@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Patient Access",
+  "cards:targetURL": "/content.html/admin/PatientAccessConfiguration",
+  "cards:icon": "asset:patient-portal.PatientAccessConfigurationIcon.js",
+  "cards:hint": "Configure how patient users can authenticate and access their pending surveys",
+  "cards:defaultOrder": 430
+}

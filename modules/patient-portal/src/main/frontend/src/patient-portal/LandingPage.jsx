@@ -64,7 +64,7 @@ function LandingPage(props) {
 
   const USER_TYPE_PARAM = "usertype";
   const USER_TYPE_HCP = "hcp";
-  const CONFIG = "/Survey/PatientIdentification.json";
+  const CONFIG = "/Survey/PatientAccess.json";
   const ENABLED_PROP = "tokenlessAuthEnabled";
 
   useEffect(() => {

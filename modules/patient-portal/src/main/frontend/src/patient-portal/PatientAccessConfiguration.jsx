@@ -30,8 +30,8 @@ import {
 import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
-export const PATIENT_IDENTIFICATION_PATH = "/Survey/PatientIdentification";
-export const DEFAULT_PATIENT_ID_CONFIG = {
+export const PATIENT_ACCESS_CONFIG_PATH = "/Survey/PatientAccess";
+export const DEFAULT_PATIENT_ACCESS_CONFIG = {
     tokenlessAuthEnabled: false,
     PIIAuthRequired: false,
     allowedPostVisitCompletionTime: "0"
@@ -48,10 +48,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function PatientIdentificationConfiguration() {
+function PatientAccessConfiguration() {
   const classes = useStyles();
 
-  const [ patientIdentification, setPatientIdentification ] = useState();
+  const [ patientAccessConfig, setPatientAccessConfig ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);
 
   const labels = {
@@ -61,23 +61,23 @@ function PatientIdentificationConfiguration() {
   };
 
   let buildConfigData = (formData) => {
-    for (let key of Object.keys(patientIdentification)) {
-      !key.startsWith("jcr:") && formData.append(key, patientIdentification[key] || DEFAULT_PATIENT_ID_CONFIG[key]);
+    for (let key of Object.keys(patientAccessConfig)) {
+      !key.startsWith("jcr:") && formData.append(key, patientAccessConfig[key] || DEFAULT_PATIENT_ACCESS_CONFIG[key]);
     }
   }
 
   useEffect(() => {
     setHasChanges(true);
-  }, [patientIdentification]);
+  }, [patientAccessConfig]);
 
   let renderConfigCheckbox = (key, valueOverride) => (
       <ListItem>
         <FormControlLabel control={
           <Checkbox
             name={key}
-            checked={valueOverride || patientIdentification?.[key] || DEFAULT_PATIENT_ID_CONFIG[key]}
+            checked={valueOverride || patientAccessConfig?.[key] || DEFAULT_PATIENT_ACCESS_CONFIG[key]}
             disabled={valueOverride}
-            onChange={event => setPatientIdentification({...patientIdentification, [key]: valueOverride || event.target.checked})}
+            onChange={event => setPatientAccessConfig({...patientAccessConfig, [key]: valueOverride || event.target.checked})}
           />}
           label={labels[key]}
         />
@@ -91,10 +91,10 @@ function PatientIdentificationConfiguration() {
           <TextField
             variant="standard"
             type="number"
-            onChange={event => setPatientIdentification({...patientIdentification, [key]: event.target.value})}
-            onBlur={event => setPatientIdentification({...patientIdentification, [key]: event.target.value})}
-            placeholder={DEFAULT_PATIENT_ID_CONFIG[key] || ""}
-            value={patientIdentification?.[key]}
+            onChange={event => setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value})}
+            onBlur={event => setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value})}
+            placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
+            value={patientAccessConfig?.[key]}
             InputProps={{
               endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
             }}
@@ -105,20 +105,20 @@ function PatientIdentificationConfiguration() {
 
   return (
       <AdminConfigScreen
-          title="Patient Identification"
-          configPath={PATIENT_IDENTIFICATION_PATH}
-          onConfigFetched={setPatientIdentification}
+          title="Patient Access"
+          configPath={PATIENT_ACCESS_CONFIG_PATH}
+          onConfigFetched={setPatientAccessConfig}
           hasChanges={hasChanges}
           buildConfigData={buildConfigData}
           onConfigSaved={() => setHasChanges(false)}
           >
           <List>
             { renderConfigCheckbox("tokenlessAuthEnabled") }
-            { renderConfigCheckbox("PIIAuthRequired", patientIdentification?.tokenlessAuthEnabled) }
+            { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
             { renderConfigInput("allowedPostVisitCompletionTime", "days") }
           </List>
       </AdminConfigScreen>
   );
 }
 
-export default PatientIdentificationConfiguration;
+export default PatientAccessConfiguration;
