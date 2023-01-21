@@ -34,7 +34,8 @@ export const PATIENT_ACCESS_CONFIG_PATH = "/Survey/PatientAccess";
 export const DEFAULT_PATIENT_ACCESS_CONFIG = {
     tokenlessAuthEnabled: false,
     PIIAuthRequired: false,
-    allowedPostVisitCompletionTime: "0"
+    allowedPostVisitCompletionTime: "0",
+    draftLifetime: "0"
 };
 
 const useStyles = makeStyles(theme => ({
@@ -57,7 +58,8 @@ function PatientAccessConfiguration() {
   const labels = {
     tokenlessAuthEnabled: "Patients can answer surveys without a personalized link",
     PIIAuthRequired: "Patients must confirm their identity by providing their date of birth and either MRN or HCN",
-    allowedPostVisitCompletionTime: "Patients can fill out surveys after the associated event for:"
+    allowedPostVisitCompletionTime: "Patients can fill out surveys after the associated event for:",
+    draftLifetime: "Patients can edit unsubmitted responses for:"
   };
 
   let buildConfigData = (formData) => {
@@ -83,16 +85,16 @@ function PatientAccessConfiguration() {
       </ListItem>
     );
 
-  let renderConfigInput = (key, unit) => (
+  let renderConfigInput = (key, unit, placeholder) => (
       <ListItem>
         <FormGroup className={classes.textField}>
           <FormLabel>{labels[key]}</FormLabel>
           <TextField
-            variant="standard"
+            variant="outlined"
             type="number"
             onChange={event => { setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value}); setHasChanges(true); }}
             onBlur={event => { setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value}); setHasChanges(true); }}
-            placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
+            placeholder={placeholder || DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
             value={patientAccessConfig?.[key]}
             InputProps={{
               endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
@@ -116,6 +118,7 @@ function PatientAccessConfiguration() {
             { renderConfigCheckbox("tokenlessAuthEnabled") }
             { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
             { renderConfigInput("allowedPostVisitCompletionTime", "days") }
+            { renderConfigInput("draftLifetime", "days", patientAccessConfig?.allowedPostVisitCompletionTime) }
           </List>
       </AdminConfigScreen>
   );
