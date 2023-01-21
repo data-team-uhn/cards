@@ -37,6 +37,11 @@
 		<value>True</value>
 		<type>Boolean</type>
 	</property>
+        <property>
+                <name>paginationVariant</name>
+                <value>text</value>
+                <type>String</type>
+        </property>
 	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
