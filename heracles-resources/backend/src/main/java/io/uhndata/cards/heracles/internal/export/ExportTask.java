@@ -65,10 +65,7 @@ public class ExportTask implements Runnable
 
     ExportTask(final ResourceResolverFactory resolverFactory, final String exportRunMode)
     {
-        this.resolverFactory = resolverFactory;
-        this.exportRunMode = exportRunMode;
-        this.exportLowerBound = null;
-        this.exportUpperBound = null;
+        this(resolverFactory, exportRunMode, null, null);
     }
 
     ExportTask(final ResourceResolverFactory resolverFactory, final String exportRunMode,

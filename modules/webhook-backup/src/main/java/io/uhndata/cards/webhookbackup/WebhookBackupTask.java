@@ -52,15 +52,14 @@ public class WebhookBackupTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
     private final String exportRunMode;
+
     private final LocalDateTime exportLowerBound;
+
     private final LocalDateTime exportUpperBound;
 
     WebhookBackupTask(final ResourceResolverFactory resolverFactory, final String exportRunMode)
     {
-        this.resolverFactory = resolverFactory;
-        this.exportRunMode = exportRunMode;
-        this.exportLowerBound = null;
-        this.exportUpperBound = null;
+        this(resolverFactory, exportRunMode, null, null);
     }
 
     WebhookBackupTask(final ResourceResolverFactory resolverFactory, final String exportRunMode,

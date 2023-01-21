@@ -80,8 +80,8 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
      * Basic method to get the answer label associated with the resource answer option.
      *
      * @param node the AnswerOption node being serialized
-     * @return the label for that AmswerOption, obtained from the label property (indicated by the parent question)
-     *     of resource it refers to
+     * @return the label for that AmswerOption, obtained from the label property (indicated by the parent question) of
+     *         resource it refers to
      */
     private JsonValue getAnswerOptionLabel(final Node node, final String labelPropertyName)
     {

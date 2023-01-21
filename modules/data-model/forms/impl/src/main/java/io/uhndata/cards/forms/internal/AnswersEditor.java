@@ -48,8 +48,6 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
- *
- *
  * @version $Id$
  */
 public abstract class AnswersEditor extends DefaultEditor
@@ -249,8 +247,7 @@ public abstract class AnswersEditor extends DefaultEditor
         final Map<String, List<NodeBuilder>> childNodesByReference, final NodeBuilder nodeBuilder)
     {
         Map<QuestionTree, NodeBuilder> result = new HashMap<>();
-        for (Map.Entry<String, QuestionTree> childQuestion
-            : questionTree.getChildren().entrySet()) {
+        for (Map.Entry<String, QuestionTree> childQuestion : questionTree.getChildren().entrySet()) {
             QuestionTree childTree = childQuestion.getValue();
             try {
                 Node childQuestionNode = childTree.getNode();
@@ -306,8 +303,6 @@ public abstract class AnswersEditor extends DefaultEditor
         }
         return result;
     }
-
-
 
     protected abstract static class AbstractAnswerChangeTracker extends DefaultEditor
     {

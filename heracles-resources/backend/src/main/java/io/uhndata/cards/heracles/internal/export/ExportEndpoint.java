@@ -41,6 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 public class ExportEndpoint extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -1615592669184694095L;
+
     @Reference
     private ResourceResolverFactory resolverFactory;
 
@@ -49,10 +50,10 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
     {
         final Writer out = response.getWriter();
 
-        //Ensure that this can only be run when logged in as admin
+        // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
         if (remoteUser == null || !"admin".equals(remoteUser)) {
-            //admin login required
+            // admin login required
             response.setStatus(403);
             out.write("Only admin can perform this operation.");
             return;

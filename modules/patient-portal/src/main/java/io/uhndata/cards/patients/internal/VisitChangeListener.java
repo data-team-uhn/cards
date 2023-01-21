@@ -432,8 +432,8 @@ public class VisitChangeListener implements ResourceChangeListener
     }
 
     /**
-     * Remove any questionnaires from the questionnaire set which are in the provided list of questionnaires
-     * if they are within the questionnaire set's frequency range.
+     * Remove any questionnaires from the questionnaire set which are in the provided list of questionnaires if they are
+     * within the questionnaire set's frequency range.
      *
      * @param visitInformation the set of data about the visit that triggered this event
      * @param visitDate the data of the visit being checked
@@ -727,11 +727,16 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         // Conflict with any questionnaire
         private static final String CONFLICT_ANY = "any";
+
         // Only conflict with questionnaires included in the map of conflicts
         private static final String CONFLICT_ANY_LISTED = "anyListed";
+
         private final Map<String, Integer> conflicts;
+
         private final Map<String, QuestionnaireRef> members;
+
         private boolean ignoreClinic;
+
         private String conflictMode;
 
         QuestionnaireSetInfo()
@@ -757,7 +762,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 int frequencyPeriod = 0;
                 if (CONFLICT_ANY.equals(this.conflictMode)) {
                     frequencyPeriod = this.members.values().stream()
-                        .map(ref -> ref.getFrequency())
+                        .map(QuestionnaireRef::getFrequency)
                         .max(Integer::compare).get();
                 } else if (this.conflicts.containsKey(questionnaireIdentifier)) {
                     frequencyPeriod = this.conflicts.get(questionnaireIdentifier);

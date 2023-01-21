@@ -16,7 +16,6 @@
  */
 package io.uhndata.cards.heracles.internal;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -57,6 +56,7 @@ public class PauseResumeFormEditor extends DefaultEditor
     private final NodeBuilder currentNodeBuilder;
 
     private final ResourceResolverFactory rrf;
+
     private final ThreadResourceResolverProvider rrp;
 
     private final QuestionnaireUtils questionnaireUtils;
@@ -66,6 +66,7 @@ public class PauseResumeFormEditor extends DefaultEditor
     private final SubjectUtils subjectUtils;
 
     private boolean isFormNode;
+
     private boolean isNew;
 
     /**
@@ -101,7 +102,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             return null;
         } else {
             return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
-            this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, true);
+                this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, true);
         }
     }
 
