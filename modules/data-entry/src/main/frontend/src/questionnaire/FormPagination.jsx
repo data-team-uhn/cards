@@ -47,7 +47,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, enabled, variant, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, doneIcon, questionnaireData } = props;
+  let { classes, enabled, variant, navMode, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, doneIcon, questionnaireData } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -175,7 +175,7 @@ function FormPagination (props) {
       (doneLabel || 'Save')}
     </Button>
 
-  let backButton =
+  let backButton = navMode == "only_next" ? undefined : (
     <Button
       type="submit"
       variant="outlined"
@@ -188,6 +188,13 @@ function FormPagination (props) {
     >
       Back
     </Button>
+  );
+
+  let stepperClasses = [classes.formStepper];
+  if (classes[navMode]) {
+    stepperClasses.push(classes[navMode]);
+  }
+  stepperClasses = stepperClasses.join(' ');
 
   let progressAdjustment = (condition) => (condition && variant == "progress" ? 1 : 0);
 
@@ -210,9 +217,7 @@ function FormPagination (props) {
               variant: "buffer",
               valueBuffer: (activePage + 1) / (lastValidPage() + 1) * 100
           }}
-          // Hide the backround of the front bar to segment of back bar
-          className={classes.formStepper}
-          classes={{progress: classes.formStepperBottomBackground}}
+          className={stepperClasses}
           // base 0 to base 1, plus 1 for the "current page" region when variant is "progress"
           steps={lastValidPage() + 1 + progressAdjustment(true)}
           nextButton={saveButton}
@@ -228,6 +233,7 @@ FormPagination.propTypes = {
   enableSave: PropTypes.bool,
   enabled: PropTypes.bool,
   variant: PropTypes.oneOf(['progress', 'dots', 'text']),
+  navMode: PropTypes.oneOf(['back_next', 'only_next']),
   questionnaireData: PropTypes.object.isRequired,
   setPagesCallback: PropTypes.func.isRequired,
   lastSaveStatus: PropTypes.bool,
@@ -238,6 +244,7 @@ FormPagination.defaultProps = {
   enableSave: true,
   enabled: true,
   variant: "progress",
+  navMode: "back_next",
   saveInProgress: false,
   lastSaveStatus: true
 };

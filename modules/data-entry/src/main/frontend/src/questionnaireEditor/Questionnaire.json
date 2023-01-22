@@ -20,6 +20,10 @@
           "progress" : {},
           "dots": {},
           "text" : {}
+        },
+        "paginationMode" : {
+           "back_next" : {},
+           "only_next" : {}
         }
       },
       "false" : {}

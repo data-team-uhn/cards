@@ -71,7 +71,7 @@ import { hasWarningFlags } from "./AnswerInstructions";
  */
 function Form (props) {
   let { classes, id, contentOffset } = props;
-  let { mode, className, paginationVariant, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons } = props;
+  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -510,7 +510,8 @@ function Form (props) {
               saveInProgress={saveInProgress}
               lastSaveStatus={lastSaveStatus}
               enabled={paginationEnabled}
-              variant={paginationVariant || data?.questionnaire?.paginationVariant}
+              variant={paginationProps?.variant || data?.questionnaire?.paginationVariant}
+              navMode = {paginationProps?.navMode || data?.questionnaire?.paginationMode}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
               onDone={() => { setEndReached(true) }}
