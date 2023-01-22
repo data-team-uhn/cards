@@ -1,9 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
-  "cards:extensionName": "Patient Identification",
-  "cards:targetURL": "/content.html/admin/PatientIdentificationConfiguration",
-  "cards:icon": "asset:patient-portal.PatientIdentificationConfigurationIcon.js",
-  "cards:hint": "Configure how patient users can authenticate",
-  "cards:defaultOrder": 430
-}

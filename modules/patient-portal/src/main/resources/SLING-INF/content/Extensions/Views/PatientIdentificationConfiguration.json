@@ -1,7 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/view",
-  "cards:extensionName": "Patient Identification",
-  "cards:targetURL": "/content.html/admin/PatientIdentificationConfiguration",
-  "cards:extensionRenderURL": "asset:patient-portal.PatientIdentificationConfiguration.js"
-}

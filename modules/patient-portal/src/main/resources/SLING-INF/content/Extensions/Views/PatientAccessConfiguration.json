@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Patient Access",
+  "cards:targetURL": "/content.html/admin/PatientAccessConfiguration",
+  "cards:extensionRenderURL": "asset:patient-portal.PatientAccessConfiguration.js"
+}
