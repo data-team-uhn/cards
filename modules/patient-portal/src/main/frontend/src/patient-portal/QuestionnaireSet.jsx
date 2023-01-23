@@ -511,7 +511,7 @@ function QuestionnaireSet(props) {
     let provider = getVisitInformation("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
     return (eventLabel && (time || location || provider)) ?
-      <Alert severity="info">
+      <Alert severity="info" key="appointment-notification">
         {eventLabel}
         {time ? <> {time} </> : null}
         {location ? <> at {location}</> : null}
@@ -580,7 +580,7 @@ function QuestionnaireSet(props) {
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    introMessage ? <FormattedText paragraph>{introMessage}</FormattedText> : displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
+    introMessage ? <FormattedText paragraph key="intro-message">{introMessage}</FormattedText> : displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -617,12 +617,12 @@ function QuestionnaireSet(props) {
 
   let reviewScreen = !enableReviewScreen ? [
     <Grid alignItems="center" justifyContent="center">
-      <Grid item><CircularProgress/></Grid>
+      <Grid item key="review-loading"><CircularProgress/></Grid>
     </Grid>
   ] : [
-    <Typography variant="h4">Please review your answers</Typography>,
-    <Typography paragraph>You can update the answers for each survey and continue to this review screen before final submission.</Typography>,
-    <Grid container direction="column" spacing={8}>
+    <Typography variant="h4" key="review-title">Please review your answers</Typography>,
+    <Typography paragraph key="review-desc">You can update the answers for each survey and continue to this review screen before final submission.</Typography>,
+    <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).map((q, i) => (
       <Grid item key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
@@ -645,28 +645,27 @@ function QuestionnaireSet(props) {
       </Grid>
       ))}
     </Grid>,
-    <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my answers</Fab>
+    <Fab variant="extended" color="primary" onClick={() => {onSubmit()}} key="review-submit">Submit my answers</Fab>
   ];
 
   // Are there any response interpretations to display to the patient?
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
   let disclaimer = (
-      displayText("disclaimer", Alert, {severity: "warning"})
+      displayText("disclaimer", Alert, {severity: "warning", key: "disclaimer"})
   )
 
   let summaryScreen = hasInterpretations ? [
-      <Typography variant="h4">Thank you for your submission</Typography>,
-      displayText("summaryInstructions", Typography, {color: "textSecondary"}),
+      <Typography variant="h4" key="summary-title">Thank you for your submission</Typography>,
+      displayText("summaryInstructions", Typography, {color: "textSecondary", key: "summary-instructions"}),
       disclaimer,
-      <Typography variant="h4">Interpreting your results</Typography>,
-      displayText("interpretationInstructions", Typography, {color: "textSecondary"}),
-      <Grid container direction="column" spacing={3}>
+      <Typography variant="h4" key="summary-intro">Interpreting your results</Typography>,
+      displayText("interpretationInstructions", Typography, {color: "textSecondary", key: "summary-interpretation-instructions"}),
+      <Grid container direction="column" spacing={3} key="summary-list">
       { (questionnaireIds || []).map((q, i) => (
-        <Grid item>
+        <Grid item key={q+"Summary"}>
         {
           questionnaires?.[q]?.hasInterpretation ? <Form
-              key={q+"Summary"}
               id={subjectData?.[q]?.['@name']}
               mode="summary"
               questionnaireAddons={questionnaires?.[q]?.questionnaireAddons}
@@ -681,15 +680,15 @@ function QuestionnaireSet(props) {
       </Grid>,
       closeButton,
     ] : [
-      <Typography variant="h4">Thank you for your submission</Typography>,
+      <Typography variant="h4" key="summary-title">Thank you for your submission</Typography>,
       disclaimer,
       closeButton,
     ];
 
-  let loadingScreen = [ <CircularProgress /> ];
+  let loadingScreen = [ <CircularProgress key="exit-loading"/> ];
 
   let incompleteScreen = [
-        <List>
+        <List key="incomplete-list">
         { (questionnaireIds || []).map((q, i) => (
           <ListItem key={q+"Exit"}>
             <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
@@ -700,8 +699,8 @@ function QuestionnaireSet(props) {
           </ListItem>
         ))}
         </List>,
-        <Typography color="error">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
-        <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update my answers</Fab>
+        <Typography color="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
+        <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
   ];
 
   let exitScreen = (typeof(isComplete) == 'undefined') ? loadingScreen : (isComplete ? (isSubmitted ? summaryScreen : reviewScreen) : incompleteScreen);
@@ -710,6 +709,7 @@ function QuestionnaireSet(props) {
 
   return (<>
       <Header
+        key="title"
         title={title}
         greeting={username}
         withSignout={!!(config?.PIIAuthRequired)}
