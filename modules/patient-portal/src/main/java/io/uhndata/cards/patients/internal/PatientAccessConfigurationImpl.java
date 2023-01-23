@@ -67,7 +67,7 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     private static final int TOKEN_LIFETIME_DEFAULT = 0;
 
     /** The number of days a patient's draft response is kept for by default (used in case of errors). */
-    private static final int DRAFT_LIFETIME_DEFAULT = 0;
+    private static final int DRAFT_LIFETIME_DEFAULT = -1;
 
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
@@ -138,9 +138,6 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
         try
         {
             Property lifetime = getConfig(DRAFT_LIFETIME_PROP);
-            if (lifetime == null) {
-                lifetime = getConfig(TOKEN_LIFETIME_PROP);
-            }
             return lifetime == null ? DRAFT_LIFETIME_DEFAULT : (int) lifetime.getLong();
         } catch (RepositoryException e) {
             return DRAFT_LIFETIME_DEFAULT;
