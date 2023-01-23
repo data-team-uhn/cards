@@ -128,7 +128,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>Examples of other hospital staff include: Occupational Therapists, Physiotherapists, Social Workers, Pharmacists, Personal Support Workers etc.</value>
+				<value>Examples of other hospital staff include: Dietitians, Personal Support Workers, Pharmacists, Physiotherapists, Occupational Therapists, Social Workers, Speech Language Pathologists, etc.</value>
 				<type>String</type>
 			</property>
 			<property>
