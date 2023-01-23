@@ -88,7 +88,7 @@ function PatientAccessConfiguration() {
       </ListItem>
     );
 
-  let renderConfigInput = (key, unit, placeholder) => (
+  let renderConfigInput = (key, unit, inputProps) => (
       <ListItem>
         <FormGroup className={classes.textField}>
           <FormLabel>{labels[key][0]}</FormLabel>
@@ -97,12 +97,13 @@ function PatientAccessConfiguration() {
             type="number"
             onChange={event => { setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value}); setHasChanges(true); }}
             onBlur={event => { setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value}); setHasChanges(true); }}
-            placeholder={placeholder || DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
+            placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
             value={patientAccessConfig?.[key]}
             helperText={labels[key][1]}
             InputProps={{
               endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
             }}
+            inputProps={inputProps}
           />
         </FormGroup>
       </ListItem>
@@ -122,7 +123,7 @@ function PatientAccessConfiguration() {
             { renderConfigCheckbox("tokenlessAuthEnabled") }
             { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
             { renderConfigInput("allowedPostVisitCompletionTime", "days") }
-            { renderConfigInput("draftLifetime", "days") }
+            { renderConfigInput("draftLifetime", "days", {min: -1, max: patientAccessConfig?.allowedPostVisitCompletionTime}) }
           </List>
       </AdminConfigScreen>
   );
