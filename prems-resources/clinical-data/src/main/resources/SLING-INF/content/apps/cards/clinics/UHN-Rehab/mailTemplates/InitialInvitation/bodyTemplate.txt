@@ -3,9 +3,10 @@ Dear ${first_name} ${last_name},
 You are receiving this email because you have recently been discharged from a
 University Health Network (UHN) hospital.
 
-We’d like to hear about your experience while you were an inpatient at UHN.
-Your opinions are valuable to us. Your responses will be anonymous and will
-be used to help UHN continuously improve the quality of care patients receive.
+We’d like to hear about your experience while you were an inpatient at UHN's
+Toronto Rehab. Your opinions are valuable to us. Your responses will be
+anonymous and will be used to help UHN continuously improve the quality of
+care patients receive.
 
 Completing this survey is voluntary. Your responses will not be shared with
 the care team and answering will not impact future care you receive at UHN.
@@ -15,6 +16,9 @@ complete.
 
 To begin the survey, click the following link:
 ${surveysLink}
+
+Please note that this survey is compatible with voice activated software which
+can be used to navigate this survey.
 
 If you have any questions or concerns or wish to be removed from the survey,
 please contact us at yourexperience@uhn.ca. You can also unsubscribe from all
