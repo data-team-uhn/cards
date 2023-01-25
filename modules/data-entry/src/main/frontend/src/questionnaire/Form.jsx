@@ -239,20 +239,23 @@ function Form (props) {
         openErrorDialog();
         setLastSaveStatus(undefined);
     }).finally(() => {
-        // Re-fetch the form after save to see if user can progress
-        fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
-          .then((response) => response.ok ? response.json() : Promise.reject(response))
-          .then(json => {
-            let incompleteEl = getFirstIncompleteQuestionEl(json);
-            setIncompleteQuestionEl(incompleteEl);
-            !incompleteEl && onSuccess?.();
-            setLastSaveStatus(true);
-            setLastSaveTimestamp(new Date());
-          })
-          .catch(handleFetchError)
-          .finally(() => {
-            formNode?.current && setSaveInProgress(false)});
-          });
+        // If the form is required to be complete, re-fetch it after save to see if user can progress
+        if (requireComplete) {
+            fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
+              .then((response) => response.ok ? response.json() : Promise.reject(response))
+              .then(json => {
+                  let incompleteEl = getFirstIncompleteQuestionEl(json);
+                  setIncompleteQuestionEl(incompleteEl);
+                  !incompleteEl && onSuccess?.();
+                  setLastSaveStatus(true);
+                  setLastSaveTimestamp(new Date());
+              })
+              .catch(handleFetchError)
+              .finally(() => {formNode?.current && setSaveInProgress(false)});
+        } else {
+            formNode?.current && setSaveInProgress(false);
+        }
+    });
   }
 
   let saveDataWithCheckin = (event, onSuccess) => {
