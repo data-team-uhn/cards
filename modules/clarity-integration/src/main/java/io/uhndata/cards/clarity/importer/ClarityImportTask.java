@@ -73,13 +73,14 @@ public class ClarityImportTask implements Runnable
 
     private static final String VALUE_PROP = "value";
 
-    private ThreadLocal<Map<String, String>> sqlColumnToDataType = new ThreadLocal<>();
+    private final ThreadLocal<Map<String, String>> sqlColumnToDataType = ThreadLocal.withInitial(HashMap::new);
 
-    private ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
+    private final ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
 
-    private ThreadLocal<VersionManager> versionManager = new ThreadLocal<>();
+    private final ThreadLocal<VersionManager> versionManager = new ThreadLocal<>();
 
-    private ThreadLocal<ClaritySubjectMapping> clarityImportConfiguration = new ThreadLocal<>();
+    private final ThreadLocal<ClaritySubjectMapping> clarityImportConfiguration =
+        ThreadLocal.withInitial(ClaritySubjectMapping::new);
 
     // Helper classes
 
@@ -91,19 +92,33 @@ public class ClarityImportTask implements Runnable
         CLINIC
     }
 
-    private class ClaritySubjectMapping
+    private static final class ClaritySubjectMapping
     {
-        private String name;
-        private String path;
-        private String subjectIdColumn;
-        private String subjectType;
-        private List<ClaritySubjectMapping> childSubjects;
-        private List<ClarityQuestionnaireMapping> questionnaires;
+        private final String name;
 
-        ClaritySubjectMapping(String name, String subjectIdColumn, String subjectType)
+        private final String path;
+
+        private final String subjectIdColumn;
+
+        private final String subjectType;
+
+        private final List<ClaritySubjectMapping> childSubjects;
+
+        private final List<ClarityQuestionnaireMapping> questionnaires;
+
+        /**
+         * Constructor used for the root of the mapping tree, an empty mapping with the only purpose of holding child
+         * subject mappings.
+         */
+        ClaritySubjectMapping()
+        {
+            this("", "", "", "");
+        }
+
+        ClaritySubjectMapping(String name, String subjectIdColumn, String subjectType, String path)
         {
             this.name = name;
-            this.path = "";
+            this.path = path;
             this.subjectIdColumn = subjectIdColumn;
             this.subjectType = subjectType;
             this.childSubjects = new LinkedList<>();
@@ -121,38 +136,44 @@ public class ClarityImportTask implements Runnable
         }
     }
 
-    private class ClarityQuestionnaireMapping
+    private static final class ClarityQuestionnaireMapping
     {
-        private String name;
-        private boolean updatesExisting;
-        private List<ClarityQuestionMapping> questions;
+        private final String name;
 
-        ClarityQuestionnaireMapping(String name, boolean updatesExisting)
+        private final boolean updatesExisting;
+
+        private final List<ClarityQuestionMapping> questions;
+
+        ClarityQuestionnaireMapping(final String name, final boolean updatesExisting)
         {
             this.name = name;
             this.updatesExisting = updatesExisting;
             this.questions = new LinkedList<>();
         }
 
-        private void addQuestion(ClarityQuestionMapping mapping)
+        private void addQuestion(final ClarityQuestionMapping mapping)
         {
             this.questions.add(mapping);
         }
 
-        private Resource getQuestionnaireResource(ResourceResolver resolver)
+        private Resource getQuestionnaireResource(final ResourceResolver resolver)
         {
             return resolver.resolve("/Questionnaires/" + this.name);
         }
     }
 
-    private class ClarityQuestionMapping
+    private static final class ClarityQuestionMapping
     {
-        private String name;
-        private String question;
-        private String sqlColumn;
-        private QuestionType questionType;
+        private final String name;
 
-        ClarityQuestionMapping(String name, String question, String sqlColumn, QuestionType questionType)
+        private final String question;
+
+        private final String sqlColumn;
+
+        private final QuestionType questionType;
+
+        ClarityQuestionMapping(final String name, final String question, final String sqlColumn,
+            final QuestionType questionType)
         {
             this.name = name;
             this.question = question;
@@ -188,10 +209,6 @@ public class ClarityImportTask implements Runnable
 
             final Session session = resolver.adaptTo(Session.class);
             this.versionManager.set(session.getWorkspace().getVersionManager());
-
-            this.clarityImportConfiguration.set(new ClaritySubjectMapping("", "", ""));
-
-            this.sqlColumnToDataType.set(new HashMap<>());
 
             populateClarityImportConfiguration(resolver, resolver.resolve(MAPPING_CONFIG),
                 this.clarityImportConfiguration.get());
@@ -245,8 +262,7 @@ public class ClarityImportTask implements Runnable
 
                 // Add this cards:claritySubjectMapping to the local Java data structures
                 ClaritySubjectMapping claritySubjectMapping = new ClaritySubjectMapping(configChildNode.getName(),
-                    subjectIDColumnLabel, subjectNodeType);
-                claritySubjectMapping.path = clarityConf.path + "/" + claritySubjectMapping.name;
+                    subjectIDColumnLabel, subjectNodeType, clarityConf.path + "/" + configChildNode.getName());
 
                 // Iterate through all Questionnaires that are to be created
                 Resource questionnaires = configChildNode.getChild("questionnaires");
