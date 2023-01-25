@@ -590,7 +590,7 @@ function Form (props) {
             { isEdit &&
               <MainActionButton
                 style={doneButtonStyle}
-                disableProgress={requireComplete && incompleteQuestionEl}
+                disabled={requireComplete && incompleteQuestionEl}
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
