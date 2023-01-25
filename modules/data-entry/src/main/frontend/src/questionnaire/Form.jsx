@@ -230,11 +230,23 @@ function Form (props) {
         return;
       }
       if (response.ok) {
+        setLastSaveStatus(true);
+        setLastSaveTimestamp(new Date());
         if (!disableHeader) {
           fetchWithReLogin(globalLoginDisplay, `${formURL}/statusFlags.json`)
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then(json => setStatusFlags(json.statusFlags))
             .catch(err => console.log("The form status flags could not be updated after saving"));
+        }
+        onSuccess?.();
+        // If the form is required to be complete, re-fetch it after save to see if user can progress
+        if (requireCompletion) {
+            fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
+              .then((response) => response.ok ? response.json() : Promise.reject(response))
+              .then(json => {
+                  setIncompleteQuestionEl(getFirstIncompleteQuestionEl(json));
+              })
+              .catch(handleFetchError);
         }
       } else if (response.status === 500) {
         response.json().then((json) => {
@@ -249,24 +261,8 @@ function Form (props) {
         setErrorMessage(err?.message);
         openErrorDialog();
         setLastSaveStatus(undefined);
-    }).finally(() => {
-        // If the form is required to be complete, re-fetch it after save to see if user can progress
-        if (requireCompletion) {
-            fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
-              .then((response) => response.ok ? response.json() : Promise.reject(response))
-              .then(json => {
-                  let incompleteEl = getFirstIncompleteQuestionEl(json);
-                  setIncompleteQuestionEl(incompleteEl);
-                  !incompleteEl && onSuccess?.();
-                  setLastSaveStatus(true);
-                  setLastSaveTimestamp(new Date());
-              })
-              .catch(handleFetchError)
-              .finally(() => {formNode?.current && setSaveInProgress(false)});
-        } else {
-            formNode?.current && setSaveInProgress(false);
-        }
-    });
+    })
+    .finally(() => {formNode?.current && setSaveInProgress(false)});
   }
 
   let saveDataWithCheckin = (event, onSuccess) => {
