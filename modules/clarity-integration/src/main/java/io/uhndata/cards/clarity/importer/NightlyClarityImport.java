@@ -31,6 +31,8 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true)
 @Designate(ocd = ClarityImportConfigDefinition.class)
 public class NightlyClarityImport
@@ -43,6 +45,9 @@ public class NightlyClarityImport
     /** Provides access to resources. */
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     /** The scheduler for rescheduling jobs. */
     @Reference
@@ -68,7 +73,7 @@ public class NightlyClarityImport
         options.canRunConcurrently(true);
 
         final Runnable importJob;
-        importJob = new ClarityImportTask(this.resolverFactory);
+        importJob = new ClarityImportTask(this.resolverFactory, this.rrp);
         try {
             if (importJob != null) {
                 this.scheduler.schedule(importJob, options);

@@ -49,12 +49,15 @@ import org.apache.sling.api.resource.ValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+
 /**
  * Query the Clarity server every so often to obtain all of the visits & patients that have appeared throughout the day.
  * This will patch over patient & visit information forms.
  *
  * @version $Id$
  */
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class ClarityImportTask implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClarityImportTask.class);
@@ -81,6 +84,8 @@ public class ClarityImportTask implements Runnable
 
     private final ThreadLocal<ClaritySubjectMapping> clarityImportConfiguration =
         ThreadLocal.withInitial(ClaritySubjectMapping::new);
+
+    private final ThreadResourceResolverProvider rrp;
 
     // Helper classes
 
@@ -185,9 +190,10 @@ public class ClarityImportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
-    ClarityImportTask(final ResourceResolverFactory resolverFactory)
+    ClarityImportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp)
     {
         this.resolverFactory = resolverFactory;
+        this.rrp = rrp;
     }
 
     // The entry point for running an import
@@ -204,8 +210,11 @@ public class ClarityImportTask implements Runnable
                 + "encrypt=" + System.getenv("CLARITY_SQL_ENCRYPT") + ";";
 
         // Connect via SQL to the server
+        boolean mustPopResolver = false;
         try (Connection connection = DriverManager.getConnection(connectionUrl);
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            this.rrp.push(resolver);
+            mustPopResolver = true;
 
             final Session session = resolver.adaptTo(Session.class);
             this.versionManager.set(session.getWorkspace().getVersionManager());
@@ -246,6 +255,9 @@ public class ClarityImportTask implements Runnable
             this.versionManager.remove();
             this.clarityImportConfiguration.remove();
             this.sqlColumnToDataType.remove();
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
     }
 

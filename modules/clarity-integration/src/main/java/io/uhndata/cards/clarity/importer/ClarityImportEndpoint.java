@@ -33,6 +33,8 @@ import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
@@ -44,6 +46,9 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
 
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -57,7 +62,7 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
         }
 
         // Load configuration from environment variables
-        final Runnable importJob = new ClarityImportTask(this.resolverFactory);
+        final Runnable importJob = new ClarityImportTask(this.resolverFactory, this.rrp);
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);
