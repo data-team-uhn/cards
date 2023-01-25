@@ -531,6 +531,9 @@ if args.s3_test_container:
   yaml_obj['services']['cardsinitial']['environment'].append("AWS_KEY=minioadmin")
   yaml_obj['services']['cardsinitial']['environment'].append("AWS_SECRET=minioadmin")
 
+if SSL_PROXY:
+  yaml_obj['services']['cardsinitial']['environment'].append("BEHIND_SSL_PROXY=true")
+
 if ENABLE_BACKUP_SERVER:
   print("Configuring service: backup_recorder")
 
