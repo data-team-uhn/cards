@@ -70,7 +70,7 @@ import ResourceHeader from "./ResourceHeader.jsx";
  */
 function Form (props) {
   let { classes, id, contentOffset } = props;
-  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps, requireComplete } = props;
+  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -101,6 +101,12 @@ function Form (props) {
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
+  // Check if the form is required to be complete before progressing
+  // The requirement can either be passed to the Form component as a prop,
+  // or come via Questionnaire properties. The custom prop should have
+  // priority over the questionnaire configuration.
+  let [ requireCompletion, setRequireCompletion ] = useState(props.requireCompletion);
+  // The first incomplete question, to be brought to the user's attention
   let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
 
   // End is always reached on non-paginated forms
@@ -112,7 +118,9 @@ function Form (props) {
 
   // When end was reached and save was successful, call `onDone` if applicable
   useEffect(() => {
-    if (requireComplete && incompleteQuestionEl) {
+    // If there's at least a question that is incomplete while we require completion,
+    // focus on that element and fo not call `onDone`
+    if (incompleteQuestionEl) {
       // focus and hightlight the first unfinished mandatory question box
       incompleteQuestionEl.classList.add(classes.questionnaireItemWithError);
       incompleteQuestionEl.scrollIntoView({block: "center"});
@@ -175,6 +183,9 @@ function Form (props) {
     }
     setData(json);
     setStatusFlags(json.statusFlags);
+    // If the completion requirement has not already been set via Form prop,
+    // grab it from the questionnaire definition
+    typeof(requireCompletion == "undefined") && setRequireCompletion(json?.['questionnaire']?.['requireCompletion']);
     setPaginationEnabled(!!json?.['questionnaire']?.['paginate'] && isEdit);
     if (isEdit) {
       //Perform a JCR check-out of the Form
@@ -240,7 +251,7 @@ function Form (props) {
         setLastSaveStatus(undefined);
     }).finally(() => {
         // If the form is required to be complete, re-fetch it after save to see if user can progress
-        if (requireComplete) {
+        if (requireCompletion) {
             fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
               .then((response) => response.ok ? response.json() : Promise.reject(response))
               .then(json => {
@@ -575,7 +586,7 @@ function Form (props) {
         <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
-              disableProgress={requireComplete && incompleteQuestionEl}
+              disableProgress={incompleteQuestionEl}
               lastSaveStatus={lastSaveStatus}
               enabled={paginationEnabled}
               variant={paginationProps?.variant || data?.questionnaire?.paginationVariant}
@@ -593,7 +604,7 @@ function Form (props) {
             { isEdit &&
               <MainActionButton
                 style={doneButtonStyle}
-                disabled={requireComplete && incompleteQuestionEl}
+                disabled={incompleteQuestionEl}
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
