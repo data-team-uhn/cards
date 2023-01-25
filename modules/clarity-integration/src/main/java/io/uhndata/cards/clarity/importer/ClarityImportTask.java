@@ -50,8 +50,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Query the Clarity server every so often to obtain all of the visits & patients that have appeared
- * throughout the day. This will patch over patient & visit information forms.
+ * Query the Clarity server every so often to obtain all of the visits & patients that have appeared throughout the day.
+ * This will patch over patient & visit information forms.
  *
  * @version $Id$
  */
@@ -80,6 +80,8 @@ public class ClarityImportTask implements Runnable
     private ThreadLocal<VersionManager> versionManager = new ThreadLocal<>();
 
     private ThreadLocal<ClaritySubjectMapping> clarityImportConfiguration = new ThreadLocal<>();
+
+    // Helper classes
 
     private enum QuestionType
     {
@@ -167,71 +169,70 @@ public class ClarityImportTask implements Runnable
         this.resolverFactory = resolverFactory;
     }
 
-    /***
-     * Identify the question type from a question Resource.
-     *
-     * @param question the cards:Question node to analyze
-     * @return A QuestionType corresponding to the given cards:Question node
-     */
-    private QuestionType getQuestionType(Resource question)
-    {
-        ValueMap questionProps = question.getValueMap();
-        String dataType = questionProps.containsKey(DATA_TYPE_PROP) ? questionProps.get(DATA_TYPE_PROP, "") : "";
-        String primaryType = questionProps.containsKey("primaryType") ? questionProps.get("primaryType", "") : "";
-        if ("date".equals(dataType)) {
-            return QuestionType.DATE;
-        } else if ("boolean".equals(dataType)) {
-            return QuestionType.BOOLEAN;
-        } else if ("cards:ClinicMapping".equals(primaryType)) {
-            return QuestionType.CLINIC;
-        }
-        return QuestionType.STRING;
-    }
+    // The entry point for running an import
 
-    private String generateClarityQuery()
+    @Override
+    public void run()
     {
-        String queryString = "SELECT ";
-        Iterator<Map.Entry<String, String>> columnsIterator = this.sqlColumnToDataType.get().entrySet().iterator();
-        while (columnsIterator.hasNext()) {
-            Map.Entry<String, String> col = columnsIterator.next();
-            if ("date".equals(col.getValue())) {
-                queryString += "FORMAT(" + col.getKey() + ", 'yyyy-MM-dd HH:mm:ss') AS " + col.getKey();
-            } else {
-                queryString += col.getKey();
+        LOGGER.info("Running ClarityImportTask");
+
+        String connectionUrl =
+            "jdbc:sqlserver://" + System.getenv("CLARITY_SQL_SERVER") + ";"
+                + "user=" + System.getenv("CLARITY_SQL_USERNAME") + ";"
+                + "password=" + System.getenv("CLARITY_SQL_PASSWORD") + ";"
+                + "encrypt=" + System.getenv("CLARITY_SQL_ENCRYPT") + ";";
+
+        // Connect via SQL to the server
+        try (Connection connection = DriverManager.getConnection(connectionUrl);
+            ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+
+            final Session session = resolver.adaptTo(Session.class);
+            this.versionManager.set(session.getWorkspace().getVersionManager());
+
+            this.clarityImportConfiguration.set(new ClaritySubjectMapping("", "", ""));
+
+            this.sqlColumnToDataType.set(new HashMap<>());
+
+            populateClarityImportConfiguration(resolver, resolver.resolve(MAPPING_CONFIG),
+                this.clarityImportConfiguration.get());
+
+            // Generate and perform the query
+            PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
+            ResultSet results = statement.executeQuery();
+
+            while (results.next()) {
+                // Create the Subjects and Forms as is needed
+                createFormsAndSubjects(resolver, results);
             }
-            if (columnsIterator.hasNext()) {
-                queryString += ", ";
-            }
-        }
-        queryString += " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS";
-        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE()-1 AS DATE);";
 
-        return queryString;
-    }
-
-    private void updateExistingForm(ResourceResolver resolver, Resource formNode,
-        ClarityQuestionnaireMapping questionnaireMapping, ResultSet sqlRow)
-        throws ParseException, RepositoryException, SQLException
-    {
-        this.versionManager.get().checkout(formNode.getPath());
-        for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
-            replaceFormAnswer(resolver, formNode,
-                generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
-        }
-        // Perform a JCR check-in to this cards:Form node once the import is completed
-        this.nodesToCheckin.get().add(formNode.getPath());
-    }
-
-    private void populateEmptyForm(ResourceResolver resolver, Resource formNode,
-        ClarityQuestionnaireMapping questionnaireMapping, ResultSet sqlRow)
-        throws ParseException, PersistenceException, SQLException
-    {
-        for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
-            // Create the answer node in the JCR
-            resolver.create(formNode, UUID.randomUUID().toString(),
-                generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
+            session.save();
+            this.nodesToCheckin.get().forEach(node -> {
+                try {
+                    this.versionManager.get().checkin(node);
+                } catch (final RepositoryException e) {
+                    LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
+                }
+            });
+        } catch (SQLException e) {
+            LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
+        } catch (LoginException e) {
+            LOGGER.error("Could not find service user while writing results: {}", e.getMessage(), e);
+        } catch (RepositoryException e) {
+            LOGGER.error("Error during Clarity import: {}", e.getMessage(), e);
+        } catch (PersistenceException e) {
+            LOGGER.error("PersistenceException while importing data to JCR", e);
+        } catch (ParseException e) {
+            LOGGER.error("ParseException while importing data to JCR");
+        } finally {
+            // Cleanup all ThreadLocals
+            this.nodesToCheckin.remove();
+            this.versionManager.remove();
+            this.clarityImportConfiguration.remove();
+            this.sqlColumnToDataType.remove();
         }
     }
+
+    // Methods for preparing the Clarity SQL query
 
     private void populateClarityImportConfiguration(ResourceResolver resolver, Resource configNode,
         ClaritySubjectMapping clarityConf)
@@ -286,6 +287,58 @@ public class ClarityImportTask implements Runnable
         }
     }
 
+    /***
+     * Identify the question type from a question Resource.
+     *
+     * @param question the cards:Question node to analyze
+     * @return A QuestionType corresponding to the given cards:Question node
+     */
+    private QuestionType getQuestionType(Resource question)
+    {
+        ValueMap questionProps = question.getValueMap();
+        String dataType = questionProps.containsKey(DATA_TYPE_PROP) ? questionProps.get(DATA_TYPE_PROP, "") : "";
+        String primaryType = questionProps.containsKey("primaryType") ? questionProps.get("primaryType", "") : "";
+        if ("date".equals(dataType)) {
+            return QuestionType.DATE;
+        } else if ("boolean".equals(dataType)) {
+            return QuestionType.BOOLEAN;
+        } else if ("cards:ClinicMapping".equals(primaryType)) {
+            return QuestionType.CLINIC;
+        }
+        return QuestionType.STRING;
+    }
+
+    private String generateClarityQuery()
+    {
+        String queryString = "SELECT ";
+        Iterator<Map.Entry<String, String>> columnsIterator = this.sqlColumnToDataType.get().entrySet().iterator();
+        while (columnsIterator.hasNext()) {
+            Map.Entry<String, String> col = columnsIterator.next();
+            if ("date".equals(col.getValue())) {
+                queryString += "FORMAT(" + col.getKey() + ", 'yyyy-MM-dd HH:mm:ss') AS " + col.getKey();
+            } else {
+                queryString += col.getKey();
+            }
+            if (columnsIterator.hasNext()) {
+                queryString += ", ";
+            }
+        }
+        queryString += " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS";
+        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE()-1 AS DATE);";
+
+        return queryString;
+    }
+
+    // Methods for handling a result row
+
+    private void createFormsAndSubjects(ResourceResolver resolver, ResultSet sqlRow)
+        throws ParseException, PersistenceException, RepositoryException, SQLException
+    {
+        // Recursively move down the local Clarity Import configuration tree
+        walkThroughLocalConfig(resolver, sqlRow, this.clarityImportConfiguration.get(),
+            resolver.resolve("/Subjects"));
+    }
+
     private void walkThroughLocalConfig(ResourceResolver resolver, ResultSet sqlRow,
         ClaritySubjectMapping subjectMapping, Resource subjectParent)
         throws ParseException, PersistenceException, RepositoryException, SQLException
@@ -328,73 +381,85 @@ public class ClarityImportTask implements Runnable
         }
     }
 
-    private void createFormsAndSubjects(ResourceResolver resolver, ResultSet sqlRow)
-        throws ParseException, PersistenceException, RepositoryException, SQLException
+    // Methods for storing subjects
+
+    /**
+     * Grab a subject of the specified type, or create it if it doesn't exist.
+     *
+     * @param identifier Identifier to use for the subject
+     * @param subjectTypePath path to a SubjectType node for this subject
+     * @param resolver resource resolver to use
+     * @param parent parent Resource if this is a child of that resource, or null
+     * @return A Subject resource
+     */
+    private Resource getOrCreateSubject(final String identifier, final String subjectTypePath,
+        final ResourceResolver resolver, final Resource parent) throws RepositoryException, PersistenceException
     {
-        // Recursively move down the local Clarity Import configuration tree
-        walkThroughLocalConfig(resolver, sqlRow, this.clarityImportConfiguration.get(),
-            resolver.resolve("/Subjects"));
+        String subjectMatchQuery = String.format(
+            "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
+            identifier);
+        resolver.refresh();
+        final Iterator<Resource> subjectResourceIter = resolver.findResources(subjectMatchQuery, "JCR-SQL2");
+        if (subjectResourceIter.hasNext()) {
+            final Resource subjectResource = subjectResourceIter.next();
+            this.versionManager.get().checkout(subjectResource.getPath());
+            this.nodesToCheckin.get().add(subjectResource.getPath());
+            return subjectResource;
+        } else {
+            Resource parentResource = parent;
+            if (parentResource == null) {
+                parentResource = resolver.getResource("/Subjects/");
+            }
+            final Resource patientType = resolver.getResource(subjectTypePath);
+            final Resource newSubject = resolver.create(parentResource, identifier, Map.of(
+                ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Subject",
+                "identifier", identifier,
+                "type", patientType.adaptTo(Node.class)));
+            this.nodesToCheckin.get().add(newSubject.getPath());
+            return newSubject;
+        }
     }
 
-    @Override
-    public void run()
+    private Resource getFormForSubject(ResourceResolver resolver, Resource questionnaireResource,
+        Resource subjectResource)
     {
-        LOGGER.info("Running ClarityImportTask");
+        // Get the jcr:uuid associated with questionnairePath
+        String questionnaireUUID = questionnaireResource.getValueMap().get("jcr:uuid", "");
 
-        String connectionUrl =
-            "jdbc:sqlserver://" + System.getenv("CLARITY_SQL_SERVER") + ";"
-            + "user=" + System.getenv("CLARITY_SQL_USERNAME") + ";"
-            + "password=" + System.getenv("CLARITY_SQL_PASSWORD") + ";"
-            + "encrypt=" + System.getenv("CLARITY_SQL_ENCRYPT") + ";";
+        // Get the jcr:uuid associated with subjectPath
+        String subjectUUID = subjectResource.getValueMap().get("jcr:uuid", "");
 
-        // Connect via SQL to the server
-        try (Connection connection = DriverManager.getConnection(connectionUrl);
-            ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+        // Query for a cards:Form node with the specified questionnaire and subject
+        String formMatchQuery = String.format(
+            "SELECT * FROM [cards:Form] as form WHERE"
+                + " form.'subject'='%s'"
+                + " AND form.'questionnaire'='%s'"
+                + " option (index tag property)",
+            subjectUUID,
+            questionnaireUUID);
 
-            final Session session = resolver.adaptTo(Session.class);
-            this.versionManager.set(session.getWorkspace().getVersionManager());
-
-            this.clarityImportConfiguration.set(new ClaritySubjectMapping("", "", ""));
-
-            this.sqlColumnToDataType.set(new HashMap<>());
-
-            populateClarityImportConfiguration(resolver, resolver.resolve(MAPPING_CONFIG),
-                this.clarityImportConfiguration.get());
-
-            // Generate and perform the query
-            PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
-            ResultSet results = statement.executeQuery();
-
-            while (results.next()) {
-                // Create the Subjects and Forms as is needed
-                createFormsAndSubjects(resolver, results);
-            }
-
-            session.save();
-            this.nodesToCheckin.get().forEach(node -> {
-                try {
-                    this.versionManager.get().checkin(node);
-                } catch (final RepositoryException e) {
-                    LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
-                }
-            });
-        } catch (SQLException e) {
-            LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
-        } catch (LoginException e) {
-            LOGGER.error("Could not find service user while writing results: {}", e.getMessage(), e);
-        } catch (RepositoryException e) {
-            LOGGER.error("Error during Clarity import: {}", e.getMessage(), e);
-        } catch (PersistenceException e) {
-            LOGGER.error("PersistenceException while importing data to JCR");
-        } catch (ParseException e) {
-            LOGGER.error("ParseException while importing data to JCR");
-        } finally {
-            // Cleanup all ThreadLocals
-            this.nodesToCheckin.remove();
-            this.versionManager.remove();
-            this.clarityImportConfiguration.remove();
-            this.sqlColumnToDataType.remove();
+        resolver.refresh();
+        final Iterator<Resource> formResourceIter = resolver.findResources(formMatchQuery, "JCR-SQL2");
+        if (formResourceIter.hasNext()) {
+            return formResourceIter.next();
         }
+
+        return null;
+    }
+
+    // Methods for updating an existing form
+
+    private void updateExistingForm(ResourceResolver resolver, Resource formNode,
+        ClarityQuestionnaireMapping questionnaireMapping, ResultSet sqlRow)
+        throws ParseException, RepositoryException, SQLException
+    {
+        this.versionManager.get().checkout(formNode.getPath());
+        for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
+            replaceFormAnswer(resolver, formNode,
+                generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
+        }
+        // Perform a JCR check-in to this cards:Form node once the import is completed
+        this.nodesToCheckin.get().add(formNode.getPath());
     }
 
     private void replaceFormAnswer(final ResourceResolver resolver, final Resource form,
@@ -418,21 +483,36 @@ public class ClarityImportTask implements Runnable
         }
     }
 
-    /*
-     * If the corresponding cards:Question has a maxAnswers value != 1
-     * set the "value" property of this answer node to a single-element list
-     * containing only the type-casted answer value.
-     */
-    private Map<String, Object> fixAnswerMultiValues(Map<String, Object> props, Resource questionResource)
+    // Methods for storing a new form
+
+    private Resource createForm(ResourceResolver resolver, Resource questionnaire, Resource subject)
+        throws PersistenceException
     {
-        int maxAnswers = questionResource.getValueMap().get("maxAnswers", 1);
-        Object valuePropValue = props.get(ClarityImportTask.VALUE_PROP);
-        if ((maxAnswers != 1) && (valuePropValue != null)) {
-            // Make this value a single element "multi-valued" property
-            Object[] multiValues = {valuePropValue};
-            props.put(ClarityImportTask.VALUE_PROP, multiValues);
+        return resolver.create(resolver.resolve("/Forms"), UUID.randomUUID().toString(), Map.of(
+            ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
+            QUESTIONNAIRE_PROP, questionnaire.adaptTo(Node.class),
+            "subject", subject.adaptTo(Node.class)));
+    }
+
+    private void populateEmptyForm(ResourceResolver resolver, Resource formNode,
+        ClarityQuestionnaireMapping questionnaireMapping, ResultSet sqlRow)
+        throws ParseException, PersistenceException, SQLException
+    {
+        for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
+            // Create the answer node in the JCR
+            resolver.create(formNode, UUID.randomUUID().toString(),
+                generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
         }
-        return props;
+    }
+
+    private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver,
+        final ClarityQuestionMapping questionMapping, final ResultSet sqlRow) throws ParseException, SQLException
+    {
+        String questionPath = questionMapping.question;
+        String sqlColumn = questionMapping.sqlColumn;
+        String answerValue = sqlRow.getString(sqlColumn);
+        QuestionType qType = questionMapping.questionType;
+        return generateAnswerNodeProperties(resolver, qType, questionPath, answerValue);
     }
 
     private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver, final QuestionType qType,
@@ -477,86 +557,19 @@ public class ClarityImportTask implements Runnable
         return props;
     }
 
-    private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver,
-        final ClarityQuestionMapping questionMapping, final ResultSet sqlRow) throws ParseException, SQLException
-    {
-        String questionPath = questionMapping.question;
-        String sqlColumn = questionMapping.sqlColumn;
-        String answerValue = sqlRow.getString(sqlColumn);
-        QuestionType qType = questionMapping.questionType;
-        return generateAnswerNodeProperties(resolver, qType, questionPath, answerValue);
-    }
-
-    /**
-     * Grab a subject of the specified type, or create it if it doesn't exist.
-     *
-     * @param identifier Identifier to use for the subject
-     * @param subjectTypePath path to a SubjectType node for this subject
-     * @param resolver resource resolver to use
-     * @param parent parent Resource if this is a child of that resource, or null
-     * @return A Subject resource
+    /*
+     * If the corresponding cards:Question has a maxAnswers value != 1 set the "value" property of this answer node to a
+     * single-element list containing only the type-casted answer value.
      */
-    private Resource getOrCreateSubject(final String identifier, final String subjectTypePath,
-        final ResourceResolver resolver, final Resource parent) throws RepositoryException, PersistenceException
+    private Map<String, Object> fixAnswerMultiValues(Map<String, Object> props, Resource questionResource)
     {
-        String subjectMatchQuery = String.format(
-            "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
-                identifier);
-        resolver.refresh();
-        final Iterator<Resource> subjectResourceIter = resolver.findResources(subjectMatchQuery, "JCR-SQL2");
-        if (subjectResourceIter.hasNext()) {
-            final Resource subjectResource = subjectResourceIter.next();
-            this.versionManager.get().checkout(subjectResource.getPath());
-            this.nodesToCheckin.get().add(subjectResource.getPath());
-            return subjectResource;
-        } else {
-            Resource parentResource = parent;
-            if (parentResource == null) {
-                parentResource = resolver.getResource("/Subjects/");
-            }
-            final Resource patientType = resolver.getResource(subjectTypePath);
-            final Resource newSubject = resolver.create(parentResource, identifier, Map.of(
-                ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Subject",
-                "identifier", identifier,
-                "type", patientType.adaptTo(Node.class)));
-            this.nodesToCheckin.get().add(newSubject.getPath());
-            return newSubject;
+        int maxAnswers = questionResource.getValueMap().get("maxAnswers", 1);
+        Object valuePropValue = props.get(ClarityImportTask.VALUE_PROP);
+        if ((maxAnswers != 1) && (valuePropValue != null)) {
+            // Make this value a single element "multi-valued" property
+            Object[] multiValues = { valuePropValue };
+            props.put(ClarityImportTask.VALUE_PROP, multiValues);
         }
-    }
-
-    private Resource createForm(ResourceResolver resolver, Resource questionnaire, Resource subject)
-        throws PersistenceException
-    {
-        return resolver.create(resolver.resolve("/Forms"), UUID.randomUUID().toString(), Map.of(
-                ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
-                QUESTIONNAIRE_PROP, questionnaire.adaptTo(Node.class),
-                "subject", subject.adaptTo(Node.class)));
-    }
-
-    private Resource getFormForSubject(ResourceResolver resolver, Resource questionnaireResource,
-        Resource subjectResource)
-    {
-        // Get the jcr:uuid associated with questionnairePath
-        String questionnaireUUID = questionnaireResource.getValueMap().get("jcr:uuid", "");
-
-        // Get the jcr:uuid associated with subjectPath
-        String subjectUUID = subjectResource.getValueMap().get("jcr:uuid", "");
-
-        // Query for a cards:Form node with the specified questionnaire and subject
-        String formMatchQuery = String.format(
-            "SELECT * FROM [cards:Form] as form WHERE"
-            + " form.'subject'='%s'"
-            + " AND form.'questionnaire'='%s'"
-            + " option (index tag property)",
-            subjectUUID,
-            questionnaireUUID);
-
-        resolver.refresh();
-        final Iterator<Resource> formResourceIter = resolver.findResources(formMatchQuery, "JCR-SQL2");
-        if (formResourceIter.hasNext()) {
-            return formResourceIter.next();
-        }
-
-        return null;
+        return props;
     }
 }
