@@ -55,7 +55,6 @@ import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
-import { hasWarningFlags } from "./AnswerInstructions";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -71,7 +70,7 @@ import { hasWarningFlags } from "./AnswerInstructions";
  */
 function Form (props) {
   let { classes, id, contentOffset } = props;
-  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
+  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps, requireComplete } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -102,6 +101,7 @@ function Form (props) {
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
+  let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -112,8 +112,14 @@ function Form (props) {
 
   // When end was reached and save was successful, call `onDone` if applicable
   useEffect(() => {
-    lastSaveStatus && endReached && onDone && onDone();
-  }, [lastSaveStatus, endReached]);
+    if (requireComplete && incompleteQuestionEl) {
+      // focus and hightlight the first unfinished mandatory question box
+      incompleteQuestionEl.classList.add(classes.focusedQuestionnaireItem);
+      incompleteQuestionEl.scrollIntoView({block: "center"});
+    } else {
+      lastSaveStatus && endReached && onDone && onDone();
+    }
+  }, [lastSaveStatus, endReached, incompleteQuestionEl]);
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
@@ -213,15 +219,12 @@ function Form (props) {
         return;
       }
       if (response.ok) {
-        setLastSaveStatus(true);
-        setLastSaveTimestamp(new Date());
         if (!disableHeader) {
           fetchWithReLogin(globalLoginDisplay, `${formURL}/statusFlags.json`)
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then(json => setStatusFlags(json.statusFlags))
             .catch(err => console.log("The form status flags could not be updated after saving"));
         }
-        onSuccess?.();
       } else if (response.status === 500) {
         response.json().then((json) => {
             setErrorCode(json["status.code"]);
@@ -235,8 +238,21 @@ function Form (props) {
         setErrorMessage(err?.message);
         openErrorDialog();
         setLastSaveStatus(undefined);
-    })
-    .finally(() => {formNode?.current && setSaveInProgress(false)});
+    }).finally(() => {
+        // Re-fetch the form after save to see if user can progress
+        fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
+          .then((response) => response.ok ? response.json() : Promise.reject(response))
+          .then(json => {
+            let incompleteEl = getFirstIncompleteQuestionEl(json);
+            setIncompleteQuestionEl(incompleteEl);
+            !incompleteEl && onSuccess?.();
+            setLastSaveStatus(true);
+            setLastSaveTimestamp(new Date());
+          })
+          .catch(handleFetchError)
+          .finally(() => {
+            formNode?.current && setSaveInProgress(false)});
+          });
   }
 
   let saveDataWithCheckin = (event, onSuccess) => {
@@ -409,8 +425,56 @@ function Form (props) {
             </div>
   )
 
+  // A helper recursive function to loop through the sections/questions data 
+  // and collect all questions that have incomplete status among it's statusFlags
+  let parseSectionOrQuestionnaire = (sectionJson) => {
+      let retFields = [];
+      Object.entries(sectionJson).map(([title, object]) => {
+        // We only care about children that are cards:Questions or cards:Sections
+        if (object["sling:resourceSuperType"] == "cards/Answer" && object.statusFlags?.includes("INCOMPLETE")) {
+          // If this is an cards:Question, we copy the entire path to the array
+          retFields.push(object.question["@path"]);
+        } else if (object["jcr:primaryType"] == "cards:AnswerSection" && object.statusFlags?.includes("INCOMPLETE")) {
+          // if this is matrix - save the section path as this section is rendered in Question component
+          if ("matrix" === object.section["displayMode"]) {
+            retFields.push(object.section["@path"]);
+          } else {
+            // If this is a normal cards:Section, recurse deeper
+            retFields.push(...parseSectionOrQuestionnaire(object));
+          }
+        }
+        // Otherwise, we don't care about this object
+      });
+      return retFields;
+  }
+
+  let getFirstIncompleteQuestionEl = (json) => {
+    if (json?.statusFlags?.includes("INCOMPLETE")) {
+      let incompleteQuestions = parseSectionOrQuestionnaire(json);
+      if (incompleteQuestions.length > 0) {
+        let firstEl = document.getElementById(incompleteQuestions[0]);
+        if (firstEl && getComputedStyle(firstEl.parentElement).display != 'none') {
+          return firstEl;
+        }
+      }
+    }
+    return null;
+  }
+
   return (
-    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode} className={className || null}>
+    <form action={data?.["@path"]}
+          method="POST"
+          onSubmit={handleSubmit}
+          onChange={() => {
+                         incompleteQuestionEl && incompleteQuestionEl.classList.remove(classes.focusedQuestionnaireItem);
+                         setIncompleteQuestionEl(null);
+                         setLastSaveStatus(undefined);
+                         }
+                   }
+          key={id}
+          ref={formNode}
+          className={className || null}
+      >
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
@@ -508,6 +572,7 @@ function Form (props) {
         <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
+              disableProgress={requireComplete && incompleteQuestionEl}
               lastSaveStatus={lastSaveStatus}
               enabled={paginationEnabled}
               variant={paginationProps?.variant || data?.questionnaire?.paginationVariant}
@@ -525,6 +590,7 @@ function Form (props) {
             { isEdit &&
               <MainActionButton
                 style={doneButtonStyle}
+                disableProgress={requireComplete && incompleteQuestionEl}
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}

@@ -158,6 +158,8 @@ function QuestionnaireSet(props) {
 
   const visitInformationFormTitle = "Visit information";
 
+  const requireComplete = true;
+
   const isFormComplete = (questionnaireId) => {
     return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
   }
@@ -213,7 +215,7 @@ function QuestionnaireSet(props) {
   // Determine if all surveys have been filled out
   useEffect(() => {
     if (!subjectData || !questionnaireIds) return;
-    setComplete(Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length);
+    setComplete(questionnaireIds.filter(q => isFormComplete(q)).length == questionnaireIds.length);
   }, [subjectDataLoadCount]);
 
   // Determine if the user has already submitted their forms
@@ -612,6 +614,7 @@ function QuestionnaireSet(props) {
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset || 0}
+          requireComplete={requireComplete}
         />
   ];
 
