@@ -69,6 +69,8 @@ argparser.add_argument('--s3_test_container', help='Add a MinIO S3 Bucket Docker
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
+argparser.add_argument('--web_port_admin', help='If specified, will listen for connections on this port (and not 8080/443) and forward them to the full-access reverse proxy (permitting logins)', type=int)
+argparser.add_argument('--web_port_user', help='If specified, will listen for connections on this port and forward them to the restricted-access reverse proxy (logins not permitted)', type=int)
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
@@ -599,9 +601,19 @@ yaml_obj['services']['proxy']['build'] = {}
 yaml_obj['services']['proxy']['build']['context'] = "proxy"
 
 if SSL_PROXY:
-  yaml_obj['services']['proxy']['ports'] = ["443:443"]
+  if args.web_port_admin is not None:
+    yaml_obj['services']['proxy']['ports'] = ["{}:443".format(args.web_port_admin)]
+  else:
+    yaml_obj['services']['proxy']['ports'] = ["443:443"]
+  if args.web_port_user is not None:
+    yaml_obj['services']['proxy']['ports'].append("{}:444".format(args.web_port_user))
 else:
-  yaml_obj['services']['proxy']['ports'] = ["8080:80"]
+  if args.web_port_admin is not None:
+    yaml_obj['services']['proxy']['ports'] = ["{}:80".format(args.web_port_admin)]
+  else:
+    yaml_obj['services']['proxy']['ports'] = ["8080:80"]
+  if args.web_port_user is not None:
+    yaml_obj['services']['proxy']['ports'].append("{}:90".format(args.web_port_user))
 
 yaml_obj['services']['proxy']['networks'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork'] = {}
