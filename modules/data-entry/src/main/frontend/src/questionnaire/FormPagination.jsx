@@ -158,7 +158,7 @@ function FormPagination (props) {
         handlePageChange();
       }
     }
-  }, [saveInProgress, pendingSubmission]);
+  }, [saveInProgress, pendingSubmission, disableProgress]);
 
   let saveButton =
     <Button

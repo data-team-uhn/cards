@@ -586,7 +586,7 @@ function Form (props) {
         <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
-              disableProgress={incompleteQuestionEl}
+              disableProgress={!!incompleteQuestionEl}
               lastSaveStatus={lastSaveStatus}
               enabled={paginationEnabled}
               variant={paginationProps?.variant || data?.questionnaire?.paginationVariant}
@@ -604,7 +604,7 @@ function Form (props) {
             { isEdit &&
               <MainActionButton
                 style={doneButtonStyle}
-                disabled={incompleteQuestionEl}
+                disabled={!!incompleteQuestionEl}
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
