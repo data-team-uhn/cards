@@ -114,7 +114,7 @@ function Form (props) {
   useEffect(() => {
     if (requireComplete && incompleteQuestionEl) {
       // focus and hightlight the first unfinished mandatory question box
-      incompleteQuestionEl.classList.add(classes.focusedQuestionnaireItem);
+      incompleteQuestionEl.classList.add(classes.questionnaireItemWithError);
       incompleteQuestionEl.scrollIntoView({block: "center"});
     } else {
       lastSaveStatus && endReached && onDone && onDone();
@@ -466,7 +466,7 @@ function Form (props) {
           method="POST"
           onSubmit={handleSubmit}
           onChange={() => {
-                         incompleteQuestionEl && incompleteQuestionEl.classList.remove(classes.focusedQuestionnaireItem);
+                         incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
                          setIncompleteQuestionEl(null);
                          setLastSaveStatus(undefined);
                          }

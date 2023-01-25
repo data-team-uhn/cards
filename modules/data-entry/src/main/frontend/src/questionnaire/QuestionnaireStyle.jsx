@@ -561,6 +561,11 @@ const questionnaireStyle = theme => ({
         outline: `2px solid ${theme.palette.primary.main}`,
       },
     },
+    questionnaireItemWithError: {
+      "&.MuiCard-root, > .MuiCard-root" : {
+        outline: `2px solid ${theme.palette.error.main}`,
+      },
+    },
     fileResourceAnswerList: {
       listStyleType: 'none',
       paddingInlineStart: "0",
