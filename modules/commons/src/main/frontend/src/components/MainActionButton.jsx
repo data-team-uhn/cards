@@ -91,14 +91,14 @@ MainActionButton.propTypes = {
   ariaLabel: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
-  disableProgress: PropTypes.bool,
+  disabled: PropTypes.bool,
   classes: PropTypes.object.isRequired,
   style: PropTypes.object,
 }
 
 MainActionButton.defaultProps = {
   inProgress: false,
-  disableProgress: false,
+  disabled: false,
   style: {},
 };
 

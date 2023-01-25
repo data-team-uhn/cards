@@ -108,6 +108,7 @@ function Form (props) {
   let [ requireCompletion, setRequireCompletion ] = useState(props.requireCompletion);
   // The first incomplete question, to be brought to the user's attention
   let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
+  let [ disableProgress, setDisableProgress ] = useState(props.requireCompletion);
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -158,6 +159,12 @@ function Form (props) {
       });
     }
   }, [isEdit]);
+  
+  useEffect(() => {
+    // If reuired complition is set, stop any advancing progress untill check that all required 
+    // questions are completed
+    requireCompletion && setDisableProgress(true);
+  }, [requireCompletion]);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -183,11 +190,14 @@ function Form (props) {
     }
     setData(json);
     setStatusFlags(json.statusFlags);
-    // If the completion requirement has not already been set via Form prop,
-    // grab it from the questionnaire definition
-    typeof(requireCompletion == "undefined") && setRequireCompletion(json?.['questionnaire']?.['requireCompletion']);
     setPaginationEnabled(!!json?.['questionnaire']?.['paginate'] && isEdit);
+    setDisableProgress(requireCompletion);
+    setIncompleteQuestionEl(null);
     if (isEdit) {
+      // If the completion requirement has not already been set via Form prop,
+      // grab it from the questionnaire definition
+      typeof(requireCompletion == "undefined") && setRequireCompletion(json?.['questionnaire']?.['requireCompletion']);
+
       //Perform a JCR check-out of the Form
       let checkoutForm = new FormData();
       checkoutForm.set(":operation", "checkout");
@@ -202,6 +212,8 @@ function Form (props) {
   let handleFetchError = (response) => {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
+    setDisableProgress(requireCompletion);
+    setIncompleteQuestionEl(null);
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
@@ -214,6 +226,7 @@ function Form (props) {
 
     let data = new FormData(formNode.current);
     setSaveInProgress(true);
+    setIncompleteQuestionEl(null);
     if (performCheckin) {
         data.append(":checkin", "true");
     }
@@ -244,7 +257,12 @@ function Form (props) {
             fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
               .then((response) => response.ok ? response.json() : Promise.reject(response))
               .then(json => {
-                  setIncompleteQuestionEl(getFirstIncompleteQuestionEl(json));
+                  let incompleteEl = getFirstIncompleteQuestionEl(json);
+                  if (!!incompleteEl) {
+                    setIncompleteQuestionEl(incompleteEl);
+                  } else {
+                    setDisableProgress(false);
+                  }
               })
               .catch(handleFetchError);
         }
@@ -437,36 +455,65 @@ function Form (props) {
 
   // A helper recursive function to loop through the sections/questions data 
   // and collect all questions that have incomplete status among it's statusFlags
-  let parseSectionOrQuestionnaire = (sectionJson) => {
-      let retFields = [];
-      Object.entries(sectionJson).map(([title, object]) => {
+  // Recursively build a map of uuid->path of all incomplete questions
+  let getIncompleteQuestionsMap = (sectionJson) => {
+    let retFields = {};
+    Object.entries(sectionJson).map(([title, object]) => {
         // We only care about children that are cards:Questions or cards:Sections
         if (object["sling:resourceSuperType"] == "cards/Answer" && object.statusFlags?.includes("INCOMPLETE")) {
           // If this is an cards:Question, we copy the entire path to the array
-          retFields.push(object.question["@path"]);
+          retFields[object.question["jcr:uuid"]] = object.question["@path"];
         } else if (object["jcr:primaryType"] == "cards:AnswerSection" && object.statusFlags?.includes("INCOMPLETE")) {
           // if this is matrix - save the section path as this section is rendered in Question component
           if ("matrix" === object.section["displayMode"]) {
-            retFields.push(object.section["@path"]);
+            retFields[object.question["jcr:uuid"]] = object.question["@path"];
+          } else {
+            // If this is a normal cards:Section, recurse deeper
+            retFields = {...retFields, ...getIncompleteQuestionsMap(object)};
+          }
+        }
+        // Otherwise, we don't care about this object
+    });
+    return retFields;
+  }
+
+  // Recursively collect all uuids of questions in the *right order*
+  let parseSectionOrQuestionnaire = (sectionJson) => {
+    let retFields = [];
+    Object.entries(sectionJson).map(([title, object]) => {
+        // We only care about children that are cards:Questions or cards:Sections
+        if (object["jcr:primaryType"] == "cards:Question") {
+          // If this is an cards:Question, copy the entire thing over to our Json value
+          retFields.push(object["jcr:uuid"]);
+        } else if (object["jcr:primaryType"] == "cards:Section") {
+          if ("matrix" === object["displayMode"]) {
+            retFields.push(object["jcr:uuid"]);
           } else {
             // If this is a normal cards:Section, recurse deeper
             retFields.push(...parseSectionOrQuestionnaire(object));
           }
         }
-        // Otherwise, we don't care about this object
-      });
-      return retFields;
+        // Otherwise, we don't care about this value
+    });
+    return retFields;
   }
 
   let getFirstIncompleteQuestionEl = (json) => {
+    //if the form is incomplete itself
     if (json?.statusFlags?.includes("INCOMPLETE")) {
-      let incompleteQuestions = parseSectionOrQuestionnaire(json);
-      if (incompleteQuestions.length > 0) {
-        let firstEl = document.getElementById(incompleteQuestions[0]);
-        if (firstEl && getComputedStyle(firstEl.parentElement).display != 'none') {
-          return firstEl;
+
+      let allUuids = parseSectionOrQuestionnaire(json.questionnaire);
+      let incompleteQuestions = getIncompleteQuestionsMap(json);
+
+      if (Object.keys(incompleteQuestions).length > 0) {
+        for (const uuid of allUuids) {
+          let firstEl = document.getElementById(incompleteQuestions[uuid]);
+          if (firstEl && getComputedStyle(firstEl.parentElement).display != 'none') {
+            return firstEl;
+          }
         }
       }
+
     }
     return null;
   }
@@ -477,6 +524,8 @@ function Form (props) {
           onSubmit={handleSubmit}
           onChange={() => {
                          incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
+                         setIncompleteQuestionEl(null);
+                         setDisableProgress(requireCompletion);
                          setIncompleteQuestionEl(null);
                          setLastSaveStatus(undefined);
                          }
@@ -582,14 +631,15 @@ function Form (props) {
         <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
-              disableProgress={!!incompleteQuestionEl}
+              disableProgress={disableProgress}
               lastSaveStatus={lastSaveStatus}
               enabled={paginationEnabled}
               variant={paginationProps?.variant || data?.questionnaire?.paginationVariant}
               navMode = {paginationProps?.navMode || data?.questionnaire?.paginationMode}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
-              onDone={() => { setEndReached(true) }}
+              onDone={() => { setEndReached(true); }}
+              onPageChange={() => { setDisableProgress(requireCompletion); setIncompleteQuestionEl(null); }}
               doneLabel={doneLabel}
               doneIcon={doneIcon}
           />
@@ -600,7 +650,7 @@ function Form (props) {
             { isEdit &&
               <MainActionButton
                 style={doneButtonStyle}
-                disabled={!!incompleteQuestionEl}
+                disabled={disableProgress}
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}

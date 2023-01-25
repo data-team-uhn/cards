@@ -47,7 +47,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, enabled, variant, navMode, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, doneIcon, questionnaireData, disableProgress } = props;
+  let { classes, enabled, variant, navMode, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, doneIcon, questionnaireData, disableProgress, onPageChange } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -107,9 +107,6 @@ function FormPagination (props) {
   }
 
   let handleNext = () => {
-    if (disableProgress) {
-        return;
-    }
     initChangePage(DIRECTION_NEXT);
   }
 
@@ -145,10 +142,11 @@ function FormPagination (props) {
       window.scrollTo(0, 0);
     }
     setActivePage(nextPage);
+    onPageChange && onPageChange();
   }
 
   useEffect(() => {
-    if (saveInProgress && pendingSubmission && !(disableProgress && direction === DIRECTION_NEXT)) {
+    if (!saveInProgress && pendingSubmission && !(disableProgress && direction === DIRECTION_NEXT)) {
       setPendingSubmission(false);
       if (activePage === lastValidPage() && direction === DIRECTION_NEXT) {
         setSavedLastPage(true);
