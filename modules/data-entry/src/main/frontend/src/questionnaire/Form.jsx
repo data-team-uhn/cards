@@ -120,7 +120,7 @@ function Form (props) {
   // When end was reached and save was successful, call `onDone` if applicable
   useEffect(() => {
     // If there's at least a question that is incomplete while we require completion,
-    // focus on that element and fo not call `onDone`
+    // focus on that element and do not call `onDone`
     if (incompleteQuestionEl) {
       // focus and hightlight the first unfinished mandatory question box
       incompleteQuestionEl.classList.add(classes.questionnaireItemWithError);
@@ -161,7 +161,7 @@ function Form (props) {
   }, [isEdit]);
   
   useEffect(() => {
-    // If reuired complition is set, stop any advancing progress untill check that all required 
+    // If `requireCompletion` is set, stop any advancing progress until check that all required 
     // questions are completed
     requireCompletion && paginationEnabled && setDisableProgress(true);
   }, [requireCompletion, paginationEnabled]);
@@ -192,7 +192,7 @@ function Form (props) {
     setStatusFlags(json.statusFlags);
     
     if (isEdit) {
-	  setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
+      setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
       // If the completion requirement has not already been set via Form prop,
       // grab it from the questionnaire definition
       typeof(requireCompletion == "undefined") && setRequireCompletion(json?.['questionnaire']?.['requireCompletion']);
