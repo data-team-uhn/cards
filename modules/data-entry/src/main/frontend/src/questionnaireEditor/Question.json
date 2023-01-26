@@ -370,7 +370,8 @@
             "maxAnswers": "long",
             "displayMode": {
               "input": {
-                "propertiesToSearch" : "string"
+                "propertiesToSearch" : "string",
+                "enableUserEntry" : "boolean"
               },
               "select" : {},
               "list": {
@@ -378,6 +379,7 @@
               },
               "list+input" : {
                 "propertiesToSearch" : "string",
+                "enableUserEntry" : "boolean",
                 "compact" : "boolean",
                 "answerOptions" : "textOptions"
               }
