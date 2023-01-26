@@ -71,6 +71,7 @@ argparser.add_argument('--sling_admin_port', help='The localhost TCP port which 
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
 argparser.add_argument('--web_port_admin', help='If specified, will listen for connections on this port (and not 8080/443) and forward them to the full-access reverse proxy (permitting logins)', type=int)
 argparser.add_argument('--web_port_user', help='If specified, will listen for connections on this port and forward them to the restricted-access reverse proxy (logins not permitted)', type=int)
+argparser.add_argument('--web_port_user_root_redirect', help='The client accessing / over --web_port_user will automatically be redirected to this page', default='/Survey.html')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
@@ -629,6 +630,7 @@ shutil.copyfile(getCardsProjectLogoPath(args.cards_project), "./proxy/proxyerror
 #Specify the Application Name of the CARDS project to the proxy
 yaml_obj['services']['proxy']['environment'] = []
 yaml_obj['services']['proxy']['environment'].append("CARDS_APP_NAME={}".format(getCardsApplicationName(args.cards_project)))
+yaml_obj['services']['proxy']['environment'].append("WEB_PORT_USER_ROOT_REDIRECT={}".format(args.web_port_user_root_redirect))
 
 if SSL_PROXY:
   if args.saml:
