@@ -163,6 +163,7 @@ function FormPagination (props) {
       startIcon={activePage === lastValidPage() ? doneIcon : undefined}
       type="submit"
       variant="contained"
+      disabled={saveInProgress}
       className={classes.paginationButton}
       onClick={handleNext}
     >
