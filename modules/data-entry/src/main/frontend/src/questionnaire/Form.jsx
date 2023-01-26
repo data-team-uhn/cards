@@ -93,7 +93,7 @@ function Form (props) {
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
   let [ pages, setPages ] = useState(null);
   // Avoid rendering everything at once before we get all of the questionnaire details
-  let [ paginationEnabled, setPaginationEnabled ] = useState(true);
+  let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
@@ -190,14 +190,13 @@ function Form (props) {
     }
     setData(json);
     setStatusFlags(json.statusFlags);
-    setPaginationEnabled(!!json?.['questionnaire']?.['paginate'] && isEdit);
-    setDisableProgress(requireCompletion);
-    setIncompleteQuestionEl(null);
+    
     if (isEdit) {
+	  setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
       // If the completion requirement has not already been set via Form prop,
       // grab it from the questionnaire definition
       typeof(requireCompletion == "undefined") && setRequireCompletion(json?.['questionnaire']?.['requireCompletion']);
-
+      setIncompleteQuestionEl(null);
       //Perform a JCR check-out of the Form
       let checkoutForm = new FormData();
       checkoutForm.set(":operation", "checkout");
@@ -212,8 +211,10 @@ function Form (props) {
   let handleFetchError = (response) => {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
-    setDisableProgress(requireCompletion);
-    setIncompleteQuestionEl(null);
+    if (isEdit) {
+      setDisableProgress(requireCompletion);
+      setIncompleteQuestionEl(null);
+    }
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
@@ -459,7 +460,7 @@ function Form (props) {
   let getIncompleteQuestionsMap = (sectionJson) => {
     let retFields = {};
     Object.entries(sectionJson).map(([title, object]) => {
-        // We only care about children that are cards:Questions or cards:Sections
+        // We only care about children that are cards/Answers or cards:AnswerSections
         if (object["sling:resourceSuperType"] == "cards/Answer" && object.statusFlags?.includes("INCOMPLETE")) {
           // If this is an cards:Question, we copy the entire path to the array
           retFields[object.question["jcr:uuid"]] = object.question["@path"];
@@ -501,13 +502,16 @@ function Form (props) {
   let getFirstIncompleteQuestionEl = (json) => {
     //if the form is incomplete itself
     if (json?.statusFlags?.includes("INCOMPLETE")) {
-
+      // Get an array of the question uuids in the order defined by questionnaire
       let allUuids = parseSectionOrQuestionnaire(json.questionnaire);
+      // Get the map of uuid:path of the incomplete answers
       let incompleteQuestions = getIncompleteQuestionsMap(json);
 
       if (Object.keys(incompleteQuestions).length > 0) {
+	    // Loop through the question uuids in the order defined by questionnaire
         for (const uuid of allUuids) {
           let firstEl = document.getElementById(incompleteQuestions[uuid]);
+          // Find first visible element by path from incomplete answers map
           if (firstEl && getComputedStyle(firstEl.parentElement).display != 'none') {
             return firstEl;
           }
@@ -523,12 +527,12 @@ function Form (props) {
           method="POST"
           onSubmit={handleSubmit}
           onChange={() => {
-                         incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
-                         setIncompleteQuestionEl(null);
-                         setDisableProgress(requireCompletion);
-                         setIncompleteQuestionEl(null);
-                         setLastSaveStatus(undefined);
-                         }
+	                         incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
+	                         setIncompleteQuestionEl(null);
+	                         setDisableProgress(requireCompletion);
+	                         setIncompleteQuestionEl(null);
+	                         setLastSaveStatus(undefined);
+                          }
                    }
           key={id}
           ref={formNode}
