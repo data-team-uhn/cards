@@ -79,6 +79,11 @@
 			<value>vocabulary</value>
 			<type>String</type>
 		</property>
+                <property>
+                        <name>enableVocabularyBrowser</name>
+                        <value>True</value>
+                        <type>Boolean</type>
+                </property>
 		<property>
 			<name>sourceVocabularies</name>
 			<values>

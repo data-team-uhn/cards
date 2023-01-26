@@ -313,7 +313,10 @@
             "minAnswers": "long",
             "maxAnswers": "long",
             "displayMode": {
-              "input": {},
+              "input": {
+                "enableVocabularyBrowser" : "boolean",
+                "enableUserEntry" : "boolean"
+              },
               "list": {
                 "compact" : "boolean",
                 "answerOptions" : {
@@ -322,6 +325,8 @@
                 }
               },
               "list+input" : {
+                "enableVocabularyBrowser" : "boolean",
+                "enableUserEntry" : "boolean",
                 "compact" : "boolean",
                 "answerOptions" : {
                   "type": "textOptions",
