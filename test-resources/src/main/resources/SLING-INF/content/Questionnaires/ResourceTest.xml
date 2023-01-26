@@ -569,7 +569,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Shows the **list+input** display mode with **multiple answers** for **Vocabulary** Questions. The vocabulary browser in **not** enabled.</value>
+			<value>Shows the **list+input** display mode with **multiple answers** for **Vocabulary** Questions. The vocabulary browser is **not** enabled.</value>
 			<type>String</type>
 		</property>
 		<property>
