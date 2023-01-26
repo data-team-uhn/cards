@@ -55,7 +55,7 @@ import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
-import { getFirstIncompleteQuestionEl } from "./FormUtility.jsx";
+import { getFirstIncompleteQuestionEl } from "./FormUtilities.jsx";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 

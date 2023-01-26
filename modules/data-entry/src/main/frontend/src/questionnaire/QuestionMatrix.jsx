@@ -34,7 +34,7 @@ import withStyles from '@mui/styles/withStyles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
-import { hasWarningFlags } from "./AnswerInstructions";
+import { hasWarningFlags } from "./FormUtilities";
 import Question from "./Question";
 import FormattedText from "../components/FormattedText.jsx";
 import QuestionnaireStyle from './QuestionnaireStyle';
