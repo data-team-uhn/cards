@@ -48,7 +48,7 @@
           <name>00000001</name>
           <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
           <property>
-            <name>sqlColumn</name>
+            <name>column</name>
             <value>PAT_MRN</value>
             <type>String</type>
           </property>
@@ -62,7 +62,7 @@
           <name>00000002</name>
           <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
           <property>
-            <name>sqlColumn</name>
+            <name>column</name>
             <value>PAT_FIRST_NAME</value>
             <type>String</type>
           </property>
@@ -76,7 +76,7 @@
           <name>00000003</name>
           <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
           <property>
-            <name>sqlColumn</name>
+            <name>column</name>
             <value>PAT_LAST_NAME</value>
             <type>String</type>
           </property>
@@ -90,7 +90,7 @@
           <name>00000004</name>
           <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
           <property>
-            <name>sqlColumn</name>
+            <name>column</name>
             <value>EMAIL_ADDRESS</value>
             <type>String</type>
           </property>
@@ -104,7 +104,7 @@
           <name>00000005</name>
           <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
           <property>
-            <name>sqlColumn</name>
+            <name>column</name>
             <value>EMAIL_CONSENT_YN</value>
             <type>String</type>
           </property>
@@ -137,7 +137,7 @@
               <name>00000001</name>
               <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
               <property>
-                <name>sqlColumn</name>
+                <name>column</name>
                 <value>DISCH_DEPT_NAME</value>
                 <type>String</type>
               </property>
@@ -151,7 +151,7 @@
               <name>00000002</name>
               <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
               <property>
-                <name>sqlColumn</name>
+                <name>column</name>
                 <value>HOSP_DISCHARGE_DTTM</value>
                 <type>String</type>
               </property>
@@ -165,7 +165,7 @@
               <name>00000003</name>
               <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
               <property>
-                <name>sqlColumn</name>
+                <name>column</name>
                 <value>DISCH_LOC_NAME</value>
                 <type>String</type>
               </property>

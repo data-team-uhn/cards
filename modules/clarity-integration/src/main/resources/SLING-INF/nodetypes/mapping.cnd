@@ -54,8 +54,12 @@
   // Attributes:
   query
 
-  - sqlColumn (STRING) mandatory
+  // Path to a question in the parent questionnaire
   - question (STRING) mandatory
+  // The name of the column; this is usually an sql column in Clarity, except for computed questions
+  - column (STRING) mandatory
+  // If true, the answer isn't coming from Clarity, but is computed by a data processor
+  - computed (BOOLEAN) = false mandatory autocreated
 
   // Properties:
   // Hardcode the resource type

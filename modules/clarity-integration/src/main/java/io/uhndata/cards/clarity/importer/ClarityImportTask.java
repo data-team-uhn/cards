@@ -40,6 +40,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.VersionManager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
@@ -173,17 +174,20 @@ public class ClarityImportTask implements Runnable
 
         private final String question;
 
-        private final String sqlColumn;
+        private final String column;
 
         private final QuestionType questionType;
 
-        ClarityQuestionMapping(final String name, final String question, final String sqlColumn,
-            final QuestionType questionType)
+        private final boolean computed;
+
+        ClarityQuestionMapping(final String name, final String question, final String column,
+            final QuestionType questionType, final boolean computed)
         {
             this.name = name;
             this.question = question;
-            this.sqlColumn = sqlColumn;
+            this.column = column;
             this.questionType = questionType;
+            this.computed = computed;
         }
     }
 
@@ -288,16 +292,19 @@ public class ClarityImportTask implements Runnable
                         for (Resource questionMapping : questionnaire.getChildren()) {
                             // Add the questions associated with this questionnaire to the local Java data structures
                             String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
-                            String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
+                            String column = questionMapping.getValueMap().get("column", "");
+                            boolean computed = questionMapping.getValueMap().get("computed", Boolean.FALSE);
                             Resource questionResource = resolver.resolve(questionPath);
                             QuestionType qType = this.getQuestionType(questionResource);
                             ClarityQuestionMapping clarityQuestionMapping = new ClarityQuestionMapping(
-                                questionMapping.getName(), questionPath, sqlColumn, qType);
+                                questionMapping.getName(), questionPath, column, qType, computed);
                             clarityQuestionnaireMapping.addQuestion(clarityQuestionMapping);
 
                             // Populate this.sqlColumnToDataType
-                            this.sqlColumnToDataType.get().put(sqlColumn,
-                                questionResource.getValueMap().get(DATA_TYPE_PROP, ""));
+                            if (!clarityQuestionMapping.computed) {
+                                this.sqlColumnToDataType.get().put(column,
+                                    questionResource.getValueMap().get(DATA_TYPE_PROP, ""));
+                            }
                         }
                         claritySubjectMapping.addQuestionnaire(clarityQuestionnaireMapping);
                     }
@@ -483,6 +490,9 @@ public class ClarityImportTask implements Runnable
     {
         this.versionManager.get().checkout(formNode.getPath());
         for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
+            if (StringUtils.isBlank(questionMapping.question)) {
+                continue;
+            }
             replaceFormAnswer(resolver, formNode,
                 generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
         }
@@ -527,6 +537,9 @@ public class ClarityImportTask implements Runnable
         throws ParseException, PersistenceException, SQLException
     {
         for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
+            if (StringUtils.isBlank(questionMapping.question)) {
+                continue;
+            }
             // Create the answer node in the JCR
             resolver.create(formNode, UUID.randomUUID().toString(),
                 generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
@@ -537,8 +550,8 @@ public class ClarityImportTask implements Runnable
         final ClarityQuestionMapping questionMapping, final ResultSet sqlRow) throws ParseException, SQLException
     {
         String questionPath = questionMapping.question;
-        String sqlColumn = questionMapping.sqlColumn;
-        String answerValue = sqlRow.getString(sqlColumn);
+        String column = questionMapping.column;
+        String answerValue = sqlRow.getString(column);
         QuestionType qType = questionMapping.questionType;
         return generateAnswerNodeProperties(resolver, qType, questionPath, answerValue);
     }
