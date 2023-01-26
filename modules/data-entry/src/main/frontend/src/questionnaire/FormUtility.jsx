@@ -41,7 +41,7 @@ export function getIncompleteQuestionsMap (sectionJson) {
     return retFields;
 }
 
-  // Recursively collect all uuids of questions in the *right order*
+// Recursively collect all uuids of questions in the *right order*
 export function parseSectionOrQuestionnaire (sectionJson) {
     let retFields = [];
     Object.entries(sectionJson).map(([title, object]) => {
@@ -62,6 +62,7 @@ export function parseSectionOrQuestionnaire (sectionJson) {
     return retFields;
 }
 
+// Gets the first visible incomplete question element from the form json
 export function getFirstIncompleteQuestionEl (json) {
     //if the form is incomplete itself
     if (json?.statusFlags?.includes("INCOMPLETE")) {
