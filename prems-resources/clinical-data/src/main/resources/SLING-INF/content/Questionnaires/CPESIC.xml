@@ -5736,7 +5736,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list+input</value>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -6028,6 +6028,107 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>15</value>
 					<type>Long</type>
 				</property>
+			</node>
+			<node>
+                                <name>other</name>
+                                <primaryNodeType>cards:AnswerOption</primaryNodeType>
+                                <property>
+                                        <name>label</name>
+                                        <value>Other</value>
+                                        <type>String</type>
+                                </property>
+                                <property>
+                                        <name>value</name>
+                                        <value>Other</value>
+                                        <type>String</type>
+                                </property>
+                                <property>
+                                        <name>defaultOrder</name>
+                                        <value>16</value>
+                                        <type>Long</type>
+                                </property>
+                        </node>
+		</node>
+		<node>
+			<name>cpesic_48_othersection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>cpesic_48</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Other</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>cpesic_48_other</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>dataType</name>
+					<value>vocabulary</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>What other ethnicity would you consider yourself to be?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>input</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>HANCESTRO</value>
+					</values>
+					<type>String</type>
+				</property>
+				<node>
+					<name>vocabularyFilters</name>
+					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
+					<property>
+						<name>HANCESTRO</name>
+						<values>
+							<value>HANCESTRO_0004</value>
+						</values>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
