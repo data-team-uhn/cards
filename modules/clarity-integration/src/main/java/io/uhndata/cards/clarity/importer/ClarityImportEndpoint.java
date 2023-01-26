@@ -19,6 +19,8 @@
 package io.uhndata.cards.clarity.importer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.json.Json;
@@ -31,8 +33,12 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
+import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 @Component(service = { Servlet.class })
@@ -50,6 +56,11 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
     @Reference
     private ThreadResourceResolverProvider rrp;
 
+    /** A list of all available data processors. */
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.REPLACE,
+        policy = ReferencePolicy.DYNAMIC)
+    private volatile List<ClarityDataProcessor> processors;
+
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
@@ -63,8 +74,10 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
 
         // Load configuration from environment variables
         final int pastDayToQuery = getPastDayToQuery(request);
+        List<ClarityDataProcessor> sortedProcessors = new ArrayList<>(this.processors);
+        sortedProcessors.sort(null);
         final Runnable importJob =
-            new ClarityImportTask(pastDayToQuery, this.resolverFactory, this.rrp);
+            new ClarityImportTask(pastDayToQuery, this.resolverFactory, this.rrp, sortedProcessors);
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);

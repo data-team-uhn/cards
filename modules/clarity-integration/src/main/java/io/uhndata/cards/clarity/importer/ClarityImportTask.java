@@ -50,6 +50,7 @@ import org.apache.sling.api.resource.ValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
@@ -89,6 +90,8 @@ public class ClarityImportTask implements Runnable
         ThreadLocal.withInitial(ClaritySubjectMapping::new);
 
     private final ThreadResourceResolverProvider rrp;
+
+    private final List<ClarityDataProcessor> processors;
 
     // Helper classes
 
@@ -216,11 +219,12 @@ public class ClarityImportTask implements Runnable
     private final ResourceResolverFactory resolverFactory;
 
     ClarityImportTask(final int pastDayToQuery, final ResourceResolverFactory resolverFactory,
-        final ThreadResourceResolverProvider rrp)
+        final ThreadResourceResolverProvider rrp, final List<ClarityDataProcessor> processors)
     {
         this.pastDayToQuery = pastDayToQuery;
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
+        this.processors = processors;
     }
 
     // The entry point for running an import
@@ -392,12 +396,24 @@ public class ClarityImportTask implements Runnable
     private void createFormsAndSubjects(ResourceResolver resolver, ResultSet sqlRow)
         throws ParseException, PersistenceException, RepositoryException, SQLException
     {
+        Map<String, String> row = new HashMap<>();
+        final int columnCount = sqlRow.getMetaData().getColumnCount();
+        for (int column = 1; column <= columnCount; column++) {
+            row.put(sqlRow.getMetaData().getColumnName(column), sqlRow.getString(column));
+        }
+
+        for (ClarityDataProcessor processor : this.processors) {
+            row = processor.processEntry(row);
+            if (row == null) {
+                return;
+            }
+        }
         // Recursively move down the local Clarity Import configuration tree
-        walkThroughLocalConfig(resolver, sqlRow, this.clarityImportConfiguration.get(),
+        walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
             resolver.resolve("/Subjects"));
     }
 
-    private void walkThroughLocalConfig(ResourceResolver resolver, ResultSet sqlRow,
+    private void walkThroughLocalConfig(ResourceResolver resolver, Map<String, String> row,
         ClaritySubjectMapping subjectMapping, Resource subjectParent)
         throws ParseException, PersistenceException, RepositoryException, SQLException
     {
@@ -406,7 +422,7 @@ public class ClarityImportTask implements Runnable
             String subjectNodeType = childSubjectMapping.subjectType;
             String subjectIDColumnLabel = childSubjectMapping.subjectIdColumn;
             String subjectIDColumnValue = (!"".equals(subjectIDColumnLabel))
-                ? sqlRow.getString(subjectIDColumnLabel) : UUID.randomUUID().toString();
+                ? row.get(subjectIDColumnLabel) : UUID.randomUUID().toString();
 
             Resource newSubjectParent = getOrCreateSubject(subjectIDColumnValue,
                 subjectNodeType, resolver, subjectParent);
@@ -419,14 +435,14 @@ public class ClarityImportTask implements Runnable
 
                 if (updatesExisting && (formNode != null)) {
                     // Update the answers to an existing Form
-                    updateExistingForm(resolver, formNode, questionnaireMapping, sqlRow);
+                    updateExistingForm(resolver, formNode, questionnaireMapping, row);
                 } else {
                     // Create a new Form
                     formNode = createForm(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
                         newSubjectParent);
 
                     // Attach all the Answer nodes to it
-                    populateEmptyForm(resolver, formNode, questionnaireMapping, sqlRow);
+                    populateEmptyForm(resolver, formNode, questionnaireMapping, row);
 
                     // Commit the changes to the JCR
                     resolver.commit();
@@ -435,7 +451,7 @@ public class ClarityImportTask implements Runnable
                     this.nodesToCheckin.get().add(formNode.getPath());
                 }
             }
-            walkThroughLocalConfig(resolver, sqlRow, childSubjectMapping, newSubjectParent);
+            walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
         }
     }
 
@@ -508,7 +524,7 @@ public class ClarityImportTask implements Runnable
     // Methods for updating an existing form
 
     private void updateExistingForm(ResourceResolver resolver, Resource formNode,
-        ClarityQuestionnaireMapping questionnaireMapping, ResultSet sqlRow)
+        ClarityQuestionnaireMapping questionnaireMapping, Map<String, String> row)
         throws ParseException, RepositoryException, SQLException
     {
         this.versionManager.get().checkout(formNode.getPath());
@@ -517,7 +533,7 @@ public class ClarityImportTask implements Runnable
                 continue;
             }
             replaceFormAnswer(resolver, formNode,
-                generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
+                generateAnswerNodeProperties(resolver, questionMapping, row));
         }
         // Perform a JCR check-in to this cards:Form node once the import is completed
         this.nodesToCheckin.get().add(formNode.getPath());
@@ -556,7 +572,7 @@ public class ClarityImportTask implements Runnable
     }
 
     private void populateEmptyForm(ResourceResolver resolver, Resource formNode,
-        ClarityQuestionnaireMapping questionnaireMapping, ResultSet sqlRow)
+        ClarityQuestionnaireMapping questionnaireMapping, Map<String, String> row)
         throws ParseException, PersistenceException, SQLException
     {
         for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
@@ -565,16 +581,16 @@ public class ClarityImportTask implements Runnable
             }
             // Create the answer node in the JCR
             resolver.create(formNode, UUID.randomUUID().toString(),
-                generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
+                generateAnswerNodeProperties(resolver, questionMapping, row));
         }
     }
 
     private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver,
-        final ClarityQuestionMapping questionMapping, final ResultSet sqlRow) throws ParseException, SQLException
+        final ClarityQuestionMapping questionMapping, final Map<String, String> row) throws ParseException, SQLException
     {
         String questionPath = questionMapping.question;
         String column = questionMapping.column;
-        String answerValue = sqlRow.getString(column);
+        String answerValue = row.get(column);
         QuestionType qType = questionMapping.questionType;
         return generateAnswerNodeProperties(resolver, qType, questionPath, answerValue);
     }
