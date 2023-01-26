@@ -108,7 +108,7 @@ function Form (props) {
   let [ requireCompletion, setRequireCompletion ] = useState(props.requireCompletion);
   // The first incomplete question, to be brought to the user's attention
   let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
-  let [ disableProgress, setDisableProgress ] = useState(props.requireCompletion);
+  let [ disableProgress, setDisableProgress ] = useState();
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -163,8 +163,8 @@ function Form (props) {
   useEffect(() => {
     // If reuired complition is set, stop any advancing progress untill check that all required 
     // questions are completed
-    requireCompletion && setDisableProgress(true);
-  }, [requireCompletion]);
+    requireCompletion && paginationEnabled && setDisableProgress(true);
+  }, [requireCompletion, paginationEnabled]);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -212,7 +212,7 @@ function Form (props) {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
     if (isEdit) {
-      setDisableProgress(requireCompletion);
+      paginationEnabled && setDisableProgress(requireCompletion);
       setIncompleteQuestionEl(null);
     }
   };
@@ -529,7 +529,7 @@ function Form (props) {
           onChange={() => {
 	                         incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
 	                         setIncompleteQuestionEl(null);
-	                         setDisableProgress(requireCompletion);
+	                         paginationEnabled && setDisableProgress(requireCompletion);
 	                         setIncompleteQuestionEl(null);
 	                         setLastSaveStatus(undefined);
                           }
