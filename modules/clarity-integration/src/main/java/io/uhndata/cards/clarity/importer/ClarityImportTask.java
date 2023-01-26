@@ -140,6 +140,12 @@ public class ClarityImportTask implements Runnable
         {
             this.questionnaires.add(mapping);
         }
+
+        @Override
+        public String toString()
+        {
+            return String.format("Subject mapping %s: %s -> $s", this.name, this.subjectIdColumn, this.subjectType);
+        }
     }
 
     private static final class ClarityQuestionnaireMapping
@@ -166,6 +172,12 @@ public class ClarityImportTask implements Runnable
         {
             return resolver.resolve("/Questionnaires/" + this.name);
         }
+
+        @Override
+        public String toString()
+        {
+            return String.format("Questionnaire mapping %s", this.name);
+        }
     }
 
     private static final class ClarityQuestionMapping
@@ -188,6 +200,13 @@ public class ClarityImportTask implements Runnable
             this.column = column;
             this.questionType = questionType;
             this.computed = computed;
+        }
+
+        @Override
+        public String toString()
+        {
+            return String.format("Question mapping %s: %s -> $s ($s)", this.name, this.column, this.question,
+                this.questionType);
         }
     }
 
