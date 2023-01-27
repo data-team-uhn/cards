@@ -41,7 +41,7 @@ export function getIncompleteQuestionsMap (sectionJson) {
         } else if (object["jcr:primaryType"] == "cards:AnswerSection" && hasWarningFlags(object)) {
           // if this is matrix - save the section path as this section is rendered in Question component
           if ("matrix" === object.section["displayMode"]) {
-            retFields[object.question["jcr:uuid"]] = object.question["@path"];
+            retFields[object.section["jcr:uuid"]] = object.section["@path"];
           } else {
             // If this is a normal cards:Section, recurse deeper
             retFields = {...retFields, ...getIncompleteQuestionsMap(object)};
