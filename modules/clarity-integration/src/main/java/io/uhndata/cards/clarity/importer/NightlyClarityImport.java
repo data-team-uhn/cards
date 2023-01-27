@@ -72,8 +72,7 @@ public class NightlyClarityImport
         options.name(SCHEDULER_JOB_NAME);
         options.canRunConcurrently(true);
 
-        final Runnable importJob;
-        importJob = new ClarityImportTask(this.resolverFactory, this.rrp);
+        final Runnable importJob = new ClarityImportTask(1, this.resolverFactory, this.rrp);
         try {
             if (importJob != null) {
                 this.scheduler.schedule(importJob, options);

@@ -77,6 +77,8 @@ public class ClarityImportTask implements Runnable
 
     private static final String VALUE_PROP = "value";
 
+    private final int pastDayToQuery;
+
     private final ThreadLocal<Map<String, String>> sqlColumnToDataType = ThreadLocal.withInitial(HashMap::new);
 
     private final ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
@@ -213,8 +215,10 @@ public class ClarityImportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
-    ClarityImportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp)
+    ClarityImportTask(final int pastDayToQuery, final ResourceResolverFactory resolverFactory,
+        final ThreadResourceResolverProvider rrp)
     {
+        this.pastDayToQuery = pastDayToQuery;
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
     }
@@ -378,7 +382,7 @@ public class ClarityImportTask implements Runnable
             }
         }
         queryString += " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS";
-        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE()-1 AS DATE);";
+        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE()-" + this.pastDayToQuery + " AS DATE);";
 
         return queryString;
     }

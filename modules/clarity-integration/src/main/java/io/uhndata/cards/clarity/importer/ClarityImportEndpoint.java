@@ -62,7 +62,9 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
         }
 
         // Load configuration from environment variables
-        final Runnable importJob = new ClarityImportTask(this.resolverFactory, this.rrp);
+        final int pastDayToQuery = getPastDayToQuery(request);
+        final Runnable importJob =
+            new ClarityImportTask(pastDayToQuery, this.resolverFactory, this.rrp);
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);
@@ -92,5 +94,14 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
         response.setStatus(status);
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(body);
+    }
+
+    private int getPastDayToQuery(final SlingHttpServletRequest request)
+    {
+        try {
+            return Integer.parseInt(request.getParameter("pastDayToQuery"));
+        } catch (NumberFormatException e) {
+            return 1;
+        }
     }
 }
