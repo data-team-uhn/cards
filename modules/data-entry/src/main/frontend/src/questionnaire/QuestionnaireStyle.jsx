@@ -563,7 +563,7 @@ const questionnaireStyle = theme => ({
     },
     questionnaireItemWithError: {
       "&.MuiCard-root, > .MuiCard-root" : {
-        outline: `2px solid ${theme.palette.error.main}`,
+        outline: `1px solid ${theme.palette.error.light}`,
       },
     },
     fileResourceAnswerList: {
