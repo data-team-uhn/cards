@@ -604,9 +604,9 @@ public class ClarityImportTask implements Runnable
             props.put(ClarityImportTask.VALUE_PROP, "Yes".equals(answerValue) ? 1 : 0);
         } else if (qType == QuestionType.CLINIC) {
             // This is similar to a string, except we transform the output to look at the ClinicMapping node
-            props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
+            props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:ResourceAnswer");
             props.put(ClarityImportTask.VALUE_PROP,
-                answerValue == null ? "" : "/Survey/ClinicMapping/" + String.valueOf(answerValue));
+                answerValue == null ? "" : String.valueOf(answerValue));
         } else {
             LOGGER.warn("Unsupported question type: " + qType);
         }
