@@ -597,7 +597,7 @@ function QuestionnaireSet(props) {
     <Typography paragraph key="expiry-message" color="textSecondary">
         {expiryDate()}
     </Typography>,
-    displayText("surveyDraftInfo", FormattedText, {paragraph: true, variant: "caption", key: "draft-info"}),
+    displayText("surveyDraftInfo", FormattedText, {paragraph: true, variant: "body2", key: "draft-info"}),
   ];
 
   let formScreen = [

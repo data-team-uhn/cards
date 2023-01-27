@@ -21,7 +21,7 @@ import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { appTheme } from "../themePalette.jsx";
+import { portalTheme } from "./portalTheme.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import Footer from "./Footer.jsx";
@@ -94,7 +94,7 @@ const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 ReactDOM.render(
   <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={appTheme}>
+    <ThemeProvider theme={portalTheme}>
       <Router history={hist}>
         <Switch color="secondary">
           <Route path="/Survey.html/" component={PatientPortalHomepage} />

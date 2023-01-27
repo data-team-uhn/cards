@@ -16,30 +16,18 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
-import {
-  Link,
-} from "@mui/material";
-import ToUDialog from "./ToUDialog.jsx";
+import React from 'react';
+import { createTheme } from '@mui/material/styles';
 
-function ToULink (props) {
-  const [ showTou, setShowTou ] = useState(false);
+import { appTheme } from "../themePalette";
 
-  return (<>
-    <Link
-      component="button"
-      color="inherit"
-      variant="body2"
-      onClick={() => {setShowTou(true);}}
-      underline="hover"
-    >
-      Terms of Use and Privacy Policy
-    </Link>
-    <ToUDialog
-      open={showTou}
-      onClose={() => {setShowTou(false);}}
-    />
-  </>);
-}
+const portalTheme = createTheme({
+  palette: appTheme.palette,
+  typography: {
+    caption: {
+      fontSize: "1rem",
+    },
+  },
+});
 
-export default ToULink;
+export { portalTheme };
