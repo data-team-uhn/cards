@@ -245,8 +245,6 @@ function Form (props) {
         return;
       }
       if (response.ok) {
-        setLastSaveStatus(true);
-        setLastSaveTimestamp(new Date());
         if (!disableHeader) {
           fetchWithReLogin(globalLoginDisplay, `${formURL}/statusFlags.json`)
             .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -266,7 +264,14 @@ function Form (props) {
                     setDisableProgress(false);
                   }
               })
-              .catch(handleFetchError);
+              .catch(handleFetchError)
+              .finally(() => {
+	            setLastSaveStatus(true);
+                setLastSaveTimestamp(new Date());
+              });
+        } else {
+	      setLastSaveStatus(true);
+          setLastSaveTimestamp(new Date());
         }
       } else if (response.status === 500) {
         response.json().then((json) => {
