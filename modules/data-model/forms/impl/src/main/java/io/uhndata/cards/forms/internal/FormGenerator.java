@@ -155,7 +155,14 @@ public class FormGenerator
             answerNode.setProperty("jcr:primaryType", types.getPrimaryType(), Type.NAME);
             answerNode.setProperty("sling:resourceSuperType", FormUtils.ANSWER_RESOURCE, Type.STRING);
             answerNode.setProperty("sling:resourceType", types.getResourceType(), Type.STRING);
-            answerNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
+
+            // TODO: Once AnswerCompletionStatusEditor is correctly running on generated forms,
+            // remove this condition and always set statusFlags to an empty list.
+            if (questionNode.hasProperty("minAnswers") && questionNode.getProperty("minAnswers").getLong() > 0) {
+                answerNode.setProperty("statusFlags", Collections.singletonList("INCOMPLETE"), Type.STRINGS);
+            } else {
+                answerNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
+            }
         } catch (RepositoryException e) {
             // Could not retrieve answer type or question UUID
         }
