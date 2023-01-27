@@ -266,11 +266,11 @@ function Form (props) {
               })
               .catch(handleFetchError)
               .finally(() => {
-	            setLastSaveStatus(true);
+                setLastSaveStatus(true);
                 setLastSaveTimestamp(new Date());
               });
         } else {
-	      setLastSaveStatus(true);
+          setLastSaveStatus(true);
           setLastSaveTimestamp(new Date());
         }
       } else if (response.status === 500) {
@@ -465,10 +465,10 @@ function Form (props) {
           method="POST"
           onSubmit={handleSubmit}
           onChange={() => {
-	                         incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
-	                         setIncompleteQuestionEl(null);
-	                         paginationEnabled && setDisableProgress(requireCompletion);
-	                         setLastSaveStatus(undefined);
+                             incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
+                             setIncompleteQuestionEl(null);
+                             paginationEnabled && setDisableProgress(requireCompletion);
+                             setLastSaveStatus(undefined);
                           }
                    }
           key={id}
