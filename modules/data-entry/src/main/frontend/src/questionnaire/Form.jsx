@@ -463,7 +463,6 @@ function Form (props) {
 	                         incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
 	                         setIncompleteQuestionEl(null);
 	                         paginationEnabled && setDisableProgress(requireCompletion);
-	                         setIncompleteQuestionEl(null);
 	                         setLastSaveStatus(undefined);
                           }
                    }
