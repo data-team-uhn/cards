@@ -35,6 +35,7 @@ COPY ports.conf /etc/apache2/ports.conf
 COPY apache_ssl.conf /apache_common_conf/apache_ssl.conf
 COPY apache_ssl_headers.conf /apache_common_conf/apache_ssl_headers.conf
 COPY apache_common.conf /apache_common_conf/apache_common.conf
+COPY apache_user_port_rules.conf /apache_common_conf/apache_user_port_rules.conf
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
 COPY proxyerror /var/www/html/proxyerror
 COPY http_proxy.js /http_proxy.js
