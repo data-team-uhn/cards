@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   logo: {
-    maxWidth: "240px",
+    maxWidth: "360px",
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
