@@ -597,7 +597,7 @@ function Form (props) {
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
-                label={saveInProgress ? "Saving..." : lastSaveStatus ? "Saved" : doneLabel || "Save"}
+                label={saveInProgress ? "Saving..." : doneLabel || (lastSaveStatus ? "Saved" : "Save")}
               />
             }
           </div>
