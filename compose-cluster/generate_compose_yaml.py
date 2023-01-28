@@ -45,6 +45,7 @@ argparser.add_argument('--demo', help='Enable the Demo Banner, Upgrade Marker Fl
 argparser.add_argument('--demo_banner', help='Enable only the Demo Banner', action='store_true')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
 argparser.add_argument('--composum', help='Enable Composum for the CARDS admin account', action='store_true')
+argparser.add_argument('--debug', help='Debug the CARDS instance on port 5005', action='store_true')
 argparser.add_argument('--adminer', help='Add an Adminer Docker container for database interaction via web browser', action='store_true')
 argparser.add_argument('--adminer_port', help='If --adminer is specified, bind it to this localhost port [default: 1435]', default=1435, type=int)
 argparser.add_argument('--enable_backup_server', help='Add a cards/backup_recorder service to the cluster', action='store_true')
@@ -481,14 +482,22 @@ if not (args.oak_filesystem or args.external_mongo):
   # internal MongoDB setup will also use a significant amount of memory.
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_JAVA_MEMORY_LIMIT_MB={}".format(getCardsJavaMemoryLimitMB()))
 
+yaml_obj['services']['cardsinitial']['ports'] = []
+
 if args.sling_admin_port:
-  yaml_obj['services']['cardsinitial']['ports'] = ["127.0.0.1:{}:8080".format(args.sling_admin_port)]
+  yaml_obj['services']['cardsinitial']['ports'].append("127.0.0.1:{}:8080".format(args.sling_admin_port))
+
+if args.debug:
+  yaml_obj['services']['cardsinitial']['ports'].append("127.0.0.1:5005:5005")
 
 if args.cards_project:
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_PROJECT={}".format(args.cards_project))
 
 if args.composum:
   yaml_obj['services']['cardsinitial']['environment'].append("DEV=true")
+
+if args.debug:
+  yaml_obj['services']['cardsinitial']['environment'].append("DEBUG=true")
 
 if args.demo:
   yaml_obj['services']['cardsinitial']['environment'].append("DEMO=true")
