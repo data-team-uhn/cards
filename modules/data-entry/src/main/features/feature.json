@@ -76,6 +76,7 @@
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-data-entry":{
       "user.mapping":[
+        "io.uhndata.cards.data-model-forms-impl:createMissingAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:computedAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:referenceAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:maxFormsOfTypePerSubjectValidator=[sling-readall]",

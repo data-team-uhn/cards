@@ -20,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,8 +35,6 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
- *
- *
  * @version $Id$
  */
 public class FormGenerator
@@ -82,13 +79,6 @@ public class FormGenerator
         }
 
         return formNode;
-    }
-
-    public void createMissingNodes(final Node questionnaireNode, final List<NodeBuilder> formNodes)
-    {
-        for (NodeBuilder node: formNodes) {
-            createMissingNodes(questionnaireNode, node);
-        }
     }
 
     private void createMissingChildren(Node questionnaireNode, NodeBuilder formNode)

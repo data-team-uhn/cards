@@ -137,12 +137,8 @@ public class ComputedAnswersEditor extends AnswersEditor
 
         // There are missing computed questions, let's create them!
         if (computedQuestionsTree != null) {
-            FormGenerator generator = new FormGenerator(this.questionnaireUtils, this.formUtils,
-                this.currentSession.getUserID());
-            generator.createMissingNodes(questionnaireNode, this.currentNodeBuilder);
-
-            Map<Node, NodeBuilder> questionAndAnswers
-                = computedQuestionsTree.getQuestionAndAnswers(this.currentNodeBuilder);
+            Map<Node, NodeBuilder> questionAndAnswers =
+                computedQuestionsTree.getQuestionAndAnswers(this.currentNodeBuilder);
             // Try to determine the right order in which answers should be computed, so that the answers that depend on
             // other computed answers are evaluated after all their dependencies have been evaluated
             final Set<String> questionNames = questionAndAnswers.keySet().stream()
