@@ -42,7 +42,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@Component(service = EditorProvider.class, immediate = true)
+@Component(property = "service.ranking:Integer=60")
 public class ReferenceAnswersEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,

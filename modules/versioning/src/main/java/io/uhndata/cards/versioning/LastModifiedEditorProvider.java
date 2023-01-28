@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  *
  * @version $Id$
  */
-@Component
+@Component(property = "service.ranking:Integer=70")
 public class LastModifiedEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,

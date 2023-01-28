@@ -23,14 +23,13 @@ import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * A {@link EditorProvider} returning {@link QuestionMatrixEditor}.
  *
  * @version $Id$
  */
-@Component(service = EditorProvider.class, scope = ServiceScope.SINGLETON, immediate = true)
+@Component(property = "service.ranking:Integer=10")
 public class QuestionMatrixEditorProvider implements EditorProvider
 {
     @Override

@@ -43,7 +43,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  *
  * @version $Id$
  */
-@Component(immediate = true)
+@Component(property = "service.ranking:Integer=100")
 public class AnswerCompletionStatusEditorProvider implements EditorProvider
 {
     @Reference

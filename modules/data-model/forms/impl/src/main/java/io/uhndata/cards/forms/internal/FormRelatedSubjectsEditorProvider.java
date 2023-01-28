@@ -27,7 +27,6 @@ import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ServiceScope;
 
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -36,7 +35,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  *
  * @version $Id$
  */
-@Component(service = EditorProvider.class, scope = ServiceScope.SINGLETON, immediate = true)
+@Component(property = "service.ranking:Integer=50")
 public class FormRelatedSubjectsEditorProvider implements EditorProvider
 {
     @Reference

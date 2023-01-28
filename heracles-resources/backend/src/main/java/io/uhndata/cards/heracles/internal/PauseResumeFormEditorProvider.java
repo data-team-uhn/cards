@@ -39,7 +39,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@Component
+@Component(property = "service.ranking:Integer=10")
 public class PauseResumeFormEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,

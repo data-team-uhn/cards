@@ -30,15 +30,13 @@ import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * A {@link EditorProvider} returning {@link SubjectFullIdentifierEditor}.
  *
  * @version $Id$
  */
-@Component(name = "SubjectFullIdentifierEditorProvider", service = EditorProvider.class,
-    scope = ServiceScope.SINGLETON, immediate = true)
+@Component(property = "service.ranking:Integer=50")
 public class SubjectFullIdentifierEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
