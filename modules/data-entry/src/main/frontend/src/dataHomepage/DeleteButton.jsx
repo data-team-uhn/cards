@@ -177,6 +177,7 @@ function DeleteButton(props) {
             <Typography variant="body1">{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
+            <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>
             <Button
               variant="contained"
               color="error"
@@ -186,7 +187,6 @@ function DeleteButton(props) {
             >
               { deletionInProgress ? "Deleting..." : deleteRecursive ? "Delete All" : "Delete" }
             </Button>
-            <Button variant="outlined" size="small" onClick={closeDialog}>Close</Button>
         </DialogActions>
       </Dialog>
       {variant == "icon" ?
