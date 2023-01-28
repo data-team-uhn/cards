@@ -254,6 +254,8 @@ function Form (props) {
         onSuccess?.();
         // If the form is required to be complete, re-fetch it after save to see if user can progress
         if (requireCompletion) {
+            // Disable progress until we figure out if it's ok to proceed
+            setDisableProgress(true);
             fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
               .then((response) => response.ok ? response.json() : Promise.reject(response))
               .then(json => {
