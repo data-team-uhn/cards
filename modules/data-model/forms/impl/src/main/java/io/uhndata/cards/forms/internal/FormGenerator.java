@@ -164,7 +164,6 @@ public class FormGenerator
 
         private Type<?> dataType;
 
-        @SuppressWarnings("checkstyle:CyclomaticComplexity")
         AnswerNodeTypes(final Node questionNode) throws RepositoryException
         {
             final String dataTypeString = questionNode.getProperty("dataType").getString();
@@ -191,9 +190,6 @@ public class FormGenerator
                             ? Type.LONG
                             : Type.DATE;
                     break;
-                case "time":
-                case "vocabulary":
-                case "text":
                 default:
                     this.dataType = Type.STRING;
             }
@@ -214,5 +210,4 @@ public class FormGenerator
             return this.dataType;
         }
     }
-
 }
