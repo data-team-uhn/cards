@@ -1237,6 +1237,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1406,6 +1411,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1550,6 +1560,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<node>
 					<name>0</name>
@@ -1720,6 +1735,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1864,6 +1884,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<node>
 					<name>0</name>
@@ -2151,6 +2176,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<type>Long</type>
 				</property>
 				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>boolean</value>
 					<type>String</type>
@@ -2261,6 +2291,11 @@ Your response to this survey is voluntary but will provide us with important inf
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
 				</property>
@@ -2782,6 +2817,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2926,6 +2966,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<node>
 					<name>0</name>
@@ -3072,6 +3117,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3217,6 +3267,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3357,6 +3412,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>After you knew that you needed to be admitted to a hospital bed, did you have to wait too long before getting there?</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -3425,6 +3485,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<node>
 					<name>0</name>
