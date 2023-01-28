@@ -475,7 +475,7 @@ export const NumberFormatCustom = forwardRef(function NumberFormatCustom(
 });
 
 NumberFormatCustom.propTypes = {
-  ref: PropTypes.func.isRequired,
+  ref: PropTypes.func,
   onChange: PropTypes.func.isRequired,
 };
 
