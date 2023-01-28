@@ -97,6 +97,11 @@ public class FormGenerator
             for (NodeIterator i = questionnaireNode.getNodes(); i.hasNext();) {
                 Node questionnaireChild = i.nextNode();
 
+                if (!this.questionnaireUtils.isSection(questionnaireChild)
+                    && !this.questionnaireUtils.isQuestion(questionnaireChild)) {
+                    continue;
+                }
+
                 NodeBuilder childNode;
                 if (childFormNodes.containsKey(questionnaireNode.getIdentifier())) {
                     childNode = childFormNodes.get(questionnaireNode.getIdentifier());
