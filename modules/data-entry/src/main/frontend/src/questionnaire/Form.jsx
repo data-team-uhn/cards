@@ -469,7 +469,7 @@ function Form (props) {
           onChange={() => {
                              incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
                              setIncompleteQuestionEl(null);
-                             paginationEnabled && setDisableProgress(requireCompletion);
+                             setDisableProgress(paginationEnabled && requireCompletion);
                              setLastSaveStatus(undefined);
                           }
                    }
