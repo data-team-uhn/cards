@@ -42,6 +42,7 @@ function DeleteButton(props) {
   const [ dialogAction, setDialogAction ] = useState("");
   const [ deleteRecursive, setDeleteRecursive ] = useState(false);
   const [ entryNotFound, setEntryNotFound ] = useState(false);
+  const [ deletionInProgress, setDeletionInProgress ] = useState(false);
 
   const buttonText = label || ("Delete " + (entryType?.toLowerCase() || '')).trim();
   const defaultDialogAction = `Are you sure you want to delete ${entryType} ${entryName}?`;
@@ -129,6 +130,7 @@ function DeleteButton(props) {
     if (deleteRecursive) {
       url.searchParams.set("recursive", true);
     }
+    setDeletionInProgress(true);
     fetchWithReLogin(globalLoginDisplay, url, {
       method: 'DELETE',
       headers: {
@@ -142,7 +144,7 @@ function DeleteButton(props) {
       } else {
         handleError(response.status, response);
       }
-    });
+    }).finally(() => setDeletionInProgress(false));
   }
 
   let handleClick = () => {
@@ -175,8 +177,14 @@ function DeleteButton(props) {
             <Typography variant="body1">{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="contained" color="error" size="small" onClick={() => handleDelete()}>
-              { deleteRecursive ? "Delete All" : "Delete" }
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              onClick={() => handleDelete()}
+              disabled={deletionInProgress}
+            >
+              { deletionInProgress ? "Deleting..." : deleteRecursive ? "Delete All" : "Delete" }
             </Button>
             <Button variant="outlined" size="small" onClick={closeDialog}>Close</Button>
         </DialogActions>
