@@ -69,6 +69,19 @@ function Question (props) {
     cardClasses.push(classes.focusedQuestionnaireItem);
   }
 
+  let labels = existingAnswer?.[1].displayedValue;
+  if (typeof(labels) == "undefined") {
+    labels = existingAnswer?.[1].value;
+  }
+  // Always turn value into an array for convenience
+  if (!Array.isArray(labels)) {
+    if (typeof(labels) == "undefined" || labels === "") {
+      labels = [];
+    } else {
+      labels = [labels];
+    }
+  }
+
   return (
     <Card
       id={questionDefinition["@path"]}
@@ -99,9 +112,9 @@ function Question (props) {
             </>
           }
           { !isEdit && !preventDefaultView ?
-            ( existingAnswer?.[1]["displayedValue"] ?
+            ( labels ?
               <List>
-                { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
+                { labels.map( (item, idx) => {
                   return(
                     <ListItem key={existingAnswer[0] + idx}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
                   )})
