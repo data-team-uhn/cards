@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * Schedule the cleanup of unsubmitted past forms every midnight.
@@ -49,6 +50,10 @@ public class UnsubmittedFormsCleanupScheduler
     @Reference
     private ResourceResolverFactory resolverFactory;
 
+    /** For sharing the resource resolver with other services. */
+    @Reference
+    private ThreadResourceResolverProvider rrp;
+
     /** Grab details on patient authentication for token lifetime purposes. */
     @Reference
     private PatientAccessConfiguration patientAccessConfiguration;
@@ -66,7 +71,7 @@ public class UnsubmittedFormsCleanupScheduler
             options.name(SCHEDULER_JOB_NAME);
             options.canRunConcurrently(false);
 
-            final Runnable cleanupJob = new UnsubmittedFormsCleanupTask(this.resolverFactory,
+            final Runnable cleanupJob = new UnsubmittedFormsCleanupTask(this.resolverFactory, this.rrp,
                 this.patientAccessConfiguration);
             this.scheduler.schedule(cleanupJob, options);
         } catch (final Exception e) {

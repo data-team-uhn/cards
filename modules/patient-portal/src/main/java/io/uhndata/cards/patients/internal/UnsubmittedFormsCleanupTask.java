@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * Periodically remove visit data forms (except the Visit Information itself) belonging to past visits that haven't been
@@ -51,6 +52,9 @@ public class UnsubmittedFormsCleanupTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
+    /** For sharing the resource resolver with other services. */
+    private final ThreadResourceResolverProvider rrp;
+
     /** Grab details on patient authentication for token lifetime purposes. */
     private final PatientAccessConfiguration patientAccessConfiguration;
 
@@ -58,18 +62,21 @@ public class UnsubmittedFormsCleanupTask implements Runnable
      * @param resolverFactory a valid ResourceResolverFactory providing access to resources
      * @param patientAccessConfiguration details on patient authentication for token lifetime purposes
      */
-    UnsubmittedFormsCleanupTask(final ResourceResolverFactory resolverFactory,
+    UnsubmittedFormsCleanupTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
         final PatientAccessConfiguration patientAccessConfiguration)
     {
         this.resolverFactory = resolverFactory;
+        this.rrp = rrp;
         this.patientAccessConfiguration = patientAccessConfiguration;
     }
 
     @Override
     public void run()
     {
+        final boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
+            this.rrp.push(resolver);
             // Gather the needed UUIDs to place in the query
             final String visitInformationQuestionnaire =
                 (String) resolver.getResource("/Questionnaires/Visit information").getValueMap().get("jcr:uuid");
@@ -103,15 +110,19 @@ public class UnsubmittedFormsCleanupTask implements Runnable
             resources.forEachRemaining(form -> {
                 try {
                     resolver.delete(form);
-                } catch (PersistenceException e) {
+                } catch (final PersistenceException e) {
                     LOGGER.warn("Failed to delete expired form {}: {}", form.getPath(), e.getMessage());
                 }
             });
             resolver.commit();
-        } catch (LoginException e) {
+        } catch (final LoginException e) {
             LOGGER.warn("Invalid setup, service rights not set up for the expired forms cleanup task");
-        } catch (PersistenceException e) {
+        } catch (final PersistenceException e) {
             LOGGER.warn("Failed to delete expired forms: {}", e.getMessage());
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
     }
 }
