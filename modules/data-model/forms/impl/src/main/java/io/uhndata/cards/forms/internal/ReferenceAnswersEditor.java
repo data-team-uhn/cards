@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -55,15 +56,17 @@ public class ReferenceAnswersEditor extends AnswersEditor
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
+     * @param currentSession the current user session
      * @param rrf the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param subjectUtils for working with subject data
      */
-    public ReferenceAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, SubjectUtils subjectUtils)
+    public ReferenceAnswersEditor(final NodeBuilder nodeBuilder, final Session currentSession,
+        final ResourceResolverFactory rrf, final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils,
+        final SubjectUtils subjectUtils)
     {
-        super(nodeBuilder, rrf, questionnaireUtils, formUtils, "referenceAnswers");
+        super(nodeBuilder, currentSession, rrf, questionnaireUtils, formUtils);
         this.subjectUtils = subjectUtils;
     }
 
@@ -71,6 +74,12 @@ public class ReferenceAnswersEditor extends AnswersEditor
     protected Logger getLogger()
     {
         return LOGGER;
+    }
+
+    @Override
+    protected String getServiceName()
+    {
+        return "referenceAnswers";
     }
 
     @Override
@@ -82,7 +91,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
     @Override
     protected ReferenceAnswersEditor getNewEditor(String name)
     {
-        return new ReferenceAnswersEditor(this.currentNodeBuilder.getChildNode(name),
+        return new ReferenceAnswersEditor(this.currentNodeBuilder.getChildNode(name), this.currentSession,
             this.rrf, this.questionnaireUtils, this.formUtils, this.subjectUtils);
     }
 

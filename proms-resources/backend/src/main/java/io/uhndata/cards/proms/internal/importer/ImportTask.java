@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.metrics.Metrics;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * Query the Torch server provided for patients with appointments in the coming few days (default: 3), and stores them
@@ -57,7 +57,7 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
  *
  * @version $Id$
  */
-@SuppressWarnings({"checkstyle:ClassDataAbstractionCoupling"})
+@SuppressWarnings({ "checkstyle:ClassDataAbstractionCoupling" })
 public class ImportTask implements Runnable
 {
     /** Default log. */
@@ -119,12 +119,12 @@ public class ImportTask implements Runnable
         this.vaultToken = vaultToken;
         this.clinicNames = clinicNames;
         // Parse the query dates
-        this.queryDates = new LinkedList<Calendar>();
+        this.queryDates = new LinkedList<>();
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        for (int i = 0; i < queryDates.length; i++) {
+        for (String queryDate : queryDates) {
             try {
                 final Calendar date = Calendar.getInstance();
-                date.setTime(formatter.parse(queryDates[i]));
+                date.setTime(formatter.parse(queryDate));
                 this.queryDates.add(date);
             } catch (ParseException e) {
                 LOGGER.error("Query date invalid: {}", e.getMessage(), e);
@@ -142,8 +142,8 @@ public class ImportTask implements Runnable
         final String token = loginWithJWT();
         long importedAppointmentsCount = 0;
         // Iterate over every clinic name
-        for (int i = 0; i < this.clinicNames.length; i++) {
-            importedAppointmentsCount += getUpcomingAppointments(token, this.daysToQuery, this.clinicNames[i]);
+        for (String clinicName : this.clinicNames) {
+            importedAppointmentsCount += getUpcomingAppointments(token, this.daysToQuery, clinicName);
         }
         // Update the performance counter
         Metrics.increment(this.resolverFactory,
@@ -214,15 +214,20 @@ public class ImportTask implements Runnable
 
             // Create the storage object and store every patient/visit
             final JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
+            boolean mustPopResolver = false;
             try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
                 Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"))) {
                 this.rrp.push(resolver);
+                mustPopResolver = true;
                 final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
                     this.providerIDs, this.providerRoles, this.queryDates);
 
                 data.forEach(storage::store);
                 importedAppointmentsCount += storage.getCountAppointmentsCreated();
-                this.rrp.pop();
+            } finally {
+                if (mustPopResolver) {
+                    this.rrp.pop();
+                }
             }
         } catch (final Exception e) {
             LOGGER.error("Failed to query server: {}", e.getMessage(), e);

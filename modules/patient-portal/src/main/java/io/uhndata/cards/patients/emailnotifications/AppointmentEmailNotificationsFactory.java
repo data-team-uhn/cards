@@ -36,7 +36,7 @@ import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Designate(ocd = AppointmentEmailNotificationsFactory.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)

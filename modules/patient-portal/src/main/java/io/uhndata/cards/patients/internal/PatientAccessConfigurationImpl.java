@@ -31,8 +31,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.spi.AbstractNodeUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Basic utilities for grabbing patient authentication config details.

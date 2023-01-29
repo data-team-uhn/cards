@@ -35,6 +35,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
@@ -42,20 +44,24 @@ import org.slf4j.LoggerFactory;
 public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebhookBackupEndpoint.class);
+
     private static final long serialVersionUID = -6489305069446929017L;
 
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
         final Writer out = response.getWriter();
 
-        //Ensure that this can only be run when logged in as admin
+        // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
         if (remoteUser == null || !"admin".equals(remoteUser)) {
-            //admin login required
+            // admin login required
             response.setStatus(403);
             out.write("Only admin can perform this operation.");
             return;
@@ -68,8 +74,8 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
             : (dateLowerBound != null && dateUpperBound == null) ? "manualAfter" : "manualToday";
 
         final Runnable exportJob = ("manualToday".equals(exportRunMode))
-            ? new WebhookBackupTask(this.resolverFactory, exportRunMode)
-            : new WebhookBackupTask(this.resolverFactory, exportRunMode, dateLowerBound, dateUpperBound);
+            ? new WebhookBackupTask(this.resolverFactory, this.rrp, exportRunMode)
+            : new WebhookBackupTask(this.resolverFactory, this.rrp, exportRunMode, dateLowerBound, dateUpperBound);
         final Thread thread = new Thread(exportJob);
         thread.start();
         out.write("Webhook Backup export started");

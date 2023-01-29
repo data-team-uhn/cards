@@ -45,9 +45,9 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Change listener looking for new or modified forms related to a Visit subject. Initially, when a new Visit Information
@@ -117,6 +117,7 @@ public class VisitChangeListener implements ResourceChangeListener
     private void handleEvent(final ResourceChange event)
     {
         // Acquire a service session with the right privileges for accessing visits and their forms
+        boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.resolverFactory
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
             // Get the information needed from the triggering form
@@ -130,6 +131,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 return;
             }
             this.rrp.push(localResolver);
+            mustPopResolver = true;
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
             final Node subject = this.formUtils.getSubject(form);
 
@@ -144,11 +146,14 @@ public class VisitChangeListener implements ResourceChangeListener
                     handleVisitDataForm(subject, session);
                 }
             }
-            this.rrp.pop();
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } catch (final RepositoryException e) {
             LOGGER.error(e.getMessage(), e);
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
     }
 
@@ -432,8 +437,8 @@ public class VisitChangeListener implements ResourceChangeListener
     }
 
     /**
-     * Remove any questionnaires from the questionnaire set which are in the provided list of questionnaires
-     * if they are within the questionnaire set's frequency range.
+     * Remove any questionnaires from the questionnaire set which are in the provided list of questionnaires if they are
+     * within the questionnaire set's frequency range.
      *
      * @param visitInformation the set of data about the visit that triggered this event
      * @param visitDate the data of the visit being checked
@@ -727,11 +732,16 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         // Conflict with any questionnaire
         private static final String CONFLICT_ANY = "any";
+
         // Only conflict with questionnaires included in the map of conflicts
         private static final String CONFLICT_ANY_LISTED = "anyListed";
+
         private final Map<String, Integer> conflicts;
+
         private final Map<String, QuestionnaireRef> members;
+
         private boolean ignoreClinic;
+
         private String conflictMode;
 
         QuestionnaireSetInfo()
@@ -757,7 +767,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 int frequencyPeriod = 0;
                 if (CONFLICT_ANY.equals(this.conflictMode)) {
                     frequencyPeriod = this.members.values().stream()
-                        .map(ref -> ref.getFrequency())
+                        .map(QuestionnaireRef::getFrequency)
                         .max(Integer::compare).get();
                 } else if (this.conflicts.containsKey(questionnaireIdentifier)) {
                     frequencyPeriod = this.conflicts.get(questionnaireIdentifier);

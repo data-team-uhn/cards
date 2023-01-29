@@ -31,8 +31,8 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * A {@link EditorProvider} returning {@link ComputedAnswersEditor}.

@@ -16,7 +16,6 @@
  */
 package io.uhndata.cards.heracles.internal;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,8 +41,8 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * An {@link Editor} that fills out any reference answers for a new form.
@@ -57,6 +56,7 @@ public class PauseResumeFormEditor extends DefaultEditor
     private final NodeBuilder currentNodeBuilder;
 
     private final ResourceResolverFactory rrf;
+
     private final ThreadResourceResolverProvider rrp;
 
     private final QuestionnaireUtils questionnaireUtils;
@@ -66,6 +66,7 @@ public class PauseResumeFormEditor extends DefaultEditor
     private final SubjectUtils subjectUtils;
 
     private boolean isFormNode;
+
     private boolean isNew;
 
     /**
@@ -101,7 +102,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             return null;
         } else {
             return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
-            this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, true);
+                this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, true);
         }
     }
 
@@ -125,9 +126,11 @@ public class PauseResumeFormEditor extends DefaultEditor
             return;
         }
 
+        boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.rrf
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "PauseResumeEditor"))) {
             this.rrp.push(localResolver);
+            mustPopResolver = true;
 
             if (!isPauseResumeForm(after)) {
                 return;
@@ -137,9 +140,10 @@ public class PauseResumeFormEditor extends DefaultEditor
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } finally {
-            this.rrp.pop();
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
-
     }
 
     private void processForm(NodeState after)

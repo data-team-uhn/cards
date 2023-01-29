@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jackrabbit.oak.api.Type;
@@ -56,15 +57,17 @@ public class ComputedAnswersEditor extends AnswersEditor
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
+     * @param currentSession the current user session
      * @param rrf the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param expressionUtils for evaluating the computed questions
      */
-    public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final ExpressionUtils expressionUtils)
+    public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final Session currentSession,
+        final ResourceResolverFactory rrf, final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils,
+        final ExpressionUtils expressionUtils)
     {
-        super(nodeBuilder, rrf, questionnaireUtils, formUtils, "computedAnswers");
+        super(nodeBuilder, currentSession, rrf, questionnaireUtils, formUtils);
         this.expressionUtils = expressionUtils;
     }
 
@@ -72,6 +75,12 @@ public class ComputedAnswersEditor extends AnswersEditor
     protected Logger getLogger()
     {
         return LOGGER;
+    }
+
+    @Override
+    protected String getServiceName()
+    {
+        return "computedAnswers";
     }
 
     @Override
@@ -84,7 +93,7 @@ public class ComputedAnswersEditor extends AnswersEditor
     protected ComputedAnswersEditor getNewEditor(String name)
     {
         return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-            this.rrf, this.questionnaireUtils, this.formUtils, this.expressionUtils);
+            this.currentSession, this.rrf, this.questionnaireUtils, this.formUtils, this.expressionUtils);
     }
 
     @Override

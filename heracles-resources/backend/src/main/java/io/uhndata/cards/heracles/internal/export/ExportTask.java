@@ -48,6 +48,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 public class ExportTask implements Runnable
 {
@@ -57,24 +58,26 @@ public class ExportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
+    private final ThreadResourceResolverProvider rrp;
+
     private final String exportRunMode;
 
     private final LocalDate exportLowerBound;
 
     private final LocalDate exportUpperBound;
 
-    ExportTask(final ResourceResolverFactory resolverFactory, final String exportRunMode)
+    ExportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
+        final String exportRunMode)
     {
-        this.resolverFactory = resolverFactory;
-        this.exportRunMode = exportRunMode;
-        this.exportLowerBound = null;
-        this.exportUpperBound = null;
+        this(resolverFactory, rrp, exportRunMode, null, null);
     }
 
-    ExportTask(final ResourceResolverFactory resolverFactory, final String exportRunMode,
+    ExportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
+        final String exportRunMode,
         final LocalDate exportLowerBound, final LocalDate exportUpperBound)
     {
         this.resolverFactory = resolverFactory;
+        this.rrp = rrp;
         this.exportRunMode = exportRunMode;
         this.exportLowerBound = exportLowerBound;
         this.exportUpperBound = exportUpperBound;
@@ -269,7 +272,10 @@ public class ExportTask implements Runnable
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
             + ".dataFilter:statusNot=INCOMPLETE",
             path, requestDateStringLower, requestDateStringUpper);
+        boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            this.rrp.push(resolver);
+            mustPopResolver = true;
             Resource subjectData = resolver.resolve(subjectDataUrl);
             Resource identifiedSubjectData = resolver.resolve(identifiedSubjectDataUrl);
             return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(),
@@ -277,6 +283,10 @@ public class ExportTask implements Runnable
         } catch (LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
             return null;
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
     }
 

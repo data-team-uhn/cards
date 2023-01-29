@@ -29,6 +29,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+
 @Component(immediate = true)
 public class NightlyWebhookBackup
 {
@@ -38,6 +40,9 @@ public class NightlyWebhookBackup
     /** Provides access to resources. */
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     /** The scheduler for rescheduling jobs. */
     @Reference
@@ -52,7 +57,7 @@ public class NightlyWebhookBackup
         options.name("NightlyWebhookBackup");
         options.canRunConcurrently(true);
 
-        final Runnable webhookBackupJob = new WebhookBackupTask(this.resolverFactory, "nightly");
+        final Runnable webhookBackupJob = new WebhookBackupTask(this.resolverFactory, this.rrp, "nightly");
 
         try {
             this.scheduler.schedule(webhookBackupJob, options);

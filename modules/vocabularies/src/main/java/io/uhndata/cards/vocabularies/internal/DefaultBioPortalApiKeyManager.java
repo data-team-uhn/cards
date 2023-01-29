@@ -22,15 +22,12 @@ import javax.jcr.Node;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.vocabularies.BioPortalApiKeyManager;
 
 /**
@@ -46,9 +43,8 @@ public class DefaultBioPortalApiKeyManager implements BioPortalApiKeyManager
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBioPortalApiKeyManager.class);
 
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public String getAPIKey()
@@ -77,7 +73,7 @@ public class DefaultBioPortalApiKeyManager implements BioPortalApiKeyManager
         String apiKey = "";
 
         try {
-            Resource res = this.rrf.getThreadResourceResolver().resolve(resourcePath);
+            Resource res = this.rrp.getThreadResourceResolver().resolve(resourcePath);
             if (!res.isResourceType(Resource.RESOURCE_TYPE_NON_EXISTING)) {
                 Node keyNode = res.adaptTo(Node.class);
                 apiKey = keyNode.getProperty("key").getString();

@@ -21,13 +21,10 @@ import javax.jcr.RepositoryException;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.spi.AbstractNodeUtils;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 
@@ -39,16 +36,15 @@ import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 @Component
 public final class SubjectTypeUtilsImpl extends AbstractNodeUtils implements SubjectTypeUtils
 {
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     // Subject methods
 
     @Override
     public Node getSubjectType(final String identifier)
     {
-        final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));
+        final Node result = getNodeByIdentifier(identifier, getSession(this.rrp));
         return isSubjectType(result) ? result : null;
     }
 
@@ -67,7 +63,7 @@ public final class SubjectTypeUtilsImpl extends AbstractNodeUtils implements Sub
     @Override
     public boolean isSubjectType(final NodeState node)
     {
-        return isNodeType(node, SUBJECT_TYPE_NODETYPE, getSession(this.rrf));
+        return isNodeType(node, SUBJECT_TYPE_NODETYPE, getSession(this.rrp));
     }
 
     @Override

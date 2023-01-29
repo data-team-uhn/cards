@@ -48,8 +48,6 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
- *
- *
  * @version $Id$
  */
 public abstract class AnswersEditor extends DefaultEditor
@@ -60,8 +58,8 @@ public abstract class AnswersEditor extends DefaultEditor
 
     protected final ResourceResolverFactory rrf;
 
-    /** The current user session. **/
-    protected Session currentSession;
+    /** The current user session. */
+    protected final Session currentSession;
 
     /**
      * A session that has access to all the questionnaire questions and can access restricted questions. This session
@@ -79,31 +77,31 @@ public abstract class AnswersEditor extends DefaultEditor
 
     protected AbstractAnswerChangeTracker answerChangeTracker;
 
-    private final String serviceName;
-
     /**
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
+     * @param currentSession the current user session
      * @param rrf the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
-     * @param serviceName the name of the service resource resolver that should be used to handle any changes
      */
-    public AnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final String serviceName)
+    public AnswersEditor(final NodeBuilder nodeBuilder, final Session currentSession, final ResourceResolverFactory rrf,
+        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils)
     {
-        this.serviceName = serviceName;
         this.currentNodeBuilder = nodeBuilder;
-        this.rrf = rrf;
         this.questionnaireUtils = questionnaireUtils;
         this.formUtils = formUtils;
         this.answerChangeTracker = getAnswerChangeTracker();
-        this.isFormNode = this.formUtils.isForm(this.currentNodeBuilder);
         this.shouldRunOnLeave = false;
+        this.currentSession = currentSession;
+        this.rrf = rrf;
+        this.isFormNode = this.formUtils.isForm(nodeBuilder);
     }
 
     protected abstract Logger getLogger();
+
+    protected abstract String getServiceName();
 
     protected abstract AbstractAnswerChangeTracker getAnswerChangeTracker();
 
@@ -137,17 +135,16 @@ public abstract class AnswersEditor extends DefaultEditor
             return;
         }
 
-        final Map<String, Object> parameters =
-            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, this.serviceName);
-        final ResourceResolver sessionResolver = this.rrf.getThreadResourceResolver();
-        try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
-            if (sessionResolver != null && serviceResolver != null) {
-                this.currentSession = sessionResolver.adaptTo(Session.class);
+        try (ResourceResolver serviceResolver =
+            this.rrf.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, getServiceName()))) {
+            if (serviceResolver != null) {
                 this.serviceSession = serviceResolver.adaptTo(Session.class);
                 handleLeave(after);
             }
         } catch (LoginException e) {
             // Should not happen
+        } finally {
+            this.serviceSession = null;
         }
     }
 
@@ -211,7 +208,8 @@ public abstract class AnswersEditor extends DefaultEditor
                     // New node, insert all required properties
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                     currentNode.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
-                    currentNode.setProperty("jcr:createdBy", this.currentSession.getUserID(), Type.NAME);
+                    currentNode.setProperty("jcr:createdBy", this.currentSession.getUserID(),
+                        Type.NAME);
                     String questionReference = questionTree.getNode().getIdentifier();
                     currentNode.setProperty(FormUtils.QUESTION_PROPERTY, questionReference, Type.REFERENCE);
                     currentNode.setProperty("jcr:primaryType", types.getPrimaryType(), Type.NAME);
@@ -246,8 +244,7 @@ public abstract class AnswersEditor extends DefaultEditor
         final Map<String, List<NodeBuilder>> childNodesByReference, final NodeBuilder nodeBuilder)
     {
         Map<QuestionTree, NodeBuilder> result = new HashMap<>();
-        for (Map.Entry<String, QuestionTree> childQuestion
-            : questionTree.getChildren().entrySet()) {
+        for (Map.Entry<String, QuestionTree> childQuestion : questionTree.getChildren().entrySet()) {
             QuestionTree childTree = childQuestion.getValue();
             try {
                 Node childQuestionNode = childTree.getNode();
@@ -303,11 +300,6 @@ public abstract class AnswersEditor extends DefaultEditor
         }
         return result;
     }
-
-
-
-
-
 
     protected abstract static class AbstractAnswerChangeTracker extends DefaultEditor
     {

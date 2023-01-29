@@ -35,6 +35,8 @@ import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
@@ -48,6 +50,9 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
 
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Reference
     private volatile List<ExportConfig> configs;
@@ -81,7 +86,7 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
-        final Runnable exportJob = new ExportTask(this.resolverFactory, config.frequency_in_days(),
+        final Runnable exportJob = new ExportTask(this.resolverFactory, this.rrp, config.frequency_in_days(),
             config.questionnaires_to_be_exported(), config.save_path(), config.enable_label());
         final Thread thread = new Thread(exportJob);
         thread.start();
