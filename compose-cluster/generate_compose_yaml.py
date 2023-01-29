@@ -54,6 +54,9 @@ argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of 
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 argparser.add_argument('--external_mongo_uri', help='URI of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
+argparser.add_argument('--clarity', help='Enable the clarity-integration CARDS module.', action='store_true')
+argparser.add_argument('--mssql', help='Start up a MS-SQL instance with test data', action='store_true')
+argparser.add_argument('--expose_mssql', help='If --mssql is specified, forward the SQL service to the specified port (defaults to 1433 if --expose_mssql is specified without a port parameter)', nargs='?', const=1433, type=int)
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
 argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
 argparser.add_argument('--saml_cloud_iam_demo', help='Enable SAML authentication with CARDS via the Cloud-IAM.com demo', action='store_true')
@@ -496,6 +499,9 @@ if args.demo:
 if args.demo_banner:
   yaml_obj['services']['cardsinitial']['environment'].append("DEMO_BANNER=true")
 
+if args.clarity:
+  yaml_obj['services']['cardsinitial']['environment'].append("CLARITY_IMPORT_ENABLED=true")
+
 if args.saml:
   yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")
   yaml_obj['services']['cardsinitial']['volumes'].append("./samlKeystore.p12:/opt/cards/samlKeystore.p12:ro")
@@ -698,6 +704,21 @@ if args.adminer:
   yaml_obj['services']['adminer']['networks']['internalnetwork'] = {}
   yaml_obj['services']['adminer']['networks']['internalnetwork']['aliases'] = ['adminer']
   yaml_obj['services']['adminer']['ports'] = ["127.0.0.1:{}:8080".format(args.adminer_port)]
+
+if args.mssql:
+  print("Configuring service: ms-sql")
+  yaml_obj['services']['mssql'] = {}
+  yaml_obj['services']['mssql']['image'] = 'mcr.microsoft.com/mssql/server:2022-latest'
+  yaml_obj['services']['mssql']['networks'] = {}
+  yaml_obj['services']['mssql']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['mssql']['networks']['internalnetwork']['aliases'] = ['mssql']
+  yaml_obj['services']['mssql']['environment'] = ['ACCEPT_EULA=Y', 'MSSQL_SA_PASSWORD=testPassword_']
+  yaml_obj['services']['cardsinitial']['environment'].append("CLARITY_SQL_SERVER=mssql:1433")
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_USERNAME=sa')
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_PASSWORD=testPassword_')
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_ENCRYPT=false')
+  if args.expose_mssql:
+    yaml_obj['services']['mssql']['ports'] = ['127.0.0.1:{}:1433'.format(args.expose_mssql)]
 
 #Setup the internal network
 print("Configuring the internal network")

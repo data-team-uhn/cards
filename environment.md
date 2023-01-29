@@ -25,6 +25,10 @@ The following environment variables are read by CARDS and thus can be used in bo
 | `BIOPORTAL_APIKEY` | API key [for Bioportal vocabularies](https://data.bioontology.org/documentation) | |
 | `NIGHTLY_WEBHOOK_BACKUP_SCHEDULE` | Crontab-readable schedule (Quartz Job Scheduler) for performing Webhook backups of CARDS | `0 0 6 * * ? *` |
 | `BACKUP_WEBHOOK_URL` | Webhook URL to perform backups of CARDS to | `http://localhost:8012` |
+| `CLARITY_SQL_SERVER` | The MS-SQL server and port number to import clarity data from | `mssql:1433` |
+| `CLARITY_SQL_USERNAME` | Username to use when connecting to the Clarity MS-SQL server | `sa` |
+| `CLARITY_SQL_PASSWORD` | Password to use when connecting to the Clarity MS-SQL server | `testPassword_` |
+| `CLARITY_SQL_ENCRYPT` | If true, [TLS encryption will be used for all data sent to and from](https://learn.microsoft.com/en-us/sql/connect/jdbc/setting-the-connection-properties?view=sql-server-ver16) the Clarity MS-SQL server | `false` |
 
 ### Environment variables read by the CARDS docker container entrypoint
 The following environment variables are read by the CARDS Docker container _entrypoint_ script and thus are _only_ usable in Docker-based deployments.

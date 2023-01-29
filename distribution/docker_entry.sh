@@ -54,6 +54,7 @@ fi
 [[ "${CARDS_PROJECT}" == 'cards4proms' || "${CARDS_PROJECT}" == 'cards4prems' ]] && SMTPS_ENABLED="true"
 
 [[ "${CARDS_PROJECT}" == 'cards4prems' ]] && CSV_EXPORT_ENABLED="true"
+[[ "${CARDS_PROJECT}" == 'cards4prems' ]] && CLARITY_IMPORT_ENABLED="true"
 
 if [ ! -z $DEV ]
 then
@@ -180,6 +181,12 @@ fi
 if [[ "$CSV_EXPORT_ENABLED" == "true" ]]
 then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-scheduled-csv-export/${PROJECT_VERSION}/slingosgifeature"
+fi
+
+#Should the clarity-integration module be loaded?
+if [[ "$CLARITY_IMPORT_ENABLED" == "true" ]]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-clarity-integration/${PROJECT_VERSION}/slingosgifeature"
 fi
 
 if [[ "$SMTPS_LOCALHOST_PROXY" == "true" ]]
