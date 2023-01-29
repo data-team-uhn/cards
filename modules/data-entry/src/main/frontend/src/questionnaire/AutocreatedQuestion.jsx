@@ -27,38 +27,17 @@ import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from './QuestionnaireStyle';
-import { useFormWriterContext } from "./FormContext";
-
 
 // Component that displays an autocreated question of any type.
 //
 // Other options are passed to the <question> widget
 let AutocreatedQuestion = (props) => {
-  const { existingAnswer, classes, pageActive, questionName} = props;
-  const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...props};
+  const { isEdit, ...rest } = props;
+  const { existingAnswer, classes, pageActive, questionName} = rest;
+  const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...rest};
 
-  let initialValue = existingAnswer?.[1].value || "";
-  let answer = initialValue === "" ? [] : [["value", initialValue]];
   const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
-
-  // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
-  const changeFormContext = useFormWriterContext();
-
-  // When the answers change, we inform the FormContext
-  useEffect(() => {
-    if (answer) {
-      changeFormContext((oldContext) => ({...oldContext, [questionName]: answer}));
-    }
-  }, [answer]);
-
-  useEffect(() => {
-    if (unitOfMeasurement) {
-      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>}));
-    } else {
-      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined}));
-    }
-  }, [unitOfMeasurement])
 
   useEffect(() => {
     let formatted = (displayMode === "formatted" || displayMode === "summary");
@@ -67,29 +46,15 @@ let AutocreatedQuestion = (props) => {
     };
   }, [displayMode])
 
+  // Autocreated answers are read-only and displayed the same in view and edit modes
+  // Answer instructions are not displayed since there's nothing the user can do in this form to actually follow them, as the answers are read-only
   return (
     <Question
-      defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : undefined}
-      currentAnswers={typeof(initialValue) !== "undefined" && initialValue !== "" ? 1 : 0}
-      {...props}
-      >
-      {
-        pageActive && <>
-          { isFormatted ? <FormattedText>
-              {initialValue + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
-            </FormattedText>
-          :
-          <TextField
-            variant="standard"
-            disabled={true}
-            className={classes.textField + " " + classes.answerField}
-            value={initialValue}
-            InputProps={muiInputProps}
-          />
-          }
-        </>
-      }
-    </Question>
+      isEdit={false}
+      defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : (label, idx) => label}
+      disableInstructions
+      {...rest}
+    />
   )
 }
 
@@ -98,7 +63,7 @@ AutocreatedQuestion.propTypes = {
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
     description: PropTypes.string,
-    displayMode: PropTypes.oneOf(['input', 'formatted', 'hidden', 'summary']),
+    displayMode: PropTypes.oneOf(['plain', 'formatted', 'hidden', 'summary']),
     unitOfMeasurement: PropTypes.string
   }).isRequired
 };
