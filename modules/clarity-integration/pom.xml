@@ -44,7 +44,7 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/mapping.cnd</Sling-Nodetypes>
+            <Sling-Nodetypes>SLING-INF/nodetypes/clarity-mapping.cnd</Sling-Nodetypes>
             <!-- This is required to let the SQLDriver class actually be accessible from this module -->
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
