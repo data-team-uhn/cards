@@ -73,10 +73,11 @@ public class UnsubmittedFormsCleanupTask implements Runnable
     @Override
     public void run()
     {
-        final boolean mustPopResolver = false;
+        boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
             this.rrp.push(resolver);
+            mustPopResolver = true;
             // Gather the needed UUIDs to place in the query
             final String visitInformationQuestionnaire =
                 (String) resolver.getResource("/Questionnaires/Visit information").getValueMap().get("jcr:uuid");
