@@ -19,6 +19,9 @@
 
 package io.uhndata.cards.clarity.importer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
@@ -26,11 +29,15 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true)
@@ -48,6 +55,11 @@ public class NightlyClarityImport
 
     @Reference
     private ThreadResourceResolverProvider rrp;
+
+    /** A list of all available data processors. */
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.REPLACE,
+        policy = ReferencePolicy.DYNAMIC)
+    private volatile List<ClarityDataProcessor> processors;
 
     /** The scheduler for rescheduling jobs. */
     @Reference
@@ -72,12 +84,12 @@ public class NightlyClarityImport
         options.name(SCHEDULER_JOB_NAME);
         options.canRunConcurrently(true);
 
-        final Runnable importJob = new ClarityImportTask(1, this.resolverFactory, this.rrp);
+        List<ClarityDataProcessor> sortedProcessors = new ArrayList<>(this.processors);
+        sortedProcessors.sort(null);
+        final Runnable importJob = new ClarityImportTask(1, this.resolverFactory, this.rrp, sortedProcessors);
         try {
-            if (importJob != null) {
-                this.scheduler.schedule(importJob, options);
-                LOGGER.info("Activated Clarity Importer configuration");
-            }
+            this.scheduler.schedule(importJob, options);
+            LOGGER.info("Activated Clarity Importer configuration");
         } catch (final Exception e) {
             LOGGER.error("NightlyClarityImport Failed to schedule: {}", e.getMessage(), e);
         }
