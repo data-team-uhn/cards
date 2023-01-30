@@ -32,6 +32,7 @@
   <description>A collection of questionnaires for Cards for PREMs.</description>
 
   <modules>
+    <module>backend</module>
     <module>clinical-data</module>
     <module>feature</module>
   </modules>
