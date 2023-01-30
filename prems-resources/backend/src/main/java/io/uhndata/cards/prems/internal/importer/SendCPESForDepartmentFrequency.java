@@ -45,15 +45,21 @@ public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
             + " of the total visits registered for each department")
     public @interface SendCPESForDepartmentFrequencyConfigDefinition
     {
+        @AttributeDefinition(name = "Default Frequency", description = "For example \"0.04\".", defaultValue = "0.04")
+        double default_frequency();
+
         @AttributeDefinition(name = "Per Department Frequency", description = "For example \"Department name = 0.02\".")
         String[] frequency_per_department();
     }
+
+    private final double defaultFrequency;
 
     private final Map<String, Double> perDepartmentFrequency;
 
     @Activate
     public SendCPESForDepartmentFrequency(SendCPESForDepartmentFrequencyConfigDefinition configuration)
     {
+        this.defaultFrequency = configuration.default_frequency();
         this.perDepartmentFrequency = new HashMap<>(configuration.frequency_per_department().length);
         for (String clinic : configuration.frequency_per_department()) {
             String[] pieces = clinic.split("\\s*=\\s*");
@@ -68,7 +74,7 @@ public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
     public Map<String, String> processEntry(Map<String, String> input)
     {
         final String department = input.get("DISCH_DEPT_NAME");
-        if (Math.random() < this.perDepartmentFrequency.getOrDefault(department, 0.0d)) {
+        if (Math.random() < this.perDepartmentFrequency.getOrDefault(department, this.defaultFrequency)) {
             input.put("CLINIC", "/Survey/ClinicMapping/2075099");
         }
         return input;
