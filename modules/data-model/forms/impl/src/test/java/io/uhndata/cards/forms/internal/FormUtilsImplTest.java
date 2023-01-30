@@ -17,7 +17,7 @@
 * under the License.
 */
 
-package io.uhn.data.cards.forms.internal;
+package io.uhndata.cards.forms.internal;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -57,7 +57,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
-import io.uhndata.cards.forms.internal.FormUtilsImpl;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
