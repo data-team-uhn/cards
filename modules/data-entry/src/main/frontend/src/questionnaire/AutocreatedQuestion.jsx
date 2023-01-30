@@ -41,7 +41,7 @@ let AutocreatedQuestion = (props) => {
   const [isFormatted, changeIsFormatted] = useState(false);
 
 
-  // If we are in edit mode, upon lading the pre-filled answers, place them
+  // If we are in edit mode, upon loading the pre-filled answers, place them
   // in the form context where they can be accessed by computed answers
   const changeFormContext = useFormWriterContext();
 
@@ -49,7 +49,6 @@ let AutocreatedQuestion = (props) => {
     if (isEdit) {
       let value = existingAnswer?.[1].value;
       if (typeof(value) != "undefined" && value != "") {
-        value = Array.of(value).flat();
         let answer = Array.of(value).flat().map(v => [v, v]);
         changeFormContext((oldContext) => ({...oldContext, [questionName]: answer}));
       }
