@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Canadian Patient Experiences Survey</value>
+		<value>Canadian Patient Experience Survey</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -37,6 +37,11 @@
 		<value>True</value>
 		<type>Boolean</type>
 	</property>
+        <property>
+                <name>paginationVariant</name>
+                <value>dots</value>
+                <type>String</type>
+        </property>
 	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
@@ -48,11 +53,6 @@
 		<node>
 			<name>cpesic_intro</name>
 			<primaryNodeType>cards:Information</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
 			<property>
 				<name>dataType</name>
 				<value>info</value>
@@ -6095,24 +6095,24 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 			</node>
 			<node>
-                                <name>other</name>
-                                <primaryNodeType>cards:AnswerOption</primaryNodeType>
-                                <property>
-                                        <name>label</name>
-                                        <value>Other</value>
-                                        <type>String</type>
-                                </property>
-                                <property>
-                                        <name>value</name>
-                                        <value>Other</value>
-                                        <type>String</type>
-                                </property>
-                                <property>
-                                        <name>defaultOrder</name>
-                                        <value>16</value>
-                                        <type>Long</type>
-                                </property>
-                        </node>
+				<name>other</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Other</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Other</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>16</value>
+					<type>Long</type>
+				</property>
+			</node>
 		</node>
 		<node>
 			<name>cpesic_48_othersection</name>
