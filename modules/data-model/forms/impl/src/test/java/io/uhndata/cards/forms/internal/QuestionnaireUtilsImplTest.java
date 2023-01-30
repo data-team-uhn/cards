@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhn.data.cards.forms.internal;
+package io.uhndata.cards.forms.internal;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -35,8 +35,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import io.uhndata.cards.forms.internal.QuestionnaireUtilsImpl;
 
 /**
  * Unit tests for {@link QuestionnaireUtilsImpl}.
