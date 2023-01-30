@@ -27,6 +27,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from './QuestionnaireStyle';
+import { useFormWriterContext } from "./FormContext";
 
 // Component that displays an autocreated question of any type.
 //
@@ -38,6 +39,22 @@ let AutocreatedQuestion = (props) => {
 
   const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
+
+
+  // If we are in edit mode, upon lading the pre-filled answers, place them
+  // in the form context where they can be accessed by computed answers
+  const changeFormContext = useFormWriterContext();
+
+  useEffect(() => {
+    if (isEdit) {
+      let value = existingAnswer?.[1].value;
+      if (typeof(value) != "undefined" && value != "") {
+        value = Array.of(value).flat();
+        let answer = Array.of(value).flat().map(v => [v, v]);
+        changeFormContext((oldContext) => ({...oldContext, [questionName]: answer}));
+      }
+    }
+  }, []);
 
   useEffect(() => {
     let formatted = (displayMode === "formatted" || displayMode === "summary");
