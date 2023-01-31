@@ -115,8 +115,8 @@ public class FormGenerator
                 }
 
                 NodeBuilder childNode;
-                if (childFormNodes.containsKey(questionnaireNode.getIdentifier())) {
-                    childNode = childFormNodes.get(questionnaireNode.getIdentifier());
+                if (childFormNodes.containsKey(questionnaireChild.getIdentifier())) {
+                    childNode = childFormNodes.get(questionnaireChild.getIdentifier());
                 } else {
                     childNode = formNode.setChildNode(UUID.randomUUID().toString());
                 }
