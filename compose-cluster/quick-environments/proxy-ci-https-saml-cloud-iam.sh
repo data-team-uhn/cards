@@ -17,8 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# TODO: Generate a self-signed SSL certificate
-
 # HTTPS+SAML
 python3 generate_compose_yaml.py \
   --dev_docker_image \
@@ -30,7 +28,8 @@ python3 generate_compose_yaml.py \
   --cards_project cards4prems \
   --saml \
   --saml_cloud_iam_demo \
-  --ssl_proxy
+  --ssl_proxy \
+  --self_signed_ssl_proxy
 
 docker-compose build
 docker-compose up -d

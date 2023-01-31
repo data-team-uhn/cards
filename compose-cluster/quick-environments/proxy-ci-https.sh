@@ -17,8 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# TODO: Generate a self-signed SSL certificate
-
 # HTTPS
 python3 generate_compose_yaml.py \
   --dev_docker_image \
@@ -28,7 +26,8 @@ python3 generate_compose_yaml.py \
   --web_port_admin 443 \
   --web_port_user 444 \
   --cards_project cards4prems \
-  --ssl_proxy
+  --ssl_proxy \
+  --self_signed_ssl_proxy
 
 docker-compose build
 docker-compose up -d
