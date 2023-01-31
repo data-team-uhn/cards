@@ -97,13 +97,6 @@ public class ComputedAnswersEditor extends AnswersEditor
     }
 
     @Override
-    protected ComputedAnswerNodeTypes getNewAnswerNodeTypes(Node node)
-        throws RepositoryException
-    {
-        return new ComputedAnswerNodeTypes(node);
-    }
-
-    @Override
     protected boolean isQuestionNodeMatchingType(Node node)
     {
         return this.questionnaireUtils.isComputedQuestion(node);
@@ -171,13 +164,7 @@ public class ComputedAnswersEditor extends AnswersEditor
     {
         final Node question = entry.getKey();
         final NodeBuilder answer = entry.getValue();
-        Type<?> resultType = Type.STRING;
-        try {
-            ComputedAnswerNodeTypes types = new ComputedAnswerNodeTypes(question);
-            resultType = types.getDataType();
-        } catch (RepositoryException e) {
-            LOGGER.error("Error typing value for question. " + e.getMessage());
-        }
+        Type<?> resultType = getAnswerType(question);
         Object result = this.expressionUtils.evaluate(question, answersByQuestionName, resultType);
 
         if (result == null || (result instanceof String && "null".equals(result))) {
@@ -268,14 +255,6 @@ public class ComputedAnswersEditor extends AnswersEditor
                 }
             }
             return false;
-        }
-    }
-
-    private final class ComputedAnswerNodeTypes extends AnswerNodeTypes
-    {
-        ComputedAnswerNodeTypes(final Node questionNode) throws RepositoryException
-        {
-            super(questionNode, "cards:ComputedAnswer", "cards/ComputedAnswer");
         }
     }
 }

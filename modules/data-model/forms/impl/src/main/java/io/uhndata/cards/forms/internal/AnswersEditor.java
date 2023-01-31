@@ -29,7 +29,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
@@ -103,8 +102,6 @@ public abstract class AnswersEditor extends DefaultEditor
     protected abstract AbstractAnswerChangeTracker getAnswerChangeTracker();
 
     protected abstract AnswersEditor getNewEditor(String name);
-
-    protected abstract AnswerNodeTypes getNewAnswerNodeTypes(Node node) throws RepositoryException;
 
     protected abstract boolean isQuestionNodeMatchingType(Node node) throws RepositoryException;
 
@@ -283,7 +280,6 @@ public abstract class AnswersEditor extends DefaultEditor
 
         private boolean isQuestion;
 
-
         QuestionTree(final Node node, final boolean isQuestion, final FormUtils formUtils)
         {
             this.isQuestion = isQuestion;
@@ -306,6 +302,7 @@ public abstract class AnswersEditor extends DefaultEditor
         {
             return this.isQuestion;
         }
+
         public Map<Node, NodeBuilder> getQuestionAndAnswers(NodeBuilder currentNode)
         {
             if (this.isQuestion) {
@@ -363,68 +360,38 @@ public abstract class AnswersEditor extends DefaultEditor
         }
     }
 
-    protected static class AnswerNodeTypes
+    protected Type<?> getAnswerType(final Node questionNode)
     {
-        private String primaryType;
-
-        private String resourceType;
-
-        private Type<?> dataType;
-
-        @SuppressWarnings("checkstyle:CyclomaticComplexity")
-        AnswerNodeTypes(final Node questionNode, String defaultPrimaryType, String defaultResourceType)
-            throws RepositoryException
-        {
+        Type<?> result = Type.STRING;
+        try {
             final String dataTypeString = questionNode.getProperty("dataType").getString();
-            final String capitalizedType = StringUtils.capitalize(dataTypeString);
-            this.primaryType = "cards:" + capitalizedType + "Answer";
-            this.resourceType = "cards/" + capitalizedType + "Answer";
             switch (dataTypeString) {
                 case "long":
-                    this.dataType = Type.LONG;
+                    result = Type.LONG;
                     break;
                 case "double":
-                    this.dataType = Type.DOUBLE;
+                    result = Type.DOUBLE;
                     break;
                 case "decimal":
-                    this.dataType = Type.DECIMAL;
+                    result = Type.DECIMAL;
                     break;
                 case "boolean":
                     // Long, not boolean
-                    this.dataType = Type.LONG;
+                    result = Type.LONG;
                     break;
                 case "date":
-                    this.dataType = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
+                    result = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
                         questionNode.getProperty("dateFormat").getString().toLowerCase()))
                             ? Type.LONG
                             : Type.DATE;
                     break;
-                case "time":
-                case "vocabulary":
-                case "text":
-                    this.dataType = Type.STRING;
-                    break;
                 default:
-                    this.primaryType = defaultPrimaryType;
-                    this.resourceType = defaultResourceType;
-                    this.dataType = Type.STRING;
+                    result = Type.STRING;
             }
+        } catch (RepositoryException e) {
+            getLogger().warn("Error typing value for question. " + e.getMessage());
+            // It's OK to assume String by default
         }
-
-        public String getPrimaryType()
-        {
-            return this.primaryType;
-        }
-
-        public String getResourceType()
-        {
-            return this.resourceType;
-        }
-
-        public Type<?> getDataType()
-        {
-            return this.dataType;
-        }
+        return result;
     }
-
 }

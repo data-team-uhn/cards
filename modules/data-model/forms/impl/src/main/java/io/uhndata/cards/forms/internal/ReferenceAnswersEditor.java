@@ -95,13 +95,6 @@ public class ReferenceAnswersEditor extends AnswersEditor
     }
 
     @Override
-    protected ReferenceAnswerNodeTypes getNewAnswerNodeTypes(Node node)
-        throws RepositoryException
-    {
-        return new ReferenceAnswerNodeTypes(node);
-    }
-
-    @Override
     protected boolean isQuestionNodeMatchingType(Node node)
     {
         return this.questionnaireUtils.isReferenceQuestion(node);
@@ -142,14 +135,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
                     }
 
                     NodeBuilder answer = entry.getValue();
-                    Type<?> resultType = Type.STRING;
-                    try {
-                        ReferenceAnswerNodeTypes types = new ReferenceAnswerNodeTypes(question);
-                        resultType = types.getDataType();
-                    } catch (RepositoryException e) {
-                        LOGGER.warn("Error typing value for question. " + e.getMessage());
-                    }
-
+                    Type<?> resultType = getAnswerType(question);
                     Object result = getAnswer(form, referencedQuestion);
 
                     if (result == null) {
@@ -162,7 +148,6 @@ public class ReferenceAnswersEditor extends AnswersEditor
                             (Type<Object>) (result instanceof List ? resultType.getArrayType() : resultType);
                         answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
                     }
-
                 });
         }
     }
@@ -226,14 +211,6 @@ public class ReferenceAnswersEditor extends AnswersEditor
                 }
             }
             return false;
-        }
-    }
-
-    private final class ReferenceAnswerNodeTypes extends AnswerNodeTypes
-    {
-        ReferenceAnswerNodeTypes(final Node questionNode) throws RepositoryException
-        {
-            super(questionNode, "cards:ReferenceAnswer", "cards/ReferenceAnswer");
         }
     }
 }
