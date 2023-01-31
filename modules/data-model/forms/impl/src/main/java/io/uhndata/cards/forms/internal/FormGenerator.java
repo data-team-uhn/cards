@@ -16,9 +16,8 @@
  */
 package io.uhndata.cards.forms.internal;
 
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -26,10 +25,20 @@ import java.util.UUID;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.nodetype.PropertyDefinition;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
+import org.apache.jackrabbit.oak.plugins.memory.PropertyStates;
+import org.apache.jackrabbit.oak.spi.nodetype.NodeTypeConstants;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
+import org.apache.jackrabbit.util.ISO8601;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
@@ -39,31 +48,36 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
  */
 public class FormGenerator
 {
-    protected final QuestionnaireUtils questionnaireUtils;
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormGenerator.class);
 
-    protected final FormUtils formUtils;
+    private final QuestionnaireUtils questionnaireUtils;
 
-    protected final String userID;
+    private final FormUtils formUtils;
+
+    private final Session session;
+
+    private final String userID;
 
     /**
      * Simple constructor.
      *
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
-     * @param userID the user that should be recorded as ccreating any missing nodes
+     * @param session the current JCR session
      */
     public FormGenerator(final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils,
-        final String userID)
+        final Session session)
     {
         this.questionnaireUtils = questionnaireUtils;
         this.formUtils = formUtils;
-        this.userID = userID;
+        this.session = session;
+        this.userID = session.getUserID();
     }
 
     public NodeBuilder createMissingNodes(final Node questionnaireNode, final NodeBuilder formNode)
     {
-        // If the current node has a primarytype, it has already been created
-        boolean nodeNeedsInitialization = !formNode.hasProperty("jcr:primaryType");
+        // If the current node has a primary type, it has already been created
+        final boolean nodeNeedsInitialization = !formNode.hasProperty("jcr:primaryType");
 
         if (this.questionnaireUtils.isSection(questionnaireNode)) {
             if (nodeNeedsInitialization) {
@@ -72,20 +86,18 @@ public class FormGenerator
             createMissingChildren(questionnaireNode, formNode);
         } else if (this.questionnaireUtils.isQuestionnaire(questionnaireNode)) {
             createMissingChildren(questionnaireNode, formNode);
-        } else {
-            if (nodeNeedsInitialization) {
-                initializeAnswer(questionnaireNode, formNode);
-            }
+        } else if (nodeNeedsInitialization) {
+            initializeAnswer(questionnaireNode, formNode);
         }
 
         return formNode;
     }
 
-    private void createMissingChildren(Node questionnaireNode, NodeBuilder formNode)
+    private void createMissingChildren(final Node questionnaireNode, final NodeBuilder formNode)
     {
-        Map<String, NodeBuilder> childFormNodes = new HashMap<>();
-        for (String childNodeName : formNode.getChildNodeNames()) {
-            NodeBuilder childNode = formNode.getChildNode(childNodeName);
+        final Map<String, NodeBuilder> childFormNodes = new HashMap<>();
+        for (final String childNodeName : formNode.getChildNodeNames()) {
+            final NodeBuilder childNode = formNode.getChildNode(childNodeName);
             if (this.formUtils.isAnswerSection(childNode)) {
                 childFormNodes.put(this.formUtils.getSectionIdentifier(childNode), childNode);
             } else if (this.formUtils.isAnswer(childNode)) {
@@ -94,8 +106,8 @@ public class FormGenerator
         }
 
         try {
-            for (NodeIterator i = questionnaireNode.getNodes(); i.hasNext();) {
-                Node questionnaireChild = i.nextNode();
+            for (final NodeIterator i = questionnaireNode.getNodes(); i.hasNext();) {
+                final Node questionnaireChild = i.nextNode();
 
                 if (!this.questionnaireUtils.isSection(questionnaireChild)
                     && !this.questionnaireUtils.isQuestion(questionnaireChild)) {
@@ -118,96 +130,90 @@ public class FormGenerator
                 //     .getLong();
 
             }
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             // Could not iterate through children
         }
     }
 
-    private void initializeSection(Node sectionNode, NodeBuilder answerSectionNode)
+    private void initializeSection(final Node sectionNode, final NodeBuilder answerSectionNode)
     {
         try {
             // Section must be created before primary type
             answerSectionNode.setProperty(FormUtils.SECTION_PROPERTY, sectionNode.getIdentifier(),
                 Type.REFERENCE);
             answerSectionNode.setProperty("jcr:primaryType", FormUtils.ANSWER_SECTION_NODETYPE, Type.NAME);
-            answerSectionNode.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
-            answerSectionNode.setProperty("sling:resourceType", FormUtils.ANSWER_SECTION_RESOURCE, Type.STRING);
-            answerSectionNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
-        } catch (RepositoryException e) {
+            autoCreateProperties(answerSectionNode);
+        } catch (final RepositoryException e) {
             // Could not retrieve section UUID
         }
     }
 
-    private void initializeAnswer(Node questionNode, NodeBuilder answerNode)
+    private void initializeAnswer(final Node questionNode, final NodeBuilder answerNode)
     {
         try {
-            AnswerNodeTypes types = new AnswerNodeTypes(questionNode);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            answerNode.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
-            answerNode.setProperty("jcr:createdBy", this.userID, Type.NAME);
             answerNode.setProperty(FormUtils.QUESTION_PROPERTY, questionNode.getIdentifier(),
                 Type.REFERENCE);
-            answerNode.setProperty("jcr:primaryType", types.getPrimaryType(), Type.NAME);
-            answerNode.setProperty("sling:resourceSuperType", FormUtils.ANSWER_RESOURCE, Type.STRING);
-            answerNode.setProperty("sling:resourceType", types.getResourceType(), Type.STRING);
-            answerNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
-        } catch (RepositoryException e) {
+            answerNode.setProperty("jcr:primaryType", getAnswerNodeType(questionNode), Type.NAME);
+            autoCreateProperties(answerNode);
+        } catch (final RepositoryException e) {
             // Could not retrieve answer type or question UUID
         }
     }
 
-    protected static class AnswerNodeTypes
+    private void autoCreateProperties(final NodeBuilder node)
     {
-        private String primaryType;
-
-        private String resourceType;
-
-        private Type<?> dataType;
-
-        AnswerNodeTypes(final Node questionNode) throws RepositoryException
-        {
-            final String dataTypeString = questionNode.getProperty("dataType").getString();
-            final String capitalizedType = StringUtils.capitalize(dataTypeString);
-            this.primaryType = "cards:" + capitalizedType + "Answer";
-            this.resourceType = "cards/" + capitalizedType + "Answer";
-            switch (dataTypeString) {
-                case "long":
-                    this.dataType = Type.LONG;
-                    break;
-                case "double":
-                    this.dataType = Type.DOUBLE;
-                    break;
-                case "decimal":
-                    this.dataType = Type.DECIMAL;
-                    break;
-                case "boolean":
-                    // Long, not boolean
-                    this.dataType = Type.LONG;
-                    break;
-                case "date":
-                    this.dataType = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
-                        questionNode.getProperty("dateFormat").getString().toLowerCase()))
-                            ? Type.LONG
-                            : Type.DATE;
-                    break;
-                default:
-                    this.dataType = Type.STRING;
+        try {
+            final PropertyDefinition[] definitions = this.session.getWorkspace().getNodeTypeManager()
+                .getNodeType(node.getProperty("jcr:primaryType").getValue(Type.STRING))
+                .getPropertyDefinitions();
+            if (definitions == null || definitions.length == 0) {
+                return;
             }
+            for (PropertyDefinition definition : definitions) {
+                if (node.hasProperty(definition.getName()) || !definition.isAutoCreated()) {
+                    continue;
+                }
+                final PropertyState property = autoCreateProperty(definition, node);
+                if (property != null) {
+                    node.setProperty(property);
+                }
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to autocreate properties: {}", e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("checkstyle:ReturnCount")
+    private PropertyState autoCreateProperty(final PropertyDefinition definition, final NodeBuilder node)
+        throws RepositoryException
+    {
+        final String name = definition.getName();
+        switch (name) {
+            case JcrConstants.JCR_UUID:
+                return PropertyStates.createProperty(name, UUID.randomUUID().toString(), Type.STRING);
+            case JcrConstants.JCR_CREATED:
+            case JcrConstants.JCR_LASTMODIFIED:
+                return PropertyStates.createProperty(name, ISO8601.format(Calendar.getInstance()), Type.DATE);
+            case NodeTypeConstants.JCR_CREATEDBY:
+            case NodeTypeConstants.JCR_LASTMODIFIEDBY:
+                return PropertyStates.createProperty(name, StringUtils.defaultString(this.userID), Type.STRING);
+            default:
+                // No default handling, manually create based on the definition
         }
 
-        public String getPrimaryType()
-        {
-            return this.primaryType;
+        Value[] values = definition.getDefaultValues();
+        if (definition.isMultiple()) {
+            return PropertyStates.createProperty(name, Arrays.asList(values));
+        } else if (values != null && values.length > 0) {
+            return PropertyStates.createProperty(name, values[0]);
         }
+        return null;
+    }
 
-        public String getResourceType()
-        {
-            return this.resourceType;
-        }
-
-        public Type<?> getDataType()
-        {
-            return this.dataType;
-        }
+    private String getAnswerNodeType(final Node questionNode) throws RepositoryException
+    {
+        final String dataTypeString = questionNode.getProperty("dataType").getString();
+        final String capitalizedType = StringUtils.capitalize(dataTypeString);
+        return "cards:" + capitalizedType + "Answer";
     }
 }

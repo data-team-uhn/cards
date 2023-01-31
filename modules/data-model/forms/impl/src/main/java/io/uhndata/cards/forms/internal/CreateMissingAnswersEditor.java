@@ -132,7 +132,7 @@ public class CreateMissingAnswersEditor extends DefaultEditor
         }
 
         final FormGenerator generator = new FormGenerator(this.questionnaireUtils, this.formUtils,
-            this.currentSession.getUserID());
+            this.currentSession);
         generator.createMissingNodes(questionnaireNode, this.currentNodeBuilder);
     }
 }
