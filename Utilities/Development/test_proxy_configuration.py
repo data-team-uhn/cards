@@ -79,7 +79,25 @@ def check_standard_http_headers():
   r = testClient.adminGET("/")
   assert 'X-Frame-Options' in r.headers, "FAIL: X-Frame-Options not in HTTP response header"
   assert r.headers['X-Frame-Options'] == 'DENY, SAMEORIGIN', "FAIL: X-Frame-Options header != DENY"
-  print("PASS: X-Frame-Options=DENY Test")
+  print("PASS: (admin port) X-Frame-Options=DENY Test")
+
+  r = testClient.userGET("/")
+  assert 'X-Frame-Options' in r.headers, "FAIL: X-Frame-Options not in HTTP response header"
+  assert r.headers['X-Frame-Options'] == 'DENY, SAMEORIGIN', "FAIL: X-Frame-Options header != DENY"
+  print("PASS: (user port) X-Frame-Options=DENY Test")
+
+
+def check_https_hsts():
+  # Check that the `Strict-Transport-Security "max-age=31536000"` HTTP header is present
+  r = testClient.adminGET("/")
+  assert 'Strict-Transport-Security' in r.headers, "FAIL: Strict-Transport-Security not in HTTP response header"
+  assert r.headers['Strict-Transport-Security'] == "max-age=31536000", "FAIL: Incorrect HSTS HTTP header on admin port"
+  print("PASS: Correct HSTS HTTP header on admin port")
+
+  r = testClient.userGET("/")
+  assert 'Strict-Transport-Security' in r.headers, "FAIL: Strict-Transport-Security not in HTTP response header"
+  assert r.headers['Strict-Transport-Security'] == "max-age=31536000", "FAIL: Incorrect HSTS HTTP header on user port"
+  print("PASS: Correct HSTS HTTP header on user port")
 
 
 def check_basic_http_auth():
@@ -91,7 +109,7 @@ def check_basic_http_auth():
   # Check that Basic HTTP Authentication through the user port DOES NOT work
   r = testClient.userGET("/thisIsAPathToSomethingThatDoesntExist", auth=('admin', 'admin'), allow_redirects=False)
   assert r.status_code == 302, "FAIL: Was able to do basic HTTP authentication through user port"
-  print("PASS: Basic Auth (denied) through admin port Test")
+  print("PASS: Basic Auth (denied) through user port Test")
 
 
 def check_session_cookie_auth():
@@ -205,9 +223,14 @@ def check_system_console_logout():
   print("PASS: /system/console/logout sets the appropriate cookies")
 
 withSaml = args.saml
+withHttps = args.https
 
 # Run the tests
 check_standard_http_headers()
+
+if withHttps:
+  check_https_hsts()
+
 check_basic_http_auth()
 check_session_cookie_auth()
 check_ncr_routing()
