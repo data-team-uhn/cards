@@ -124,6 +124,13 @@ def check_session_cookie_auth():
   print("PASS: Session cookie auth (denied) through user port Test")
 
 
+def check_secure_cookie():
+  # Checks that the login session cookie has the "secure" attribute set, so that it will only ever be sent over HTTPS
+  r = testClient.adminPOST("/j_security_check", data={'j_username': 'admin', 'j_password': 'admin', 'j_validate': 'true'})
+  assert 'Set-Cookie' in r.headers, "FAIL: Set-Cookie HTTP header not present"
+  assert r.headers['Set-Cookie'].endswith(';Secure'), "FAIL: Secure flag for Set-Cookie not set"
+  print("PASS: Session cookie has 'Secure' flag set")
+
 def check_ncr_routing():
   # Check that routing to /ncr/ works
   r = testClient.adminGET("/ncr/annotate")
@@ -230,6 +237,7 @@ check_standard_http_headers()
 
 if withHttps:
   check_https_hsts()
+  check_secure_cookie()
 
 check_basic_http_auth()
 check_session_cookie_auth()
