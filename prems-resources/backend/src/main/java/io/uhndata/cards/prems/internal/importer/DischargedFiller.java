@@ -30,7 +30,7 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  *
  * @version $Id$
  */
-@Component()
+@Component
 public class DischargedFiller implements ClarityDataProcessor
 {
     @Override

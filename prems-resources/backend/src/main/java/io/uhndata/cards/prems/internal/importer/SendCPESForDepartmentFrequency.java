@@ -36,7 +36,7 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  *
  * @version $Id$
  */
-@Component()
+@Component
 @Designate(ocd = SendCPESForDepartmentFrequency.SendCPESForDepartmentFrequencyConfigDefinition.class)
 public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
 {

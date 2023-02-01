@@ -32,7 +32,7 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  *
  * @version $Id$
  */
-@Component()
+@Component
 public class FilterEmailConsent implements ClarityDataProcessor
 {
     @Override
