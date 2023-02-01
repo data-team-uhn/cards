@@ -85,6 +85,15 @@ public interface QuestionnaireUtils
     boolean isSection(Node node);
 
     /**
+     * Check if the given node is a conditional Section node.
+     *
+     * @param node the node to check, a JCR Node, may be {@code null}
+     * @return {@code true} if the node is not {@code null} and is of type {@code cards:Section} and has a condition,
+     *         {@code false} otherwise
+     */
+    boolean isConditionalSection(Node node);
+
+    /**
      * Retrieve the Section with the given UUID.
      *
      * @param identifier an UUID that references a section.

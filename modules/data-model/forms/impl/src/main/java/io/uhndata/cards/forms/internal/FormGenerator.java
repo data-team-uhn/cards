@@ -110,7 +110,8 @@ public class FormGenerator
                 final Node questionnaireChild = i.nextNode();
 
                 if (!this.questionnaireUtils.isSection(questionnaireChild)
-                    && !this.questionnaireUtils.isQuestion(questionnaireChild)) {
+                    && !this.questionnaireUtils.isQuestion(questionnaireChild)
+                    || this.questionnaireUtils.isConditionalSection(questionnaireChild)) {
                     continue;
                 }
 
