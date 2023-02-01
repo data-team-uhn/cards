@@ -299,11 +299,11 @@ public class ClarityImportTask implements Runnable
     {
         for (Resource configChildNode : configNode.getChildren()) {
             String configChildNodeType = configChildNode.getValueMap().get(PRIMARY_TYPE_PROP, "");
-            if ("cards:claritySubjectMapping".equals(configChildNodeType)) {
+            if ("cards:ClaritySubjectMapping".equals(configChildNodeType)) {
                 String subjectNodeType = configChildNode.getValueMap().get(SUBJECT_TYPE_PROP, "");
                 String subjectIDColumnLabel = configChildNode.getValueMap().get("subjectIDColumn", "");
 
-                // Add this cards:claritySubjectMapping to the local Java data structures
+                // Add this cards:ClaritySubjectMapping to the local Java data structures
                 ClaritySubjectMapping claritySubjectMapping = new ClaritySubjectMapping(configChildNode.getName(),
                     subjectIDColumnLabel, subjectNodeType, clarityConf.path + "/" + configChildNode.getName());
 

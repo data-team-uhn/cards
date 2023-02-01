@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 // Nodetypes for configuring how data from the Clarity SQL database will be imported into CARDS
 
-[cards:claritySubjectMapping] > sling:Folder
+[cards:ClaritySubjectMapping] > sling:Folder
   // Attributes:
   query
 
@@ -32,12 +32,12 @@
 
   // Properties:
   // Hardcode the resource type
-  - sling:resourceType (STRING) = "cards/claritySubjectMapping" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ClaritySubjectMapping" mandatory autocreated protected
 
   // Hardcode the resource supertype
-  - sling:resourceSuperType (STRING) = "cards/clarityMapping" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/ClarityMapping" mandatory autocreated protected
 
-[cards:clarityQuestionnaireMapping] > sling:Folder
+[cards:ClarityQuestionnaireMapping] > sling:Folder
   // Attributes:
   query
 
@@ -45,12 +45,12 @@
 
   // Properties:
   // Hardcode the resource type
-  - sling:resourceType (STRING) = "cards/clarityQuestionnaireMapping" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ClarityQuestionnaireMapping" mandatory autocreated protected
 
   // Hardcode the resource supertype
-  - sling:resourceSuperType (STRING) = "cards/clarityMapping" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/ClarityMapping" mandatory autocreated protected
 
-[cards:clarityQuestionMapping] > nt:unstructured
+[cards:ClarityQuestionMapping] > nt:unstructured
   // Attributes:
   query
 
@@ -63,7 +63,7 @@
 
   // Properties:
   // Hardcode the resource type
-  - sling:resourceType (STRING) = "cards/clarityQuestionMapping" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ClarityQuestionMapping" mandatory autocreated protected
 
   // Hardcode the resource supertype
-  - sling:resourceSuperType (STRING) = "cards/clarityMapping" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/ClarityMapping" mandatory autocreated protected
