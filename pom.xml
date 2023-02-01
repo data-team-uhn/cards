@@ -395,7 +395,10 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <compilerArgument>-Xlint:all</compilerArgument>
+          <compilerArgs>
+            <arg>-Werror</arg>
+            <arg>-Xlint:all</arg>
+          </compilerArgs>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
           <failOnWarning>true</failOnWarning>
