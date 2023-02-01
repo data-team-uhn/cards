@@ -22,7 +22,7 @@
   <primaryNodeType>sling:Folder</primaryNodeType>
   <node>
     <name>Patient</name>
-    <primaryNodeType>cards:claritySubjectMapping</primaryNodeType>
+    <primaryNodeType>cards:ClaritySubjectMapping</primaryNodeType>
     <property>
       <name>subjectIDColumn</name>
       <value>PAT_MRN</value>
@@ -38,7 +38,7 @@
       <primaryNodeType>sling:Folder</primaryNodeType>
       <node>
         <name>Patient information</name>
-        <primaryNodeType>cards:clarityQuestionnaireMapping</primaryNodeType>
+        <primaryNodeType>cards:ClarityQuestionnaireMapping</primaryNodeType>
         <property>
           <name>updatesExisting</name>
           <value>true</value>
@@ -46,7 +46,7 @@
         </property>
         <node>
           <name>00000001</name>
-          <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
             <value>PAT_MRN</value>
@@ -60,7 +60,7 @@
         </node>
         <node>
           <name>00000002</name>
-          <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
             <value>PAT_FIRST_NAME</value>
@@ -74,7 +74,7 @@
         </node>
         <node>
           <name>00000003</name>
-          <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
             <value>PAT_LAST_NAME</value>
@@ -88,7 +88,7 @@
         </node>
         <node>
           <name>00000004</name>
-          <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
             <value>EMAIL_ADDRESS</value>
@@ -102,7 +102,7 @@
         </node>
         <node>
           <name>00000005</name>
-          <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
             <value>EMAIL_CONSENT_YN</value>
@@ -121,7 +121,7 @@
       <primaryNodeType>sling:Folder</primaryNodeType>
       <node>
         <name>Visit</name>
-        <primaryNodeType>cards:claritySubjectMapping</primaryNodeType>
+        <primaryNodeType>cards:ClaritySubjectMapping</primaryNodeType>
         <property>
           <name>subjectType</name>
           <value>/SubjectTypes/Patient/Visit</value>
@@ -132,10 +132,10 @@
           <primaryNodeType>sling:Folder</primaryNodeType>
           <node>
             <name>Visit information</name>
-            <primaryNodeType>cards:clarityQuestionnaireMapping</primaryNodeType>
+            <primaryNodeType>cards:ClarityQuestionnaireMapping</primaryNodeType>
             <node>
               <name>00000001</name>
-              <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>DISCH_DEPT_NAME</value>
@@ -149,7 +149,7 @@
             </node>
             <node>
               <name>00000002</name>
-              <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>HOSP_DISCHARGE_DTTM</value>
@@ -163,7 +163,7 @@
             </node>
             <node>
               <name>00000003</name>
-              <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>DISCH_LOC_NAME</value>
@@ -177,7 +177,7 @@
             </node>
             <node>
               <name>00000004</name>
-              <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>CLINIC</value>
