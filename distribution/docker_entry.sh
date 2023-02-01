@@ -80,7 +80,12 @@ fi
 
 if [ ! -z $SAML_CLOUD_IAM_DEMO ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${PROJECT_VERSION}/slingosgifeature"
+  if [[ ${BEHIND_SSL_PROXY} == 'true' ]]
+  then
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support-ssl/${PROJECT_VERSION}/slingosgifeature"
+  else
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${PROJECT_VERSION}/slingosgifeature"
+  fi
 fi
 
 if [ ! -z $ADDITIONAL_SLING_FEATURES ]

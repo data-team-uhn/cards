@@ -29,6 +29,10 @@ RUN a2enmod proxy_http
 RUN a2enmod headers
 RUN a2enmod ssl
 
+COPY ports.conf /etc/apache2/ports.conf
+
+COPY apache_common_conf /apache_common_conf
+
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
 COPY proxyerror /var/www/html/proxyerror
 COPY http_proxy.js /http_proxy.js

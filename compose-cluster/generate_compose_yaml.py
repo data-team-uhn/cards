@@ -67,8 +67,12 @@ argparser.add_argument('--smtps_test_container', help='Enable the mock SMTPS (ca
 argparser.add_argument('--smtps_test_mail_path', help='Host OS path where the email mbox file from smtps_test_container is stored')
 argparser.add_argument('--s3_test_container', help='Add a MinIO S3 Bucket Docker container for testing S3 data exports', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
+argparser.add_argument('--self_signed_ssl_proxy', help='Generate a self-signed SSL certificate for the proxy to use (used mainly for testing purposes).', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
+argparser.add_argument('--web_port_admin', help='If specified, will listen for connections on this port (and not 8080/443) and forward them to the full-access reverse proxy (permitting logins)', type=int)
+argparser.add_argument('--web_port_user', help='If specified, will listen for connections on this port and forward them to the restricted-access reverse proxy (logins not permitted)', type=int)
+argparser.add_argument('--web_port_user_root_redirect', help='The client accessing / over --web_port_user will automatically be redirected to this page', default='/Survey.html')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
@@ -531,6 +535,9 @@ if args.s3_test_container:
   yaml_obj['services']['cardsinitial']['environment'].append("AWS_KEY=minioadmin")
   yaml_obj['services']['cardsinitial']['environment'].append("AWS_SECRET=minioadmin")
 
+if SSL_PROXY:
+  yaml_obj['services']['cardsinitial']['environment'].append("BEHIND_SSL_PROXY=true")
+
 if ENABLE_BACKUP_SERVER:
   print("Configuring service: backup_recorder")
 
@@ -596,9 +603,19 @@ yaml_obj['services']['proxy']['build'] = {}
 yaml_obj['services']['proxy']['build']['context'] = "proxy"
 
 if SSL_PROXY:
-  yaml_obj['services']['proxy']['ports'] = ["443:443"]
+  if args.web_port_admin is not None:
+    yaml_obj['services']['proxy']['ports'] = ["{}:443".format(args.web_port_admin)]
+  else:
+    yaml_obj['services']['proxy']['ports'] = ["443:443"]
+  if args.web_port_user is not None:
+    yaml_obj['services']['proxy']['ports'].append("{}:444".format(args.web_port_user))
 else:
-  yaml_obj['services']['proxy']['ports'] = ["8080:80"]
+  if args.web_port_admin is not None:
+    yaml_obj['services']['proxy']['ports'] = ["{}:80".format(args.web_port_admin)]
+  else:
+    yaml_obj['services']['proxy']['ports'] = ["8080:80"]
+  if args.web_port_user is not None:
+    yaml_obj['services']['proxy']['ports'].append("{}:90".format(args.web_port_user))
 
 yaml_obj['services']['proxy']['networks'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork'] = {}
@@ -614,6 +631,7 @@ shutil.copyfile(getCardsProjectLogoPath(args.cards_project), "./proxy/proxyerror
 #Specify the Application Name of the CARDS project to the proxy
 yaml_obj['services']['proxy']['environment'] = []
 yaml_obj['services']['proxy']['environment'].append("CARDS_APP_NAME={}".format(getCardsApplicationName(args.cards_project)))
+yaml_obj['services']['proxy']['environment'].append("WEB_PORT_USER_ROOT_REDIRECT={}".format(args.web_port_user_root_redirect))
 
 if SSL_PROXY:
   if args.saml:
@@ -646,6 +664,17 @@ if args.saml:
 
   yaml_obj['services']['proxy']['environment'].append("SAML_IDP_DESTINATION={}".format(idp_url))
   yaml_obj['services']['proxy']['environment'].append("CARDS_HOST_AND_PORT={}".format(cards_server_address))
+
+# Generate a self-signed SSL certificate for the proxy, if instructed to do so
+if args.self_signed_ssl_proxy:
+  print("Generating a self-signed SSL certificate for the proxy")
+  proxy_ssl_key, proxy_ssl_cert = generateSelfSignedCert()
+  with open("./SSL_CONFIG/certificatekey.key", 'w') as f_proxy_ssl_key:
+    f_proxy_ssl_key.write(proxy_ssl_key)
+  with open("./SSL_CONFIG/certificate.crt", 'w') as f_proxy_ssl_cert:
+    f_proxy_ssl_cert.write(proxy_ssl_cert)
+  with open("./SSL_CONFIG/certificatechain.crt", 'w') as f_proxy_ssl_cert:
+    f_proxy_ssl_cert.write(proxy_ssl_cert)
 
 #Configure the SMTPS localhost proxy container (if enabled)
 if args.smtps_localhost_proxy:

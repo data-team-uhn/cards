@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,21 +17,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
-Include /apache_common_conf/apache_common.conf
+# HTTPS
+python3 generate_compose_yaml.py \
+  --dev_docker_image \
+  --composum \
+  --oak_filesystem \
+  --server_address localhost \
+  --web_port_admin 443 \
+  --web_port_user 444 \
+  --cards_project cards4prems \
+  --ssl_proxy \
+  --self_signed_ssl_proxy
 
-<VirtualHost *:80>
-	<Location "/">
-		Header edit Location ${SAML_IDP_DESTINATION}.* http://${CARDS_HOST_AND_PORT}/login "expr=(%{REQUEST_STATUS} == 302) && (%{REQUEST_URI} != '/fetch_requires_saml_login.html') && (%{REQUEST_URI} != '/goto_saml_login')"
-		Header set Cache-Control no-store "expr=(%{REQUEST_URI} == '/fetch_requires_saml_login.html') || (%{REQUEST_URI} == '/goto_saml_login')"
-		ProxyPass http://cardsinitial:8080/
-		ProxyPassReverse http://cardsinitial:8080/
-	</Location>
+docker-compose build
+docker-compose up -d
 
-	Include /apache_common_conf/apache_non_cards_all_user_routes.conf
-	Include /apache_common_conf/apache_saml_admin_port_rules.conf
-
-</VirtualHost>
-
-<VirtualHost *:90>
-	Include /apache_common_conf/apache_user_port_rules.conf
-</VirtualHost>
+while true
+do
+  curl --fail --insecure https://localhost/system/sling/info.sessionInfo.json && break
+  sleep 5
+done
