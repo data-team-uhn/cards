@@ -52,7 +52,7 @@ import style from './style.jsx';
 //
 
 function MainActionButton(props) {
-  const { icon, label, title, ariaLabel, onClick, inProgress, style, classes } = props;
+  const { icon, label, title, ariaLabel, onClick, inProgress, disabled, style, classes } = props;
 
   let extended = !!label;
 
@@ -62,7 +62,7 @@ function MainActionButton(props) {
         variant={extended ? "extended" : "round"}
         color="primary"
         onClick={onClick}
-        disabled={inProgress}
+        disabled={inProgress || disabled}
         aria-label={ariaLabel}
       >
         {icon}{label}
@@ -91,12 +91,14 @@ MainActionButton.propTypes = {
   ariaLabel: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
+  disabled: PropTypes.bool,
   classes: PropTypes.object.isRequired,
   style: PropTypes.object,
 }
 
 MainActionButton.defaultProps = {
   inProgress: false,
+  disabled: false,
   style: {},
 };
 

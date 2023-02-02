@@ -55,7 +55,7 @@ import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
-import { hasWarningFlags } from "./AnswerInstructions";
+import { getFirstIncompleteQuestionEl } from "./FormUtilities.jsx";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -94,7 +94,7 @@ function Form (props) {
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
   let [ pages, setPages ] = useState(null);
   // Avoid rendering everything at once before we get all of the questionnaire details
-  let [ paginationEnabled, setPaginationEnabled ] = useState(true);
+  let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
@@ -102,6 +102,14 @@ function Form (props) {
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
+  // Check if the form is required to be complete before progressing
+  // The requirement can either be passed to the Form component as a prop,
+  // or come via Questionnaire properties. The custom prop should have
+  // priority over the questionnaire configuration.
+  let [ requireCompletion, setRequireCompletion ] = useState(props.requireCompletion);
+  // The first incomplete question, to be brought to the user's attention
+  let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
+  let [ disableProgress, setDisableProgress ] = useState();
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -112,8 +120,16 @@ function Form (props) {
 
   // When end was reached and save was successful, call `onDone` if applicable
   useEffect(() => {
-    lastSaveStatus && endReached && onDone && onDone();
-  }, [lastSaveStatus, endReached]);
+    // If there's at least a question that is incomplete while we require completion,
+    // focus on that element and do not call `onDone`
+    if (incompleteQuestionEl) {
+      // focus and hightlight the first unfinished mandatory question box
+      incompleteQuestionEl.classList.add(classes.questionnaireItemWithError);
+      incompleteQuestionEl.scrollIntoView({block: "center"});
+    } else {
+      lastSaveStatus && endReached && onDone && onDone();
+    }
+  }, [lastSaveStatus, endReached, incompleteQuestionEl]);
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
@@ -144,6 +160,12 @@ function Form (props) {
       });
     }
   }, [isEdit]);
+  
+  useEffect(() => {
+    // If `requireCompletion` is set, stop any advancing progress until check that all required 
+    // questions are completed
+    requireCompletion && paginationEnabled && setDisableProgress(true);
+  }, [requireCompletion, paginationEnabled]);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -169,8 +191,13 @@ function Form (props) {
     }
     setData(json);
     setStatusFlags(json.statusFlags);
-    setPaginationEnabled(!!json?.['questionnaire']?.['paginate'] && isEdit);
+    
     if (isEdit) {
+      setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
+      // If the completion requirement has not already been set via Form prop,
+      // grab it from the questionnaire definition
+      typeof(requireCompletion == "undefined") && setRequireCompletion(json?.['questionnaire']?.['requireCompletion']);
+      setIncompleteQuestionEl(null);
       //Perform a JCR check-out of the Form
       let checkoutForm = new FormData();
       checkoutForm.set(":operation", "checkout");
@@ -185,6 +212,10 @@ function Form (props) {
   let handleFetchError = (response) => {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
+    if (isEdit) {
+      paginationEnabled && setDisableProgress(requireCompletion);
+      setIncompleteQuestionEl(null);
+    }
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
@@ -197,6 +228,7 @@ function Form (props) {
 
     let data = new FormData(formNode.current);
     setSaveInProgress(true);
+    setIncompleteQuestionEl(null);
     if (performCheckin) {
         data.append(":checkin", "true");
     }
@@ -213,8 +245,6 @@ function Form (props) {
         return;
       }
       if (response.ok) {
-        setLastSaveStatus(true);
-        setLastSaveTimestamp(new Date());
         if (!disableHeader) {
           fetchWithReLogin(globalLoginDisplay, `${formURL}/statusFlags.json`)
             .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -222,6 +252,29 @@ function Form (props) {
             .catch(err => console.log("The form status flags could not be updated after saving"));
         }
         onSuccess?.();
+        // If the form is required to be complete, re-fetch it after save to see if user can progress
+        if (requireCompletion) {
+            // Disable progress until we figure out if it's ok to proceed
+            setDisableProgress(true);
+            fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
+              .then((response) => response.ok ? response.json() : Promise.reject(response))
+              .then(json => {
+                  let incompleteEl = getFirstIncompleteQuestionEl(json);
+                  if (!!incompleteEl) {
+                    setIncompleteQuestionEl(incompleteEl);
+                  } else {
+                    setDisableProgress(false);
+                  }
+              })
+              .catch(handleFetchError)
+              .finally(() => {
+                setLastSaveStatus(true);
+                setLastSaveTimestamp(new Date());
+              });
+        } else {
+          setLastSaveStatus(true);
+          setLastSaveTimestamp(new Date());
+        }
       } else if (response.status === 500) {
         response.json().then((json) => {
             setErrorCode(json["status.code"]);
@@ -410,7 +463,20 @@ function Form (props) {
   )
 
   return (
-    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode} className={className || null}>
+    <form action={data?.["@path"]}
+          method="POST"
+          onSubmit={handleSubmit}
+          onChange={() => {
+                             incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
+                             setIncompleteQuestionEl(null);
+                             setDisableProgress(paginationEnabled && requireCompletion);
+                             setLastSaveStatus(undefined);
+                          }
+                   }
+          key={id}
+          ref={formNode}
+          className={className || null}
+      >
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
@@ -508,13 +574,15 @@ function Form (props) {
         <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
+              disableProgress={disableProgress}
               lastSaveStatus={lastSaveStatus}
               enabled={paginationEnabled}
               variant={paginationProps?.variant || data?.questionnaire?.paginationVariant}
               navMode = {paginationProps?.navMode || data?.questionnaire?.paginationMode}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
-              onDone={() => { setEndReached(true) }}
+              onDone={() => { setEndReached(true); }}
+              onPageChange={() => { setDisableProgress(requireCompletion); setIncompleteQuestionEl(null); }}
               doneLabel={doneLabel}
               doneIcon={doneIcon}
           />
@@ -525,10 +593,11 @@ function Form (props) {
             { isEdit &&
               <MainActionButton
                 style={doneButtonStyle}
+                disabled={disableProgress}
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
-                label={saveInProgress ? "Saving..." : lastSaveStatus ? "Saved" : doneLabel || "Save"}
+                label={saveInProgress ? "Saving..." : doneLabel || (lastSaveStatus ? "Saved" : "Save")}
               />
             }
           </div>

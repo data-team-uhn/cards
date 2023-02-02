@@ -44,7 +44,7 @@ import ReferenceQuestion from "./ReferenceQuestion";
 
 import FormattedText from "../components/FormattedText";
 
-import { hasWarningFlags } from "./AnswerInstructions";
+import { hasWarningFlags } from "./FormUtilities";
 
 export const QUESTION_TYPES = ["cards:Question"];
 export const SECTION_TYPES = ["cards:Section"];

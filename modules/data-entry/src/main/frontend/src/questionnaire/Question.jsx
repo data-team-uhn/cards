@@ -71,6 +71,7 @@ function Question (props) {
 
   return (
     <Card
+      id={questionDefinition["@path"]}
       variant="outlined"
       ref={doHighlight ? questionRef : undefined}
       className={cardClasses.join(" ")}
