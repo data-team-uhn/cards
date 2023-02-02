@@ -112,7 +112,7 @@
         </property>
         <property>
             <name>displayName</name>
-            <value>UHN Emergency to Inpatient</value>
+            <value>UHN Emergency and Inpatient</value>
             <type>String</type>
         </property>
         <property>
@@ -136,7 +136,7 @@
         </property>
         <property>
             <name>displayName</name>
-            <value>Toronto Rehab</value>
+            <value>UHN Rehab</value>
             <type>String</type>
         </property>
         <property>
