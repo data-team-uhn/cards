@@ -105,14 +105,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
           },
           "autocreated": {
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -167,14 +167,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
           },
           "autocreated": {
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -229,14 +229,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
           },
           "autocreated": {
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -277,14 +277,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
           },
           "autocreated": {
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -347,14 +347,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
           },
           "autocreated": {
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -397,14 +397,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
           },
           "autocreated": {
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -431,14 +431,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
           },
           "autocreated": {
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
