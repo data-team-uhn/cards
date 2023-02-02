@@ -93,7 +93,7 @@ public final class EmailFormAlerts
 
         @AttributeDefinition(name = "Clinic ID Link", description = "Response associated with the"
             + " subject of Linking Subject Type that associates it with a clinic")
-        String clinicIdLink() default "/Questionnaires/Visit information/surveys";
+        String clinicIdLink() default "/Questionnaires/Visit information/clinic";
 
         @AttributeDefinition(name = "Clinics JCR Path")
         String clinicsJcrPath() default "/Survey";
@@ -101,6 +101,9 @@ public final class EmailFormAlerts
         @AttributeDefinition(name = "Clinic Email Property",
             description = "Property of the Clinic definition where the emergency contact is stored")
         String clinicEmailProperty() default "emergencyContact";
+
+        @AttributeDefinition(name = "From Email", description = "The email address which this email originates from")
+        String emailFromAddress() default "";
     }
 
     @Activate
@@ -121,25 +124,18 @@ public final class EmailFormAlerts
                 return;
             }
 
-            // Get the UUID associated with config.alertingQuestionPath()
-            final String alertingQuestionUUID = this.resolver.getResource(
-                config.alertingQuestionPath()).getValueMap().get("jcr:uuid", "");
-
-            if ("".equals(alertingQuestionUUID)) {
-                return;
-            }
-
             Map<String, String> listenerParams = new HashMap<>();
             listenerParams.put("alertName", config.name());
             listenerParams.put("submittedFlagUUID", submittedFlagUUID);
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
-            listenerParams.put("alertingQuestionUUID", alertingQuestionUUID);
+            listenerParams.put("alertingQuestionPath", config.alertingQuestionPath());
             listenerParams.put("triggerOperator", config.triggerOperator());
             listenerParams.put("triggerOperand", config.triggerOperand());
             listenerParams.put("alertDescription", config.alertDescription());
             listenerParams.put("clinicIdLink", config.clinicIdLink());
             listenerParams.put("clinicsJcrPath", config.clinicsJcrPath());
             listenerParams.put("clinicEmailProperty", config.clinicEmailProperty());
+            listenerParams.put("emailFromAddress", config.emailFromAddress());
             EventListener myEventListener = new EmailAlertEventListener(
                 this.resolverFactory, this.formUtils, this.mailService, listenerParams);
 

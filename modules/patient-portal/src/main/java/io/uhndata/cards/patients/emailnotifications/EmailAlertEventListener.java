@@ -54,7 +54,7 @@ public final class EmailAlertEventListener implements EventListener
 
     private String linkingSubjectType;
 
-    private String alertingQuestionUUID;
+    private String alertingQuestionPath;
 
     private String triggerOperator;
 
@@ -68,6 +68,8 @@ public final class EmailAlertEventListener implements EventListener
 
     private String clinicEmailProperty;
 
+    private String emailFromAddress;
+
     private EmailTemplate template;
 
     public EmailAlertEventListener(ResourceResolverFactory rrf, FormUtils formUtils,
@@ -79,16 +81,17 @@ public final class EmailAlertEventListener implements EventListener
         this.alertName = listenerParams.get("alertName");
         this.submittedFlagUUID = listenerParams.get("submittedFlagUUID");
         this.linkingSubjectType = listenerParams.get("linkingSubjectType");
-        this.alertingQuestionUUID = listenerParams.get("alertingQuestionUUID");
+        this.alertingQuestionPath = listenerParams.get("alertingQuestionPath");
         this.triggerOperator = listenerParams.get("triggerOperator");
         this.triggerOperand = listenerParams.get("triggerOperand");
         this.alertDescription = listenerParams.get("alertDescription");
         this.clinicIdLink = listenerParams.get("clinicIdLink");
         this.clinicsJcrPath = listenerParams.get("clinicsJcrPath");
         this.clinicEmailProperty = listenerParams.get("clinicEmailProperty");
+        this.emailFromAddress = listenerParams.get("emailFromAddress");
 
         this.template = EmailTemplate.builder().withSubject("DATAPRO Alert: " + this.alertName)
-            .withSender(this.alertDescription, this.alertName).build();
+            .withSender(this.emailFromAddress, this.alertName).build();
     }
 
     private String getModifedValueNodePath(Event thisEvent) throws RepositoryException
@@ -157,7 +160,7 @@ public final class EmailAlertEventListener implements EventListener
                  * button whose setting caused this event to occur.
                  */
                 Collection<Node> answers = this.formUtils.findAllSubjectRelatedAnswers(formRelatedSubject,
-                    session.getNode(this.alertingQuestionUUID),
+                    session.getNode(this.alertingQuestionPath),
                     EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS, FormUtils.SearchType.DESCENDANTS_FORMS));
 
                 for (Node answer : answers) {
@@ -202,13 +205,13 @@ public final class EmailAlertEventListener implements EventListener
                 case "=":
                     return this.triggerOperand.equals(String.valueOf(value));
                 case ">":
-                    return Double.parseDouble(this.triggerOperand) > ((Number) value).doubleValue();
+                    return ((Number) value).doubleValue() > Double.parseDouble(this.triggerOperand);
                 case ">=":
-                    return Double.parseDouble(this.triggerOperand) >= ((Number) value).doubleValue();
+                    return ((Number) value).doubleValue() >= Double.parseDouble(this.triggerOperand);
                 case "<":
-                    return Double.parseDouble(this.triggerOperand) < ((Number) value).doubleValue();
+                    return ((Number) value).doubleValue() < Double.parseDouble(this.triggerOperand);
                 case "<=":
-                    return Double.parseDouble(this.triggerOperand) <= ((Number) value).doubleValue();
+                    return ((Number) value).doubleValue() <= Double.parseDouble(this.triggerOperand);
                 case "is not empty":
                     return value != null && !String.valueOf(value).isEmpty();
                 case "is empty":
