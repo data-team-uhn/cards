@@ -41,6 +41,11 @@
 		<name>hospital</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -143,6 +148,11 @@
 		<name>assigned_survey</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -184,8 +194,47 @@
 		</property>
 	</node>
 	<node>
+		<name>survey_expiry</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Survey expires on</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy-MM-dd'T'HH:mm:ss.sssZ</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>plain</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>autocreated</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
 		<name>invitation_sent</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
