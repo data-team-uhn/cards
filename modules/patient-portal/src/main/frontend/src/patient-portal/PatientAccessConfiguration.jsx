@@ -67,9 +67,9 @@ function PatientAccessConfiguration() {
     allowedPostVisitCompletionTime: ["Patients can fill out surveys after the associated event for:"],
     draftLifetime: ["Patients can edit unsubmitted responses for:", "-1 means that drafts are kept until the patient is no longer able to access their surveys"]
   };
-  const errorText = `Value must be between ${DEFAULT_PATIENT_ACCESS_CONFIG['draftLifetime']} and ${patientAccessConfig?.allowedPostVisitCompletionTime}`;
+  const errorText = `Value must be between 0 and ${patientAccessConfig?.allowedPostVisitCompletionTime}`;
 
-  let readpatientAccessConfigData = (json) => {
+  let readPatientAccessConfigData = (json) => {
 	setDraftLifetime(json.draftLifetime);
 	inputRef.current.value = json.draftLifetime;
 	setPatientAccessConfig(json);
@@ -153,7 +153,7 @@ function PatientAccessConfiguration() {
           title="Patient Access"
           configPath={PATIENT_ACCESS_CONFIG_PATH}
           configTemplate={Object.keys(DEFAULT_PATIENT_ACCESS_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
-          onConfigFetched={readpatientAccessConfigData}
+          onConfigFetched={readPatientAccessConfigData}
           hasChanges={hasChanges}
           buildConfigData={buildConfigData}
           onConfigSaved={() => setHasChanges(false)}
