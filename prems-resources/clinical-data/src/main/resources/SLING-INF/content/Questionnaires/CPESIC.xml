@@ -32,11 +32,11 @@
 		</values>
 		<type>Reference</type>
 	</property>
-        <property>
-                <name>requireCompletion</name>
-                <value>True</value>
-                <type>Boolean</type>
-        </property>
+	<property>
+		<name>requireCompletion</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
 	<property>
 		<name>paginate</name>
 		<value>True</value>
@@ -6035,24 +6035,24 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 			</node>
 			<node>
-                                <name>other</name>
-                                <primaryNodeType>cards:AnswerOption</primaryNodeType>
-                                <property>
-                                        <name>label</name>
-                                        <value>Other</value>
-                                        <type>String</type>
-                                </property>
-                                <property>
-                                        <name>value</name>
-                                        <value>Other</value>
-                                        <type>String</type>
-                                </property>
-                                <property>
-                                        <name>defaultOrder</name>
-                                        <value>16</value>
-                                        <type>Long</type>
-                                </property>
-                        </node>
+				<name>other</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Other</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Other</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>16</value>
+					<type>Long</type>
+				</property>
+			</node>
 		</node>
 		<node>
 			<name>cpesic_48_othersection</name>
