@@ -21,14 +21,18 @@ package io.uhndata.cards;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-import javax.jcr.query.Query;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue.ValueType;
 import javax.servlet.Servlet;
 
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -38,6 +42,8 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A servlet that lists the filters applicable to the given questionnaire, or all questionnaires visible by the user.
@@ -56,27 +62,45 @@ import org.osgi.service.component.annotations.Component;
     selectors = { "filters" })
 public class FilterServlet extends SlingSafeMethodsServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilterServlet.class);
+
     private static final long serialVersionUID = 2558430802619674046L;
 
     private static final String DEEP_JSON_SUFFIX = ".deep.json";
 
-    private static final String JCR_UUID = "jcr:uuid";
+    private static final String CONFIGURATION_NODE = "/apps/cards/config/CopyAnswers/Questionnaires/";
+
+    private final ThreadLocal<Node> answersToCopy = ThreadLocal.withInitial(() -> null);
+
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
         // Is there a questionnaire specified?
         String questionnaire = request.getParameter("questionnaire");
-        String homepagePath = request.getResource().getPath();
+        if (questionnaire == null) {
+            response.setStatus(403);
+            final Writer out = response.getWriter();
+            out.write("Questionnaire path has to be specified in the request.");
+            return;
+        }
 
-        // If a questionnaire is specified, return all fields by the given questionnaire
-        // Otherwise, we return all questionnaires under this node that are visible by the user
-        JsonObject allProperties = questionnaire == null
-            ? getAllFieldsFromAllQuestionnaires(request.getResourceResolver(), homepagePath)
-            : getAllFields(request.getResourceResolver(), questionnaire);
+        // get configs for additional answers
+        final Resource allConfigurations = request.getResourceResolver().getResource(CONFIGURATION_NODE);
+        if (allConfigurations != null) {
+            final String questionnaireName =
+                    request.getResourceResolver().getResource(questionnaire).getName();
+            final Resource configuration = allConfigurations.getChild(questionnaireName);
+            if (configuration != null) {
+                this.answersToCopy.set(configuration.adaptTo(Node.class));
+            }
+        }
 
-        // Return the entire thing as a json file, except join together fields that have the same
-        // name and type
+        // return all fields by the given questionnaire
+        JsonObject allProperties = getAllFields(request.getResourceResolver(), questionnaire);
+
+        this.answersToCopy.remove();
+        // Return the entire thing as a json file
         final Writer out = response.getWriter();
         out.write(allProperties.toString());
     }
@@ -99,139 +123,80 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
         // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        this.copyQuestions(resource.adaptTo(JsonObject.class), builder);
+        JsonObject questionnaire = resource.adaptTo(JsonObject.class);
+        // Copy deep json of questionnaire
+        builder.add(questionnaire.getString("@name"), questionnaire);
+        // Copy answers from the corresponding configuration file, if any
+        copyConfigAnswers(resolver, questionnairePath, builder);
         return builder.build();
     }
 
     /**
-     * Creates a JsonObject of all filterable fields from every questionnaire under
-     * the given QuestionnaireHomepage node.
+     * Copies over fields from another questionnaires configured to be added to the questionnaire JSON form.
      *
      * @param resolver a reference to a ResourceResolver
-     * @param parentPath the path of the parent QuestionnaireHomepage
-     * @return a JsonObject of filterable fields
-     */
-    private JsonObject getAllFieldsFromAllQuestionnaires(ResourceResolver resolver, String parentPath)
-    {
-        final StringBuilder query =
-            // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
-            new StringBuilder("select n from [cards:Questionnaire] as n where isdescendantnode(n, '"
-                + parentPath + "') and n.'sling:resourceSuperType' = 'cards/Resource'");
-        final Iterator<Resource> results =
-            resolver.findResources(query.toString(), Query.JCR_SQL2);
-
-        // Generate the output via recursively adding all fields from each questionnaire.
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-        Map<String, String> seenTypes = new HashMap<String, String>();
-        Map<String, String> seenElements = new HashMap<String, String>();
-        while (results.hasNext()) {
-            Resource resource = results.next();
-            String path = resource.getResourceMetadata().getResolutionPath();
-            resource = resolver.resolve(path.concat(DEEP_JSON_SUFFIX));
-            this.copyQuestions(resource.adaptTo(JsonObject.class), builder, seenTypes, seenElements);
-        }
-        return builder.build();
-    }
-
-    /**
-     * Copies over cards:Question fields from the input JsonObject, optionally handling questions that
-     * may already exist in the builder.
-     *
-     * @param questions A JsonObject (from an cards:Questionnaire or cards:Section) whose fields may be cards:Questions
+     * @param questionnairePath the path to the questionnaire to compare
      * @param builder A JsonObjectBuilder to copy results to
-     * @param seenTypes Either a map from field names to dataTypes, or null to disable tracking
-     * @param seenElements Either a map from field names to jcr:uuids, or null to disable tracking
-     * @return the content matching the query
      */
-    private void copyQuestions(JsonObject questions, JsonObjectBuilder builder, Map<String, String> seenTypes,
-            Map<String, String> seenElements)
+    private void copyConfigAnswers(ResourceResolver resolver, String questionnairePath, JsonObjectBuilder builder)
     {
-        // Copy over the keys
-        for (String key : questions.keySet()) {
-            // Skip over non-questions (non-objects)
-            if (questions.get(key).getValueType() != ValueType.OBJECT) {
-                continue;
-            }
-            JsonObject datum = questions.getJsonObject(key);
-
-            // Copy over information from children of sections
-            if ("cards:Section".equals(datum.getString("jcr:primaryType"))) {
-                this.copyQuestions(datum, builder, seenTypes, seenElements);
-            }
-
-            // Copy over information from this object if this is a question
-            if ("cards:Question".equals(datum.getString("jcr:primaryType"))) {
-                copyFields(datum, key, builder, seenTypes, seenElements);
-            }
-        }
-    }
-
-    /**
-     * Copies over every field from the input JsonObject, optionally handling questions that
-     * may already exist in the builder.
-     *
-     * @param question A JsonObject from an cards:Question
-     * @param key The name of the cards:Question
-     * @param builder A JsonObjectBuilder to copy results to
-     * @param seenTypes Either a map from field names to dataTypes, or null to disable tracking
-     * @param seenElements Either a map from field names to jcr:uuids, or null to disable tracking
-     * @return the content matching the query
-     */
-    private void copyFields(JsonObject question, String key, JsonObjectBuilder builder, Map<String, String> seenTypes,
-            Map<String, String> seenElements)
-    {
-        if (seenTypes == null) {
-            // No map to keep track of dataTypes provided: add blindly to the builder
-            builder.add(key, question);
+        if (this.answersToCopy.get() == null) {
             return;
         }
 
-        if (seenTypes.containsKey(key)) {
-            // If this question already exists, make sure that it has the same dataType
-            String questionType = question.getString("dataType");
-            if (seenTypes.get(key) != questionType) {
-                // DIFFERENT -- prepend a slightly differently named version
-                String newKey = questionType.concat("|").concat(key);
-                seenTypes.put(newKey, questionType);
-                seenElements.put(newKey, question.getString(JCR_UUID));
-                builder.add(newKey, question);
-            } else {
-                // SAME -- append our jcr:uuid to the question
-                // JsonObjects are immutable, so we need to copy and overwrite the UUID
-                JsonObjectBuilder amended = Json.createObjectBuilder();
-                for (String amendKey : question.keySet()) {
-                    if (amendKey.equals(JCR_UUID)) {
-                        // Append our jcr:uuid to the existing one
-                        String newUUID = String.format(
-                            "%s,%s",
-                            seenElements.get(key),
-                            question.getString(JCR_UUID)
-                        );
-                        amended.add(JCR_UUID, newUUID);
-                        seenElements.put(key, newUUID);
-                    } else {
-                        amended.add(amendKey, question.get(amendKey));
-                    }
+        try {
+            // Group questions by questionnaire
+            Map<String, List<JsonObject>> result = new HashMap<>();
+            Map<String, Resource> questionairesById = new HashMap<>();
+
+            final Node configNode = this.answersToCopy.get();
+            final PropertyIterator properties = configNode.getProperties();
+            while (properties.hasNext()) {
+                final Property property = properties.nextProperty();
+                if (property.getType() != PropertyType.REFERENCE) {
+                    continue;
                 }
-                builder.add(key, amended.build());
+                final String path = property.getNode().getPath();
+                // We are interested only in questions not from original questionnaire from request
+                //   those were captured in previous step with deep json of original questionnaire
+                if (!path.startsWith(questionnairePath)) {
+                    Resource questionResource = resolver.resolve(path);
+                    JsonObject question = questionResource.adaptTo(JsonObject.class);
+                    Resource questionnaire = getQuestionnaire(questionResource);
+                    String identifier = questionnaire.getValueMap().get("jcr:uuid", String.class);
+                    List<JsonObject> answers = result.getOrDefault(identifier, new LinkedList<>());
+                    answers.add(question);
+                    result.put(identifier, answers);
+                    questionairesById.put(identifier, questionnaire);
+                }
             }
-        } else {
-            // If this question does not exist, just add it
-            seenTypes.put(key, question.getString("dataType"));
-            seenElements.put(key, question.getString(JCR_UUID));
-            builder.add(key, question);
+
+            // Now we can add all config questions by questionnaires
+            for (String questionnaireId : result.keySet()) {
+                JsonObjectBuilder qbuilder = Json.createObjectBuilder();
+
+                JsonObject questionnaire = questionairesById.get(questionnaireId).adaptTo(JsonObject.class);
+                qbuilder.add("jcr:primaryType", questionnaire.getString("jcr:primaryType"));
+                qbuilder.add("title", questionnaire.getString("title"));
+
+                // Add all questions
+                for (JsonObject question : result.get(questionnaireId)) {
+                    qbuilder.add(question.getString("@name"), question);
+                }
+                builder.add(questionnaire.getString("@name"), qbuilder.build());
+            }
+
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to look for the right answer to copy: {}", e.getMessage(), e);
         }
     }
 
-    /**
-     * Copies over cards:Question fields from the input JsonObject.
-     *
-     * @param questions A JsonObject (from an cards:Questionnaire) whose fields may be cards:Questions
-     * @param builder A JsonObjectBuilder to copy results to
-     * @return the content matching the query
-     */
-    private void copyQuestions(JsonObject questions, JsonObjectBuilder builder)
+    private Resource getQuestionnaire(final Resource questionResource)
     {
-        this.copyQuestions(questions, builder, null, null);
+        Resource result = questionResource;
+        while (result != null && !"cards/Questionnaire".equals(result.getResourceType())) {
+            result = result.getParent();
+        }
+        return result;
     }
 }
