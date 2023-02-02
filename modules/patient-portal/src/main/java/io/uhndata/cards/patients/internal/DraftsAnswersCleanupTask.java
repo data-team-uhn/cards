@@ -40,11 +40,11 @@ import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
- * Periodically remove patient's answer values with a frequency specified by `PatientAccess.draftLifetime`
+ * Periodically remove patient's answer values with a frequency specified by @{code PatientAccess.draftLifetime}
  * that haven't been submitted by the patient.
  *
  * @version $Id$
- * @since 0.9.2
+ * @since 0.9.6
  */
 public class DraftsAnswersCleanupTask implements Runnable
 {
@@ -106,9 +106,9 @@ public class DraftsAnswersCleanupTask implements Runnable
                     + " where"
                     // link to the correct Visit Information questionnaire
                     + "  visitInformation.questionnaire = '%1$s'"
-                    // the visit date is in the past
+                    // the data form was last modified by the patient before the allowed timeframe
                     + "  and dataForm.[jcr:lastModified] < '%2$s'"
-                    + "  and dataForm.[jcr:lastModifiedBy] = 'patient'"
+                    + "  and (lastmodifiedby = patient or lastmodifiedby = guest-patient)"
                     // the visit is not submitted
                     + "  and submitted.question = '%3$s'"
                     + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
@@ -150,7 +150,7 @@ public class DraftsAnswersCleanupTask implements Runnable
                 final Node questionNode = child.getProperty("question").getNode();
                 if (questionNode != null && questionNode.hasProperty("entryMode")) {
                     final String entrymode = questionNode.getProperty("entryMode").getString();
-                    if (!"refernce".equals(entrymode) && !"autocreated".equals(entrymode)) {
+                    if (!"reference".equals(entrymode) && !"autocreated".equals(entrymode)) {
                         child.remove();
                     }
                 }
