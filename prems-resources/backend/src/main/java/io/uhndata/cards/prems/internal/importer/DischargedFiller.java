@@ -21,34 +21,29 @@ package io.uhndata.cards.prems.internal.importer;
 
 import java.util.Map;
 
-import org.apache.commons.validator.routines.EmailValidator;
 import org.osgi.service.component.annotations.Component;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
- * Clarity import processor that only allows visits for patients with a valid email address who have given consent to
- * receiving emails.
+ * Clarity import processor that fills visit status "discharged" into all imported forms.
  *
  * @version $Id$
  */
 @Component
-public class FilterEmailConsent implements ClarityDataProcessor
+public class DischargedFiller implements ClarityDataProcessor
 {
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        final String email = input.get("EMAIL_ADDRESS");
-        final Boolean consent = "Yes".equalsIgnoreCase(input.get("EMAIL_CONSENT_YN"));
-        if (consent && EmailValidator.getInstance().isValid(email)) {
-            return input;
-        }
-        return null;
+        // All visits we recieve are discharged, add this to the output so it can get inserted into the visit
+        input.put("STATUS", "discharged");
+        return input;
     }
 
     @Override
     public int getPriority()
     {
-        return 0;
+        return 70;
     }
 }
