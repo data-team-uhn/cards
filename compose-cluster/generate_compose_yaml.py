@@ -30,12 +30,14 @@ import argparse
 from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
 from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
-from ServerMemorySplitConfig import MEMORY_SPLIT_CARDS_JAVA, MEMORY_SPLIT_MONGO_SHARDS_REPLICAS
+from ServerMemorySplitConfig import MEMORY_SPLIT_CARDS_JAVA, MEMORY_SPLIT_MONGO_DATA_STORAGE
 
 ADMINER_DOCKER_RELEASE_TAG = "4.8.1"
 MINIO_DOCKER_RELEASE_TAG = "RELEASE.2022-09-17T00-09-45Z"
 
 argparser = argparse.ArgumentParser()
+argparser.add_argument('--mongo_singular', help='Use a single MongoDB Docker container for data storage', action='store_true')
+argparser.add_argument('--mongo_cluster', help='Use a cluster of MongoDB shards and replicas for data storage', action='store_true')
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
@@ -89,13 +91,25 @@ def sha256FileHash(filepath):
     return hasher.hexdigest()
 
 #Validate before doing anything else
-if (MONGO_REPLICA_COUNT % 2) != 1:
-  print("ERROR: Replica count must be *odd* to achieve distributed consensus")
+
+# Ensure that we have some type of data storage for CARDS
+mongo_storage_type_settings = [args.mongo_singular, args.mongo_cluster, args.oak_filesystem, args.external_mongo]
+if mongo_storage_type_settings.count(True) < 1:
+  print("ERROR: A data persistence backend of either --mongo_singular, --mongo_cluster, --oak_filesystem, or --external_mongo must be specified")
   sys.exit(-1)
 
-if (CONFIGDB_REPLICA_COUNT % 2) != 1:
-  print("ERROR: Config replica count must be *odd* to achieve distributed consensus")
+if mongo_storage_type_settings.count(True) > 1:
+  print("ERROR: Only one data persistence backend can be specified")
   sys.exit(-1)
+
+if args.mongo_cluster:
+  if (MONGO_REPLICA_COUNT % 2) != 1:
+    print("ERROR: Replica count must be *odd* to achieve distributed consensus")
+    sys.exit(-1)
+
+  if (CONFIGDB_REPLICA_COUNT % 2) != 1:
+    print("ERROR: Config replica count must be *odd* to achieve distributed consensus")
+    sys.exit(-1)
 
 if args.smtps_localhost_proxy:
   if not args.subnet:
@@ -260,24 +274,24 @@ def getCardsApplicationName(project_name):
   # If all else fails, use the generic CARDS name
   return "CARDS"
 
-def getWiredTigerCacheSizeGB():
+def getWiredTigerCacheSizeGB(mongo_node_count=1):
   total_system_memory_bytes = psutil.virtual_memory().total
   total_system_memory_gb = total_system_memory_bytes / (1024 * 1024 * 1024)
 
-  # Total memory given to the complete set of MongoDB shards and replicas:
-  total_mongo_shard_replica_memory_gb = MEMORY_SPLIT_MONGO_SHARDS_REPLICAS * total_system_memory_gb
+  # Total memory allocated for MongoDB - be it a single MongoDB container of a cluster of shards and replicas:
+  total_mongo_memory_gb = MEMORY_SPLIT_MONGO_DATA_STORAGE * total_system_memory_gb
 
-  # Memory given to each MongoDB shard / replica
-  memory_per_shard_replica_gb = total_mongo_shard_replica_memory_gb / (MONGO_SHARD_COUNT * MONGO_REPLICA_COUNT)
+  # What should the WIRED_TIGER_CACHE_SIZE_GB value be for the MongoDB node in question?
+  wired_tiger_cache_size_gb = total_mongo_memory_gb / mongo_node_count
 
   # Floor to 2 decimal places
-  memory_per_shard_replica_gb = math.floor(100 * memory_per_shard_replica_gb) / 100.0
+  wired_tiger_cache_size_gb = math.floor(100 * wired_tiger_cache_size_gb) / 100.0
 
   # The value of WiredTigerCacheSizeGB must range between 0.25GB and 10000GB as per MongoDB documentation
-  if (memory_per_shard_replica_gb < 0.25) or (memory_per_shard_replica_gb > 10000):
+  if (wired_tiger_cache_size_gb < 0.25) or (wired_tiger_cache_size_gb > 10000):
     raise Exception("WiredTigerCacheSizeGB cannot be less than 0.25 or greater than 10000")
 
-  return memory_per_shard_replica_gb
+  return wired_tiger_cache_size_gb
 
 def getCardsJavaMemoryLimitMB():
   total_system_memory_bytes = psutil.virtual_memory().total
@@ -295,7 +309,8 @@ yaml_obj['version'] = '3'
 yaml_obj['volumes'] = {}
 yaml_obj['services'] = {}
 
-if not (args.oak_filesystem or args.external_mongo):
+# We're using a cluster of MongoDB shards and replicas for data storage
+if args.mongo_cluster:
   #Create configuration databases
   for i in range(CONFIGDB_REPLICA_COUNT):
     service_name = "config{}".format(i)
@@ -343,7 +358,7 @@ if not (args.oak_filesystem or args.external_mongo):
       yaml_obj['services'][service_name]['build'] = {}
       yaml_obj['services'][service_name]['build']['context'] = "shard{}".format(shard_index)
 
-      yaml_obj['services'][service_name]['environment'] = ["WIRED_TIGER_CACHE_SIZE_GB={}".format(getWiredTigerCacheSizeGB())]
+      yaml_obj['services'][service_name]['environment'] = ["WIRED_TIGER_CACHE_SIZE_GB={}".format(getWiredTigerCacheSizeGB(MONGO_SHARD_COUNT * MONGO_REPLICA_COUNT))]
 
       yaml_obj['services'][service_name]['expose'] = ['27017']
 
@@ -450,6 +465,21 @@ if not (args.oak_filesystem or args.external_mongo):
 
   yaml_obj['services']['initializer']['depends_on'] = ['router']
 
+if args.mongo_singular:
+  # Create the single-container MongoDB
+  print("Configuring service: mongo")
+  yaml_obj['services']['mongo'] = {}
+  yaml_obj['services']['mongo']['image'] = "mongo:4.2-bionic"
+  yaml_obj['services']['mongo']['networks'] = {}
+  yaml_obj['services']['mongo']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['mongo']['networks']['internalnetwork']['aliases'] = ['mongo']
+  yaml_obj['services']['mongo']['environment'] = ["WIRED_TIGER_CACHE_SIZE_GB={}".format(getWiredTigerCacheSizeGB(1))]
+
+  yaml_obj['volumes']['cards-mongo'] = {}
+  yaml_obj['volumes']['cards-mongo']['driver'] = "local"
+
+  yaml_obj['services']['mongo']['volumes'] = ["cards-mongo:/data/db"]
+
 #Configure the initial CARDS container
 print("Configuring service: cardsinitial")
 yaml_obj['services']['cardsinitial'] = {}
@@ -476,14 +506,23 @@ if args.custom_env_file:
 
 yaml_obj['services']['cardsinitial']['environment'] = []
 yaml_obj['services']['cardsinitial']['environment'].append("INITIAL_SLING_NODE=true")
-if not (args.oak_filesystem or args.external_mongo):
+
+# If we're using a cluster of MongoDB shards and replicas for data storage,
+# ensure that CARDS does not start before the cluster is ready.
+if args.mongo_cluster:
   yaml_obj['services']['cardsinitial']['environment'].append("INSIDE_DOCKER_COMPOSE=true")
+
 yaml_obj['services']['cardsinitial']['environment'].append("CARDS_RELOAD=${CARDS_RELOAD:-}")
 if args.oak_filesystem:
   yaml_obj['services']['cardsinitial']['environment'].append("OAK_FILESYSTEM=true")
 
-if not (args.oak_filesystem or args.external_mongo):
+if args.mongo_cluster:
   yaml_obj['services']['cardsinitial']['depends_on'] = ['router']
+
+if args.mongo_singular:
+  yaml_obj['services']['cardsinitial']['depends_on'] = ['mongo']
+
+if args.mongo_cluster or args.mongo_singular:
   # We must also limit the memory given to the CARDS Java process as the
   # internal MongoDB setup will also use a significant amount of memory.
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_JAVA_MEMORY_LIMIT_MB={}".format(getCardsJavaMemoryLimitMB()))
