@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Checkbox,
     FormControlLabel,
@@ -55,37 +55,33 @@ function PatientAccessConfiguration() {
 
   const [ patientAccessConfig, setPatientAccessConfig ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);
-  const [ draftLifetime, setDraftLifetime ] = useState();
-  const [ error, setError ] = useState(false);
-  const inputRef = useRef(null);
+  const [ error, setError ] = useState({});
 
   // Boolean fields can have one label
-  // Text fields can have one label and one optional helper text
-  const labels = {
+  // Text fields can have one label, one optional helper text, one optional error text
+  const LABELS = {
     tokenlessAuthEnabled: "Patients can answer surveys without a personalized link",
     PIIAuthRequired: "Patients must confirm their identity by providing their date of birth and either MRN or HCN",
-    allowedPostVisitCompletionTime: ["Patients can fill out surveys after the associated event for:"],
-    draftLifetime: ["Patients can edit unsubmitted responses for:", "-1 means that drafts are kept until the patient is no longer able to access their surveys"]
+    allowedPostVisitCompletionTime: [
+      "Relatively to the associated event, patients can fill out surveys within:",
+      "Use a negative number when patient responses are due a number of days before the event, 0 for the day of the event, and a positive number when their responses are expected after the event."
+    ],
+    draftLifetime: [
+      "Patients can edit unsubmitted responses for:",
+      "-1 means that drafts are kept until the patient is no longer able to access their surveys, 0 means drafts are deleted daily at midnight, 1 means they are kept until the next day at midmight, etc.",
+      "Please use a value of at least 0, or -1 to disable periodic draft deletion."
+    ]
   };
-  const errorText = `Please use a value between 0 and ${patientAccessConfig?.allowedPostVisitCompletionTime}, or ${DEFAULT_PATIENT_ACCESS_CONFIG['draftLifetime']} to disable periodic draft deletion.`;
 
-  let readPatientAccessConfigData = (json) => {
-	setDraftLifetime(json.draftLifetime);
-	inputRef.current.value = json.draftLifetime;
-	setPatientAccessConfig(json);
+  const LIMITS = {
+    draftLifetime: {min: -1}
   }
 
   let buildConfigData = (formData) => {
     for (let key of Object.keys(patientAccessConfig)) {
       !key.startsWith("jcr:") && formData.append(key, patientAccessConfig[key] || DEFAULT_PATIENT_ACCESS_CONFIG[key]);
     }
-    formData.append('draftLifetime', draftLifetime || DEFAULT_PATIENT_ACCESS_CONFIG['draftLifetime']);
   }
-
-  useEffect(() => {
-    setError(draftLifetime && (draftLifetime > patientAccessConfig?.allowedPostVisitCompletionTime
-                                  || draftLifetime < DEFAULT_PATIENT_ACCESS_CONFIG['draftLifetime']));
-  }, [draftLifetime]);
 
   let renderConfigCheckbox = (key, valueOverride) => (
       <ListItem>
@@ -99,50 +95,34 @@ function PatientAccessConfiguration() {
               setHasChanges(true);
             }}
           />}
-          label={labels[key]}
+          label={LABELS[key]}
         />
       </ListItem>
     );
 
-  let renderConfigInput = (key, unit, inputProps) => (
+  let onInputValueChanged = (key, value) => {
+    setPatientAccessConfig({...patientAccessConfig, [key]: value});
+    setHasChanges(true);
+    setError({...error, [key]: (LIMITS[key]?.min > value || LIMITS[key]?.max < value)});
+  }
+
+  let renderConfigInput = (key, unit) => (
       <ListItem>
         <FormGroup className={classes.textField}>
-          <FormLabel>{labels[key][0]}</FormLabel>
+          <FormLabel>{LABELS[key][0]}</FormLabel>
           <TextField
             variant="standard"
             type="number"
-            onChange={event => { setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value}); setHasChanges(true); }}
-            onBlur={event => { setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value}); setHasChanges(true); }}
+            onChange={event => onInputValueChanged(key, event.target.value)}
+            onBlur={event => onInputValueChanged(key, event.target.value)}
             placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
             value={patientAccessConfig?.[key]}
-            helperText={labels[key][1]}
+            error={error[key]}
+            helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
             InputProps={{
               endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
             }}
-            inputProps={inputProps}
-          />
-        </FormGroup>
-      </ListItem>
-    );
-
-  let renderDraftLifetimeConfigInput = (key, unit, inputProps) => (
-      <ListItem>
-        <FormGroup className={classes.textField}>
-          <FormLabel>{labels[key][0]}</FormLabel>
-          <TextField
-            inputRef={inputRef}
-            error={error}
-            variant="standard"
-            type="number"
-            onChange={event => setDraftLifetime(event.target.value)}
-            onBlur={event => setDraftLifetime(event.target.value)}
-            placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
-            value={draftLifetime}
-            helperText={error ? errorText : labels[key][1]}
-            InputProps={{
-              endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
-            }}
-            inputProps={inputProps}
+            inputProps={LIMITS[key]}
           />
         </FormGroup>
       </ListItem>
@@ -153,7 +133,7 @@ function PatientAccessConfiguration() {
           title="Patient Access"
           configPath={PATIENT_ACCESS_CONFIG_PATH}
           configTemplate={Object.keys(DEFAULT_PATIENT_ACCESS_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
-          onConfigFetched={readPatientAccessConfigData}
+          onConfigFetched={setPatientAccessConfig}
           hasChanges={hasChanges}
           buildConfigData={buildConfigData}
           onConfigSaved={() => setHasChanges(false)}
@@ -162,7 +142,7 @@ function PatientAccessConfiguration() {
             { renderConfigCheckbox("tokenlessAuthEnabled") }
             { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
             { renderConfigInput("allowedPostVisitCompletionTime", "days") }
-            { renderDraftLifetimeConfigInput("draftLifetime", "days", {min: -1, max: patientAccessConfig?.allowedPostVisitCompletionTime}) }
+            { renderConfigInput("draftLifetime", "days") }
           </List>
       </AdminConfigScreen>
   );
