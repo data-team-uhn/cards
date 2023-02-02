@@ -89,9 +89,9 @@ def sha256FileHash(filepath):
 #Validate before doing anything else
 
 # Ensure that we have some type of data storage for CARDS
-mongo_storage_type_settings = [args.mongo_singular, args.mongo_cluster, args.oak_filesystem]
+mongo_storage_type_settings = [args.mongo_singular, args.mongo_cluster, args.oak_filesystem, args.external_mongo]
 if mongo_storage_type_settings.count(True) < 1:
-  print("ERROR: A data persistence backend of either --mongo_singular, --mongo_cluster, or --oak_filesystem must be specified")
+  print("ERROR: A data persistence backend of either --mongo_singular, --mongo_cluster, --oak_filesystem, or --external_mongo must be specified")
   sys.exit(-1)
 
 if mongo_storage_type_settings.count(True) > 1:
