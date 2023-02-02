@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
     Checkbox,
     FormControlLabel,
@@ -55,6 +55,9 @@ function PatientAccessConfiguration() {
 
   const [ patientAccessConfig, setPatientAccessConfig ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);
+  const [ draftLifetime, setDraftLifetime ] = useState();
+  const [ error, setError ] = useState(false);
+  const inputRef = useRef(null);
 
   // Boolean fields can have one label
   // Text fields can have one label and one optional helper text
@@ -64,12 +67,25 @@ function PatientAccessConfiguration() {
     allowedPostVisitCompletionTime: ["Patients can fill out surveys after the associated event for:"],
     draftLifetime: ["Patients can edit unsubmitted responses for:", "-1 means that drafts are kept until the patient is no longer able to access their surveys"]
   };
+  const errorText = `Value must be between ${DEFAULT_PATIENT_ACCESS_CONFIG['draftLifetime']} and ${patientAccessConfig?.allowedPostVisitCompletionTime}`;
+
+  let readpatientAccessConfigData = (json) => {
+	setDraftLifetime(json.draftLifetime);
+	inputRef.current.value = json.draftLifetime;
+	setPatientAccessConfig(json);
+  }
 
   let buildConfigData = (formData) => {
     for (let key of Object.keys(patientAccessConfig)) {
       !key.startsWith("jcr:") && formData.append(key, patientAccessConfig[key] || DEFAULT_PATIENT_ACCESS_CONFIG[key]);
     }
+    formData.append('draftLifetime', draftLifetime || DEFAULT_PATIENT_ACCESS_CONFIG['draftLifetime']);
   }
+
+  useEffect(() => {
+    setError(draftLifetime && (draftLifetime > patientAccessConfig?.allowedPostVisitCompletionTime
+                                  || draftLifetime < DEFAULT_PATIENT_ACCESS_CONFIG['draftLifetime']));
+  }, [draftLifetime]);
 
   let renderConfigCheckbox = (key, valueOverride) => (
       <ListItem>
@@ -109,12 +125,35 @@ function PatientAccessConfiguration() {
       </ListItem>
     );
 
+  let renderDraftLifetimeConfigInput = (key, unit, inputProps) => (
+      <ListItem>
+        <FormGroup className={classes.textField}>
+          <FormLabel>{labels[key][0]}</FormLabel>
+          <TextField
+            inputRef={inputRef}
+            error={error}
+            variant="standard"
+            type="number"
+            onChange={event => setDraftLifetime(event.target.value)}
+            onBlur={event => setDraftLifetime(event.target.value)}
+            placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
+            value={draftLifetime}
+            helperText={error ? errorText : labels[key][1]}
+            InputProps={{
+              endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
+            }}
+            inputProps={inputProps}
+          />
+        </FormGroup>
+      </ListItem>
+    );
+
   return (
       <AdminConfigScreen
           title="Patient Access"
           configPath={PATIENT_ACCESS_CONFIG_PATH}
           configTemplate={Object.keys(DEFAULT_PATIENT_ACCESS_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
-          onConfigFetched={setPatientAccessConfig}
+          onConfigFetched={readpatientAccessConfigData}
           hasChanges={hasChanges}
           buildConfigData={buildConfigData}
           onConfigSaved={() => setHasChanges(false)}
@@ -123,7 +162,7 @@ function PatientAccessConfiguration() {
             { renderConfigCheckbox("tokenlessAuthEnabled") }
             { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
             { renderConfigInput("allowedPostVisitCompletionTime", "days") }
-            { renderConfigInput("draftLifetime", "days", {min: -1, max: patientAccessConfig?.allowedPostVisitCompletionTime}) }
+            { renderDraftLifetimeConfigInput("draftLifetime", "days", {min: -1, max: patientAccessConfig?.allowedPostVisitCompletionTime}) }
           </List>
       </AdminConfigScreen>
   );
