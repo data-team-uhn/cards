@@ -42,7 +42,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  *
  * @version $Id$
  */
-@Component
+@Component(property = "service.ranking:Integer=60")
 public class ComputedAnswersEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,

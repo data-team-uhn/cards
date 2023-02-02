@@ -17,6 +17,7 @@
 package io.uhndata.cards.forms.internal;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -85,6 +86,25 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     public boolean isSection(final Node node)
     {
         return isNodeType(node, SECTION_NODETYPE);
+    }
+
+    @Override
+    public boolean isConditionalSection(final Node node)
+    {
+        if (isSection(node)) {
+            try {
+                final NodeIterator children = node.getNodes();
+                while (children.hasNext()) {
+                    final Node child = children.nextNode();
+                    if (child.isNodeType("cards:Conditional") || child.isNodeType("cards:ConditionalGroup")) {
+                        return true;
+                    }
+                }
+            } catch (final RepositoryException e) {
+                // Not expected
+            }
+        }
+        return false;
     }
 
     @Override

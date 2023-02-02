@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
  *
  * @version $Id$
  */
-@Component(immediate = true)
+@Component(property = "service.ranking:Integer=0")
 public class SubjectParentEditorProvider implements EditorProvider
 {
     @Override

@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -96,13 +95,6 @@ public class ReferenceAnswersEditor extends AnswersEditor
     }
 
     @Override
-    protected ReferenceAnswerNodeTypes getNewAnswerNodeTypes(Node node)
-        throws RepositoryException
-    {
-        return new ReferenceAnswerNodeTypes(node);
-    }
-
-    @Override
     protected boolean isQuestionNodeMatchingType(Node node)
     {
         return this.questionnaireUtils.isReferenceQuestion(node);
@@ -125,49 +117,38 @@ public class ReferenceAnswersEditor extends AnswersEditor
         if (questionnaireNode == null) {
             return;
         }
-        final QuestionTree referenceQuestionsTree =
+        final QuestionTree unansweredQuestionsTree =
             getUnansweredMatchingQuestions(questionnaireNode);
 
         // There are missing reference questions, let's create them!
-        if (referenceQuestionsTree != null) {
-            // Create the missing structure, i.e. AnswerSection and Answer nodes
-            final Map<QuestionTree, NodeBuilder> answersToFinish =
-                createMissingNodes(referenceQuestionsTree, this.currentNodeBuilder);
-
+        if (unansweredQuestionsTree != null) {
             // Retrieve all the referenced answers
-            answersToFinish.entrySet().stream().forEach(entry -> {
-                Node question = entry.getKey().getNode();
-                final String referencedQuestion;
-                try {
-                    referencedQuestion = question.getProperty("question").getString();
-                } catch (final RepositoryException e) {
-                    LOGGER.warn("Skipping referenced question due to missing property");
-                    return;
-                }
+            unansweredQuestionsTree.getQuestionAndAnswers(this.currentNodeBuilder)
+                .entrySet().stream().forEach(entry -> {
+                    Node question = entry.getKey();
+                    final String referencedQuestion;
+                    try {
+                        referencedQuestion = question.getProperty("question").getString();
+                    } catch (final RepositoryException e) {
+                        LOGGER.warn("Skipping referenced question due to missing property");
+                        return;
+                    }
 
-                NodeBuilder answer = entry.getValue();
-                Type<?> resultType = Type.STRING;
-                try {
-                    ReferenceAnswerNodeTypes types = new ReferenceAnswerNodeTypes(question);
-                    resultType = types.getDataType();
-                } catch (RepositoryException e) {
-                    LOGGER.warn("Error typing value for question. " + e.getMessage());
-                }
+                    NodeBuilder answer = entry.getValue();
+                    Type<?> resultType = getAnswerType(question);
+                    Object result = getAnswer(form, referencedQuestion);
 
-                Object result = getAnswer(form, referencedQuestion);
-
-                if (result == null) {
-                    answer.removeProperty(FormUtils.VALUE_PROPERTY);
-                } else {
-                    // Type erasure makes the actual type irrelevant, there's only one real implementation method
-                    // The implementation can extract the right type from the type object
-                    @SuppressWarnings("unchecked")
-                    Type<Object> untypedResultType =
-                        (Type<Object>) (result instanceof List ? resultType.getArrayType() : resultType);
-                    answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
-                }
-
-            });
+                    if (result == null) {
+                        answer.removeProperty(FormUtils.VALUE_PROPERTY);
+                    } else {
+                        // Type erasure makes the actual type irrelevant, there's only one real implementation method
+                        // The implementation can extract the right type from the type object
+                        @SuppressWarnings("unchecked")
+                        Type<Object> untypedResultType =
+                            (Type<Object>) (result instanceof List ? resultType.getArrayType() : resultType);
+                        answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
+                    }
+                });
         }
     }
 
@@ -221,7 +202,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
                 Node questionNode = ReferenceAnswersEditor.this.questionnaireUtils.getQuestion(questionId);
                 try {
                     if (questionNode != null && questionNode.hasProperty("entryMode")
-                        && "refernce".equals(questionNode.getProperty("entryMode").getString())) {
+                        && "reference".equals(questionNode.getProperty("entryMode").getString())) {
                         return true;
                     }
                 } catch (RepositoryException e) {
@@ -230,14 +211,6 @@ public class ReferenceAnswersEditor extends AnswersEditor
                 }
             }
             return false;
-        }
-    }
-
-    private final class ReferenceAnswerNodeTypes extends AnswerNodeTypes
-    {
-        ReferenceAnswerNodeTypes(final Node questionNode) throws RepositoryException
-        {
-            super(questionNode, "cards:ReferenceAnswer", "cards/ReferenceAnswer");
         }
     }
 }

@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.versioning;
+package io.uhndata.cards.forms.internal;
+
+import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
@@ -30,28 +32,41 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+
 /**
- * A {@link EditorProvider} returning {@link LastModifiedEditor}.
+ * A {@link EditorProvider} returning {@link ReferenceAnswersEditor}.
  *
  * @version $Id$
  */
-@Component(property = "service.ranking:Integer=70")
-public class LastModifiedEditorProvider implements EditorProvider
+@Component(property = "service.ranking:Integer=50")
+public class CreateMissingAnswersEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
 
+    @Reference
+    private ThreadResourceResolverProvider rrp;
+
+    @Reference
+    private QuestionnaireUtils questionnaireUtils;
+
+    @Reference
+    private FormUtils formUtils;
+
     @Override
-    public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)
+    public Editor getRootEditor(final NodeState before, final NodeState after, final NodeBuilder builder,
+        final CommitInfo info)
         throws CommitFailedException
     {
-        if (this.rrf != null) {
-            final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
-            if (myResolver != null) {
-                // Each LastModifiedEditor maintains a state, so a new instance must be returned each time
-                return new LastModifiedEditor(builder, myResolver, null);
-            }
+        final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
+        if (resolver != null) {
+            // Each ReferenceEditor maintains a state, so a new instance must be returned each time
+            return new CreateMissingAnswersEditor(builder, resolver.adaptTo(Session.class), this.rrf, this.rrp,
+                this.questionnaireUtils, this.formUtils);
         }
         return null;
     }

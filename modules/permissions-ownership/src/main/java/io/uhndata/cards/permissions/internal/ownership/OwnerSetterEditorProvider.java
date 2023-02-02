@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Component;
  *
  * @version $Id$
  */
-@Component(service = EditorProvider.class)
+@Component(property = "service.ranking:Integer=0")
 public class OwnerSetterEditorProvider implements EditorProvider
 {
     @Override
