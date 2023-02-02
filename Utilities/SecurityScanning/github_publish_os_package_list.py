@@ -27,7 +27,7 @@ import os_file_management
 from GitHubRepoHandler import GitHubRepoHandler
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument('--private_key', help='File path the to private key used for JWT signing')
+argparser.add_argument('--private_key', help='File path to the private key used for JWT signing')
 argparser.add_argument('--app_id', help='GitHub App ID')
 argparser.add_argument('--installation_id', help='GitHub App installation ID')
 argparser.add_argument('--repository', help='OWNER/NAME of the GitHub repository (eg. data-team-uhn/cards)')
