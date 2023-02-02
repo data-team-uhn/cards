@@ -67,7 +67,7 @@ function PatientAccessConfiguration() {
     allowedPostVisitCompletionTime: ["Patients can fill out surveys after the associated event for:"],
     draftLifetime: ["Patients can edit unsubmitted responses for:", "-1 means that drafts are kept until the patient is no longer able to access their surveys"]
   };
-  const errorText = `Value must be between 0 and ${patientAccessConfig?.allowedPostVisitCompletionTime}`;
+  const errorText = `Please use a value between 0 and ${patientAccessConfig?.allowedPostVisitCompletionTime}, or ${DEFAULT_PATIENT_ACCESS_CONFIG['draftLifetime']} to disable periodic draft deletion.`;
 
   let readPatientAccessConfigData = (json) => {
 	setDraftLifetime(json.draftLifetime);
