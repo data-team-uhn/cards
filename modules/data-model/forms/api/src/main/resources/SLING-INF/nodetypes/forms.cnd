@@ -445,6 +445,10 @@
   // Should this section be displayed as a page
   - paginate (boolean) = false autocreated
 
+  // If true, warn the user about missing mandatory answers when they save an incomplete form.
+  // In paginated forms, do not permit advancing to the next page until the current page is complete.
+  - requireCompletion (BOOLEAN)
+
   // Children
 
   // The sections and standalone questions that make up this questionnaire.
