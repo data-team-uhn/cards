@@ -76,6 +76,7 @@ function DowntimeWarningConfiguration() {
     <AdminConfigScreen
         title="Downtime Warning Banner Settings"
         configPath="/apps/cards/config/DowntimeWarning"
+        configTemplate={{enabled: false, fromDate: "", toDate: ""}}
         onConfigFetched={readDowntimeWarningSettings}
         hasChanges={hasChanges}
         configError={dateRangeIsInvalid ? "Invalid date range" : undefined}

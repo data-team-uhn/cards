@@ -66,6 +66,7 @@ function ToUConfiguration() {
     <AdminConfigScreen
       title="Patient Portal Terms of Use"
       configPath="/Survey/TermsOfUse"
+      configTemplate={{"acceptanceRequired" : false, "title" : "", "version" : "", "text" : ""}}
       onConfigFetched={readToUData}
       hasChanges={hasChanges}
       buildConfigData={buildConfigData}

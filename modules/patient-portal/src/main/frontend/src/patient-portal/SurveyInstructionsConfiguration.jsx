@@ -75,6 +75,7 @@ function SurveyInstructionsConfiguration() {
       <AdminConfigScreen
         title="Patient Portal Survey Instructions"
         configPath={SURVEY_INSTRUCTIONS_PATH}
+        configTemplate={Object.values(labels).flat().reduce((t, k) => ({...t, [k]: getUnsetValue(k)}), {})}
         onConfigFetched={setSurveyInstructions}
         hasChanges={hasChanges}
         buildConfigData={buildConfigData}

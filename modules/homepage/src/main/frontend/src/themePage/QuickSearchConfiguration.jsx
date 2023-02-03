@@ -71,6 +71,7 @@ function QuickSearchConfiguration(props) {
     <AdminConfigScreen
         title="Quick Search Settings"
         configPath="/apps/cards/config/QuickSearch"
+        configTemplate={{limit: "", showTotalRows: false, allowedResourceTypes: []}}
         onConfigFetched={readQuickSearchSettings}
         hasChanges={hasChanges}
         buildConfigData={buildConfigData}

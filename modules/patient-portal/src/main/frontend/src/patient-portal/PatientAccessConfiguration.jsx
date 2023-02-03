@@ -107,6 +107,7 @@ function PatientAccessConfiguration() {
       <AdminConfigScreen
           title="Patient Access"
           configPath={PATIENT_ACCESS_CONFIG_PATH}
+          configTemplate={Object.keys(DEFAULT_PATIENT_ACCESS_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
           onConfigFetched={setPatientAccessConfig}
           hasChanges={hasChanges}
           buildConfigData={buildConfigData}
