@@ -38,6 +38,7 @@ MINIO_DOCKER_RELEASE_TAG = "RELEASE.2022-09-17T00-09-45Z"
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--mongo_singular', help='Use a single MongoDB Docker container for data storage', action='store_true')
 argparser.add_argument('--mongo_cluster', help='Use a cluster of MongoDB shards and replicas for data storage', action='store_true')
+argparser.add_argument('--percona_singular', help='Use a single Docker container of Percona Server for MongoDB for data storage', action='store_true')
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
@@ -93,9 +94,9 @@ def sha256FileHash(filepath):
 #Validate before doing anything else
 
 # Ensure that we have some type of data storage for CARDS
-mongo_storage_type_settings = [args.mongo_singular, args.mongo_cluster, args.oak_filesystem, args.external_mongo]
+mongo_storage_type_settings = [args.mongo_singular, args.mongo_cluster, args.oak_filesystem, args.external_mongo, args.percona_singular]
 if mongo_storage_type_settings.count(True) < 1:
-  print("ERROR: A data persistence backend of either --mongo_singular, --mongo_cluster, --oak_filesystem, or --external_mongo must be specified")
+  print("ERROR: A data persistence backend of either --mongo_singular, --mongo_cluster, --oak_filesystem, --external_mongo, or --percona_singular must be specified")
   sys.exit(-1)
 
 if mongo_storage_type_settings.count(True) > 1:
@@ -473,12 +474,29 @@ if args.mongo_singular:
   yaml_obj['services']['mongo']['networks'] = {}
   yaml_obj['services']['mongo']['networks']['internalnetwork'] = {}
   yaml_obj['services']['mongo']['networks']['internalnetwork']['aliases'] = ['mongo']
-  yaml_obj['services']['mongo']['environment'] = ["WIRED_TIGER_CACHE_SIZE_GB={}".format(getWiredTigerCacheSizeGB(1))]
+
+  yaml_obj['services']['mongo']['command'] = "--wiredTigerCacheSizeGB {}".format(getWiredTigerCacheSizeGB(1))
 
   yaml_obj['volumes']['cards-mongo'] = {}
   yaml_obj['volumes']['cards-mongo']['driver'] = "local"
 
   yaml_obj['services']['mongo']['volumes'] = ["cards-mongo:/data/db"]
+
+if args.percona_singular:
+  # Create the single-container Percona Server for MongoDB
+  print("Configuring service: percona")
+  yaml_obj['services']['percona'] = {}
+  yaml_obj['services']['percona']['image'] = "percona/percona-server-mongodb:4.4"
+  yaml_obj['services']['percona']['networks'] = {}
+  yaml_obj['services']['percona']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['percona']['networks']['internalnetwork']['aliases'] = ['percona', 'mongo']
+
+  yaml_obj['services']['percona']['command'] = "--wiredTigerCacheSizeGB {}".format(getWiredTigerCacheSizeGB(1))
+
+  yaml_obj['volumes']['cards-percona'] = {}
+  yaml_obj['volumes']['cards-percona']['driver'] = "local"
+
+  yaml_obj['services']['percona']['volumes'] = ["cards-percona:/data/db"]
 
 #Configure the initial CARDS container
 print("Configuring service: cardsinitial")
@@ -522,7 +540,10 @@ if args.mongo_cluster:
 if args.mongo_singular:
   yaml_obj['services']['cardsinitial']['depends_on'] = ['mongo']
 
-if args.mongo_cluster or args.mongo_singular:
+if args.percona_singular:
+  yaml_obj['services']['cardsinitial']['depends_on'] = ['percona']
+
+if args.mongo_cluster or args.mongo_singular or args.percona_singular:
   # We must also limit the memory given to the CARDS Java process as the
   # internal MongoDB setup will also use a significant amount of memory.
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_JAVA_MEMORY_LIMIT_MB={}".format(getCardsJavaMemoryLimitMB()))
