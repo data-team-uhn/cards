@@ -26,6 +26,8 @@ import string
 import argparse
 import requests
 
+from GitHubRepoHandler import GitHubRepoHandler
+
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--private_key', help='File path to the private key used for JWT signing')
 argparser.add_argument('--app_id', help='GitHub App ID')
@@ -73,32 +75,11 @@ if args.repository is None:
 else:
 	REPOSITORY = args.repository
 
-def readGitHubTextFile(path, installation_token):
-	installation_headers = {}
-	installation_headers['Accept'] = 'application/vnd.github.raw'
-	installation_headers['Authorization'] = 'token ' + installation_token
-
-	resp = requests.get("https://api.github.com/repos/" + REPOSITORY + "/contents/" + path, headers=installation_headers)
-	if resp.status_code != 200:
-		raise Exception("HTTP {} was returned when attempting to download {}.".format(resp.status_code, path))
-	return resp.text
-
-payload = {}
-payload['iat'] = int(time.time())
-payload['exp'] = payload['iat'] + (60 * 10)
-payload['iss'] = APP_ID
-
-github_jwt = jwt.encode(payload, PRIVATE_KEY, algorithm='RS256')
-
-application_headers = {}
-application_headers['Accept'] = 'application/vnd.github+json'
-application_headers['Authorization'] = 'Bearer ' + github_jwt.decode()
-
-installation_token_resp = requests.post("https://api.github.com/app/installations/" + INSTALLATION_ID + "/access_tokens", headers=application_headers)
-installation_token = installation_token_resp.json()['token']
+# Instantiate a GitHubRepoHandler to interact with the GitHub API
+gh_client = GitHubRepoHandler(cli_args=args)
 
 # Get the Docker image hash ID that is being used in this deployment
-cards_image_hash = readGitHubTextFile('hosts/' + args.deployment_hostname + '/docker/' + args.docker_image_name, installation_token).rstrip()
+cards_image_hash = gh_client.readGitHubTextFile('hosts/' + args.deployment_hostname + '/docker/' + args.docker_image_name).rstrip()
 
 cards_image_hash_type = cards_image_hash.split(':')[0]
 cards_image_hash_value = cards_image_hash.split(':')[1]
