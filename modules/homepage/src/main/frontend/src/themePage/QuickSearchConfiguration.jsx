@@ -63,10 +63,6 @@ function QuickSearchConfiguration(props) {
     setAllowedResourceTypes(types);
   }
 
-  useEffect(() => {
-    setHasChanges(true);
-  }, [limit, showTotalRows]);
-
   return (
     <AdminConfigScreen
         title="Quick Search Settings"
@@ -89,7 +85,7 @@ function QuickSearchConfiguration(props) {
                 type="number"
                 label="Limit"
                 value={limit}
-                onChange={ event => setLimit(event.target.value) }
+                onChange={ event => { setLimit(event.target.value); setHasChanges(true); } }
                 style={{'width' : '250px'}}
                 helperText="How many results should be displayed"
               />
@@ -99,7 +95,7 @@ function QuickSearchConfiguration(props) {
                 control={
                   <Checkbox
                     checked={showTotalRows}
-                    onChange={ event => setShowTotalRows(event.target.checked) }
+                    onChange={ event => { setShowTotalRows(event.target.checked); setHasChanges(true); } }
                     name="showTotalRows"
                   />
                 }

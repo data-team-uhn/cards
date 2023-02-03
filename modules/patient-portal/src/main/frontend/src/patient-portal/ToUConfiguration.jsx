@@ -58,10 +58,6 @@ function ToUConfiguration() {
     formData.append('text', text);
   }
 
-  useEffect(() => {
-    setHasChanges(true);
-  }, [title, version, text, acceptanceRequired]);
-
   return (
     <AdminConfigScreen
       title="Patient Portal Terms of Use"
@@ -85,7 +81,7 @@ function ToUConfiguration() {
                 type="text"
                 label="Title"
                 value={title}
-                onChange={(event) => { setTitle(event.target.value); }}
+                onChange={(event) => { setTitle(event.target.value); setHasChanges(true); }}
               />
             </ListItem>
             <ListItem key="version">
@@ -97,7 +93,7 @@ function ToUConfiguration() {
                 type="version"
                 label="Version"
                 value={version}
-                onChange={(event) => { setVersion(event.target.value); }}
+                onChange={(event) => { setVersion(event.target.value); setHasChanges(true); }}
                 style={{'width' : '250px'}}
               />
             </ListItem>
@@ -106,7 +102,7 @@ function ToUConfiguration() {
               <MarkdownText
                 value={text}
                 height={350}
-                onChange={value => { setText(value); }}
+                onChange={value => { setText(value); setHasChanges(true); }}
               />
             </ListItem>
             <ListItem key="acceptanceRequired">
@@ -114,7 +110,7 @@ function ToUConfiguration() {
                 control={
                   <Checkbox
                     checked={acceptanceRequired}
-                    onChange={(event) => { setAcceptanceRequired(event.target.checked); }}
+                    onChange={(event) => { setAcceptanceRequired(event.target.checked); setHasChanges(true); }}
                     name="acceptanceRequired"
                   />
                 }

@@ -68,10 +68,6 @@ function DowntimeWarningConfiguration() {
     setDateRangeIsInvalid(fromDate && toDate && new Date(toDate).valueOf() < new Date(fromDate).valueOf());
   }, [fromDate, toDate]);
 
-  useEffect(() => {
-    setHasChanges(true);
-  }, [enabled, fromDate, toDate]);
-
   return (
     <AdminConfigScreen
         title="Downtime Warning Banner Settings"
@@ -89,7 +85,7 @@ function DowntimeWarningConfiguration() {
                 control={
                   <Checkbox
                     checked={enabled}
-                    onChange={ event => setEnabled(event.target.checked) }
+                    onChange={ event => { setEnabled(event.target.checked); setHasChanges(true); } }
                     name="enabled"
                   />
                 }
@@ -103,7 +99,7 @@ function DowntimeWarningConfiguration() {
                 type="datetime-local"
                 InputLabelProps={{ shrink: true }}
                 className={classes.textField}
-                onChange={(event) => setFromDate(event.target.value) }
+                onChange={(event) => { setFromDate(event.target.value); setHasChanges(true); } }
                 onBlur={(event) => setFromDate(event.target.value) }
                 placeholder={dateFormat.toLowerCase()}
                 value={fromDate || ""}
@@ -116,7 +112,7 @@ function DowntimeWarningConfiguration() {
                 type="datetime-local"
                 InputLabelProps={{ shrink: true }}
                 className={classes.textField}
-                onChange={(event) => setToDate(event.target.value) }
+                onChange={(event) => { setToDate(event.target.value); setHasChanges(true); } }
                 onBlur={(event) => setToDate(event.target.value) }
                 placeholder={dateFormat.toLowerCase()}
                 value={toDate || ""}

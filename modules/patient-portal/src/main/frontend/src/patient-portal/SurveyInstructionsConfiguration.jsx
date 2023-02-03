@@ -67,10 +67,6 @@ function SurveyInstructionsConfiguration() {
 
   let getUnsetValue = (key) => (key?.startsWith("enable") ? false : "");
 
-  useEffect(() => {
-    setHasChanges(true);
-  }, [surveyInstructions]);
-
   return (
       <AdminConfigScreen
         title="Patient Portal Survey Instructions"
@@ -91,14 +87,20 @@ function SurveyInstructionsConfiguration() {
                   { key == "welcomeMessage" ?
                       <WelcomeMessageConfiguration
                         welcomeMessage={surveyInstructions?.[key]}
-                        onChange={(text) => { setSurveyInstructions({...surveyInstructions, [key]: text}); }}
+                        onChange={(text) => {
+                          setSurveyInstructions({...surveyInstructions, [key]: text});
+                          setHasChanges(true);
+                        }}
                       />
                     :
                     key.startsWith("enable") ?
                       <FormControlLabel control={
                         <Checkbox
                           checked={!!(surveyInstructions?.[key])}
-                          onChange={event => setSurveyInstructions({...surveyInstructions, [key]: !!event.target.checked})}
+                          onChange={event => {
+                            setSurveyInstructions({...surveyInstructions, [key]: !!event.target.checked});
+                            setHasChanges(true);
+                          }}
                         />}
                         label={camelCaseToWords(key)}
                       />
@@ -114,7 +116,10 @@ function SurveyInstructionsConfiguration() {
                         label={camelCaseToWords(key)}
                         value={surveyInstructions?.[key] || ""}
                         placeholder={DEFAULT_INSTRUCTIONS[key] || ""}
-                        onChange={(event) => { setSurveyInstructions({...surveyInstructions, [key]: event.target.value}); }}
+                        onChange={(event) => {
+                           setSurveyInstructions({...surveyInstructions, [key]: event.target.value});
+                           setHasChanges(true);
+                        }}
                         fullWidth
                       />
                   }
