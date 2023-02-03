@@ -79,7 +79,7 @@ function PatientAccessConfiguration() {
 
   let buildConfigData = (formData) => {
     for (let key of Object.keys(patientAccessConfig)) {
-      !key.startsWith("jcr:") && formData.append(key, patientAccessConfig[key] || DEFAULT_PATIENT_ACCESS_CONFIG[key]);
+      !key.startsWith("jcr:") && formData.append(key, patientAccessConfig[key]);
     }
   }
 
@@ -101,9 +101,9 @@ function PatientAccessConfiguration() {
     );
 
   let onInputValueChanged = (key, value) => {
-    setPatientAccessConfig({...patientAccessConfig, [key]: value});
+    setPatientAccessConfig(config => ({...config, [key]: (value || "")}));
     setHasChanges(true);
-    setError({...error, [key]: (LIMITS[key]?.min > value || LIMITS[key]?.max < value)});
+    setError(err => ({...err, [key]: (LIMITS[key]?.min > value || LIMITS[key]?.max < value)}));
   }
 
   let renderConfigInput = (key, unit) => (
