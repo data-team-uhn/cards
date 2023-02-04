@@ -108,7 +108,8 @@ public class DraftsAnswersCleanupTask implements Runnable
                     + "  visitInformation.questionnaire = '%1$s'"
                     // the data form was last modified by the patient before the allowed timeframe
                     + "  and dataForm.[jcr:lastModified] < '%2$s'"
-                    + "  and (lastmodifiedby = patient or lastmodifiedby = guest-patient)"
+                    + "  and"
+                    + " (dataForm.[jcr:lastModifiedBy] = 'patient' or dataForm.[jcr:lastModifiedBy] = 'guest-patient')"
                     // the visit is not submitted
                     + "  and submitted.question = '%3$s'"
                     + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
