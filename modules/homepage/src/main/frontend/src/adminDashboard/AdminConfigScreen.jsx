@@ -143,15 +143,15 @@ function AdminConfigScreen(props) {
     if (event) {
       // If the submit is user-initiated, grab values form the form
       buildConfigData?.(formData);
+      // Use the config template to Fill in any missing values
+      for (let key of Object.keys(configTemplate)) {
+        formData.get(key) == null && Array.of(configTemplate[key]).flat().forEach(v => formData.append(key, v));
+      }
     } else {
       // Otherwise just save the existing config
       // Use the template keys to avoid attempts to save reserved properties like "jcr:...", "sling:...", "@..."
       for (let key of Object.keys(configTemplate)) {
-        if (Array.isArray(config[key])) {
-          config[key].forEach(v => formData.append(key, v));
-        } else {
-          formData.append(key, config[key]);
-        }
+        Array.of(config[key]).flat().forEach(v => formData.append(key, v));
       }
     }
 
