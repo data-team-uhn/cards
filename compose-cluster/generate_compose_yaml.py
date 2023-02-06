@@ -79,6 +79,7 @@ argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (u
 argparser.add_argument('--self_signed_ssl_proxy', help='Generate a self-signed SSL certificate for the proxy to use (used mainly for testing purposes).', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
+argparser.add_argument('--vault_dev_server', help='Add a HashiCorp Vault (development mode) container to the set of services', action='store_true')
 argparser.add_argument('--web_port_admin', help='If specified, will listen for connections on this port (and not 8080/443) and forward them to the full-access reverse proxy (permitting logins)', type=int)
 argparser.add_argument('--web_port_user', help='If specified, will listen for connections on this port and forward them to the restricted-access reverse proxy (logins not permitted)', type=int)
 argparser.add_argument('--web_port_user_root_redirect', help='The client accessing / over --web_port_user will automatically be redirected to this page', default='/Survey.html')
@@ -851,6 +852,16 @@ if args.mssql:
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_ENCRYPT=false')
   if args.expose_mssql:
     yaml_obj['services']['mssql']['ports'] = ['127.0.0.1:{}:1433'.format(args.expose_mssql)]
+
+if args.vault_dev_server:
+  print("Configuring service: vault_dev")
+  yaml_obj['services']['vault_dev'] = {}
+  yaml_obj['services']['vault_dev']['image'] = 'vault:1.12.2'
+  yaml_obj['services']['vault_dev']['networks'] = {}
+  yaml_obj['services']['vault_dev']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['vault_dev']['networks']['internalnetwork']['aliases'] = ['vault_dev', 'vault']
+  yaml_obj['services']['vault_dev']['environment'] = ['VAULT_DEV_ROOT_TOKEN_ID=vault_dev_token']
+  yaml_obj['services']['vault_dev']['ports'] = ['127.0.0.1:8200:8200']
 
 #Setup the internal network
 print("Configuring the internal network")
