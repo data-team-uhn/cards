@@ -40,6 +40,11 @@ argparser.add_argument('--mongo_singular', help='Use a single MongoDB Docker con
 argparser.add_argument('--mongo_cluster', help='Use a cluster of MongoDB shards and replicas for data storage', action='store_true')
 argparser.add_argument('--percona_singular', help='Use a single Docker container of Percona Server for MongoDB for data storage', action='store_true')
 argparser.add_argument('--percona_encryption_keyfile', help='Enable encryption-at-rest for the singular Percona Server for MongoDB instance using the provided keyfile')
+argparser.add_argument('--percona_encryption_vault_server')
+argparser.add_argument('--percona_encryption_vault_port', type=int, default=8200)
+argparser.add_argument('--percona_encryption_vault_token_file')
+argparser.add_argument('--percona_encryption_vault_secret')
+argparser.add_argument('--percona_encryption_vault_disable_tls_for_testing', action='store_true')
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
@@ -104,6 +109,19 @@ if mongo_storage_type_settings.count(True) > 1:
   print("ERROR: Only one data persistence backend can be specified")
   sys.exit(-1)
 
+VAULT_PROVIDED_PERCONA_ENCRYPTION = False
+percona_encryption_vault_required_settings = [(args.percona_encryption_vault_server is not None), (args.percona_encryption_vault_token_file is not None), (args.percona_encryption_vault_secret is not None)]
+if percona_encryption_vault_required_settings.count(True) == 3:
+  # Encryption using HashiCorp Vault is enabled
+  VAULT_PROVIDED_PERCONA_ENCRYPTION = True
+elif percona_encryption_vault_required_settings.count(True) == 0:
+  # Encryption using HashiCorp Vault will not be used
+  VAULT_PROVIDED_PERCONA_ENCRYPTION = False
+else:
+  # Bad configuration
+  print("ERROR: In order to use a Percona encryption key provided by Vault, --percona_encryption_vault_server, --percona_encryption_vault_token_file, and --percona_encryption_vault_secret must be specified")
+  sys.exit(-1)
+
 if args.mongo_cluster:
   if (MONGO_REPLICA_COUNT % 2) != 1:
     print("ERROR: Replica count must be *odd* to achieve distributed consensus")
@@ -143,6 +161,10 @@ if args.saml_cloud_iam_demo:
     print("")
 
 if args.percona_encryption_keyfile is not None:
+  if VAULT_PROVIDED_PERCONA_ENCRYPTION:
+    print("ERROR: Cannot specify both keyfile-based and Vault-based Percona encryption")
+    sys.exit(-1)
+
   # Check that the file is owned by UID=1001 and has octal permissions of 600
   keyfile_stat = os.stat(args.percona_encryption_keyfile)
   if keyfile_stat.st_uid != 1001:
@@ -505,6 +527,10 @@ if args.percona_singular:
   yaml_obj['services']['percona']['command'] = "--wiredTigerCacheSizeGB {}".format(getWiredTigerCacheSizeGB(1))
   if args.percona_encryption_keyfile is not None:
     yaml_obj['services']['percona']['command'] += " --enableEncryption --encryptionKeyFile /percona_keyfile"
+  elif VAULT_PROVIDED_PERCONA_ENCRYPTION:
+    yaml_obj['services']['percona']['command'] += " --enableEncryption --vaultServerName {} --vaultPort {} --vaultTokenFile /vault.token --vaultSecret {}".format(args.percona_encryption_vault_server, args.percona_encryption_vault_port, args.percona_encryption_vault_secret)
+    if args.percona_encryption_vault_disable_tls_for_testing:
+      yaml_obj['services']['percona']['command'] += "  --vaultDisableTLSForTesting"
 
   yaml_obj['volumes']['cards-percona'] = {}
   yaml_obj['volumes']['cards-percona']['driver'] = "local"
@@ -512,6 +538,8 @@ if args.percona_singular:
   yaml_obj['services']['percona']['volumes'] = ["cards-percona:/data/db"]
   if args.percona_encryption_keyfile is not None:
     yaml_obj['services']['percona']['volumes'].append("{}:/percona_keyfile:ro".format(args.percona_encryption_keyfile))
+  elif VAULT_PROVIDED_PERCONA_ENCRYPTION:
+    yaml_obj['services']['percona']['volumes'].append("{}:/vault.token:ro".format(args.percona_encryption_vault_token_file))
 
 #Configure the initial CARDS container
 print("Configuring service: cardsinitial")
