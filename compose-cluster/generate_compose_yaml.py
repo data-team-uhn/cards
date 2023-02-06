@@ -39,6 +39,7 @@ argparser = argparse.ArgumentParser()
 argparser.add_argument('--mongo_singular', help='Use a single MongoDB Docker container for data storage', action='store_true')
 argparser.add_argument('--mongo_cluster', help='Use a cluster of MongoDB shards and replicas for data storage', action='store_true')
 argparser.add_argument('--percona_singular', help='Use a single Docker container of Percona Server for MongoDB for data storage', action='store_true')
+argparser.add_argument('--percona_encryption_keyfile', help='Enable encryption-at-rest for the singular Percona Server for MongoDB instance using the provided keyfile')
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
@@ -140,6 +141,16 @@ if args.saml_cloud_iam_demo:
     print("SAML authentication with Cloud-IAM.com may not work.")
     print("======================================================================")
     print("")
+
+if args.percona_encryption_keyfile is not None:
+  # Check that the file is owned by UID=1001 and has octal permissions of 600
+  keyfile_stat = os.stat(args.percona_encryption_keyfile)
+  if keyfile_stat.st_uid != 1001:
+    print("ERROR: The file specified by --percona_encryption_keyfile must have UID=1001")
+    sys.exit(-1)
+  if (keyfile_stat.st_mode & 0b111111111) != 0o600:
+    print("ERROR: The file specified by --percona_encryption_keyfile must have permissions of rw------- (600)")
+    sys.exit(-1)
 
 def getDockerHostIP(subnet):
   network_address = subnet.split('/')[0]
@@ -492,11 +503,15 @@ if args.percona_singular:
   yaml_obj['services']['percona']['networks']['internalnetwork']['aliases'] = ['percona', 'mongo']
 
   yaml_obj['services']['percona']['command'] = "--wiredTigerCacheSizeGB {}".format(getWiredTigerCacheSizeGB(1))
+  if args.percona_encryption_keyfile is not None:
+    yaml_obj['services']['percona']['command'] += " --enableEncryption --encryptionKeyFile /percona_keyfile"
 
   yaml_obj['volumes']['cards-percona'] = {}
   yaml_obj['volumes']['cards-percona']['driver'] = "local"
 
   yaml_obj['services']['percona']['volumes'] = ["cards-percona:/data/db"]
+  if args.percona_encryption_keyfile is not None:
+    yaml_obj['services']['percona']['volumes'].append("{}:/percona_keyfile:ro".format(args.percona_encryption_keyfile))
 
 #Configure the initial CARDS container
 print("Configuring service: cardsinitial")
