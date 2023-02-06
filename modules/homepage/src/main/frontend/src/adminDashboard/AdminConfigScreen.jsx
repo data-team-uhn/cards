@@ -204,7 +204,7 @@ function AdminConfigScreen(props) {
               variant="contained"
               color="primary"
               size="small"
-              disabled={configError || !hasChanges}
+              disabled={!!configError || !hasChanges}
             >
               Save
             </Button>

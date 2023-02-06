@@ -65,7 +65,7 @@ function DowntimeWarningConfiguration() {
 
   useEffect(() => {
     // Determine if the end date is earlier than the start date
-    setDateRangeIsInvalid(fromDate && toDate && new Date(toDate).valueOf() < new Date(fromDate).valueOf());
+    setDateRangeIsInvalid(!!fromDate && !!toDate && new Date(toDate).valueOf() < new Date(fromDate).valueOf());
   }, [fromDate, toDate]);
 
   return (
@@ -75,7 +75,7 @@ function DowntimeWarningConfiguration() {
         configTemplate={{enabled: false, fromDate: "", toDate: ""}}
         onConfigFetched={readDowntimeWarningSettings}
         hasChanges={hasChanges}
-        configError={dateRangeIsInvalid ? "Invalid date range" : undefined}
+        configError={!!dateRangeIsInvalid ? "Invalid date range" : undefined}
         buildConfigData={buildConfigData}
         onConfigSaved={() => setHasChanges(false)}
       >
