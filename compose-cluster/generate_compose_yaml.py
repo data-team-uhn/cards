@@ -161,6 +161,7 @@ if args.saml_cloud_iam_demo:
     print("======================================================================")
     print("")
 
+# Check that the encryption keyfile ownership and permissions are acceptable to Percona
 if args.percona_encryption_keyfile is not None:
   if VAULT_PROVIDED_PERCONA_ENCRYPTION:
     print("ERROR: Cannot specify both keyfile-based and Vault-based Percona encryption")
@@ -173,6 +174,17 @@ if args.percona_encryption_keyfile is not None:
     sys.exit(-1)
   if (keyfile_stat.st_mode & 0b111111111) != 0o600:
     print("ERROR: The file specified by --percona_encryption_keyfile must have permissions of rw------- (600)")
+    sys.exit(-1)
+
+# Check that the Vault token file ownership and permissions are acceptable to Percona
+if args.percona_encryption_vault_token_file is not None:
+  # Check that the file is owned by UID=1001 and has octal permissions of 600
+  token_file_stat = os.stat(args.percona_encryption_vault_token_file)
+  if token_file_stat.st_uid != 1001:
+    print("ERROR: The file specified by --percona_encryption_vault_token_file must have UID=1001")
+    sys.exit(-1)
+  if (token_file_stat.st_mode & 0b111111111) != 0o600:
+    print("ERROR: The file specified by --percona_encryption_vault_token_file must have permissions of rw------- (600)")
     sys.exit(-1)
 
 def getDockerHostIP(subnet):
