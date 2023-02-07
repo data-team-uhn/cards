@@ -110,8 +110,13 @@ public class SurveyTracker implements ResourceChangeListener
             if (isHasSurveysAnswer(node) && hasSurveys(node)) {
                 ensureSurveyStatusFormExists(surveyStatusQuestionnaire,
                     this.formUtils.getSubject(this.formUtils.getForm(node)), session);
+                // Also update the expiration date, since this cannot be copied from the visit
+                updateSurveyExpirationDate(this.formUtils.getAnswer(this.formUtils.getForm(node),
+                    session.getNode("/Questionnaires/Visit information/time")), session);
             } else if (isSubmittedAnswer(node) && isSubmitted(node)) {
                 updateSurveySubmittedDate(node, session);
+            } else if (isDischargedAnswer(node)) {
+                updateSurveyExpirationDate(node, session);
             }
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
@@ -134,6 +139,30 @@ public class SurveyTracker implements ResourceChangeListener
         if (submittedDateAnswer != null) {
             submittedDateAnswer.setProperty("value", Calendar.getInstance());
             session.save();
+        }
+    }
+
+    private void updateSurveyExpirationDate(final Node dischargedAnswer, final Session session)
+        throws RepositoryException
+    {
+        Calendar eventDate = (Calendar) this.formUtils.getValue(dischargedAnswer);
+        if (eventDate != null) {
+            final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
+            final Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire,
+                this.formUtils.getSubject(this.formUtils.getForm(dischargedAnswer)), session);
+            final Node expirationDateAnswer = this.formUtils.getAnswer(surveyStatusForm,
+                session.getNode("/Questionnaires/Survey events/survey_expiry"));
+            if (expirationDateAnswer != null) {
+                Calendar expirationDate = (Calendar) eventDate.clone();
+                expirationDate.add(Calendar.DATE, this.accessConfiguration.getAllowedPostVisitCompletionTime() + 1);
+                expirationDate.add(Calendar.DATE, 1);
+                expirationDate.set(Calendar.HOUR_OF_DAY, 0);
+                expirationDate.set(Calendar.MINUTE, 0);
+                expirationDate.set(Calendar.SECOND, 0);
+                expirationDate.set(Calendar.MILLISECOND, 0);
+                expirationDateAnswer.setProperty("value", expirationDate);
+                session.save();
+            }
         }
     }
 
@@ -210,6 +239,17 @@ public class SurveyTracker implements ResourceChangeListener
     private boolean isSubmittedAnswer(final Node answer)
     {
         return isAnswerForQuestion(answer, "surveys_submitted");
+    }
+
+    /**
+     * Check if an answer is for the "patient discharge date" question.
+     *
+     * @param answer the answer node to check
+     * @return {@code true} if the answer is indeed for the target question
+     */
+    private boolean isDischargedAnswer(final Node answer)
+    {
+        return isAnswerForQuestion(answer, "time");
     }
 
     private boolean isAnswerForQuestion(final Node answer, final String questionName)
