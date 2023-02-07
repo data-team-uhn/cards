@@ -51,10 +51,6 @@ function DashboardSettingsConfiguration() {
     type: "boolean"
   }];
 
-  useEffect(() => {
-    setHasChanges(true);
-  }, [enableTimeTabs, eventsLabel, eventTimeLabel]);
-
   let buildConfigData = (formData) => {
     formData.append('enableTimeTabs', enableTimeTabs);
     formData.append('eventsLabel', eventsLabel);
@@ -72,6 +68,7 @@ function DashboardSettingsConfiguration() {
       <AdminConfigScreen
         title="Clinic dashboard"
         configPath={"/Survey/DashboardSettings"}
+        configTemplate={fields.reduce((t, k) => ({...t, [k.key] : ""}), {})}
         onConfigFetched={readDashboardSettings}
         hasChanges={hasChanges}
         buildConfigData={buildConfigData}
@@ -90,14 +87,14 @@ function DashboardSettingsConfiguration() {
                 type="text"
                 label={camelCaseToWords(field.key)}
                 value={field.value}
-                onChange={(event) => { field.setter(event.target.value); }}
+                onChange={(event) => { field.setter(event.target.value); setHasChanges(true); }}
               />
               :
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={field.value}
-                    onChange={ event => field.setter(event.target.checked) }
+                    onChange={ event => { field.setter(event.target.checked); setHasChanges(true); } }
                     name={field.key}
                   />
                 }

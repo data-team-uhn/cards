@@ -66,10 +66,6 @@ function PatientAccessConfiguration() {
     }
   }
 
-  useEffect(() => {
-    setHasChanges(true);
-  }, [patientAccessConfig]);
-
   let renderConfigCheckbox = (key, valueOverride) => (
       <ListItem>
         <FormControlLabel control={
@@ -77,7 +73,10 @@ function PatientAccessConfiguration() {
             name={key}
             checked={valueOverride || patientAccessConfig?.[key] || DEFAULT_PATIENT_ACCESS_CONFIG[key]}
             disabled={valueOverride}
-            onChange={event => setPatientAccessConfig({...patientAccessConfig, [key]: valueOverride || event.target.checked})}
+            onChange={event => {
+              setPatientAccessConfig({...patientAccessConfig, [key]: valueOverride || event.target.checked});
+              setHasChanges(true);
+            }}
           />}
           label={labels[key]}
         />
@@ -91,8 +90,8 @@ function PatientAccessConfiguration() {
           <TextField
             variant="standard"
             type="number"
-            onChange={event => setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value})}
-            onBlur={event => setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value})}
+            onChange={event => { setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value}); setHasChanges(true); }}
+            onBlur={event => { setPatientAccessConfig({...patientAccessConfig, [key]: event.target.value}); setHasChanges(true); }}
             placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
             value={patientAccessConfig?.[key]}
             InputProps={{
@@ -107,6 +106,7 @@ function PatientAccessConfiguration() {
       <AdminConfigScreen
           title="Patient Access"
           configPath={PATIENT_ACCESS_CONFIG_PATH}
+          configTemplate={Object.keys(DEFAULT_PATIENT_ACCESS_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
           onConfigFetched={setPatientAccessConfig}
           hasChanges={hasChanges}
           buildConfigData={buildConfigData}

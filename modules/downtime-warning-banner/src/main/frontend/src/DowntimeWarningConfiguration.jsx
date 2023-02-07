@@ -65,20 +65,17 @@ function DowntimeWarningConfiguration() {
 
   useEffect(() => {
     // Determine if the end date is earlier than the start date
-    setDateRangeIsInvalid(fromDate && toDate && new Date(toDate).valueOf() < new Date(fromDate).valueOf());
+    setDateRangeIsInvalid(!!fromDate && !!toDate && new Date(toDate).valueOf() < new Date(fromDate).valueOf());
   }, [fromDate, toDate]);
-
-  useEffect(() => {
-    setHasChanges(true);
-  }, [enabled, fromDate, toDate]);
 
   return (
     <AdminConfigScreen
         title="Downtime Warning Banner Settings"
         configPath="/apps/cards/config/DowntimeWarning"
+        configTemplate={{enabled: false, fromDate: "", toDate: ""}}
         onConfigFetched={readDowntimeWarningSettings}
         hasChanges={hasChanges}
-        configError={dateRangeIsInvalid ? "Invalid date range" : undefined}
+        configError={!!dateRangeIsInvalid ? "Invalid date range" : undefined}
         buildConfigData={buildConfigData}
         onConfigSaved={() => setHasChanges(false)}
       >
@@ -88,7 +85,7 @@ function DowntimeWarningConfiguration() {
                 control={
                   <Checkbox
                     checked={enabled}
-                    onChange={ event => setEnabled(event.target.checked) }
+                    onChange={ event => { setEnabled(event.target.checked); setHasChanges(true); } }
                     name="enabled"
                   />
                 }
@@ -102,7 +99,7 @@ function DowntimeWarningConfiguration() {
                 type="datetime-local"
                 InputLabelProps={{ shrink: true }}
                 className={classes.textField}
-                onChange={(event) => setFromDate(event.target.value) }
+                onChange={(event) => { setFromDate(event.target.value); setHasChanges(true); } }
                 onBlur={(event) => setFromDate(event.target.value) }
                 placeholder={dateFormat.toLowerCase()}
                 value={fromDate || ""}
@@ -115,7 +112,7 @@ function DowntimeWarningConfiguration() {
                 type="datetime-local"
                 InputLabelProps={{ shrink: true }}
                 className={classes.textField}
-                onChange={(event) => setToDate(event.target.value) }
+                onChange={(event) => { setToDate(event.target.value); setHasChanges(true); } }
                 onBlur={(event) => setToDate(event.target.value) }
                 placeholder={dateFormat.toLowerCase()}
                 value={toDate || ""}
