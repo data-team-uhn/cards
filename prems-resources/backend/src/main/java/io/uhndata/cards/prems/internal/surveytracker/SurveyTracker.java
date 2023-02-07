@@ -26,6 +26,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -33,6 +34,9 @@ import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,12 +52,13 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@Component(immediate = true, service = { ResourceChangeListener.class }, property = {
+@Component(immediate = true, service = { ResourceChangeListener.class, EventHandler.class }, property = {
     ResourceChangeListener.PATHS + "=/Forms",
     ResourceChangeListener.CHANGES + "=ADDED",
     ResourceChangeListener.CHANGES + "=CHANGED",
+    EventConstants.EVENT_TOPIC + "=Notification/Patient/Appointment/*",
 })
-public class SurveyTracker implements ResourceChangeListener
+public class SurveyTracker implements ResourceChangeListener, EventHandler
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SurveyTracker.class);
 
@@ -82,6 +87,37 @@ public class SurveyTracker implements ResourceChangeListener
     public void onChange(final List<ResourceChange> changes)
     {
         changes.forEach(this::handleResourceEvent);
+    }
+
+    @Override
+    public void handleEvent(Event event)
+    {
+        boolean mustPopResolver = false;
+        try (ResourceResolver localResolver = this.resolverFactory
+            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "SurveyTracker"))) {
+            this.rrp.push(localResolver);
+            mustPopResolver = true;
+            final Session session = localResolver.adaptTo(Session.class);
+
+            final Node visitSubject = session.getNode((String) event.getProperty("visit"));
+            final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
+            final Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
+            final Node question = surveyStatusQuestionnaire
+                .getNode(StringUtils.toRootLowerCase(StringUtils.substringAfterLast(event.getTopic(), "/")) + "_sent");
+            final Node answer = this.formUtils.getAnswer(surveyStatusForm, question);
+            if (answer != null) {
+                answer.setProperty("value", Calendar.getInstance());
+                session.save();
+            }
+        } catch (final LoginException e) {
+            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
+        } catch (final RepositoryException e) {
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
+        }
     }
 
     /**

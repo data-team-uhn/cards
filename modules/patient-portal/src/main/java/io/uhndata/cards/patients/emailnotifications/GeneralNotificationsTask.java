@@ -30,6 +30,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
+import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,8 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneralNotificationsTask.class);
 
     private final String taskName;
+
+    private final String notificationType;
 
     private final String clinicId;
 
@@ -70,14 +73,15 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
      */
     @SuppressWarnings("checkstyle:ParameterNumber")
     public GeneralNotificationsTask(final ResourceResolverFactory resolverFactory,
-        final ThreadResourceResolverProvider resolverProvider,
+        final ThreadResourceResolverProvider resolverProvider, final EventAdmin eventAdmin,
         final TokenManager tokenManager, final MailService mailService,
-        final FormUtils formUtils,
-        final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
-        final String clinicId, final String emailTemplatePath, final int daysToVisit)
+        final FormUtils formUtils, final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
+        final String notificationType, final String clinicId, final String emailTemplatePath, final int daysToVisit)
     {
-        super(resolverFactory, resolverProvider, tokenManager, mailService, formUtils, patientAccessConfiguration);
+        super(resolverFactory, resolverProvider, tokenManager, mailService, formUtils, patientAccessConfiguration,
+            eventAdmin);
         this.taskName = taskName;
+        this.notificationType = notificationType;
         this.clinicId = clinicId;
         this.emailTemplatePath = emailTemplatePath;
         this.daysToVisit = daysToVisit;
@@ -91,6 +95,12 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
         }
         long emailsSent = sendNotification(this.daysToVisit, this.emailTemplate, this.clinicId);
         Metrics.increment(this.resolverFactory, this.taskName, emailsSent);
+    }
+
+    @Override
+    protected String getNotificationType()
+    {
+        return "Notification/Patient/Appointment/" + this.notificationType;
     }
 
     private EmailTemplate buildTemplate(final String configurationNodePath)

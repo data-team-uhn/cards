@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.event.EventAdmin;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -53,6 +54,9 @@ public final class AppointmentEmailNotificationsFactory
     @Reference
     private ThreadResourceResolverProvider resolverProvider;
 
+    @Reference
+    private EventAdmin eventAdmin;
+
     /** The scheduler for rescheduling jobs. */
     @Reference
     private Scheduler scheduler;
@@ -78,6 +82,10 @@ public final class AppointmentEmailNotificationsFactory
     {
         @AttributeDefinition(name = "Name", description = "Name")
         String name();
+
+        @AttributeDefinition(name = "Notification Type",
+            description = "What type of email notification, e.g. Invitation")
+        String notificationType();
 
         @AttributeDefinition(name = "Metric Name", description = "Metric name description (eg. Reminder emails sent)")
         String metricName();
@@ -113,8 +121,9 @@ public final class AppointmentEmailNotificationsFactory
 
         // Instantiate the Runnable
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.resolverProvider,
-            this.tokenManager, this.mailService, this.formUtils, this.patientAccessConfiguration, config.name(),
-            config.clinicId(), config.emailConfiguration(), config.daysToVisit());
+            this.eventAdmin, this.tokenManager, this.mailService, this.formUtils, this.patientAccessConfiguration,
+            config.name(), config.notificationType(), config.clinicId(), config.emailConfiguration(),
+            config.daysToVisit());
 
         try {
             this.scheduler.schedule(notificationsJob, notificationsOptions);

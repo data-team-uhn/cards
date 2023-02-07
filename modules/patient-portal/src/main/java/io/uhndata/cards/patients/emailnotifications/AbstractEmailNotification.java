@@ -36,6 +36,8 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +65,8 @@ abstract class AbstractEmailNotification
 
     protected final ThreadResourceResolverProvider resolverProvider;
 
+    private final EventAdmin eventAdmin;
+
     private final TokenManager tokenManager;
 
     private final MailService mailService;
@@ -74,7 +78,7 @@ abstract class AbstractEmailNotification
     AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
         final ThreadResourceResolverProvider resolverProvider,
         final TokenManager tokenManager, final MailService mailService, final FormUtils formUtils,
-        final PatientAccessConfiguration patientAccessConfiguration)
+        final PatientAccessConfiguration patientAccessConfiguration, final EventAdmin eventAdmin)
     {
         this.resolverFactory = resolverFactory;
         this.resolverProvider = resolverProvider;
@@ -82,7 +86,7 @@ abstract class AbstractEmailNotification
         this.mailService = mailService;
         this.formUtils = formUtils;
         this.patientAccessConfiguration = patientAccessConfiguration;
-
+        this.eventAdmin = eventAdmin;
     }
 
     /*
@@ -114,24 +118,12 @@ abstract class AbstractEmailNotification
             while (appointmentResults.hasNext()) {
                 Node appointmentDate = appointmentResults.nextNode();
                 Node appointmentForm = this.formUtils.getForm(appointmentDate);
-                if (appointmentForm == null) {
+                if (appointmentForm == null || isSurveyCompleted(appointmentForm, session)) {
                     continue;
                 }
                 Node visitSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient/Visit");
                 // Get the Patient Subject associated with this appointment Form
                 Node patientSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient");
-
-                Node surveysCompleteQuestion = session.getNode("/Questionnaires/Visit information/surveys_complete");
-                // Skip the email if there are no incomplete surveys for the patient
-                boolean patientSurveysComplete = this.formUtils
-                    .findAllFormRelatedAnswers(appointmentForm, surveysCompleteQuestion,
-                        EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS))
-                    .stream()
-                    .map(n -> this.formUtils.getValue(n))
-                    .anyMatch(v -> Long.valueOf(1).equals(v));
-                if (patientSurveysComplete) {
-                    continue;
-                }
 
                 try {
                     Email email = renderTemplate(template, appointmentDate, visitSubject, patientSubject, session);
@@ -139,6 +131,10 @@ abstract class AbstractEmailNotification
                         continue;
                     }
                     EmailUtils.sendHtmlEmail(email, this.mailService);
+                    Event event = new Event(getNotificationType(), Map.of(
+                        "visit", visitSubject.getPath(),
+                        "patient", patientSubject.getPath()));
+                    this.eventAdmin.postEvent(event);
                     emailsSent += 1;
                 } catch (MessagingException e) {
                     LOGGER.warn("Failed to send Initial Notification Email");
@@ -153,6 +149,8 @@ abstract class AbstractEmailNotification
         }
         return emailsSent;
     }
+
+    protected abstract String getNotificationType();
 
     private Email renderTemplate(final EmailTemplate template, final Node appointmentDate,
         final Node visitSubject, final Node patientSubject, final Session session) throws RepositoryException
@@ -184,6 +182,18 @@ abstract class AbstractEmailNotification
         return template.getEmailBuilderForSubject(visitSubject, valuesMap, this.formUtils)
             .withRecipient(patientEmailAddress, patientFullName)
             .build();
+    }
+
+    private boolean isSurveyCompleted(final Node appointmentForm, final Session session) throws RepositoryException
+    {
+        Node surveysCompleteQuestion = session.getNode("/Questionnaires/Visit information/surveys_complete");
+        // Skip the email if there are no incomplete surveys for the patient
+        return this.formUtils
+            .findAllFormRelatedAnswers(appointmentForm, surveysCompleteQuestion,
+                EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS))
+            .stream()
+            .map(n -> this.formUtils.getValue(n))
+            .anyMatch(v -> Long.valueOf(1).equals(v));
     }
 
     private void atMidnight(final Calendar c)
