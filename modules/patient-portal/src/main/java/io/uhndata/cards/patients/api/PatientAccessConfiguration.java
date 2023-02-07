@@ -49,4 +49,14 @@ public interface PatientAccessConfiguration
      * @return A number of days
      */
     int getAllowedPostVisitCompletionTime();
+
+    /**
+     * Get the configured amount of time, in days, that patient's draft responses are kept in the database and the
+     * patient is allowed to continue filling them out. After the specified number of days, the draft responses would
+     * be deleted and the patient would have to start over. If a value is not specified for this setting or if it is
+     * {@code -1}, the draft will remain in the database until the patient no longer has access to it.
+     *
+     * @return A number of days
+     */
+    int getDraftLifetime();
 }
