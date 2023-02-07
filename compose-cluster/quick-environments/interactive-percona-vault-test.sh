@@ -41,6 +41,9 @@ do
 done
 echo "Vault is up"
 
+# Set the perconaencrypt Vault secret to some pre-defined test value
+docker-compose exec -e "VAULT_ADDR=http://127.0.0.1:8200" -e "VAULT_TOKEN=vault_dev_token" vault_dev vault kv put secret/perconaencrypt value="gKpfqVcH85jI6K97OVdKdoH8CCXHPa5OkWduWfWsOBw="
+
 # Bring everything else up
 docker-compose up -d
 
