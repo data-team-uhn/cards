@@ -45,6 +45,7 @@ argparser.add_argument('--percona_encryption_vault_port', type=int, default=8200
 argparser.add_argument('--percona_encryption_vault_token_file')
 argparser.add_argument('--percona_encryption_vault_secret')
 argparser.add_argument('--percona_encryption_vault_disable_tls_for_testing', action='store_true')
+argparser.add_argument('--data_db_mount', help='If using --mongo_singular or --percona_singular, mount /data/db to a given location instead of to a Docker volume')
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
@@ -185,6 +186,13 @@ if args.percona_encryption_vault_token_file is not None:
     sys.exit(-1)
   if (token_file_stat.st_mode & 0b111111111) != 0o600:
     print("ERROR: The file specified by --percona_encryption_vault_token_file must have permissions of rw------- (600)")
+    sys.exit(-1)
+
+# Percona requires that /data/db have a UID=1001
+if (args.data_db_mount is not None) and args.percona_singular:
+  data_db_mount_stat = os.stat(args.data_db_mount)
+  if data_db_mount_stat.st_uid != 1001:
+    print("ERROR: The file specified by --percona_singular must have UID=1001")
     sys.exit(-1)
 
 def getDockerHostIP(subnet):
@@ -523,10 +531,13 @@ if args.mongo_singular:
 
   yaml_obj['services']['mongo']['command'] = "--wiredTigerCacheSizeGB {}".format(getWiredTigerCacheSizeGB(1))
 
-  yaml_obj['volumes']['cards-mongo'] = {}
-  yaml_obj['volumes']['cards-mongo']['driver'] = "local"
+  if args.data_db_mount is None:
+    yaml_obj['volumes']['cards-mongo'] = {}
+    yaml_obj['volumes']['cards-mongo']['driver'] = "local"
 
-  yaml_obj['services']['mongo']['volumes'] = ["cards-mongo:/data/db"]
+    yaml_obj['services']['mongo']['volumes'] = ["cards-mongo:/data/db"]
+  else:
+    yaml_obj['services']['mongo']['volumes'] = ["{}:/data/db".format(args.data_db_mount)]
 
 if args.percona_singular:
   # Create the single-container Percona Server for MongoDB
@@ -545,10 +556,14 @@ if args.percona_singular:
     if args.percona_encryption_vault_disable_tls_for_testing:
       yaml_obj['services']['percona']['command'] += "  --vaultDisableTLSForTesting"
 
-  yaml_obj['volumes']['cards-percona'] = {}
-  yaml_obj['volumes']['cards-percona']['driver'] = "local"
+  if args.data_db_mount is None:
+    yaml_obj['volumes']['cards-percona'] = {}
+    yaml_obj['volumes']['cards-percona']['driver'] = "local"
 
-  yaml_obj['services']['percona']['volumes'] = ["cards-percona:/data/db"]
+    yaml_obj['services']['percona']['volumes'] = ["cards-percona:/data/db"]
+  else:
+    yaml_obj['services']['percona']['volumes'] = ["{}:/data/db".format(args.data_db_mount)]
+
   if args.percona_encryption_keyfile is not None:
     yaml_obj['services']['percona']['volumes'].append("{}:/percona_keyfile:ro".format(args.percona_encryption_keyfile))
   elif VAULT_PROVIDED_PERCONA_ENCRYPTION:

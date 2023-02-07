@@ -17,8 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+ALL_ARGUMENTS=$@
+
 # HTTP + Singular Percona + Encryption-At-Rest with Vault provided key
-python3 generate_compose_yaml.py \
+python3 generate_compose_yaml.py $ALL_ARGUMENTS \
   --dev_docker_image \
   --composum \
   --percona_singular \
