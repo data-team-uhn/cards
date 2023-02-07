@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.prems.internal.surveytracker;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -109,6 +110,8 @@ public class SurveyTracker implements ResourceChangeListener
             if (isHasSurveysAnswer(node) && hasSurveys(node)) {
                 ensureSurveyStatusFormExists(surveyStatusQuestionnaire,
                     this.formUtils.getSubject(this.formUtils.getForm(node)), session);
+            } else if (isSubmittedAnswer(node) && isSubmitted(node)) {
+                updateSurveySubmittedDate(node, session);
             }
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
@@ -121,10 +124,29 @@ public class SurveyTracker implements ResourceChangeListener
         }
     }
 
+    private void updateSurveySubmittedDate(final Node submittedAnswer, final Session session) throws RepositoryException
+    {
+        final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
+        final Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire,
+            this.formUtils.getSubject(this.formUtils.getForm(submittedAnswer)), session);
+        final Node submittedDateAnswer = this.formUtils.getAnswer(surveyStatusForm,
+            session.getNode("/Questionnaires/Survey events/responses_received"));
+        if (submittedDateAnswer != null) {
+            submittedDateAnswer.setProperty("value", Calendar.getInstance());
+            session.save();
+        }
+    }
+
     private boolean hasSurveys(final Node hasSurveysAnswer) throws RepositoryException
     {
         final Long hasSurveys = (Long) this.formUtils.getValue(hasSurveysAnswer);
         return hasSurveys != null && hasSurveys == 1;
+    }
+
+    private boolean isSubmitted(final Node submittedAnswer) throws RepositoryException
+    {
+        final Long submitted = (Long) this.formUtils.getValue(submittedAnswer);
+        return submitted != null && submitted == 1;
     }
 
     private void ensureSurveyStatusFormExists(final Node surveyStatusQuestionnaire, final Node visitSubject,
@@ -177,6 +199,17 @@ public class SurveyTracker implements ResourceChangeListener
     private boolean isHasSurveysAnswer(final Node answer)
     {
         return isAnswerForQuestion(answer, "has_surveys");
+    }
+
+    /**
+     * Check if an answer is for the "survey has been submitted" question.
+     *
+     * @param answer the answer node to check
+     * @return {@code true} if the answer is indeed for the target question
+     */
+    private boolean isSubmittedAnswer(final Node answer)
+    {
+        return isAnswerForQuestion(answer, "surveys_submitted");
     }
 
     private boolean isAnswerForQuestion(final Node answer, final String questionName)
