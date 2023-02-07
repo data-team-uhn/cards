@@ -143,15 +143,15 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             }
             final Node node = session.getNode(path);
             final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
-            if (isHasSurveysAnswer(node) && hasSurveys(node)) {
+            if (isAnswerForHasSurveys(node) && hasSurveys(node)) {
                 ensureSurveyStatusFormExists(surveyStatusQuestionnaire,
                     this.formUtils.getSubject(this.formUtils.getForm(node)), session);
                 // Also update the expiration date, since this cannot be copied from the visit
                 updateSurveyExpirationDate(this.formUtils.getAnswer(this.formUtils.getForm(node),
                     session.getNode("/Questionnaires/Visit information/time")), session);
-            } else if (isSubmittedAnswer(node) && isSubmitted(node)) {
+            } else if (isAnswerForSurveysSubmitted(node) && isSubmitted(node)) {
                 updateSurveySubmittedDate(node, session);
-            } else if (isDischargedAnswer(node)) {
+            } else if (isAnswerForDischargeTime(node)) {
                 updateSurveyExpirationDate(node, session);
             }
         } catch (final LoginException e) {
@@ -261,7 +261,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
      * @param answer the answer node to check
      * @return {@code true} if the answer is indeed for the target question
      */
-    private boolean isHasSurveysAnswer(final Node answer)
+    private boolean isAnswerForHasSurveys(final Node answer)
     {
         return isAnswerForQuestion(answer, "has_surveys");
     }
@@ -272,7 +272,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
      * @param answer the answer node to check
      * @return {@code true} if the answer is indeed for the target question
      */
-    private boolean isSubmittedAnswer(final Node answer)
+    private boolean isAnswerForSurveysSubmitted(final Node answer)
     {
         return isAnswerForQuestion(answer, "surveys_submitted");
     }
@@ -283,7 +283,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
      * @param answer the answer node to check
      * @return {@code true} if the answer is indeed for the target question
      */
-    private boolean isDischargedAnswer(final Node answer)
+    private boolean isAnswerForDischargeTime(final Node answer)
     {
         return isAnswerForQuestion(answer, "time");
     }
