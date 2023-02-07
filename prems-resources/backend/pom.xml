@@ -43,9 +43,37 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.uhndata.cards</groupId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-data-model-forms-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-data-model-subjects-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-patient-portal</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-resolver-provider</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>cards-clarity-integration</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.api</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-validator</groupId>
@@ -54,17 +82,15 @@
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.metatype.annotations</artifactId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.cm</artifactId>
-      <version>1.6.1</version>
+      <artifactId>org.osgi.service.metatype.annotations</artifactId>
     </dependency>
     <dependency>
-    <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.framework</artifactId>
-      <version>1.9.0</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
 </project>
