@@ -99,6 +99,7 @@ function Form (props) {
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
+  let [ classNames, setClassNames ] = useState(className ? [className] : []);
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
@@ -198,6 +199,9 @@ function Form (props) {
       // grab it from the questionnaire definition
       typeof(requireCompletion == "undefined") && setRequireCompletion(json?.['questionnaire']?.['requireCompletion']);
       setIncompleteQuestionEl(null);
+      // Take into account the option to hide answer instructions as specified in the questionnaire definition
+      let hideInstructions = json?.['questionnaire']?.['hideAnswerInstructions'];
+      !!hideInstructions && setClassNames(names => ([...names, classes.hideAnswerInstructions]));
       //Perform a JCR check-out of the Form
       let checkoutForm = new FormData();
       checkoutForm.set(":operation", "checkout");
@@ -475,7 +479,7 @@ function Form (props) {
                    }
           key={id}
           ref={formNode}
-          className={className || null}
+          className={classNames?.join(' ')}
       >
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&

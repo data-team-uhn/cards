@@ -36,11 +36,13 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(-1, -1, 4),
     padding: theme.spacing(0, 1),
     boxSizing: "content-box",
-    background: "transparent",
+    background: theme.palette.background.paper,
     color: theme.palette.text.primary,
     boxShadow: "none",
   },
   toolbar : {
+    maxWidth: "780px",
+    margin: "auto",
     display: "flex",
     justifyContent: "space-between",
     background: theme.palette.background.paper,
@@ -50,11 +52,13 @@ const useStyles = makeStyles(theme => ({
   titleLine : {
     display: "flex",
     alignItems: "center",
+    "& * + *" : {
+      marginLeft: theme.spacing(4),
+    }
   },
   logo : {
     maxHeight: theme.spacing(6),
-    marginRight: theme.spacing(2),
-    "@media (max-width: 400px)" : {
+    "@media (max-width: 500px)" : {
       maxHeight: theme.spacing(4),
     }
   },
@@ -65,7 +69,6 @@ const useStyles = makeStyles(theme => ({
   },
   fullSize : {
     paddingTop: theme.spacing(5),
-    maxWidth: "780px",
     width: `calc(100% - ${theme.spacing(5)})`,
     margin: "auto",
     "&.MuiToolbar-root > .MuiTypography-root" : {
@@ -85,7 +88,7 @@ function Header (props) {
   const scrollTrigger = useScrollTrigger({
     target: window,
     disableHysteresis: true,
-    threshold: 250,
+    threshold: 200,
   });
 
   let subtitleBar = subtitle ?
@@ -95,23 +98,31 @@ function Header (props) {
     </Toolbar>
     : <></>;
 
+  const logo = document.querySelector('meta[name="logoLight"]').content;
+  const affiliationLogo = document.querySelector('meta[name="affiliationLogo"]')?.content;
+
   return (
     <>
     <AppBar position="sticky" className={classes.appbar}>
       <Collapse in={!subtitle || !(scrollTrigger)}>
         <Toolbar variant="dense" className={classes.toolbar}>
           <div className={classes.titleLine}>
-            <img src={document.querySelector('meta[name="logoLight"]').content} alt="logo" className={classes.logo} />
+            <img src={logo} alt="logo" className={classes.logo} />
             { title &&
               <Typography variant="overline" color="textPrimary">{ title }</Typography>
             }
           </div>
-          <Breadcrumbs separator = "·">
-            {greeting && <span className={classes.greeting}>{ greeting }</span>}
-            {withSignout &&
+          { affiliationLogo &&
+            <img src={affiliationLogo} alt="logo" className={classes.logo} />
+          }
+          { (greeting || withSignout) &&
+            <Breadcrumbs separator = "·">
+            { greeting && <span className={classes.greeting}>{ greeting }</span>}
+            { withSignout &&
               <Link href="/system/sling/logout" underline="hover" onClick={(event) => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
             }
-          </Breadcrumbs>
+            </Breadcrumbs>
+          }
         </Toolbar>
       </Collapse>
       { subtitle && <Collapse in={scrollTrigger}>{subtitleBar}</Collapse> }

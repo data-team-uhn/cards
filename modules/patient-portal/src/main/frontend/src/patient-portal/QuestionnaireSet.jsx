@@ -75,17 +75,19 @@ const useStyles = makeStyles(theme => ({
     }
   },
   stepIndicator : {
-    border: "1px solid " + theme.palette.text.secondary,
+    border: "1px solid " + theme.palette.action.disabled,
     background: "transparent",
-    color: theme.palette.text.secondary,
+    color: theme.palette.action.disabled,
   },
   incompleteIndicator : {
-    border: "1px solid " + theme.palette.secondary.main,
+    border: "1px solid " + theme.palette.error.main,
     background: "transparent",
-    color: theme.palette.secondary.main,
+    color: theme.palette.error.main,
   },
   doneIndicator : {
-    background: theme.palette.success.main,
+    border: "1px solid " + theme.palette.success.main,
+    background: "transparent",
+    color: theme.palette.success.main,
   },
   survey : {
     alignItems: "stretch",
@@ -215,6 +217,11 @@ function QuestionnaireSet(props) {
     if (!subjectData || !questionnaireIds) return;
     setComplete(Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length);
   }, [subjectDataLoadCount]);
+
+  // Automatically log out the user at the end
+  useEffect(() => {
+    isSubmitted && fetch('/system/sling/logout');
+  }, [isSubmitted]);
 
   // Determine if the user has already submitted their forms
   useEffect(() => {
@@ -443,9 +450,10 @@ function QuestionnaireSet(props) {
         url,
         { method: 'POST', body: data }
       )
+        .then(response => response.ok ? response.text() : Promise.reject(response))
+        .then(() => setSubmitted(true))
+        .catch(response => setError(`Submitting the responses failed with error code ${response.status}: ${response.statusText}`));
     }
-
-    setSubmitted(true);
   }
 
   let checkinForms = () => {
@@ -567,16 +575,10 @@ function QuestionnaireSet(props) {
   // Replace the occurrence of the pattern with the value
   let introMessage = intro.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
-  let closeButton = <Fab key="close-button" variant="extended" color="primary" onClick={
-      () => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)
-    }>Close</Fab>;
-
-
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
     displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "survey-info"}),
-    closeButton,
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
@@ -621,7 +623,7 @@ function QuestionnaireSet(props) {
     </Grid>
   ] : [
     <Typography variant="h4" key="review-title">Please review your answers</Typography>,
-    <Typography paragraph key="review-desc">You can update the answers for each survey and continue to this review screen before final submission.</Typography>,
+    <Typography paragraph key="review-desc">You can update the response for each question in the survey by using the "Update this Survey" button below.</Typography>,
     <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).map((q, i) => (
       <Grid item key={q+"Review"}>
@@ -651,13 +653,17 @@ function QuestionnaireSet(props) {
   // Are there any response interpretations to display to the patient?
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
+  let finalInstructions = (
+      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions"})
+  );
+
   let disclaimer = (
       displayText("disclaimer", Alert, {severity: "warning", key: "disclaimer"})
-  )
+  );
 
   let summaryScreen = hasInterpretations ? [
-      <Typography variant="h4" key="summary-title">Thank you for your submission</Typography>,
-      displayText("summaryInstructions", Typography, {color: "textSecondary", key: "summary-instructions"}),
+      <Typography variant="h4" key="summary-title">Thank you</Typography>,
+      finalInstructions,
       disclaimer,
       <Typography variant="h4" key="summary-intro">Interpreting your results</Typography>,
       displayText("interpretationInstructions", Typography, {color: "textSecondary", key: "summary-interpretation-instructions"}),
@@ -678,11 +684,10 @@ function QuestionnaireSet(props) {
         </Grid>
       ))}
       </Grid>,
-      closeButton,
     ] : [
-      <Typography variant="h4" key="summary-title">Thank you for your submission</Typography>,
+      <Typography variant="h4" key="summary-title">Thank you</Typography>,
+      finalInstructions,
       disclaimer,
-      closeButton,
     ];
 
   let loadingScreen = [ <CircularProgress key="exit-loading"/> ];

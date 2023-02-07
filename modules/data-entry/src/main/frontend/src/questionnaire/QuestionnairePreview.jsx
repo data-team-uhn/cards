@@ -72,7 +72,7 @@ function QuestionnairePreview (props) {
     );
   }
 
-  return (<>
+  return (<div className={data?.hideAnswerInstructions ? classes.hideAnswerInstructions : null}>
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
       { /* Added dummy save functionality for mocking file and pedigree questions functionality. */ }
       <FormProvider additionalFormData={{
@@ -124,7 +124,7 @@ function QuestionnairePreview (props) {
         label="Close"
       />
     }
-  </>);
+  </div>);
 };
 
 export default withStyles(QuestionnaireStyle)(QuestionnairePreview);

@@ -32,7 +32,7 @@ Please answer some questions about your recent stay at:
 
 **@{visit.location}**
 
-Do not include any other hospital stays in your answers.
+Please do not include any other hospital stays in your answers.
         </value>
         <type>String</type>
     </property>

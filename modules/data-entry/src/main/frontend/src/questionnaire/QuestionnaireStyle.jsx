@@ -34,6 +34,12 @@ const questionnaireStyle = theme => ({
     questionCard : {
       "& .MuiCardHeader-root" : {
         padding: theme.spacing(1, 3, 0, 3),
+        "& h6 ol" : {
+           paddingLeft: 0,
+        },
+        "& h6 li" : {
+           listStylePosition: "inside",
+        },
       },
       "& .MuiCardContent-root" : {
         paddingLeft: theme.spacing(3),
@@ -136,6 +142,11 @@ const questionnaireStyle = theme => ({
     answerInstructions: {
         margin: theme.spacing(-3,0,1),
         padding: theme.spacing(1, 0),
+    },
+    hideAnswerInstructions: {
+      "& p[class*='-answerInstructions']" : {
+        display: "none",
+      }
     },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,
@@ -565,6 +576,9 @@ const questionnaireStyle = theme => ({
       "&.MuiCard-root, > .MuiCard-root" : {
         outline: `1px solid ${theme.palette.error.light}`,
       },
+      "& p[class*='-answerInstructions']" : {
+        display: "block",
+      }
     },
     fileResourceAnswerList: {
       listStyleType: 'none',

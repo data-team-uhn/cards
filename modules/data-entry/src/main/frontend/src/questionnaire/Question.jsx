@@ -93,10 +93,9 @@ function Question (props) {
         // Note that we need to preserve the hierarchy in which we place children
         // so that pageActive changing does not cause children to lose state
         pageActive && <CardHeader
-          title={text}
-          titleTypographyProps={{ variant: 'h6' }}
-          subheader={<FormattedText variant="caption">{description}</FormattedText>}
-          subheaderTypographyProps={{ component: "div" }}
+          disableTypography
+          title={<FormattedText component="h6" variant="h6">{text}</FormattedText>}
+          subheader={<FormattedText component="div" variant="caption" color="textSecondary">{description}</FormattedText>}
           />
       }
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
