@@ -26,7 +26,7 @@ from os import path
 
 package_name = 'cards-aggregated-frontend'
 
-def merge_packache_json_files(root, dir_name, project_to_name_map, package_merged):
+def merge_package_json_files(root, dir_name, project_to_name_map, package_merged):
     fl = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'package.json')
     if path.exists(fl):
         with open(fl, "r") as f:
@@ -102,7 +102,7 @@ def main(args=sys.argv[1:]):
 
             for name in dirs:
                 if not name == "aggregated-frontend":
-                    merge_packache_json_files(root, name, project_to_name_map, package_merged)
+                    merge_package_json_files(root, name, project_to_name_map, package_merged)
                     merge_webpack_files(root, name, aggregated_frontend_dir, project_to_name_map, webpack_config_entries)
 
     # Write aggregated package.json file
