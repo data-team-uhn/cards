@@ -80,12 +80,14 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.action.disabled,
   },
   incompleteIndicator : {
-    border: "1px solid " + theme.palette.secondary.main,
+    border: "1px solid " + theme.palette.error.main,
     background: "transparent",
-    color: theme.palette.secondary.main,
+    color: theme.palette.error.main,
   },
   doneIndicator : {
-    background: theme.palette.success.main,
+    border: "1px solid " + theme.palette.success.main,
+    background: "transparent",
+    color: theme.palette.success.main,
   },
   survey : {
     alignItems: "stretch",
