@@ -15,6 +15,7 @@
     "description" : "markdown",
     "maxPerSubject": "long",
     "requireCompletion" : "boolean",
+    "hideAnswerInstructions" : "boolean",
     "paginate": {
       "true" : {
         "paginationVariant" : {
