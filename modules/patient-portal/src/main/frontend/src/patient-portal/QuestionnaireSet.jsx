@@ -75,9 +75,9 @@ const useStyles = makeStyles(theme => ({
     }
   },
   stepIndicator : {
-    border: "1px solid " + theme.palette.text.secondary,
+    border: "1px solid " + theme.palette.action.disabled,
     background: "transparent",
-    color: theme.palette.text.secondary,
+    color: theme.palette.action.disabled,
   },
   incompleteIndicator : {
     border: "1px solid " + theme.palette.secondary.main,
