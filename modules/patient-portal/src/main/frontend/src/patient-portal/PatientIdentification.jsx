@@ -52,10 +52,25 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
   },
   logo : {
-    maxWidth: "240px",
+    "& > img" : {
+      maxWidth: "240px",
+    },
     "@media (max-height: 725px)" : {
-      maxHeight: "70px",
-    }
+      "& > img" : {
+        maxHeight: "70px",
+      },
+    },
+  },
+  doubleLogo : {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap-reverse",
+    "& > img" : {
+      width: `calc(50% - ${theme.spacing(4)})`,
+      minWidth: "100px",
+      height: "fit-content",
+      margin: theme.spacing(1, 2),
+    },
   },
   description : {
     "& > *" : {
@@ -252,6 +267,9 @@ function PatientIdentification(props) {
     )
   }
 
+  const logo = document.querySelector('meta[name="logoLight"]').content;
+  const affiliationLogo = document.querySelector('meta[name="affiliationLogo"]')?.content;
+
   return (<>
     <ToUDialog
       open={showTou}
@@ -295,8 +313,9 @@ function PatientIdentification(props) {
 
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justifyContent="center">
-         <Grid item xs={12}>
-           <img src={document.querySelector('meta[name="logoLight"]').content} className={classes.logo} alt="logo" />
+         <Grid item className={affiliationLogo ? classes.doubleLogo : classes.logo} xs={12}>
+           <img src={logo} alt="logo" />
+           {affiliationLogo && <img src={affiliationLogo} alt="logo" />}
          </Grid>
 
          { /* If we don't have the authentication token yet or we don't need the identification form,
