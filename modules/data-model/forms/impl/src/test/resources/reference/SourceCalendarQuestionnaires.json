@@ -1,0 +1,10 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Source Questionnaire",
+  "description": "A test source questionnaire",
+  "source_question": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Source Question",
+    "dataType": "text"
+  }
+}
