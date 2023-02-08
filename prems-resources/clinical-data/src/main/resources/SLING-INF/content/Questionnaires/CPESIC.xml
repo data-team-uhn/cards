@@ -5781,6 +5781,16 @@ Your response to this survey is voluntary but will provide us with important inf
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>minValue</name>
+				<value>1900</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>2023</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>cpesic_47</name>
