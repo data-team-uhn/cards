@@ -1421,7 +1421,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>In addition to the questions you just answered, UHN would like to know the following about your recent emergency visit at the hospital.</value>
+			<value>Additional question about your recent emergency visit</value>
 			<type>String</type>
 		</property>
 		<node>
