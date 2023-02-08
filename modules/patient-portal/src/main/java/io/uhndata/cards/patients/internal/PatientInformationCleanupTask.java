@@ -95,17 +95,19 @@ public class PatientInformationCleanupTask implements Runnable
             // Query:
             final Iterator<Resource> resources = resolver.findResources(String.format(
                 // select the data forms
-                "select distinct dataForm.*"
-                    + "  from [cards:Form] as dataForm"
+                "select distinct patientInformation.*"
+                    + "  from [cards:Form] as patientInformation"
                     // belonging to a visit
-                    + "  inner join [cards:Form] as visitInformation on visitInformation.subject = dataForm.subject"
+                    + "  inner join [cards:Form] as visitInformation on"
+                    + "   isdescendantnode(visitInformation.subject, patientInformation.subject)"
                     + " where"
                     // link to the correct Visit Information questionnaire
                     + "  visitInformation.questionnaire = '%1$s'"
                     // link to the correct Patient Information questionnaire
-                    + "  and dataForm.questionnaire = '%2$s'",
+                    + "  and patientInformation.questionnaire = '%2$s'",
                 visitInformationQuestionnaire, patientInformationQuestionnaire),
                 Query.JCR_SQL2);
+
             resources.forEachRemaining(form -> {
                 try {
                     Node formNode = form.adaptTo(Node.class);
@@ -142,21 +144,27 @@ public class PatientInformationCleanupTask implements Runnable
     private boolean canDeleteInformation(final Node form, final ResourceResolver resolver, final String visitQ,
         final String patientQ) throws ValueFormatException, PathNotFoundException, RepositoryException
     {
+        final String time = (String) resolver
+            .getResource("/Questionnaires/Visit information/time").getValueMap().get("jcr:uuid");
         // run query to get all associated Visit information forms sorted by time property
         Iterator<Resource> resources = resolver.findResources(String.format(
             // select the data forms
             "select distinct visitInformation.*"
                 + "  from [cards:Form] as visitInformation"
                 // belonging to a visit
-                + "  inner join [cards:Form] as dataForm on visitInformation.subject = dataForm.subject"
+                + "  inner join [cards:Form] as patientInformation on"
+                + "   isdescendantnode(visitInformation.subject, patientInformation.subject)"
+                + "    inner join [cards:Answer] as time on isdescendantnode(time, visitInformation)"
                 + " where"
                 // link to the correct Visit Information questionnaire
                 + "  visitInformation.questionnaire = '%1$s'"
                 // link to the correct Patient Information questionnaire
-                + "  and dataForm.questionnaire = '%2$s'"
-                + "  and dataForm.[jcr:uuid] = '%3$s'"
-                + "  order by visitInformation.time desc",
-                visitQ, patientQ, form.getProperty("jcr:uuid").getString()),
+                + "  and patientInformation.questionnaire = '%2$s'"
+                + "  and patientInformation.[jcr:uuid] = '%3$s'"
+                // link to the time question
+                + "  and time.question = '%3$s'"
+                + "  order by time desc",
+                visitQ, patientQ, form.getProperty("jcr:uuid").getString(), time),
             Query.JCR_SQL2);
 
         if (!resources.hasNext()) {
