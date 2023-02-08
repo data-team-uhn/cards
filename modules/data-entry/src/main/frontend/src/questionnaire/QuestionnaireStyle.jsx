@@ -143,6 +143,11 @@ const questionnaireStyle = theme => ({
         margin: theme.spacing(-3,0,1),
         padding: theme.spacing(1, 0),
     },
+    hideAnswerInstructions: {
+      "& p[class*='-answerInstructions']" : {
+        display: "none",
+      }
+    },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,
     },
@@ -571,6 +576,9 @@ const questionnaireStyle = theme => ({
       "&.MuiCard-root, > .MuiCard-root" : {
         outline: `1px solid ${theme.palette.error.light}`,
       },
+      "& p[class*='-answerInstructions']" : {
+        display: "block",
+      }
     },
     fileResourceAnswerList: {
       listStyleType: 'none',
