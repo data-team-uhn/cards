@@ -624,7 +624,7 @@ function QuestionnaireSet(props) {
     </Grid>
   ] : [
     <Typography variant="h4" key="review-title">Please review your answers</Typography>,
-    <Typography paragraph key="review-desc">You can update the answers for each survey and continue to this review screen before final submission.</Typography>,
+    <Typography paragraph key="review-desc">You can update the response for each question in the survey by using the "Update this Survey" button below.</Typography>,
     <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).map((q, i) => (
       <Grid item key={q+"Review"}>
@@ -654,13 +654,17 @@ function QuestionnaireSet(props) {
   // Are there any response interpretations to display to the patient?
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
+  let finalInstructions = (
+      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions"})
+  );
+
   let disclaimer = (
       displayText("disclaimer", Alert, {severity: "warning", key: "disclaimer"})
-  )
+  );
 
   let summaryScreen = hasInterpretations ? [
-      <Typography variant="h4" key="summary-title">Thank you for your submission</Typography>,
-      displayText("summaryInstructions", Typography, {color: "textSecondary", key: "summary-instructions"}),
+      <Typography variant="h4" key="summary-title">Thank you</Typography>,
+      finalInstructions,
       disclaimer,
       <Typography variant="h4" key="summary-intro">Interpreting your results</Typography>,
       displayText("interpretationInstructions", Typography, {color: "textSecondary", key: "summary-interpretation-instructions"}),
@@ -682,7 +686,8 @@ function QuestionnaireSet(props) {
       ))}
       </Grid>,
     ] : [
-      <Typography variant="h4" key="summary-title">Thank you for your submission</Typography>,
+      <Typography variant="h4" key="summary-title">Thank you</Typography>,
+      finalInstructions,
       disclaimer,
     ];
 
