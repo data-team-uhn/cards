@@ -282,6 +282,18 @@ def getCardsJavaMemoryLimitMB():
   # Floor down to the nearest integer MB
   return math.floor(cards_java_memory_limit_mb)
 
+def newListIfEmpty(yaml_object, *keys):
+  # Descend down the yaml_object through the keys
+  list_parent_object = yaml_object
+  for key in keys[0:-1]:
+    list_parent_object = list_parent_object[key]
+  list_name = keys[-1]
+  if list_name in list_parent_object.keys():
+    if type(list_parent_object[list_name]) is list:
+      return list_parent_object[list_name]
+  list_parent_object[list_name] = []
+  return list_parent_object[list_name]
+
 OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
@@ -482,13 +494,11 @@ if not (args.oak_filesystem or args.external_mongo):
   # internal MongoDB setup will also use a significant amount of memory.
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_JAVA_MEMORY_LIMIT_MB={}".format(getCardsJavaMemoryLimitMB()))
 
-yaml_obj['services']['cardsinitial']['ports'] = []
-
 if args.sling_admin_port:
-  yaml_obj['services']['cardsinitial']['ports'].append("127.0.0.1:{}:8080".format(args.sling_admin_port))
+  newListIfEmpty(yaml_obj, 'services', 'cardsinitial', 'ports').append("127.0.0.1:{}:8080".format(args.sling_admin_port))
 
 if args.debug:
-  yaml_obj['services']['cardsinitial']['ports'].append("127.0.0.1:5005:5005")
+  newListIfEmpty(yaml_obj, 'services', 'cardsinitial', 'ports').append("127.0.0.1:5005:5005")
 
 if args.cards_project:
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_PROJECT={}".format(args.cards_project))
