@@ -148,7 +148,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
+				<value>1. Did you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -277,7 +277,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, did you get all the information you needed about your condition and treatment?</value>
+				<value>2. During this hospital stay, did you get all the information you needed about your condition and treatment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -382,7 +382,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you get the support you needed to help you with any anxieties, fears or worries you had during this hospital stay?</value>
+				<value>3. Did you get the support you needed to help you with any anxieties, fears or worries you had during this hospital stay?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -487,7 +487,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Were you involved as much as you wanted to be in decisions about your care and treatment?</value>
+				<value>4. Were you involved as much as you wanted to be in decisions about your care and treatment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -592,7 +592,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Were you able to get a member of hospital staff to help you when you needed attention?</value>
+				<value>5. Were you able to get a member of hospital staff to help you when you needed attention?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -697,7 +697,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Before you left the hospital did you have a clear understanding about all of your prescribed medications, including those you were taking before your hospital stay?</value>
+				<value>6. Before you left the hospital did you have a clear understanding about all of your prescribed medications, including those you were taking before your hospital stay?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -826,7 +826,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?</value>
+				<value>7. Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -931,7 +931,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
+				<value>8. Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1169,7 +1169,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value> Would you recommend this hospital to your friends and family?</value>
+				<value>9. Would you recommend this hospital to your friends and family?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1407,7 +1407,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>What else would you like to say about this experience?</value>
+				<value>10. What else would you like to say about this experience?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1440,7 +1440,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Do you feel that you were treated with kindness and compassion?</value>
+				<value>11. Do you feel that you were treated with kindness and compassion?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1564,7 +1564,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Were you given enough information about what was going to happen during your stay at the hospital?</value>
+				<value>12. Were you given enough information about what was going to happen during your stay at the hospital?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1688,7 +1688,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Were your caregiver(s) (family member or friend) involved as much as you wanted in decisions about your care and treatment?</value>
+				<value>13. Were your caregiver(s) (family member or friend) involved as much as you wanted in decisions about your care and treatment?</value>
 				<type>String</type>
 			</property>
 			<property>

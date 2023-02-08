@@ -170,7 +170,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did nurses treat you with _courtesy and respect_?</value>
+				<value>1. During this hospital stay, how often did nurses treat you with _courtesy and respect_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -275,7 +275,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did nurses _listen carefully to you_?</value>
+				<value>2. During this hospital stay, how often did nurses _listen carefully to you_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -380,7 +380,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did nurses _explain things_ in a way you could understand?</value>
+				<value>3. During this hospital stay, how often did nurses _explain things_ in a way you could understand?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -485,7 +485,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, after you pressed the call button, how often did you get help as soon as you wanted it?</value>
+				<value>4. During this hospital stay, after you pressed the call button, how often did you get help as soon as you wanted it?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -618,7 +618,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did doctors treat you with _courtesy and respect_?</value>
+				<value>5. During this hospital stay, how often did doctors treat you with _courtesy and respect_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -723,7 +723,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did doctors _listen carefully to you_?</value>
+				<value>6. During this hospital stay, how often did doctors _listen carefully to you_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -828,7 +828,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did doctors _explain things_ in a way you could understand?</value>
+				<value>7. During this hospital stay, how often did doctors _explain things_ in a way you could understand?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -942,7 +942,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often were your room and bathroom kept clean?</value>
+				<value>8. During this hospital stay, how often were your room and bathroom kept clean?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1047,7 +1047,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often was the area around your room quiet at night?</value>
+				<value>9. During this hospital stay, how often was the area around your room quiet at night?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1171,9 +1171,14 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, did you need help from nurses or other hospital staff in getting to the bathroom or in using a bedpan?</value>
+				<value>10. During this hospital stay, did you need help from nurses or other hospital staff in getting to the bathroom or in using a bedpan?</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>description</name>
+				<value>If **No**, next question is 12</value>
+				<type>String</type>
+				</property>
 			<property>
 				<name>minAnswers</name>
 				<value>1</value>
@@ -1239,7 +1244,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>How often did you get help in getting to the bathroom or in using a bedpan as soon as you wanted?</value>
+					<value>11. How often did you get help in getting to the bathroom or in using a bedpan as soon as you wanted?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1345,7 +1350,12 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, did you need medicine for pain?</value>
+				<value>12. During this hospital stay, did you need medicine for pain?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>If **No**, next question is 15</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1413,7 +1423,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>During this hospital stay, how often was your pain well controlled?</value>
+					<value>13. During this hospital stay, how often was your pain well controlled?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1563,7 +1573,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>During this hospital stay, how often did the hospital staff do everything they could to help you with your pain?</value>
+					<value>14. During this hospital stay, how often did the hospital staff do everything they could to help you with your pain?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1669,7 +1679,12 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, were you given any medicine that you had not taken before?</value>
+				<value>15. During this hospital stay, were you given any medicine that you had not taken before?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>If **No**, next question is 18</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1737,7 +1752,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>Before giving you any new medicine, how often did hospital staff tell you what the medicine was for?</value>
+					<value>16. Before giving you any new medicine, how often did hospital staff tell you what the medicine was for?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1887,7 +1902,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>Before giving you any new medicine, how often did hospital staff describe possible side effects in a way you could understand?</value>
+					<value>17. Before giving you any new medicine, how often did hospital staff describe possible side effects in a way you could understand?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2012,7 +2027,12 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>After you left the hospital, did you go directly to your own home, to someone else’s home or to another health facility?</value>
+				<value>18. After you left the hospital, did you go directly to your own home, to someone else’s home or to another health facility?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>If **Another health facility**, next question is 21</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2197,7 +2217,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>During this hospital stay, did doctors, nurses or other hospital staff talk with you about whether you would have the help you needed when you left the hospital?</value>
+					<value>19. During this hospital stay, did doctors, nurses or other hospital staff talk with you about whether you would have the help you needed when you left the hospital?</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -2316,7 +2336,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>During this hospital stay, did you get information in writing about what symptoms or health problems to look out for after you left the hospital?</value>
+					<value>20. During this hospital stay, did you get information in writing about what symptoms or health problems to look out for after you left the hospital?</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -2379,7 +2399,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>What number would you use to rate this hospital during your stay?</value>
+				<value>21. What number would you use to rate this hospital during your stay?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2622,7 +2642,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Would you recommend this hospital to your friends and family?</value>
+				<value>22. Would you recommend this hospital to your friends and family?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2751,7 +2771,12 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>When you arrived at the hospital, did you go to the emergency department?</value>
+				<value>23. When you arrived at the hospital, did you go to the emergency department?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>If **Yes**, go to question 26</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2819,7 +2844,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>Before coming to the hospital, did you have enough information about what was going to happen during the admission process?</value>
+					<value>24. Before coming to the hospital, did you have enough information about what was going to happen during the admission process?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2969,7 +2994,12 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>Was your admission into the hospital organized?</value>
+					<value>25. Was your admission into the hospital organized?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Next question is 30</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3119,7 +3149,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>When you were in the emergency department, did you get enough information about your condition and treatment?</value>
+					<value>26. When you were in the emergency department, did you get enough information about your condition and treatment?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3269,7 +3299,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>Were you given enough information about what was going to happen during your admission to the hospital?</value>
+					<value>27. Were you given enough information about what was going to happen during your admission to the hospital?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3419,7 +3449,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>After you knew that you needed to be admitted to a hospital bed, did you have to wait too long before getting there?</value>
+					<value>28. After you knew that you needed to be admitted to a hospital bed, did you have to wait too long before getting there?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3488,7 +3518,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>Was your transfer from the emergency department into a hospital bed organized?</value>
+					<value>29. Was your transfer from the emergency department into a hospital bed organized?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3603,7 +3633,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Do you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
+				<value>30. Do you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3708,7 +3738,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>How often did doctors, nurses and other hospital staff seem informed and up-to-date about your hospital care?</value>
+				<value>31. How often did doctors, nurses and other hospital staff seem informed and up-to-date about your hospital care?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3813,7 +3843,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>How often were tests and procedures done when you were told they would be done?</value>
+				<value>32. How often were tests and procedures done when you were told they would be done?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3937,7 +3967,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, did you get all the information you needed about your condition and treatment?</value>
+				<value>33. During this hospital stay, did you get all the information you needed about your condition and treatment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4042,7 +4072,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you get the support you needed to help you with any anxieties, fears or worries you had during this hospital stay?</value>
+				<value>34. Did you get the support you needed to help you with any anxieties, fears or worries you had during this hospital stay?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4171,7 +4201,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Were you involved as much as you wanted to be in decisions about your care and treatment?</value>
+				<value>35. Were you involved as much as you wanted to be in decisions about your care and treatment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4276,7 +4306,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Were your family or friends involved as much as you wanted in decisions about your care and treatment?</value>
+				<value>36. Were your family or friends involved as much as you wanted in decisions about your care and treatment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4428,7 +4458,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Before you left the hospital, did you have a clear understanding about all of your prescribed medications, including those you were taking before your hospital stay?</value>
+				<value>37. Before you left the hospital, did you have a clear understanding about all of your prescribed medications, including those you were taking before your hospital stay?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4557,7 +4587,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?</value>
+				<value>38. Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4662,7 +4692,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>When you left the hospital, did you have a better understanding of your condition than when you entered?</value>
+				<value>39. When you left the hospital, did you have a better understanding of your condition than when you entered?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4776,7 +4806,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall, do you feel you were helped by your hospital stay?</value>
+				<value>40. Overall, do you feel you were helped by your hospital stay?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5019,7 +5049,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
+				<value>41. Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5266,7 +5296,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>In general, how would you rate your overall physical health?</value>
+				<value>42. In general, how would you rate your overall physical health?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5390,7 +5420,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>In general, how would you rate your overall mental or emotional health?</value>
+				<value>43. In general, how would you rate your overall mental or emotional health?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5514,7 +5544,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>What is the highest grade or level of school that you have _completed_?</value>
+				<value>44. What is the highest grade or level of school that you have _completed_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5657,7 +5687,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>What is your gender?</value>
+				<value>45. What is your gender?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5743,7 +5773,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>What is your year of birth?</value>
+				<value>46. What is your year of birth?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5782,7 +5812,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Was your most recent stay at this hospital for a childbirth experience?</value>
+				<value>47. Was your most recent stay at this hospital for a childbirth experience?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5806,7 +5836,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>People living in Canada come from many different cultural and racial backgrounds. The following question will help us to better understand the experiences of the communities that we serve. Do you consider yourself to be...</value>
+				<value>48. People living in Canada come from many different cultural and racial backgrounds. The following question will help us to better understand the experiences of the communities that we serve. Do you consider yourself to be...</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -6226,7 +6256,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Is there anything else you would like to share about your hospital stay?</value>
+				<value>49. Is there anything else you would like to share about your hospital stay?</value>
 				<type>String</type>
 			</property>
 			<property>
