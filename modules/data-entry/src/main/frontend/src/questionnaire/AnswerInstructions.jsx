@@ -63,7 +63,7 @@ function AnswerInstructions (props) {
     >
       {
         (isMandatory) ?
-        "This question is mandatory"
+        "This answer is required"
         :
         "Please provide " + range + " " + answerLabel + "s"
       }
