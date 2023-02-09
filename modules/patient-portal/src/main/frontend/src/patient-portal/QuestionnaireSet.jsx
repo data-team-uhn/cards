@@ -450,7 +450,7 @@ function QuestionnaireSet(props) {
       )
         .then(response => response.ok ? response.text() : Promise.reject(response))
         .then(() => setSubmitted(true))
-        .catch(response => setError(`Submitting the responses failed with error code ${response.status}: ${response.statusText}`));
+        .catch(() => setError("Recording the submission of the responses has failed. Please try again later or contact the sender of the survey for further assistance."));
     }
   }
 
@@ -477,7 +477,8 @@ function QuestionnaireSet(props) {
         }
       })
       .catch((response) => {
-        setError(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
+        // The error is not important enough to display to the user
+        console.log(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
       });
   }
 
