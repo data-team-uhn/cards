@@ -510,6 +510,8 @@
             <exclude>**/*.json</exclude>
             <!-- Exclude CSV files since comments are not supported -->
             <exclude>**/*.csv</exclude>
+            <!-- Exclude .token files since comments are not supported -->
+            <exclude>**/*.token</exclude>
             <!-- Documentation files in markdown format -->
             <exclude>**/*.md</exclude>
             <!-- File hashes -->

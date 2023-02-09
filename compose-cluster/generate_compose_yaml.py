@@ -38,6 +38,14 @@ MINIO_DOCKER_RELEASE_TAG = "RELEASE.2022-09-17T00-09-45Z"
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--mongo_singular', help='Use a single MongoDB Docker container for data storage', action='store_true')
 argparser.add_argument('--mongo_cluster', help='Use a cluster of MongoDB shards and replicas for data storage', action='store_true')
+argparser.add_argument('--percona_singular', help='Use a single Docker container of Percona Server for MongoDB for data storage', action='store_true')
+argparser.add_argument('--percona_encryption_keyfile', help='Enable encryption-at-rest for the singular Percona Server for MongoDB instance using the provided keyfile')
+argparser.add_argument('--percona_encryption_vault_server')
+argparser.add_argument('--percona_encryption_vault_port', type=int, default=8200)
+argparser.add_argument('--percona_encryption_vault_token_file')
+argparser.add_argument('--percona_encryption_vault_secret')
+argparser.add_argument('--percona_encryption_vault_disable_tls_for_testing', action='store_true')
+argparser.add_argument('--data_db_mount', help='If using --mongo_singular or --percona_singular, mount /data/db to a given location instead of to a Docker volume')
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
@@ -73,6 +81,7 @@ argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (u
 argparser.add_argument('--self_signed_ssl_proxy', help='Generate a self-signed SSL certificate for the proxy to use (used mainly for testing purposes).', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
+argparser.add_argument('--vault_dev_server', help='Add a HashiCorp Vault (development mode) container to the set of services', action='store_true')
 argparser.add_argument('--web_port_admin', help='If specified, will listen for connections on this port (and not 8080/443) and forward them to the full-access reverse proxy (permitting logins)', type=int)
 argparser.add_argument('--web_port_user', help='If specified, will listen for connections on this port and forward them to the restricted-access reverse proxy (logins not permitted)', type=int)
 argparser.add_argument('--web_port_user_root_redirect', help='The client accessing / over --web_port_user will automatically be redirected to this page', default='/Survey.html')
@@ -94,13 +103,26 @@ def sha256FileHash(filepath):
 #Validate before doing anything else
 
 # Ensure that we have some type of data storage for CARDS
-mongo_storage_type_settings = [args.mongo_singular, args.mongo_cluster, args.oak_filesystem, args.external_mongo]
+mongo_storage_type_settings = [args.mongo_singular, args.mongo_cluster, args.oak_filesystem, args.external_mongo, args.percona_singular]
 if mongo_storage_type_settings.count(True) < 1:
-  print("ERROR: A data persistence backend of either --mongo_singular, --mongo_cluster, --oak_filesystem, or --external_mongo must be specified")
+  print("ERROR: A data persistence backend of either --mongo_singular, --mongo_cluster, --oak_filesystem, --external_mongo, or --percona_singular must be specified")
   sys.exit(-1)
 
 if mongo_storage_type_settings.count(True) > 1:
   print("ERROR: Only one data persistence backend can be specified")
+  sys.exit(-1)
+
+VAULT_PROVIDED_PERCONA_ENCRYPTION = False
+percona_encryption_vault_required_settings = [(args.percona_encryption_vault_server is not None), (args.percona_encryption_vault_token_file is not None), (args.percona_encryption_vault_secret is not None)]
+if percona_encryption_vault_required_settings.count(True) == 3:
+  # Encryption using HashiCorp Vault is enabled
+  VAULT_PROVIDED_PERCONA_ENCRYPTION = True
+elif percona_encryption_vault_required_settings.count(True) == 0:
+  # Encryption using HashiCorp Vault will not be used
+  VAULT_PROVIDED_PERCONA_ENCRYPTION = False
+else:
+  # Bad configuration
+  print("ERROR: In order to use a Percona encryption key provided by Vault, --percona_encryption_vault_server, --percona_encryption_vault_token_file, and --percona_encryption_vault_secret must be specified")
   sys.exit(-1)
 
 if args.mongo_cluster:
@@ -140,6 +162,39 @@ if args.saml_cloud_iam_demo:
     print("SAML authentication with Cloud-IAM.com may not work.")
     print("======================================================================")
     print("")
+
+# Check that the encryption keyfile ownership and permissions are acceptable to Percona
+if args.percona_encryption_keyfile is not None:
+  if VAULT_PROVIDED_PERCONA_ENCRYPTION:
+    print("ERROR: Cannot specify both keyfile-based and Vault-based Percona encryption")
+    sys.exit(-1)
+
+  # Check that the file is owned by UID=1001 and has octal permissions of 600
+  keyfile_stat = os.stat(args.percona_encryption_keyfile)
+  if keyfile_stat.st_uid != 1001:
+    print("ERROR: The file specified by --percona_encryption_keyfile must have UID=1001")
+    sys.exit(-1)
+  if (keyfile_stat.st_mode & 0b111111111) != 0o600:
+    print("ERROR: The file specified by --percona_encryption_keyfile must have permissions of rw------- (600)")
+    sys.exit(-1)
+
+# Check that the Vault token file ownership and permissions are acceptable to Percona
+if args.percona_encryption_vault_token_file is not None:
+  # Check that the file is owned by UID=1001 and has octal permissions of 600
+  token_file_stat = os.stat(args.percona_encryption_vault_token_file)
+  if token_file_stat.st_uid != 1001:
+    print("ERROR: The file specified by --percona_encryption_vault_token_file must have UID=1001")
+    sys.exit(-1)
+  if (token_file_stat.st_mode & 0b111111111) != 0o600:
+    print("ERROR: The file specified by --percona_encryption_vault_token_file must have permissions of rw------- (600)")
+    sys.exit(-1)
+
+# Percona requires that /data/db have a UID=1001
+if (args.data_db_mount is not None) and args.percona_singular:
+  data_db_mount_stat = os.stat(args.data_db_mount)
+  if data_db_mount_stat.st_uid != 1001:
+    print("ERROR: The file specified by --percona_singular must have UID=1001")
+    sys.exit(-1)
 
 def getDockerHostIP(subnet):
   network_address = subnet.split('/')[0]
@@ -486,12 +541,46 @@ if args.mongo_singular:
   yaml_obj['services']['mongo']['networks'] = {}
   yaml_obj['services']['mongo']['networks']['internalnetwork'] = {}
   yaml_obj['services']['mongo']['networks']['internalnetwork']['aliases'] = ['mongo']
-  yaml_obj['services']['mongo']['environment'] = ["WIRED_TIGER_CACHE_SIZE_GB={}".format(getWiredTigerCacheSizeGB(1))]
 
-  yaml_obj['volumes']['cards-mongo'] = {}
-  yaml_obj['volumes']['cards-mongo']['driver'] = "local"
+  yaml_obj['services']['mongo']['command'] = "--wiredTigerCacheSizeGB {}".format(getWiredTigerCacheSizeGB(1))
 
-  yaml_obj['services']['mongo']['volumes'] = ["cards-mongo:/data/db"]
+  if args.data_db_mount is None:
+    yaml_obj['volumes']['cards-mongo'] = {}
+    yaml_obj['volumes']['cards-mongo']['driver'] = "local"
+
+    yaml_obj['services']['mongo']['volumes'] = ["cards-mongo:/data/db"]
+  else:
+    yaml_obj['services']['mongo']['volumes'] = ["{}:/data/db".format(args.data_db_mount)]
+
+if args.percona_singular:
+  # Create the single-container Percona Server for MongoDB
+  print("Configuring service: percona")
+  yaml_obj['services']['percona'] = {}
+  yaml_obj['services']['percona']['image'] = "percona/percona-server-mongodb:4.4"
+  yaml_obj['services']['percona']['networks'] = {}
+  yaml_obj['services']['percona']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['percona']['networks']['internalnetwork']['aliases'] = ['percona', 'mongo']
+
+  yaml_obj['services']['percona']['command'] = "--wiredTigerCacheSizeGB {}".format(getWiredTigerCacheSizeGB(1))
+  if args.percona_encryption_keyfile is not None:
+    yaml_obj['services']['percona']['command'] += " --enableEncryption --encryptionKeyFile /percona_keyfile"
+  elif VAULT_PROVIDED_PERCONA_ENCRYPTION:
+    yaml_obj['services']['percona']['command'] += " --enableEncryption --vaultServerName {} --vaultPort {} --vaultTokenFile /vault.token --vaultSecret {}".format(args.percona_encryption_vault_server, args.percona_encryption_vault_port, args.percona_encryption_vault_secret)
+    if args.percona_encryption_vault_disable_tls_for_testing:
+      yaml_obj['services']['percona']['command'] += "  --vaultDisableTLSForTesting"
+
+  if args.data_db_mount is None:
+    yaml_obj['volumes']['cards-percona'] = {}
+    yaml_obj['volumes']['cards-percona']['driver'] = "local"
+
+    yaml_obj['services']['percona']['volumes'] = ["cards-percona:/data/db"]
+  else:
+    yaml_obj['services']['percona']['volumes'] = ["{}:/data/db".format(args.data_db_mount)]
+
+  if args.percona_encryption_keyfile is not None:
+    yaml_obj['services']['percona']['volumes'].append("{}:/percona_keyfile:ro".format(args.percona_encryption_keyfile))
+  elif VAULT_PROVIDED_PERCONA_ENCRYPTION:
+    yaml_obj['services']['percona']['volumes'].append("{}:/vault.token:ro".format(args.percona_encryption_vault_token_file))
 
 #Configure the initial CARDS container
 print("Configuring service: cardsinitial")
@@ -535,7 +624,10 @@ if args.mongo_cluster:
 if args.mongo_singular:
   yaml_obj['services']['cardsinitial']['depends_on'] = ['mongo']
 
-if args.mongo_cluster or args.mongo_singular:
+if args.percona_singular:
+  yaml_obj['services']['cardsinitial']['depends_on'] = ['percona']
+
+if args.mongo_cluster or args.mongo_singular or args.percona_singular:
   # We must also limit the memory given to the CARDS Java process as the
   # internal MongoDB setup will also use a significant amount of memory.
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_JAVA_MEMORY_LIMIT_MB={}".format(getCardsJavaMemoryLimitMB()))
@@ -806,6 +898,16 @@ if args.mssql:
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_ENCRYPT=false')
   if args.expose_mssql:
     yaml_obj['services']['mssql']['ports'] = ['127.0.0.1:{}:1433'.format(args.expose_mssql)]
+
+if args.vault_dev_server:
+  print("Configuring service: vault_dev")
+  yaml_obj['services']['vault_dev'] = {}
+  yaml_obj['services']['vault_dev']['image'] = 'vault:1.12.2'
+  yaml_obj['services']['vault_dev']['networks'] = {}
+  yaml_obj['services']['vault_dev']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['vault_dev']['networks']['internalnetwork']['aliases'] = ['vault_dev', 'vault']
+  yaml_obj['services']['vault_dev']['environment'] = ['VAULT_DEV_ROOT_TOKEN_ID=vault_dev_token']
+  yaml_obj['services']['vault_dev']['ports'] = ['127.0.0.1:8200:8200']
 
 #Setup the internal network
 print("Configuring the internal network")
