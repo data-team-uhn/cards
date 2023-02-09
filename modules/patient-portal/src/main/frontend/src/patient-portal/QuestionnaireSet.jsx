@@ -218,6 +218,11 @@ function QuestionnaireSet(props) {
     setComplete(Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length);
   }, [subjectDataLoadCount]);
 
+  // Automatically log out the user at the end
+  useEffect(() => {
+    isSubmitted && fetch('/system/sling/logout');
+  }, [isSubmitted]);
+
   // Determine if the user has already submitted their forms
   useEffect(() => {
     let submittedQuestionUuid = visitInformation?.questionnaire?.surveys_submitted?.["jcr:uuid"] || null;
@@ -445,9 +450,10 @@ function QuestionnaireSet(props) {
         url,
         { method: 'POST', body: data }
       )
+        .then(response => response.ok ? response.text() : Promise.reject(response))
+        .then(() => setSubmitted(true))
+        .catch(() => setError("Recording the submission of the responses has failed. Please try again later or contact the sender of the survey for further assistance."));
     }
-
-    setSubmitted(true);
   }
 
   let checkinForms = () => {
@@ -473,7 +479,8 @@ function QuestionnaireSet(props) {
         }
       })
       .catch((response) => {
-        setError(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
+        // The error is not important enough to display to the user
+        console.log(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
       });
   }
 
@@ -569,16 +576,10 @@ function QuestionnaireSet(props) {
   // Replace the occurrence of the pattern with the value
   let introMessage = intro.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
-  let closeButton = <Fab key="close-button" variant="extended" color="primary" onClick={
-      () => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)
-    }>Close</Fab>;
-
-
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
     displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "survey-info"}),
-    closeButton,
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
@@ -680,11 +681,9 @@ function QuestionnaireSet(props) {
         </Grid>
       ))}
       </Grid>,
-      closeButton,
     ] : [
       <Typography variant="h4" key="summary-title">Thank you for your submission</Typography>,
       disclaimer,
-      closeButton,
     ];
 
   let loadingScreen = [ <CircularProgress key="exit-loading"/> ];
