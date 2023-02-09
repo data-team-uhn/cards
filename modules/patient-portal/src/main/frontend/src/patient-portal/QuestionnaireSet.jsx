@@ -655,7 +655,7 @@ function QuestionnaireSet(props) {
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
   let finalInstructions = (
-      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions"})
+      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions", paragraph: true})
   );
 
   let disclaimer = (
