@@ -449,6 +449,12 @@
   // In paginated forms, do not permit advancing to the next page until the current page is complete.
   - requireCompletion (BOOLEAN)
 
+  // If true, notes such as "This answer is required" or "Please provide at least 3 files"
+  // will not be shown under the text of the questions with such restrictions, unless
+  // requireCompletion is true and the question is highlighted for having a missing or
+  // invalid answer
+  - hideAnswerInstructions (BOOLEAN)
+
   // Children
 
   // The sections and standalone questions that make up this questionnaire.
