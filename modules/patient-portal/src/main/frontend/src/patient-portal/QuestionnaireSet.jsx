@@ -266,9 +266,7 @@ function QuestionnaireSet(props) {
         }
         selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
       })
-      .catch((response) => {
-        setError(`Loading the visit failed with error code ${response.status}: ${response.statusText}`);
-      });
+      .catch(() => setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance."));
   }
 
   const loadQuestionnaireSet = () => {
@@ -282,9 +280,9 @@ function QuestionnaireSet(props) {
       })
       .catch((response) => {
         if (response.status == 404) {
-          setError("The survey you are trying to access does not exist. Please contact your care team for further assistance.");
+          setError("The survey you are trying to access does not exist. Please contact the sender of the survey for further assistance.");
         } else {
-          setError(`Loading the survey failed with error code ${response.status}: ${response.statusText}`);
+          setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance.");
         }
         setQuestionnaires(null);
       });
@@ -353,7 +351,7 @@ function QuestionnaireSet(props) {
           newPreviews[formId] = text;
           return newPreviews;
         }))
-        .catch(response => setError(`Loading the survey response preview for ${formId} failed with error code ${response.status}: ${response.statusText}`));
+        .catch(() => setError("Your responses cannot be previewed at this time. Please try again later or contact the sender of the survey for further assistance."));
     })
   }
 
@@ -452,7 +450,7 @@ function QuestionnaireSet(props) {
       )
         .then(response => response.ok ? response.text() : Promise.reject(response))
         .then(() => setSubmitted(true))
-        .catch(() => setError("Recording the submission of the responses has failed. Please try again later or contact the sender of the survey for further assistance."));
+        .catch(() => setError("Recording the submission of your responses has failed. Please try again later or contact the sender of the survey for further assistance."));
     }
   }
 
