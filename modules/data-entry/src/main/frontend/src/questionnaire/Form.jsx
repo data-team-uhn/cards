@@ -528,16 +528,18 @@ function Form (props) {
           ['/AllowResave']: ()=>setLastSaveStatus(undefined)
           }}>
           <FormUpdateProvider>
-            <SelectorDialog
-              allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
-              error={selectorDialogError}
-              open={selectorDialogOpen}
-              onChange={changeSubject}
-              onClose={() => {setSelectorDialogOpen(false)}}
-              onError={setSelectorDialogError}
-              title="Set subject"
-              selectedQuestionnaire={data?.questionnaire}
+            {!disableHeader &&
+              <SelectorDialog
+                allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
+                error={selectorDialogError}
+                open={selectorDialogOpen}
+                onChange={changeSubject}
+                onClose={() => {setSelectorDialogOpen(false)}}
+                onError={setSelectorDialogError}
+                title="Set subject"
+                selectedQuestionnaire={data?.questionnaire}
               />
+            }
             {changedSubject &&
               <React.Fragment>
                 <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>

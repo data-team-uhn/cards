@@ -220,7 +220,7 @@ function QuestionnaireSet(props) {
 
   // Automatically log out the user at the end
   useEffect(() => {
-    isSubmitted && fetch('/system/sling/logout');
+    isSubmitted && fetch('/system/sling/logout', {"redirect": "manual"});
   }, [isSubmitted]);
 
   // Determine if the user has already submitted their forms
