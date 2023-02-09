@@ -123,6 +123,9 @@ function PatientIdentification(props) {
   // Internal state
   // Flag specifying that the required authentication token is missing, so the user cannot be identified
   const [ canAuthenticate, setCanAuthenticate ] = useState();
+  // Flag specifying if the identification form needs to be displayed
+  const [ showIdentificationForm, setShowIdentificationForm ] = useState();
+  
   // Holds an error message for display
   const [ error, setError ] = useState();
   // Returned from the server after successful validation of the authentication,
@@ -206,6 +209,12 @@ function PatientIdentification(props) {
       validateCredentials(requestData, () => {});
     }
   }, [config?.tokenlessAuthEnabled]);
+
+  // The identification form should be made availavle whenever tokenless auth is enabled,
+  // as well as when specifically required according to the patient access config
+  useEffect(() => {
+    setShowIdentificationForm(config?.tokenlessAuthEnabled || config?.PIIAuthRequired);
+  }, [config?.tokenlessAuthEnabled, config?.PIIAuthRequired]);
 
   // Once a visit is selected, finalize the identification
   useEffect(() => {
@@ -302,7 +311,7 @@ function PatientIdentification(props) {
          { /* If we don't have the authentication token yet or we don't need the identification form,
              display the welcome message and a circular progress while we wait for the next step */ }
 
-         { (typeof(canAuthenticate) == "undefined" || !config?.PIIAuthRequired) ?
+         { (typeof(canAuthenticate) == "undefined" || !showIdentificationForm) ?
 
          <>
          { welcomeMessage &&
