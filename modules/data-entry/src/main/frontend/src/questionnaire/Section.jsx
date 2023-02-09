@@ -19,7 +19,7 @@
 
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Button, Collapse, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { Button, Collapse, Grid, IconButton, Tooltip } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
@@ -69,9 +69,9 @@ function Section(props) {
   const headerVariant = "h5";
   const titleEl = sectionDefinition["label"] &&
     (idx =>
-      <Typography variant={headerVariant}>
+      <FormattedText component={headerVariant} variant={headerVariant}>
         {createTitle(sectionDefinition["label"], idx, isRecurrent)}
-      </Typography>
+      </FormattedText>
     );
   const descEl = sectionDefinition["description"] &&
     (() =>

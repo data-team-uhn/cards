@@ -19,7 +19,7 @@
       "Section" : "Section.json",
       "Information" : "Information.json"
     },
-    "label": "string",
+    "label": "markdown",
     "description": "markdown",
     "displayMode": {
       "default" : {
