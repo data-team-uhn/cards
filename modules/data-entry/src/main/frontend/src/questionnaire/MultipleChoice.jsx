@@ -589,7 +589,7 @@ function ResponseChild(props) {
 
   return (
     <React.Fragment>
-      <ListItem key={name} className={classes.selectionChild} onClick={() => onClick(id, name, checked)}>
+      <ListItem key={name} className={classes.selectionChild} onClick={evt => {evt.preventDefault(); onClick(id, name, checked);}}>
           { /* This is either a Checkbox/Radiobox if this is a default suggestion, or a delete button otherwise */
           isDefaultOption ?
             (<>
