@@ -68,7 +68,7 @@ public class QuestionnaireRestrictionPattern implements RestrictionPattern
                     return true;
                 }
             }
-        } catch (final RepositoryException e) {
+        } catch (final RepositoryException | NullPointerException e) {
             // Should not happen
         }
         return false;
