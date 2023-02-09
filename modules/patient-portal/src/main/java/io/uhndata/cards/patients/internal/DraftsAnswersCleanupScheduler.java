@@ -36,7 +36,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * Schedule the cleanup of patient draft answers.
  *
  * @version $Id$
- * @since 0.9.2
+ * @since 0.9.6
  */
 @Component(immediate = true)
 public class DraftsAnswersCleanupScheduler
