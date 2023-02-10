@@ -179,6 +179,66 @@
       "clinicId": "/Survey/ClinicMapping/78840662",
       "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/ReminderNotification",
       "daysToVisit": -11
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-FilteredDiscard-General-DeathDate":{
+      "priority": 20,
+      "conditions": ["DEATH_DATE is not empty"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-FilteredDiscard-General-DeceasedDischarge":{
+      "priority": 20,
+      "conditions": ["DISCH_DISPOSITION = Deceased"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-FilteredDiscard-General-ALC":{
+      "priority": 20,
+      "conditions": ["LEVEL_OF_CARE = ALC.*"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-Rehab":{
+      "priority": 40,
+      "clinicId": "/Survey/ClinicMapping/78840662",
+      "conditions": ["DISCH_LOC_NAME = Toronto\\sRehab"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-ED-NoTransferTG":{
+      "priority": 80,
+      "clinicId": "/Survey/ClinicMapping/-1792626799",
+      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = [Nn][Oo]", "DISCH_DEPT_NAME = TG-EMERGENCY"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-ED-NoTransferTW":{
+      "priority": 80,
+      "clinicId": "/Survey/ClinicMapping/-1792626799",
+      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = [Nn][Oo]", "DISCH_DEPT_NAME = TW-EMERGENCY"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-ED-IPTransferShortStay":{
+      "priority": 80,
+      "clinicId": "/Survey/ClinicMapping/-1792626799",
+      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = [Yy][Ee][Ss]", "LENGTH_OF_STAY_DAYS <= 4"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-CohortMapper-ED-TransferTG":{
+      "priority": 100,
+      "clinicId": "/Survey/ClinicMapping/-1792626799",
+      "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME = TG-EMERGENCY"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-CohortMapper-ED-TransferTW":{
+      "priority": 100,
+      "clinicId": "/Survey/ClinicMapping/-1792626799",
+      "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME = TW-EMERGENCY"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-FilteredDiscard-CPES-IP-ShortStay":{
+      "priority": 100,
+      "conditions": ["CLINIC is empty", "LENGTH_OF_STAY_DAYS <= 4"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-FilteredDiscard-CPES-IP-Psychiatric":{
+      "priority": 100,
+      "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME = TG-8ES"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-EDIP":{
+      "priority": 140,
+      "clinicId": "/Survey/ClinicMapping/-432465800",
+      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = [Yy][Ee][Ss]"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-IP":{
+      "priority": 160,
+      "clinicId": "/Survey/ClinicMapping/-1792626663",
+      "conditions": ["CLINIC is empty"]
     }
   }
 }
