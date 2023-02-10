@@ -51,6 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
+import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
@@ -230,6 +231,7 @@ public class ClarityImportTask implements Runnable
     // The entry point for running an import
 
     @Override
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     public void run()
     {
         LOGGER.info("Running ClarityImportTask");
@@ -257,9 +259,11 @@ public class ClarityImportTask implements Runnable
             PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
             ResultSet results = statement.executeQuery();
 
+            long importedAppointmentsCount = 0;
             while (results.next()) {
                 // Create the Subjects and Forms as is needed
                 createFormsAndSubjects(resolver, results);
+                importedAppointmentsCount += 1;
             }
 
             session.save();
@@ -270,6 +274,10 @@ public class ClarityImportTask implements Runnable
                     LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
                 }
             });
+
+            // Update the performance counter
+            Metrics.increment(this.resolverFactory, "ImportedAppointments", importedAppointmentsCount);
+
         } catch (SQLException e) {
             LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
         } catch (LoginException e) {
