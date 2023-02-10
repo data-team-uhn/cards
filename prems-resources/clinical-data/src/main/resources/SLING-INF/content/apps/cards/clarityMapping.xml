@@ -215,7 +215,7 @@
             </node>
             <node>
               <name>00000006</name>
-              <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>DEATH_DATE</value>
@@ -229,7 +229,7 @@
             </node>
             <node>
               <name>00000007</name>
-              <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>DISCH_DISPOSITION</value>
@@ -243,7 +243,7 @@
             </node>
             <node>
               <name>00000008</name>
-              <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>LEVEL_OF_CARE</value>
@@ -257,7 +257,7 @@
             </node>
             <node>
               <name>00000009</name>
-              <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>ED_IP_TRANSFER_YN</value>
@@ -271,7 +271,7 @@
             </node>
             <node>
               <name>00000010</name>
-              <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>LENGTH_OF_STAY_DAYS</value>
