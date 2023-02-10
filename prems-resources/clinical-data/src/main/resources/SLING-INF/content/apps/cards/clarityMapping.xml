@@ -228,12 +228,25 @@
               </property>
             </node>
             <node>
+              <name>00000011</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>MYCHART STATUS</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
               <name>00000012</name>
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
                 <value>HOSP_ADMISSION_DTTM</value>
-                <type>String</type>
               </property>
               <property>
                 <name>question</name>

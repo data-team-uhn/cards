@@ -379,7 +379,11 @@ public class ClarityImportTask implements Runnable
             if ("date".equals(col.getValue())) {
                 queryString += "FORMAT(" + col.getKey() + ", 'yyyy-MM-dd HH:mm:ss') AS " + col.getKey();
             } else {
-                queryString += col.getKey();
+                String column = col.getKey();
+                if (column.contains(" ")) {
+                    column = "[" + column + "]";
+                }
+                queryString += column;
             }
             if (columnsIterator.hasNext()) {
                 queryString += ", ";
