@@ -59,7 +59,7 @@ public class LengthOfStayMapper implements ClarityDataProcessor
                 admission.setTime(dateFormat.parse(input.get("HOSP_ADMISSION_DTTM")));
                 discharge.setTime(dateFormat.parse(input.get("HOSP_DISCHARGE_DTTM")));
 
-                length = ChronoUnit.DAYS.between(discharge.toInstant(), admission.toInstant());
+                length = ChronoUnit.DAYS.between(admission.toInstant(), discharge.toInstant());
                 input.put("LENGTH_OF_STAY_DAYS", String.valueOf(length));
             } catch (ParseException e) {
                 // Do nothing, could not calculate a new length so leave empty
