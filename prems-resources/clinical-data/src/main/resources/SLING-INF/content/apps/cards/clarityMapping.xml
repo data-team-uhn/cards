@@ -214,7 +214,7 @@
               </property>
             </node>
             <node>
-              <name>00000005</name>
+              <name>00000006</name>
               <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
@@ -228,7 +228,7 @@
               </property>
             </node>
             <node>
-              <name>00000006</name>
+              <name>00000007</name>
               <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
@@ -242,7 +242,7 @@
               </property>
             </node>
             <node>
-              <name>00000007</name>
+              <name>00000008</name>
               <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
@@ -256,7 +256,7 @@
               </property>
             </node>
             <node>
-              <name>00000008</name>
+              <name>00000009</name>
               <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
@@ -270,7 +270,7 @@
               </property>
             </node>
             <node>
-              <name>00000009</name>
+              <name>00000010</name>
               <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
