@@ -22,6 +22,10 @@ package io.uhndata.cards.prems.internal.importer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
@@ -33,6 +37,7 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 public abstract class AbstractConditionalClarityDataProcessor implements ClarityDataProcessor
 {
     protected final int priority;
+
     protected final List<ConditionDefinition> conditions;
 
     AbstractConditionalClarityDataProcessor(int priority, String[] conditionStrings)
@@ -69,30 +74,80 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
         return this.priority;
     }
 
+    private enum Operator
+    {
+        NEQ("<>", false, (input, value) -> input == null || !input.matches(value)),
+        LTE("<=", false, (input, value) -> compareDouble(input, value, (a, b) -> a <= b)),
+        LT("<", false, (input, value) -> compareDouble(input, value, (a, b) -> a < b)),
+        GTE(">=", false, (input, value) -> compareDouble(input, value, (a, b) -> a >= b)),
+        GT(">", false, (input, value) -> compareDouble(input, value, (a, b) -> a > b)),
+        EQ("=", false, (input, value) -> input != null && input.matches(value)),
+        EMPTY("is empty", true, (input, value) -> input == null || input.length() == 0),
+        NOT_EMPTY("is not empty", true, (input, value) -> input != null && input.length() > 0);
+
+        private final String operator;
+
+        private final boolean unary;
+
+        private final BiFunction<String, String, Boolean> evaluator;
+
+        Operator(final String operator, final boolean unary, final BiFunction<String, String, Boolean> evaluator)
+        {
+            this.operator = operator;
+            this.unary = unary;
+            this.evaluator = evaluator;
+        }
+
+        Pair<String, String> parse(String configuration)
+        {
+            if (this.unary) {
+                if (configuration.endsWith(this.operator)) {
+                    return Pair.of(StringUtils.removeEnd(configuration, this.operator).trim(), null);
+                }
+            } else {
+                String[] pieces = configuration.split("\\s*" + this.operator + "\\s*");
+                if (pieces.length == 2) {
+                    return Pair.of(pieces[0], pieces[1]);
+                }
+            }
+            return null;
+        }
+
+        boolean matches(String column, String value)
+        {
+            return this.evaluator.apply(column, value);
+        }
+
+        private static boolean compareDouble(String input, String value,
+            BiFunction<Double, Double, Boolean> comparator)
+        {
+            try {
+                double inputNumber = Double.parseDouble(input);
+                double compareTo = Double.parseDouble(value);
+                return comparator.apply(inputNumber, compareTo);
+            } catch (Exception e) {
+                // Error parsing to double, does not match
+                return false;
+            }
+        }
+    }
+
     private class ConditionDefinition
     {
-        private final String[] dualOperators = {"<>", "<=", "<", ">=", ">", "="};
-        private final String[] singleOperators = {"is empty", "is not empty"};
         private final String column;
-        private final String operator;
+
+        private final Operator operator;
+
         private final String value;
 
         ConditionDefinition(String configuration)
         {
-            for (String operatorOption : this.dualOperators) {
-                String[] pieces = configuration.split("\\s*" + operatorOption + "\\s*");
-                if (pieces.length == 2) {
-                    this.operator = operatorOption;
-                    this.column = pieces[0];
-                    this.value = pieces[1];
-                    return;
-                }
-            }
-            for (String operatorOption : this.singleOperators) {
-                if (configuration.endsWith(operatorOption)) {
-                    this.operator = operatorOption;
-                    this.column = configuration.substring(0, configuration.length() - operatorOption.length()).trim();
-                    this.value = null;
+            for (Operator o : Operator.values()) {
+                Pair<String, String> result = o.parse(configuration);
+                if (result != null) {
+                    this.column = result.getKey();
+                    this.operator = o;
+                    this.value = result.getValue();
                     return;
                 }
             }
@@ -106,67 +161,9 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
             return this.column != null;
         }
 
-        @SuppressWarnings("checkstyle:CyclomaticComplexity")
         public boolean matches(Map<String, String> input)
         {
-            String inputValue = input.get(this.column);
-            final boolean result;
-            switch (this.operator) {
-                case "<>":
-                    // Return true value is null or values do not match
-                    result = inputValue == null || !inputValue.matches(this.value);
-                    break;
-                case "=":
-                    // Return true if column has entry and values match
-                    result = inputValue != null && inputValue.matches(this.value);
-                    break;
-                case "<=":
-                    result = this.compareDouble(
-                        inputValue,
-                        (double a, double b) -> a <= b
-                    );
-                    break;
-                case "<":
-                    result = this.compareDouble(
-                        inputValue,
-                        (double a, double b) -> a < b
-                    );
-                    break;
-                case ">=":
-                    result = this.compareDouble(
-                        inputValue,
-                        (double a, double b) -> a >= b
-                    );
-                    break;
-                case ">":
-                    result = this.compareDouble(
-                        inputValue,
-                        (double a, double b) -> a > b
-                    );
-                    break;
-                case "is empty":
-                    result = inputValue == null || inputValue.length() == 0;
-                    break;
-                case "is not empty":
-                    result = inputValue != null && inputValue.length() > 0;
-                    break;
-                default:
-                    result = false;
-            }
-            return result;
-        }
-
-        private boolean compareDouble(String input,
-            AbstractConditionalClarityDataProcessor.DoubleComparator comparator)
-        {
-            try {
-                double inputNumber = Double.parseDouble(input);
-                double compareTo = Double.parseDouble(this.value);
-                return comparator.op(inputNumber, compareTo);
-            } catch (Exception e) {
-                // Error parsing to double, does not match
-                return false;
-            }
+            return this.operator.matches(input.get(this.column), this.value);
         }
 
         @Override
@@ -174,10 +171,5 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
         {
             return this.column + " " + this.operator + (this.value != null ? " " + this.value : "");
         }
-    }
-
-    private interface DoubleComparator
-    {
-        boolean op(double a, double b);
     }
 }
