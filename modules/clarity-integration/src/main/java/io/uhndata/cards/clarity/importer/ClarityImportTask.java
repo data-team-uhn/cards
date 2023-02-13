@@ -427,13 +427,7 @@ public class ClarityImportTask implements Runnable
     {
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
             // Get or create the subject
-            String subjectNodeType = childSubjectMapping.subjectType;
-            String subjectIDColumnLabel = childSubjectMapping.subjectIdColumn;
-            String subjectIDColumnValue = (!"".equals(subjectIDColumnLabel))
-                ? row.get(subjectIDColumnLabel) : UUID.randomUUID().toString();
-
-            Resource newSubjectParent = getOrCreateSubject(subjectIDColumnValue,
-                subjectNodeType, resolver, subjectParent);
+            Resource newSubjectParent = getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent);
             resolver.commit();
 
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
@@ -474,9 +468,14 @@ public class ClarityImportTask implements Runnable
      * @param parent parent Resource if this is a child of that resource, or null
      * @return A Subject resource
      */
-    private Resource getOrCreateSubject(final String identifier, final String subjectTypePath,
-        final ResourceResolver resolver, final Resource parent) throws RepositoryException, PersistenceException
+    private Resource getOrCreateSubject(ResourceResolver resolver, Map<String, String> row,
+        ClaritySubjectMapping subjectMapping, Resource parent) throws RepositoryException, PersistenceException
     {
+
+        final String subjectTypePath = subjectMapping.subjectType;
+        final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
+            ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
+
         String subjectMatchQuery = String.format(
             "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
             identifier);
