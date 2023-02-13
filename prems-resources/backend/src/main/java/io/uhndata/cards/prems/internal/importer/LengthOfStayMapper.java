@@ -30,12 +30,12 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
- * Clarity import processor that only allows visits for patients with a valid email address who have given consent to
- * receiving emails.
+ * Clarity import processor that computes the {@code LENGTH_OF_STAY_DAYS} based on the admission and discharge dates, if
+ * no value is already present in the query result.
  *
  * @version $Id$
  */
-@Component()
+@Component
 public class LengthOfStayMapper implements ClarityDataProcessor
 {
     @Override
