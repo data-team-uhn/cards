@@ -237,7 +237,6 @@ public class ClarityImportTask implements Runnable
     // The entry point for running an import
 
     @Override
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     public void run()
     {
         LOGGER.info("Running ClarityImportTask");
@@ -271,23 +270,8 @@ public class ClarityImportTask implements Runnable
             }
 
             session.save();
-            this.nodesToCheckin.get().forEach(node -> {
-                try {
-                    this.versionManager.get().checkin(node);
-                } catch (final RepositoryException e) {
-                    LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
-                }
-            });
-
-            // Update the performance counter
-            Iterator<Map.Entry<String, Long>> metricsAdjustmentsIterator =
-                this.metricsAdjustments.get().entrySet().iterator();
-            while (metricsAdjustmentsIterator.hasNext()) {
-                Map.Entry<String, Long> metricAdjustment = metricsAdjustmentsIterator.next();
-                String metricName = metricAdjustment.getKey();
-                long metricAdjustmentValue = metricAdjustment.getValue();
-                Metrics.increment(this.resolverFactory, metricName, metricAdjustmentValue);
-            }
+            checkinNodes();
+            updatePerformanceCounters();
 
         } catch (SQLException e) {
             LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
@@ -309,6 +293,27 @@ public class ClarityImportTask implements Runnable
             if (mustPopResolver) {
                 this.rrp.pop();
             }
+        }
+    }
+
+    private void checkinNodes()
+    {
+        this.nodesToCheckin.get().forEach(node -> {
+            try {
+                this.versionManager.get().checkin(node);
+            } catch (final RepositoryException e) {
+                LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
+            }
+        });
+    }
+
+    private void updatePerformanceCounters()
+    {
+        Iterator<Map.Entry<String, Long>> metricsAdjustmentsIterator =
+            this.metricsAdjustments.get().entrySet().iterator();
+        while (metricsAdjustmentsIterator.hasNext()) {
+            Map.Entry<String, Long> metricAdjustment = metricsAdjustmentsIterator.next();
+            Metrics.increment(this.resolverFactory, metricAdjustment.getKey(), metricAdjustment.getValue());
         }
     }
 
