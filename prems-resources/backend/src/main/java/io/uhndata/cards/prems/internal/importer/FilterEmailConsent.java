@@ -40,7 +40,8 @@ public class FilterEmailConsent implements ClarityDataProcessor
     {
         final String email = input.get("EMAIL_ADDRESS");
         final Boolean consent = "Yes".equalsIgnoreCase(input.get("EMAIL_CONSENT_YN"));
-        if (consent && EmailValidator.getInstance().isValid(email)) {
+        final Boolean myChartActivated = "Activated".equalsIgnoreCase(input.get("MYCHART STATUS"));
+        if ((consent || myChartActivated) && EmailValidator.getInstance().isValid(email)) {
             return input;
         }
         return null;
