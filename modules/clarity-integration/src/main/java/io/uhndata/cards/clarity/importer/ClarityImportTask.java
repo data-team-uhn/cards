@@ -428,7 +428,6 @@ public class ClarityImportTask implements Runnable
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
             // Get or create the subject
             Resource newSubjectParent = getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent);
-            resolver.commit();
 
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
                 boolean updatesExisting = questionnaireMapping.updatesExisting;
@@ -496,6 +495,7 @@ public class ClarityImportTask implements Runnable
                 ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Subject",
                 "identifier", identifier,
                 "type", patientType.adaptTo(Node.class)));
+            resolver.commit();
             this.nodesToCheckin.get().add(newSubject.getPath());
             return newSubject;
         }
