@@ -377,13 +377,9 @@ public class ClarityImportTask implements Runnable
         while (columnsIterator.hasNext()) {
             Map.Entry<String, String> col = columnsIterator.next();
             if ("date".equals(col.getValue())) {
-                queryString += "FORMAT(" + col.getKey() + ", 'yyyy-MM-dd HH:mm:ss') AS " + col.getKey();
+                queryString += "FORMAT([" + col.getKey() + "], 'yyyy-MM-dd HH:mm:ss') AS [" + col.getKey() + "]";
             } else {
-                String column = col.getKey();
-                if (column.contains(" ")) {
-                    column = "[" + column + "]";
-                }
-                queryString += column;
+                queryString += "[" + col.getKey() + "]";
             }
             if (columnsIterator.hasNext()) {
                 queryString += ", ";
