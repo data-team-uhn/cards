@@ -72,6 +72,6 @@ public class LengthOfStayMapper implements ClarityDataProcessor
     @Override
     public int getPriority()
     {
-        return 70;
+        return 10;
     }
 }
