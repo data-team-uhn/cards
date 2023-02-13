@@ -31,7 +31,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
- * Clarity import processor that assigns a cohort to an imported visit based on OSGI configured conditons.
+ * Clarity import processor that assigns a cohort to an imported visit based on OSGi configured conditions.
  *
  * @version $Id$
  */
@@ -44,16 +44,23 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
         + " cohort")
     public static @interface Config
     {
-        @AttributeDefinition(name = "Priority", description = "Priority")
+        @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
+            + " Processors are run in ascending priority order")
         int priority();
 
-        @AttributeDefinition(name = "ClinicId",
+        @AttributeDefinition(name = "Clinic",
             description = "Clinic mapping path that should be assigned if all conditions are met"
                 + " (eg. /Survey/ClinicMapping/123456789)")
-        String clinicId();
+        String clinic();
 
-        @AttributeDefinition(name = "Conditions", description = "Conditions for this cohort to be assigned."
-            + " For example \"COLUMN_NAME is empty\".")
+        @AttributeDefinition(name = "Conditions",
+            description = "Conditions for this cohort to be assigned."
+                + " Included operators are:"
+                + "\n - Case insensitive string comparisons '<>' and '='"
+                + "\n - Regex comparisons 'matches' and 'not matches'"
+                + "\n - Double comparisons '<=', '<', '>=' and '>'"
+                + "\n - Unary operators 'is empty' and 'is not empty'"
+                + "\nFor example \"COLUMN_NAME is empty\".")
         String[] conditions();
     }
 
@@ -63,7 +70,7 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
     public ConfiguredCohortMapper(Config configuration)
     {
         super(configuration.priority(), configuration.conditions());
-        this.cohort = configuration.clinicId();
+        this.cohort = configuration.clinic();
     }
 
     @Override

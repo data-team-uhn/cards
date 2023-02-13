@@ -76,12 +76,14 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
 
     private enum Operator
     {
-        NEQ("<>", false, (input, value) -> input == null || !input.matches(value)),
+        NEQ("<>", false, (input, value) -> input == null || !input.equalsIgnoreCase(value)),
         LTE("<=", false, (input, value) -> compareDouble(input, value, (a, b) -> a <= b)),
         LT("<", false, (input, value) -> compareDouble(input, value, (a, b) -> a < b)),
         GTE(">=", false, (input, value) -> compareDouble(input, value, (a, b) -> a >= b)),
         GT(">", false, (input, value) -> compareDouble(input, value, (a, b) -> a > b)),
-        EQ("=", false, (input, value) -> input != null && input.matches(value)),
+        EQ("=", false, (input, value) -> input != null && input.equalsIgnoreCase(value)),
+        NOT_MATCHES("not matches", false, (input, value) -> input == null || !input.matches(value)),
+        MATCHES("matches", false, (input, value) -> input != null && input.matches(value)),
         EMPTY("is empty", true, (input, value) -> input == null || input.length() == 0),
         NOT_EMPTY("is not empty", true, (input, value) -> input != null && input.length() > 0);
 

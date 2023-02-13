@@ -44,11 +44,18 @@ public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProce
         + " conditions")
     public static @interface Config
     {
-        @AttributeDefinition(name = "Priority", description = "Priority")
+        @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
+            + " Processors are run in ascending priority order")
         int priority();
 
-        @AttributeDefinition(name = "Discard Conditions", description = "Discards a visit if all conditions in this"
-            + " array are true. For example \"COLUMN_NAME is empty\".")
+        @AttributeDefinition(name = "Conditions",
+            description = "Conditions for this cohort to be assigned."
+                + " Included operators are:"
+                + "\n - Case insensitive string comparisons '<>' and '='"
+                + "\n - Regex comparisons 'matches' and 'not matches'"
+                + "\n - Double comparisons '<=', '<', '>=' and '>'"
+                + "\n - Unary operators 'is empty' and 'is not empty'"
+                + "\nFor example \"COLUMN_NAME is empty\".")
         String[] conditions();
     }
 
