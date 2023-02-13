@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -36,7 +35,7 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  * @version $Id$
  */
 @Designate(ocd = ConfiguredCohortMapper.Config.class, factory = true)
-@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component
 public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProcessor implements ClarityDataProcessor
 {
     @ObjectClassDefinition(name = "Clarity import filter - Cohort mapping conditions",
