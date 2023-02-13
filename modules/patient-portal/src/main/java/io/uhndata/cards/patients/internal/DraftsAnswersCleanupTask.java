@@ -145,14 +145,14 @@ public class DraftsAnswersCleanupTask implements Runnable
             final Node child = children.nextNode();
             if (child.isNodeType("cards:AnswerSection")) {
                 deleteFormAnswers(child);
-            } else if (child.isNodeType("cards:Answer")) {
+            } else if (child.isNodeType("cards:Answer") && child.hasProperty("value")) {
                 // Only the answers added by the patient should be deleted.
                 // (entry mode: reference or autocreated)
                 final Node questionNode = child.getProperty("question").getNode();
                 if (questionNode != null && questionNode.hasProperty("entryMode")) {
                     final String entrymode = questionNode.getProperty("entryMode").getString();
                     if (!"reference".equals(entrymode) && !"autocreated".equals(entrymode)) {
-                        child.remove();
+                        child.getProperty("value").remove();
                     }
                 }
             }
