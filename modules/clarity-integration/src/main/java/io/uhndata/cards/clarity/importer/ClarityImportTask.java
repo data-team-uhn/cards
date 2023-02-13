@@ -90,6 +90,8 @@ public class ClarityImportTask implements Runnable
     private final ThreadLocal<ClaritySubjectMapping> clarityImportConfiguration =
         ThreadLocal.withInitial(ClaritySubjectMapping::new);
 
+    private final ThreadLocal<Map<String, Long>> metricsAdjustments = ThreadLocal.withInitial(HashMap::new);
+
     private final ThreadResourceResolverProvider rrp;
 
     private final List<ClarityDataProcessor> processors;
@@ -114,6 +116,8 @@ public class ClarityImportTask implements Runnable
 
         private final String subjectType;
 
+        private final String incrementMetricOnCreation;
+
         private final List<ClaritySubjectMapping> childSubjects;
 
         private final List<ClarityQuestionnaireMapping> questionnaires;
@@ -124,15 +128,17 @@ public class ClarityImportTask implements Runnable
          */
         ClaritySubjectMapping()
         {
-            this("", "", "", "");
+            this("", "", "", "", "");
         }
 
-        ClaritySubjectMapping(String name, String subjectIdColumn, String subjectType, String path)
+        ClaritySubjectMapping(String name, String subjectIdColumn, String subjectType, String path,
+            String incrementMetricOnCreation)
         {
             this.name = name;
             this.path = path;
             this.subjectIdColumn = subjectIdColumn;
             this.subjectType = subjectType;
+            this.incrementMetricOnCreation = incrementMetricOnCreation;
             this.childSubjects = new LinkedList<>();
             this.questionnaires = new LinkedList<>();
         }
@@ -259,11 +265,9 @@ public class ClarityImportTask implements Runnable
             PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
             ResultSet results = statement.executeQuery();
 
-            long importedAppointmentsCount = 0;
             while (results.next()) {
                 // Create the Subjects and Forms as is needed
                 createFormsAndSubjects(resolver, results);
-                importedAppointmentsCount += 1;
             }
 
             session.save();
@@ -276,7 +280,14 @@ public class ClarityImportTask implements Runnable
             });
 
             // Update the performance counter
-            Metrics.increment(this.resolverFactory, "ImportedAppointments", importedAppointmentsCount);
+            Iterator<Map.Entry<String, Long>> metricsAdjustmentsIterator =
+                this.metricsAdjustments.get().entrySet().iterator();
+            while (metricsAdjustmentsIterator.hasNext()) {
+                Map.Entry<String, Long> metricAdjustment = metricsAdjustmentsIterator.next();
+                String metricName = metricAdjustment.getKey();
+                long metricAdjustmentValue = metricAdjustment.getValue();
+                Metrics.increment(this.resolverFactory, metricName, metricAdjustmentValue);
+            }
 
         } catch (SQLException e) {
             LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
@@ -294,6 +305,7 @@ public class ClarityImportTask implements Runnable
             this.versionManager.remove();
             this.clarityImportConfiguration.remove();
             this.sqlColumnToDataType.remove();
+            this.metricsAdjustments.remove();
             if (mustPopResolver) {
                 this.rrp.pop();
             }
@@ -310,10 +322,12 @@ public class ClarityImportTask implements Runnable
             if ("cards:ClaritySubjectMapping".equals(configChildNodeType)) {
                 String subjectNodeType = configChildNode.getValueMap().get(SUBJECT_TYPE_PROP, "");
                 String subjectIDColumnLabel = configChildNode.getValueMap().get("subjectIDColumn", "");
+                String incrementMetricOnCreation = configChildNode.getValueMap().get("incrementMetricOnCreation", "");
 
                 // Add this cards:ClaritySubjectMapping to the local Java data structures
                 ClaritySubjectMapping claritySubjectMapping = new ClaritySubjectMapping(configChildNode.getName(),
-                    subjectIDColumnLabel, subjectNodeType, clarityConf.path + "/" + configChildNode.getName());
+                    subjectIDColumnLabel, subjectNodeType, clarityConf.path + "/" + configChildNode.getName(),
+                    incrementMetricOnCreation);
 
                 // Iterate through all Questionnaires that are to be created
                 Resource questionnaires = configChildNode.getChild("questionnaires");
@@ -474,6 +488,7 @@ public class ClarityImportTask implements Runnable
         final String subjectTypePath = subjectMapping.subjectType;
         final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
             ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
+        final String incrementMetricOnCreation = subjectMapping.incrementMetricOnCreation;
 
         String subjectMatchQuery = String.format(
             "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
@@ -496,6 +511,17 @@ public class ClarityImportTask implements Runnable
                 "identifier", identifier,
                 "type", patientType.adaptTo(Node.class)));
             resolver.commit();
+
+            // Adjust the incrementMetricOnCreation referenced metric
+            if (!"".equals(incrementMetricOnCreation)) {
+                if (this.metricsAdjustments.get().keySet().contains(incrementMetricOnCreation)) {
+                    long oldValue = this.metricsAdjustments.get().get(incrementMetricOnCreation);
+                    this.metricsAdjustments.get().put(incrementMetricOnCreation, oldValue + 1L);
+                } else {
+                    this.metricsAdjustments.get().put(incrementMetricOnCreation, 1L);
+                }
+            }
+
             this.nodesToCheckin.get().add(newSubject.getPath());
             return newSubject;
         }
