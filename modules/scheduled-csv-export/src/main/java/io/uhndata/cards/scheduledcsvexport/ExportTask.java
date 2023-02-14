@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -30,6 +32,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -55,24 +58,25 @@ public class ExportTask implements Runnable
 
     private final String savePath;
 
-    private final boolean enableLabels;
+    private final String customSelectors;
+
+    private final String fileNameFormat;
 
     ExportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
-        int frequencyInDays, String[] questionnairesToBeExported,
-        String savePath, boolean enableLabels)
+        final ExportConfigDefinition config)
     {
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
-        this.frequencyInDays = frequencyInDays;
-        this.questionnairesToBeExported = new ArrayList<>(Arrays.asList(questionnairesToBeExported));
-        this.savePath = savePath;
-        this.enableLabels = enableLabels;
+        this.frequencyInDays = config.frequency_in_days();
+        this.questionnairesToBeExported = new ArrayList<>(Arrays.asList(config.questionnaires_to_be_exported()));
+        this.customSelectors = config.selectors();
+        this.savePath = config.save_path();
+        this.fileNameFormat = config.file_name_format();
     }
 
     @Override
     public void run()
     {
-        final String labelsParameter = this.enableLabels ? ".labels" : "";
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         final String modifiedAfterDate = simpleDateFormat.format(getPastDate(this.frequencyInDays));
         final String modifiedBeforeDate = simpleDateFormat.format(new Date());
@@ -88,13 +92,12 @@ public class ExportTask implements Runnable
             this.rrp.push(resolver);
             mustPopResolver = true;
             for (String questionnaire : this.questionnairesToBeExported) {
-                final File csvFile = new File(this.savePath + "/ExportedForms_" + questionnaire.replace("/", "_") + "_"
-                    + timePeriod + ".csv");
+                final File csvFile = new File(
+                    this.savePath + File.separatorChar + getTargetFileName(questionnaire, timePeriod));
                 try (FileWriter writer = new FileWriter(csvFile)) {
                     final String csvPath = String.format(
-                        questionnaire + "%s.data.dataFilter:modifiedAfter=%s.dataFilter:"
-                            + "modifiedBefore=%s.csv",
-                        labelsParameter, modifiedAfterDate, modifiedBeforeDate);
+                        questionnaire + "%s.data.dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.csv",
+                        StringUtils.defaultString(this.customSelectors), modifiedAfterDate, modifiedBeforeDate);
                     final CSVString csv = resolver.resolve(csvPath).adaptTo(CSVString.class);
                     writer.write(csv.toString());
                 } catch (IOException e) {
@@ -116,5 +119,14 @@ public class ExportTask implements Runnable
         Calendar date = new GregorianCalendar();
         date.add(Calendar.DAY_OF_MONTH, -numberOfDaysAgo);
         return date.getTime();
+    }
+
+    private String getTargetFileName(final String questionnaire, final String timePeriod)
+    {
+        return this.fileNameFormat
+            .replace("{questionnaire}", StringUtils.removeStart(questionnaire.replace('/', '_'), "_"))
+            .replace("{date}", DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.now()))
+            .replace("{time}", DateTimeFormatter.ISO_LOCAL_TIME.format(LocalDateTime.now()))
+            .replace("{period}", timePeriod);
     }
 }

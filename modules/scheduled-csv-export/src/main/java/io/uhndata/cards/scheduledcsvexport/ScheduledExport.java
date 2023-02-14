@@ -75,8 +75,7 @@ public class ScheduledExport
 
         final Runnable csvExportJob;
         csvExportJob =
-            new ExportTask(this.resolverFactory, this.rrp, configDef.frequency_in_days(),
-                configDef.questionnaires_to_be_exported(), configDef.save_path(), configDef.enable_label());
+            new ExportTask(this.resolverFactory, this.rrp, configDef);
         try {
             this.scheduler.schedule(csvExportJob, options);
         } catch (final Exception e) {
