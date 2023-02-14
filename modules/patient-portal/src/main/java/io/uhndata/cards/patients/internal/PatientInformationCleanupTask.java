@@ -44,9 +44,9 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * Periodically clears last_name, first_name, email from any Patient information form of patient subjects
- * for whom the last Visit information form has surveys_submitted set to true or the token associated with the visit
- * has expired.
- *
+ * for whom Survey events form corresponding to the latest visit (i.e. for which the answer to discharged_date
+ * is the latest) has at least one of responses_received or reminder2_sent answers filled in with a date value.
+ * 
  * @version $Id$
  * @since 0.9.6
  */
@@ -121,7 +121,7 @@ public class PatientInformationCleanupTask implements Runnable
                         if (child.isNodeType("cards:Answer")) {
                             final String name = child.getProperty("question").getNode().getName();
                             if ("first_name".equals(name) || "last_name".equals(name) || "email".equals(name)) {
-                                child.remove();
+                                child.getProperty("value").remove();
                             }
                         }
                     }
