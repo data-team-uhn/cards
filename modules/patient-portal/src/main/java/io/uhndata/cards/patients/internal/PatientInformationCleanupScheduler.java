@@ -36,7 +36,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * Schedule the cleanup of Patient information data every midnight.
  *
  * @version $Id$
- * @since 0.9.2
+ * @since 0.9.6
  */
 @Component(immediate = true)
 public class PatientInformationCleanupScheduler
