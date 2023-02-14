@@ -49,7 +49,7 @@
 	</property>
 	<property>
 		<name>paginationVariant</name>
-		<value>dots</value>
+		<value>progress</value>
 		<type>String</type>
 	</property>
 	<property>
