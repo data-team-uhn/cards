@@ -190,7 +190,7 @@
         "/Questionnaires/OED",
         "/Questionnaires/Rehab"
       ],
-      "selectors": ".labels.dataFilter:status=SUBMITTED.csvHeader:raw",
+      "selectors": ".labels.dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
       "save.path": ".",
       "file.name.format": "{questionnaire}_{period}_labels.csv",
       "export.format": "csv"
@@ -205,7 +205,7 @@
         "/Questionnaires/OED",
         "/Questionnaires/Rehab"
       ],
-      "selectors": ".dataFilter:status=SUBMITTED.csvHeader:raw",
+      "selectors": ".dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
       "save.path": ".",
       "file.name.format": "{questionnaire}_{period}.csv",
       "export.format": "csv"
@@ -217,7 +217,7 @@
       "questionnaires.to.be.exported": [
         "/Questionnaires/Survey events"
       ],
-      "selectors": ".dataFilter:statusNot=INCOMPLETE.csvHeader:raw",
+      "selectors": ".dataFilter:statusNot=INCOMPLETE",
       "save.path": ".",
       "file.name.format": "SurveyStatuses_{period}.csv",
       "export.format": "csv"
