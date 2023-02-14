@@ -447,8 +447,8 @@ function Form (props) {
                     <MoreIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
-                { !actionsMenu && <div style={{display: "none"}}>{ dropdownList }</div> }
-                <Popover
+                {actionsMenu ?
+                  <Popover
                     open={Boolean(actionsMenu)}
                     anchorEl={actionsMenu}
                     onClose={() => {setActionsMenu(null)}}
@@ -460,9 +460,12 @@ function Form (props) {
                         vertical: 'top',
                         horizontal: 'right',
                     }}
-                >
+                  >
                   { dropdownList }
-                </Popover>
+                  </Popover>
+                  :
+                  <div style={{display: "none"}}>{ dropdownList }</div>
+                }
             </div>
   )
 
