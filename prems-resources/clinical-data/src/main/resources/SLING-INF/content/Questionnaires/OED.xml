@@ -114,7 +114,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>1. If you had a long wait, were you told why?</value>
+				<value>If you had a long wait, were you told why?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -238,7 +238,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>2. How often did care providers treat you with courtesy and respect?</value>
+				<value>How often did care providers treat you with courtesy and respect?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -343,7 +343,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>3. How often did care providers explain things in a way you could understand?</value>
+				<value>How often did care providers explain things in a way you could understand?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -448,7 +448,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>4. Did you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
+				<value>Did you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -572,7 +572,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>5. Did you get the emotional support you needed to help you with any anxieties, fears or worries you had during this hospital visit?</value>
+				<value>Did you get the emotional support you needed to help you with any anxieties, fears or worries you had during this hospital visit?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -701,7 +701,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>6. Did care providers do everything they could do to ease your discomfort or symptoms?</value>
+				<value>Did care providers do everything they could do to ease your discomfort or symptoms?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -830,7 +830,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>7. Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?</value>
+				<value>Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -935,7 +935,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>8. Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
+				<value>Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1173,7 +1173,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>9. Would you recommend this hospital to your friends and family? </value>
+				<value>Would you recommend this hospital to your friends and family? </value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1411,7 +1411,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>10. What else would you like to say about this experience?</value>
+				<value>What else would you like to say about this experience?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1444,7 +1444,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>11. Do you feel that you were treated with kindness and compassion?</value>
+				<value>Do you feel that you were treated with kindness and compassion?</value>
 				<type>String</type>
 			</property>
 			<property>
