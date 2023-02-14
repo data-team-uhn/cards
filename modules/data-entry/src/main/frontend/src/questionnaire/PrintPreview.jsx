@@ -57,13 +57,13 @@ async function getHeaderExtensions() {
 
 let headerExtensions = [];
 getHeaderExtensions()
-      .then(extensions => {
-        headerExtensions = extensions || [];
-      })
-      .catch(err => {
-        console.log("Something went wrong loading the print header extensions", err);
-        headerExtensions = [];
-      })
+  .then(extensions => {
+    headerExtensions = extensions || [];
+  })
+  .catch(err => {
+    console.log("Something went wrong loading the print header extensions", err);
+    headerExtensions = [];
+  })
 
 // Component that renders a form in a format/style ready for printing.
 // Internally, it queries and renders the markdown (.md) export of the form.
