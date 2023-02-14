@@ -48,7 +48,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * has expired.
  *
  * @version $Id$
- * @since 0.9.2
+ * @since 0.9.6
  */
 public class PatientInformationCleanupTask implements Runnable
 {
@@ -162,7 +162,7 @@ public class PatientInformationCleanupTask implements Runnable
                 + "  and patientInformation.questionnaire = '%2$s'"
                 + "  and patientInformation.[jcr:uuid] = '%3$s'"
                 // link to the time question
-                + "  and time.question = '%3$s'"
+                + "  and time.question = '%4$s'"
                 + "  order by time desc",
                 visitQ, patientQ, form.getProperty("jcr:uuid").getString(), time),
             Query.JCR_SQL2);
