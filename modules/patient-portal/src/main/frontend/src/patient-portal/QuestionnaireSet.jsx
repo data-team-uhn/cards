@@ -609,7 +609,7 @@ function QuestionnaireSet(props) {
           disableHeader
           questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
-          doneLabel={nextQuestionnaire ? `${nextQuestionnaire?.alias}` : enableReviewScreen ? "Review" : "Submit my answers"}
+          doneLabel={nextQuestionnaire ? "Next survey" : enableReviewScreen ? "Review" : "Submit my answers"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset || 0}
