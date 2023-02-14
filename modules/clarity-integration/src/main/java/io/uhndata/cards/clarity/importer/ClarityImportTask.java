@@ -480,10 +480,10 @@ public class ClarityImportTask implements Runnable
     /**
      * Grab a subject of the specified type, or create it if it doesn't exist.
      *
-     * @param identifier Identifier to use for the subject
-     * @param subjectTypePath path to a SubjectType node for this subject
-     * @param resolver resource resolver to use
-     * @param parent parent Resource if this is a child of that resource, or null
+     * @param resolver ResourceResolver to use for reading and writing to the JCR
+     * @param row {@code Map<String, String>} object that maps column names to values for a SQL query result row
+     * @param subjectMapping ClaritySubjectMapping object describing how a CARDS Subject is to be created from a SQL row
+     * @param parent Resource if this is a child of that resource, or null (parent JCR node to defaults to /Subjects/)
      * @return A Subject resource
      */
     private Resource getOrCreateSubject(ResourceResolver resolver, Map<String, String> row,
