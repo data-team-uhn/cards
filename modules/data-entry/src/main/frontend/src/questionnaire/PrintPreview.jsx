@@ -153,13 +153,14 @@ function PrintPreview(props) {
   }, [content]);
 
   useEffect(() => {
+    if (!open || headerExtensions?.length >= 0) return;
     getHeaderExtensions()
       .then(extensions => setHeaderExtensions(extensions || []))
       .catch(err => {
         console.log("Something went wrong loading the print header extensions", err);
         setHeaderExtensions([]);
       })
-  }, [])
+  }, [open, headerExtensions?.length])
 
   let header = (
     headerExtensions?.length ? <>{ headerExtensions.map((extension, index) => {
