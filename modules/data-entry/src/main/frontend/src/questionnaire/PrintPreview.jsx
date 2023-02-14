@@ -58,11 +58,11 @@ async function getHeaderExtensions() {
 let headerExtensions = [];
 getHeaderExtensions()
       .then(extensions => {
-	      headerExtensions = extensions || [];
+        headerExtensions = extensions || [];
       })
       .catch(err => {
         console.log("Something went wrong loading the print header extensions", err);
-        setHeaderExtensions([]);
+        headerExtensions = [];
       })
 
 // Component that renders a form in a format/style ready for printing.
