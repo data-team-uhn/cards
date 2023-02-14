@@ -62,6 +62,8 @@ public class ExportTask implements Runnable
 
     private final String fileNameFormat;
 
+    private final String exportFormat;
+
     ExportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
         final ExportConfigDefinition config)
     {
@@ -72,6 +74,7 @@ public class ExportTask implements Runnable
         this.customSelectors = config.selectors();
         this.savePath = config.save_path();
         this.fileNameFormat = config.file_name_format();
+        this.exportFormat = config.export_format();
     }
 
     @Override
@@ -96,8 +99,9 @@ public class ExportTask implements Runnable
                     this.savePath + File.separatorChar + getTargetFileName(questionnaire, timePeriod));
                 try (FileWriter writer = new FileWriter(csvFile)) {
                     final String csvPath = String.format(
-                        questionnaire + "%s.data.dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.csv",
-                        StringUtils.defaultString(this.customSelectors), modifiedAfterDate, modifiedBeforeDate);
+                        questionnaire + "%s.data.dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.%s",
+                        StringUtils.defaultString(this.customSelectors), modifiedAfterDate, modifiedBeforeDate,
+                        this.exportFormat);
                     final CSVString csv = resolver.resolve(csvPath).adaptTo(CSVString.class);
                     writer.write(csv.toString());
                 } catch (IOException e) {

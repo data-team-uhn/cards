@@ -51,17 +51,21 @@ public @interface ExportConfigDefinition
 
     @AttributeDefinition(name = "Selectors",
         description = "Optional selectors to add to the questionnaire when exporting,"
-        + " e.g. \".labels\" to export labels instead of raw values")
+            + " e.g. \".labels\" to export labels instead of raw values")
     String selectors();
 
     @AttributeDefinition(name = "Save path",
         description = "The local disk path to the directory where exported survey CSV files are to be saved")
     String save_path() default SAVE_PATH;
 
-    @AttributeDefinition(name = "Save file format", description = "The format of the file name. "
+    @AttributeDefinition(name = "Filename format", description = "The format of the file name. "
         + "Special values are {questionnaire} for the questionnaire name, "
         + "{date} for the current date,"
         + "{time} for the current time,"
         + "{period} for the time period being queried")
     String file_name_format() default FILE_NAME_FORMAT;
+
+    @AttributeDefinition(name = "Export format",
+        description = "Whether this should be a CSV or a TSV. Must be one of 'csv' or 'tsv'.")
+    String export_format() default "csv";
 }
