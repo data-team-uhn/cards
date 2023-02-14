@@ -62,7 +62,6 @@ getHeaderExtensions()
   })
   .catch(err => {
     console.log("Something went wrong loading the print header extensions", err);
-    headerExtensions = [];
   })
 
 // Component that renders a form in a format/style ready for printing.
