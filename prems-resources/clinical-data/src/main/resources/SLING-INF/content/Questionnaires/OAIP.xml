@@ -926,12 +926,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall... </value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience.”</value>
+				<value>Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
 				<type>String</type>
 			</property>
 			<property>
