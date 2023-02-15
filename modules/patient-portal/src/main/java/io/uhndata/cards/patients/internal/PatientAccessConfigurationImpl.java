@@ -138,7 +138,8 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
         try
         {
             Property lifetime = getConfig(DRAFT_LIFETIME_PROP);
-            return lifetime == null ? DRAFT_LIFETIME_DEFAULT : (int) lifetime.getLong();
+            int value = lifetime == null ? DRAFT_LIFETIME_DEFAULT : (int) lifetime.getLong();
+            return value < -1 ? DRAFT_LIFETIME_DEFAULT : value;
         } catch (RepositoryException e) {
             return DRAFT_LIFETIME_DEFAULT;
         }
