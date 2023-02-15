@@ -179,6 +179,48 @@
       "clinicId": "/Survey/ClinicMapping/78840662",
       "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/ReminderNotification",
       "daysToVisit": -11
+    },
+    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Labeled-Forms":{
+      "name": "UHN-Labeled-Forms",
+      "frequency.in.days": 7,
+      "export.schedule": "0 0 2 ? * SAT *",
+      "questionnaires.to.be.exported": [
+        "/Questionnaires/CPESIC",
+        "/Questionnaires/OAIP",
+        "/Questionnaires/OED",
+        "/Questionnaires/Rehab"
+      ],
+      "selectors": ".labels.dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
+      "save.path": ".",
+      "file.name.format": "{questionnaire}_{period}_labels.csv",
+      "export.format": "csv"
+    },
+    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Raw-Forms":{
+      "name": "UHN-Raw-Forms",
+      "frequency.in.days": 7,
+      "export.schedule": "0 0 2 ? * SAT *",
+      "questionnaires.to.be.exported": [
+        "/Questionnaires/CPESIC",
+        "/Questionnaires/OAIP",
+        "/Questionnaires/OED",
+        "/Questionnaires/Rehab"
+      ],
+      "selectors": ".dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
+      "save.path": ".",
+      "file.name.format": "{questionnaire}_{period}.csv",
+      "export.format": "csv"
+    },
+    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Survey-Events":{
+      "name": "UHN-Survey-Events",
+      "frequency.in.days": 7,
+      "export.schedule": "0 0 2 ? * SAT *",
+      "questionnaires.to.be.exported": [
+        "/Questionnaires/Survey events"
+      ],
+      "selectors": ".dataFilter:statusNot=INCOMPLETE",
+      "save.path": ".",
+      "file.name.format": "{questionnaire}_{period}.csv",
+      "export.format": "csv"
     }
   }
 }

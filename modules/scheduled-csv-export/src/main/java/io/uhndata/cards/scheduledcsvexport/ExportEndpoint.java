@@ -86,8 +86,7 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
-        final Runnable exportJob = new ExportTask(this.resolverFactory, this.rrp, config.frequency_in_days(),
-            config.questionnaires_to_be_exported(), config.save_path(), config.enable_label());
+        final Runnable exportJob = new ExportTask(this.resolverFactory, this.rrp, config);
         final Thread thread = new Thread(exportJob);
         thread.start();
         response.setStatus(200);
