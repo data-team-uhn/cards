@@ -257,7 +257,7 @@ function QuestionnaireSet(props) {
         if (!questionnaires) {
           setSubjectData(json);
           setVisitInformation(json[visitInformationFormTitle]?.[0] || {});
-          let clinicPath = Object.values(json[visitInformationFormTitle]?.[0]).find(o => o?.question?.text == "Clinic")?.value;
+          let clinicPath = Object.values(json[visitInformationFormTitle]?.[0]).find(o => o?.question?.["@name"] == "clinic")?.value;
           return fetchWithReLogin(globalLoginDisplay, `${clinicPath}.deep.json`)
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then((json) => {
