@@ -56,6 +56,7 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
             description = "Conditions for this cohort to be assigned."
                 + " Included operators are:"
                 + "\n - Case insensitive string comparisons '<>' and '='"
+                + "\n - Case insensitive list comparisons 'in' and 'not in'. Split values by ';' eg. COLUMN in a; b; c"
                 + "\n - Regex comparisons 'matches' and 'not matches'"
                 + "\n - Double comparisons '<=', '<', '>=' and '>'"
                 + "\n - Unary operators 'is empty' and 'is not empty'"

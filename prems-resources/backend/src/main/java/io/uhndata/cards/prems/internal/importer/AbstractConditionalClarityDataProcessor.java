@@ -20,6 +20,7 @@
 package io.uhndata.cards.prems.internal.importer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -84,6 +85,10 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
         EQ("=", false, (input, value) -> input != null && input.equalsIgnoreCase(value)),
         NOT_MATCHES("not matches", false, (input, value) -> input == null || !input.matches(value)),
         MATCHES("matches", false, (input, value) -> input != null && input.matches(value)),
+        NOT_IN("not in", false, (input, value) -> input == null
+            && !Arrays.stream(value.split("\\s*;\\s*")).anyMatch(input::equalsIgnoreCase)),
+        IN("in", false, (input, value) -> input != null
+            && Arrays.stream(value.split("\\s*;\\s*")).anyMatch(input::equalsIgnoreCase)),
         EMPTY("is empty", true, (input, value) -> input == null || input.length() == 0),
         NOT_EMPTY("is not empty", true, (input, value) -> input != null && input.length() > 0);
 
@@ -107,7 +112,7 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
                     return Pair.of(StringUtils.removeEnd(configuration, this.operator).trim(), null);
                 }
             } else {
-                String[] pieces = configuration.split("\\s*" + this.operator + "\\s*");
+                String[] pieces = configuration.split("\\s+" + this.operator + "\\s+", 2);
                 if (pieces.length == 2) {
                     return Pair.of(pieces[0], pieces[1]);
                 }
