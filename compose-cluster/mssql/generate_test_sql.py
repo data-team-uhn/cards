@@ -78,7 +78,8 @@ CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
     ED_IP_TRANSFER_YN varchar(3) NULL,
     LENGTH_OF_STAY_DAYS varchar(102) NULL,
     [MYCHART STATUS] varchar(255) NULL,
-    HOSP_ADMISSION_DTTM datetime2 NULL
+    HOSP_ADMISSION_DTTM datetime2 NULL,
+    DX_NAME varchar(255) NULL,
 );
 
 -- Insert test data

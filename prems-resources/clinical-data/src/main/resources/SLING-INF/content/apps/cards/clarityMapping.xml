@@ -311,6 +311,20 @@
                 <type>String</type>
               </property>
             </node>
+            <node>
+              <name>00000013</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>DX_NAME</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
           </node>
         </node>
       </node>
