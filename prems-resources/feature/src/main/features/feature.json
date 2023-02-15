@@ -219,7 +219,7 @@
       ],
       "selectors": ".dataFilter:statusNot=INCOMPLETE",
       "save.path": ".",
-      "file.name.format": "SurveyStatuses_{period}.csv",
+      "file.name.format": "{questionnaire}_{period}.csv",
       "export.format": "csv"
     }
   }
