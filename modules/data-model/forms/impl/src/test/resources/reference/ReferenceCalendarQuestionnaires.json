@@ -1,6 +1,6 @@
 {
   "jcr:primaryType": "cards:Questionnaire",
-  "title": "Test Reference Questionnaire",
+  "title": "Test Calendar Reference Questionnaire",
   "description": "A test reference questionnaire",
   "reference_question": {
     "jcr:primaryType": "cards:Question",
