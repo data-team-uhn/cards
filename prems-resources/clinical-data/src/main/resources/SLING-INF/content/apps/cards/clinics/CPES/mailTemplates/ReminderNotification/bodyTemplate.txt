@@ -11,8 +11,8 @@ be used to help UHN continuously improve the quality of care patients receive.
 Completing this survey is voluntary. Your responses will not be shared with
 the care team and answering will not impact future care you receive at UHN.
 
-The questionnaire contains 49 questions and will take about 15 to 20 minutes
-to complete.
+This questionnaire will take about 15 to 20 minutes to complete. Based on your
+responses you may be asked up to 49 questions.
 
 To begin the survey, click the following link:
 ${surveysLink}

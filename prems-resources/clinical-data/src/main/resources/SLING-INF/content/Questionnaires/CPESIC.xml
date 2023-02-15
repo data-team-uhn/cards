@@ -38,15 +38,20 @@
 		<type>Boolean</type>
 	</property>
 	<property>
+		<name>hideAnswerInstructions</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>paginate</name>
 		<value>True</value>
 		<type>Boolean</type>
 	</property>
-        <property>
-                <name>paginationVariant</name>
-                <value>dots</value>
-                <type>String</type>
-        </property>
+	<property>
+		<name>paginationVariant</name>
+		<value>progress</value>
+		<type>String</type>
+	</property>
 	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
@@ -165,7 +170,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did nurses treat you with courtesy and respect?</value>
+				<value>During this hospital stay, how often did nurses treat you with _courtesy and respect_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -270,7 +275,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did nurses listen carefully to you?</value>
+				<value>During this hospital stay, how often did nurses _listen carefully to you_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -375,7 +380,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did nurses explain things in a way you could understand?</value>
+				<value>During this hospital stay, how often did nurses _explain things_ in a way you could understand?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -613,7 +618,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did doctors treat you with courtesy and respect?</value>
+				<value>During this hospital stay, how often did doctors treat you with _courtesy and respect_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -718,7 +723,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did doctors listen carefully to you?</value>
+				<value>During this hospital stay, how often did doctors _listen carefully to you_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -823,7 +828,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did doctors explain things in a way you could understand?</value>
+				<value>During this hospital stay, how often did doctors _explain things_ in a way you could understand?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5014,12 +5019,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall...</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience.”</value>
+				<value>Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5514,7 +5514,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>What is the highest grade or level of school that you have completed?</value>
+				<value>What is the highest grade or level of school that you have _completed_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5754,6 +5754,16 @@ Your response to this survey is voluntary but will provide us with important inf
 			<property>
 				<name>minAnswers</name>
 				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>1900</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>2023</value>
 				<type>Long</type>
 			</property>
 		</node>

@@ -38,15 +38,20 @@
 		<type>Boolean</type>
 	</property>
 	<property>
+		<name>hideAnswerInstructions</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>paginate</name>
 		<value>True</value>
 		<type>Boolean</type>
 	</property>
-        <property>
-                <name>paginationVariant</name>
-                <value>dots</value>
-                <type>String</type>
-        </property>
+	<property>
+		<name>paginationVariant</name>
+		<value>text</value>
+		<type>String</type>
+	</property>
 	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
@@ -930,12 +935,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall... </value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience.”</value>
+				<value>Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1426,7 +1426,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>In addition to the questions you just answered, UHN would like to know the following about your recent emergency visit at the hospital.</value>
+			<value>Additional question about your recent emergency visit</value>
 			<type>String</type>
 		</property>
 		<node>
