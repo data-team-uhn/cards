@@ -11,7 +11,7 @@
     "o1": {
       "jcr:primaryType": "cards:AnswerOption",
       "label": "Option 1",
-      "value": "01"
+      "value": "O1"
     },
     "o2": {
       "jcr:primaryType": "cards:AnswerOption",
@@ -31,7 +31,7 @@
       "o1": {
         "jcr:primaryType": "cards:AnswerOption",
         "label": "Option 1",
-        "value": "01"
+        "value": "O1"
       },
       "o2": {
         "jcr:primaryType": "cards:AnswerOption",
@@ -52,7 +52,7 @@
       "o1": {
         "jcr:primaryType": "cards:AnswerOption",
         "label": "Option 1",
-        "value": "01"
+        "value": "O1"
       },
       "o2": {
         "jcr:primaryType": "cards:AnswerOption",
