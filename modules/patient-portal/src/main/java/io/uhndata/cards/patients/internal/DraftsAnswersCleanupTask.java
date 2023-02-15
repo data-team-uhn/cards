@@ -119,7 +119,10 @@ public class DraftsAnswersCleanupTask implements Runnable
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {
-                    deleteFormAnswers(form.adaptTo(Node.class));
+                    final Node formNode = form.adaptTo(Node.class);
+                    if (deleteFormAnswers(formNode, formNode)) {
+                        formNode.getSession().getWorkspace().getVersionManager().checkin(formNode.getPath());
+                    }
                 } catch (RepositoryException e) {
                     LOGGER.warn("Failed to delete patient's answer values from unsubmitted drafts from the form {}: {}",
                         form.getPath(), e.getMessage());
@@ -137,14 +140,15 @@ public class DraftsAnswersCleanupTask implements Runnable
         }
     }
 
-    private void deleteFormAnswers(final Node node)
+    private boolean deleteFormAnswers(final Node form, final Node node)
         throws RepositoryException
     {
         final NodeIterator children = node.getNodes();
+        boolean result = false;
         while (children.hasNext()) {
             final Node child = children.nextNode();
             if (child.isNodeType("cards:AnswerSection")) {
-                deleteFormAnswers(child);
+                result |= deleteFormAnswers(form, child);
             } else if (child.isNodeType("cards:Answer") && child.hasProperty("value")) {
                 // Only the answers added by the patient should be deleted.
                 // (entry mode: reference or autocreated)
@@ -152,10 +156,13 @@ public class DraftsAnswersCleanupTask implements Runnable
                 if (questionNode != null && questionNode.hasProperty("entryMode")) {
                     final String entrymode = questionNode.getProperty("entryMode").getString();
                     if (!"reference".equals(entrymode) && !"autocreated".equals(entrymode)) {
+                        form.getSession().getWorkspace().getVersionManager().checkout(form.getPath());
                         child.getProperty("value").remove();
+                        result = true;
                     }
                 }
             }
         }
+        return result;
     }
 }
