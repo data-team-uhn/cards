@@ -98,11 +98,6 @@
 			<name>oaip_department</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
