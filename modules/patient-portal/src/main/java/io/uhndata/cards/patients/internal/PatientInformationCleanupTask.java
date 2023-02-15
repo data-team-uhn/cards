@@ -19,7 +19,6 @@
 
 package io.uhndata.cards.patients.internal;
 
-import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -38,7 +37,6 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -46,7 +44,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * Periodically clears last_name, first_name, email from any Patient information form of patient subjects
  * for whom Survey events form corresponding to the latest visit (i.e. for which the answer to discharged_date
  * is the latest) has at least one of responses_received or reminder2_sent answers filled in with a date value.
- * 
+ *
  * @version $Id$
  * @since 0.9.6
  */
@@ -54,6 +52,7 @@ public class PatientInformationCleanupTask implements Runnable
 {
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(PatientInformationCleanupTask.class);
+    private static final String UUID_KEY = "jcr:uuid";
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
@@ -88,33 +87,41 @@ public class PatientInformationCleanupTask implements Runnable
 
             // Gather the needed UUIDs to place in the query
             final String patientInformationQuestionnaire =
-                (String) resolver.getResource("/Questionnaires/Patient information").getValueMap().get("jcr:uuid");
-            final String visitInformationQuestionnaire =
-                (String) resolver.getResource("/Questionnaires/Visit information").getValueMap().get("jcr:uuid");
+                (String) resolver.getResource("/Questionnaires/Patient information").getValueMap().get(UUID_KEY);
+            final String surveyEventsQuestionnaire =
+                (String) resolver.getResource("/Questionnaires/Survey events").getValueMap().get(UUID_KEY);
+            final String dischargedDate = (String) resolver
+                .getResource("/Questionnaires/Survey events/discharged_date").getValueMap().get(UUID_KEY);
 
             // Query:
             final Iterator<Resource> resources = resolver.findResources(String.format(
-                // select the data forms
+                // select the Patient information forms
                 "select distinct patientInformation.*"
                     + "  from [cards:Form] as patientInformation"
-                    // belonging to a visit
-                    + "  inner join [cards:Form] as visitInformation on"
-                    + "   isdescendantnode(visitInformation.subject, patientInformation.subject)"
+                    // with Survey events
+                    + "  inner join [cards:Form] as surveyEvents on"
+                    + "  isdescendantnode(surveyEvents.subject, patientInformation.subject)"
+                    // for which the answer to discharged_date exists
+                    + "  inner join [cards:Answer] as dischargedDate on isdescendantnode(dischargedDate, surveyEvents)"
                     + " where"
-                    // link to the correct Visit Information questionnaire
-                    + "  visitInformation.questionnaire = '%1$s'"
+                    + " dischargedDate.value IS NOT NULL"
+                    // link to the correct Survey events questionnaire
+                    + "  and surveyEvents.questionnaire = '%1$s'"
                     // link to the correct Patient Information questionnaire
-                    + "  and patientInformation.questionnaire = '%2$s'",
-                visitInformationQuestionnaire, patientInformationQuestionnaire),
+                    + "  and patientInformation.questionnaire = '%2$s'"
+                    // link to the discharged_date question
+                    + "  and dischargedDate.question = '%3$s'",
+                    surveyEventsQuestionnaire, patientInformationQuestionnaire, dischargedDate),
                 Query.JCR_SQL2);
 
             resources.forEachRemaining(form -> {
                 try {
                     Node formNode = form.adaptTo(Node.class);
-                    if (!canDeleteInformation(formNode, resolver, visitInformationQuestionnaire,
-                        patientInformationQuestionnaire)) {
+                    if (!canDeleteInformation(formNode, resolver, patientInformationQuestionnaire,
+                        surveyEventsQuestionnaire, dischargedDate)) {
                         return;
                     }
+
                     final NodeIterator children = formNode.getNodes();
                     while (children.hasNext()) {
                         final Node child = children.nextNode();
@@ -141,55 +148,71 @@ public class PatientInformationCleanupTask implements Runnable
         }
     }
 
-    private boolean canDeleteInformation(final Node form, final ResourceResolver resolver, final String visitQ,
-        final String patientQ) throws ValueFormatException, PathNotFoundException, RepositoryException
+    private boolean canDeleteInformation(final Node form, final ResourceResolver resolver, final String patientQ,
+        final String surveyQ, final String dischargedDate)
+        throws ValueFormatException, PathNotFoundException, RepositoryException
     {
-        final String time = (String) resolver
-            .getResource("/Questionnaires/Visit information/time").getValueMap().get("jcr:uuid");
-        // run query to get all associated Visit information forms sorted by time property
+        final Node visitSubject = this.formUtils.getSubject(form, "/SubjectTypes/Patient/Visit");
+        final String visitSubjectUuid = visitSubject.getProperty(UUID_KEY).getString();
+
+        // run query to get all associated Survey events forms sorted by discharged_date property
         Iterator<Resource> resources = resolver.findResources(String.format(
-            // select the data forms
-            "select distinct visitInformation.*"
-                + "  from [cards:Form] as visitInformation"
-                // belonging to a visit
-                + "  inner join [cards:Form] as patientInformation on"
-                + "   isdescendantnode(visitInformation.subject, patientInformation.subject)"
-                + "    inner join [cards:Answer] as time on isdescendantnode(time, visitInformation)"
+            // select the Survey events forms
+            "select distinct surveyEvents.*"
+                + "  from [cards:Form] as surveyEvents"
+                + "    inner join [cards:Answer] as dischargedDate on isdescendantnode(dischargedDate, surveyEvents)"
                 + " where"
-                // link to the correct Visit Information questionnaire
-                + "  visitInformation.questionnaire = '%1$s'"
-                // link to the correct Patient Information questionnaire
-                + "  and patientInformation.questionnaire = '%2$s'"
-                + "  and patientInformation.[jcr:uuid] = '%3$s'"
-                // link to the time question
-                + "  and time.question = '%4$s'"
-                + "  order by time desc",
-                visitQ, patientQ, form.getProperty("jcr:uuid").getString(), time),
+                // for which the answer to discharged_date exists
+                + "  dischargedDate.value IS NOT NULL"
+                // link to the correct Survey events questionnaire
+                + "  and surveyEvents.questionnaire = '%1$s'"
+                // link to the discharged_date question
+                + "  and dischargedDate.question = '%2$s'"
+                // link to the patient visit subject
+                + "  and surveyEvents.subject = '%3$s'"
+                + " order by dischargedDate.value desc",
+                surveyQ, dischargedDate, visitSubjectUuid),
             Query.JCR_SQL2);
 
         if (!resources.hasNext()) {
             return false;
         }
-        // get the last visit and see if it's surveys_submitted = true
-        final Node visit = resources.next().adaptTo(Node.class);
-        if (visit == null) {
+        // get the last Survey events form (i.e. for which the answer to discharged_date is the latest)
+        final Node survey = resources.next().adaptTo(Node.class);
+        if (survey == null) {
             return false;
         }
-        if (visit.hasProperty("surveys_submitted") && visit.getProperty("surveys_submitted").getBoolean()) {
-            return true;
-        }
 
-        final Node visitSubjectPath = this.formUtils.getSubject(visit);
-        // run the query to get an expired token associated with patient name and visit
-        resources = resolver.findResources(String.format(
-            "select * from [cards:Token]"
+        // see if form has at least one of responses_received or reminder2_sent answers filled in with a date value
+        final String surveyUuid = survey.getProperty(UUID_KEY).getString();
+        final String responsesReceived = (String) resolver
+            .getResource("/Questionnaires/Survey events/responses_received").getValueMap().get(UUID_KEY);
+        final String reminderSent = (String) resolver
+            .getResource("/Questionnaires/Survey events/reminder2Sent").getValueMap().get(UUID_KEY);
+
+        // run query to see if this Survey events form has at least one of responses_received or reminder2_sent answers
+        Iterator<Resource> resource = resolver.findResources(String.format(
+            // select the Survey events forms
+            "select distinct surveyEvents.*"
+                + " from [cards:Form] as surveyEvents "
+                + "inner join [cards:Answer] as responsesReceived on isdescendantnode(responsesReceived, surveyEvents)"
+                + " inner join [cards:Answer] as reminderSent on isdescendantnode(reminderSent, surveyEvents)"
                 + " where"
-                + " [" + CardsTokenImpl.TOKEN_ATTRIBUTE_EXPIRY + "] < '%1$s'"
-                + " and [cards:sessionSubject] = '%2$s'",
-            ZonedDateTime.now(), visitSubjectPath.getPath()),
+                // link to the given survey events form
+                + " surveyEvents.'jcr:uuid' = '%1$s'"
+                // for which at least one of responses_received or reminder2_sent answers filled in with a date value
+                + " and (responsesReceived.value IS NOT NULL or reminderSent.value IS NOT NULL)"
+                // link to the correct Survey events questionnaire
+                + " and surveyEvents.questionnaire = '%2$s'"
+                // link to the responses_received question
+                + " and responsesReceived.question = '%3$s'"
+                // link to the reminder2_sent question
+                + " and reminderSent.question = '%4$s'",
+                surveyUuid, surveyQ, responsesReceived, reminderSent),
             Query.JCR_SQL2);
-        if (resources.hasNext()) {
-            return true;
+
+        if (!resource.hasNext()) {
+            return false;
         }
 
         return false;
