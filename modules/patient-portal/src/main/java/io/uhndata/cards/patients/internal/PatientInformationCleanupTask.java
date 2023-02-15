@@ -88,37 +88,22 @@ public class PatientInformationCleanupTask implements Runnable
             // Gather the needed UUIDs to place in the query
             final String patientInformationQuestionnaire =
                 (String) resolver.getResource("/Questionnaires/Patient information").getValueMap().get(UUID_KEY);
-            final String surveyEventsQuestionnaire =
-                (String) resolver.getResource("/Questionnaires/Survey events").getValueMap().get(UUID_KEY);
-            final String dischargedDate = (String) resolver
-                .getResource("/Questionnaires/Survey events/discharged_date").getValueMap().get(UUID_KEY);
 
             // Query:
             final Iterator<Resource> resources = resolver.findResources(String.format(
-                // select the Patient information forms
+                // select all of the Patient information forms
                 "select distinct patientInformation.*"
                     + "  from [cards:Form] as patientInformation"
-                    // with Survey events
-                    + "  inner join [cards:Form] as surveyEvents on"
-                    + "  isdescendantnode(surveyEvents.subject, patientInformation.subject)"
-                    // for which the answer to discharged_date exists
-                    + "  inner join [cards:Answer] as dischargedDate on isdescendantnode(dischargedDate, surveyEvents)"
                     + " where"
-                    + " dischargedDate.value IS NOT NULL"
-                    // link to the correct Survey events questionnaire
-                    + "  and surveyEvents.questionnaire = '%1$s'"
                     // link to the correct Patient Information questionnaire
-                    + "  and patientInformation.questionnaire = '%2$s'"
-                    // link to the discharged_date question
-                    + "  and dischargedDate.question = '%3$s'",
-                    surveyEventsQuestionnaire, patientInformationQuestionnaire, dischargedDate),
+                    + "  patientInformation.questionnaire = '%1$s'",
+                    patientInformationQuestionnaire),
                 Query.JCR_SQL2);
 
             resources.forEachRemaining(form -> {
                 try {
                     Node formNode = form.adaptTo(Node.class);
-                    if (!canDeleteInformation(formNode, resolver, patientInformationQuestionnaire,
-                        surveyEventsQuestionnaire, dischargedDate)) {
+                    if (!canDeleteInformation(formNode, resolver, patientInformationQuestionnaire)) {
                         return;
                     }
 
@@ -148,10 +133,13 @@ public class PatientInformationCleanupTask implements Runnable
         }
     }
 
-    private boolean canDeleteInformation(final Node form, final ResourceResolver resolver, final String patientQ,
-        final String surveyQ, final String dischargedDate)
+    private boolean canDeleteInformation(final Node form, final ResourceResolver resolver, final String patientQ)
         throws ValueFormatException, PathNotFoundException, RepositoryException
     {
+        final String surveyEventsQuestionnaire =
+            (String) resolver.getResource("/Questionnaires/Survey events").getValueMap().get(UUID_KEY);
+        final String dischargedDate = (String) resolver
+            .getResource("/Questionnaires/Survey events/discharged_date").getValueMap().get(UUID_KEY);
         final Node visitSubject = this.formUtils.getSubject(form, "/SubjectTypes/Patient/Visit");
         final String visitSubjectUuid = visitSubject.getProperty(UUID_KEY).getString();
 
@@ -171,16 +159,17 @@ public class PatientInformationCleanupTask implements Runnable
                 // link to the patient visit subject
                 + "  and surveyEvents.subject = '%3$s'"
                 + " order by dischargedDate.value desc",
-                surveyQ, dischargedDate, visitSubjectUuid),
+                surveyEventsQuestionnaire, dischargedDate, visitSubjectUuid),
             Query.JCR_SQL2);
 
+        // If there are no visit information forms, delete the patient info since there's no visit to notify about
         if (!resources.hasNext()) {
-            return false;
+            return true;
         }
-        // get the last Survey events form (i.e. for which the answer to discharged_date is the latest)
+        // Get the last Survey events form (i.e. for which the answer to discharged_date is the latest)
         final Node survey = resources.next().adaptTo(Node.class);
         if (survey == null) {
-            return false;
+            return true;
         }
 
         // see if form has at least one of responses_received or reminder2_sent answers filled in with a date value
@@ -208,13 +197,13 @@ public class PatientInformationCleanupTask implements Runnable
                 + " and responsesReceived.question = '%3$s'"
                 // link to the reminder2_sent question
                 + " and reminderSent.question = '%4$s'",
-                surveyUuid, surveyQ, responsesReceived, reminderSent),
+                surveyUuid, surveyEventsQuestionnaire, responsesReceived, reminderSent),
             Query.JCR_SQL2);
 
         if (!resource.hasNext()) {
             return false;
         }
 
-        return false;
+        return true;
     }
 }
