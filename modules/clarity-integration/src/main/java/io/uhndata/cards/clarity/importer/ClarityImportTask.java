@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -51,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
+import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
@@ -89,6 +91,8 @@ public class ClarityImportTask implements Runnable
     private final ThreadLocal<ClaritySubjectMapping> clarityImportConfiguration =
         ThreadLocal.withInitial(ClaritySubjectMapping::new);
 
+    private final ThreadLocal<Map<String, Long>> metricsAdjustments = ThreadLocal.withInitial(HashMap::new);
+
     private final ThreadResourceResolverProvider rrp;
 
     private final List<ClarityDataProcessor> processors;
@@ -113,6 +117,8 @@ public class ClarityImportTask implements Runnable
 
         private final String subjectType;
 
+        private final String incrementMetricOnCreation;
+
         private final List<ClaritySubjectMapping> childSubjects;
 
         private final List<ClarityQuestionnaireMapping> questionnaires;
@@ -123,15 +129,17 @@ public class ClarityImportTask implements Runnable
          */
         ClaritySubjectMapping()
         {
-            this("", "", "", "");
+            this("", "", "", "", "");
         }
 
-        ClaritySubjectMapping(String name, String subjectIdColumn, String subjectType, String path)
+        ClaritySubjectMapping(String name, String subjectIdColumn, String subjectType, String path,
+            String incrementMetricOnCreation)
         {
             this.name = name;
             this.path = path;
             this.subjectIdColumn = subjectIdColumn;
             this.subjectType = subjectType;
+            this.incrementMetricOnCreation = incrementMetricOnCreation;
             this.childSubjects = new LinkedList<>();
             this.questionnaires = new LinkedList<>();
         }
@@ -263,13 +271,9 @@ public class ClarityImportTask implements Runnable
             }
 
             session.save();
-            this.nodesToCheckin.get().forEach(node -> {
-                try {
-                    this.versionManager.get().checkin(node);
-                } catch (final RepositoryException e) {
-                    LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
-                }
-            });
+            checkinNodes();
+            updatePerformanceCounters();
+
         } catch (SQLException e) {
             LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
         } catch (LoginException e) {
@@ -286,9 +290,28 @@ public class ClarityImportTask implements Runnable
             this.versionManager.remove();
             this.clarityImportConfiguration.remove();
             this.sqlColumnToDataType.remove();
+            this.metricsAdjustments.remove();
             if (mustPopResolver) {
                 this.rrp.pop();
             }
+        }
+    }
+
+    private void checkinNodes()
+    {
+        this.nodesToCheckin.get().forEach(node -> {
+            try {
+                this.versionManager.get().checkin(node);
+            } catch (final RepositoryException e) {
+                LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
+            }
+        });
+    }
+
+    private void updatePerformanceCounters()
+    {
+        for (Entry<String, Long> metricAdjustment : this.metricsAdjustments.get().entrySet()) {
+            Metrics.increment(this.resolverFactory, metricAdjustment.getKey(), metricAdjustment.getValue());
         }
     }
 
@@ -302,10 +325,12 @@ public class ClarityImportTask implements Runnable
             if ("cards:ClaritySubjectMapping".equals(configChildNodeType)) {
                 String subjectNodeType = configChildNode.getValueMap().get(SUBJECT_TYPE_PROP, "");
                 String subjectIDColumnLabel = configChildNode.getValueMap().get("subjectIDColumn", "");
+                String incrementMetricOnCreation = configChildNode.getValueMap().get("incrementMetricOnCreation", "");
 
                 // Add this cards:ClaritySubjectMapping to the local Java data structures
                 ClaritySubjectMapping claritySubjectMapping = new ClaritySubjectMapping(configChildNode.getName(),
-                    subjectIDColumnLabel, subjectNodeType, clarityConf.path + "/" + configChildNode.getName());
+                    subjectIDColumnLabel, subjectNodeType, clarityConf.path + "/" + configChildNode.getName(),
+                    incrementMetricOnCreation);
 
                 // Iterate through all Questionnaires that are to be created
                 Resource questionnaires = configChildNode.getChild("questionnaires");
@@ -419,14 +444,7 @@ public class ClarityImportTask implements Runnable
     {
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
             // Get or create the subject
-            String subjectNodeType = childSubjectMapping.subjectType;
-            String subjectIDColumnLabel = childSubjectMapping.subjectIdColumn;
-            String subjectIDColumnValue = (!"".equals(subjectIDColumnLabel))
-                ? row.get(subjectIDColumnLabel) : UUID.randomUUID().toString();
-
-            Resource newSubjectParent = getOrCreateSubject(subjectIDColumnValue,
-                subjectNodeType, resolver, subjectParent);
-            resolver.commit();
+            Resource newSubjectParent = getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent);
 
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
                 boolean updatesExisting = questionnaireMapping.updatesExisting;
@@ -460,15 +478,21 @@ public class ClarityImportTask implements Runnable
     /**
      * Grab a subject of the specified type, or create it if it doesn't exist.
      *
-     * @param identifier Identifier to use for the subject
-     * @param subjectTypePath path to a SubjectType node for this subject
-     * @param resolver resource resolver to use
-     * @param parent parent Resource if this is a child of that resource, or null
+     * @param resolver ResourceResolver to use for reading and writing to the JCR
+     * @param row {@code Map<String, String>} object that maps column names to values for a SQL query result row
+     * @param subjectMapping ClaritySubjectMapping object describing how a CARDS Subject is to be created from a SQL row
+     * @param parent Resource if this is a child of that resource, or null (parent JCR node to defaults to /Subjects/)
      * @return A Subject resource
      */
-    private Resource getOrCreateSubject(final String identifier, final String subjectTypePath,
-        final ResourceResolver resolver, final Resource parent) throws RepositoryException, PersistenceException
+    private Resource getOrCreateSubject(ResourceResolver resolver, Map<String, String> row,
+        ClaritySubjectMapping subjectMapping, Resource parent) throws RepositoryException, PersistenceException
     {
+
+        final String subjectTypePath = subjectMapping.subjectType;
+        final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
+            ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
+        final String incrementMetricOnCreation = subjectMapping.incrementMetricOnCreation;
+
         String subjectMatchQuery = String.format(
             "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
             identifier);
@@ -489,6 +513,13 @@ public class ClarityImportTask implements Runnable
                 ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Subject",
                 "identifier", identifier,
                 "type", patientType.adaptTo(Node.class)));
+            resolver.commit();
+
+            // Adjust the incrementMetricOnCreation referenced metric
+            if (!"".equals(incrementMetricOnCreation)) {
+                this.metricsAdjustments.get().compute(incrementMetricOnCreation, (k, v) -> v == null ? 1L : v + 1);
+            }
+
             this.nodesToCheckin.get().add(newSubject.getPath());
             return newSubject;
         }

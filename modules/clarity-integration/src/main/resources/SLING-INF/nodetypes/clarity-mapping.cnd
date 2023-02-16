@@ -29,6 +29,7 @@
 
   - subjectIDColumn (STRING)
   - subjectType (STRING)
+  - incrementMetricOnCreation (STRING)
 
   // Properties:
   // Hardcode the resource type

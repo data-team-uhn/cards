@@ -127,6 +127,11 @@
           <value>/SubjectTypes/Patient/Visit</value>
           <type>String</type>
         </property>
+        <property>
+          <name>incrementMetricOnCreation</name>
+          <value>ImportedAppointments</value>
+          <type>String</type>
+        </property>
         <node>
           <name>questionnaires</name>
           <primaryNodeType>sling:Folder</primaryNodeType>
