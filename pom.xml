@@ -419,10 +419,7 @@
               <goal>analyze-only</goal>
             </goals>
             <configuration>
-              <!-- FIXME the plugin at version 3.1.2 does not work with Java 11,
-                   and at version 3.2.0 fails to detect the correct scope of dependencies (MDEP-753).
-                   Re-enable failing the build once MDEP-753 is fixed and released. -->
-              <failOnWarning>false</failOnWarning>
+              <failOnWarning>true</failOnWarning>
               <ignoreNonCompile>true</ignoreNonCompile>
               <skip>${dependencyCheck.skip}</skip>
             </configuration>
@@ -814,7 +811,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.2.0</version>
+          <version>3.5.0</version>
           <configuration>
             <ignoredUsedUndeclaredDependencies>
               <ignoredUsedUndeclaredDependency>javax.inject:javax.inject</ignoredUsedUndeclaredDependency>
