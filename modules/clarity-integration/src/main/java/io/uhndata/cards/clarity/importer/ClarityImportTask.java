@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -309,10 +310,7 @@ public class ClarityImportTask implements Runnable
 
     private void updatePerformanceCounters()
     {
-        Iterator<Map.Entry<String, Long>> metricsAdjustmentsIterator =
-            this.metricsAdjustments.get().entrySet().iterator();
-        while (metricsAdjustmentsIterator.hasNext()) {
-            Map.Entry<String, Long> metricAdjustment = metricsAdjustmentsIterator.next();
+        for (Entry<String, Long> metricAdjustment : this.metricsAdjustments.get().entrySet()) {
             Metrics.increment(this.resolverFactory, metricAdjustment.getKey(), metricAdjustment.getValue());
         }
     }
@@ -519,12 +517,7 @@ public class ClarityImportTask implements Runnable
 
             // Adjust the incrementMetricOnCreation referenced metric
             if (!"".equals(incrementMetricOnCreation)) {
-                if (this.metricsAdjustments.get().keySet().contains(incrementMetricOnCreation)) {
-                    long oldValue = this.metricsAdjustments.get().get(incrementMetricOnCreation);
-                    this.metricsAdjustments.get().put(incrementMetricOnCreation, oldValue + 1L);
-                } else {
-                    this.metricsAdjustments.get().put(incrementMetricOnCreation, 1L);
-                }
+                this.metricsAdjustments.get().compute(incrementMetricOnCreation, (k, v) -> v == null ? 1L : v + 1);
             }
 
             this.nodesToCheckin.get().add(newSubject.getPath());
