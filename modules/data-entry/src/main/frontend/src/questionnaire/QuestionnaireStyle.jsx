@@ -455,6 +455,7 @@ const questionnaireStyle = theme => ({
     paginationButton: {
         float: "right",
         margin: theme.spacing(1),
+        minWidth: "fit-content",
     },
     formStepperBufferBar: {
         backgroundColor: theme.palette.secondary.main,
