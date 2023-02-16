@@ -71,7 +71,14 @@ CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
     DISCH_DEPT_NAME varchar(254) NULL,
     DISCH_LOC_NAME varchar(254) NULL,
     EMAIL_CONSENT_YN varchar(3),
-    LoadTime datetime2 NULL
+    LoadTime datetime2 NULL,
+    DEATH_DATE datetime2 NULL,
+    DISCH_DISPOSITION varchar(255) NULL,
+    LEVEL_OF_CARE varchar(255) NULL,
+    ED_IP_TRANSFER_YN varchar(3) NULL,
+    LENGTH_OF_STAY_DAYS varchar(102) NULL,
+    [MYCHART STATUS] varchar(255) NULL,
+    HOSP_ADMISSION_DTTM datetime2 NULL
 );
 
 -- Insert test data
@@ -113,22 +120,74 @@ HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-17A Breas
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-17B Head & Neck, Sarc & Lung")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-18B Short Term Care")
 
+def convertToSqlType(insertion_values):
+    converted_values = {}
+    for key in insertion_values:
+        if type(insertion_values[key]) == str:
+            converted_values[key] = "'" + insertion_values[key] + "'"
+        elif insertion_values[key] == None:
+            converted_values[key] = "NULL"
+        else:
+            converted_values[key] = insertion_values[key]
+    return converted_values
+
 # Insert test data
 for i in range(args.n):
+    insertion_values = {}
+
+    #PAT_MRN
     mrn = random.randint(0, 9999999)
+    insertion_values['PAT_MRN'] = mrn
+
+    # PAT_FIRST_NAME
     first_name = "".join([random.choice(string.ascii_lowercase) for n in range(random.randint(5, 10))])
+    insertion_values['PAT_FIRST_NAME'] = first_name
+
+    # PAT_LAST_NAME
     last_name = "".join([random.choice(string.ascii_lowercase) for n in range(random.randint(5, 10))])
+    insertion_values['PAT_LAST_NAME'] = last_name
+
+    # EMAIL_ADDRESS
     email = 'test' + str(mrn) + '@test.com'
-    entry_time = args.basedate - datetime.timedelta(seconds=random.randint(0, args.time_spread_seconds))
-    entry_time_str = entry_time.strftime('%Y-%m-%d %H:%M:%S')
+    insertion_values['EMAIL_ADDRESS'] = email
+
+    # HOSP_DISCHARGE_DTTM
+    discharge_time = args.basedate - datetime.timedelta(seconds=random.randint(0, args.time_spread_seconds))
+    discharge_time_str = discharge_time.strftime('%Y-%m-%d %H:%M:%S')
+    insertion_values['HOSP_DISCHARGE_DTTM'] = discharge_time_str
+    potential_death_time = discharge_time + datetime.timedelta(seconds=random.randint(0, 5*24*60*60))
+    potential_death_time_str = potential_death_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    # DISCH_LOC_NAME
     disch_dept_location = random.choice(list(HOSPITALS_TO_DEPARTMENTS.keys()))
+    insertion_values['DISCH_LOC_NAME'] = disch_dept_location
+
+    # DISCH_DEPT_NAME
     disch_dept_name = random.choice(HOSPITALS_TO_DEPARTMENTS[disch_dept_location])
+    insertion_values['DISCH_DEPT_NAME'] = disch_dept_name
+
+    # EMAIL_CONSENT_YN
     email_consent_yn = random.choice(['Yes', 'No'])
+    insertion_values['EMAIL_CONSENT_YN'] = email_consent_yn
+
+    # DISCH_DISPOSITION
+    insertion_values['DISCH_DISPOSITION'] = random.choice(['Home', 'Deceased'])
+
+    # DEATH_DATE
+    insertion_values['DEATH_DATE'] = random.choice([None, potential_death_time_str])
+
+    # LEVEL_OF_CARE
+    insertion_values['LEVEL_OF_CARE'] = random.choice(['regular', 'ALC-AB', 'ALC 123'])
+
+    # ED_IP_TRANSFER_YN
+    insertion_values['ED_IP_TRANSFER_YN'] = random.choice(['Yes', 'No'])
+
+    # LENGTH_OF_STAY_DAYS
+    insertion_values['LENGTH_OF_STAY_DAYS'] = random.randint(1, 15)
 
     args.file.write("INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]")
-    args.file.write("\t(PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, LoadTime)\n")
+    args.file.write("\t(PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, LoadTime, DEATH_DATE, DISCH_DISPOSITION, LEVEL_OF_CARE, ED_IP_TRANSFER_YN, LENGTH_OF_STAY_DAYS)\n")
     args.file.write("\tVALUES\n")
-    args.file.write("\t(%07d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', CAST(GETDATE()-1 AS DATE))\n"
-        % (mrn, first_name, last_name, email, entry_time_str, disch_dept_name, disch_dept_location, email_consent_yn))
+    args.file.write("\t({PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, CAST(GETDATE()-1 AS DATE), {DEATH_DATE}, {DISCH_DISPOSITION}, {LEVEL_OF_CARE}, {ED_IP_TRANSFER_YN}, {LENGTH_OF_STAY_DAYS})\n".format(**convertToSqlType(insertion_values)))
 
 args.file.close()
