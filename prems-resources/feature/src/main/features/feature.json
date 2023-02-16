@@ -222,80 +222,88 @@
       "file.name.format": "{questionnaire}_{period}.csv",
       "export.format": "csv"
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-DeathDate":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-DeathDate":{
       "priority": 20,
       "conditions": ["DEATH_DATE is not empty"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-Deceased":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Deceased":{
       "priority": 20,
-      "conditions": ["DISCH_DISPOSITION in Not Arrived; Jail; Cad Donor; Deceased; Died on Leav; Diverted; Died; Donor; Stillbirth; Suicide Out; Death After; MAID; Death on Arr; IP Medically; IP In-Facili; IP Died Whil; IP Out of Fa; DOA; OP Medically; OP In-Facili; Suicide fac; Still Born; Shelter; Cad donor; Pt. suicide; Expired LOA; Expired; Jail or half; Med assist d; Suicide fac; DOA; Inpatient Ps"]
+      "conditions": ["DISCH_DISPOSITION in Cad Donor; Deceased; Died on Leav; Died; Donor; Stillbirth; Suicide Out; Death After; MAID; Death on Arr; IP Medically; IP In-Facili; IP Died Whil; IP Out of Fa; DOA; OP Medically; OP In-Facili; Suicide fac; Still Born; Pt. suicide; Expired LOA; Expired; Med assist d; Suicide fac; DOA"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-AlternativeLevelOfCare":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-DischargeToLocation":{
+      "priority": 20,
+      "conditions": ["DISCH_DISPOSITION in Not Arrived; Jail; Diverted; Shelter; Jail or half; Inpatient Ps; IP Trnsfr; OP Transfer"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-AlternativeLevelOfCare":{
       "priority": 20,
       "conditions": ["LEVEL_OF_CARE matches ALC.*"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-Psychiatric":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Psychiatric":{
       "priority": 20,
       "conditions": ["DISCH_DEPT_NAME = TG-8ES PSYCHIATRY"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-Palliative":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Palliative":{
       "priority": 20,
       "conditions": ["DISCH_DEPT_NAME in PM-PALLIATIVE CARE ONCOLOGY CLINIC; TW-PALLIATIVE CARE CLINIC; TG-PALLIATIVE CARE; PM-16P PALLIATIVE CARE"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-Rehab":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-Rehab":{
       "priority": 40,
       "clinic": "/Survey/ClinicMapping/78840662",
       "conditions": ["DISCH_LOC_NAME = Toronto Rehab"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-Rehab-Psychiatric":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-Psychiatric":{
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME = UC-5 SOUTH IP"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-Rehab-ComplexContinuing":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-ComplexContinuingDept":{
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME in BC-3 NORTH TCU IP; BC-5A NORTH IP; BC-5B NORTH IP; BC-3 SOUTH IP; BC-5 SOUTH IP"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-NotRehab-PrimaryDiagnosis":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-ComplexContinuingMatch":{
+      "priority": 60,
+      "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME matches .*CCC.*"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NotRehab-PrimaryDiagnosis":{
       "priority": 60,
       "conditions": ["CLINIC is empty", "DX_NAME in Acute delirium; Adjustment disorder; Adjustment disorder with mixed anxiety and depressed mood; Adjustment disorders, unspecified; Agitation; Alcohol dependence in remission; Alcohol intoxication; Alcohol use; Alcohol use disorder; Alcohol withdrawal; Alcoholism in recovery; Alzheimer disease; Anxiety; Anxiety about health; Anxiety and depression; Bipolar 1 disorder; Bipolar affective disorder, current episode manic; Bipolar disorder; Cocaine use; Cocaine use disorder, severe, dependence; Cognitive impairment; Confusion; Delirium; Delirium superimposed on dementia; Dementia; Depression; Depression, prolonged; Developmental delay; Generalized anxiety disorder; Impaired cognition; Major depressive disorder; Memory impairment; MDD (major depressive disorder); Mood disorder; Schizoaffective disorder; Schizoaffective disorder, bipolar type; Schizophrenia; Severe anxiety with panic; Stress; Stress and adjustment reaction; Substance abuse; Substance use; Substance use disorder; Suicidal ideation; Unspecified intellectual developmental disorder (intellectual disability); Unspecified schizophrenia spectrum and other psychotic disorder; Unspecified trauma- and stressor-related disorder; Withdrawal symptoms, alcohol"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-NotRehab-LongTermCare":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NotRehab-LongTermCare":{
       "priority": 60,
       "conditions": ["CLINIC is empty", "DISCH_DISPOSITION in Residential; Discharge; IP Transfer; LTC; Res Care; Board & Care"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-ED-NoTransferTG":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-ED-NoTransferTG":{
       "priority": 80,
       "clinic": "/Survey/ClinicMapping/-1792626799",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = no", "DISCH_DEPT_NAME = TG-EMERGENCY"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-ED-NoTransferTW":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-ED-NoTransferTW":{
       "priority": 80,
       "clinic": "/Survey/ClinicMapping/-1792626799",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = no", "DISCH_DEPT_NAME = TW-EMERGENCY"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-ED-IPTransferShortStay":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-ED-IPTransferShortStay":{
       "priority": 80,
       "clinic": "/Survey/ClinicMapping/-1792626799",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = yes", "LENGTH_OF_STAY_DAYS <= 4", "DISCH_DEPT_NAME <> TW-EMERGENCY", "DISCH_DEPT_NAME <> TG-EMERGENCY"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-ED-TransferTG":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-ED-TransferTG":{
       "priority": 100,
       "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME = TG-EMERGENCY"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-ED-TransferTW":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-ED-TransferTW":{
       "priority": 100,
       "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME = TW-EMERGENCY"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~UHN-Discard-IP-ShortStay":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-IP-ShortStay":{
       "priority": 100,
       "conditions": ["CLINIC is empty", "LENGTH_OF_STAY_DAYS <= 4"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-EDIP-Transfer":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-EDIP-Transfer":{
       "priority": 140,
       "clinic": "/Survey/ClinicMapping/-432465800",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = yes"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~UHN-CohortMapper-IP":{
+    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-IP":{
       "priority": 160,
       "clinic": "/Survey/ClinicMapping/-1792626663",
       "conditions": ["CLINIC is empty"]

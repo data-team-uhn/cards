@@ -83,14 +83,14 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
         GTE(">=", false, (input, value) -> compareDouble(input, value, (a, b) -> a >= b)),
         GT(">", false, (input, value) -> compareDouble(input, value, (a, b) -> a > b)),
         EQ("=", false, (input, value) -> input != null && input.equalsIgnoreCase(value)),
-        NOT_MATCHES("not matches", false, (input, value) -> input == null || !input.matches(value)),
-        MATCHES("matches", false, (input, value) -> input != null && input.matches(value)),
-        NOT_IN("not in", false, (input, value) -> input == null
-            && !Arrays.stream(value.split("\\s*;\\s*")).anyMatch(input::equalsIgnoreCase)),
-        IN("in", false, (input, value) -> input != null
-            && Arrays.stream(value.split("\\s*;\\s*")).anyMatch(input::equalsIgnoreCase)),
-        EMPTY("is empty", true, (input, value) -> input == null || input.length() == 0),
-        NOT_EMPTY("is not empty", true, (input, value) -> input != null && input.length() > 0);
+        NOT_MATCHES(" not matches ", false, (input, value) -> input == null || !input.matches(value)),
+        MATCHES(" matches ", false, (input, value) -> input != null && input.matches(value)),
+        NOT_IN(" not in ", false, (input, value) -> input == null
+            && !Arrays.stream(value.split("\\s*+;\\s*+")).anyMatch(input::equalsIgnoreCase)),
+        IN(" in ", false, (input, value) -> input != null
+            && Arrays.stream(value.split("\\s*+;\\s*+")).anyMatch(input::equalsIgnoreCase)),
+        EMPTY(" is empty", true, (input, value) -> input == null || input.length() == 0),
+        NOT_EMPTY(" is not empty", true, (input, value) -> input != null && input.length() > 0);
 
         private final String operator;
 
@@ -112,7 +112,7 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
                     return Pair.of(StringUtils.removeEnd(configuration, this.operator).trim(), null);
                 }
             } else {
-                String[] pieces = configuration.split("\\s+" + this.operator + "\\s+", 2);
+                String[] pieces = configuration.split("\\s*" + this.operator + "\\s*", 2);
                 if (pieces.length == 2) {
                     return Pair.of(pieces[0], pieces[1]);
                 }
@@ -176,7 +176,7 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
         @Override
         public String toString()
         {
-            return this.column + " " + this.operator + (this.value != null ? " " + this.value : "");
+            return this.column + this.operator + (this.value != null ? this.value : "");
         }
     }
 }
