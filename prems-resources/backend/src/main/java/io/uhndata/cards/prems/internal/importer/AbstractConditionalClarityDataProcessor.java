@@ -53,7 +53,7 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
         }
     }
 
-    protected abstract Map<String, String> handleUnmatchedCondition(Map<String, String> input);
+    protected abstract Map<String, String> handleUnmatchedCondition(Map<String, String> input, String condition);
 
     protected abstract Map<String, String> handleAllConditionsMatched(Map<String, String> input);
 
@@ -62,7 +62,7 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
     {
         for (ConditionDefinition condition : this.conditions) {
             if (!condition.matches(input)) {
-                return this.handleUnmatchedCondition(input);
+                return this.handleUnmatchedCondition(input, condition.toString());
             }
         }
         // All filters match if data got here
@@ -136,6 +136,12 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
                 // Error parsing to double, does not match
                 return false;
             }
+        }
+
+        @Override
+        public String toString()
+        {
+            return this.operator;
         }
     }
 

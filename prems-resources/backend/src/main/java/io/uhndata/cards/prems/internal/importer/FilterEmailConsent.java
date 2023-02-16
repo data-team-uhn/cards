@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
@@ -35,6 +37,8 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 @Component
 public class FilterEmailConsent implements ClarityDataProcessor
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilterEmailConsent.class);
+
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
@@ -44,6 +48,7 @@ public class FilterEmailConsent implements ClarityDataProcessor
         if ((consent || myChartActivated) && EmailValidator.getInstance().isValid(email)) {
             return input;
         }
+        LOGGER.warn("Discarded visit {}", input.getOrDefault("ID", "Unknown"));
         return null;
     }
 

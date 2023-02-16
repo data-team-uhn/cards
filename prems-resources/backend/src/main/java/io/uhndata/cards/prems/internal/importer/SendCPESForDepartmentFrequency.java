@@ -27,6 +27,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
@@ -40,6 +42,8 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 @Designate(ocd = SendCPESForDepartmentFrequency.SendCPESForDepartmentFrequencyConfigDefinition.class)
 public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SendCPESForDepartmentFrequency.class);
+
     @ObjectClassDefinition(name = "Clarity import filter - CPESIC percentage",
         description = "Configuration for the Clarity importer filter sending the CPESIC questionnaire to a percentage"
             + " of the total visits registered for each department")
@@ -77,6 +81,8 @@ public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
         if ((input.get("CLINIC") == null || input.get("CLINIC").length() == 0)
             && Math.random() < this.perDepartmentFrequency.getOrDefault(department, this.defaultFrequency)) {
             input.put("CLINIC", "/Survey/ClinicMapping/2075099");
+
+            LOGGER.warn("Mapped visit {} to /Survey/ClinicMapping/2075099", input.getOrDefault("ID", "Unknown"));
         }
         return input;
     }
