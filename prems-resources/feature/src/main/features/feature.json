@@ -188,7 +188,7 @@
       "daysToVisit": -11
     },
 
-    // Regular CSV exports of all data
+    // Periodic CSV exports of all new and updated data
 
     "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Labeled-Forms":{
       "name": "UHN-Labeled-Forms",
@@ -233,7 +233,7 @@
       "export.format": "csv"
     },
 
-    // Clarity import filters and fillers
+    // Clarity import filters and mappers
 
     // Only look at events from the participating hospitals, discard everything else
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
@@ -245,7 +245,7 @@
         "DISCH_LOC_NAME <> Toronto Rehab"
       ]
     },
-    // Discard dead patients
+    // Discard deceased patients
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-DeathDate":{
       "priority": 20,
       "conditions": ["DEATH_DATE is not empty"]
@@ -254,7 +254,7 @@
       "priority": 20,
       "conditions": ["DISCH_DISPOSITION in Cad Donor; Deceased; Died on Leav; Died; Donor; Stillbirth; Suicide Out; Death After; MAID; Death on Arr; IP Medically; IP In-Facili; IP Died Whil; IP Out of Fa; DOA; OP Medically; OP In-Facili; Suicide fac; Still Born; Pt. suicide; Expired LOA; Expired; Med assist d; Suicide fac; DOA"]
     },
-    // Discard patients discharged to another institution (or not arrived at all)
+    // Discard patients discharged to another institution or not arrived at all
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-DischargeToLocation":{
       "priority": 20,
       "conditions": ["DISCH_DISPOSITION in Not Arrived; Jail; Diverted; Shelter; Jail or half; Inpatient Ps; IP Trnsfr; OP Transfer"]
