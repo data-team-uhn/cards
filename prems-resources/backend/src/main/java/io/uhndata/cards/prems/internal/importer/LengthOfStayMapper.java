@@ -26,6 +26,8 @@ import java.util.Calendar;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
@@ -38,6 +40,8 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 @Component
 public class LengthOfStayMapper implements ClarityDataProcessor
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LengthOfStayMapper.class);
+
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
@@ -61,6 +65,8 @@ public class LengthOfStayMapper implements ClarityDataProcessor
 
                 length = ChronoUnit.DAYS.between(admission.toInstant(), discharge.toInstant());
                 input.put("LENGTH_OF_STAY_DAYS", String.valueOf(length));
+
+                LOGGER.warn("Updated visit {} length of stay", input.getOrDefault("ID", "Unknown"));
             } catch (ParseException e) {
                 // Do nothing, could not calculate a new length so leave empty
             }
