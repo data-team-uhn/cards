@@ -242,7 +242,11 @@
         "DISCH_LOC_NAME <> Toronto General Hospital",
         "DISCH_LOC_NAME <> Toronto Western Hospital",
         "DISCH_LOC_NAME <> Princess Margaret Cancer Centre",
-        "DISCH_LOC_NAME <> Toronto Rehab"
+        "DISCH_LOC_NAME <> Toronto Rehab - Bickle Centre",
+        "DISCH_LOC_NAME <> Toronto Rehab - Lyndhurst Centre",
+        "DISCH_LOC_NAME <> Toronto Rehab - Rumsey Neuro",
+        "DISCH_LOC_NAME <> Toronto Rehab - Rumsey Cardiac",
+        "DISCH_LOC_NAME <> Toronto Rehab - University Centre"
       ]
     },
     // Discard deceased patients
@@ -276,7 +280,7 @@
     "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-Rehab":{
       "priority": 40,
       "clinic": "/Survey/ClinicMapping/78840662",
-      "conditions": ["DISCH_LOC_NAME = Toronto Rehab"]
+      "conditions": ["DISCH_LOC_NAME matches Toronto Rehab .*"]
     },
     // From the rehab department, exclude patients with special care
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-Psychiatric":{
