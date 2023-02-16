@@ -60,6 +60,9 @@
         "io.uhndata.cards.prems-backend:SurveyTracker=[survey-tracker]"
       ]
     },
+
+    // Email notifications for patients
+
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~CPES-InitialInvitationTask":{
       "name": "CPES-InitialNotificationsTask",
       "notificationType": "Invitation",
@@ -84,6 +87,7 @@
       "emailConfiguration": "/apps/cards/clinics/CPES/mailTemplates/ReminderNotification",
       "daysToVisit": -11
     },
+
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IP-InitialInvitationTask":{
       "name": "UHN-IP-InitialInvitationsTask",
       "notificationType": "Invitation",
@@ -108,6 +112,7 @@
       "emailConfiguration": "/apps/cards/clinics/UHN-IP/mailTemplates/ReminderNotification",
       "daysToVisit": -11
     },
+
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-ED-InitialInvitationTask":{
       "name": "UHN-ED-InitialInvitationsTask",
       "notificationType": "Invitation",
@@ -132,6 +137,7 @@
       "emailConfiguration": "/apps/cards/clinics/UHN-ED/mailTemplates/ReminderNotification",
       "daysToVisit": -11
     },
+
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIP-InitialInvitationTask":{
       "name": "UHN-EDIP-InitialInvitationsTask",
       "notificationType": "Invitation",
@@ -156,6 +162,7 @@
       "emailConfiguration": "/apps/cards/clinics/UHN-EDIP/mailTemplates/ReminderNotification",
       "daysToVisit": -11
     },
+
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-Rehab-InitialInvitationTask":{
       "name": "UHN-Rehab-InitialInvitationsTask",
       "notificationType": "Invitation",
@@ -180,6 +187,9 @@
       "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/ReminderNotification",
       "daysToVisit": -11
     },
+
+    // Regular CSV exports of all data
+
     "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Labeled-Forms":{
       "name": "UHN-Labeled-Forms",
       "frequency.in.days": 7,
@@ -222,6 +232,10 @@
       "file.name.format": "{questionnaire}_{period}.csv",
       "export.format": "csv"
     },
+
+    // Clarity import filters and fillers
+
+    // Only look at events from the participating hospitals, discard everything else
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
       "priority": 10,
       "conditions": [
@@ -231,6 +245,7 @@
         "DISCH_LOC_NAME <> Toronto Rehab"
       ]
     },
+    // Discard dead patients
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-DeathDate":{
       "priority": 20,
       "conditions": ["DEATH_DATE is not empty"]
@@ -239,10 +254,12 @@
       "priority": 20,
       "conditions": ["DISCH_DISPOSITION in Cad Donor; Deceased; Died on Leav; Died; Donor; Stillbirth; Suicide Out; Death After; MAID; Death on Arr; IP Medically; IP In-Facili; IP Died Whil; IP Out of Fa; DOA; OP Medically; OP In-Facili; Suicide fac; Still Born; Pt. suicide; Expired LOA; Expired; Med assist d; Suicide fac; DOA"]
     },
+    // Discard patients discharged to another institution (or not arrived at all)
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-DischargeToLocation":{
       "priority": 20,
       "conditions": ["DISCH_DISPOSITION in Not Arrived; Jail; Diverted; Shelter; Jail or half; Inpatient Ps; IP Trnsfr; OP Transfer"]
     },
+    // Discard patients with special care
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-AlternativeLevelOfCare":{
       "priority": 20,
       "conditions": ["LEVEL_OF_CARE matches ALC.*"]
@@ -255,11 +272,13 @@
       "priority": 20,
       "conditions": ["DISCH_DEPT_NAME in PM-PALLIATIVE CARE ONCOLOGY CLINIC; TW-PALLIATIVE CARE CLINIC; TG-PALLIATIVE CARE; PM-16P PALLIATIVE CARE"]
     },
+    // Assign patients from Toronto Rehab to the Rehab cohort
     "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-Rehab":{
       "priority": 40,
       "clinic": "/Survey/ClinicMapping/78840662",
       "conditions": ["DISCH_LOC_NAME = Toronto Rehab"]
     },
+    // From the rehab department, exclude patients with special care
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-Psychiatric":{
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME = UC-5 SOUTH IP"]
@@ -272,6 +291,7 @@
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME matches .*CCC.*"]
     },
+    // Discard patients not from the Rehab department, but with other special characteristics
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NotRehab-PrimaryDiagnosis":{
       "priority": 60,
       "conditions": ["CLINIC is empty", "DX_NAME in Acute delirium; Adjustment disorder; Adjustment disorder with mixed anxiety and depressed mood; Adjustment disorders, unspecified; Agitation; Alcohol dependence in remission; Alcohol intoxication; Alcohol use; Alcohol use disorder; Alcohol withdrawal; Alcoholism in recovery; Alzheimer disease; Anxiety; Anxiety about health; Anxiety and depression; Bipolar 1 disorder; Bipolar affective disorder, current episode manic; Bipolar disorder; Cocaine use; Cocaine use disorder, severe, dependence; Cognitive impairment; Confusion; Delirium; Delirium superimposed on dementia; Dementia; Depression; Depression, prolonged; Developmental delay; Generalized anxiety disorder; Impaired cognition; Major depressive disorder; Memory impairment; MDD (major depressive disorder); Mood disorder; Schizoaffective disorder; Schizoaffective disorder, bipolar type; Schizophrenia; Severe anxiety with panic; Stress; Stress and adjustment reaction; Substance abuse; Substance use; Substance use disorder; Suicidal ideation; Unspecified intellectual developmental disorder (intellectual disability); Unspecified schizophrenia spectrum and other psychotic disorder; Unspecified trauma- and stressor-related disorder; Withdrawal symptoms, alcohol"]
@@ -280,6 +300,8 @@
       "priority": 60,
       "conditions": ["CLINIC is empty", "DISCH_DISPOSITION in Residential; Discharge; IP Transfer; LTC; Res Care; Board & Care"]
     },
+    // Only non-rehab patients from now on.
+    // Assign patients that were only at the emergency department to the ED cohort
     "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-ED-NoTransferTG":{
       "priority": 80,
       "clinic": "/Survey/ClinicMapping/-1792626799",
@@ -290,11 +312,14 @@
       "clinic": "/Survey/ClinicMapping/-1792626799",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = no", "DISCH_DEPT_NAME = TW-EMERGENCY"]
     },
+    // Assign patients that were at the emergency department followed by a short stay in-patient to the ED cohort
     "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-ED-IPTransferShortStay":{
       "priority": 80,
       "clinic": "/Survey/ClinicMapping/-1792626799",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = yes", "LENGTH_OF_STAY_DAYS <= 4", "DISCH_DEPT_NAME <> TW-EMERGENCY", "DISCH_DEPT_NAME <> TG-EMERGENCY"]
     },
+    // Discard patients that were discharged from the emergency department to in-patient for an unknown period of time for now;
+    // a follow up event will be generated later when they are discharged from in-patient
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-ED-TransferTG":{
       "priority": 100,
       "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME = TG-EMERGENCY"]
@@ -303,15 +328,21 @@
       "priority": 100,
       "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME = TW-EMERGENCY"]
     },
+    // Only in-patients from now on.
+    // Discard patients that were only in-patient for a short time
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-IP-ShortStay":{
       "priority": 100,
       "conditions": ["CLINIC is empty", "LENGTH_OF_STAY_DAYS <= 4"]
     },
+    // As a special filter not listed here, a small percentage of patients are assigned to the long-form CPESIC cohort.
+    // Only non-CPESIC patients from now on.
+    // Assign patients that were both in the emergency and in-patient to the EDIP cohort
     "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-EDIP-Transfer":{
       "priority": 140,
       "clinic": "/Survey/ClinicMapping/-432465800",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = yes"]
     },
+    // Assign patients that were only in-patient to the IP cohort
     "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-IP":{
       "priority": 160,
       "clinic": "/Survey/ClinicMapping/-1792626663",
