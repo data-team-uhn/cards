@@ -43,8 +43,8 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfiguredCohortMapper.class);
 
     @ObjectClassDefinition(name = "Clarity import filter - Cohort mapping conditions",
-    description = "Configuration for the Clarity importer to map visits matching these conditions to a specified"
-        + " cohort")
+        description = "Configuration for the Clarity importer to map visits matching these conditions to a specified"
+            + " cohort")
     public @interface Config
     {
         @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
@@ -72,6 +72,7 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
     }
 
     private final String cohort;
+
     private final String id;
 
     @Activate

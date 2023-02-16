@@ -40,15 +40,13 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 @Component
 public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProcessor implements ClarityDataProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfiguredCohortMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfiguredDiscardFilter.class);
 
     @ObjectClassDefinition(name = "Clarity import filter - Discard Conditions",
-    description = "Configuration for the Clarity importer filter to discard any questionnaires matching these"
-        + " conditions")
+        description = "Configuration for the Clarity importer filter to discard any questionnaires matching these"
+            + " conditions")
     public @interface Config
     {
-        String id();
-
         @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
             + " Processors are run in ascending priority order")
         int priority();
