@@ -88,16 +88,33 @@ public class PatientInformationCleanupTask implements Runnable
             // Gather the needed UUIDs to place in the query
             final String patientInformationQuestionnaire =
                 (String) resolver.getResource("/Questionnaires/Patient information").getValueMap().get(UUID_KEY);
+            final String firstName = (String)
+                resolver.getResource("/Questionnaires/Patient information/first_name").getValueMap().get(UUID_KEY);
+            final String lastName = (String)
+                resolver.getResource("/Questionnaires/Patient information/last_name").getValueMap().get(UUID_KEY);
+            final String email =
+                (String) resolver.getResource("/Questionnaires/Patient information/email").getValueMap().get(UUID_KEY);
 
             // Query:
             final Iterator<Resource> resources = resolver.findResources(String.format(
-                // select all of the Patient information forms
+                // select all of the Patient information forms with some of private information filled
                 "select distinct patientInformation.*"
                     + "  from [cards:Form] as patientInformation"
+                    + "    inner join [cards:Answer] as firstName on isdescendantnode(firstName, patientInformation)"
+                    + "    inner join [cards:Answer] as lastName on isdescendantnode(lastName, patientInformation)"
+                    + "    inner join [cards:Answer] as email on isdescendantnode(email, patientInformation)"
                     + " where"
+                    // for which at least one of first_name, last_name, email answers is filled in
+                    + " (firstName.value IS NOT NULL or lastName.value IS NOT NULL or email.value IS NOT NULL)"
                     // link to the correct Patient Information questionnaire
-                    + "  patientInformation.questionnaire = '%1$s'",
-                    patientInformationQuestionnaire),
+                    + "  and patientInformation.questionnaire = '%1$s'"
+                    // link to the first_name question
+                    + "  and firstName.question = '%2$s'"
+                    // link to the last_name question
+                    + "  and firstName.question = '%3$s'"
+                    // link to the email question
+                    + "  and email.question = '%4$s'",
+                    patientInformationQuestionnaire, firstName, lastName, email),
                 Query.JCR_SQL2);
 
             resources.forEachRemaining(form -> {
