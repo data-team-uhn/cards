@@ -78,7 +78,7 @@ public final class AppointmentEmailNotificationsFactory
 
     @ObjectClassDefinition(name = "Appointment email notification",
         description = "Send emails for past and future appointments")
-    public static @interface Config
+    public @interface Config
     {
         @AttributeDefinition(name = "Name", description = "Name")
         String name();
