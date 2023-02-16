@@ -187,7 +187,7 @@ public class PatientInformationCleanupTask implements Runnable
         final String responsesReceived = (String) resolver
             .getResource("/Questionnaires/Survey events/responses_received").getValueMap().get(UUID_KEY);
         final String reminderSent = (String) resolver
-            .getResource("/Questionnaires/Survey events/reminder2Sent").getValueMap().get(UUID_KEY);
+            .getResource("/Questionnaires/Survey events/reminder2_sent").getValueMap().get(UUID_KEY);
 
         // run query to see if this Survey events form has at least one of responses_received or reminder2_sent answers
         Iterator<Resource> resource = resolver.findResources(String.format(
