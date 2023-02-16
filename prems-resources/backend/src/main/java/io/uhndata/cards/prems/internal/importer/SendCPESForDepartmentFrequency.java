@@ -74,7 +74,8 @@ public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
     public Map<String, String> processEntry(Map<String, String> input)
     {
         final String department = input.get("DISCH_DEPT_NAME");
-        if (Math.random() < this.perDepartmentFrequency.getOrDefault(department, this.defaultFrequency)) {
+        if ((input.get("CLINIC") == null || input.get("CLINIC").length() == 0)
+            && Math.random() < this.perDepartmentFrequency.getOrDefault(department, this.defaultFrequency)) {
             input.put("CLINIC", "/Survey/ClinicMapping/2075099");
         }
         return input;
@@ -83,6 +84,6 @@ public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
     @Override
     public int getPriority()
     {
-        return 100;
+        return 120;
     }
 }
