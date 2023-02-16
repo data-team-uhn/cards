@@ -80,9 +80,13 @@ public interface FormUtils
 
     enum SearchType
     {
+        /** Search only in this form. */
         FORM,
+        /** Search in all the forms belonging to the subject. */
         SUBJECT_FORMS,
+        /** Search in all the forms belonging to the subject and all ancestor subjects. */
         ANCESTORS_FORMS,
+        /** Search in all the forms belonging to the subject and all descendant subjects. */
         DESCENDANTS_FORMS
     }
 

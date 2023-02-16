@@ -62,7 +62,7 @@ public final class SubmissionCounter
 
     @ObjectClassDefinition(name = "Submission Counter",
         description = "Configuration for a surveys submitted performance counter")
-    public static @interface Config
+    public @interface Config
     {
         @AttributeDefinition(name = "Name", description = "Name")
         String name() default "SurveysSubmitted";
@@ -109,8 +109,7 @@ public final class SubmissionCounter
                 true,
                 null,
                 MONITORED_JCR_NODE_TYPES,
-                false
-            );
+                false);
         } catch (Exception e) {
             LOGGER.warn("Failed to register SubmissionCounter event handler: {}", e.getMessage());
         }

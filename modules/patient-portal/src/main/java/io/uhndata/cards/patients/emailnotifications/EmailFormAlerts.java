@@ -66,7 +66,7 @@ public final class EmailFormAlerts
 
     @ObjectClassDefinition(name = "Email Alerts",
         description = "Configuration for triggering an email alert based on the patient's responses")
-    public static @interface Config
+    public @interface Config
     {
         @AttributeDefinition(name = "Name", description = "Name")
         String name() default "PatientHealthAlert001";
