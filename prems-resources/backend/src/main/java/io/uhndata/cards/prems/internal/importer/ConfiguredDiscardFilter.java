@@ -41,7 +41,7 @@ public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProce
     @ObjectClassDefinition(name = "Clarity import filter - Discard Conditions",
     description = "Configuration for the Clarity importer filter to discard any questionnaires matching these"
         + " conditions")
-    public static @interface Config
+    public @interface Config
     {
         @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
             + " Processors are run in ascending priority order")

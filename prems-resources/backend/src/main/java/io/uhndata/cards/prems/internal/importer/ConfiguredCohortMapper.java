@@ -41,7 +41,7 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
     @ObjectClassDefinition(name = "Clarity import filter - Cohort mapping conditions",
     description = "Configuration for the Clarity importer to map visits matching these conditions to a specified"
         + " cohort")
-    public static @interface Config
+    public @interface Config
     {
         @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
             + " Processors are run in ascending priority order")
