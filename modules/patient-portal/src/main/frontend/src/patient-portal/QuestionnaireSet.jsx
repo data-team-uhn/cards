@@ -74,6 +74,12 @@ const useStyles = makeStyles(theme => ({
       textAlign: "center",
     }
   },
+  reviewScreen : {
+    "& > .MuiGrid-item:last-child" : {
+      position: "sticky",
+      bottom: theme.spacing(1),
+    },
+  },
   stepIndicator : {
     border: "1px solid " + theme.palette.action.disabled,
     background: "transparent",
@@ -153,6 +159,8 @@ function QuestionnaireSet(props) {
   const [ error, setError ] = useState("");
   // Screen layout props
   const [ screenType, setScreenType ] = useState();
+  // Subtype for non-survey screens
+  const [screenSubtype, setScreenSubtype ] = useState();
 
   const classes = useStyles();
 
@@ -173,6 +181,19 @@ function QuestionnaireSet(props) {
   useEffect(() => {
     setScreenType(crtStep >= 0 && crtStep < questionnaireIds?.length ? "survey" : "screen");
   }, [crtStep]);
+
+  useEffect(() => {
+    setScreenSubtype(
+      screenType == "screen" ?
+        isComplete ?
+          isSubmitted ?
+            "summaryScreen"
+            :
+            "reviewScreen"
+        : "incompleteScreen"
+      : ""
+    )
+  }, [screenType, isComplete, isSubmitted]);
 
   // Reset the crtFormId when returning to the welcome screen
   useEffect(() => {
@@ -621,8 +642,8 @@ function QuestionnaireSet(props) {
       <Grid item key="review-loading"><CircularProgress/></Grid>
     </Grid>
   ] : [
-    <Typography variant="h4" key="review-title">Please review your answers</Typography>,
-    <Typography paragraph key="review-desc">You can update the response for each question in the survey by using the "Update this Survey" button below.</Typography>,
+    <Typography variant="h4" key="review-title">Please review and submit your answers</Typography>,
+    <FormattedText paragraph key="review-desc">You can update the response for each question in the survey by using the **Update this Survey** button below. After reviewing, please click on **Submit my answers** to send your responses.</FormattedText>,
     <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).map((q, i) => (
       <Grid item key={q+"Review"}>
@@ -721,7 +742,7 @@ function QuestionnaireSet(props) {
         subtitle={questionnaires[questionnaireIds[crtStep]]?.title}
         step={stepIndicator(crtStep, true)}
       />
-      <QuestionnaireSetScreen className={classes[screenType]} key="screen">
+      <QuestionnaireSetScreen className={classes[screenType] + (screenSubtype && classes[screenSubtype] ? (" " + classes[screenSubtype]) : "")} key="screen">
         {
           crtStep == -1 ? welcomeScreen :
           crtStep < questionnaireIds.length ? formScreen :
