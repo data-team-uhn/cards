@@ -411,7 +411,7 @@ public class ClarityImportTask implements Runnable
             }
         }
         queryString += " FROM " + System.getenv("CLARITY_SQL_SCHEMA") + "." + System.getenv("CLARITY_SQL_TABLE");
-        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE()-" + this.pastDayToQuery + " AS DATE);";
+        queryString += " WHERE CAST(EDW_CREATE_DATE AS DATE) = CAST(GETDATE()-" + this.pastDayToQuery + " AS DATE);";
 
         return queryString;
     }
