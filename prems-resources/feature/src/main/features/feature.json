@@ -322,7 +322,7 @@
     "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-ED-IPTransferShortStay":{
       "priority": 80,
       "clinic": "/Survey/ClinicMapping/-1792626799",
-      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = yes", "LENGTH_OF_STAY_DAYS <= 4", "DISCH_DEPT_NAME <> TW-EMERGENCY", "DISCH_DEPT_NAME <> TG-EMERGENCY"]
+      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = yes", "LENGTH_OF_STAY_DAYS < 1", "DISCH_DEPT_NAME <> TW-EMERGENCY", "DISCH_DEPT_NAME <> TG-EMERGENCY"]
     },
     // Discard patients that were discharged from the emergency department to in-patient for an unknown period of time for now;
     // a follow up event will be generated later when they are discharged from in-patient
@@ -331,10 +331,10 @@
       "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME matches .*EMERGENCY.*"]
     },
     // Only in-patients from now on.
-    // Discard patients that were only in-patient for a short time
+    // Discard patients that didn't have an overnight stay
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-IP-ShortStay":{
       "priority": 100,
-      "conditions": ["CLINIC is empty", "LENGTH_OF_STAY_DAYS <= 4"]
+      "conditions": ["CLINIC is empty", "LENGTH_OF_STAY_DAYS < 1"]
     },
     // As a special filter, a small percentage of patients are assigned to the long-form CPESIC cohort
     "io.uhndata.cards.prems.internal.importer.SendCPESForDepartmentFrequency":{
