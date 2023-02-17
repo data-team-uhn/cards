@@ -60,17 +60,16 @@ public class LengthOfStayMapper implements ClarityDataProcessor
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Calendar admission = Calendar.getInstance();
                 Calendar discharge = Calendar.getInstance();
-                admission.setTime(dateFormat.parse(input.get("HOSP_ADMISSION_DTTM")));
-                discharge.setTime(dateFormat.parse(input.get("HOSP_DISCHARGE_DTTM")));
+                admission.setTime(dateFormat.parse(input.getOrDefault("HOSP_ADMISSION_DTTM", "")));
+                discharge.setTime(dateFormat.parse(input.getOrDefault("HOSP_DISCHARGE_DTTM", "")));
 
                 length = ChronoUnit.DAYS.between(admission.toInstant(), discharge.toInstant());
                 input.put("LENGTH_OF_STAY_DAYS", String.valueOf(length));
 
                 LOGGER.warn("Updated visit {} length of stay", input.getOrDefault("ID", "Unknown"));
-            } catch (ParseException e) {
+            } catch (ParseException | NullPointerException e) {
                 // Do nothing, could not calculate a new length so leave empty
             }
-
         }
         return input;
     }
