@@ -120,6 +120,8 @@ public class VisitChangeListener implements ResourceChangeListener
         boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.resolverFactory
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
+            this.rrp.push(localResolver);
+            mustPopResolver = true;
             // Get the information needed from the triggering form
             final Session session = localResolver.adaptTo(Session.class);
             if (!session.nodeExists(event.getPath())) {
@@ -130,8 +132,6 @@ public class VisitChangeListener implements ResourceChangeListener
             if (!this.formUtils.isForm(form)) {
                 return;
             }
-            this.rrp.push(localResolver);
-            mustPopResolver = true;
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
             final Node subject = this.formUtils.getSubject(form);
 
