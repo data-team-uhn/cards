@@ -124,15 +124,8 @@ public class PatientInformationCleanupTask implements Runnable
                         return;
                     }
 
-                    final NodeIterator children = formNode.getNodes();
-                    while (children.hasNext()) {
-                        final Node child = children.nextNode();
-                        if (child.isNodeType("cards:Answer")) {
-                            final String name = child.getProperty("question").getNode().getName();
-                            if ("first_name".equals(name) || "last_name".equals(name) || "email".equals(name)) {
-                                child.getProperty("value").remove();
-                            }
-                        }
+                    if (deleteFormAnswers(formNode)) {
+                        formNode.getSession().getWorkspace().getVersionManager().checkin(formNode.getPath());
                     }
                 } catch (final RepositoryException e) {
                     LOGGER.warn("Failed to delete patient information {}: {}", form.getPath(), e.getMessage());
@@ -222,5 +215,24 @@ public class PatientInformationCleanupTask implements Runnable
         }
 
         return true;
+    }
+
+    private boolean deleteFormAnswers(final Node form)
+        throws RepositoryException
+    {
+        boolean result = false;
+        final NodeIterator children = form.getNodes();
+        while (children.hasNext()) {
+            final Node child = children.nextNode();
+            if (child.isNodeType("cards:Answer")) {
+                final String name = child.getProperty("question").getNode().getName();
+                if ("first_name".equals(name) || "last_name".equals(name) || "email".equals(name)) {
+                    form.getSession().getWorkspace().getVersionManager().checkout(form.getPath());
+                    child.getProperty("value").remove();
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
 }
