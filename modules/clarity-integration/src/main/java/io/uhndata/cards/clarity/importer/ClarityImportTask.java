@@ -410,7 +410,7 @@ public class ClarityImportTask implements Runnable
                 queryString += ", ";
             }
         }
-        queryString += " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS";
+        queryString += " FROM " + System.getenv("CLARITY_SQL_SCHEMA") + "." + System.getenv("CLARITY_SQL_TABLE");
         queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE()-" + this.pastDayToQuery + " AS DATE);";
 
         return queryString;
