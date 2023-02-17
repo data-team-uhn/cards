@@ -282,12 +282,13 @@
       "clinic": "/Survey/ClinicMapping/78840662",
       "conditions": ["DISCH_LOC_NAME matches Toronto Rehab .*"]
     },
-    // From the rehab department, exclude patients with special care
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-Psychiatric":{
+    // From the Rehab, exclude patients from the Special Dementia Unit
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-Dementia":{
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME = UC-5 SOUTH IP"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-ComplexContinuingDept":{
+    // From the Rehab, exclude Complex Continuing Care patients
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-ComplexContinuingCare":{
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME in BC-3 NORTH TCU IP; BC-5A NORTH IP; BC-5B NORTH IP; BC-3 SOUTH IP; BC-5 SOUTH IP"]
     },
@@ -295,11 +296,12 @@
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME matches .*CCC.*"]
     },
-    // Discard patients not from the Rehab department, but with other special characteristics
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NotRehab-PrimaryDiagnosis":{
+    // Discard patients not from Rehab, and with psychiatric or substance abuse as primary diagnosis 
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NotRehab-PsychiatricOrSubstanceAbusePrimaryDiagnosis":{
       "priority": 60,
       "conditions": ["CLINIC is empty", "DX_NAME in Acute alcoholic intoxication; Acute delirium; Adjustment disorder; Adjustment disorder with mixed anxiety and depressed mood; Adjustment disorders, unspecified; Agitation; Alcohol dependence in remission; Alcohol intoxication; Alcohol use; Alcohol use disorder; Alcohol withdrawal; Alcoholism in recovery; Alzheimer disease; Anoxic brain injury; Anxiety; Anxiety about health; Anxiety and depression; Bipolar 1 disorder; Bipolar affective disorder, current episode manic; Bipolar disorder; Cocaine use; Cocaine use disorder, severe, dependence; Cognitive impairment; Confusion; Delirium; Delirium superimposed on dementia; Dementia; Depression; Depression, prolonged; Developmental delay; Drug-induced psychotic disorder; Essential tremor; Generalized anxiety disorder; Impaired cognition; Major depressive disorder; Memory impairment; MDD (major depressive disorder); Mood disorder; Overdose; Overdose of drug/medicinal substance; Overdose of tricyclic antidepressants; Polysubstance dependence; Schizoaffective disorder; Schizoaffective disorder, bipolar type; Schizophrenia; Seizure; Seizure disorder; Seizures; Severe anxiety with panic; Stress; Stress and adjustment reaction; Substance abuse; Substance use; Substance use disorder; Suicidal ideation; Tremor; Unspecified intellectual developmental disorder (intellectual disability); Unspecified schizophrenia spectrum and other psychotic disorder; Unspecified trauma- and stressor-related disorder; Vapes nicotine containing substance; Withdrawal symptoms, alcohol"]
     },
+    // Discard patients not from Rehab, and discharged to long term care
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NotRehab-LongTermCare":{
       "priority": 60,
       "conditions": ["CLINIC is empty", "DISCH_DISPOSITION in Residential; Discharge; IP Transfer; LTC; Res Care; Board & Care"]
