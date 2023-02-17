@@ -267,7 +267,15 @@ public class ClarityImportTask implements Runnable
 
             while (results.next()) {
                 // Create the Subjects and Forms as is needed
-                createFormsAndSubjects(resolver, results);
+                try {
+                    createFormsAndSubjects(resolver, results);
+                } catch (PersistenceException e) {
+                    LOGGER.error("PersistenceException while importing data to JCR", e);
+                } catch (ParseException e) {
+                    LOGGER.error("ParseException while importing data to JCR");
+                } catch (Exception e) {
+                    LOGGER.error("Unhandled exception while importing data: {}", e.getMessage(), e);
+                }
             }
 
             session.save();
@@ -280,10 +288,6 @@ public class ClarityImportTask implements Runnable
             LOGGER.error("Could not find service user while writing results: {}", e.getMessage(), e);
         } catch (RepositoryException e) {
             LOGGER.error("Error during Clarity import: {}", e.getMessage(), e);
-        } catch (PersistenceException e) {
-            LOGGER.error("PersistenceException while importing data to JCR", e);
-        } catch (ParseException e) {
-            LOGGER.error("ParseException while importing data to JCR");
         } finally {
             // Cleanup all ThreadLocals
             this.nodesToCheckin.remove();
@@ -428,9 +432,13 @@ public class ClarityImportTask implements Runnable
         }
 
         for (ClarityDataProcessor processor : this.processors) {
-            row = processor.processEntry(row);
-            if (row == null) {
-                return;
+            try {
+                row = processor.processEntry(row);
+                if (row == null) {
+                    return;
+                }
+            } catch (Exception e) {
+                LOGGER.error("Unhandled exception while processing data: {}", e.getMessage(), e);
             }
         }
         // Recursively move down the local Clarity Import configuration tree
