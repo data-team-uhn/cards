@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.formcompletionstatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Session;
@@ -63,10 +64,11 @@ public class AnswerCompletionStatusEditorProvider implements EditorProvider
     {
         final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
         if (resolver != null) {
-            this.allValidators.sort(null);
+            final List<AnswerValidator> sortedValidators = new ArrayList<>(this.allValidators);
+            sortedValidators.sort(null);
             // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
             return new AnswerCompletionStatusEditor(builder, false, resolver.adaptTo(Session.class), this.formUtils,
-                this.allValidators);
+                sortedValidators);
         }
         return null;
     }
