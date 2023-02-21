@@ -137,14 +137,15 @@ function DeleteButton(props) {
         Accept: "application/json"
       }
     }).then((response) => {
+      setDeletionInProgress(false);
       if (response.ok)  {
-        if (onComplete) {onComplete();}
         closeDialog();
+        if (onComplete) {onComplete();}
         if (navigateBack) {goBack();}
       } else {
         handleError(response.status, response);
       }
-    }).finally(() => setDeletionInProgress(false));
+    });
   }
 
   let handleClick = () => {
