@@ -296,6 +296,7 @@
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME matches .*CCC.*"]
     },
+    // Only non-rehab patients from now on.
     // Discard patients not from Rehab, and with psychiatric or substance abuse as primary diagnosis 
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NotRehab-PsychiatricOrSubstanceAbusePrimaryDiagnosis":{
       "priority": 60,
@@ -306,7 +307,6 @@
       "priority": 60,
       "conditions": ["CLINIC is empty", "DISCH_DISPOSITION in Residential; Discharge; IP Transfer; LTC; Res Care; Board & Care"]
     },
-    // Only non-rehab patients from now on.
     // Assign patients that were only at the emergency department to the ED cohort
     "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-ED-NoTransferTG":{
       "priority": 80,
@@ -318,24 +318,13 @@
       "clinic": "/Survey/ClinicMapping/-1792626799",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = no", "DISCH_DEPT_NAME = TW-EMERGENCY"]
     },
-    // Assign patients that were at the emergency department followed by a short stay in-patient to the ED cohort
-    "io.uhndata.cards.prems.internal.importer.ConfiguredCohortMapper~CohortMapper-ED-IPTransferShortStay":{
-      "priority": 80,
-      "clinic": "/Survey/ClinicMapping/-1792626799",
-      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = yes", "LENGTH_OF_STAY_DAYS <= 4", "DISCH_DEPT_NAME <> TW-EMERGENCY", "DISCH_DEPT_NAME <> TG-EMERGENCY"]
-    },
-    // Discard patients that were discharged from the emergency department to in-patient for an unknown period of time for now;
+    // Discard patients that were discharged from the emergency department to in-patient for now;
     // a follow up event will be generated later when they are discharged from in-patient
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-ED-Transfer":{
       "priority": 100,
       "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME matches .*EMERGENCY.*"]
     },
     // Only in-patients from now on.
-    // Discard patients that were only in-patient for a short time
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-IP-ShortStay":{
-      "priority": 100,
-      "conditions": ["CLINIC is empty", "LENGTH_OF_STAY_DAYS <= 4"]
-    },
     // As a special filter, a small percentage of patients are assigned to the long-form CPESIC cohort
     "io.uhndata.cards.prems.internal.importer.SendCPESForDepartmentFrequency":{
       "default.frequency": 0.04,
