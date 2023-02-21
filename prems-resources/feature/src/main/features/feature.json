@@ -356,6 +356,11 @@
       "priority": 160,
       "clinic": "/Survey/ClinicMapping/-1792626663",
       "conditions": ["CLINIC is empty"]
+    },
+    // Discard duplicates if there's more than one even per patient
+    "io.uhndata.cards.prems.internal.importer.DiscardDuplicatesFilter":{
+      "enable": true,
+      "column": "PAT_ENC_CSN_ID"
     }
   }
 }
