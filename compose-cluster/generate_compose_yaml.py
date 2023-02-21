@@ -898,6 +898,7 @@ if args.mssql:
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_ENCRYPT=false')
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_SCHEMA=path')
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS')
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=HOSP_DISCHARGE_DTTM')
   if args.expose_mssql:
     yaml_obj['services']['mssql']['ports'] = ['127.0.0.1:{}:1433'.format(args.expose_mssql)]
 
