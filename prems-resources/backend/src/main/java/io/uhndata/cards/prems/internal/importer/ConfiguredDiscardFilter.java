@@ -79,7 +79,8 @@ public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProce
     @Override
     protected Map<String, String> handleAllConditionsMatched(Map<String, String> input)
     {
-        LOGGER.warn("{} discarded visit {} due to all conditions met", this.id, input.getOrDefault("ID", "Unknown"));
+        LOGGER.warn("{} discarded visit {} due to all conditions met", this.id,
+            input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"));
         return null;
     }
 

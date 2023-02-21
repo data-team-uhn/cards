@@ -88,7 +88,8 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
     protected Map<String, String> handleAllConditionsMatched(Map<String, String> input)
     {
         input.put("CLINIC", this.cohort);
-        LOGGER.warn("{} mapped visit {} to {} due to all conditions met", this.id, input.getOrDefault("ID", "Unknown"),
+        LOGGER.warn("{} mapped visit {} to {} due to all conditions met", this.id,
+            input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"),
             this.cohort);
         return input;
     }
@@ -97,7 +98,7 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
     protected Map<String, String> handleUnmatchedCondition(Map<String, String> input, String condition)
     {
         if (!condition.startsWith("CLINIC")) {
-            LOGGER.warn("{} skipped visit {} due to {}", this.id, input.getOrDefault("ID", "Unknown"),
+            LOGGER.warn("{} skipped visit {} due to {}", this.id, input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"),
                 condition);
         }
         return input;

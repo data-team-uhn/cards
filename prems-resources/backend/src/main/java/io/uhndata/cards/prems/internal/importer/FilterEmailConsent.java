@@ -48,7 +48,7 @@ public class FilterEmailConsent implements ClarityDataProcessor
         if ((consent || myChartActivated) && EmailValidator.getInstance().isValid(email)) {
             return input;
         }
-        LOGGER.warn("Discarded visit {}", input.getOrDefault("ID", "Unknown"));
+        LOGGER.warn("Discarded visit {}", input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"));
         return null;
     }
 

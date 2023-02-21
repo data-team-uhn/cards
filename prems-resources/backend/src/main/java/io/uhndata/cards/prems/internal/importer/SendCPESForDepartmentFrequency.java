@@ -82,7 +82,8 @@ public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
             && Math.random() < this.perDepartmentFrequency.getOrDefault(department, this.defaultFrequency)) {
             input.put("CLINIC", "/Survey/ClinicMapping/2075099");
 
-            LOGGER.warn("Mapped visit {} to /Survey/ClinicMapping/2075099", input.getOrDefault("ID", "Unknown"));
+            LOGGER.warn("Mapped visit {} to /Survey/ClinicMapping/2075099",
+                input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"));
         }
         return input;
     }
