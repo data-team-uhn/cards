@@ -156,12 +156,14 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                     final Property sourceAnswerValue = node.getProperty(VALUE);
                     final Object referenceAnswerValue = referenceAnswer.getValueMap().get(VALUE);
                     if (!referenceAnswerValue.toString().equals(sourceAnswerValue.getString())) {
-                        final String referenceFormPath = getParentFormPath(referenceAnswer);
+                        final String referenceFormPath = this.formUtils.getForm(referenceAnswer.adaptTo(Node.class))
+                                .getPath();
                         versionManager.checkout(referenceFormPath);
                         checkoutPaths.add(referenceFormPath);
                         final Node formNode = session.getNode(referenceFormPath);
-                        Node changingAnswer = this.formUtils.getAnswer(formNode,
-                                getQuestionNode(referenceAnswer, session, serviceResolver));
+                        final Node question = this.questionnaireUtils.getQuestion(referenceAnswer.getValueMap()
+                                .get("question").toString());
+                        Node changingAnswer = this.formUtils.getAnswer(formNode, question);
                         changingAnswer.setProperty(VALUE, sourceAnswerValue.getValue());
                     }
                 }
@@ -171,46 +173,5 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         for (String path : checkoutPaths) {
             versionManager.checkin(path);
         }
-    }
-
-    /**
-     * Gets the Question node for given Answer node.
-     *
-     * @param answer answer for which the question is sought
-     * @param session a service session providing access to the repository
-     * @param serviceResolver a ResourceResolver that can be used for querying the JCR
-     * @return node of question to reference answer
-     * @throws RepositoryException if the form data could not be accessed
-     */
-    private Node getQuestionNode(final Resource answer, final Session session, final ResourceResolver serviceResolver)
-            throws RepositoryException
-    {
-        String questionUUID = answer.getValueMap().get("question").toString();
-        final Iterator<Resource> resourceIteratorQuestion = serviceResolver.findResources(
-                "SELECT q.* FROM [cards:Question] AS q WHERE q.'jcr:uuid' = '" + questionUUID + "'",
-                "JCR-SQL2");
-        if (!resourceIteratorQuestion.hasNext()) {
-            return null;
-        }
-        return session.getNode(resourceIteratorQuestion.next().getPath());
-    }
-
-    /**
-     * Gets the path of the parent Form for a given descendant node.
-     *
-     * @param child node for which the parent form is sought
-     * @return string of path the parent form
-     */
-    private String getParentFormPath(Resource child)
-    {
-        Resource parent = child.getParent();
-
-        if (parent == null) {
-            return null;
-        }
-        if (!parent.isResourceType("cards/Form")) {
-            return getParentFormPath(parent);
-        }
-        return parent.getPath();
     }
 }
