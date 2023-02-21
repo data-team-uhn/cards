@@ -340,20 +340,6 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>ID</value>
-                <type>String</type>
-              </property>
-              <property>
-                <name>question</name>
-                <value></value>
-                <type>String</type>
-              </property>
-            </node>
-            <node>
-              <name>00000015</name>
-              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-              <property>
-                <name>column</name>
                 <value>PAT_ENC_CSN_ID</value>
                 <type>String</type>
               </property>

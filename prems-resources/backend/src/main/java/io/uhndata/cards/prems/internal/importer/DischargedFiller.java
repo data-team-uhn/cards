@@ -36,7 +36,7 @@ public class DischargedFiller implements ClarityDataProcessor
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        // All visits we recieve are discharged, add this to the output so it can get inserted into the visit
+        // All visits we receive are discharged, add this to the output so it can get inserted into the visit
         input.put("STATUS", "discharged");
         return input;
     }
