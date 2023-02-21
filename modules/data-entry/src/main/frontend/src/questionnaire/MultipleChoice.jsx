@@ -375,7 +375,7 @@ function MultipleChoice(props) {
               tabIndex: isRadio ? -1 : undefined
             }, additionalInputProps)
             }
-            value={ghostName}
+            value={ghostName || ''}
             multiline={textbox}
             InputProps={muiInputProps}
             inputRef={ref => {inputEl = ref}}
