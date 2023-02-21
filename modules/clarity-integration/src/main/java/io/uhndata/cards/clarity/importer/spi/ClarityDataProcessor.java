@@ -36,6 +36,14 @@ import io.uhndata.cards.clarity.importer.ClarityImportTask;
 public interface ClarityDataProcessor extends Comparable<ClarityDataProcessor>
 {
     /**
+     * Called at the start of a new import job to allow a processor to initialize any needed state.
+     */
+    default void start()
+    {
+        // Nothing to do by default
+    }
+
+    /**
      * Process a row before importing it, by changing values, adding new columns, removing columns, or skipping the
      * entire row completely.
      *
@@ -43,6 +51,14 @@ public interface ClarityDataProcessor extends Comparable<ClarityDataProcessor>
      * @return the same row, a modified row, or {@code null} to cause this row to be ignored
      */
     Map<String, String> processEntry(Map<String, String> input);
+
+    /**
+     * Called at the end of an import job to allow a processor to cleanup any temporary state.
+     */
+    default void end()
+    {
+        // Nothing to do by default
+    }
 
     /**
      * The priority of this processor. Processors with higher numbers are invoked after those with lower numbers,
