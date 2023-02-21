@@ -157,7 +157,7 @@ public class ClarityImportTask implements Runnable
         @Override
         public String toString()
         {
-            return String.format("Subject mapping %s: %s -> $s", this.name, this.subjectIdColumn, this.subjectType);
+            return String.format("Subject mapping %s: %s -> %s", this.name, this.subjectIdColumn, this.subjectType);
         }
     }
 
@@ -218,7 +218,7 @@ public class ClarityImportTask implements Runnable
         @Override
         public String toString()
         {
-            return String.format("Question mapping %s: %s -> $s ($s)", this.name, this.column, this.question,
+            return String.format("Question mapping %s: %s -> %s (%s)", this.name, this.column, this.question,
                 this.questionType);
         }
     }
