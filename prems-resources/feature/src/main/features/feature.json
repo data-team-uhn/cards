@@ -360,7 +360,7 @@
     // Discard duplicates if there's more than one even per patient
     "io.uhndata.cards.prems.internal.importer.DiscardDuplicatesFilter":{
       "enable": true,
-      "column": "PAT_MRN"
+      "column": "PAT_ENC_CSN_ID"
     }
   }
 }
