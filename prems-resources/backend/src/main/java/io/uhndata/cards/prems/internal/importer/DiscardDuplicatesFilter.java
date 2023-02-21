@@ -29,6 +29,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
@@ -42,6 +44,8 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DiscardDuplicatesFilter implements ClarityDataProcessor
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiscardDuplicatesFilter.class);
+
     private final ThreadLocal<Set<String>> seenMrns = ThreadLocal.withInitial(HashSet::new);
 
     private final boolean enabled;
@@ -72,6 +76,8 @@ public class DiscardDuplicatesFilter implements ClarityDataProcessor
         if (this.enabled) {
             final String value = input.get(this.column);
             if (value != null && !this.seenMrns.get().add(value)) {
+                LOGGER.warn("DiscardDuplicatesFilter discarded visit {} as duplicate",
+                    input.getOrDefault("ID", "Unknown"));
                 return null;
             }
         }
