@@ -28,6 +28,9 @@ The following environment variables are read by CARDS and thus can be used in bo
 | `CLARITY_SQL_SERVER` | The MS-SQL server and port number to import clarity data from | `mssql:1433` |
 | `CLARITY_SQL_USERNAME` | Username to use when connecting to the Clarity MS-SQL server | `sa` |
 | `CLARITY_SQL_PASSWORD` | Password to use when connecting to the Clarity MS-SQL server | `testPassword_` |
+| `CLARITY_SQL_SCHEMA` | The schema name to connect to | `path` |
+| `CLARITY_SQL_TABLE` | The name of the table containing the Clarity data to be imported | `CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS` |
+| `CLARITY_EVENT_TIME_COLUMN` | The column containing the event date, used for filtering and sorting | `HOSP_DISCHARGE_DTTM` |
 | `CLARITY_SQL_ENCRYPT` | If true, [TLS encryption will be used for all data sent to and from](https://learn.microsoft.com/en-us/sql/connect/jdbc/setting-the-connection-properties?view=sql-server-ver16) the Clarity MS-SQL server | `false` |
 
 ### Environment variables read by the CARDS docker container entrypoint

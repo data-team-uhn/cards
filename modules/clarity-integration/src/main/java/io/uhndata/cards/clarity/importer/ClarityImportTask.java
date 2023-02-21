@@ -243,10 +243,9 @@ public class ClarityImportTask implements Runnable
         LOGGER.info("Running ClarityImportTask");
 
         String connectionUrl =
-            "jdbc:sqlserver://" + System.getenv("CLARITY_SQL_SERVER") + ";"
-                + "user=" + System.getenv("CLARITY_SQL_USERNAME") + ";"
-                + "password=" + System.getenv("CLARITY_SQL_PASSWORD") + ";"
-                + "encrypt=" + System.getenv("CLARITY_SQL_ENCRYPT") + ";";
+            String.format("jdbc:sqlserver://%s;user=%s;password=%s;encrypt=%s;", System.getenv("CLARITY_SQL_SERVER"),
+                System.getenv("CLARITY_SQL_USERNAME"), System.getenv("CLARITY_SQL_PASSWORD"),
+                System.getenv("CLARITY_SQL_ENCRYPT"));
 
         // Connect via SQL to the server
         boolean mustPopResolver = false;
@@ -415,7 +414,9 @@ public class ClarityImportTask implements Runnable
             }
         }
         queryString += " FROM " + System.getenv("CLARITY_SQL_SCHEMA") + "." + System.getenv("CLARITY_SQL_TABLE");
-        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE()-" + this.pastDayToQuery + " AS DATE);";
+        queryString += " WHERE CAST(" + System.getenv("CLARITY_EVENT_TIME_COLUMN") + " AS DATE) = CAST(GETDATE()-"
+            + this.pastDayToQuery + " AS DATE)";
+        queryString += " ORDER BY " + System.getenv("CLARITY_EVENT_TIME_COLUMN") + ";";
 
         return queryString;
     }
