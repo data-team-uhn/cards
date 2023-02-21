@@ -235,6 +235,11 @@
 
     // Clarity import filters and mappers
 
+    // Only send surveys to patients once every 6 months
+    "io.uhndata.cards.prems.internal.importer.RecentVisitDiscardFilter": {
+      "subject.id.column": "PAT_MRN",
+      "minimum.visit.frequency": 183
+    },
     // Only look at events from the participating hospitals, discard everything else
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
       "priority": 10,
@@ -297,7 +302,7 @@
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME matches .*CCC.*"]
     },
     // Only non-rehab patients from now on.
-    // Discard patients not from Rehab, and with psychiatric or substance abuse as primary diagnosis 
+    // Discard patients not from Rehab, and with psychiatric or substance abuse as primary diagnosis
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NotRehab-PsychiatricOrSubstanceAbusePrimaryDiagnosis":{
       "priority": 60,
       "conditions": ["CLINIC is empty", "DX_NAME in Acute alcoholic intoxication; Acute delirium; Adjustment disorder; Adjustment disorder with mixed anxiety and depressed mood; Adjustment disorders, unspecified; Agitation; Alcohol dependence in remission; Alcohol intoxication; Alcohol use; Alcohol use disorder; Alcohol withdrawal; Alcoholism in recovery; Alzheimer disease; Anoxic brain injury; Anxiety; Anxiety about health; Anxiety and depression; Bipolar 1 disorder; Bipolar affective disorder, current episode manic; Bipolar disorder; Cocaine use; Cocaine use disorder, severe, dependence; Cognitive impairment; Confusion; Delirium; Delirium superimposed on dementia; Dementia; Depression; Depression, prolonged; Developmental delay; Drug-induced psychotic disorder; Essential tremor; Generalized anxiety disorder; Impaired cognition; Major depressive disorder; Memory impairment; MDD (major depressive disorder); Mood disorder; Overdose; Overdose of drug/medicinal substance; Overdose of tricyclic antidepressants; Polysubstance dependence; Schizoaffective disorder; Schizoaffective disorder, bipolar type; Schizophrenia; Seizure; Seizure disorder; Seizures; Severe anxiety with panic; Stress; Stress and adjustment reaction; Substance abuse; Substance use; Substance use disorder; Suicidal ideation; Tremor; Unspecified intellectual developmental disorder (intellectual disability); Unspecified schizophrenia spectrum and other psychotic disorder; Unspecified trauma- and stressor-related disorder; Vapes nicotine containing substance; Withdrawal symptoms, alcohol"]

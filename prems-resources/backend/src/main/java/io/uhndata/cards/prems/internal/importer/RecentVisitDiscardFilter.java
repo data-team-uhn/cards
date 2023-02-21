@@ -30,8 +30,12 @@ import javax.jcr.RepositoryException;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +43,8 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.subjects.api.SubjectTypeUtils;
+import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
  * Clarity import processor that discards visits for patients who have recently been sent surveys.
@@ -46,13 +52,13 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * @version $Id$
  */
 @Component
+@Designate(ocd = RecentVisitDiscardFilter.Config.class)
 public class RecentVisitDiscardFilter implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecentVisitDiscardFilter.class);
 
-    // TODO: Retrieve from configuration
-    private final String subjectIDColumn = "PAT_MRN";
-    private final int dayLimit = -183;
+    private final String subjectIDColumn;
+    private final int minimumFrequency;
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -63,13 +69,40 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
     @Reference
     private FormUtils formUtils;
 
+    @Reference
+    private SubjectUtils subjectUtils;
+
+    @Reference
+    private SubjectTypeUtils subjectTypeUtils;
+
+    @ObjectClassDefinition(name = "Clarity import filter - Recent Visit Discarder",
+        description = "Configuration for the Clarity importer filter that discards visits for patients who have had "
+        + "surveys sent to them recently.")
+    public @interface Config
+    {
+        @AttributeDefinition(name = "Minimum Frequency",
+            description = "Minimum period in days between sending surveys to a patient")
+        int minimum_visit_frequency();
+
+        @AttributeDefinition(name = "Subject ID Column", description = "Clarity column containing the patient ID.")
+        String subject_id_column();
+    }
+
+    @Activate
+    public RecentVisitDiscardFilter(Config configuration)
+    {
+        this.subjectIDColumn = configuration.subject_id_column();
+        this.minimumFrequency = configuration.minimum_visit_frequency();
+    }
+
     // TODO: Cleanup
-    @SuppressWarnings("checkstyle:NestedIfDepth")
+    @SuppressWarnings({"checkstyle:NestedIfDepth", "checkstyle:CyclomaticComplexity"})
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
         LOGGER.error("Running on visit {}", input.getOrDefault("ID", "Unknown"));
         final String mrn = input.get(this.subjectIDColumn);
+        LOGGER.error("{}, {}", this.subjectIDColumn, String.valueOf(this.minimumFrequency));
 
         if (mrn == null || mrn.length() == 0) {
             return null;
@@ -88,25 +121,28 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
                     for (final NodeIterator visits = subjectNode.getNodes(); visits.hasNext();) {
                         // TODO: Verify child is a visit
                         Node visit = visits.nextNode();
-                        LOGGER.error("Found visit");
-                        for (final PropertyIterator forms = visit.getReferences("subject"); forms.hasNext();) {
-                            final Node form = forms.nextProperty().getParent();
-                            final Node questionnaire = this.formUtils.getQuestionnaire(form);
-                            if (isSurveyEventsForm(questionnaire)) {
-                                LOGGER.error("Found survey event form");
-                                Node invitationSentQuestion =
-                                    this.questionnaireUtils.getQuestion(questionnaire, "invitation_sent");
+                        final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(visit));
+                        if ("Visit".equals(subjectType)) {
+                            LOGGER.error("Found visit");
+                            for (final PropertyIterator forms = visit.getReferences("subject"); forms.hasNext();) {
+                                final Node form = forms.nextProperty().getParent();
+                                final Node questionnaire = this.formUtils.getQuestionnaire(form);
+                                if (isSurveyEventsForm(questionnaire)) {
+                                    LOGGER.error("Found survey event form");
+                                    Node invitationSentQuestion =
+                                        this.questionnaireUtils.getQuestion(questionnaire, "invitation_sent");
 
-                                final Calendar invitationSent =
-                                    (Calendar) this.formUtils.getValue(
-                                    this.formUtils.getAnswer(form, invitationSentQuestion));
+                                    final Calendar invitationSent =
+                                        (Calendar) this.formUtils.getValue(
+                                        this.formUtils.getAnswer(form, invitationSentQuestion));
 
-                                // If no value is set, survey is pending but has not yet been sent.
-                                // If that is the case or an invitation was sent recently, discard this visit.
-                                if (invitationSent == null || isRecent(invitationSent)) {
-                                    LOGGER.warn("Discarded visit {} due to recent invitation sent",
-                                        input.getOrDefault("ID", "Unknown"));
-                                    return null;
+                                    // If no value is set, survey is pending but has not yet been sent.
+                                    // If that is the case or an invitation was sent recently, discard this visit.
+                                    if (invitationSent == null || isRecent(invitationSent)) {
+                                        LOGGER.warn("Discarded visit {} due to recent invitation sent",
+                                            input.getOrDefault("ID", "Unknown"));
+                                        return null;
+                                    }
                                 }
                             }
                         }
@@ -132,7 +168,7 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
     private boolean isRecent(Calendar date)
     {
         Calendar compareTo = Calendar.getInstance();
-        compareTo.add(Calendar.DATE, this.dayLimit);
+        compareTo.add(Calendar.DATE, -this.minimumFrequency);
 
         // Return true if the requested date is after the configured recent date.
         return date.after(compareTo);
