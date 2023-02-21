@@ -454,6 +454,9 @@ public class ClarityImportTask implements Runnable
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
             // Get or create the subject
             Resource newSubjectParent = getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent);
+            if (newSubjectParent == null) {
+                return;
+            }
 
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
                 boolean updatesExisting = questionnaireMapping.updatesExisting;
@@ -501,6 +504,10 @@ public class ClarityImportTask implements Runnable
         final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
             ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
         final String incrementMetricOnCreation = subjectMapping.incrementMetricOnCreation;
+
+        if (StringUtils.isEmpty(identifier)) {
+            return null;
+        }
 
         String subjectMatchQuery = String.format(
             "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
