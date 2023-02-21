@@ -25,6 +25,9 @@ import {
   CircularProgress,
   Grid,
   IconButton,
+  List,
+  ListItem,
+  Popover,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -34,8 +37,10 @@ import withStyles from '@mui/styles/withStyles';
 import { DateTime } from "luxon";
 
 import EditIcon from '@mui/icons-material/Edit';
+import MoreIcon from '@mui/icons-material/MoreVert';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
+import ExportButton from "../dataHomepage/ExportButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
@@ -67,7 +72,8 @@ let findQuestions = (json, result = []) =>  {
 let Questionnaire = (props) => {
   let { id, classes } = props;
   let [ data, setData ] = useState();
-  let [ questionnaireTitle, setQuestionnaireTitle ] = useState()
+  let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
+  let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ error, setError ] = useState();
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
@@ -126,6 +132,31 @@ let Questionnaire = (props) => {
     });
   }, []);
 
+  let dropdownList = (
+      <List>
+        <ListItem className={classes.actionsMenuItem}>
+          <ExportButton
+              entityData={data}
+              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+	          entryName={questionnaireTitle}
+	          entryType="Questionnaire"
+	          size="medium"
+              variant="text"
+          />
+        </ListItem>
+        <ListItem className={classes.actionsMenuItem}>
+          <DeleteButton
+	          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+	          entryName={questionnaireTitle}
+	          entryType="Questionnaire"
+	          onComplete={() => history.replace(baseUrl)}
+	          size="medium"
+              variant="text"
+	      />
+        </ListItem>
+      </List>
+  )
+
   let questionnaireMenu = (
       <div className={classes.actionsMenu}>
         { isEdit ?
@@ -141,13 +172,26 @@ let Questionnaire = (props) => {
             </IconButton>
           </Tooltip>
         }
-        <DeleteButton
-          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-          entryName={questionnaireTitle}
-          entryType="Questionnaire"
-          variant="icon"
-          onComplete={() => history.replace(baseUrl)}
-        />
+        <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+          <IconButton size="large">
+            <MoreIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Popover
+            open={Boolean(actionsMenu)}
+            anchorEl={actionsMenu}
+            onClose={() => {setActionsMenu(null)}}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+            }}
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+        >
+          { dropdownList }
+        </Popover>
       </div>
   )
 
