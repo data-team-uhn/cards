@@ -128,6 +128,11 @@
           <type>String</type>
         </property>
         <property>
+          <name>subjectIDColumn</name>
+          <value>PAT_ENC_CSN_ID</value>
+          <type>String</type>
+        </property>
+        <property>
           <name>incrementMetricOnCreation</name>
           <value>ImportedAppointments</value>
           <type>String</type>
