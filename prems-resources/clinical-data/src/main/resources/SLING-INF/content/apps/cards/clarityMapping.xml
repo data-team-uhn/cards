@@ -303,7 +303,7 @@
               </property>
               <property>
                 <name>question</name>
-                <value>/Questionnaires/Visit information/status</value>
+                <value></value>
                 <type>String</type>
               </property>
             </node>
