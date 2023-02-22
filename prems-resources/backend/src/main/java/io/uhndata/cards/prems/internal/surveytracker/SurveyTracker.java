@@ -148,6 +148,8 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             if (isAnswerForHasSurveys(node) && hasSurveys(node)) {
                 LOGGER.warn("isAnswerForHasSurveys {}", event.getPath());
                 // Also update the expiration date, since this cannot be copied from the visit
+                ensureSurveyStatusFormExists(session.getNode("/Questionnaires/Survey events"),
+                    this.formUtils.getSubject(this.formUtils.getForm(node)), session);
                 updateSurveyExpirationDate(this.formUtils.getAnswer(this.formUtils.getForm(node),
                     session.getNode("/Questionnaires/Visit information/time")), session);
             } else if (isAnswerForSurveysSubmitted(node) && isSubmitted(node)) {
