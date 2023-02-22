@@ -445,6 +445,13 @@ public class ClarityImportTask implements Runnable
         // Recursively move down the local Clarity Import configuration tree
         walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
             resolver.resolve("/Subjects"));
+        try {
+            // If we import too much data at once, the notification system gets clogged and some events may be
+            // lost. Add a short delay to allow the rest of the system to catch up.
+            Thread.sleep(100L, 0);
+        } catch (InterruptedException e) {
+            // Not expected
+        }
     }
 
     private void walkThroughLocalConfig(ResourceResolver resolver, Map<String, String> row,
