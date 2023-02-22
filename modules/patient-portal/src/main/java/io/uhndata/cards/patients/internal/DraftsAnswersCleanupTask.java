@@ -121,9 +121,10 @@ public class DraftsAnswersCleanupTask implements Runnable
                 try {
                     final Node formNode = form.adaptTo(Node.class);
                     if (deleteFormAnswers(formNode, formNode)) {
+                        resolver.commit();
                         formNode.getSession().getWorkspace().getVersionManager().checkin(formNode.getPath());
                     }
-                } catch (RepositoryException e) {
+                } catch (RepositoryException | PersistenceException e) {
                     LOGGER.warn("Failed to delete patient's answer values from unsubmitted drafts from the form {}: {}",
                         form.getPath(), e.getMessage());
                 }
