@@ -45,6 +45,9 @@ const useStyles = makeStyles(theme => ({
       borderLeft: "0 none",
       color: "inherit",
       fontStyle: "italic",
+      "& a" : {
+        wordBreak: "break-all",
+      },
     }
   },
   actionErrorMessage: {
