@@ -130,6 +130,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
      */
     private void handleResourceEvent(final ResourceChange event)
     {
+        LOGGER.warn("Received {} notification for {}", event.getType(), event.getPath());
         // Acquire a service session with the right privileges for accessing visits and their forms
         boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.resolverFactory
@@ -140,16 +141,20 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             final Session session = localResolver.adaptTo(Session.class);
             final String path = event.getPath();
             if (!session.nodeExists(path)) {
+                LOGGER.warn("{} doesn't exit, aborting", event.getPath());
                 return;
             }
             final Node node = session.getNode(path);
             if (isAnswerForHasSurveys(node) && hasSurveys(node)) {
+                LOGGER.warn("isAnswerForHasSurveys {}", event.getPath());
                 // Also update the expiration date, since this cannot be copied from the visit
                 updateSurveyExpirationDate(this.formUtils.getAnswer(this.formUtils.getForm(node),
                     session.getNode("/Questionnaires/Visit information/time")), session);
             } else if (isAnswerForSurveysSubmitted(node) && isSubmitted(node)) {
+                LOGGER.warn("isAnswerForSurveysSubmitted {}", event.getPath());
                 updateSurveySubmittedDate(node, session);
             } else if (isAnswerForDischargeTime(node)) {
+                LOGGER.warn("isAnswerForDischargeTime {}", event.getPath());
                 updateSurveyExpirationDate(node, session);
             }
         } catch (final LoginException e) {
