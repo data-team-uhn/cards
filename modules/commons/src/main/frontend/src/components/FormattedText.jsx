@@ -25,6 +25,7 @@ import MDEditor from '@uiw/react-md-editor';
 
 const useStyles = makeStyles(theme => ({
   markdown: {
+    background: "transparent",
     fontSize: "inherit",
     fontFamily: "inherit",
     "& .anchor" : {
