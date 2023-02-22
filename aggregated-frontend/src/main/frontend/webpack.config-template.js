@@ -26,6 +26,7 @@ module_name = require("./package.json").name + ".";
 
 module.exports = {
   mode: 'development',
+  devtool: 'eval-cheap-module-source-map',
   entry: {
 ENTRY_CONTENT
   },

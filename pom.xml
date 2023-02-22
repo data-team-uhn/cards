@@ -1940,7 +1940,7 @@
            + ensure we sign files using GPG. -->
       <id>release</id>
       <properties>
-        <webpackArguments>--mode=production</webpackArguments>
+        <webpackArguments>--mode=production --devtool=source-map</webpackArguments>
       </properties>
       <activation>
         <property>
