@@ -26,6 +26,8 @@ import java.util.Calendar;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
@@ -38,19 +40,24 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 @Component
 public class UpdatedDischargeDateFiller implements ClarityDataProcessor
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UpdatedDischargeDateFiller.class);
+
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public Map<String, String> processEntry(Map<String, String> input)
+    public Map<String, String> processEntry(final Map<String, String> input)
     {
         try {
             final Calendar discharge = Calendar.getInstance();
             final Calendar cutoff = Calendar.getInstance();
             cutoff.add(Calendar.DATE, -7);
             discharge.setTime(DATE_FORMAT.parse(input.getOrDefault("HOSP_DISCHARGE_DTTM", "")));
-            long length = ChronoUnit.DAYS.between(cutoff.toInstant(), discharge.toInstant());
+            final long length = ChronoUnit.DAYS.between(cutoff.toInstant(), discharge.toInstant());
             if (length <= 0) {
                 input.put("HOSP_DISCHARGE_DTTM", DATE_FORMAT.format(cutoff.getTime()));
+                LOGGER.warn("Updated visit {} discharge date from {} to {}",
+                    input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"), DATE_FORMAT.format(discharge.getTime()),
+                    DATE_FORMAT.format(cutoff.getTime()));
             }
         } catch (ParseException | NullPointerException e) {
             // We don't do anything if the date is missing or malformed
