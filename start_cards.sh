@@ -151,29 +151,20 @@ function message_hancestro_install_fail() {
   echo -e "${TERMINAL_RED}****************************${TERMINAL_NOCOLOR}"
 }
 
-function message_sha256_cloud_iam_ok() {
-  echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                                                  *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}* Setup Cloud-IAM.com Demo as a SAML IdP for CARDS *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                                                  *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
+function message_vocabulary_install_ok() {
+  echo -e "${TERMINAL_GREEN}**************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                        *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}* Installed Vocabularies *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                        *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}**************************${TERMINAL_NOCOLOR}"
 }
 
-function message_sha256_cloud_iam_error() {
-  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}* Invalid Sha256 hash for samlKeystore.p12 for Cloud-IAM.com demo. *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}* SAML authentication via Cloud-IAM.com IdP may not work.          *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
-}
-
-function message_saml_proxy_port_conflict_fail() {
-  echo -e "${TERMINAL_RED}***************************************************************************************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                                                                                     *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}* Error: CARDS and keycloak_headermod_http_proxy.js cannot be bound to the same port. *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                                                                                     *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}***************************************************************************************${TERMINAL_NOCOLOR}"
+function message_vocabulary_install_fail() {
+  echo -e "${TERMINAL_RED}*****************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                           *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}* Vocabulary install failed *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                           *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*****************************${TERMINAL_NOCOLOR}"
 }
 
 function message_started_cards() {
@@ -238,12 +229,7 @@ declare OAK_STORAGE="tar"
 # Permissions scheme: default is open, allow switching to something else
 declare PERMISSIONS="open"
 declare PERMISSIONS_EXPLICITLY_SET="false"
-# Are we using the Cloud-IAM.com Keycloak demo instance?
-declare CLOUD_IAM_DEMO="false"
-# Is SAML authentication enabled?
-declare SAML_IN_USE="false"
-# Should any flags be passed to Java to enable debugging with JDB?
-declare JAVA_DEBUGGING_FLAGS=""
+RUNMODE_KIDS=false
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -276,6 +262,9 @@ do
         then
           PERMISSIONS="trusted"
         fi
+      elif [[ ${PROJECT} == 'cards4kids' ]]
+      then
+        RUNMODE_KIDS=true
       fi
       if [[ ${PROJECT} == 'cards4prems' ]]
       then
@@ -528,6 +517,35 @@ then
       --cards-port=$BIND_PORT \
       --keycloak-endpoint=$KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT &
     KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
+  fi
+fi
+
+# Handle Cards4Kids specific vocabularies
+if [[ $RUNMODE_KIDS = true ]]
+then
+  if [ -z $ADMIN_PASSWORD ]
+  then
+    ADMIN_PASSWORD="admin"
+  fi
+  VOCABULARIES=("DiagnosisMasterlist" "CathProcedureMasterlist" "CardiacSurgMasterlist" "VesselClosureMasterlist" "DeviceMasterlist")
+  KIDS_VOCABULARY_SUCCESS=true
+  for index in ${!VOCABULARIES[@]}; do
+    #Check if the vocabulary is already installed
+    curl -u admin:$ADMIN_PASSWORD --fail $CARDS_URL/Vocabularies/${VOCABULARIES[$index]}.json > /dev/null 2> /dev/null \
+      && VOCABULARY_INSTALLED=true || VOCABULARY_INSTALLED=false
+    if [ $VOCABULARY_INSTALLED = false ]
+    then
+      python3 Utilities/Administration/install_vocabulary.py --vocabulary_file ./kids-resources/clinical-data/src/main/vocabularies/${VOCABULARIES[$index]}.owl --vocabulary_name ${VOCABULARIES[$index]} --vocabulary_id ${VOCABULARIES[$index]} --vocabulary_version 1 \
+        || KIDS_VOCABULARY_SUCCESS=false
+    else
+      echo "${VOCABULARIES[$index]} already installed"
+    fi
+  done
+  if [[ $KIDS_VOCABULARY_SUCCESS = true ]]
+  then
+    message_vocabulary_install_ok
+  else
+    message_vocabulary_install_fail
   fi
 fi
 

@@ -1,0 +1,2175 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<rdf:RDF xmlns="urn:absolute:#"
+     xml:base="urn:absolute:"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="urn:absolute:"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+    <!-- urn:absolute:#Adenosine -->
+
+    <owl:Class rdf:about="urn:absolute:#Adenosine">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Adjunctive_therapy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Adjunctive_therapy -->
+
+    <owl:Class rdf:about="urn:absolute:#Adjunctive_therapy"/>
+
+
+
+    <!-- urn:absolute:#Angiographic_data_obtained -->
+
+    <owl:Class rdf:about="urn:absolute:#Angiographic_data_obtained">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Data"/>
+        <owl:disjointWith rdf:resource="urn:absolute:#Hemodynamic_data_obtained"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_valve -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_valve">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_valvotomy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Atrial_stimulation -->
+
+    <owl:Class rdf:about="urn:absolute:#Atrial_stimulation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiology_alteration"/>
+        <owl:disjointWith rdf:resource="urn:absolute:#Ventricular_stimulation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Balloon_dilation -->
+
+    <owl:Class rdf:about="urn:absolute:#Balloon_dilation"/>
+
+
+
+    <!-- urn:absolute:#Balloon_valvotomy -->
+
+    <owl:Class rdf:about="urn:absolute:#Balloon_valvotomy"/>
+
+
+
+    <!-- urn:absolute:#Beta_blockade -->
+
+    <owl:Class rdf:about="urn:absolute:#Beta_blockade">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Adjunctive_therapy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Biopsy -->
+
+    <owl:Class rdf:about="urn:absolute:#Biopsy"/>
+
+
+
+    <!-- urn:absolute:#Blade_atrial_septostomy -->
+
+    <owl:Class rdf:about="urn:absolute:#Blade_atrial_septostomy">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septostomy"/>
+        <owl:disjointWith rdf:resource="urn:absolute:#Balloon_atrial_septostomy_by_pullback_(Rashkind)_(BAS)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Coil_implantation -->
+
+    <owl:Class rdf:about="urn:absolute:#Coil_implantation"/>
+
+
+
+    <!-- urn:absolute:#Conduit -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Device_implantation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Data -->
+
+    <owl:Class rdf:about="urn:absolute:#Data"/>
+
+
+
+    <!-- urn:absolute:#Device_implantation -->
+
+    <owl:Class rdf:about="urn:absolute:#Device_implantation"/>
+
+
+
+    <!-- urn:absolute:#Diagnostic -->
+
+    <owl:Class rdf:about="urn:absolute:#Diagnostic"/>
+
+
+
+    <!-- urn:absolute:#Electrophysiology_alteration -->
+
+    <owl:Class rdf:about="urn:absolute:#Electrophysiology_alteration"/>
+
+
+
+    <!-- urn:absolute:#Fuild_bolus_challenge -->
+
+    <owl:Class rdf:about="urn:absolute:#Fuild_bolus_challenge">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hemodynamic_alteration"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Hemodynamic_alteration -->
+
+    <owl:Class rdf:about="urn:absolute:#Hemodynamic_alteration"/>
+
+
+
+    <!-- urn:absolute:#Hemodynamic_data_obtained -->
+
+    <owl:Class rdf:about="urn:absolute:#Hemodynamic_data_obtained">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Data"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Hybrid_Approach -->
+
+    <owl:Class rdf:about="urn:absolute:#Hybrid_Approach"/>
+
+
+
+    <!-- urn:absolute:#Inotropy_test -->
+
+    <owl:Class rdf:about="urn:absolute:#Inotropy_test">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hemodynamic_alteration"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Intravascular_foreign_body_removal -->
+
+    <owl:Class rdf:about="urn:absolute:#Intravascular_foreign_body_removal"/>
+
+
+
+    <!-- urn:absolute:#Mitral_valve -->
+
+    <owl:Class rdf:about="urn:absolute:#Mitral_valve">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_valvotomy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pericardiocentesis_-_elective -->
+
+    <owl:Class rdf:about="urn:absolute:#Pericardiocentesis_-_elective">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Other_invasive_procedures/interventional_techniques"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pericardiocentesis_-_emergent -->
+
+    <owl:Class rdf:about="urn:absolute:#Pericardiocentesis_-_emergent">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Other_invasive_procedures/interventional_techniques"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pleuracentesis_-_elective -->
+
+    <owl:Class rdf:about="urn:absolute:#Pleuracentesis_-_elective">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Other_invasive_procedures/interventional_techniques"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pleuracentesis_-_emergent -->
+
+    <owl:Class rdf:about="urn:absolute:#Pleuracentesis_-_emergent">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Other_invasive_procedures/interventional_techniques"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonic_valve -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonic_valve">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_valvotomy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#RV_post_heart_transplant -->
+
+    <owl:Class rdf:about="urn:absolute:#RV_post_heart_transplant">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Biopsy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Rapid_pacing -->
+
+    <owl:Class rdf:about="urn:absolute:#Rapid_pacing">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Adjunctive_therapy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Septostomy -->
+
+    <owl:Class rdf:about="urn:absolute:#Septostomy"/>
+
+
+
+    <!-- urn:absolute:#Site_not_RV -->
+
+    <owl:Class rdf:about="urn:absolute:#Site_not_RV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Biopsy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Snare_foreign_body -->
+
+    <owl:Class rdf:about="urn:absolute:#Snare_foreign_body">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Other_invasive_procedures/interventional_techniques"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Stent_insertion -->
+
+    <owl:Class rdf:about="urn:absolute:#Stent_insertion"/>
+
+
+
+    <!-- urn:absolute:#Stent_re-dilation -->
+
+    <owl:Class rdf:about="urn:absolute:#Stent_re-dilation"/>
+
+
+
+    <!-- urn:absolute:#Systemic_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Device_implantation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Device_implantation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Transcardiac_balloon_dilation -->
+
+    <owl:Class rdf:about="urn:absolute:#Transcardiac_balloon_dilation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hybrid_Approach"/>
+        <owl:disjointWith rdf:resource="urn:absolute:#Transcardiac_transcatheter_device_placement"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Transcardiac_transcatheter_device_placement -->
+
+    <owl:Class rdf:about="urn:absolute:#Transcardiac_transcatheter_device_placement">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hybrid_Approach"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Transcatheter_Fontan_completion -->
+
+    <owl:Class rdf:about="urn:absolute:#Transcatheter_Fontan_completion"/>
+
+
+
+    <!-- urn:absolute:#Transcatheter_implantation_of_valve -->
+
+    <owl:Class rdf:about="urn:absolute:#Transcatheter_implantation_of_valve"/>
+
+
+
+    <!-- urn:absolute:#Transluminal_test_occlusion -->
+
+    <owl:Class rdf:about="urn:absolute:#Transluminal_test_occlusion"/>
+
+
+
+    <!-- urn:absolute:#Tricuspid_valve -->
+
+    <owl:Class rdf:about="urn:absolute:#Tricuspid_valve">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_valvotomy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Ventricular_stimulation -->
+
+    <owl:Class rdf:about="urn:absolute:#Ventricular_stimulation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiology_alteration"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#coil_implantation_Coil_implantation -->
+
+    <owl:Class rdf:about="urn:absolute:#coil_implantation_Coil_implantation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Coil_implantation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#coil_implantation_Systemic_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#coil_implantation_Systemic_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Coil_implantation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#coil_implantation_Systemic_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#coil_implantation_Systemic_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Coil_implantation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#diagnostic_Transluminal_test_occlusion -->
+
+    <owl:Class rdf:about="urn:absolute:#diagnostic_Transluminal_test_occlusion">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Diagnostic"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#performative_Systemic_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#performative_Systemic_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#performative_Systemic_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#performative_Systemic_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_PDA -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_PDA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Transcatheter_implantation_of_valve -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Transcatheter_implantation_of_valve">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_PDA -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_PDA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transcatheter_implantation_Not_systemic_or_pulmonary_outflow -->
+
+    <owl:Class rdf:about="urn:absolute:#transcatheter_implantation_Not_systemic_or_pulmonary_outflow">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transcatheter_implantation_of_valve"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transcatheter_implantation_Pulmonary_outflow_position -->
+
+    <owl:Class rdf:about="urn:absolute:#transcatheter_implantation_Pulmonary_outflow_position">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transcatheter_implantation_of_valve"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transcatheter_implantation_Systemic_outflow_position -->
+
+    <owl:Class rdf:about="urn:absolute:#transcatheter_implantation_Systemic_outflow_position">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transcatheter_implantation_of_valve"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transcatheter_implantation_Systemic_ventricular_inflow_position -->
+
+    <owl:Class rdf:about="urn:absolute:#transcatheter_implantation_Systemic_ventricular_inflow_position">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transcatheter_implantation_of_valve"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transcatheter_implantation_pulmonary_ventricular_inflow_position -->
+
+    <owl:Class rdf:about="urn:absolute:#transcatheter_implantation_pulmonary_ventricular_inflow_position">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transcatheter_implantation_of_valve"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Fontan_fenestration -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Fontan_fenestration">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Interatrial_communication -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Interatrial_communication">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortopulmonary_amalgamation_+_Superior_Cavopulmonary_anastomosis(es)_+_PA_Debanding_+_Without_aortic_arch_repair -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortopulmonary_amalgamation_+_Superior_Cavopulmonary_anastomosis(es)_+_PA_Debanding_+_Without_aortic_arch_repair">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hybrid_approach_&apos;Stage_2&apos;"/>
+        <owl:disjointWith rdf:resource="urn:absolute:#Aortopulmonary_amalgamation_+_Superior_Cavopulmonary_anastomosis(es)_+_PA_Debanding_+_Aortic_arch_repair_(Norwood_[Stage_1]_+_Superior_Cavopulmonary_anastomosis(es)_+_PA_Debanding)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortopulmonary_amalgamation_+_Superior_Cavopulmonary_anastomosis(es)_+_PA_Debanding_+_Aortic_arch_repair_(Norwood_[Stage_1]_+_Superior_Cavopulmonary_anastomosis(es)_+_PA_Debanding) -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortopulmonary_amalgamation_+_Superior_Cavopulmonary_anastomosis(es)_+_PA_Debanding_+_Aortic_arch_repair_(Norwood_[Stage_1]_+_Superior_Cavopulmonary_anastomosis(es)_+_PA_Debanding)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hybrid_approach_&apos;Stage_2&apos;"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Application_of_RPA_&amp;_LPA_bands -->
+
+    <owl:Class rdf:about="urn:absolute:#Application_of_RPA_&amp;_LPA_bands">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hybrid_Approach_&apos;Stage_1&apos;"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Balloon_atrial_septostomy_by_pullback_(Rashkind)_(BAS) -->
+
+    <owl:Class rdf:about="urn:absolute:#Balloon_atrial_septostomy_by_pullback_(Rashkind)_(BAS)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septostomy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Cardiovascular_catheterization_procedure,_Therapeutic,_Perforation_(establishing_interchamber_and/or_intervessel_communication) -->
+
+    <owl:Class rdf:about="urn:absolute:#Cardiovascular_catheterization_procedure,_Therapeutic,_Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+
+
+
+    <!-- urn:absolute:#Completion_of_total_cavopulmonary_connection_(TCPC)_using_transcatheter_covered_stent -->
+
+    <owl:Class rdf:about="urn:absolute:#Completion_of_total_cavopulmonary_connection_(TCPC)_using_transcatheter_covered_stent">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transcatheter_Fontan_completion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_LA_to_LV -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_LA_to_LV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_LV_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_LV_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_LV_to_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_LV_to_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_RA_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_RA_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_RA_to_PA-pulmonary_trunk -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_RA_to_PA-pulmonary_trunk">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_RA_to_RV -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_RA_to_RV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_RV_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_RV_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_RV_to_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_RV_to_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_Shunt_-_systemic-to-pulmonary -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_Shunt_-_systemic-to-pulmonary">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit) -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit:_Sano_modification_(RV_to_PA_valveless_conduit) -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit:_Sano_modification_(RV_to_PA_valveless_conduit)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Hybrid_Approach_&apos;Stage_1&apos; -->
+
+    <owl:Class rdf:about="urn:absolute:#Hybrid_Approach_&apos;Stage_1&apos;"/>
+
+
+
+    <!-- urn:absolute:#Hybrid_approach_&apos;Stage_2&apos; -->
+
+    <owl:Class rdf:about="urn:absolute:#Hybrid_approach_&apos;Stage_2&apos;"/>
+
+
+
+    <!-- urn:absolute:#Intracardiac/septum:_Fontan_Baffle -->
+
+    <owl:Class rdf:about="urn:absolute:#Intracardiac/septum:_Fontan_Baffle">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Intracardiac/septum:_Fontan_fenestration -->
+
+    <owl:Class rdf:about="urn:absolute:#Intracardiac/septum:_Fontan_fenestration">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Intracardiac/septum:_Ventricular_septum -->
+
+    <owl:Class rdf:about="urn:absolute:#Intracardiac/septum:_Ventricular_septum">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Intracardiac/septum:_Atrial_baffle_S/P_atrial_switch -->
+
+    <owl:Class rdf:about="urn:absolute:#Intracardiac/septum:_Atrial_baffle_S/P_atrial_switch">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Intracardiac/septum:_Atrial_septum_(Static_balloon_dilation_[without_pullback]) -->
+
+    <owl:Class rdf:about="urn:absolute:#Intracardiac/septum:_Atrial_septum_(Static_balloon_dilation_[without_pullback])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Other_invasive_procedures/interventional_techniques -->
+
+    <owl:Class rdf:about="urn:absolute:#Other_invasive_procedures/interventional_techniques"/>
+
+
+
+    <!-- urn:absolute:#Oxygen/nitric_test -->
+
+    <owl:Class rdf:about="urn:absolute:#Oxygen/nitric_test">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hemodynamic_alteration"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication) -->
+
+    <owl:Class rdf:about="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+
+
+
+    <!-- urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication),_Systemic_vein,_Caval_vein,_Inferior_vena_cava -->
+
+    <owl:Class rdf:about="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication),_Systemic_vein,_Caval_vein,_Inferior_vena_cava"/>
+
+
+
+    <!-- urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication),_Systemic_vein,_Caval_vein,_Superior_vena_cava -->
+
+    <owl:Class rdf:about="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication),_Systemic_vein,_Caval_vein,_Superior_vena_cava"/>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery:_Peripheral -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery:_Peripheral">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery:_Proximal -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery:_Proximal">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery:_Central_(Proximal_left_and/or_proximal_right_pulmonary_artery_including_the_pulmonary_artery_bifurcation) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery:_Central_(Proximal_left_and/or_proximal_right_pulmonary_artery_including_the_pulmonary_artery_bifurcation)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery:_Main_(Trunk) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery:_Main_(Trunk)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Pulmonary_venous_confluence -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Pulmonary_venous_confluence">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Pulmonary_venous_confluence_with_left_atrium -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Pulmonary_venous_confluence_with_left_atrium">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Left_(Left_pulmonary_vein_[LPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Left_(Left_pulmonary_vein_[LPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Left_lower_(Left_lower_pulmonary_vein_[LLPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Left_lower_(Left_lower_pulmonary_vein_[LLPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Left_upper_(Left_upper_pulmonary_vein_[LUPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Left_upper_(Left_upper_pulmonary_vein_[LUPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Lingula_(Lingular_pulmonary_vein) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Lingula_(Lingular_pulmonary_vein)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Right_(Right_pulmonary_vein_[RPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Right_(Right_pulmonary_vein_[RPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Right_lower_(Right_lower_pulmonary_vein_[RLPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Right_lower_(Right_lower_pulmonary_vein_[RLPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Right_middle_(Right_middle_pulmonary_vein_[RMPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Right_middle_(Right_middle_pulmonary_vein_[RMPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vein:_Right_upper_(Right_upper_pulmonary_vein_[RUPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vein:_Right_upper_(Right_upper_pulmonary_vein_[RUPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#RV_not_S/P_heart_transplant -->
+
+    <owl:Class rdf:about="urn:absolute:#RV_not_S/P_heart_transplant">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Biopsy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Rapid_pacing:_Endocardial -->
+
+    <owl:Class rdf:about="urn:absolute:#Rapid_pacing:_Endocardial">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Adjunctive_therapy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Rapid_pacing:_Epicardial -->
+
+    <owl:Class rdf:about="urn:absolute:#Rapid_pacing:_Epicardial">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Adjunctive_therapy"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Stent_placement_in_arterial_duct_(PDA) -->
+
+    <owl:Class rdf:about="urn:absolute:#Stent_placement_in_arterial_duct_(PDA)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hybrid_Approach_&apos;Stage_1&apos;"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Stent_placement_in_arterial_duct_(PDA)_+_application_of_RPA_&amp;_LPA_bands -->
+
+    <owl:Class rdf:about="urn:absolute:#Stent_placement_in_arterial_duct_(PDA)_+_application_of_RPA_&amp;_LPA_bands">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Hybrid_Approach_&apos;Stage_1&apos;"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_artery,_Systemic_artery_other_than_aorta,_Iliac_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_artery,_Systemic_artery_other_than_aorta,_Iliac_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Cardiovascular_catheterization_procedure,_Therapeutic,_Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_artery:_Aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_artery:_Aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_artery:_Systemic_artery_other_than_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_artery:_Systemic_artery_other_than_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_vein,_Caval_vein,_Inferior_vena_cava -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_vein,_Caval_vein,_Inferior_vena_cava">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Device_implantation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_vein,_Caval_vein,_Superior_vena_cava -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_vein,_Caval_vein,_Superior_vena_cava">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Device_implantation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_vein:_Caval_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_vein:_Caval_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_vein:_Non-Caval_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_vein:_Non-Caval_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Balloon_dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#performativeSystemic_vein,_Caval_vein,_Inferior_vena_cava -->
+
+    <owl:Class rdf:about="urn:absolute:#performativeSystemic_vein,_Caval_vein,_Inferior_vena_cava">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication),_Systemic_vein,_Caval_vein,_Inferior_vena_cava"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#performative_Perforation_(establishing_interchamber_and/or_intervessel_communication) -->
+
+    <owl:Class rdf:about="urn:absolute:#performative_Perforation_(establishing_interchamber_and/or_intervessel_communication)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#performative_Systemic_artery,_Systemic_artery_other_than_aorta,_Femoral_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#performative_Systemic_artery,_Systemic_artery_other_than_aorta,_Femoral_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#performative_Systemic_artery,_Systemic_artery_other_than_aorta,_Iliac_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#performative_Systemic_artery,_Systemic_artery_other_than_aorta,_Iliac_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#performative_Systemic_vein,_Caval_vein,_Superior_vena_cava -->
+
+    <owl:Class rdf:about="urn:absolute:#performative_Systemic_vein,_Caval_vein,_Superior_vena_cava">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication),_Systemic_vein,_Caval_vein,_Superior_vena_cava"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#performative_Systemic_vein,_Non-Caval_vein,_Femoral_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#performative_Systemic_vein,_Non-Caval_vein,_Femoral_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#performative_Systemic_vein,_Non-Caval_vein,_Iliac_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#performative_Systemic_vein,_Non-Caval_vein,_Iliac_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_LA_to_LV -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_LA_to_LV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_LV_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_LV_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_LV_to_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_LV_to_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_RA_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_RA_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_RA_to_PA-pulmonary_trunk -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_RA_to_PA-pulmonary_trunk">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_RA_to_RV -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_RA_to_RV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_RV_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_RV_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_RV_to_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_RV_to_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_Shunt_-_systemic-to-pulmonary -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_Shunt_-_systemic-to-pulmonary">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Conduit:_Sano_modification_(RV_to_PA_valveless_conduit) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Conduit:_Sano_modification_(RV_to_PA_valveless_conduit)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Intracardiac/septum:_Atrial_septum -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Atrial_septum">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Intracardiac/septum:_Fontan_Baffle -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Fontan_Baffle">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Intracardiac/septum:_Fontan_fenestration -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Fontan_fenestration">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Intracardiac/septum:_Ventricular_septum -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Ventricular_septum">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Intracardiac/septum:_Atrial_baffle_S/P_atrial_switch -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Atrial_baffle_S/P_atrial_switch">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Lobar -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Lobar">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Lobar,_Left -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Lobar,_Left">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Lobar,_Right -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Lobar,_Right">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Sublobar_=_Segmental -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Sublobar_=_Segmental">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Sublobar_=_Segmental,_Left -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Sublobar_=_Segmental,_Left">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Sublobar_=_Segmental,_Right -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Sublobar_=_Segmental,_Right">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery,_Proximal,_Left -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Proximal,_Left">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery,_Proximal,_Right -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Proximal,_Right">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery:_Peripheral -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Peripheral">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery:_Proximal -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Proximal">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery:_Central_(Proximal_left_and/or_proximal_right_pulmonary_artery_including_the_pulmonary_artery_bifurcation) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Central_(Proximal_left_and/or_proximal_right_pulmonary_artery_including_the_pulmonary_artery_bifurcation)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_artery:_Main_(Trunk) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Main_(Trunk)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Pulmonary_venous_confluence -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Pulmonary_venous_confluence">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Pulmonary_venous_confluence_with_left_atrium -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Pulmonary_venous_confluence_with_left_atrium">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Left_(Left_pulmonary_vein_[LPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Left_(Left_pulmonary_vein_[LPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Left_lower_(Left_lower_pulmonary_vein_[LLPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Left_lower_(Left_lower_pulmonary_vein_[LLPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Left_upper_(Left_upper_pulmonary_vein_[LUPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Left_upper_(Left_upper_pulmonary_vein_[LUPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Lingula_(Lingular_pulmonary_vein) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Lingula_(Lingular_pulmonary_vein)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Right_(Right_pulmonary_vein_[RPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_(Right_pulmonary_vein_[RPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Right_lower_(Right_lower_pulmonary_vein_[RLPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_lower_(Right_lower_pulmonary_vein_[RLPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Right_middle_(Right_middle_pulmonary_vein_[RMPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_middle_(Right_middle_pulmonary_vein_[RMPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Pulmonary_vein:_Right_upper_(Right_upper_pulmonary_vein_[RUPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_upper_(Right_upper_pulmonary_vein_[RUPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracoabdominal_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracoabdominal_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta,_Coarctation -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta,_Coarctation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta,_Recurrent_coarctation -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta,_Recurrent_coarctation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta,_Native_(Primary)_coarctation -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta,_Native_(Primary)_coarctation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Ascending_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Ascending_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Descending_thoracic_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Descending_thoracic_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Transverse_arch -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Transverse_arch">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Coarctation,_Recurrent_coarctation -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Coarctation,_Recurrent_coarctation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Coarctation,_Native_(Primary)_coarctation -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Coarctation,_Native_(Primary)_coarctation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Coronary_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Coronary_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Femoral_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Femoral_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Iliac_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Iliac_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Renal_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Renal_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Subclavian_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Subclavian_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Systemic_pulmonary_vessel_connection -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Systemic_pulmonary_vessel_connection">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery:_Aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery:_Aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_artery:_Systemic_artery_other_than_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_artery:_Systemic_artery_other_than_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_vein,_Caval_vein,_Superior_vena_cava -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_vein,_Caval_vein,_Superior_vena_cava">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_vein:_Caval_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_vein:_Caval_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_insertion_Systemic_vein:_Non-Caval_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_insertion_Systemic_vein:_Non-Caval_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_insertion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_LA_to_LV -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_LA_to_LV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_LV_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_LV_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_LV_to_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_LV_to_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_RA_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RA_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_RA_to_PA-pulmonary_trunk -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RA_to_PA-pulmonary_trunk">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_RA_to_RV -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RA_to_RV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_RV_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RV_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_RV_to_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RV_to_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_Shunt_-_systemic-to-pulmonary -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_Shunt_-_systemic-to-pulmonary">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Conduit:_Sano_modification_(RV_to_PA_valveless_conduit) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Conduit:_Sano_modification_(RV_to_PA_valveless_conduit)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Intracardiac/septum:_Atrial_septum -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Atrial_septum">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Intracardiac/septum:_Fontan_Baffle -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Fontan_Baffle">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Intracardiac/septum:_Fontan_fenestration -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Fontan_fenestration">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Intracardiac/septum:_Ventricular_septum -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Ventricular_septum">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Intracardiac/septum:_Atrial_baffle_S/P_atrial_switch -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Atrial_baffle_S/P_atrial_switch">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_artery:_Peripheral -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_artery:_Peripheral">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_artery:_Proximal -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_artery:_Proximal">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_artery:_Central_(Proximal_left_and/or_proximal_right_pulmonary_artery_including_the_pulmonary_artery_bifurcation) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_artery:_Central_(Proximal_left_and/or_proximal_right_pulmonary_artery_including_the_pulmonary_artery_bifurcation)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_artery:_Main_(Trunk) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_artery:_Main_(Trunk)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Pulmonary_venous_confluence -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Pulmonary_venous_confluence">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Pulmonary_venous_confluence_with_left_atrium -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Pulmonary_venous_confluence_with_left_atrium">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Left_(Left_pulmonary_vein_[LPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Left_(Left_pulmonary_vein_[LPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Left_lower_(Left_lower_pulmonary_vein_[LLPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Left_lower_(Left_lower_pulmonary_vein_[LLPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Left_upper_(Left_upper_pulmonary_vein_[LUPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Left_upper_(Left_upper_pulmonary_vein_[LUPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Lingula_(Lingular_pulmonary_vein) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Lingula_(Lingular_pulmonary_vein)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_(Right_pulmonary_vein_[RPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_(Right_pulmonary_vein_[RPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_lower_(Right_lower_pulmonary_vein_[RLPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_lower_(Right_lower_pulmonary_vein_[RLPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_middle_(Right_middle_pulmonary_vein_[RMPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_middle_(Right_middle_pulmonary_vein_[RMPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_upper_(Right_upper_pulmonary_vein_[RUPV]) -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_upper_(Right_upper_pulmonary_vein_[RUPV])">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Systemic_artery:_Aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Systemic_artery:_Aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Systemic_artery:_Systemic_artery_other_than_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Systemic_artery:_Systemic_artery_other_than_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Systemic_vein:_Caval_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Systemic_vein:_Caval_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#stent_re_dilation_Systemic_vein:_Non-Caval_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#stent_re_dilation_Systemic_vein:_Non-Caval_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Stent_re-dilation"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transcatheter_implantation_Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit) -->
+
+    <owl:Class rdf:about="urn:absolute:#transcatheter_implantation_Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transcatheter_implantation_of_valve"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transcatheter_implantation_Conduit:_Sano_modification_(RV_to_PA_valveless_conduit) -->
+
+    <owl:Class rdf:about="urn:absolute:#transcatheter_implantation_Conduit:_Sano_modification_(RV_to_PA_valveless_conduit)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transcatheter_implantation_of_valve"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Conduit:_LA_to_LV -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Conduit:_LA_to_LV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Conduit:_LV_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Conduit:_LV_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Conduit:_LV_to_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Conduit:_LV_to_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Conduit:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Conduit:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Conduit:_RA_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Conduit:_RA_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Conduit:_RA_to_RV -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Conduit:_RA_to_RV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Conduit:_RV_to_PA -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Conduit:_RV_to_PA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Conduit:_RV_to_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Conduit:_RV_to_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Conduit:_Shunt_-_systemic-to-pulmonary -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Conduit:_Shunt_-_systemic-to-pulmonary">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Systemic_artery:_Aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Systemic_artery:_Aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Systemic_artery:_Systemic_artery_other_than_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Systemic_artery:_Systemic_artery_other_than_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Systemic_vein:_Caval_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Systemic_vein:_Caval_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#transluminal_Systemic_vein:_Non-Caval_vein -->
+
+    <owl:Class rdf:about="urn:absolute:#transluminal_Systemic_vein:_Non-Caval_vein">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transluminal_test_occlusion"/>
+    </owl:Class>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Adenosine"/>
+            <rdf:Description rdf:about="urn:absolute:#Beta_blockade"/>
+            <rdf:Description rdf:about="urn:absolute:#Rapid_pacing"/>
+            <rdf:Description rdf:about="urn:absolute:#Rapid_pacing:_Endocardial"/>
+            <rdf:Description rdf:about="urn:absolute:#Rapid_pacing:_Epicardial"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Adjunctive_therapy"/>
+            <rdf:Description rdf:about="urn:absolute:#Balloon_dilation"/>
+            <rdf:Description rdf:about="urn:absolute:#Balloon_valvotomy"/>
+            <rdf:Description rdf:about="urn:absolute:#Biopsy"/>
+            <rdf:Description rdf:about="urn:absolute:#Coil_implantation"/>
+            <rdf:Description rdf:about="urn:absolute:#Data"/>
+            <rdf:Description rdf:about="urn:absolute:#Device_implantation"/>
+            <rdf:Description rdf:about="urn:absolute:#Diagnostic"/>
+            <rdf:Description rdf:about="urn:absolute:#Electrophysiology_alteration"/>
+            <rdf:Description rdf:about="urn:absolute:#Hemodynamic_alteration"/>
+            <rdf:Description rdf:about="urn:absolute:#Hybrid_Approach"/>
+            <rdf:Description rdf:about="urn:absolute:#Intravascular_foreign_body_removal"/>
+            <rdf:Description rdf:about="urn:absolute:#Septostomy"/>
+            <rdf:Description rdf:about="urn:absolute:#Stent_insertion"/>
+            <rdf:Description rdf:about="urn:absolute:#Stent_re-dilation"/>
+            <rdf:Description rdf:about="urn:absolute:#Transcatheter_Fontan_completion"/>
+            <rdf:Description rdf:about="urn:absolute:#Transcatheter_implantation_of_valve"/>
+            <rdf:Description rdf:about="urn:absolute:#Transluminal_test_occlusion"/>
+            <rdf:Description rdf:about="urn:absolute:#Cardiovascular_catheterization_procedure,_Therapeutic,_Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+            <rdf:Description rdf:about="urn:absolute:#Hybrid_Approach_&apos;Stage_1&apos;"/>
+            <rdf:Description rdf:about="urn:absolute:#Hybrid_approach_&apos;Stage_2&apos;"/>
+            <rdf:Description rdf:about="urn:absolute:#Other_invasive_procedures/interventional_techniques"/>
+            <rdf:Description rdf:about="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+            <rdf:Description rdf:about="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication),_Systemic_vein,_Caval_vein,_Inferior_vena_cava"/>
+            <rdf:Description rdf:about="urn:absolute:#Perforation_(establishing_interchamber_and/or_intervessel_communication),_Systemic_vein,_Caval_vein,_Superior_vena_cava"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Aortic_valve"/>
+            <rdf:Description rdf:about="urn:absolute:#Mitral_valve"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonic_valve"/>
+            <rdf:Description rdf:about="urn:absolute:#Tricuspid_valve"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Conduit"/>
+            <rdf:Description rdf:about="urn:absolute:#Systemic_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#Systemic_vein"/>
+            <rdf:Description rdf:about="urn:absolute:#Systemic_vein,_Caval_vein,_Inferior_vena_cava"/>
+            <rdf:Description rdf:about="urn:absolute:#Systemic_vein,_Caval_vein,_Superior_vena_cava"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Fuild_bolus_challenge"/>
+            <rdf:Description rdf:about="urn:absolute:#Inotropy_test"/>
+            <rdf:Description rdf:about="urn:absolute:#Oxygen/nitric_test"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Pericardiocentesis_-_elective"/>
+            <rdf:Description rdf:about="urn:absolute:#Pericardiocentesis_-_emergent"/>
+            <rdf:Description rdf:about="urn:absolute:#Pleuracentesis_-_elective"/>
+            <rdf:Description rdf:about="urn:absolute:#Pleuracentesis_-_emergent"/>
+            <rdf:Description rdf:about="urn:absolute:#Snare_foreign_body"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#RV_post_heart_transplant"/>
+            <rdf:Description rdf:about="urn:absolute:#Site_not_RV"/>
+            <rdf:Description rdf:about="urn:absolute:#RV_not_S/P_heart_transplant"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#coil_implantation_Coil_implantation"/>
+            <rdf:Description rdf:about="urn:absolute:#coil_implantation_Systemic_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#coil_implantation_Systemic_vein"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_vein"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_artery,_Systemic_artery_other_than_aorta,_Femoral_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_artery,_Systemic_artery_other_than_aorta,_Iliac_artery"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_vein"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Perforation_(establishing_interchamber_and/or_intervessel_communication)"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_artery,_Systemic_artery_other_than_aorta,_Femoral_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_artery,_Systemic_artery_other_than_aorta,_Iliac_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_vein,_Non-Caval_vein,_Femoral_vein"/>
+            <rdf:Description rdf:about="urn:absolute:#performative_Systemic_vein,_Non-Caval_vein,_Iliac_vein"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_PDA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Transcatheter_implantation_of_valve"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_LA_to_LV"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_LV_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_LV_to_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RA_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RA_to_PA-pulmonary_trunk"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RA_to_RV"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RV_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RV_to_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_Shunt_-_systemic-to-pulmonary"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_Sano_modification_(RV_to_PA_valveless_conduit)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Atrial_septum"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Fontan_Baffle"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Fontan_fenestration"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Ventricular_septum"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Atrial_baffle_S/P_atrial_switch"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Lobar"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Lobar,_Left"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Lobar,_Right"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Sublobar_=_Segmental"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Sublobar_=_Segmental,_Left"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Peripheral,_Sublobar_=_Segmental,_Right"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Proximal,_Left"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery,_Proximal,_Right"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Peripheral"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Proximal"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Central_(Proximal_left_and/or_proximal_right_pulmonary_artery_including_the_pulmonary_artery_bifurcation)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Main_(Trunk)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Pulmonary_venous_confluence"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Pulmonary_venous_confluence_with_left_atrium"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Left_(Left_pulmonary_vein_[LPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Left_lower_(Left_lower_pulmonary_vein_[LLPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Left_upper_(Left_upper_pulmonary_vein_[LUPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Lingula_(Lingular_pulmonary_vein)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_(Right_pulmonary_vein_[RPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_lower_(Right_lower_pulmonary_vein_[RLPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_middle_(Right_middle_pulmonary_vein_[RMPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_upper_(Right_upper_pulmonary_vein_[RUPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracoabdominal_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta,_Coarctation"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta,_Recurrent_coarctation"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Abdominal_aorta,_Native_(Primary)_coarctation"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Ascending_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Descending_thoracic_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Transverse_arch"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Coarctation,_Recurrent_coarctation"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Aorta,_Thoracic_aorta,_Coarctation,_Native_(Primary)_coarctation"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Coronary_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Femoral_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Iliac_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Renal_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Subclavian_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery,_Systemic_artery_other_than_aorta,_Systemic_pulmonary_vessel_connection"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery:_Aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery:_Systemic_artery_other_than_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_vein,_Caval_vein,_Superior_vena_cava"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_vein:_Caval_vein"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_vein:_Non-Caval_vein"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_PDA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_LA_to_LV"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_LV_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_LV_to_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RA_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RA_to_PA-pulmonary_trunk"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RA_to_RV"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RV_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_RV_to_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_Shunt_-_systemic-to-pulmonary"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Conduit:_Sano_modification_(RV_to_PA_valveless_conduit)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Atrial_septum"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Fontan_Baffle"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Fontan_fenestration"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Ventricular_septum"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Intracardiac/septum:_Atrial_baffle_S/P_atrial_switch"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Peripheral"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Proximal"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Central_(Proximal_left_and/or_proximal_right_pulmonary_artery_including_the_pulmonary_artery_bifurcation)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_artery:_Main_(Trunk)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Pulmonary_venous_confluence"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Pulmonary_venous_confluence_with_left_atrium"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Left_(Left_pulmonary_vein_[LPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Left_lower_(Left_lower_pulmonary_vein_[LLPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Left_upper_(Left_upper_pulmonary_vein_[LUPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Lingula_(Lingular_pulmonary_vein)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_(Right_pulmonary_vein_[RPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_lower_(Right_lower_pulmonary_vein_[RLPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_middle_(Right_middle_pulmonary_vein_[RMPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Pulmonary_vein:_Right_upper_(Right_upper_pulmonary_vein_[RUPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery:_Aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_artery:_Systemic_artery_other_than_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_vein:_Caval_vein"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_insertion_Systemic_vein:_Non-Caval_vein"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_PDA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_LA_to_LV"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_LV_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_LV_to_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RA_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RA_to_PA-pulmonary_trunk"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RA_to_RV"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RV_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_RV_to_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_Shunt_-_systemic-to-pulmonary"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_Sano_modification-with_valve_(RV_to_PA_valved_conduit)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Conduit:_Sano_modification_(RV_to_PA_valveless_conduit)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Atrial_septum"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Fontan_Baffle"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Fontan_fenestration"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Ventricular_septum"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Intracardiac/septum:_Atrial_baffle_S/P_atrial_switch"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_artery:_Peripheral"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_artery:_Proximal"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_artery:_Central_(Proximal_left_and/or_proximal_right_pulmonary_artery_including_the_pulmonary_artery_bifurcation)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_artery:_Main_(Trunk)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Pulmonary_venous_confluence"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Pulmonary_venous_confluence_with_left_atrium"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Left_(Left_pulmonary_vein_[LPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Left_lower_(Left_lower_pulmonary_vein_[LLPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Left_upper_(Left_upper_pulmonary_vein_[LUPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Lingula_(Lingular_pulmonary_vein)"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_(Right_pulmonary_vein_[RPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_lower_(Right_lower_pulmonary_vein_[RLPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_middle_(Right_middle_pulmonary_vein_[RMPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Pulmonary_vein:_Right_upper_(Right_upper_pulmonary_vein_[RUPV])"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Systemic_artery:_Aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Systemic_artery:_Systemic_artery_other_than_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Systemic_vein:_Caval_vein"/>
+            <rdf:Description rdf:about="urn:absolute:#stent_re_dilation_Systemic_vein:_Non-Caval_vein"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Fontan_fenestration"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Interatrial_communication"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Conduit:_LA_to_LV"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Conduit:_LV_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Conduit:_LV_to_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Conduit:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Conduit:_RA_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Conduit:_RA_to_RV"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Conduit:_RV_to_PA"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Conduit:_RV_to_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Conduit:_Shunt_-_systemic-to-pulmonary"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Systemic_artery:_Aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Systemic_artery:_Systemic_artery_other_than_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Systemic_vein:_Caval_vein"/>
+            <rdf:Description rdf:about="urn:absolute:#transluminal_Systemic_vein:_Non-Caval_vein"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Application_of_RPA_&amp;_LPA_bands"/>
+            <rdf:Description rdf:about="urn:absolute:#Stent_placement_in_arterial_duct_(PDA)"/>
+            <rdf:Description rdf:about="urn:absolute:#Stent_placement_in_arterial_duct_(PDA)_+_application_of_RPA_&amp;_LPA_bands"/>
+        </owl:members>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+
