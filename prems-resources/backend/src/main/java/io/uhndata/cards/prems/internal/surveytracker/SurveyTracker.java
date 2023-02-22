@@ -101,7 +101,8 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
 
             final Node visitSubject = session.getNode((String) event.getProperty("visit"));
             final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
-            final Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
+            final Node surveyStatusForm =
+                ensureSurveyStatusFormExists(surveyStatusQuestionnaire, visitSubject, session);
             final Node question = surveyStatusQuestionnaire
                 .getNode(StringUtils.toRootLowerCase(StringUtils.substringAfterLast(event.getTopic(), "/")) + "_sent");
             final Node answer = this.formUtils.getAnswer(surveyStatusForm, question);
@@ -129,6 +130,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
      */
     private void handleResourceEvent(final ResourceChange event)
     {
+        LOGGER.warn("Received {} notification for {}", event.getType(), event.getPath());
         // Acquire a service session with the right privileges for accessing visits and their forms
         boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.resolverFactory
@@ -139,19 +141,20 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             final Session session = localResolver.adaptTo(Session.class);
             final String path = event.getPath();
             if (!session.nodeExists(path)) {
+                LOGGER.warn("{} doesn't exit, aborting", event.getPath());
                 return;
             }
             final Node node = session.getNode(path);
-            final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
             if (isAnswerForHasSurveys(node) && hasSurveys(node)) {
-                ensureSurveyStatusFormExists(surveyStatusQuestionnaire,
-                    this.formUtils.getSubject(this.formUtils.getForm(node)), session);
+                LOGGER.warn("isAnswerForHasSurveys {}", event.getPath());
                 // Also update the expiration date, since this cannot be copied from the visit
                 updateSurveyExpirationDate(this.formUtils.getAnswer(this.formUtils.getForm(node),
                     session.getNode("/Questionnaires/Visit information/time")), session);
             } else if (isAnswerForSurveysSubmitted(node) && isSubmitted(node)) {
+                LOGGER.warn("isAnswerForSurveysSubmitted {}", event.getPath());
                 updateSurveySubmittedDate(node, session);
             } else if (isAnswerForDischargeTime(node)) {
+                LOGGER.warn("isAnswerForDischargeTime {}", event.getPath());
                 updateSurveyExpirationDate(node, session);
             }
         } catch (final LoginException e) {
@@ -168,7 +171,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
     private void updateSurveySubmittedDate(final Node submittedAnswer, final Session session) throws RepositoryException
     {
         final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
-        final Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire,
+        final Node surveyStatusForm = ensureSurveyStatusFormExists(surveyStatusQuestionnaire,
             this.formUtils.getSubject(this.formUtils.getForm(submittedAnswer)), session);
         final Node submittedDateAnswer = this.formUtils.getAnswer(surveyStatusForm,
             session.getNode("/Questionnaires/Survey events/responses_received"));
@@ -214,15 +217,16 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
         return submitted != null && submitted == 1;
     }
 
-    private void ensureSurveyStatusFormExists(final Node surveyStatusQuestionnaire, final Node visitSubject,
+    private Node ensureSurveyStatusFormExists(final Node surveyStatusQuestionnaire, final Node visitSubject,
         final Session session) throws RepositoryException
     {
         // First look for an existing form
-        final Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
+        Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
         if (surveyStatusForm == null) {
             // Not found, create a new form
-            createSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
+            surveyStatusForm = createSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
         }
+        return surveyStatusForm;
     }
 
     private Node findSurveyStatusForm(final Node surveyStatusQuestionnaire, final Node visitSubject,
