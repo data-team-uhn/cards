@@ -667,6 +667,12 @@ if args.smtps:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_ENABLED=true")
   yaml_obj['services']['cardsinitial']['environment'].append("SLING_COMMONS_CRYPTO_PASSWORD=password")
 
+  if args.server_address:
+    cards_server_address = args.server_address
+  else:
+    cards_server_address = input("Enter the public-facing server address for this deployment (eg. localhost:8080): ")
+  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_HOST_AND_PORT={}".format(cards_server_address))
+
 if args.smtps_localhost_proxy:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_HOST=smtps_localhost_proxy")
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_LOCALHOST_PROXY=true")
