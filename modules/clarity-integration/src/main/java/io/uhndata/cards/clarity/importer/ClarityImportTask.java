@@ -56,8 +56,8 @@ import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
- * Query the Clarity server every so often to obtain all of the visits & patients that have appeared throughout the day.
- * This will patch over patient & visit information forms.
+ * Query the Clarity server every so often to obtain all of the visits and patients that have appeared throughout the
+ * day. This will patch over patient and visit information forms.
  *
  * @version $Id$
  */

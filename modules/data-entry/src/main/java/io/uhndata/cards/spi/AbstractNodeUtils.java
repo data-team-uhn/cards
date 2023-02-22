@@ -173,7 +173,7 @@ public abstract class AbstractNodeUtils
     /**
      * Obtain the current session from the resource resolver factory.
      *
-     * @param rrf the resource resolver factory service, may be {@code null}
+     * @param rrp the resource resolver factory service, may be {@code null}
      * @return the current session, or {@code null} if a session may not be obtained
      */
     protected Session getSession(final ThreadResourceResolverProvider rrp)

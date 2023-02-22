@@ -35,7 +35,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
- * A {@link EditorProvider} returning {@link ComputedAnswersEditor}.
+ * A {@link EditorProvider} returning {@link PauseResumeFormEditor}.
  *
  * @version $Id$
  */

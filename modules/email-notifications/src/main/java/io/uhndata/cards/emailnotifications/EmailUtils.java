@@ -54,6 +54,7 @@ public final class EmailUtils
      *
      * @param email the email to send
      * @param mailService the MailService object which sends the email
+     * @throws MessagingException if sending the email fails
      */
     public static void sendTextEmail(final Email email, final MailService mailService)
         throws MessagingException
@@ -74,6 +75,7 @@ public final class EmailUtils
      *
      * @param email the email to send
      * @param mailService the MailService object which sends the email
+     * @throws MessagingException if sending the email fails
      */
     public static void sendHtmlEmail(final Email email, final MailService mailService)
         throws MessagingException
