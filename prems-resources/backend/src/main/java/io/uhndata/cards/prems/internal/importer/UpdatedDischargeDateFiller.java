@@ -68,6 +68,6 @@ public class UpdatedDischargeDateFiller implements ClarityDataProcessor
     @Override
     public int getPriority()
     {
-        return 40;
+        return 300;
     }
 }
