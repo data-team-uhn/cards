@@ -51,14 +51,14 @@ import io.uhndata.cards.forms.api.FormUtils;
  * and extra attachments to include. To create a template, use {@link #builder()} to obtain a new {@link Builder
  * template builder}, invoke the builder's method to set the required values, then {@link Builder#build() build} the
  * template. To instantiate a template into an actual email for a specific subject ready to be sent, use
- * {@link #builderForSubject}. This already looks up all the answers for the questions referenced in
+ * {@link #getEmailBuilderForSubject}. This already looks up all the answers for the questions referenced in
  * {@link #getExtraProperties()} and interpolates the body templates.
  * <p>
- * An alternative way to configure an email template is through {@cards:EmailTemplate} nodes. Each such node defines all
- * the required properties like the Sender and {@link #getSubject() Subject}, the {@link #getHtmlTemplate() HTML} and
- * {@link #getTextTemplate() text templates}, can hold other properties to be used as {@link #getExtraProperties() extra
- * properties}, and any other children will be used as {@link #getInlineAttachments() attachments}. To build a template
- * starting from such a Node, use {@link #builder(Node, ResourceResolver)}.
+ * An alternative way to configure an email template is through {@code cards:EmailTemplate} nodes. Each such node
+ * defines all the required properties like the Sender and {@link #getSubject() Subject}, the {@link #getHtmlTemplate()
+ * HTML} and {@link #getTextTemplate() text templates}, can hold other properties to be used as
+ * {@link #getExtraProperties() extra properties}, and any other children will be used as {@link #getInlineAttachments()
+ * attachments}. To build a template starting from such a Node, use {@link #builder(Node, ResourceResolver)}.
  * </p>
  *
  * @see Email
@@ -170,10 +170,10 @@ public class EmailTemplate
      * The title of the email, the {@code Subject} email header.
      *
      * @return a subject
-     * @todo Add support for variable interpolation in the subject
      */
     public String getSubject()
     {
+        // TODO Add support for variable interpolation in the subject
         return this.subject;
     }
 
