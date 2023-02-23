@@ -75,6 +75,9 @@ public final class AppointmentUtils
                 final Node answer = answers.iterator().next();
                 @SuppressWarnings("unchecked")
                 T answerVal = (T) formUtils.getValue(answer);
+                if (Number.class.isAssignableFrom(defaultValue.getClass()) && answerVal == null) {
+                    return defaultValue;
+                }
                 return answerVal;
             }
         } catch (RepositoryException e) {
@@ -105,6 +108,10 @@ public final class AppointmentUtils
                 0L);
             Node visitClinic = session.getNode(getQuestionAnswerForSubject(formUtils, visitSubject,
                 "/Questionnaires/Visit information/clinic", TEXT_ANSWER, EMPTY));
+
+            if (visitClinic == null) {
+                return null;
+            }
 
             boolean ignoreEmailConsent = false;
             if (visitClinic.hasProperty("ignoreEmailConsent")) {
