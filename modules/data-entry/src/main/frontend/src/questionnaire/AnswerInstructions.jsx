@@ -58,7 +58,7 @@ function AnswerInstructions (props) {
     <Typography
       component="p"
       color={ answerIsAcceptable ? 'textSecondary' : 'error'}
-      className={classes.answerInstructions}
+      className="cards-answerInstructions"
       variant="caption"
     >
       {
