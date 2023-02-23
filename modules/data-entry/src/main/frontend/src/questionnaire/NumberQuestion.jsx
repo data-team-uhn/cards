@@ -337,7 +337,7 @@ function NumberQuestion(props) {
         <Typography
           component="p"
           color="error"
-          className={classes.answerInstructions}
+          className="cards-answerInstructions"
           variant="caption"
         >
           { errorText }
@@ -347,7 +347,7 @@ function NumberQuestion(props) {
         <Typography
           component="p"
           color={minMaxError ? 'error' : 'textSecondary'}
-          className={classes.answerInstructions}
+          className="cards-answerInstructions"
           variant="caption"
         >
           { minMaxMessage }
@@ -364,7 +364,7 @@ function NumberQuestion(props) {
           <Typography
             component="p"
             color="error"
-            className={classes.answerInstructions}
+            className="cards-answerInstructions"
             variant="caption"
           >
           { rangeErrorMessage }

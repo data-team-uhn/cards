@@ -48,6 +48,15 @@ const questionnaireStyle = theme => ({
       "& .MuiList-root": {
         marginLeft: theme.spacing(-2),
       },
+      "& .cards-answerInstructions" : {
+        margin: theme.spacing(-3,0,1),
+        padding: theme.spacing(1, 0),
+      },
+    },
+    hideAnswerInstructions: {
+      "& .cards-answerInstructions" : {
+        display: "none",
+      }
     },
     editModeAnswers: {
       "& .MuiListItem-root:hover" : {
@@ -138,15 +147,6 @@ const questionnaireStyle = theme => ({
     },
     hiddenQuestion: {
         display: "none"
-    },
-    answerInstructions: {
-        margin: theme.spacing(-3,0,1),
-        padding: theme.spacing(1, 0),
-    },
-    hideAnswerInstructions: {
-      "& p[class*='-answerInstructions']" : {
-        display: "none",
-      }
     },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,
