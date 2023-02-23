@@ -142,6 +142,9 @@ function QuestionnaireSet(props) {
   const [ enableReviewScreen, setEnableReviewScreen ] = useState();
   // Is the user reviewing an already complete form?
   const [ reviewMode, setReviewMode ] = useState(false);
+  // Did the user just click on Submit and we're waiting
+  // for the request to complete?
+  const [ submissionInProgress, setSubmissionInProgress ] = useState(false);
   // Has the user submitted their answers?
   const [ isSubmitted, setSubmitted ] = useState(false);
   // Has everything been filled out?
@@ -457,6 +460,7 @@ function QuestionnaireSet(props) {
     let url = visitInformation?.["@path"];
 
     if (submittedQuestionUuid && url) {
+      setSubmissionInProgress(true);
       let answerUuid = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.["@name"] || uuidv4();
       let data = new FormData();
       data.append("./" + answerUuid + "/jcr:primaryType", "cards:BooleanAnswer");
@@ -471,7 +475,8 @@ function QuestionnaireSet(props) {
       )
         .then(response => response.ok ? response.text() : Promise.reject(response))
         .then(() => setSubmitted(true))
-        .catch(() => setError("Recording the submission of your responses has failed. Please try again later or contact the sender of the survey for further assistance."));
+        .catch(() => setError("Recording the submission of your responses has failed. Please try again later or contact the sender of the survey for further assistance."))
+        .finally(() => setSubmissionInProgress(false));
     }
   }
 
@@ -667,7 +672,7 @@ function QuestionnaireSet(props) {
       </Grid>
       ))}
     </Grid>,
-    <Fab variant="extended" color="primary" onClick={() => {onSubmit()}} key="review-submit">Submit my answers</Fab>
+    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key="review-submit">{submissionInProgress ? "Submitting...." : "Submit my answers"}</Fab>
   ];
 
   // Are there any response interpretations to display to the patient?
