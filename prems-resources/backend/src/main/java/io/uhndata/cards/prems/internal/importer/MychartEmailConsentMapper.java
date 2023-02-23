@@ -21,7 +21,6 @@ package io.uhndata.cards.prems.internal.importer;
 
 import java.util.Map;
 
-import org.apache.commons.validator.routines.EmailValidator;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,31 +28,27 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
- * Clarity import processor that only allows visits for patients with a valid email address who have given consent to
- * receiving emails.
+ * Clarity import processor that sets a patients email consent to yes if they signed up for mychart.
  *
  * @version $Id$
  */
 @Component
-public class FilterEmailConsent implements ClarityDataProcessor
+public class MychartEmailConsentMapper implements ClarityDataProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilterEmailConsent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MychartEmailConsentMapper.class);
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        final String email = input.get("EMAIL_ADDRESS");
-        final Boolean consent = "Yes".equalsIgnoreCase(input.get("EMAIL_CONSENT_YN"));
-        if (consent && EmailValidator.getInstance().isValid(email)) {
-            return input;
+        if ("Activated".equalsIgnoreCase(input.get("MYCHART STATUS"))) {
+            input.put("EMAIL_CONSENT_YN", "Yes");
         }
-        LOGGER.warn("Discarded visit {}", input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"));
-        return null;
+        return input;
     }
 
     @Override
     public int getPriority()
     {
-        return 5;
+        return 0;
     }
 }
