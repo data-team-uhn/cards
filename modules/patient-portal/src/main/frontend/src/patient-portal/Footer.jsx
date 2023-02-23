@@ -18,6 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 import {
+  Breadcrumbs,
   Toolbar,
   Typography
 } from "@mui/material";
@@ -57,12 +58,14 @@ function Footer (props) {
 
   return (
     <Toolbar className={classes.footer}>
+    <Breadcrumbs separator="·">
     {
       footerExtensions.map((extension, index) => {
         let Extension = extension["cards:extensionRender"];
         return <Typography variant="caption" key={index}><Extension /></Typography>
       })
     }
+    </Breadcrumbs>
     </Toolbar>
   );
 }
