@@ -126,7 +126,7 @@ function ExportButton(props) {
       setEntities(findQuestionsOrSections(entityData));
     }
     if (!entityData && entryName && !entities && open) {
-        fetch(`/Questionnaires/${entryName}.deep.json`)
+        fetch(`${entryPath}.deep.json`)
           .then((response) => response.ok ? response.json() : Promise.reject(response))
           .then((json) => {
             setEntities(findQuestionsOrSections(json));
