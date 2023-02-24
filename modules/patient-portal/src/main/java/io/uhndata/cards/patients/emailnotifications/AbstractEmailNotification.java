@@ -157,6 +157,9 @@ abstract class AbstractEmailNotification
     {
         String patientEmailAddress =
             AppointmentUtils.getPatientConsentedEmail(this.formUtils, patientSubject, visitSubject);
+        if (StringUtils.isBlank(patientEmailAddress)) {
+            return null;
+        }
         String patientFullName = AppointmentUtils.getPatientFullName(this.formUtils, patientSubject);
         Calendar visitDate = (Calendar) this.formUtils.getValue(appointmentDate);
         Calendar tokenExpiryDate = (Calendar) visitDate.clone();
@@ -190,7 +193,7 @@ abstract class AbstractEmailNotification
         // Skip the email if there are no incomplete surveys for the patient
         return this.formUtils
             .findAllFormRelatedAnswers(appointmentForm, surveysCompleteQuestion,
-                EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS))
+                EnumSet.of(FormUtils.SearchType.FORM))
             .stream()
             .map(n -> this.formUtils.getValue(n))
             .anyMatch(v -> Long.valueOf(1).equals(v));
