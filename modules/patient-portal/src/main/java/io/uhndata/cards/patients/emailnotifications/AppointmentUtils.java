@@ -296,6 +296,8 @@ public final class AppointmentUtils
             final String visitTimeUUID = visitTimeResult.getIdentifier();
             final String statusUUID =
                 session.getNode("/Questionnaires/Visit information/status").getIdentifier();
+            final String hasSurveysUUID =
+                session.getNode("/Questionnaires/Visit information/has_surveys").getIdentifier();
             final String clinicUUID =
                 session.getNode("/Questionnaires/Visit information/clinic").getIdentifier();
             final Calendar lowerBoundDate = (Calendar) dateToQuery.clone();
@@ -310,18 +312,22 @@ public final class AppointmentUtils
                 formatter.format(lowerBoundDate.getTime()),
                 formatter.format(upperBoundDate.getTime()));
 
-            final String query = "SELECT d.* FROM [cards:DateAnswer] AS d "
-                + "  INNER JOIN [cards:Form] AS f ON isdescendantnode(d, f) "
-                + "  INNER JOIN [cards:TextAnswer] AS s ON isdescendantnode(s, f) "
-                + ((clinicId != null) ? "  INNER JOIN [cards:ResourceAnswer] AS c ON isdescendantnode(c, f) " : "")
-                + "WHERE d.'question'='" + visitTimeUUID + "' "
-                + "  AND d.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
-                + "  AND d.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)"
-                + "  AND s.'question' = '" + statusUUID + "' "
-                + "  AND s.'value' <> 'cancelled'"
-                + "  AND s.'value' <> 'entered-in-error'"
-                + ((clinicId != null) ? ("  AND c.'question' = '" + clinicUUID + "' AND c.'value' = '" + clinicId + "'")
-                    : "");
+            final String query = "SELECT vdate.* FROM [cards:DateAnswer] AS vdate "
+                + "  INNER JOIN [cards:Form] AS form ON isdescendantnode(vdate, form) "
+                + "  INNER JOIN [cards:TextAnswer] AS vstatus ON isdescendantnode(vstatus, form) "
+                + "  INNER JOIN [cards:BooleanAnswer] AS has_surveys ON isdescendantnode(has_surveys, form) "
+                + ((clinicId != null)
+                    ? "  INNER JOIN [cards:ResourceAnswer] AS clinic ON isdescendantnode(clinic, form) " : "")
+                + "WHERE vdate.'question'='" + visitTimeUUID + "' "
+                + "  AND vdate.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
+                + "  AND vdate.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)"
+                + "  AND vstatus.'question' = '" + statusUUID + "' "
+                + "  AND vstatus.'value' <> 'cancelled'"
+                + "  AND vstatus.'value' <> 'entered-in-error'"
+                + "  AND has_surveys.'question' = '" + hasSurveysUUID + "' "
+                + "  AND has_surveys.'value' = 1 "
+                + ((clinicId != null)
+                    ? ("  AND clinic.'question' = '" + clinicUUID + "' AND clinic.'value' = '" + clinicId + "'") : "");
 
             return session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
         } catch (RepositoryException e) {
