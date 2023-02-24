@@ -201,12 +201,12 @@ function ExportButton(props) {
   }
 
   let getAvatar = (type) => {
-	return (<Avatar
-	            style={{backgroundColor: entitySpecs[type].avatarColor || "black"}}
-	            className={classes.avatar}
-	        >
-	            { entitySpecs[type].avatar ? <Icon>{entitySpecs[type].avatar}</Icon> : type?.charAt(0) }
-	        </Avatar>);
+    return (<Avatar
+                style={{backgroundColor: entitySpecs[type].avatarColor || "black"}}
+                className={classes.avatar}
+            >
+                { entitySpecs[type].avatar ? <Icon>{entitySpecs[type].avatar}</Icon> : type?.charAt(0) }
+            </Avatar>);
   }
   return(
     <React.Fragment>
@@ -216,7 +216,7 @@ function ExportButton(props) {
         </DialogTitle>
         <DialogContent>
           <Grid container direction="column">
-            <Grid container alignItems='start' direction="row" className={classes.container}>
+            <Grid container alignItems='center' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">File format:</Typography></Grid>
               <Grid item xs={8}>
                 <RadioGroup
@@ -233,7 +233,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='start' direction="row" className={classes.container}>
+            <Grid container alignItems='center' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">Header format:</Typography></Grid>
               <Grid item xs={8}>
                 <FormControlLabel
@@ -259,7 +259,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='start' direction="row" className={classes.container}>
+            <Grid container alignItems='center' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
               <Grid item xs={8}>
                 <RadioGroup
@@ -276,7 +276,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='start' direction="row" className={classes.container}>
+            <Grid container alignItems='center' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
               <Grid item xs={8}>
                 <RadioGroup
