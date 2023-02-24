@@ -28,7 +28,8 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const useStyles = makeStyles(theme => ({
   container: {
-    "& .MuiGrid-item:not(:first-child)": {
+    paddingTop: theme.spacing(2),
+    "&:last-child > .MuiGrid-item:first-child" : {
       paddingTop: theme.spacing(2),
     },
   },
@@ -62,13 +63,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1),
     marginTop:  theme.spacing(1),
     alignSelf: "start",
+    zoom: "75%"
   }
 }));
 
 let findQuestionsOrSections = (json, result = []) =>  {
   Object.entries(json || {}).forEach(([k,e]) => {
     if (e?.['jcr:primaryType'] == "cards:Question" || e?.['jcr:primaryType'] == "cards:Section") {
-      result.push({name: e['@name'], text: e['text'], path: e['@path'], type: e['jcr:primaryType'].replace("cards:", '')});
+      result.push({name: e['@name'], text: e['text'] || e['label'], path: e['@path'], type: e['jcr:primaryType'].replace("cards:", '')});
       e?.['jcr:primaryType'] == "cards:Section" && findQuestionsOrSections(e, result);
     } else if (typeof(e) == 'object') {
       findQuestionsOrSections(e, result);
@@ -198,6 +200,14 @@ function ExportButton(props) {
     });
   }
 
+  let getAvatar = (type) => {
+	return (<Avatar
+	            style={{backgroundColor: entitySpecs[type].avatarColor || "black"}}
+	            className={classes.avatar}
+	        >
+	            { entitySpecs[type].avatar ? <Icon>{entitySpecs[type].avatar}</Icon> : type?.charAt(0) }
+	        </Avatar>);
+  }
   return(
     <React.Fragment>
       <Dialog fullWidth maxWidth='md' open={open} onClose={closeDialog}>
@@ -206,7 +216,7 @@ function ExportButton(props) {
         </DialogTitle>
         <DialogContent>
           <Grid container direction="column">
-            <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid container alignItems='start' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">File format:</Typography></Grid>
               <Grid item xs={8}>
                 <RadioGroup
@@ -223,7 +233,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid container alignItems='start' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">Header format:</Typography></Grid>
               <Grid item xs={8}>
                 <FormControlLabel
@@ -249,7 +259,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid container alignItems='start' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
               <Grid item xs={8}>
                 <RadioGroup
@@ -266,7 +276,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid container alignItems='start' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
               <Grid item xs={8}>
                 <RadioGroup
@@ -283,7 +293,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid container alignItems='start' direction="row" className={classes.container}>
               <Grid item xs={4}>
                 <Typography variant="subtitle2">{isInclude ? "Columns to include:" : "Columns to exclude:"}</Typography>
               </Grid>
@@ -299,14 +309,8 @@ function ExportButton(props) {
                     className={classes.valueEntry}
                   >
                     <Grid item xs={9}>
-                      <Avatar
-                        style={{backgroundColor: entitySpecs[value.type].avatarColor || "black"}}
-                        className={classes.avatar}
-                        sx={{ width: 30, height: 30 }}
-                      >
-                        { entitySpecs[value.type].avatar ? <Icon>{entitySpecs[value.type].avatar}</Icon> : value.type?.charAt(0) }
-                      </Avatar>
-                      <ListItemText primary={value.name} secondary={value.text || value.label} />
+                      { getAvatar(value.type) }
+                      <ListItemText primary={value.name} secondary={value.text} />
                     </Grid>
                     <Grid item xs={3} className={classes.valueActions}>
                       <Tooltip title="Delete entry">
@@ -328,13 +332,7 @@ function ExportButton(props) {
                     { entities?.filter(v => !questionIds.includes(v.path))
                                 .map(v =>
                                     <MenuItem value={v.path} key={`option-${v.name}`} className={classes.variableOption}>
-                                      <Avatar
-                                        style={{backgroundColor: entitySpecs[v.type].avatarColor || "black"}}
-                                        className={classes.avatar}
-                                        sx={{ width: 30, height: 30 }}
-                                      >
-                                        { entitySpecs[v.type].avatar ? <Icon>{entitySpecs[v.type].avatar}</Icon> : v.type?.charAt(0) }
-                                      </Avatar>
+                                      { getAvatar(v.type) }
                                       <ListItemText primary={v.name} secondary={v.text} />
                                     </MenuItem>)
                     }
