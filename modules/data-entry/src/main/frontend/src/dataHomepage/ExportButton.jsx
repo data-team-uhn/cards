@@ -59,7 +59,9 @@ const useStyles = makeStyles(theme => ({
     paddingTop: "0!important"
   },
   avatar: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
+    marginTop:  theme.spacing(1),
+    alignSelf: "start",
   }
 }));
 
@@ -282,7 +284,7 @@ function ExportButton(props) {
 
             <Grid container alignItems='center' direction="row" className={classes.container}>
               <Grid item xs={4}>
-                <Typography variant="subtitle2">{isInclude ? "Columns to include" : "Columns to exclude"}</Typography>
+                <Typography variant="subtitle2">{isInclude ? "Columns to include:" : "Columns to exclude:"}</Typography>
               </Grid>
               <Grid item xs={8}>
 
