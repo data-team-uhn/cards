@@ -139,7 +139,7 @@ let Questionnaire = (props) => {
               entityData={data}
               entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
               entryName={questionnaireTitle}
-              entryType="forms"
+              entryType="Questionnaire"
               size="medium"
               variant="text"
               onClose={() => { setActionsMenu(null); }}

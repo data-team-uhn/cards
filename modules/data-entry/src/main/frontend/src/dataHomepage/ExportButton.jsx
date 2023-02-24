@@ -118,7 +118,7 @@ function ExportButton(props) {
   const [ questionIds, setQuestionIds ] = useState([]);
   const [ tempValue, setTempValue ] = useState(''); // Holds new, non-selected values
 
-  const buttonText = entryLabel || ("Export " + (entryType?.toLowerCase() || '')).trim();
+  const buttonText = entryLabel || "Export forms";
 
   const classes = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
