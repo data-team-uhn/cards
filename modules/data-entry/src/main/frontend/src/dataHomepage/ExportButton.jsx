@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
@@ -24,6 +24,7 @@ import { Avatar, Checkbox, Dialog, DialogTitle, DialogActions, DialogContent, Fo
   FormControlLabel, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
 import { FileDownload } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 
 const useStyles = makeStyles(theme => ({
@@ -120,13 +121,14 @@ function ExportButton(props) {
   const buttonText = entryLabel || ("Export " + (entryType?.toLowerCase() || '')).trim();
 
   const classes = useStyles();
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
     if (entityData && !entities) {
       setEntities(findQuestionsOrSections(entityData));
     }
     if (!entityData && entryName && !entities && open) {
-        fetch(`${entryPath}.deep.json`)
+        fetchWithReLogin(globalLoginDisplay, `${entryPath}.deep.json`)
           .then((response) => response.ok ? response.json() : Promise.reject(response))
           .then((json) => {
             setEntities(findQuestionsOrSections(json));
