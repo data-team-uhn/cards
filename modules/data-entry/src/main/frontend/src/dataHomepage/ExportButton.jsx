@@ -297,7 +297,7 @@ function ExportButton(props) {
                       <Avatar style={{backgroundColor: entitySpecs[value.type].avatarColor || "black"}} className={classes.avatar}>
                         { entitySpecs[value.type].avatar ? <Icon>{entitySpecs[value.type].avatar}</Icon> : value.type?.charAt(0) }
                       </Avatar>
-                      <ListItemText primary={value.name} secondary={value.text} />
+                      <ListItemText primary={value.name} secondary={value.text || value.label} />
                     </Grid>
                     <Grid item xs={3} className={classes.valueActions}>
                       <Tooltip title="Delete entry">
