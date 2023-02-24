@@ -143,6 +143,11 @@
           <node>
             <name>Visit information</name>
             <primaryNodeType>cards:ClarityQuestionnaireMapping</primaryNodeType>
+            <property>
+              <name>updatesExisting</name>
+              <value>true</value>
+              <type>Boolean</type>
+            </property>
             <node>
               <name>00000001</name>
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
