@@ -32,10 +32,6 @@ const useStyles = makeStyles(theme => ({
       paddingTop: theme.spacing(2),
     },
   },
-  entryContainer: {
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-  },
   entryActionIcon: {
     float: "right",
     marginRight: theme.spacing(1),
@@ -63,8 +59,7 @@ const useStyles = makeStyles(theme => ({
     paddingTop: "0!important"
   },
   avatar: {
-    marginRight: theme.spacing(1),
-    opacity: '50%'
+    marginRight: theme.spacing(1)
   }
 }));
 
@@ -208,7 +203,7 @@ function ExportButton(props) {
         </DialogTitle>
         <DialogContent>
           <Grid container direction="column">
-            <Grid container alignItems='baseline' direction="row" className={classes.container}>
+            <Grid container alignItems='center' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">File format:</Typography></Grid>
               <Grid item xs={8}>
                 <RadioGroup
@@ -225,7 +220,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='baseline' direction="row" className={classes.container}>
+            <Grid container alignItems='center' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">Header format:</Typography></Grid>
               <Grid item xs={8}>
                 <FormControlLabel
@@ -251,7 +246,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='baseline' direction="row" className={classes.container}>
+            <Grid container alignItems='center' direction="row" className={classes.container}>
               <Grid item xs={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
               <Grid item xs={8}>
                 <RadioGroup
@@ -260,7 +255,7 @@ function ExportButton(props) {
                   aria-label="data"
                   name="data"
                   value={hasLabeles}
-                  onChange={(event) => setHasLabeles(Boolean(event.target.value))}
+                  onChange={(event) => setHasLabeles(event.target.value === "true")}
                 >
                   <FormControlLabel value={true} control={<Radio />} label="Labels" />
                   <FormControlLabel value={false} control={<Radio />} label="Values" />
@@ -268,23 +263,30 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='baseline' direction="row" className={classes.container}>
-              <Grid item xs={4}><Typography variant="subtitle2">Column selection:</Typography></Grid>
-                <Grid item xs={8}>
+            <Grid container alignItems='center' direction="row" className={classes.container}>
+              <Grid item xs={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
+              <Grid item xs={8}>
                 <RadioGroup
                   row
                   defaultValue="isinclude"
                   aria-label="isinclude"
                   name="isinclude"
                   value={isInclude}
-                  onChange={(event) => setIsInclude(Boolean(event.target.value))}
+                  onChange={(event) => setIsInclude(event.target.value === "true")}
                 >
                   <FormControlLabel value={true} control={<Radio />} label="Include" />
                   <FormControlLabel value={false} control={<Radio />} label="Exclude" />
                 </RadioGroup>
+              </Grid>
+            </Grid>
+
+            <Grid container alignItems='center' direction="row" className={classes.container}>
+              <Grid item xs={4}>
+                <Typography variant="subtitle2">{isInclude ? "Columns to include" : "Columns to exclude"}</Typography>
+              </Grid>
+              <Grid item xs={8}>
 
                 {/* List the entered values */}
-                <div className={classes.entryContainer} >
                 { entities?.filter(v => questionIds.includes(v.path)).map((value, index) =>
                   <Grid container
                     key={`${value.name}-${index}`}
@@ -294,7 +296,11 @@ function ExportButton(props) {
                     className={classes.valueEntry}
                   >
                     <Grid item xs={9}>
-                      <Avatar style={{backgroundColor: entitySpecs[value.type].avatarColor || "black"}} className={classes.avatar}>
+                      <Avatar
+                        style={{backgroundColor: entitySpecs[value.type].avatarColor || "black"}}
+                        className={classes.avatar}
+                        sx={{ width: 30, height: 30 }}
+                      >
                         { entitySpecs[value.type].avatar ? <Icon>{entitySpecs[value.type].avatar}</Icon> : value.type?.charAt(0) }
                       </Avatar>
                       <ListItemText primary={value.name} secondary={value.text || value.label} />
@@ -306,7 +312,6 @@ function ExportButton(props) {
                     </Grid>
                   </Grid>
                 )}
-                </div>
 
                 <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
                   <InputLabel id="label">Select questions/sections from this questionnaire</InputLabel>
@@ -320,7 +325,11 @@ function ExportButton(props) {
                     { entities?.filter(v => !questionIds.includes(v.path))
                                 .map(v =>
                                     <MenuItem value={v.path} key={`option-${v.name}`} className={classes.variableOption}>
-                                      <Avatar style={{backgroundColor: entitySpecs[v.type].avatarColor || "black"}} className={classes.avatar}>
+                                      <Avatar
+                                        style={{backgroundColor: entitySpecs[v.type].avatarColor || "black"}}
+                                        className={classes.avatar}
+                                        sx={{ width: 30, height: 30 }}
+                                      >
                                         { entitySpecs[v.type].avatar ? <Icon>{entitySpecs[v.type].avatar}</Icon> : v.type?.charAt(0) }
                                       </Avatar>
                                       <ListItemText primary={v.name} secondary={v.text} />
@@ -328,7 +337,7 @@ function ExportButton(props) {
                     }
                   </Select>
                 </FormControl>
-            </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </DialogContent>

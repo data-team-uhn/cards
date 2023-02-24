@@ -138,21 +138,21 @@ let Questionnaire = (props) => {
           <ExportButton
               entityData={data}
               entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-	          entryName={questionnaireTitle}
-	          entryType="forms"
-	          size="medium"
+              entryName={questionnaireTitle}
+              entryType="forms"
+              size="medium"
               variant="text"
           />
         </ListItem>
         <ListItem className={classes.actionsMenuItem}>
           <DeleteButton
-	          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-	          entryName={questionnaireTitle}
-	          entryType="Questionnaire"
-	          onComplete={() => history.replace(baseUrl)}
-	          size="medium"
+              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+              entryName={questionnaireTitle}
+              entryType="Questionnaire"
+              onComplete={() => history.replace(baseUrl)}
+              size="medium"
               variant="text"
-	      />
+          />
         </ListItem>
       </List>
   )
