@@ -142,6 +142,7 @@ let Questionnaire = (props) => {
               entryType="forms"
               size="medium"
               variant="text"
+              onClose={() => { setActionsMenu(null); }}
           />
         </ListItem>
         <ListItem className={classes.actionsMenuItem}>
@@ -152,6 +153,7 @@ let Questionnaire = (props) => {
               onComplete={() => history.replace(baseUrl)}
               size="medium"
               variant="text"
+              onClose={() => { setActionsMenu(null); }}
           />
         </ListItem>
       </List>

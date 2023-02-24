@@ -91,7 +91,7 @@ let entitySpecs = {
  * A component that renders an icon or button to open the export dialog that generates an export URL for an entry.
  */
 function ExportButton(props) {
-  const { entityData, entryLabel, entryPath, entryName, entryType, variant, size } = props;
+  const { entityData, entryLabel, entryPath, entryName, entryType, variant, size, onClose } = props;
 
   const [ open, setOpen ] = useState(false);
   // List of questions and sections to display in dropdown select to exclude/include
@@ -138,6 +138,7 @@ function ExportButton(props) {
 
   let closeDialog = () => {
     open && setOpen(false);
+    onClose?.();
   }
 
   let handleExport = () => {
