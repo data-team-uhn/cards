@@ -268,16 +268,20 @@ public class ClarityImportTask implements Runnable
                 // Create the Subjects and Forms as is needed
                 try {
                     createFormsAndSubjects(resolver, results);
+                    session.save();
                 } catch (PersistenceException e) {
                     LOGGER.error("PersistenceException while importing data to JCR", e);
                 } catch (ParseException e) {
                     LOGGER.error("ParseException while importing data to JCR");
                 } catch (Exception e) {
                     LOGGER.error("Unhandled exception while importing data: {}", e.getMessage(), e);
+                } finally {
+                    // If everything was saved successfully, this shouldn't discard anything; but if there was an error,
+                    // without discarding the bad data all the subsequent saves would fail too
+                    session.refresh(false);
                 }
             }
 
-            session.save();
             checkinNodes();
             updatePerformanceCounters();
 
