@@ -39,6 +39,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import AppointmentIcon from '@mui/icons-material/Event';
 
+import Logo from "../components/Logo.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
 import ToUDialog from "./ToUDialog.jsx";
 
@@ -50,27 +51,6 @@ const useStyles = makeStyles(theme => ({
     maxWidth: "500px",
     margin: "auto",
     padding: theme.spacing(2),
-  },
-  logo : {
-    "& > img" : {
-      maxWidth: "240px",
-    },
-    "@media (max-height: 725px)" : {
-      "& > img" : {
-        maxHeight: "70px",
-      },
-    },
-  },
-  doubleLogo : {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap-reverse",
-    "& > img" : {
-      width: `calc(50% - ${theme.spacing(4)})`,
-      minWidth: "100px",
-      height: "fit-content",
-      margin: theme.spacing(1, 2),
-    },
   },
   description : {
     "& > *" : {
@@ -140,7 +120,7 @@ function PatientIdentification(props) {
   const [ canAuthenticate, setCanAuthenticate ] = useState();
   // Flag specifying if the identification form needs to be displayed
   const [ showIdentificationForm, setShowIdentificationForm ] = useState();
-  
+
   // Holds an error message for display
   const [ error, setError ] = useState();
   // Returned from the server after successful validation of the authentication,
@@ -276,9 +256,6 @@ function PatientIdentification(props) {
     )
   }
 
-  const logo = document.querySelector('meta[name="logoLight"]').content;
-  const affiliationLogo = document.querySelector('meta[name="affiliationLogo"]')?.content;
-
   return (<>
     <ToUDialog
       open={showTou}
@@ -322,10 +299,7 @@ function PatientIdentification(props) {
 
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justifyContent="center">
-         <Grid item className={affiliationLogo ? classes.doubleLogo : classes.logo} xs={12}>
-           <img src={logo} alt="logo" />
-           {affiliationLogo && <img src={affiliationLogo} alt="logo" />}
-         </Grid>
+         <Logo component={Grid} item xs={12} />
 
          { /* If we don't have the authentication token yet or we don't need the identification form,
              display the welcome message and a circular progress while we wait for the next step */ }

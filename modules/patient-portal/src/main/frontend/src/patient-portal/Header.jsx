@@ -99,7 +99,7 @@ function Header (props) {
     : <></>;
 
   const logo = document.querySelector('meta[name="logoLight"]').content;
-  const affiliationLogo = document.querySelector('meta[name="affiliationLogo"]')?.content;
+  const affiliationLogo = document.querySelector('meta[name="affiliationLogoLight"]')?.content;
 
   return (
     <>
