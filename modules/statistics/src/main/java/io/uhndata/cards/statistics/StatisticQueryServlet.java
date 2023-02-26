@@ -24,16 +24,21 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 import javax.servlet.Servlet;
@@ -46,8 +51,14 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.FieldOption;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
  * A servlet for querying Statistics that returns a JSON object containing values for the x and y axes.
@@ -67,8 +78,18 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     private static final String VALUE_PROP = "value";
 
+    private static final String LABEL_PROP = "displayedValue";
+
+    private static final String VALUE_NOT_SPECIFIED = "Not specified";
+
     // splitLabels is used to cache the map from answer option values -> labels in split variables
     private final ThreadLocal<Map<String, String>> splitLabels = new ThreadLocal<>();
+
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.REPLACE,
+        policy = ReferencePolicy.DYNAMIC)
+    private volatile List<ResourceJsonProcessor> allProcessors;
+
+    private final ThreadLocal<List<ResourceJsonProcessor>> labelProcessors = new ThreadLocal<>();
 
     @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
@@ -78,6 +99,13 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, String> arguments = parseArguments(request);
 
         try {
+            // Obtain the labels processors and sort them by priority
+            // They will enable aggregating the stats data by displayedValue
+            List<ResourceJsonProcessor> processors = this.allProcessors.stream()
+                .filter(p -> "labels".equals(p.getName())).collect(Collectors.toList());
+            processors.sort((o1, o2) -> o1.getPriority() - o2.getPriority());
+            this.labelProcessors.set(processors);
+
             // Steps to returning the calculated statistic:
             // Grab the question that has data for the given x-axis (xVar)
             Session session = request.getResourceResolver().adaptTo(Session.class);
@@ -278,11 +306,13 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             return counts;
         }
 
-        try {
-            Node xAnswer = xVar.adaptTo(Node.class);
-            String xValue = xAnswer.getProperty(VALUE_PROP).getString();
-            String splitLabel = getSplitLabels(splitVar);
+        String splitLabel = getSplitLabels(splitVar);
 
+        Node xAnswer = xVar.adaptTo(Node.class);
+        List<String> values = getAnswerValues(xAnswer);
+        Iterator<String> it = values.iterator();
+        while (it.hasNext()) {
+            String xValue = it.next();
             // if x value and split value already exist
             if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitLabel)) {
                 counts.get(xValue).put(splitLabel, counts.get(xValue).get(splitLabel) + 1);
@@ -294,8 +324,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 innerCount.put(splitLabel, 1);
                 counts.put(xValue, innerCount);
             }
-        } catch (PathNotFoundException e) {
-            LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
         }
 
         return counts;
@@ -449,9 +477,10 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, Integer> counts = new HashMap<>();
         while (answers.hasNext()) {
             Node answer = answers.next().adaptTo(Node.class);
-
-            try {
-                String value = answer.getProperty(VALUE_PROP).getString();
+            List<String> values = getAnswerValues(answer);
+            Iterator<String> it = values.iterator();
+            while (it.hasNext()) {
+                String value = it.next();
                 // If this already exists in our counts dict, we add 1 to its value
                 // Otherwise, set it to 1 count
                 if (counts.containsKey(value)) {
@@ -459,12 +488,49 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 } else {
                     counts.put(value, 1);
                 }
-            } catch (PathNotFoundException e) {
-                LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
-                continue;
             }
         }
         return counts;
+    }
+
+    /**
+     * Obtain the answer values as a list, regardless whether it is single or multi valued.
+     *
+     * @param answer The cards:Answer node
+     * @return A list of strings
+     */
+    private List<String> getAnswerValues(Node answer)
+    {
+        List<String> values = new LinkedList<>();
+        // Call label processors to populate displayedValue
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        this.labelProcessors.get().forEach(p -> p.leave(answer, builder, null));
+        // Now the json has the displayedValue if a value exists
+        JsonObject answerJson = builder.build();
+        JsonValue jsonValue = answerJson.get(LABEL_PROP);
+        try {
+            if (jsonValue == null) {
+                values.add(VALUE_NOT_SPECIFIED);
+            } else if (jsonValue.getValueType() == ValueType.ARRAY) {
+                JsonArray jsonArray = jsonValue.asJsonArray();
+                if (jsonArray.size() == 0) {
+                    values.add(VALUE_NOT_SPECIFIED);
+                } else {
+                    for (int i = 0; i < jsonArray.size(); ++i) {
+                        values.add(jsonArray.getString(i));
+                    }
+                }
+            } else {
+                String value = answerJson.getString(LABEL_PROP, VALUE_NOT_SPECIFIED);
+                values.add(value);
+            }
+        } catch (ClassCastException e) {
+            LOGGER.error("Value could not be processed for question: {}", e.getMessage(), e);
+            if (values.size() == 0) {
+                values.add(VALUE_NOT_SPECIFIED);
+            }
+        }
+        return values;
     }
 
     /**
