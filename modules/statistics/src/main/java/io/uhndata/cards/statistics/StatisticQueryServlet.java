@@ -24,11 +24,12 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
@@ -45,8 +46,14 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.FieldOption;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
  * A servlet for querying Statistics that returns a JSON object containing values for the x and y axes.
@@ -66,8 +73,16 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     private static final String VALUE_PROP = "value";
 
+    private static final String LABEL_PROP = "displayedValue";
+
+    private static final String DEFAULT_X_VALUE = "Not specified";
+
     // splitLabels is used to cache the map from answer option values -> labels in split variables
     private final ThreadLocal<Map<String, String>> splitLabels = new ThreadLocal<>();
+
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.REPLACE,
+        policy = ReferencePolicy.DYNAMIC)
+    private volatile List<ResourceJsonProcessor> allProcessors;
 
     @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
@@ -77,6 +92,12 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, String> arguments = parseArguments(request);
 
         try {
+            // Get only the labels processors and sort them
+            List<ResourceJsonProcessor> labelProcessors = this.allProcessors.stream()
+                .filter(p -> "labels".equals(p.getName())).collect(Collectors.toList());
+            labelProcessors.sort((o1, o2) -> o1.getPriority() - o2.getPriority());
+            this.allProcessors = labelProcessors;
+
             // Steps to returning the calculated statistic:
             // Grab the question that has data for the given x-axis (xVar)
             Session session = request.getResourceResolver().adaptTo(Session.class);
@@ -260,7 +281,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
         try {
             Node xAnswer = xVar.adaptTo(Node.class);
-            String xValue = xAnswer.getProperty(VALUE_PROP).getString();
+            // Call label processors to populate displayedValue
+            JsonObjectBuilder result = Json.createObjectBuilder();
+            this.allProcessors.forEach(p -> p.leave(xAnswer, result, null));
+            // now result has the displayedValue if a value exists
+            String xValue = result.build().getString(LABEL_PROP, DEFAULT_X_VALUE);
             String splitLabel = getSplitLabels(splitVar);
 
             // if x value and split value already exist
@@ -274,8 +299,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 innerCount.put(splitLabel, 1);
                 counts.put(xValue, innerCount);
             }
-        } catch (PathNotFoundException e) {
-            LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
+        } catch (ClassCastException e) {
+            LOGGER.error("Value could not be processed for question: {}", e.getMessage(), e);
         }
 
         return counts;
@@ -428,10 +453,13 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     {
         Map<String, Integer> counts = new HashMap<>();
         while (answers.hasNext()) {
-            Node answer = answers.next().adaptTo(Node.class);
-
             try {
-                String value = answer.getProperty(VALUE_PROP).getString();
+                Node answer = answers.next().adaptTo(Node.class);
+                // Call label processors to populate displayedValue
+                JsonObjectBuilder result = Json.createObjectBuilder();
+                this.allProcessors.forEach(p -> p.leave(answer, result, null));
+                // now result has the displayedValue if a value exists
+                String value = result.build().getString(LABEL_PROP, DEFAULT_X_VALUE);
                 // If this already exists in our counts dict, we add 1 to its value
                 // Otherwise, set it to 1 count
                 if (counts.containsKey(value)) {
@@ -439,8 +467,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 } else {
                     counts.put(value, 1);
                 }
-            } catch (PathNotFoundException e) {
-                LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
+            } catch (ClassCastException e) {
+                LOGGER.error("Value could not be processed for question: {}", e.getMessage(), e);
                 continue;
             }
         }
