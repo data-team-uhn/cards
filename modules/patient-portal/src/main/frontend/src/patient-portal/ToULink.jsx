@@ -25,8 +25,8 @@ function ToULink (props) {
 
   return (<>
     <FooterLink
-      component="button"
-      onClick={() => {setShowTou(true);}}
+      href="#TermsOfUse"
+      onClick={event => {event.preventDefault(); setShowTou(true);}}
     >
       Terms of Use and Privacy Policy
     </FooterLink>
