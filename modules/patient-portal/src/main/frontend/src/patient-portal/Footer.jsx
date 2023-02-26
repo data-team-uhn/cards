@@ -18,8 +18,8 @@
 //
 import React, { useState, useEffect } from "react";
 import {
+  Link,
   Toolbar,
-  Typography
 } from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';
@@ -38,13 +38,16 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary,
     justifyContent: "center",
     minHeight: theme.spacing(2),
-    "& > *" : {
-      margin: theme.spacing(0, 2),
+    "& > * + *:before" : {
+      content: '"·"',
+      display: "inline-block",
+      margin: theme.spacing(0, 1),
+      opacity: 0.5,
     },
   },
 }));
 
-function Footer (props) {
+export default function Footer (props) {
   let [ footerExtensions, setFooterExtensions ] = useState([]);
 
   const classes = useStyles();
@@ -60,11 +63,22 @@ function Footer (props) {
     {
       footerExtensions.map((extension, index) => {
         let Extension = extension["cards:extensionRender"];
-        return <Typography variant="caption" key={index}><Extension /></Typography>
+        return <Extension key={index} />
       })
     }
     </Toolbar>
   );
 }
 
-export default Footer;
+export function FooterLink (props) {
+  return (
+    <span>
+      <Link
+        color="inherit"
+        variant="body2"
+        underline="hover"
+        {...props}
+      />
+    </span>
+  );
+}

@@ -17,24 +17,20 @@
 //  under the License.
 //
 import React, { useState } from "react";
+
 import { FooterLink } from "./Footer";
-import ToUDialog from "./ToUDialog.jsx";
 
-function ToULink (props) {
-  const [ showTou, setShowTou ] = useState(false);
+function UnsubscribeLink (props) {
 
-  return (<>
+  let auth_token = new URLSearchParams(window.location.search).get("auth_token");
+
+  return (auth_token ?
     <FooterLink
-      href="#TermsOfUse"
-      onClick={event => {event.preventDefault(); setShowTou(true);}}
+      href={`/Survey.unsubscribe.html?auth_token=${auth_token}`}
     >
-      Terms of Use and Privacy Policy
+      Unsubscribe
     </FooterLink>
-    <ToUDialog
-      open={showTou}
-      onClose={() => {setShowTou(false);}}
-    />
-  </>);
+    : null);
 }
 
-export default ToULink;
+export default UnsubscribeLink;

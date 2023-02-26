@@ -37,9 +37,31 @@ const useStyles = makeStyles(theme => ({
       textAlign: "center",
     },
   },
-  logo: {
-    maxWidth: "240px",
+  logo : {
+    "& > img" : {
+      maxWidth: "240px",
+    },
+    "@media (max-height: 725px)" : {
+      "& > img" : {
+        maxHeight: "70px",
+      },
+    },
   },
+  doubleLogo : {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap-reverse",
+    maxWidth: "600px !important",
+    "& > img" : {
+      width: `calc(50% - ${theme.spacing(4)})`,
+      minWidth: "100px",
+      height: "fit-content",
+      margin: theme.spacing(1, 2),
+    },
+  },
+  submit : {
+    marginTop: theme.spacing(5),
+  }
 }));
 
 function Unsubscribe (props) {
@@ -48,6 +70,16 @@ function Unsubscribe (props) {
   const [ error, setError ] = useState();
   const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
   const classes = useStyles();
+
+  useEffect(() => {
+    fetch("/Survey.unsubscribe", {method: 'GET'})
+      .then( (response) => response.ok ? response.json() : Promise.reject(response) )
+      .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
+      .catch((response) => {
+        let errMsg = "Cannot unsubscribe: ";
+        setError(errMsg + (response.status ? response.statusText : response));
+      });
+  }, []);
 
   let unsubscribe = (value) => {
     let request_data = new FormData();
@@ -72,15 +104,10 @@ function Unsubscribe (props) {
     );
   }
 
-  useEffect(() => {
-    fetch("/Survey.unsubscribe", {method: 'GET'})
-      .then( (response) => response.ok ? response.json() : Promise.reject(response) )
-      .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
-      .catch((response) => {
-        let errMsg = "Cannot unsubscribe: ";
-        setError(errMsg + (response.status ? response.statusText : response));
-      });
-  }, []);
+  let appName = document.querySelector('meta[name="title"]')?.content;
+
+  const logo = document.querySelector('meta[name="logoLight"]').content;
+  const affiliationLogo = document.querySelector('meta[name="affiliationLogo"]')?.content;
 
   return (
     <Paper className={classes.paper} elevation={0}>
@@ -91,8 +118,9 @@ function Unsubscribe (props) {
           alignItems="center"
           alignContent="center"
         >
-          <Grid item>
-            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
+          <Grid item className={affiliationLogo ? classes.doubleLogo : classes.logo} xs={12}>
+            <img src={logo} alt="logo" />
+            {affiliationLogo && <img src={affiliationLogo} alt="logo" />}
           </Grid>
           <Grid item>
             { error && <Alert severity="error">
@@ -102,7 +130,7 @@ function Unsubscribe (props) {
             }
             { alreadyUnsubscribed ?
               <>
-                <Alert icon={false} severity="info">You are already unsubscribed.</Alert>
+                <Alert icon={false} severity="info">{ `You are already unsubscribed from ${appName}.` }</Alert>
                 <Button
                   type="submit"
                   variant="contained"
@@ -114,20 +142,32 @@ function Unsubscribe (props) {
                 </Button>
               </>
               : confirmed !== null ?
-              <Alert icon={false} severity="info">
-                You have been {confirmed ? "unsubscribed" : "resubscribed"}.
-              </Alert>
+              <>
+                <Alert icon={false} severity="info">
+                  You have been {confirmed ? "unsubscribed from" : "resubscribed to"} {appName}.
+                </Alert>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={() => unsubscribe(1-confirmed)}
+                  >
+                  {confirmed ? "Resubscribe" : "Unsubscribe"}
+                </Button>
+              </>
               :
-              <><Typography>This will unsubscribe you from receiving all emails via DATA-PRO. If you wish to unsubscribe from all UHN communication, please contact your care team.</Typography>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={() => unsubscribe(1)}
-                >
-                Unsubscribe
-              </Button>
+              <>
+                <Typography>{`This will unsubscribe you from all ${appName} emails.`}</Typography>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={() => unsubscribe(1)}
+                  >
+                  Unsubscribe
+                </Button>
               </>
             }
           </Grid>

@@ -10,6 +10,7 @@ module.exports = {
     [module_name + 'index']: './src/patient-portal/index.jsx',
     [module_name + 'unsubscribe']: './src/patient-portal/unsubscribe.jsx',
     [module_name + 'ToULink']: './src/patient-portal/ToULink.jsx',
+    [module_name + 'UnsubscribeLink']: './src/patient-portal/UnsubscribeLink.jsx',
     [module_name + 'ClinicDashboard']: './src/patient-portal/ClinicDashboard.jsx',
     [module_name + 'ClinicForms']: './src/patient-portal/ClinicForms.jsx',
     [module_name + 'ClinicVisits']: './src/patient-portal/ClinicVisits.jsx',
