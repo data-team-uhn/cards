@@ -17,23 +17,19 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import {
-  Link,
-} from "@mui/material";
+
+import { FooterLink } from "./Footer";
 
 function UnsubscribeLink (props) {
 
   let auth_token = new URLSearchParams(window.location.search).get("auth_token");
 
   return (auth_token ?
-    <Link
-      color="inherit"
-      variant="body2"
-      underline="hover"
+    <FooterLink
       href={`/Survey.unsubscribe.html?auth_token=${auth_token}`}
     >
       Unsubscribe
-    </Link>
+    </FooterLink>
     : null);
 }
 
