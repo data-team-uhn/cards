@@ -34,7 +34,11 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 import javax.servlet.Servlet;
@@ -279,15 +283,13 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             return counts;
         }
 
-        try {
-            Node xAnswer = xVar.adaptTo(Node.class);
-            // Call label processors to populate displayedValue
-            JsonObjectBuilder result = Json.createObjectBuilder();
-            this.allProcessors.forEach(p -> p.leave(xAnswer, result, null));
-            // now result has the displayedValue if a value exists
-            String xValue = result.build().getString(LABEL_PROP, DEFAULT_X_VALUE);
-            String splitLabel = getSplitLabels(splitVar);
+        String splitLabel = getSplitLabels(splitVar);
 
+        Node xAnswer = xVar.adaptTo(Node.class);
+        List<String> values = getAnswerValues(xAnswer);
+        Iterator<String> it = values.iterator();
+        while (it.hasNext()) {
+            String xValue = it.next();
             // if x value and split value already exist
             if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitLabel)) {
                 counts.get(xValue).put(splitLabel, counts.get(xValue).get(splitLabel) + 1);
@@ -299,8 +301,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 innerCount.put(splitLabel, 1);
                 counts.put(xValue, innerCount);
             }
-        } catch (ClassCastException e) {
-            LOGGER.error("Value could not be processed for question: {}", e.getMessage(), e);
         }
 
         return counts;
@@ -453,13 +453,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     {
         Map<String, Integer> counts = new HashMap<>();
         while (answers.hasNext()) {
-            try {
-                Node answer = answers.next().adaptTo(Node.class);
-                // Call label processors to populate displayedValue
-                JsonObjectBuilder result = Json.createObjectBuilder();
-                this.allProcessors.forEach(p -> p.leave(answer, result, null));
-                // now result has the displayedValue if a value exists
-                String value = result.build().getString(LABEL_PROP, DEFAULT_X_VALUE);
+            Node answer = answers.next().adaptTo(Node.class);
+            List<String> values = getAnswerValues(answer);
+            Iterator<String> it = values.iterator();
+            while (it.hasNext()) {
+                String value = it.next();
                 // If this already exists in our counts dict, we add 1 to its value
                 // Otherwise, set it to 1 count
                 if (counts.containsKey(value)) {
@@ -467,12 +465,49 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 } else {
                     counts.put(value, 1);
                 }
-            } catch (ClassCastException e) {
-                LOGGER.error("Value could not be processed for question: {}", e.getMessage(), e);
-                continue;
             }
         }
         return counts;
+    }
+
+    /**
+     * Obtain the answer values as a list, regardless whether it is single or multi valued.
+     *
+     * @param answer The cards:Answer node
+     * @return A list of strings
+     */
+    private List<String> getAnswerValues(Node answer)
+    {
+        List<String> values = new LinkedList<>();
+        // Call label processors to populate displayedValue
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        this.allProcessors.forEach(p -> p.leave(answer, builder, null));
+        // Now the json has the displayedValue if a value exists
+        JsonObject answerJson = builder.build();
+        JsonValue jsonValue = answerJson.get(LABEL_PROP);
+        try {
+            if (jsonValue == null) {
+                values.add(DEFAULT_X_VALUE);
+            } else if (jsonValue.getValueType() == ValueType.ARRAY) {
+                JsonArray jsonArray = answerJson.getJsonArray(LABEL_PROP);
+                if (jsonArray.size() == 0) {
+                    values.add(DEFAULT_X_VALUE);
+                } else {
+                    for (int i = 0; i < jsonArray.size(); ++i) {
+                        values.add(jsonArray.getString(i));
+                    }
+                }
+            } else {
+                String value = answerJson.getString(LABEL_PROP, DEFAULT_X_VALUE);
+                values.add(value);
+            }
+        } catch (ClassCastException e) {
+            LOGGER.error("Value could not be processed for question: {}", e.getMessage(), e);
+            if (values.size() == 0) {
+                values.add(DEFAULT_X_VALUE);
+            }
+        }
+        return values;
     }
 
     /**
