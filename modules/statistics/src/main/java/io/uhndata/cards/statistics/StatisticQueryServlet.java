@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
@@ -81,9 +80,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     private static final String LABEL_PROP = "displayedValue";
 
     private static final String VALUE_NOT_SPECIFIED = "Not specified";
-
-    // splitLabels is used to cache the map from answer option values -> labels in split variables
-    private final ThreadLocal<Map<String, String>> splitLabels = new ThreadLocal<>();
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.REPLACE,
         policy = ReferencePolicy.DYNAMIC)
@@ -306,83 +302,32 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             return counts;
         }
 
-        String splitLabel = getSplitLabels(splitVar);
+        Node splitAnswer = splitVar.adaptTo(Node.class);
+        List<String> splitValues = getAnswerValues(splitAnswer);
 
         Node xAnswer = xVar.adaptTo(Node.class);
         List<String> values = getAnswerValues(xAnswer);
         Iterator<String> it = values.iterator();
         while (it.hasNext()) {
             String xValue = it.next();
-            // if x value and split value already exist
-            if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitLabel)) {
-                counts.get(xValue).put(splitLabel, counts.get(xValue).get(splitLabel) + 1);
-            } else if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitLabel)) {
-                // if x value already exists, but not split value - create and set to 1
-                counts.get(xValue).put(splitLabel, 1);
-            } else {
-                // else, create both and set to 1
-                innerCount.put(splitLabel, 1);
-                counts.put(xValue, innerCount);
+            Iterator<String> split = splitValues.iterator();
+            while (split.hasNext()) {
+                String splitValue = split.next();
+                // if x value and split value already exist
+                if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitValue)) {
+                    counts.get(xValue).put(splitValue, counts.get(xValue).get(splitValue) + 1);
+                } else if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitValue)) {
+                    // if x value already exists, but not split value - create and set to 1
+                    counts.get(xValue).put(splitValue, 1);
+                } else {
+                    // else, create both and set to 1
+                    innerCount.put(splitValue, 1);
+                    counts.put(xValue, innerCount);
+                }
             }
         }
 
         return counts;
-    }
-
-    /**
-     * Get the label used for the given split value.
-     *
-     * @param splitVar Split variable jcr Node
-     * @return The split value's user-readable label, or its value, or Undefined according to what exists.
-     */
-    private String getSplitLabels(Resource splitVar) throws RepositoryException
-    {
-        String retVal = "Not specified";
-
-        if (splitVar == null) {
-            return retVal;
-        }
-
-        Node splitAnswer = splitVar.adaptTo(Node.class);
-        if (splitAnswer.hasProperty(VALUE_PROP)) {
-            String splitValue = splitAnswer.getProperty(VALUE_PROP).getString();
-            if (this.splitLabels.get() == null) {
-                this.splitLabels.set(getAnswerOptionLabels(splitAnswer.getProperty("question").getNode()));
-            }
-            retVal = this.splitLabels.get().containsKey(splitValue)
-                ? this.splitLabels.get().get(splitValue) : splitValue;
-        }
-
-        return retVal;
-    }
-
-    /**
-     * For a question node, get a map from answer option values to their labels.
-     *
-     * @param questionNode the question whose answer options we want the label map for
-     * @return map of {value, label} for the given question
-     */
-    private Map<String, String> getAnswerOptionLabels(Node questionNode) throws RepositoryException
-    {
-        Map<String, String> optionLabels = new HashMap<>();
-        NodeIterator childNodes = questionNode.getNodes();
-        while (childNodes.hasNext()) {
-            Node childNode = childNodes.nextNode();
-
-            // Ensure this is an AnswerType node
-            if (!"cards:AnswerOption".equals(childNode.getProperty("jcr:primaryType").getString())) {
-                continue;
-            }
-
-            // Ensure that the child has both a value and a label
-            if (childNode.getProperty(VALUE_PROP) == null || childNode.getProperty("label") == null) {
-                continue;
-            }
-
-            optionLabels.put(childNode.getProperty(VALUE_PROP).getString(), childNode.getProperty("label").getString());
-        }
-
-        return optionLabels;
     }
 
     /**
@@ -415,8 +360,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                     }
                 }
             }
-        } finally {
-            this.splitLabels.remove();
+        } catch (Exception e) {
+            // Do nothing
         }
 
         JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
