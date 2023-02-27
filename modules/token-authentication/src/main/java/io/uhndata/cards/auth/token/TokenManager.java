@@ -20,7 +20,6 @@ package io.uhndata.cards.auth.token;
 import java.util.Calendar;
 import java.util.Map;
 
-import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -39,7 +38,7 @@ public interface TokenManager
      * @param extraData optional data to store in the token
      * @return a new token
      */
-    TokenInfo create(String user, Calendar expiration, Map<String, String> extraData);
+    CardsToken create(String user, Calendar expiration, Map<String, String> extraData);
 
     /**
      * Parse a token's data from its identifier.
@@ -47,5 +46,5 @@ public interface TokenManager
      * @param token a token identifier, either in the format {@code node-uuid_secret-key}, or just {@code node-uuid}
      * @return the parsed token data, or {@code null} if the input is invalid
      */
-    TokenInfo parse(String token);
+    CardsToken parse(String token);
 }
