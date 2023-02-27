@@ -52,6 +52,28 @@
                 }
             }
         },
+        "cards:ResourceAnswer": {
+            "jcr:primaryType": "nt:unstructured",
+            "properties": {
+                "jcr:primaryType": "nt:unstructured",
+                "question": {
+                    "name": "question",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": false,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "value": {
+                    "name": "value",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": false,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                }
+            }
+        },
         "cards:LongAnswer": {
             "jcr:primaryType": "nt:unstructured",
             "properties": {
