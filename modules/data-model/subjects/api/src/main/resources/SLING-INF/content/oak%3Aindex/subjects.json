@@ -20,6 +20,10 @@
                     "ordered": true,
                     "propertyIndex": true
                 },
+                "type": {
+                    "type": "String",
+                    "propertyIndex": true
+                },
                 "created": {
                     "name": "jcr:created",
                     "ordered": true,
