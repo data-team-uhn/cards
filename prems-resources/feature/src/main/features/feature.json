@@ -350,6 +350,13 @@
     "io.uhndata.cards.prems.internal.importer.DiscardDuplicatesFilter":{
       "enable": true,
       "column": "PAT_ENC_CSN_ID"
+    },
+    // Submission event listener
+    "io.uhndata.cards.patients.submissioncounter.SubmissionCounter~SurveysSubmitted":{
+      "name": "Patient Survey Completion Listener",
+      "submittedFlagPath": "/Questionnaires/Visit information/surveys_submitted",
+      "linkingSubjectType": "/SubjectTypes/Patient/Visit",
+      "excludedQuestionnaires": ["/Questionnaires/Survey events"]
     }
   }
 }
