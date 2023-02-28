@@ -38,6 +38,8 @@ public final class SubmissionEventListener implements EventListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubmissionEventListener.class);
 
+    private static final String SINGLE_QUOTE = "'";
+
     private final ResourceResolverFactory resolverFactory;
 
     private final ResourceResolver resolver;
@@ -48,24 +50,31 @@ public final class SubmissionEventListener implements EventListener
 
     private final String linkingSubjectType;
 
+    private final String[] excludedQuestionnaireUUIDs;
+
     public SubmissionEventListener(FormUtils formUtils, ResourceResolverFactory resolverFactory,
-        ResourceResolver resolver, Map<String, String> listenerParams)
+        ResourceResolver resolver, Map<String, Object> listenerParams)
     {
         this.formUtils = formUtils;
         this.resolverFactory = resolverFactory;
         this.resolver = resolver;
-        this.submittedFlagUUID = listenerParams.get("submittedFlagUUID");
-        this.linkingSubjectType = listenerParams.get("linkingSubjectType");
+        this.submittedFlagUUID = ((String) listenerParams.get("submittedFlagUUID"));
+        this.linkingSubjectType = ((String) listenerParams.get("linkingSubjectType"));
+        this.excludedQuestionnaireUUIDs = ((String[]) listenerParams.get("excludedQuestionnaireUUIDs"));
     }
 
     private long countVisitForms(String visitUUID, String excludeFormUUID)
     {
         long count = 0;
+
+        String sqlQuery = "SELECT * FROM [cards:Form] as f WHERE f.'relatedSubjects'='" + visitUUID + SINGLE_QUOTE;
+        sqlQuery += " AND f.'jcr:uuid'<>'" + excludeFormUUID + SINGLE_QUOTE;
+        for (String excludeQuestionnaireUUID : this.excludedQuestionnaireUUIDs) {
+            sqlQuery += " AND f.'questionnaire'<>'" + excludeQuestionnaireUUID + SINGLE_QUOTE;
+        }
+
         Iterator<Resource> results;
-        results = this.resolver.findResources(
-            "SELECT * FROM [cards:Form] as f WHERE f.'relatedSubjects'='" + visitUUID + "'"
-                + " AND f.'jcr:uuid'<>'" + excludeFormUUID + "'",
-            "JCR-SQL2");
+        results = this.resolver.findResources(sqlQuery, "JCR-SQL2");
         while (results.hasNext()) {
             count += 1;
             results.next();

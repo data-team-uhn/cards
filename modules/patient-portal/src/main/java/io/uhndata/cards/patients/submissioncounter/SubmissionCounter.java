@@ -74,6 +74,10 @@ public final class SubmissionCounter
         @AttributeDefinition(name = "Linking Subject Type", description = "Subject type that links the Form with the"
             + " \"submit\" button to the submitted Forms")
         String linkingSubjectType() default "/SubjectTypes/Patient/Visit";
+
+        @AttributeDefinition(name = "Excluded Questionnaires", description = "Do not count any Forms which are built"
+            + " from any of these types of Questionnaires")
+        String[] excludedQuestionnaires() default {};
     }
 
     @Activate
@@ -94,10 +98,18 @@ public final class SubmissionCounter
                 return;
             }
 
-            Map<String, String> listenerParams = new HashMap<>();
+            // Convert config.excludedQuestionnaires from a list of JCR paths to a list of jcr:uuid values
+            String[] excludedQuestionnaireUUIDs = new String[config.excludedQuestionnaires().length];
+            for (int i = 0; i < config.excludedQuestionnaires().length; i++) {
+                excludedQuestionnaireUUIDs[i] =
+                    this.resolver.getResource(config.excludedQuestionnaires()[i]).getValueMap().get("jcr:uuid", "");
+            }
+
+            Map<String, Object> listenerParams = new HashMap<>();
             listenerParams.put("submissionCounterName", config.name());
             listenerParams.put("submittedFlagUUID", submittedFlagUUID);
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
+            listenerParams.put("excludedQuestionnaireUUIDs", excludedQuestionnaireUUIDs);
             EventListener myEventListener = new SubmissionEventListener(this.formUtils, this.resolverFactory,
                 this.resolver, listenerParams);
 
