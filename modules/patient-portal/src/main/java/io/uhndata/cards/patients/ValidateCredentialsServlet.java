@@ -244,7 +244,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         // Find patients matching the provided ID
         final Iterator<Resource> results = rr.findResources(
             "SELECT f.* FROM [cards:TextAnswer] AS t "
-                + "  INNER JOIN [cards:Form] AS f ON isdescendantnode(t, f) "
+                + "  INNER JOIN [cards:Form] AS f ON t.form = f.[jcr:uuid] "
                 + "WHERE t.'question'='" + identifierQuestion + "' "
                 + "  AND t.'value'='" + presentedID.replaceAll("'", "''") + "'",
             "JCR-SQL2");

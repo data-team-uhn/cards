@@ -313,11 +313,11 @@ public final class AppointmentUtils
                 formatter.format(upperBoundDate.getTime()));
 
             final String query = "SELECT vdate.* FROM [cards:DateAnswer] AS vdate "
-                + "  INNER JOIN [cards:Form] AS form ON isdescendantnode(vdate, form) "
-                + "  INNER JOIN [cards:TextAnswer] AS vstatus ON isdescendantnode(vstatus, form) "
-                + "  INNER JOIN [cards:BooleanAnswer] AS has_surveys ON isdescendantnode(has_surveys, form) "
+                + "  INNER JOIN [cards:Form] AS form ON vdate.form = form.[jcr:uuid] "
+                + "  INNER JOIN [cards:TextAnswer] AS vstatus ON vstatus.form = form.[jcr:uuid] "
+                + "  INNER JOIN [cards:BooleanAnswer] AS has_surveys ON has_surveys.form = form.[jcr:uuid] "
                 + ((clinicId != null)
-                    ? "  INNER JOIN [cards:ResourceAnswer] AS clinic ON isdescendantnode(clinic, form) " : "")
+                    ? "  INNER JOIN [cards:ResourceAnswer] AS clinic ON clinic.form = form.[jcr:uuid] " : "")
                 + "WHERE vdate.'question'='" + visitTimeUUID + "' "
                 + "  AND vdate.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
                 + "  AND vdate.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)"

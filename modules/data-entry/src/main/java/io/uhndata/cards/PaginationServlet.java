@@ -595,7 +595,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 final String answerSource = filter.source;
                 joins.append(
                     String.format(
-                        " inner join [%s] as %s on isdescendantnode(%s, n)",
+                        " inner join [%s] as %s on %s.form = n.[jcr:uuid]",
                         filter.nodeType,
                         answerSource,
                         answerSource));
@@ -635,11 +635,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 final String answerSource = filter.source;
                 joins.append(
                     String.format(
-                        " inner join [%s] as %s on isdescendantnode(%s, %s)",
+                        " inner join [%s] as %s on %s.[jcr:uuid] = %s.form",
                         filter.nodeType,
                         answerSource,
-                        answerSource,
-                        formSource));
+                        formSource,
+                        answerSource));
             }
         }
 
