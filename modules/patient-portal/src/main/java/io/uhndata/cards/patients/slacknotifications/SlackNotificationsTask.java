@@ -124,7 +124,7 @@ public class SlackNotificationsTask implements Runnable
                 slackNotificationString = buildNotificationLine(
                     slackNotificationString,
                     gatheredStatistics.get(key),
-                    key
+                    key.replaceAll("^\\{\\d+\\}", "")
                 );
             }
 
