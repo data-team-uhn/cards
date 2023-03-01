@@ -33,7 +33,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import io.uhndata.cards.serialize.CSVString;
 
 /**
  * Unit tests for {@link QuestionnaireCSVServlet}.
@@ -53,8 +56,8 @@ public class QuestionnaireCSVServletTest
     private QuestionnaireCSVServlet questionnaireCSVServlet;
 
     @Test
-    public void doGetTest() throws IOException {
-        this.context.addModelsForPackage("io.uhndata.cards.serialize");
+    public void doGetTest() throws IOException
+    {
         Resource questionnaire = this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH);
         SlingHttpServletRequest request = new SlingHttpServletRequestImpl(questionnaire);
         SlingHttpServletResponse response = new SlingHttpServletResponseImpl();
@@ -62,8 +65,11 @@ public class QuestionnaireCSVServletTest
 
         Assert.assertEquals("UTF-8", response.getCharacterEncoding());
         Assert.assertTrue(response.containsHeader("Content-disposition"));
+        String header = response.getHeader("Content-disposition");
+        Assert.assertTrue(header
+                .startsWith("attachment; filename=TestQuestionnaire_"));
+        Assert.assertTrue(header.endsWith(".csv"));
     }
-
 
     @Before
     public void setupRepo() throws RepositoryException
@@ -72,6 +78,7 @@ public class QuestionnaireCSVServletTest
                 .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")
                 .commit();
         this.context.load().json("/Questionnaires.json", TEST_QUESTIONNAIRE_PATH);
+        this.context.registerAdapter(Resource.class, CSVString.class, Mockito.mock(CSVString.class));
     }
 
 }
