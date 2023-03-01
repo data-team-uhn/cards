@@ -20,11 +20,16 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
+
 import { Avatar, Checkbox, DialogActions, DialogContent, FormControl, Icon, Grid, Radio, RadioGroup,
-  FormControlLabel, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
+  FormControlLabel, TextField, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
 
 import DownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
+
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ResponsiveDialog from "../components/ResponsiveDialog";
@@ -69,7 +74,10 @@ const useStyles = makeStyles(theme => ({
     marginTop:  theme.spacing(1),
     alignSelf: "start",
     zoom: "75%"
-  }
+  },
+  answerField: {
+    marginRight: theme.spacing(4),
+  },
 }));
 
 let findQuestionsOrSections = (json, result = []) =>  {
@@ -130,6 +138,18 @@ function ExportButton(props) {
   const [ selectedEntityIds, setSelectedEntityIds ] = useState([]);
   const [ tempValue, setTempValue ] = useState(''); // Holds new, non-selected values
 
+  const [ users, setUsers ] = useState();
+  const [ user, setUser ] = useState('');
+
+  const [ createdAfter, setCreatedAfter ] = useState(null);
+  const [ createdBefore, setCreatedBefore ] = useState(null);
+  const [ modifiedAfter, setModifiedAfter ] = useState(null);
+  const [ modifiedBefore, setModifiedBefore ] = useState(null);
+
+  const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED" ];
+  const [ isIncludeStatus, setIsIncludeStatus ] = useState(false);
+  const [ status, setStatus ] = useState('');
+
   const classes = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -145,6 +165,16 @@ function ExportButton(props) {
         });
     }
   }, [entityData, open]);
+
+  useEffect(() => {
+    if (!users && open) {
+        fetchWithReLogin(globalLoginDisplay, "/home/users.json")
+          .then((response) => response.ok ? response.json() : Promise.reject(response))
+          .then((json) => {
+            setUsers(json.rows);
+          });
+    }
+  }, [open]);
 
   let openDialog = () => {
     entryPath && !open && setOpen(true);
@@ -173,6 +203,26 @@ function ExportButton(props) {
     }
     if (hasAnswerLabels) {
       path += ".labels";
+    }
+    if (user) {
+      path += ".dataFilter:createdBy=" + user;
+    }
+    if (createdAfter) {
+      path += ".dataFilter:createdAfter=" + new Date(createdAfter).toISOString();
+    }
+    if (createdBefore) {
+      path += ".dataFilter:createdBefore=" + new Date(createdBefore).toISOString();
+    }
+    if (modifiedAfter) {
+      path += ".dataFilter:modifiedAfter=" + new Date(modifiedAfter).toISOString();
+    }
+    if (modifiedBefore) {
+      path += ".dataFilter:modifiedBefore=" + new Date(modifiedBefore).toISOString();
+    }
+    if (status) {
+      path += ".dataFilter";
+      let pref = isIncludeStatus ? ".dataFilter:status=" : ".dataFilter:statusNot=";
+      path += pref + encodeURIComponent(encodeURIComponent(status));
     }
     path += fileFormat;
     window.open(path, '_blank');
@@ -215,6 +265,28 @@ function ExportButton(props) {
                 { entitySpecs[type].avatar ? <Icon>{entitySpecs[type].avatar}</Icon> : type?.charAt(0) }
             </Avatar>);
   }
+
+  let getDatePicker = (value, setter, label) => {
+    return (<DatePicker
+                label={label}
+                value={value}
+                onChange={(value) => {
+                  setter(value);
+                }}
+                renderInput={(params) =>
+                  <TextField
+                    variant="standard"
+                    className={classes.answerField}
+                    InputProps={{
+                      className: classes.answerField
+                    }}
+                    helperText={null}
+                    {...params}
+                  />
+                }
+              />);
+  }
+
   return(
     <React.Fragment>
       <ResponsiveDialog
@@ -337,6 +409,89 @@ function ExportButton(props) {
                 </Select>
               </FormControl>
             </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Created by:</Typography></Grid>
+            <Grid item xs={8}>
+                <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
+                  <InputLabel id="label">Select user</InputLabel>
+                  <Select
+                    variant="standard"
+                    labelId="label"
+                    value={user}
+                    label="Select questions/sections from this questionnaire"
+                    onChange={(event) => setUser(event.target.value)}
+                  >
+                    { users?.map(v =>
+                            <MenuItem value={v.name} key={`option-${v.principalName}`} className={classes.variableOption}>
+                              {v.principalName}
+                            </MenuItem>)
+                    }
+                  </Select>
+                </FormControl>
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Created:</Typography></Grid>
+            <Grid item xs={8}>
+              <LocalizationProvider dateAdapter={AdapterLuxon}>
+                { getDatePicker(createdAfter, setCreatedAfter, "after") }
+                { getDatePicker(createdBefore, setCreatedBefore, "before") }
+              </LocalizationProvider>
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Modified:</Typography></Grid>
+            <Grid item xs={8}>
+              <LocalizationProvider dateAdapter={AdapterLuxon}>
+                { getDatePicker(modifiedAfter, setModifiedAfter, "after") }
+                { getDatePicker(modifiedBefore, setModifiedBefore, "before") }
+              </LocalizationProvider>
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+              <Grid item xs={4}><Typography variant="subtitle2">Statuses selection mode:</Typography></Grid>
+              <Grid item xs={8}>
+                <RadioGroup
+                  row
+                  aria-label="isIncludeStatus"
+                  name="isIncludeStatus"
+                  value={isIncludeStatus}
+                  onChange={(event) => setIsIncludeStatus(event.target.value === "true")}
+                >
+                  <FormControlLabel value={true} control={<Radio />} label="Include" />
+                  <FormControlLabel value={false} control={<Radio />} label="Exclude" />
+                </RadioGroup>
+              </Grid>
+          </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid item xs={4}>
+                <Typography variant="subtitle2">{isIncludeStatus ? "Statuses to include:" : "Statuses to exclude:"}</Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
+                  <InputLabel id="status">Select a status</InputLabel>
+                  <Select
+                    variant="standard"
+                    labelId="status"
+                    value={status}
+                    label="Select a status"
+                    onChange={(event) => setStatus(event.target.value)}
+                  >
+                    { statuses.map(v =>
+                            <MenuItem value={v} key={v} className={classes.variableOption}>
+                              { v }
+                            </MenuItem>)
+                    }
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+
           </Grid>
         </DialogContent>
         <DialogActions>
