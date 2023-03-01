@@ -24,10 +24,10 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.json.Json;
 import javax.json.JsonObject;
 
-import io.uhndata.cards.spi.SearchParameters;
-import io.uhndata.cards.spi.SearchParametersFactory;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Assert;
@@ -38,6 +38,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import io.uhndata.cards.spi.SearchParameters;
+import io.uhndata.cards.spi.SearchParametersFactory;
 
 /**
  * Unit tests for {@link FormsQuickSearchEngine}.
@@ -169,6 +172,7 @@ public class FormsQuickSearchEngineTest
                 .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
                         this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
                 .commit();
+        this.context.registerAdapter(Resource.class, JsonObject.class, Json.createObjectBuilder().build());
 
         Node computedQuestionnaire = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH);
         Node referenceQuestionnaire = session.getNode(TEST_REFERENCE_QUESTIONNAIRE_PATH);

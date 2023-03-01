@@ -22,8 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
+import javax.json.Json;
 import javax.json.JsonObject;
 
+import org.apache.sling.api.adapter.AdapterFactory;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Assert;
@@ -34,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import io.uhndata.cards.serialize.ResourceToJsonAdapterFactory;
 import io.uhndata.cards.spi.SearchParameters;
 import io.uhndata.cards.spi.SearchParametersFactory;
 
@@ -49,7 +53,8 @@ public class QuestionnaireQuickSearchEngineTest
     private static final String QUESTIONNAIRE_TYPE = "cards:Questionnaire";
     private static final String TEST_MATRIX_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionMatrixQuestionnaire";
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
-    private static final String TEST_REFERENCE_CALENDAR_QUESTIONNAIRE_PATH = "/Questionnaires/TestCalendarReferenceQuestionnaire";
+    private static final String TEST_REFERENCE_CALENDAR_QUESTIONNAIRE_PATH =
+            "/Questionnaires/TestCalendarReferenceQuestionnaire";
     private static final String TEST_REFERENCE_QUESTIONNAIRE_PATH = "/Questionnaires/TestReferenceQuestionnaire";
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
     private static final String QUICK_SEARCH_PARAMETER_TYPE = "quick";
@@ -141,6 +146,8 @@ public class QuestionnaireQuickSearchEngineTest
         this.context.load().json("/ReferenceQuestionnaires.json", TEST_REFERENCE_QUESTIONNAIRE_PATH);
         this.context.load()
                 .json("/reference/ReferenceCalendarQuestionnaires.json", TEST_REFERENCE_CALENDAR_QUESTIONNAIRE_PATH);
+        this.context.registerService(AdapterFactory.class, new ResourceToJsonAdapterFactory());
+        this.context.registerAdapter(Resource.class, JsonObject.class, Json.createObjectBuilder().build());
     }
 
 }
