@@ -65,7 +65,8 @@ public class ReferenceAnswersEditorForCalendarTest
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
     private static final String TEST_SOURCE_QUESTIONNAIRE_PATH = "/Questionnaires/TestSourceQuestionnaire";
     private static final String TEST_SOURCE_QUESTION_PATH = "/Questionnaires/TestSourceQuestionnaire/source_question";
-    private static final String TEST_REFERENCE_QUESTIONNAIRE_PATH = "/Questionnaires/TestCalendarReferenceQuestionnaire";
+    private static final String TEST_REFERENCE_QUESTIONNAIRE_PATH =
+            "/Questionnaires/TestCalendarReferenceQuestionnaire";
     private static final String TEST_REFERENCE_QUESTION_PATH =
             "/Questionnaires/TestCalendarReferenceQuestionnaire/reference_question";
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
