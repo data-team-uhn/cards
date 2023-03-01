@@ -81,11 +81,11 @@
         "create path (sling:Folder) /Metrics/ImportedAppointments/name(nt:unstructured)",
         "create path (sling:Folder) /Metrics/ImportedAppointments/prevTotal(nt:unstructured)",
         "create path (sling:Folder) /Metrics/ImportedAppointments/total(nt:unstructured mixin mix:atomicCounter)",
-        "set properties on /Metrics/TotalSurveysSubmitted/name \n   default value{String} to \"Number Of Surveys Submitted\" \n end",
+        "set properties on /Metrics/TotalSurveysSubmitted/name \n   default value{String} to \"{003} Number Of Surveys Submitted\" \n end",
         "set properties on /Metrics/TotalSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
-        "set properties on /Metrics/AppointmentSurveysSubmitted/name \n   default value{String} to \"Number Of Patients Who Responded\" \n end",
+        "set properties on /Metrics/AppointmentSurveysSubmitted/name \n   default value{String} to \"{002} Number Of Patients Who Responded\" \n end",
         "set properties on /Metrics/AppointmentSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
-        "set properties on /Metrics/ImportedAppointments/name \n   default value{String} to \"Imported Appointments\" \n end",
+        "set properties on /Metrics/ImportedAppointments/name \n   default value{String} to \"{001} Imported Appointments\" \n end",
         "set properties on /Metrics/ImportedAppointments/prevTotal \n   default value{Long} to 0 \n end"
       ]
     },
