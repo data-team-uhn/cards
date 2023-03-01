@@ -522,6 +522,14 @@
   // Hardcode the resource supertype: each answer is a resource.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
+  // A pseudo-link to the form this answer belongs to.
+  // Normally this wouldn't be necessary, since the hierarchy of the two nodes makes it redundant,
+  // but in queries ISDESCENDANTNODE(answer, form) is not yet efficiently implemented,
+  // so we add this property to be able to do joins on answer.form = form.jcr:uuid.
+  // This doesn't have to be a REFERENCE, since we don't want to overcrowd the references index,
+  // and we don't want to list all the answers when trying to delete a form.
+  - form (STRING) autocreated nofulltext
+
   // A reference to the question being answered.
   // Mandatory, every answer needs a question.
   // No full text search, since it's just a non-textual reference.
