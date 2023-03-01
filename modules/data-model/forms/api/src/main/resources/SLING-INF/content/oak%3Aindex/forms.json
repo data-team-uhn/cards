@@ -19,6 +19,10 @@
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
                 },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -40,6 +44,10 @@
                     "type": "String",
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
                 },
                 "value": {
                     "name": "value",
@@ -63,6 +71,10 @@
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
                 },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -84,6 +96,10 @@
                     "type": "String",
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
                 },
                 "value": {
                     "name": "value",
@@ -107,6 +123,10 @@
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
                 },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -128,6 +148,10 @@
                     "type": "String",
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
                 },
                 "value": {
                     "name": "value",
@@ -151,6 +175,10 @@
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
                 },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -172,6 +200,10 @@
                     "type": "String",
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
                 },
                 "value": {
                     "name": "value",
@@ -195,6 +227,10 @@
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
                 },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -216,6 +252,10 @@
                     "type": "String",
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
                 },
                 "value": {
                     "name": "value",
@@ -239,6 +279,10 @@
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
                 },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -260,6 +304,10 @@
                     "type": "String",
                     "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "form": {
+                    "propertyIndex": true,
+                    "type": "String"
                 },
                 "value": {
                     "name": "value",
