@@ -528,7 +528,7 @@
   // so we add this property to be able to do joins on answer.form = form.jcr:uuid.
   // This doesn't have to be a REFERENCE, since we don't want to overcrowd the references index,
   // and we don't want to list all the answers when trying to delete a form.
-  - form (STRING) autocreated nofulltext
+  - form (STRING) nofulltext
 
   // A reference to the question being answered.
   // Mandatory, every answer needs a question.
