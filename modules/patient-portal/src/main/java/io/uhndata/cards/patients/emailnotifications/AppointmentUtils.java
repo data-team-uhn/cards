@@ -313,11 +313,10 @@ public final class AppointmentUtils
                 formatter.format(upperBoundDate.getTime()));
 
             final String query = "SELECT vdate.* FROM [cards:DateAnswer] AS vdate "
-                + "  INNER JOIN [cards:Form] AS form ON vdate.form = form.[jcr:uuid] "
-                + "  INNER JOIN [cards:TextAnswer] AS vstatus ON vstatus.form = form.[jcr:uuid] "
-                + "  INNER JOIN [cards:BooleanAnswer] AS has_surveys ON has_surveys.form = form.[jcr:uuid] "
+                + "  INNER JOIN [cards:TextAnswer] AS vstatus ON vstatus.form = vdate.form "
+                + "  INNER JOIN [cards:BooleanAnswer] AS has_surveys ON has_surveys.form = vdate.form "
                 + ((clinicId != null)
-                    ? "  INNER JOIN [cards:ResourceAnswer] AS clinic ON clinic.form = form.[jcr:uuid] " : "")
+                    ? "  INNER JOIN [cards:ResourceAnswer] AS clinic ON clinic.form = vdate.form " : "")
                 + "WHERE vdate.'question'='" + visitTimeUUID + "' "
                 + "  AND vdate.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
                 + "  AND vdate.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)"
@@ -327,7 +326,8 @@ public final class AppointmentUtils
                 + "  AND has_surveys.'question' = '" + hasSurveysUUID + "' "
                 + "  AND has_surveys.'value' = 1 "
                 + ((clinicId != null)
-                    ? ("  AND clinic.'question' = '" + clinicUUID + "' AND clinic.'value' = '" + clinicId + "'") : "");
+                    ? ("  AND clinic.'question' = '" + clinicUUID + "' AND clinic.'value' = '" + clinicId + "'") : "")
+                + " OPTION (INDEX TAG cards)";
 
             return session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
         } catch (RepositoryException e) {
