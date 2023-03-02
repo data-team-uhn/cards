@@ -54,9 +54,9 @@ function ClinicVisits(props) {
 "select distinct visitInformation.* " +
   "from " +
     "[cards:Form] as visitInformation " +
-      "inner join [cards:ResourceAnswer] as visitClinic on isdescendantnode(visitClinic, visitInformation) " +
-      "inner join [cards:DateAnswer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
-      "inner join [cards:TextAnswer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
+      "inner join [cards:ResourceAnswer] as visitClinic on visitClinic.form = visitInformation.[jcr:uuid] " +
+      "inner join [cards:DateAnswer] as visitDate on visitDate.form = visitInformation.[jcr:uuid] " +
+      "inner join [cards:TextAnswer] as visitStatus on visitStatus.form = visitInformation.[jcr:uuid] " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +

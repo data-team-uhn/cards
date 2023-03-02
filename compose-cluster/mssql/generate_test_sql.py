@@ -71,7 +71,6 @@ CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
     DISCH_DEPT_NAME varchar(254) NULL,
     DISCH_LOC_NAME varchar(254) NULL,
     EMAIL_CONSENT_YN varchar(3),
-    LoadTime datetime2 NULL,
     DEATH_DATE datetime2 NULL,
     DISCH_DISPOSITION varchar(255) NULL,
     LEVEL_OF_CARE varchar(255) NULL,
@@ -90,6 +89,7 @@ CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
 
 HOSPITALS_TO_DEPARTMENTS = {}
 HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-EMERGENCY")
 HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-4MA Cardiovascular Surgery")
 HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-4MB Cardiovascular Surgery")
 HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-5MB Cardiology")
@@ -103,6 +103,7 @@ HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES13 General Med
 HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES14 General Medicine")
 
 HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-EMERGENCY")
 HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-3B Fell Pavilion")
 HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-4B Fell Pavilion")
 HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-5A Fell Pavilion")
@@ -170,20 +171,23 @@ for i in range(args.n):
     insertion_values['DISCH_DEPT_NAME'] = disch_dept_name
 
     # EMAIL_CONSENT_YN
-    email_consent_yn = random.choice(['Yes', 'No'])
+    email_consent_yn = random.choices(['Yes', 'No'], [10, 1])[0]
     insertion_values['EMAIL_CONSENT_YN'] = email_consent_yn
 
+    # MYCHART STATUS
+    insertion_values['MYCHART STATUS'] = random.choices([None, 'Activating', 'Activated'], [2, 1, 3])[0]
+
     # DISCH_DISPOSITION
-    insertion_values['DISCH_DISPOSITION'] = random.choice(['Home', 'Deceased'])
+    insertion_values['DISCH_DISPOSITION'] = random.choices(['Home', 'Deceased'], [20, 1])[0]
 
     # DEATH_DATE
-    insertion_values['DEATH_DATE'] = random.choice([None, potential_death_time_str])
+    insertion_values['DEATH_DATE'] = random.choices([None, potential_death_time_str], [20, 1])[0]
 
     # LEVEL_OF_CARE
-    insertion_values['LEVEL_OF_CARE'] = random.choice(['regular', 'ALC-AB', 'ALC 123'])
+    insertion_values['LEVEL_OF_CARE'] = random.choices(['regular', 'ALC-AB', 'ALC 123'], [10, 1, 1])[0]
 
     # ED_IP_TRANSFER_YN
-    insertion_values['ED_IP_TRANSFER_YN'] = random.choice(['Yes', 'No'])
+    insertion_values['ED_IP_TRANSFER_YN'] = random.choices(['Yes', 'No'], [1, 5])[0]
 
     # LENGTH_OF_STAY_DAYS
     insertion_values['LENGTH_OF_STAY_DAYS'] = random.randint(1, 15)
@@ -193,8 +197,8 @@ for i in range(args.n):
     insertion_values['PAT_ENC_CSN_ID'] = i
 
     args.file.write("INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]")
-    args.file.write("\t(ID, PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, LoadTime, DEATH_DATE, DISCH_DISPOSITION, LEVEL_OF_CARE, ED_IP_TRANSFER_YN, LENGTH_OF_STAY_DAYS)\n")
+    args.file.write("\t(ID, PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, [MYCHART STATUS], DEATH_DATE, DISCH_DISPOSITION, LEVEL_OF_CARE, ED_IP_TRANSFER_YN, LENGTH_OF_STAY_DAYS)\n")
     args.file.write("\tVALUES\n")
-    args.file.write("\t({ID:07d}, {PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, CAST(GETDATE()-1 AS DATE), {DEATH_DATE}, {DISCH_DISPOSITION}, {LEVEL_OF_CARE}, {ED_IP_TRANSFER_YN}, {LENGTH_OF_STAY_DAYS})\n".format(**convertToSqlType(insertion_values)))
+    args.file.write("\t({ID:07d}, {PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART STATUS}, {DEATH_DATE}, {DISCH_DISPOSITION}, {LEVEL_OF_CARE}, {ED_IP_TRANSFER_YN}, {LENGTH_OF_STAY_DAYS})\n".format(**convertToSqlType(insertion_values)))
 
 args.file.close()
