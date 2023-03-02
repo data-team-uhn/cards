@@ -22,8 +22,10 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.json.Json;
 import javax.json.JsonObject;
 
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
@@ -70,6 +72,20 @@ public class SubjectQuickSearchEngineTest
     }
 
     @Test
+    public void quickSearchAddsAllFoundFormsToOutput()
+    {
+        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
+                .withQuery("branch")
+                .withType(QUICK_SEARCH_PARAMETER_TYPE)
+                .build();
+
+        List<JsonObject> output = new ArrayList<>();
+
+        this.subjectQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
+        assertEquals(2, output.size());
+    }
+
+    @Test
     public void quickSearchForMaxSizeOutputAndQueryWithShowTotalResultsFalse()
     {
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
@@ -83,6 +99,22 @@ public class SubjectQuickSearchEngineTest
 
         this.subjectQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
         assertEquals(10, output.size());
+    }
+
+    @Test
+    public void quickSearchForMaxResultLessThanNumberOfMatches()
+    {
+        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
+                .withQuery("root")
+                .withType(QUICK_SEARCH_PARAMETER_TYPE)
+                .withMaxResults(1)
+                .withShowTotalResults(false)
+                .build();
+
+        List<JsonObject> output = new ArrayList<>();
+
+        this.subjectQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
+        assertEquals(1, output.size());
     }
 
     @Test
@@ -109,7 +141,7 @@ public class SubjectQuickSearchEngineTest
                 .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
                 .commit();
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
-
+        this.context.registerAdapter(Resource.class, JsonObject.class, Json.createObjectBuilder().build());
         this.context.build()
                 .resource("/Subjects/r1",
                         NODE_TYPE, SUBJECT_TYPE,
