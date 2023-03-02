@@ -45,6 +45,25 @@
     "text": "Boolean Question",
     "description": "A computed boolean question",
     "dataType": "computed"
+  },
+  "question_6": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Pedigree Question",
+    "description": "A pedigree question"
+  },
+  "question_7": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Options Vocabulary Question",
+    "dataType": "vocabulary",
+    "displayMode": "list",
+    "o1": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": "/Vocabularies/Option1"
+    },
+    "o2": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": ["/Vocabularies/Option1", "/Vocabularies/Option2"]
+    }
   }
 }
 
