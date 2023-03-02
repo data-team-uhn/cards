@@ -31,7 +31,7 @@
   <name>CARDS - Data model - Questionnaires and Forms - Implementations</name>
 
   <properties>
-    <coverage.instructionRatio>0.62</coverage.instructionRatio>
+    <coverage.instructionRatio>0.70</coverage.instructionRatio>
   </properties>
 
   <build>
