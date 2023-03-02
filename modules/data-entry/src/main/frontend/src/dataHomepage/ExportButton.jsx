@@ -214,7 +214,7 @@ function ExportButton(props) {
     <React.Fragment>
       <Dialog fullWidth maxWidth='md' open={open} onClose={closeDialog}>
         <DialogTitle>
-          Export {entryLabel ? entryLabel.concat(' ') : ''}{entryName}
+          Export "{entryName}" Data
         </DialogTitle>
         <DialogContent>
           <Grid container direction="column">
