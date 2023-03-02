@@ -64,6 +64,28 @@
       "jcr:primaryType": "cards:AnswerOption",
       "value": ["/Vocabularies/Option1", "/Vocabularies/Option2"]
     }
+  },
+  "question_8": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Resource Question",
+    "description": "A resource question",
+    "labelProperty": "level",
+    "dataType": "resource"
+  },
+  "question_9": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Options Resource Question",
+    "dataType": "resource",
+    "labelProperty": "level",
+    "displayMode": "list",
+    "o1": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": "/Subjects/TestRoot"
+    },
+    "o2": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": ["/Subjects/TestRoot", "/Subjects/TestBranch"]
+    }
   }
 }
 
