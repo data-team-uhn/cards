@@ -50,8 +50,9 @@ public abstract class AbstractFormToStringSerializer
     {
         // The proper serialization depends on "deep", "dereference" and "labels", but we may allow other JSON
         // processors to be enabled/disabled to further customize the data, so we also append the original selectors
-        final String processedPath = originalResource.getPath()
-            + originalResource.getResourceMetadata().getResolutionPathInfo() + ".deep.dereference.labels";
+        String resolutionPathInfo = originalResource.getResourceMetadata().getResolutionPathInfo();
+        final String processedPath = originalResource.getPath() + (resolutionPathInfo != null ? resolutionPathInfo : "")
+                + ".deep.dereference.labels";
         final Resource resource = originalResource.getResourceResolver().resolve(processedPath);
 
         JsonObject result = resource.adaptTo(JsonObject.class);
