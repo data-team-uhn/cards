@@ -410,20 +410,19 @@ function ExportButton(props) {
               </FormControl>
             </Grid>
 
-          <Grid container alignItems='center' direction="row" className={classes.container}>
+          <Grid container alignItems='end' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">Created by:</Typography></Grid>
             <Grid item xs={8}>
-                <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
+                <FormControl variant="standard" fullWidth>
                   <InputLabel id="label">Select user</InputLabel>
                   <Select
                     variant="standard"
                     labelId="label"
                     value={user}
-                    label="Select questions/sections from this questionnaire"
                     onChange={(event) => setUser(event.target.value)}
                   >
                     { users?.map(v =>
-                            <MenuItem value={v.name} key={`option-${v.principalName}`} className={classes.variableOption}>
+                            <MenuItem value={v.name} key={`option-${v.principalName}`}>
                               {v.principalName}
                             </MenuItem>)
                     }
