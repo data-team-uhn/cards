@@ -75,8 +75,11 @@ const useStyles = makeStyles(theme => ({
     alignSelf: "start",
     zoom: "75%"
   },
-  answerField: {
-    marginRight: theme.spacing(4),
+  dateRange: {
+    marginBottom: theme.spacing(2),
+    "& > * + *" : {
+      marginLeft: theme.spacing(4),
+    }
   },
 }));
 
@@ -276,10 +279,6 @@ function ExportButton(props) {
                 renderInput={(params) =>
                   <TextField
                     variant="standard"
-                    className={classes.answerField}
-                    InputProps={{
-                      className: classes.answerField
-                    }}
                     helperText={null}
                     {...params}
                   />
@@ -434,7 +433,7 @@ function ExportButton(props) {
 
           <Grid container alignItems='center' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">Created:</Typography></Grid>
-            <Grid item xs={8}>
+            <Grid item xs={8} className={classes.dateRange}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 { getDatePicker(createdAfter, setCreatedAfter, "after") }
                 { getDatePicker(createdBefore, setCreatedBefore, "before") }
@@ -444,7 +443,7 @@ function ExportButton(props) {
 
           <Grid container alignItems='center' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">Modified:</Typography></Grid>
-            <Grid item xs={8}>
+            <Grid item xs={8} className={classes.dateRange}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
                 { getDatePicker(modifiedAfter, setModifiedAfter, "after") }
                 { getDatePicker(modifiedBefore, setModifiedBefore, "before") }
