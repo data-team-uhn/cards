@@ -117,6 +117,7 @@ function ExportButton(props) {
     hasHeaderIndentifiers: false,
     hasAnswerLabels: false,
     columnSelectionMode: "exclude",
+    statusSelectionMode: "status",
   }
 
   const [ open, setOpen ] = useState(false);
@@ -150,7 +151,7 @@ function ExportButton(props) {
   const [ modifiedBefore, setModifiedBefore ] = useState(null);
 
   const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED" ];
-  const [ isIncludeStatus, setIsIncludeStatus ] = useState(false);
+  const [ statusSelectionMode, setStatusSelectionMode ] = useState(DEFAULTS.statusSelectionMode);
   const [ status, setStatus ] = useState('');
 
   const classes = useStyles();
@@ -224,7 +225,7 @@ function ExportButton(props) {
     }
     if (status) {
       path += ".dataFilter";
-      let pref = isIncludeStatus ? ".dataFilter:status=" : ".dataFilter:statusNot=";
+      let pref = `.dataFilter:${statusSelectionMode}=`;
       path += pref + encodeURIComponent(encodeURIComponent(status));
     }
     path += fileFormat;
@@ -452,40 +453,35 @@ function ExportButton(props) {
           </Grid>
 
           <Grid container alignItems='center' direction="row" className={classes.container}>
-              <Grid item xs={4}><Typography variant="subtitle2">Statuses selection mode:</Typography></Grid>
+              <Grid item xs={4}><Typography variant="subtitle2">Status flag selection mode:</Typography></Grid>
               <Grid item xs={8}>
                 <RadioGroup
                   row
-                  aria-label="isIncludeStatus"
-                  name="isIncludeStatus"
-                  value={isIncludeStatus}
-                  onChange={(event) => setIsIncludeStatus(event.target.value === "true")}
+                  name="statusSelectionMode"
+                  value={statusSelectionMode}
+                  onChange={(event) => setStatusSelectionMode(event.target.value)}
                 >
-                  <FormControlLabel value={true} control={<Radio />} label="Include" />
-                  <FormControlLabel value={false} control={<Radio />} label="Exclude" />
+                  <FormControlLabel value="status" control={<Radio />} label="Include" />
+                  <FormControlLabel value="statusNot" control={<Radio />} label="Exclude" />
                 </RadioGroup>
               </Grid>
           </Grid>
 
-          <Grid container alignItems='center' direction="row" className={classes.container}>
+          <Grid container alignItems='end' direction="row" className={classes.container}>
             <Grid item xs={4}>
-                <Typography variant="subtitle2">{isIncludeStatus ? "Statuses to include:" : "Statuses to exclude:"}</Typography>
+                <Typography variant="subtitle2">{statusSelectionMode == "status" ? "Include only forms with the status flag:" : "Exclude all forms with the status flag:"}</Typography>
               </Grid>
               <Grid item xs={8}>
-                <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
+                <FormControl variant="standard" fullWidth>
                   <InputLabel id="status">Select a status</InputLabel>
                   <Select
                     variant="standard"
                     labelId="status"
                     value={status}
-                    label="Select a status"
+                    label="Select a status flag"
                     onChange={(event) => setStatus(event.target.value)}
                   >
-                    { statuses.map(v =>
-                            <MenuItem value={v} key={v} className={classes.variableOption}>
-                              { v }
-                            </MenuItem>)
-                    }
+                    { statuses.map(v => <MenuItem value={v} key={v}>{v}</MenuItem>) }
                   </Select>
                 </FormControl>
               </Grid>
