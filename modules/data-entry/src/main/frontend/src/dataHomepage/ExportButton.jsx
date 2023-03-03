@@ -172,11 +172,11 @@ function ExportButton(props) {
 
   useEffect(() => {
     if (!users && open) {
-        fetchWithReLogin(globalLoginDisplay, "/home/users.json")
-          .then((response) => response.ok ? response.json() : Promise.reject(response))
-          .then((json) => {
-            setUsers(json.rows);
-          });
+      fetchWithReLogin(globalLoginDisplay, "/home/users.json")
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => {
+          setUsers(json.rows);
+        });
     }
   }, [open]);
 
