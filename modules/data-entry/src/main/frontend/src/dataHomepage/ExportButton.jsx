@@ -30,8 +30,10 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 const useStyles = makeStyles(theme => ({
   container: {
     paddingTop: theme.spacing(2),
-    "&:last-child > .MuiGrid-item:first-child" : {
-      paddingTop: theme.spacing(2),
+  },
+  startAligned: {
+    "& > .MuiGrid-item:first-child" : {
+      paddingTop: theme.spacing(3),
     },
   },
   entryActionIcon: {
@@ -295,7 +297,7 @@ function ExportButton(props) {
               </Grid>
             </Grid>
 
-            <Grid container alignItems='start' direction="row" className={classes.container}>
+            <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.startAligned}>
               <Grid item xs={4}>
                 <Typography variant="subtitle2">{isInclude ? "Columns to include:" : "Columns to exclude:"}</Typography>
               </Grid>
