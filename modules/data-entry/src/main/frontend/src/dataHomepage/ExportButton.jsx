@@ -22,7 +22,8 @@ import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
 import { Avatar, Checkbox, DialogActions, DialogContent, FormControl, Icon, Grid, Radio, RadioGroup,
   FormControlLabel, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
-import { FileDownload } from "@mui/icons-material";
+
+import DownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -357,14 +358,14 @@ function ExportButton(props) {
       {variant == "icon" ?
         <Tooltip title={entryLabel}>
           <IconButton component="span" onClick={openDialog} className={classes.entryActionIcon} size={size}>
-            <FileDownload fontSize={size == "small" ? size : undefined}/>
+            <DownloadIcon fontSize={size == "small" ? size : undefined}/>
           </IconButton>
         </Tooltip>
         :
         <Button
           onClick={openDialog}
           size={size ? size : "medium"}
-          startIcon={variant == "extended" ? <FileDownload /> : undefined}
+          startIcon={variant == "extended" ? <DownloadIcon /> : undefined}
         >
           {entryLabel}
         </Button>
