@@ -100,26 +100,34 @@ let entitySpecs = {
 function ExportButton(props) {
   const { entityData, entryLabel, entryPath, entryName, variant, size, onClose } = props;
 
+  const DEFAULTS = {
+    fileFormat : ".csv",
+    hasHeaderLabels: true,
+    hasHeaderIndentifiers: false,
+    hasAnswerLabels: false,
+    columnSelectionMode: "exclude",
+  }
+
   const [ open, setOpen ] = useState(false);
   // List of questions and sections to display in dropdown select to exclude/include
   const [ entities, setEntities] = useState();
 
   // Decides if the generated export URL ends in .csv or in .tsv
-  const [ fileFormat, setFileFormat ] = useState(".csv");
+  const [ fileFormat, setFileFormat ] = useState(DEFAULTS.fileFormat);
   // Decides if/how .csvHeader is specified:
   // by default we have csvHeader:labels
   // to disable labels, add .-csvHeader:labels
   // to enable identifiers, add .csvHeader:raw
-  const [ labelFormat ,setLabelFormat ] = useState(true);
-  const [ identifiersFormat, setIdentifiersFormat ] = useState(false);
+  const [ hasHeaderLabels, setHeaderLabels ] = useState(DEFAULTS.hasHeaderLabels);
+  const [ hasHeaderIdentifiers, setHeaderIdentifiers ] = useState(DEFAULTS.hasHeaderIdentifiers);
   // Specifies if the .labels processor is enabled (disabled by default for values)
-  const [ hasLabeles, setHasLabeles ] = useState(false);
+  const [ hasAnswerLabels, setAnswerLabels ] = useState(DEFAULTS.hasAnswerLabels);
 
   // Column selection:
   // just one of the Include or Exclude options should be available at a time
-  const [ isInclude, setIsInclude ] = useState(false);
-  // List of quesitons ids to Include OR Exclude
-  const [ questionIds, setQuestionIds ] = useState([]);
+  const [ columnSelectionMode, setColumnSelectionMode ] = useState(DEFAULTS.columnSelectionMode);
+  // List of question or section ids to Include or Exclude
+  const [ selectedEntityIds, setSelectedEntityIds ] = useState([]);
   const [ tempValue, setTempValue ] = useState(''); // Holds new, non-selected values
 
   const classes = useStyles();
@@ -150,20 +158,20 @@ function ExportButton(props) {
   let handleExport = () => {
     // Construct the export URL
     let path = entryPath;
-    if (!labelFormat) {
+    if (!hasHeaderLabels) {
       path += ".-csvHeader:labels";
     }
-    if (identifiersFormat) {
+    if (hasHeaderIdentifiers) {
       path += ".csvHeader:raw";
     }
-    if (questionIds.length > 0) {
+    if (selectedEntityIds.length > 0) {
       path +=  ".questionnaireFilter";
-      let pref = isInclude ? ".questionnaireFilter:include=" : ".questionnaireFilter:exclude=";
-      for (let id in questionIds) {
-        path += pref + encodeURIComponent(encodeURIComponent(questionIds[id]));
+      let pref = `.questionnaireFilter:${columnSelectionMode}=`;
+      for (let id in selectedEntityIds) {
+        path += pref + encodeURIComponent(encodeURIComponent(selectedEntityIds[id]));
       }
     }
-    if (hasLabeles) {
+    if (hasAnswerLabels) {
       path += ".labels";
     }
     path += fileFormat;
@@ -171,10 +179,10 @@ function ExportButton(props) {
     window.open(path, '_blank');
   }
 
-  let handleSelected = (event) => {
+  let handleEntitySelected = (event) => {
     if (event.target.value) {
       let newValue = event.target.value.trim();
-      setQuestionIds(oldValue => {
+      setSelectedEntityIds(oldValue => {
         var newValues = oldValue.slice();
         newValues.push(newValue);
         return newValues;
@@ -192,8 +200,8 @@ function ExportButton(props) {
     }
   }
 
-  let deleteValue = (index) => {
-    setQuestionIds(oldValues => {
+  let unselectEntity = (index) => {
+    setSelectedEntityIds(oldValues => {
       let newValues = oldValues.slice();
       newValues.splice(index, 1);
       return newValues;
@@ -223,9 +231,7 @@ function ExportButton(props) {
               <Grid item xs={8}>
                 <RadioGroup
                   row
-                  defaultValue=".csv"
-                  aria-label="format"
-                  name="format"
+                  name="fileFormat"
                   value={fileFormat}
                   onChange={(event) => setFileFormat(event.target.value)}
                 >
@@ -241,9 +247,8 @@ function ExportButton(props) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={labelFormat}
-                      onChange={(event) => { setLabelFormat(event.target.checked);}}
-                      name="labels"
+                      defaultChecked={!!DEFAULTS.hasHeaderLabels}
+                      onChange={(event) => { setHeaderLabels(!!event.target.checked);}}
                     />
                   }
                   label="Labels"
@@ -251,9 +256,8 @@ function ExportButton(props) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={identifiersFormat}
-                      onChange={(event) => { setIdentifiersFormat(event.target.checked);}}
-                      name="identifiers"
+                      defaultChecked={!!DEFAULTS.hasHeaderIdentifiers}
+                      onChange={(event) => { setHeaderIdentifiers(!!event.target.checked);}}
                     />
                   }
                   label="Identifiers"
@@ -266,11 +270,9 @@ function ExportButton(props) {
               <Grid item xs={8}>
                 <RadioGroup
                   row
-                  defaultValue="values"
-                  aria-label="data"
                   name="data"
-                  value={hasLabeles}
-                  onChange={(event) => setHasLabeles(event.target.value === "true")}
+                  value={hasAnswerLabels}
+                  onChange={(event) => setAnswerLabels(event.target.value === "true")}
                 >
                   <FormControlLabel value={true} control={<Radio />} label="Labels" />
                   <FormControlLabel value={false} control={<Radio />} label="Values" />
@@ -283,26 +285,24 @@ function ExportButton(props) {
               <Grid item xs={8}>
                 <RadioGroup
                   row
-                  defaultValue="isinclude"
-                  aria-label="isinclude"
-                  name="isinclude"
-                  value={isInclude}
-                  onChange={(event) => setIsInclude(event.target.value === "true")}
+                  name="columnSelectionMode"
+                  value={columnSelectionMode}
+                  onChange={(event) => setColumnSelectionMode(event.target.value)}
                 >
-                  <FormControlLabel value={true} control={<Radio />} label="Include" />
-                  <FormControlLabel value={false} control={<Radio />} label="Exclude" />
+                  <FormControlLabel value="include" control={<Radio />} label="Include" />
+                  <FormControlLabel value="exclude" control={<Radio />} label="Exclude" />
                 </RadioGroup>
               </Grid>
             </Grid>
 
             <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.startAligned}>
               <Grid item xs={4}>
-                <Typography variant="subtitle2">{isInclude ? "Columns to include:" : "Columns to exclude:"}</Typography>
+                <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
               </Grid>
               <Grid item xs={8}>
 
                 {/* List the entered values */}
-                { entities?.filter(v => questionIds.includes(v.path)).map((value, index) =>
+                { entities?.filter(v => selectedEntityIds.includes(v.path)).map((value, index) =>
                   <Grid container
                     key={`${value.name}-${index}`}
                     direction="row"
@@ -316,7 +316,7 @@ function ExportButton(props) {
                     </Grid>
                     <Grid item xs={3} className={classes.valueActions}>
                       <Tooltip title="Delete entry">
-                        <IconButton onClick={() => deleteValue(questionIds.indexOf(value.path))}><CloseIcon/></IconButton>
+                        <IconButton onClick={() => unselectEntity(selectedEntityIds.indexOf(value.path))}><CloseIcon/></IconButton>
                       </Tooltip>
                     </Grid>
                   </Grid>
@@ -329,9 +329,9 @@ function ExportButton(props) {
                     labelId="label"
                     value={tempValue}
                     label="Select questions/sections from this questionnaire"
-                    onChange={handleSelected}
+                    onChange={handleEntitySelected}
                   >
-                    { entities?.filter(v => !questionIds.includes(v.path))
+                    { entities?.filter(v => !selectedEntityIds.includes(v.path))
                                 .map(v =>
                                     <MenuItem value={v.path} key={`option-${v.name}`} className={classes.variableOption}>
                                       { getAvatar(v.type) }
