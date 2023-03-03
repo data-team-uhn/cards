@@ -212,16 +212,16 @@ function ExportButton(props) {
       path += ".dataFilter:createdBy=" + user;
     }
     if (createdAfter) {
-      path += ".dataFilter:createdAfter=" + new Date(createdAfter).toISOString();
+      path += ".dataFilter:createdAfter=" + createdAfter.toISODate();
     }
     if (createdBefore) {
-      path += ".dataFilter:createdBefore=" + new Date(createdBefore).toISOString();
+      path += ".dataFilter:createdBefore=" + createdBefore.toISODate();
     }
     if (modifiedAfter) {
-      path += ".dataFilter:modifiedAfter=" + new Date(modifiedAfter).toISOString();
+      path += ".dataFilter:modifiedAfter=" + modifiedAfter.toISODate();
     }
     if (modifiedBefore) {
-      path += ".dataFilter:modifiedBefore=" + new Date(modifiedBefore).toISOString();
+      path += ".dataFilter:modifiedBefore=" + modifiedBefore.toISODate();
     }
     if (status) {
       path += ".dataFilter";
