@@ -149,6 +149,8 @@ function ExportButton(props) {
   const [ createdBefore, setCreatedBefore ] = useState(null);
   const [ modifiedAfter, setModifiedAfter ] = useState(null);
   const [ modifiedBefore, setModifiedBefore ] = useState(null);
+  const [ createdRangeIsInvalid, setCreatedRangeIsInvalid ] = useState(false);
+  const [ modifiedRangeIsInvalid, setModifiedRangeIsInvalid ] = useState(false);
 
   const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED" ];
   const [ statusSelectionMode, setStatusSelectionMode ] = useState(DEFAULTS.statusSelectionMode);
@@ -179,6 +181,15 @@ function ExportButton(props) {
         });
     }
   }, [open]);
+
+  // Determine if the before date is earlier than the after date
+  useEffect(() => {
+    open && setCreatedRangeIsInvalid(!!createdAfter && !!createdBefore && new Date(createdBefore).valueOf() < new Date(createdAfter).valueOf());
+  }, [createdAfter, createdBefore]);
+
+  useEffect(() => {
+    open && setModifiedRangeIsInvalid(!!modifiedAfter && !!modifiedBefore && new Date(modifiedBefore).valueOf() < new Date(modifiedAfter).valueOf());
+  }, [modifiedAfter, modifiedBefore]);
 
   let openDialog = () => {
     entryPath && !open && setOpen(true);
@@ -270,7 +281,7 @@ function ExportButton(props) {
             </Avatar>);
   }
 
-  let getDatePicker = (value, setter, label) => {
+  let getDatePicker = (value, setter, label, title) => {
     return (<DatePicker
                 label={label}
                 value={value}
@@ -280,8 +291,15 @@ function ExportButton(props) {
                 renderInput={(params) =>
                   <TextField
                     variant="standard"
-                    helperText={null}
                     {...params}
+                    error={label == "before" ? title == "created" ? createdRangeIsInvalid : modifiedRangeIsInvalid : false}
+                    helperText={label == "before" ?
+                                 (title == "created" && createdRangeIsInvalid) || (title == "modified" && modifiedRangeIsInvalid)
+                                 ? "The before date should be later than after date." : "" 
+                                 : ""}
+                    InputProps={{
+                      ...params.InputProps
+                    }}
                   />
                 }
               />);
@@ -435,8 +453,8 @@ function ExportButton(props) {
             <Grid item xs={4}><Typography variant="subtitle2">Created:</Typography></Grid>
             <Grid item xs={8} className={classes.dateRange}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
-                { getDatePicker(createdAfter, setCreatedAfter, "after") }
-                { getDatePicker(createdBefore, setCreatedBefore, "before") }
+                { getDatePicker(createdAfter, setCreatedAfter, "after", "created") }
+                { getDatePicker(createdBefore, setCreatedBefore, "before", "created") }
               </LocalizationProvider>
             </Grid>
           </Grid>
@@ -445,8 +463,8 @@ function ExportButton(props) {
             <Grid item xs={4}><Typography variant="subtitle2">Modified:</Typography></Grid>
             <Grid item xs={8} className={classes.dateRange}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
-                { getDatePicker(modifiedAfter, setModifiedAfter, "after") }
-                { getDatePicker(modifiedBefore, setModifiedBefore, "before") }
+                { getDatePicker(modifiedAfter, setModifiedAfter, "after", "modified") }
+                { getDatePicker(modifiedBefore, setModifiedBefore, "before", "modified") }
               </LocalizationProvider>
             </Grid>
           </Grid>
@@ -493,6 +511,7 @@ function ExportButton(props) {
             <Button
               variant="contained"
               size="small"
+              disabled={createdRangeIsInvalid || modifiedRangeIsInvalid}
               onClick={() => handleExport()}
             >
               Export
