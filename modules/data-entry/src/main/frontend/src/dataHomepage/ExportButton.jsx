@@ -138,11 +138,11 @@ function ExportButton(props) {
       setEntities(findQuestionsOrSections(entityData));
     }
     if (!entityData && entryPath && !entities && open) {
-        fetchWithReLogin(globalLoginDisplay, `${entryPath}.deep.json`)
-          .then((response) => response.ok ? response.json() : Promise.reject(response))
-          .then((json) => {
-            setEntities(findQuestionsOrSections(json));
-          });
+      fetchWithReLogin(globalLoginDisplay, `${entryPath}.deep.json`)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => {
+          setEntities(findQuestionsOrSections(json));
+        });
     }
   }, [entityData, open]);
 
@@ -175,7 +175,6 @@ function ExportButton(props) {
       path += ".labels";
     }
     path += fileFormat;
-    //let url = new URL(path, window.location.origin);
     window.open(path, '_blank');
   }
 
@@ -190,7 +189,7 @@ function ExportButton(props) {
     }
     tempValue && setTempValue('');
 
-    // Have to manually invoke submit with timeout to let re-rendering of adding new answer option complete
+    // Have to manually invoke submit with timeout to let re-rendering of adding new selected entites complete
     // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
     // Issue details: https://github.com/facebook/react/issues/4210
     if (event?.relatedTarget?.type == "submit") {
@@ -344,7 +343,7 @@ function ExportButton(props) {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions className={classes.dialogActions}>
+        <DialogActions>
             <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>
             <Button
               variant="contained"
@@ -357,7 +356,7 @@ function ExportButton(props) {
       </ResponsiveDialog>
       {variant == "icon" ?
         <Tooltip title={entryLabel}>
-          <IconButton component="span" onClick={openDialog} className={classes.entryActionIcon} size={size}>
+          <IconButton component="span" onClick={openDialog} size={size}>
             <DownloadIcon fontSize={size == "small" ? size : undefined}/>
           </IconButton>
         </Tooltip>
