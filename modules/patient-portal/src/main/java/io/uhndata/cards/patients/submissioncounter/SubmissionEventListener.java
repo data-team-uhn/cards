@@ -46,11 +46,15 @@ public final class SubmissionEventListener implements EventListener
 
     private final FormUtils formUtils;
 
-    private final String submittedFlagUUID;
-
     private final String linkingSubjectType;
 
-    private final String[] excludedQuestionnaireUUIDs;
+    private final String submittedFlagPath;
+
+    private final String[] excludedQuestionnairePaths;
+
+    private String submittedFlagUUID;
+
+    private String[] excludedQuestionnaireUUIDs;
 
     public SubmissionEventListener(FormUtils formUtils, ResourceResolverFactory resolverFactory,
         ResourceResolver resolver, Map<String, Object> listenerParams)
@@ -58,9 +62,33 @@ public final class SubmissionEventListener implements EventListener
         this.formUtils = formUtils;
         this.resolverFactory = resolverFactory;
         this.resolver = resolver;
-        this.submittedFlagUUID = ((String) listenerParams.get("submittedFlagUUID"));
+        this.submittedFlagPath = ((String) listenerParams.get("submittedFlagPath"));
         this.linkingSubjectType = ((String) listenerParams.get("linkingSubjectType"));
-        this.excludedQuestionnaireUUIDs = ((String[]) listenerParams.get("excludedQuestionnaireUUIDs"));
+        this.excludedQuestionnairePaths = ((String[]) listenerParams.get("excludedQuestionnairePaths"));
+    }
+
+    private String getSubmittedFlagUUID()
+    {
+        if (this.submittedFlagUUID != null) {
+            return this.submittedFlagUUID;
+        }
+
+        this.submittedFlagUUID = this.resolver.getResource(this.submittedFlagPath).getValueMap().get("jcr:uuid", "");
+        return this.submittedFlagUUID;
+    }
+
+    private String[] getExcludedQuestionnaireUUIDs()
+    {
+        if (this.excludedQuestionnaireUUIDs != null) {
+            return this.excludedQuestionnaireUUIDs;
+        }
+
+        this.excludedQuestionnaireUUIDs = new String[this.excludedQuestionnairePaths.length];
+        for (int i = 0; i < this.excludedQuestionnairePaths.length; i++) {
+            this.excludedQuestionnaireUUIDs[i] =
+                this.resolver.getResource(this.excludedQuestionnairePaths[i]).getValueMap().get("jcr:uuid", "");
+        }
+        return this.excludedQuestionnaireUUIDs;
     }
 
     private long countVisitForms(String visitUUID, String excludeFormUUID)
@@ -69,7 +97,7 @@ public final class SubmissionEventListener implements EventListener
 
         String sqlQuery = "SELECT * FROM [cards:Form] as f WHERE f.'relatedSubjects'='" + visitUUID + SINGLE_QUOTE;
         sqlQuery += " AND f.'jcr:uuid'<>'" + excludeFormUUID + SINGLE_QUOTE;
-        for (String excludeQuestionnaireUUID : this.excludedQuestionnaireUUIDs) {
+        for (String excludeQuestionnaireUUID : this.getExcludedQuestionnaireUUIDs()) {
             sqlQuery += " AND f.'questionnaire'<>'" + excludeQuestionnaireUUID + SINGLE_QUOTE;
         }
 
@@ -98,7 +126,7 @@ public final class SubmissionEventListener implements EventListener
     private boolean isSubmissionEvent(Node modifiedValueNode)
     {
         return this.formUtils.isAnswer(modifiedValueNode)
-            && this.submittedFlagUUID.equals(this.formUtils.getQuestionIdentifier(modifiedValueNode))
+            && this.getSubmittedFlagUUID().equals(this.formUtils.getQuestionIdentifier(modifiedValueNode))
             && ((Long) this.formUtils.getValue(modifiedValueNode)) == 1L;
     }
 

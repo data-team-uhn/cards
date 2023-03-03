@@ -90,26 +90,11 @@ public final class SubmissionCounter
             params.put(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
             this.resolver = this.resolverFactory.getServiceResourceResolver(params);
 
-            // Get the UUID associated with config.submittedFlagPath()
-            final String submittedFlagUUID = this.resolver.getResource(
-                config.submittedFlagPath()).getValueMap().get("jcr:uuid", "");
-
-            if ("".equals(submittedFlagUUID)) {
-                return;
-            }
-
-            // Convert config.excludedQuestionnaires from a list of JCR paths to a list of jcr:uuid values
-            String[] excludedQuestionnaireUUIDs = new String[config.excludedQuestionnaires().length];
-            for (int i = 0; i < config.excludedQuestionnaires().length; i++) {
-                excludedQuestionnaireUUIDs[i] =
-                    this.resolver.getResource(config.excludedQuestionnaires()[i]).getValueMap().get("jcr:uuid", "");
-            }
-
             Map<String, Object> listenerParams = new HashMap<>();
             listenerParams.put("submissionCounterName", config.name());
-            listenerParams.put("submittedFlagUUID", submittedFlagUUID);
+            listenerParams.put("submittedFlagPath", config.submittedFlagPath());
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
-            listenerParams.put("excludedQuestionnaireUUIDs", excludedQuestionnaireUUIDs);
+            listenerParams.put("excludedQuestionnairePaths", config.excludedQuestionnaires());
             EventListener myEventListener = new SubmissionEventListener(this.formUtils, this.resolverFactory,
                 this.resolver, listenerParams);
 
