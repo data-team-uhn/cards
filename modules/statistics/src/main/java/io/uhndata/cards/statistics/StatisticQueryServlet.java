@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +105,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             Node question = session.getNode(arguments.get("x-label"));
 
             Iterator<Resource> answers = null;
-            Map<Resource, String> data = new HashMap<>();
+            Map<Resource, String> data = new LinkedHashMap<>();
             Map<String, Map<Resource, String>> dataById = null;
 
             // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
@@ -123,7 +124,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 final StringBuilder query =
                     // We select all answers that answer our question
                     new StringBuilder("select n from [cards:Answer] as n where n.'question'='"
-                        + question.getIdentifier() + "'");
+                        + question.getIdentifier() + "' order by n.'value' desc");
                 answers = request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
                 answers = filterAnswersToSubjectType(answers, correctSubjectType);
             }
@@ -194,7 +195,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         final StringBuilder query =
             // We select all answers that answer our question
             new StringBuilder("select n from [cards:Answer] as n where n.'question'='"
-                + question.getIdentifier() + "'");
+                + question.getIdentifier() + "' order by n.'value' desc");
         Iterator<Resource> answers = resolver.findResources(query.toString(), Query.JCR_SQL2);
 
         while (answers.hasNext()) {
@@ -218,7 +219,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     {
         Iterator<Map.Entry<Resource, String>> entries = data.entrySet().iterator();
 
-        Map<String, Map<Resource, String>> newData = new HashMap<>();
+        Map<String, Map<Resource, String>> newData = new LinkedHashMap<>();
 
         String correctType = subjectType.getIdentifier();
 
@@ -243,7 +244,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                         newData.get(uuid).put(answer.getKey(), answer.getValue());
                     } else {
                         // if does not already include uuid
-                        Map<Resource, String> subjectData = new HashMap<>();
+                        Map<Resource, String> subjectData = new LinkedHashMap<>();
                         subjectData.put(answer.getKey(), answer.getValue());
                         newData.put(uuid, subjectData);
                     }
@@ -272,7 +273,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     private Map<String, Map<String, Integer>> aggregateSplitCounts(Resource xVar, Resource splitVar,
         Map<String, Map<String, Integer>> counts) throws RepositoryException
     {
-        Map<String, Integer> innerCount = new HashMap<>();
+        Map<String, Integer> innerCount = new LinkedHashMap<>();
 
         // We can't count anything without an x variable
         if (xVar == null) {
@@ -316,7 +317,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     private void addDataSplit(Map<String, Map<Resource, String>> data, JsonObjectBuilder builder)
         throws RepositoryException
     {
-        Map<String, Map<String, Integer>> counts = new HashMap<>();
+        Map<String, Map<String, Integer>> counts = new LinkedHashMap<>();
 
         try {
             for (Map.Entry<String, Map<Resource, String>> entries : data.entrySet()) {
@@ -396,7 +397,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      */
     private Map<String, Integer> aggregateCounts(Iterator<Resource> answers) throws RepositoryException
     {
-        Map<String, Integer> counts = new HashMap<>();
+        Map<String, Integer> counts = new LinkedHashMap<>();
         while (answers.hasNext()) {
             Node answer = answers.next().adaptTo(Node.class);
             List<String> values = getAnswerValues(answer);
