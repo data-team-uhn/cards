@@ -97,7 +97,7 @@ let entitySpecs = {
  * A component that renders an icon or button to open the export dialog that generates an export URL for an entry.
  */
 function ExportButton(props) {
-  const { entityData, entryLabel, entryPath, entryName, entryType, variant, size, onClose } = props;
+  const { entityData, entryLabel, entryPath, entryName, variant, size, onClose } = props;
 
   const [ open, setOpen ] = useState(false);
   // List of questions and sections to display in dropdown select to exclude/include
@@ -121,8 +121,6 @@ function ExportButton(props) {
   const [ questionIds, setQuestionIds ] = useState([]);
   const [ tempValue, setTempValue ] = useState(''); // Holds new, non-selected values
 
-  const buttonText = entryLabel || "Export forms";
-
   const classes = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -130,7 +128,7 @@ function ExportButton(props) {
     if (entityData && !entities) {
       setEntities(findQuestionsOrSections(entityData));
     }
-    if (!entityData && entryName && !entities && open) {
+    if (!entityData && entryPath && !entities && open) {
         fetchWithReLogin(globalLoginDisplay, `${entryPath}.deep.json`)
           .then((response) => response.ok ? response.json() : Promise.reject(response))
           .then((json) => {
@@ -140,7 +138,7 @@ function ExportButton(props) {
   }, [entityData, open]);
 
   let openDialog = () => {
-    !open && setOpen(true);
+    entryPath && !open && setOpen(true);
   }
 
   let closeDialog = () => {
@@ -149,10 +147,6 @@ function ExportButton(props) {
   }
 
   let handleExport = () => {
-    if (!entryPath) {
-      closeDialog();
-      return;
-    }
     // Construct the export URL
     let path = entryPath;
     if (!labelFormat) {
@@ -361,7 +355,7 @@ function ExportButton(props) {
         </DialogActions>
       </ResponsiveDialog>
       {variant == "icon" ?
-        <Tooltip title={buttonText}>
+        <Tooltip title={entryLabel}>
           <IconButton component="span" onClick={openDialog} className={classes.entryActionIcon} size={size}>
             <FileDownload fontSize={size == "small" ? size : undefined}/>
           </IconButton>
@@ -372,7 +366,7 @@ function ExportButton(props) {
           size={size ? size : "medium"}
           startIcon={variant == "extended" ? <FileDownload /> : undefined}
         >
-          {buttonText}
+          {entryLabel}
         </Button>
       }
     </React.Fragment>
@@ -381,18 +375,15 @@ function ExportButton(props) {
 
 ExportButton.propTypes = {
   entityData: PropTypes.object,
-  entryPath: PropTypes.string,
+  entryPath: PropTypes.string.isRequired,
   entryLabel: PropTypes.string,
-  entryName: PropTypes.string,
-  entryType: PropTypes.string,
+  entryName: PropTypes.string.isRequired,
   size: PropTypes.oneOf(["small", "medium", "large"]),
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
 }
 
 ExportButton.defaultProps = {
-  entryName: "",
-  entryType: "",
-  entryLabel: "",
+  entryLabel: "Export forms",
   variant: "icon",
   size: "large",
 }

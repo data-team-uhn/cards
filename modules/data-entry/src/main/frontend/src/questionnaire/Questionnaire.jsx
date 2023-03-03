@@ -138,7 +138,7 @@ let Questionnaire = (props) => {
           <ExportButton
               entityData={data}
               entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-              entryName={questionnaireTitle}
+              entryName={questionnaireTitle || id}
               entryType="Questionnaire"
               size="medium"
               variant="text"
