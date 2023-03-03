@@ -20,12 +20,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
-import { Avatar, Checkbox, Dialog, DialogTitle, DialogActions, DialogContent, FormControl, Icon, Grid, Radio, RadioGroup,
+import { Avatar, Checkbox, DialogActions, DialogContent, FormControl, Icon, Grid, Radio, RadioGroup,
   FormControlLabel, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
 import { FileDownload } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import ResponsiveDialog from "../components/ResponsiveDialog";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -214,10 +215,12 @@ function ExportButton(props) {
   }
   return(
     <React.Fragment>
-      <Dialog fullWidth maxWidth='md' open={open} onClose={closeDialog}>
-        <DialogTitle>
-          Export "{entryName}" Data
-        </DialogTitle>
+      <ResponsiveDialog
+        title={`Export "${entryName}" Data`}
+        open={open}
+        width="md"
+        onClose={closeDialog}
+      >
         <DialogContent>
           <Grid container direction="column">
             <Grid container alignItems='center' direction="row" className={classes.container}>
@@ -356,7 +359,7 @@ function ExportButton(props) {
               Export
             </Button>
         </DialogActions>
-      </Dialog>
+      </ResponsiveDialog>
       {variant == "icon" ?
         <Tooltip title={buttonText}>
           <IconButton component="span" onClick={openDialog} className={classes.entryActionIcon} size={size}>
