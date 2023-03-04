@@ -21,6 +21,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -47,6 +48,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -73,6 +75,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -99,6 +102,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -125,6 +129,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -151,6 +156,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -177,6 +183,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -203,6 +210,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -229,6 +237,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -255,6 +264,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -281,6 +291,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -307,6 +318,7 @@
                 },
                 "form": {
                     "propertyIndex": true,
+                    "notNullCheckEnabled": true,
                     "type": "String"
                 },
                 "value": {
@@ -324,6 +336,18 @@
             "jcr:primaryType": "nt:unstructured",
             "properties": {
                 "jcr:primaryType": "nt:unstructured",
+                "uuid": {
+                    "name": "jcr:uuid",
+                    "propertyIndex": true,
+                    "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "primaryType": {
+                    "name": "jcr:primaryType",
+                    "propertyIndex": true,
+                    "notNullCheckEnabled": true,
+                    "type": "String"
+                },
                 "questionnaire": {
                     "analyzed": false,
                     "boost": 1,
@@ -338,6 +362,7 @@
                     "nodeScopeIndex": false,
                     "useInExcerpt": true,
                     "ordered": true,
+                    "notNullCheckEnabled": true,
                     "propertyIndex": true
                 },
                 "relatedSubjects": {
