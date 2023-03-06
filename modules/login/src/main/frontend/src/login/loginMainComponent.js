@@ -17,11 +17,13 @@
 //  under the License.
 //
 import React from 'react';
-import SignUpForm from './signUpForm';
-import SignIn from './loginForm';
 
 import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
 import { withStyles } from '@mui/styles';
+
+import SignUpForm from './signUpForm';
+import SignIn from './loginForm';
+import Logo from "../components/Logo";
 
 import styles from "../styling/styles";
 
@@ -50,9 +52,7 @@ class MainLoginContainer extends React.Component {
     return (
         <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
           <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
-            <Grid item>
-              <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
-            </Grid>
+            <Logo maxWidth="200px" component={Grid} item />
             <Grid item>
             { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
             </Grid>

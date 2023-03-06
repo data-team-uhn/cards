@@ -36,9 +36,6 @@ const styles = theme => ({
     marginTop: theme.spacing(10),
     marginBottom: theme.spacing(2),
   },
-  logo: {
-    maxWidth: "200px",
-  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),

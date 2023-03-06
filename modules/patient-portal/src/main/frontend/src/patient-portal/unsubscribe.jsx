@@ -25,6 +25,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
+import Logo from "../components/Logo.jsx";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -35,28 +36,6 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     "& .MuiGrid-item" : {
       textAlign: "center",
-    },
-  },
-  logo : {
-    "& > img" : {
-      maxWidth: "240px",
-    },
-    "@media (max-height: 725px)" : {
-      "& > img" : {
-        maxHeight: "70px",
-      },
-    },
-  },
-  doubleLogo : {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap-reverse",
-    maxWidth: "600px !important",
-    "& > img" : {
-      width: `calc(50% - ${theme.spacing(4)})`,
-      minWidth: "100px",
-      height: "fit-content",
-      margin: theme.spacing(1, 2),
     },
   },
   submit : {
@@ -106,9 +85,6 @@ function Unsubscribe (props) {
 
   let appName = document.querySelector('meta[name="title"]')?.content;
 
-  const logo = document.querySelector('meta[name="logoLight"]').content;
-  const affiliationLogo = document.querySelector('meta[name="affiliationLogo"]')?.content;
-
   return (
     <Paper className={classes.paper} elevation={0}>
         <Grid
@@ -118,10 +94,7 @@ function Unsubscribe (props) {
           alignItems="center"
           alignContent="center"
         >
-          <Grid item className={affiliationLogo ? classes.doubleLogo : classes.logo} xs={12}>
-            <img src={logo} alt="logo" />
-            {affiliationLogo && <img src={affiliationLogo} alt="logo" />}
-          </Grid>
+          <Logo component={Grid} item xs={12} />
           <Grid item>
             { error && <Alert severity="error">
               <AlertTitle>An error occurred</AlertTitle>
