@@ -26,6 +26,7 @@ import json
 import psutil
 import shutil
 import hashlib
+import tzlocal
 import argparse
 from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
@@ -85,6 +86,7 @@ argparser.add_argument('--vault_dev_server', help='Add a HashiCorp Vault (develo
 argparser.add_argument('--web_port_admin', help='If specified, will listen for connections on this port (and not 8080/443) and forward them to the full-access reverse proxy (permitting logins)', type=int)
 argparser.add_argument('--web_port_user', help='If specified, will listen for connections on this port and forward them to the restricted-access reverse proxy (logins not permitted)', type=int)
 argparser.add_argument('--web_port_user_root_redirect', help='The client accessing / over --web_port_user will automatically be redirected to this page', default='/Survey.html')
+argparser.add_argument('--timezone', help='Specify a timezone (eg. America/Toronto) other than the one of the host system')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
@@ -123,6 +125,11 @@ def getArgValueOrPrompt(arg_name):
       getArgValueOrPrompt.kv_map[arg_name] = val
       return val
 
+def getTimezoneName():
+  if args.timezone:
+    return args.timezone
+  else:
+    return tzlocal.get_localzone().zone
 
 #Validate before doing anything else
 
@@ -943,6 +950,13 @@ if args.subnet:
   yaml_obj['networks']['internalnetwork']['ipam'] = {}
   yaml_obj['networks']['internalnetwork']['ipam']['driver'] = 'default'
   yaml_obj['networks']['internalnetwork']['ipam']['config'] = [{'subnet': args.subnet}]
+
+#Add timezone configuration to services
+for service_name in yaml_obj['services']:
+  if 'environment' in yaml_obj['services'][service_name]:
+    yaml_obj['services'][service_name]['environment'].append("TZ={}".format(getTimezoneName()))
+  else:
+    yaml_obj['services'][service_name]['environment'] = ["TZ={}".format(getTimezoneName())]
 
 #Save it
 with open(OUTPUT_FILENAME, 'w') as f_out:
