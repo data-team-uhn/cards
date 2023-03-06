@@ -77,7 +77,7 @@ const useStyles = makeStyles(theme => ({
   },
   dateRange: {
     marginBottom: theme.spacing(2),
-    "& > * + *" : {
+    "& > .MuiTextField-root + .MuiTextField-root" : {
       marginLeft: theme.spacing(4),
     }
   },
@@ -293,7 +293,7 @@ function ExportButton(props) {
                     variant="standard"
                     {...params}
                     error={rangeIsInvalid}
-                    helperText={rangeIsInvalid ? 'The "before" date should be later than the "after" date.' : ""}
+                    helperText=""
                     InputProps={{
                       ...params.InputProps
                     }}
@@ -450,9 +450,14 @@ function ExportButton(props) {
             <Grid item xs={4}><Typography variant="subtitle2">Created:</Typography></Grid>
             <Grid item xs={8} className={classes.dateRange}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
-                { getDatePicker(createdAfter, setCreatedAfter, "after") }
+                { getDatePicker(createdAfter, setCreatedAfter, "after", createdRangeIsInvalid) }
                 { getDatePicker(createdBefore, setCreatedBefore, "before", createdRangeIsInvalid) }
               </LocalizationProvider>
+              { createdRangeIsInvalid &&
+                <Typography component="div" variant="caption" color="error">
+                  The second date should be later than the first date
+                </Typography>
+              }
             </Grid>
           </Grid>
 
@@ -460,9 +465,14 @@ function ExportButton(props) {
             <Grid item xs={4}><Typography variant="subtitle2">Modified:</Typography></Grid>
             <Grid item xs={8} className={classes.dateRange}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
-                { getDatePicker(modifiedAfter, setModifiedAfter, "after") }
+                { getDatePicker(modifiedAfter, setModifiedAfter, "after", modifiedRangeIsInvalid) }
                 { getDatePicker(modifiedBefore, setModifiedBefore, "before", modifiedRangeIsInvalid) }
               </LocalizationProvider>
+              { modifiedRangeIsInvalid &&
+                <Typography component="div" variant="caption" color="error">
+                  The second date should be later than the first date
+                </Typography>
+              }
             </Grid>
           </Grid>
 
