@@ -281,7 +281,7 @@ function ExportButton(props) {
             </Avatar>);
   }
 
-  let getDatePicker = (value, setter, label, title) => {
+  let getDatePicker = (value, setter, label, rangeIsInvalid) => {
     return (<DatePicker
                 label={label}
                 value={value}
@@ -292,11 +292,8 @@ function ExportButton(props) {
                   <TextField
                     variant="standard"
                     {...params}
-                    error={label == "before" ? title == "created" ? createdRangeIsInvalid : modifiedRangeIsInvalid : false}
-                    helperText={label == "before" ?
-                                 (title == "created" && createdRangeIsInvalid) || (title == "modified" && modifiedRangeIsInvalid)
-                                 ? "The before date should be later than after date." : "" 
-                                 : ""}
+                    error={rangeIsInvalid}
+                    helperText={rangeIsInvalid ? 'The "before" date should be later than the "after" date.' : ""}
                     InputProps={{
                       ...params.InputProps
                     }}
@@ -453,8 +450,8 @@ function ExportButton(props) {
             <Grid item xs={4}><Typography variant="subtitle2">Created:</Typography></Grid>
             <Grid item xs={8} className={classes.dateRange}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
-                { getDatePicker(createdAfter, setCreatedAfter, "after", "created") }
-                { getDatePicker(createdBefore, setCreatedBefore, "before", "created") }
+                { getDatePicker(createdAfter, setCreatedAfter, "after") }
+                { getDatePicker(createdBefore, setCreatedBefore, "before", createdRangeIsInvalid) }
               </LocalizationProvider>
             </Grid>
           </Grid>
@@ -463,8 +460,8 @@ function ExportButton(props) {
             <Grid item xs={4}><Typography variant="subtitle2">Modified:</Typography></Grid>
             <Grid item xs={8} className={classes.dateRange}>
               <LocalizationProvider dateAdapter={AdapterLuxon}>
-                { getDatePicker(modifiedAfter, setModifiedAfter, "after", "modified") }
-                { getDatePicker(modifiedBefore, setModifiedBefore, "before", "modified") }
+                { getDatePicker(modifiedAfter, setModifiedAfter, "after") }
+                { getDatePicker(modifiedBefore, setModifiedBefore, "before", modifiedRangeIsInvalid) }
               </LocalizationProvider>
             </Grid>
           </Grid>
