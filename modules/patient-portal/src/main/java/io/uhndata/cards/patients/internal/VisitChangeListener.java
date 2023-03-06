@@ -18,9 +18,11 @@ package io.uhndata.cards.patients.internal;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -73,14 +75,6 @@ public class VisitChangeListener implements ResourceChangeListener
      * This is to allow some margin in case visits are a few days off of their ideal schedule.
      */
     private static final int FREQUENCY_MARGIN_DAYS = 2;
-
-    /**
-     * If the new visit takes place close (in time) to another visit that requires the same questionnaire, only create
-     * one instance of that survey regardless of completion status.
-     * This defines how "close", in number of days, these visits need to be in order to influence one another.
-     * This is so incomplete forms the user hasn't yet filled out yet but still will can block duplicates.
-     */
-    private static final int VISIT_CREATION_MARGIN_DAYS = 3;
 
     /** Provides access to resources. */
     @Reference
@@ -405,7 +399,7 @@ public class VisitChangeListener implements ResourceChangeListener
         // Iterate through all forms for this visit.
         // If there is a Visit Information form, record the visit date and clinic.
         // Otherwise, record a list of all unique questionnaires and if any instances of that questionnaire is complete.
-        final Map<String, Boolean> questionnaires = new HashMap<>();
+        final Set<String> questionnaires = new HashSet<>();
         Calendar visitDate = null;
         for (final PropertyIterator forms = visitNode.getReferences("subject"); forms.hasNext();) {
             final Node form = forms.nextProperty().getParent();
@@ -418,9 +412,8 @@ public class VisitChangeListener implements ResourceChangeListener
                     visitClinic = (String) this.formUtils
                         .getValue(this.formUtils.getAnswer(form, visitInformation.getClinicQuestion()));
                 } else {
-                    // Record the current questionnaire with it's completion status.
-                    // If a duplicate questionnaire is found, record if any are complete.
-                    questionnaires.merge(questionnaire.getIdentifier(), !isFormIncomplete(form), Boolean::logicalOr);
+                    // Record the current questionnaire.
+                    questionnaires.add(questionnaire.getIdentifier());
                 }
             }
         }
@@ -446,7 +439,7 @@ public class VisitChangeListener implements ResourceChangeListener
      * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
      */
     private void removeQuestionnairesFromVisit(final VisitInformation visitInformation, final Calendar visitDate,
-        final Map<String, Boolean> questionnaires, final QuestionnaireSetInfo questionnaireSetInfo)
+        final Set<String> questionnaires, final QuestionnaireSetInfo questionnaireSetInfo)
     {
         final Calendar triggeringDate = visitInformation.getVisitDate();
 
@@ -457,17 +450,13 @@ public class VisitChangeListener implements ResourceChangeListener
         } else {
             // Otherwise, check if any of this visit's forms meet a frequency requirement for the questionnaire set.
             // If they do, remove those forms' questionnaires from the set.
-            final boolean isWithinVisitMargin = isWithinDateRange(visitDate, triggeringDate,
-                VISIT_CREATION_MARGIN_DAYS);
 
-            for (final String questionnaireIdentifier : questionnaires.keySet()) {
+            for (final String questionnaireIdentifier : questionnaires) {
                 if (questionnaireSetInfo.containsMember(questionnaireIdentifier)) {
                     int frequencyPeriod = questionnaireSetInfo.getMember(questionnaireIdentifier).getFrequency();
                     frequencyPeriod = frequencyPeriod * 7 - FREQUENCY_MARGIN_DAYS;
 
-                    final boolean complete = questionnaires.get(questionnaireIdentifier);
-                    if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)
-                        && (complete || isWithinVisitMargin)) {
+                    if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)) {
                         questionnaireSetInfo.removeMember(questionnaireIdentifier);
                     }
                 }
@@ -759,11 +748,11 @@ public class VisitChangeListener implements ResourceChangeListener
             this.conflicts.put(uuid, frequency);
         }
 
-        public boolean containsConflict(final Map<String, Boolean> questionnaires, final Calendar triggeringDate,
+        public boolean containsConflict(final Set<String> questionnaires, final Calendar triggeringDate,
             final Calendar visitDate)
         {
             // Treat default as any listed case
-            for (final String questionnaireIdentifier : questionnaires.keySet()) {
+            for (final String questionnaireIdentifier : questionnaires) {
                 int frequencyPeriod = 0;
                 if (CONFLICT_ANY.equals(this.conflictMode)) {
                     frequencyPeriod = this.members.values().stream()
