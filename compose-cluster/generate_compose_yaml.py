@@ -108,7 +108,7 @@ def getArgValueOrPrompt(arg_name):
   if not hasattr(getArgValueOrPrompt, "kv_map"):
     getArgValueOrPrompt.kv_map = {}
 
-  # If this argument has been in the command-line, simply return it
+  # If this argument has been specified in the command-line, simply return it
   if (arg_name in vars(args)) and (vars(args)[arg_name] is not None):
     return vars(args)[arg_name]
   else:
