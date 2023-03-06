@@ -94,11 +94,35 @@ ENABLE_BACKUP_SERVER = args.enable_backup_server
 ENABLE_NCR = args.enable_ncr
 SSL_PROXY = args.ssl_proxy
 
+MISSING_ARG_PROMPTS = {}
+MISSING_ARG_PROMPTS['server_address'] = "Enter the public-facing server address for this deployment (eg. localhost:8080): "
+
 def sha256FileHash(filepath):
   hasher = hashlib.sha256()
   with open(filepath, 'rb') as f:
     hasher.update(f.read())
     return hasher.hexdigest()
+
+def getArgValueOrPrompt(arg_name):
+  # Initialize this method's static map of arg keys -> values
+  if not hasattr(getArgValueOrPrompt, "kv_map"):
+    getArgValueOrPrompt.kv_map = {}
+
+  # If this argument has been in the command-line, simply return it
+  if arg_name in vars(args):
+    return vars(args)[arg_name]
+  else:
+    # ...otherwise prompt and store the key -> value pair for future use
+    if arg_name in getArgValueOrPrompt.kv_map:
+      return getArgValueOrPrompt.kv_map[arg_name]
+    else:
+      if arg_name in MISSING_ARG_PROMPTS:
+        val = input(MISSING_ARG_PROMPTS[arg_name])
+      else:
+        val = input("Please enter a value for the missing --{} argument: ".format(arg_name))
+      getArgValueOrPrompt.kv_map[arg_name] = val
+      return val
+
 
 #Validate before doing anything else
 
@@ -667,11 +691,7 @@ if args.smtps:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_ENABLED=true")
   yaml_obj['services']['cardsinitial']['environment'].append("SLING_COMMONS_CRYPTO_PASSWORD=password")
 
-  if args.server_address:
-    cards_server_address = args.server_address
-  else:
-    cards_server_address = input("Enter the public-facing server address for this deployment (eg. localhost:8080): ")
-  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_HOST_AND_PORT={}".format(cards_server_address))
+  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_HOST_AND_PORT={}".format(getArgValueOrPrompt('server_address')))
 
 if args.smtps_localhost_proxy:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_HOST=smtps_localhost_proxy")
@@ -813,13 +833,8 @@ if args.saml:
   else:
     idp_url = input("Enter the SAML2 IdP destination: ")
 
-  if args.server_address:
-    cards_server_address = args.server_address
-  else:
-    cards_server_address = input("Enter the public-facing server address for this deployment (eg. localhost:8080): ")
-
   yaml_obj['services']['proxy']['environment'].append("SAML_IDP_DESTINATION={}".format(idp_url))
-  yaml_obj['services']['proxy']['environment'].append("CARDS_HOST_AND_PORT={}".format(cards_server_address))
+  yaml_obj['services']['proxy']['environment'].append("CARDS_HOST_AND_PORT={}".format(getArgValueOrPrompt('server_address')))
 
 # Generate a self-signed SSL certificate for the proxy, if instructed to do so
 if args.self_signed_ssl_proxy:
