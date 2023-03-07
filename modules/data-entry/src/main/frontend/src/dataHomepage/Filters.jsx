@@ -42,7 +42,7 @@ import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterCo
 const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
 
-const PopperMy = function (props) {
+const FilterPopper = function (props) {
   return <Popper {...props} style={{maxWidth: "fit-content"}} placement="bottom-start" />;
 };
 
@@ -529,7 +529,7 @@ function Filters(props) {
                   <Grid item xs={5}>
                     <Autocomplete
                       value={filterDatum.name && autoselectOptions.find(item => item.path == filterDatum.name) || null}
-                      PopperComponent={PopperMy}
+                      PopperComponent={FilterPopper}
                       onClose={forceRegrabFocus}
                       className={classes.answerField}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
