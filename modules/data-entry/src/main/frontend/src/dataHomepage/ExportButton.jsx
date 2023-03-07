@@ -224,122 +224,118 @@ function ExportButton(props) {
         onClose={closeDialog}
       >
         <DialogContent>
-          <Grid container direction="column">
-            <Grid container alignItems='center' direction="row" className={classes.container}>
-              <Grid item xs={4}><Typography variant="subtitle2">File format:</Typography></Grid>
-              <Grid item xs={8}>
-                <RadioGroup
-                  row
-                  name="fileFormat"
-                  value={fileFormat}
-                  onChange={(event) => setFileFormat(event.target.value)}
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">File format:</Typography></Grid>
+            <Grid item xs={8}>
+              <RadioGroup
+                row
+                name="fileFormat"
+                value={fileFormat}
+                onChange={(event) => setFileFormat(event.target.value)}
+              >
+                <FormControlLabel value=".csv" control={<Radio />} label=".csv" />
+                <FormControlLabel value=".tsv" control={<Radio />} label=".tsv" />
+              </RadioGroup>
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Header format:</Typography></Grid>
+            <Grid item xs={8}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    defaultChecked={!!DEFAULTS.hasHeaderLabels}
+                    onChange={(event) => { setHeaderLabels(!!event.target.checked);}}
+                  />
+                }
+                label="Labels"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    defaultChecked={!!DEFAULTS.hasHeaderIdentifiers}
+                    onChange={(event) => { setHeaderIdentifiers(!!event.target.checked);}}
+                  />
+                }
+                label="Identifiers"
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
+            <Grid item xs={8}>
+              <RadioGroup
+                row
+                name="data"
+                value={hasAnswerLabels}
+                onChange={(event) => setAnswerLabels(event.target.value === "true")}
+              >
+                <FormControlLabel value={true} control={<Radio />} label="Labels" />
+                <FormControlLabel value={false} control={<Radio />} label="Values" />
+              </RadioGroup>
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
+            <Grid item xs={8}>
+              <RadioGroup
+                row
+                name="columnSelectionMode"
+                value={columnSelectionMode}
+                onChange={(event) => setColumnSelectionMode(event.target.value)}
+              >
+                <FormControlLabel value="include" control={<Radio />} label="Include" />
+                <FormControlLabel value="exclude" control={<Radio />} label="Exclude" />
+              </RadioGroup>
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.startAligned}>
+            <Grid item xs={4}>
+              <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
+            </Grid>
+            <Grid item xs={8}>
+              {/* List the entered values */}
+              { entities?.filter(v => selectedEntityIds.includes(v.path)).map((value, index) =>
+                <Grid container
+                  key={`${value.name}-${index}`}
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="stretch"
+                  className={classes.valueEntry}
                 >
-                  <FormControlLabel value=".csv" control={<Radio />} label=".csv" />
-                  <FormControlLabel value=".tsv" control={<Radio />} label=".tsv" />
-                </RadioGroup>
-              </Grid>
-            </Grid>
-
-            <Grid container alignItems='center' direction="row" className={classes.container}>
-              <Grid item xs={4}><Typography variant="subtitle2">Header format:</Typography></Grid>
-              <Grid item xs={8}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      defaultChecked={!!DEFAULTS.hasHeaderLabels}
-                      onChange={(event) => { setHeaderLabels(!!event.target.checked);}}
-                    />
-                  }
-                  label="Labels"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      defaultChecked={!!DEFAULTS.hasHeaderIdentifiers}
-                      onChange={(event) => { setHeaderIdentifiers(!!event.target.checked);}}
-                    />
-                  }
-                  label="Identifiers"
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container alignItems='center' direction="row" className={classes.container}>
-              <Grid item xs={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
-              <Grid item xs={8}>
-                <RadioGroup
-                  row
-                  name="data"
-                  value={hasAnswerLabels}
-                  onChange={(event) => setAnswerLabels(event.target.value === "true")}
-                >
-                  <FormControlLabel value={true} control={<Radio />} label="Labels" />
-                  <FormControlLabel value={false} control={<Radio />} label="Values" />
-                </RadioGroup>
-              </Grid>
-            </Grid>
-
-            <Grid container alignItems='center' direction="row" className={classes.container}>
-              <Grid item xs={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
-              <Grid item xs={8}>
-                <RadioGroup
-                  row
-                  name="columnSelectionMode"
-                  value={columnSelectionMode}
-                  onChange={(event) => setColumnSelectionMode(event.target.value)}
-                >
-                  <FormControlLabel value="include" control={<Radio />} label="Include" />
-                  <FormControlLabel value="exclude" control={<Radio />} label="Exclude" />
-                </RadioGroup>
-              </Grid>
-            </Grid>
-
-            <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.startAligned}>
-              <Grid item xs={4}>
-                <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
-              </Grid>
-              <Grid item xs={8}>
-
-                {/* List the entered values */}
-                { entities?.filter(v => selectedEntityIds.includes(v.path)).map((value, index) =>
-                  <Grid container
-                    key={`${value.name}-${index}`}
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="stretch"
-                    className={classes.valueEntry}
-                  >
-                    <Grid item xs={9}>
-                      { getAvatar(value.type) }
-                      <ListItemText primary={value.name} secondary={value.text} />
-                    </Grid>
-                    <Grid item xs={3} className={classes.valueActions}>
-                      <Tooltip title="Delete entry">
-                        <IconButton onClick={() => unselectEntity(selectedEntityIds.indexOf(value.path))}><CloseIcon/></IconButton>
-                      </Tooltip>
-                    </Grid>
+                  <Grid item xs={9}>
+                    { getAvatar(value.type) }
+                    <ListItemText primary={value.name} secondary={value.text} />
                   </Grid>
-                )}
-
-                <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
-                  <InputLabel id="label">Select questions/sections from this questionnaire</InputLabel>
-                  <Select
-                    variant="standard"
-                    labelId="label"
-                    value={tempValue}
-                    label="Select questions/sections from this questionnaire"
-                    onChange={handleEntitySelected}
-                  >
-                    { entities?.filter(v => !selectedEntityIds.includes(v.path))
-                                .map(v =>
-                                    <MenuItem value={v.path} key={`option-${v.name}`} className={classes.variableOption}>
-                                      { getAvatar(v.type) }
-                                      <ListItemText primary={v.name} secondary={v.text} />
-                                    </MenuItem>)
-                    }
-                  </Select>
-                </FormControl>
-              </Grid>
+                  <Grid item xs={3} className={classes.valueActions}>
+                    <Tooltip title="Delete entry">
+                      <IconButton onClick={() => unselectEntity(selectedEntityIds.indexOf(value.path))}><CloseIcon/></IconButton>
+                    </Tooltip>
+                  </Grid>
+                </Grid>
+              )}
+              <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
+                <InputLabel id="label">Select questions/sections from this questionnaire</InputLabel>
+                <Select
+                  variant="standard"
+                  labelId="label"
+                  value={tempValue}
+                  label="Select questions/sections from this questionnaire"
+                  onChange={handleEntitySelected}
+                >
+                  { entities?.filter(v => !selectedEntityIds.includes(v.path))
+                      .map(v =>
+                        <MenuItem value={v.path} key={`option-${v.name}`} className={classes.variableOption}>
+                          { getAvatar(v.type) }
+                          <ListItemText primary={v.name} secondary={v.text} />
+                        </MenuItem>)
+                  }
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
         </DialogContent>
