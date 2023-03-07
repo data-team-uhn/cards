@@ -20,6 +20,7 @@
 package io.uhndata.cards.clarity.importer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -85,8 +86,9 @@ public class NightlyClarityImport
         options.canRunConcurrently(true);
 
         List<ClarityDataProcessor> sortedProcessors = new ArrayList<>(this.processors);
-        sortedProcessors.sort(null);
-        final Runnable importJob = new ClarityImportTask(1, this.resolverFactory, this.rrp, sortedProcessors);
+        Collections.sort(sortedProcessors);
+        final Runnable importJob =
+            new ClarityImportTask(config.pastDayToImport(), this.resolverFactory, this.rrp, sortedProcessors);
         try {
             this.scheduler.schedule(importJob, options);
             LOGGER.info("Activated Clarity Importer configuration");
