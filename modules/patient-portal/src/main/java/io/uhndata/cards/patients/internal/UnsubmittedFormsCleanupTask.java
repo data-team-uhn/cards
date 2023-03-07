@@ -20,6 +20,7 @@
 package io.uhndata.cards.patients.internal;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -93,8 +94,9 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                     + "  from [cards:Form] as dataForm"
                     // belonging to a visit
                     + "  inner join [cards:Form] as visitInformation on visitInformation.subject = dataForm.subject"
-                    + "    inner join [cards:Answer] as visitDate on visitDate.form = visitInformation.[jcr:uuid]"
-                    + "    inner join [cards:Answer] as submitted on submitted.form = visitInformation.[jcr:uuid]"
+                    + "    inner join [cards:DateAnswer] as visitDate on visitDate.form = visitInformation.[jcr:uuid]"
+                    + "    inner join [cards:BooleanAnswer] as submitted"
+                    + "      on submitted.form = visitInformation.[jcr:uuid]"
                     + " where"
                     // link to the correct Visit Information questionnaire
                     + "  visitInformation.questionnaire = '%1$s'"
@@ -105,8 +107,11 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                     + "  and submitted.question = '%3$s'"
                     + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
                     // exclude the Visit Information form itself
-                    + "  and dataForm.questionnaire <> '%1$s'",
-                visitInformationQuestionnaire, time, submitted, ZonedDateTime.now().minusDays(delay)),
+                    + "  and dataForm.questionnaire <> '%1$s'"
+                    + " option (index tag cards)",
+                visitInformationQuestionnaire, time, submitted,
+                ZonedDateTime.now().minusDays(delay)
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))),
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {
