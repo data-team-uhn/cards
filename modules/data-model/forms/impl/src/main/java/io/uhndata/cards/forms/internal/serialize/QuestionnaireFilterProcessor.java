@@ -140,13 +140,22 @@ public class QuestionnaireFilterProcessor implements ResourceJsonProcessor
     {
         // A node is excluded if:
         // it is in the list of excluded nodes
-        // or include list is contains other paths, but not this node
-        return isIn(nodePath, this.exclude.get())
-            || !(this.include.get().isEmpty() || isIn(nodePath, this.include.get()));
+        // or include list contains other paths, but not this node
+        return isIn(nodePath, this.exclude.get(), false)
+            || !(this.include.get().isEmpty() || isIn(nodePath, this.include.get(), true));
     }
 
-    private boolean isIn(final String nodePath, final Set<String> list)
+    private boolean isIn(final String nodePath, final Set<String> list, boolean allowAncestors)
     {
-        return list.stream().anyMatch(item -> nodePath.equals(item) || nodePath.startsWith(item + "/"));
+        // For exclude filters, deny:
+        // - the filtered node itself
+        // - descendants of the filter node
+        // For include filters, allow:
+        // - the filtered node itself
+        // - descendants of the filter node
+        // - ancestors of the filtered node, otherwise the node would be skipped since its parent is not serialized
+        return list.stream().anyMatch(
+            item -> nodePath.equals(item) || nodePath.startsWith(item + '/')
+                || (allowAncestors && item.startsWith(nodePath + '/')));
     }
 }
