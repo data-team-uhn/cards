@@ -74,6 +74,10 @@ public final class SubmissionCounter
         @AttributeDefinition(name = "Linking Subject Type", description = "Subject type that links the Form with the"
             + " \"submit\" button to the submitted Forms")
         String linkingSubjectType() default "/SubjectTypes/Patient/Visit";
+
+        @AttributeDefinition(name = "Excluded Questionnaires", description = "Do not count any Forms which are built"
+            + " from any of these types of Questionnaires")
+        String[] excludedQuestionnaires() default {};
     }
 
     @Activate
@@ -86,18 +90,11 @@ public final class SubmissionCounter
             params.put(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
             this.resolver = this.resolverFactory.getServiceResourceResolver(params);
 
-            // Get the UUID associated with config.submittedFlagPath()
-            final String submittedFlagUUID = this.resolver.getResource(
-                config.submittedFlagPath()).getValueMap().get("jcr:uuid", "");
-
-            if ("".equals(submittedFlagUUID)) {
-                return;
-            }
-
-            Map<String, String> listenerParams = new HashMap<>();
+            Map<String, Object> listenerParams = new HashMap<>();
             listenerParams.put("submissionCounterName", config.name());
-            listenerParams.put("submittedFlagUUID", submittedFlagUUID);
+            listenerParams.put("submittedFlagPath", config.submittedFlagPath());
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
+            listenerParams.put("excludedQuestionnairePaths", config.excludedQuestionnaires());
             EventListener myEventListener = new SubmissionEventListener(this.formUtils, this.resolverFactory,
                 this.resolver, listenerParams);
 

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -91,7 +92,7 @@ public class SlackNotificationsTask implements Runnable
             params.put(ResourceResolverFactory.SUBSERVICE, "SlackNotifications");
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(params);
 
-            Map<String, Map<String, Long>> gatheredStatistics = new HashMap<>();
+            Map<String, Map<String, Long>> gatheredStatistics = new TreeMap<>();
 
             // Get all the sling:Folder nodes under /Metrics/
             Iterator<Resource> metricsIter;
@@ -123,7 +124,7 @@ public class SlackNotificationsTask implements Runnable
                 slackNotificationString = buildNotificationLine(
                     slackNotificationString,
                     gatheredStatistics.get(key),
-                    key
+                    key.replaceAll("^\\{\\d+\\}", "")
                 );
             }
 
