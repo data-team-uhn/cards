@@ -18,7 +18,7 @@
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@mui/material";
-import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField } from "@mui/material";
+import { Autocomplete, DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, Popper, TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
@@ -42,6 +42,10 @@ import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterCo
 const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
 
+const PopperMy = function (props) {
+  return <Popper {...props} style={{maxWidth: "fit-content"}} placement="bottom-start" />;
+};
+
 function Filters(props) {
   const { classes, disabled, onChangeFilters, questionnaire, filtersJsonString } = props;
   // Filters, as displayed in the dialog, and filters as actually saved
@@ -61,6 +65,7 @@ function Filters(props) {
   const [filterRequestSent, setFilterRequestSent] = useState(false);
   const [toFocus, setFocusRow] = useState(null);
   const notesComparator = "notes contain";
+  const [autoselectOptions, setAutoselectOptions] = useState([]);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -108,6 +113,12 @@ function Filters(props) {
       onChangeFilters && onChangeFilters(newFilters);
     }
   }, [filtersJsonString, questionDefinitions]);
+
+  useEffect(() => {
+    if (filterableFields.length > 0 && Object.keys(filterableTitles).length > 0 && autoselectOptions.length == 0) {
+      setAutoselectOptions(getFieldsLabelesList(filterableFields, false));
+    }
+  }, [filterableFields, filterableTitles]);
 
   // Obtain information about the filters that can be applied
   let grabFilters = () => {
@@ -279,25 +290,25 @@ function Filters(props) {
   }
 
   // Handle the user changing one of the active filter categories
-  let handleChangeFilter = (index, event) => {
+  let handleChangeFilter = (index, path) => {
     
     // Load up the comparators for this index, if not already loaded
-    let [loadedComparators, component] = getOutputChoices(event.target.value);
+    let [loadedComparators, component] = getOutputChoices(path);
 
     // Automatically add a new filter if they've edited the final filter
     if (index == editingFilters.length-1) {
       addFilter();
     }
 
-    getOutputChoices(event.target.value);
+    getOutputChoices(path);
     setEditingFilters(oldfilters => {
       var newfilters = oldfilters.slice();
       var newfilter = {
-        name: event.target.value,
-        uuid: filterableUUIDs[event.target.value],
+        name: path,
+        uuid: filterableUUIDs[path],
         comparator: loadedComparators[0],
-        title: filterableTitles[event.target.value],
-        type: questionDefinitions[event.target.value]?.dataType || "text"
+        title: filterableTitles[path],
+        type: questionDefinitions[path]?.dataType || "text"
       }
 
       // Keep any old data, if possible
@@ -410,18 +421,29 @@ function Filters(props) {
   }
 
   // From an array of fields, turn it into a react component
-  let GetReactComponentFromFields = (fields, nested=false) => {
+  let GetReactComponentFromFields = (field, index) => {
+      if (field.path) {
+        // Straight strings are MenuItems
+        return <MenuItem value={field.path} key={field.path} className={field.className} onClick={(event) => handleChangeFilter(index, field.path)}>{field.label}</MenuItem>
+      } else {
+        // Arrays represent Questionnaires of Sections
+        // which we'll need to turn into opt groups
+        return <MenuItem key={field.label} className={field.className} disabled>{field.label}</MenuItem>
+      }
+  }
+
+  let getFieldsLabelesList = (fields, nested=false) => {
     return fields.map((path) => {
       if (typeof path == "string") {
         // Straight strings are MenuItems
-        return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{filterableTitles[path]}</MenuItem>
+        return {path: path, className: classes.categoryOption + (nested ? " " + classes.nestedSelectOption : ""), label: filterableTitles[path]}
       } else if (Array.isArray(path)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
-          GetReactComponentFromFields(path.slice(1), true)];
+        return [{path: null, className: classes.categoryHeader, label: path[0]},
+          getFieldsLabelesList(path.slice(1), true)].flat();
       }
-    })
+    }).flat();
   }
 
   return(
@@ -505,22 +527,24 @@ function Filters(props) {
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
                   <Grid item xs={5}>
-                    <Select
-                      variant="standard"
-                      value={(filterDatum.name || "")}
-                      onChange={(event) => {handleChangeFilter(index, event);}}
-                      MenuProps={{
-                        onExited: forceRegrabFocus
-                      }}
+                    <Autocomplete
+                      value={filterDatum.name && autoselectOptions.find(item => item.path == filterDatum.name) || null}
+                      PopperComponent={PopperMy}
+                      onClose={forceRegrabFocus}
                       className={classes.answerField}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
-                      displayEmpty
-                      >
-                        <MenuItem value="" disabled>
-                          <span className={classes.selectPlaceholder}>Add new filter...</span>
-                        </MenuItem>
-                        {GetReactComponentFromFields(filterableFields)}
-                    </Select>
+                      options={autoselectOptions}
+                      getOptionLabel={(option) => option.label}
+                      renderOption={(props, option) => GetReactComponentFromFields(option, index) }
+                      renderInput={(params) =>
+                          <TextField
+                            variant="standard"
+                            label="Add new filter..."
+                            helperText={null}
+                            {...params}
+                          />
+                      }
+                    />
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
                   <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
