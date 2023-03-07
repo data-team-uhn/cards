@@ -235,6 +235,10 @@
         }
     ],
     "configurations":{
+        "org.apache.sling.jcr.oak.server.internal.OakSlingRepositoryManager":{
+            "oak.observation.queue.length:Integer":"100000",
+            "oak.observation.limitCommitRate":true
+        },
         "org.apache.sling.commons.log.LogManager":{
             "org.apache.sling.commons.log.packagingDataEnabled":true,
             "org.apache.sling.commons.log.pattern":"%d{dd.MM.yyyy HH:mm:ss.SSS} *%level* [%thread] %logger %msg%n",
