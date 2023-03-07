@@ -435,7 +435,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             if (jsonValue == null) {
                 values.add(DEFAULT_X_VALUE);
             } else if (jsonValue.getValueType() == ValueType.ARRAY) {
-                JsonArray jsonArray = answerJson.getJsonArray(LABEL_PROP);
+                JsonArray jsonArray = jsonValue.asJsonArray();
                 if (jsonArray.size() == 0) {
                     values.add(DEFAULT_X_VALUE);
                 } else {
