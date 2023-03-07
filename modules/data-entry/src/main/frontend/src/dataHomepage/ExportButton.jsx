@@ -297,7 +297,7 @@ function ExportButton(props) {
     return (<LocalizationProvider dateAdapter={AdapterLuxon}>
               <DateTimePicker
                 label={!value ? "Any date" : "Select date"}
-                inputFormat={"dd/MM/yyyy hh:mm a"}
+                inputFormat={"yyyy/MM/dd hh:mm a"}
                 value={value}
                 onChange={(value) => {
                   setter(value);
