@@ -424,6 +424,7 @@ function ExportButton(props) {
                 </Select>
               </FormControl>
             </Grid>
+          </Grid>
 
           <Grid container alignItems='end' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">Created by:</Typography></Grid>
@@ -493,24 +494,22 @@ function ExportButton(props) {
 
           <Grid container alignItems='end' direction="row" className={classes.container}>
             <Grid item xs={4}>
-                <Typography variant="subtitle2">{statusSelectionMode == "status" ? "Include only forms with the status flag:" : "Exclude all forms with the status flag:"}</Typography>
-              </Grid>
-              <Grid item xs={8}>
-                <FormControl variant="standard" fullWidth>
-                  <InputLabel id="status">Select a status</InputLabel>
-                  <Select
-                    variant="standard"
-                    labelId="status"
-                    value={status}
-                    label="Select a status flag"
-                    onChange={(event) => setStatus(event.target.value)}
-                  >
-                    { statuses.map(v => <MenuItem value={v} key={v}>{v}</MenuItem>) }
-                  </Select>
-                </FormControl>
-              </Grid>
+              <Typography variant="subtitle2">{statusSelectionMode == "status" ? "Include only forms with the status flag:" : "Exclude all forms with the status flag:"}</Typography>
             </Grid>
-
+            <Grid item xs={8}>
+              <FormControl variant="standard" fullWidth>
+                <InputLabel id="status">Select a status</InputLabel>
+                <Select
+                  variant="standard"
+                  labelId="status"
+                  value={status}
+                  label="Select a status flag"
+                  onChange={(event) => setStatus(event.target.value)}
+                >
+                  { statuses.map(v => <MenuItem value={v} key={v}>{v}</MenuItem>) }
+                </Select>
+              </FormControl>
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
