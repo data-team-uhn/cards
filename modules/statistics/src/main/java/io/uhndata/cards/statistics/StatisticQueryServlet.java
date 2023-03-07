@@ -85,6 +85,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         policy = ReferencePolicy.DYNAMIC)
     private volatile List<ResourceJsonProcessor> allProcessors;
 
+    private final ThreadLocal<List<ResourceJsonProcessor>> labelProcessors = new ThreadLocal<>();
+
     @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -93,11 +95,12 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, String> arguments = parseArguments(request);
 
         try {
-            // Get only the labels processors and sort them
-            List<ResourceJsonProcessor> labelProcessors = this.allProcessors.stream()
+            // Obtain the labels processors and sort them by priority
+            // They will enable aggregating the stats data by displayedValue
+            List<ResourceJsonProcessor> processors = this.allProcessors.stream()
                 .filter(p -> "labels".equals(p.getName())).collect(Collectors.toList());
-            labelProcessors.sort((o1, o2) -> o1.getPriority() - o2.getPriority());
-            this.allProcessors = labelProcessors;
+            processors.sort((o1, o2) -> o1.getPriority() - o2.getPriority());
+            this.labelProcessors.set(processors);
 
             // Steps to returning the calculated statistic:
             // Grab the question that has data for the given x-axis (xVar)
@@ -427,7 +430,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         List<String> values = new LinkedList<>();
         // Call label processors to populate displayedValue
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        this.allProcessors.forEach(p -> p.leave(answer, builder, null));
+        this.labelProcessors.get().forEach(p -> p.leave(answer, builder, null));
         // Now the json has the displayedValue if a value exists
         JsonObject answerJson = builder.build();
         JsonValue jsonValue = answerJson.get(LABEL_PROP);
