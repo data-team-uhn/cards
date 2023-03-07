@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
 
-import { Avatar, Checkbox, DialogActions, DialogContent, FormControl, Icon, Grid, Radio, RadioGroup,
+import { Avatar, Checkbox, DialogActions, DialogContent, Divider, FormControl, Icon, Grid, Radio, RadioGroup,
   FormControlLabel, TextField, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
 
 import DownloadIcon from '@mui/icons-material/FileDownload';
@@ -36,7 +36,10 @@ import ResponsiveDialog from "../components/ResponsiveDialog";
 
 const useStyles = makeStyles(theme => ({
   container: {
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(.5),
+    "& + .MuiDivider-root" : {
+      margin: theme.spacing(3, -3),
+    },
   },
   startAligned: {
     "& > .MuiGrid-item:first-child" : {
@@ -310,7 +313,7 @@ function ExportButton(props) {
         width="md"
         onClose={closeDialog}
       >
-        <DialogContent>
+        <DialogContent dividers>
           <Grid container alignItems='center' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">File format:</Typography></Grid>
             <Grid item xs={8}>
@@ -364,6 +367,10 @@ function ExportButton(props) {
               </RadioGroup>
             </Grid>
           </Grid>
+
+          <Divider/>
+
+          <Typography variant="h6">Columns</Typography>
 
           <Grid container alignItems='center' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
@@ -425,6 +432,10 @@ function ExportButton(props) {
               </FormControl>
             </Grid>
           </Grid>
+
+          <Divider/>
+
+          <Typography variant="h6">Filters</Typography>
 
           <Grid container alignItems='end' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">Created by:</Typography></Grid>
