@@ -281,12 +281,13 @@ public class FormToMarkdownProcessorTest
 
         // process properties of resource
         ValueMap valueMap = originalResource.getValueMap();
+        List<String> objectTypeProperties = List.of(QUESTIONNAIRE_PROPERTY, SUBJECT_PROPERTY, SECTION_PROPERTY,
+                QUESTION_PROPERTY);
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         for (Map.Entry<String, Object> property : valueMap.entrySet()) {
             String key = property.getKey();
             Object value = property.getValue();
-            if ("questionnaire".equals(key) || "subject".equals(key) || "section".equals(key)
-                    || "question".equals(key)) {
+            if (objectTypeProperties.contains(key)) {
                 Resource reference =
                         this.context.resourceResolver().getResource(getResourcePathByItsIdentifier((String) value));
                 JsonObjectBuilder referenceJson = Json.createObjectBuilder(createPropertiesAndChildrenMap(reference));
