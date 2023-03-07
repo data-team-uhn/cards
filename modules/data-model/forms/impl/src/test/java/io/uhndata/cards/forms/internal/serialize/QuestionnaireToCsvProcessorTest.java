@@ -19,6 +19,7 @@
 package io.uhndata.cards.forms.internal.serialize;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -56,143 +58,114 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link FormToTextAdapterFactory}.
+ * Unit tests for {@link QuestionnaireToCsvProcessor}.
  *
  * @version $Id $
  */
 @RunWith(MockitoJUnitRunner.class)
-public class FormToTextAdapterFactoryTest
+public class QuestionnaireToCsvProcessorTest
 {
-    private static final String NEXT_LINE = "\n";
     private static final String NODE_TYPE = "jcr:primaryType";
     private static final String FORM_TYPE = "cards:Form";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
     private static final String ANSWER_TYPE = "cards:Answer";
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestSerializableQuestionnaire";
-    private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
-    private static final String TEST_FORM_PATH = "/Forms/f1";
+    private static final String TEST_SUBJECT_PATH = "/Subjects/Test/BranchTest";
+    private static final String TEST_FORM_1_PATH = "/Forms/f1";
+    private static final String TEST_FORM_2_PATH = "/Forms/f2";
+    private static final String TEST_FORM_3_PATH = "/Forms/f3";
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
     private static final String QUESTION_PROPERTY = "question";
     private static final String SECTION_PROPERTY = "section";
     private static final String SUBJECT_PROPERTY = "subject";
+    private static final String PARENT_PROPERTY = "parents";
+    private static final String RELATED_SUBJECTS_PROPERTY = "relatedSubjects";
+    private static final String REQUIRED_SUBJECT_TYPE_PROPERTY = "requiredSubjectTypes";
     private static final String DISPLAYED_VALUE_PROPERTY = "displayedValue";
+    private static final String IDENTIFIER_PROPERTY = "identifier";
+    private static final String TYPE_PROPERTY = "type";
+    private static final String CREATED_DATE_PROPERTY = "jcr:created";
+    private static final String MODIFIED_DATE_PROPERTY = "jcr:lastModified";
 
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     @InjectMocks
-    private FormToTextAdapterFactory formToTextAdapterFactory;
+    private QuestionnaireToCsvProcessor questionnaireToCsvProcessor;
 
     @Test
-    public void canProcessForFormReturnsTrue()
-    {
-        Resource form = this.context.resourceResolver().getResource(TEST_FORM_PATH);
-        assertTrue(this.formToTextAdapterFactory.canProcess(form));
-    }
-
-    @Test
-    public void canProcessForQuestionnaireReturnsFalse()
+    public void canProcessForQuestionnaireReturnsTrue()
     {
         Resource questionnaire = this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH);
-        assertFalse(this.formToTextAdapterFactory.canProcess(questionnaire));
+        assertTrue(this.questionnaireToCsvProcessor.canProcess(questionnaire));
     }
 
     @Test
-    public void serializeForFormWithOneFooterAndOneDefaultSections() throws RepositoryException
+    public void canProcessForFormReturnsFalse()
     {
-        ResourceResolver resourceResolver = this.context.resourceResolver();
-        String subjectFullIdentifier = resourceResolver.getResource(TEST_SUBJECT_PATH).adaptTo(Node.class)
-                .getIdentifier();
-        Resource form = resourceResolver.getResource(TEST_FORM_PATH);
-        String markdown = this.formToTextAdapterFactory.serialize(form);
-        assertNotNull(markdown);
-        assertEquals(subjectFullIdentifier + NEXT_LINE
-                + "TEST SERIALIZABLE QUESTIONNAIRE" + NEXT_LINE
-                + java.time.LocalDate.now() + NEXT_LINE
-                + NEXT_LINE
-                + "---------------------------------------------" + NEXT_LINE
-                + NEXT_LINE
-                + "SECTION 2" + NEXT_LINE
-                + NEXT_LINE
-                + "Long Question" + NEXT_LINE
-                + "  100" + NEXT_LINE
-                + NEXT_LINE
-                + "SECTION 1" + NEXT_LINE
-                + NEXT_LINE
-                + "Date Question" + NEXT_LINE
-                + "  —" + NEXT_LINE
-                + NEXT_LINE
-                + "Pedigree Question" + NEXT_LINE
-                + "  Pedigree provided" + NEXT_LINE
-                + NEXT_LINE
-                + "  NOTES" + NEXT_LINE
-                + "  Pedigree note", markdown);
+        Resource form = this.context.resourceResolver().getResource(TEST_FORM_1_PATH);
+        assertFalse(this.questionnaireToCsvProcessor.canProcess(form));
     }
 
     @Test
-    public void serializeForFormWithHeaderSection() throws RepositoryException
+    public void serializeForQuestionnaireWithoutRequiredSubjectType() throws RepositoryException
     {
-        ResourceResolver resourceResolver = this.context.resourceResolver();
-        String subjectFullIdentifier = resourceResolver.getResource(TEST_SUBJECT_PATH).adaptTo(Node.class)
-                .getIdentifier();
-        Resource form = resourceResolver.getResource("/Forms/f2");
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Resource questionnaire = this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH);
+        String csvText = this.questionnaireToCsvProcessor.serialize(questionnaire);
+        assertNotNull(csvText);
+        String[] lines = csvText.split("\r\n");
+        assertEquals(4, lines.length);
+        assertEquals("Identifier,Root ID,Branch ID,Leaf ID,Created,Last modified,Text Question,Boolean Question,"
+                + "Long Question,Date Question,Pedigree Question", lines[0]);
 
-        String markdown = this.formToTextAdapterFactory.serialize(form);
-        assertNotNull(markdown);
-        assertEquals(subjectFullIdentifier + NEXT_LINE
-                + "TEST SERIALIZABLE QUESTIONNAIRE" + NEXT_LINE
-                + java.time.LocalDate.now() + NEXT_LINE
-                + NEXT_LINE
-                + "SECTION 3" + NEXT_LINE
-                + NEXT_LINE
-                + "Boolean Question" + NEXT_LINE
-                + "  true" + NEXT_LINE
-                + NEXT_LINE
-                + "---------------------------------------------", markdown);
+        Node form = session.getNode("/Forms/f1");
+        String createdDateForm1 = getFormattedDate(form.getProperty(CREATED_DATE_PROPERTY).getValue().getDate());
+        String modifiedDateForm1 = getFormattedDate(form.getProperty(MODIFIED_DATE_PROPERTY).getValue().getDate());
+        assertEquals("f1,Root Subject,Branch Subject,," + createdDateForm1 + "," + modifiedDateForm1
+                        + ",,,100,2023-01-01,yes", lines[1]);
+
+        Node form2 = session.getNode(TEST_FORM_2_PATH);
+        String createdDateForm2 = getFormattedDate(form2.getProperty(CREATED_DATE_PROPERTY).getValue().getDate());
+        String modifiedDateForm2 = getFormattedDate(form2.getProperty(MODIFIED_DATE_PROPERTY).getValue().getDate());
+        assertEquals("f2,Root Subject,Branch Subject,," + createdDateForm2 + "," + modifiedDateForm2 + ",,true,,,",
+                lines[2]);
+
+        Node form3 = session.getNode(TEST_FORM_3_PATH);
+        String createdDateForm3 = getFormattedDate(form3.getProperty(CREATED_DATE_PROPERTY).getValue().getDate());
+        String modifiedDateForm3 = getFormattedDate(form3.getProperty(MODIFIED_DATE_PROPERTY).getValue().getDate());
+        assertEquals("f3,Root Subject,Branch Subject,," + createdDateForm3 + "," + modifiedDateForm3 + ",some text,,,,",
+                lines[3]);
     }
 
     @Test
-    public void serializeForFormWithRecurrentSection() throws RepositoryException
+    public void serializeForQuestionnaireWithRequiredSubjectType() throws RepositoryException
     {
-        ResourceResolver resourceResolver = this.context.resourceResolver();
-        String subjectFullIdentifier = resourceResolver.getResource(TEST_SUBJECT_PATH).adaptTo(Node.class)
-                .getIdentifier();
-        Resource form = resourceResolver.getResource("/Forms/f3");
-        String markdown = this.formToTextAdapterFactory.serialize(form);
-        assertNotNull(markdown);
-        assertEquals(subjectFullIdentifier + NEXT_LINE
-                + "TEST SERIALIZABLE QUESTIONNAIRE" + NEXT_LINE
-                + java.time.LocalDate.now() + NEXT_LINE
-                + NEXT_LINE
-                + "SECTION 3" + NEXT_LINE
-                + NEXT_LINE
-                + "SECTION 4 #1" + NEXT_LINE
-                + NEXT_LINE
-                + "Text Question" + NEXT_LINE
-                + "  some text" + NEXT_LINE
-                + NEXT_LINE
-                + "Boolean Question" + NEXT_LINE
-                + "  true" + NEXT_LINE
-                + NEXT_LINE
-                + "---------------------------------------------", markdown);
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Resource questionnaire = this.context.resourceResolver().getResource(TEST_QUESTIONNAIRE_PATH);
+        questionnaire.adaptTo(Node.class).setProperty(REQUIRED_SUBJECT_TYPE_PROPERTY, new String[]{
+            session.getNode("/SubjectTypes/Root/Branch").getIdentifier()
+        });
+        String csvText = this.questionnaireToCsvProcessor.serialize(questionnaire);
+        assertNotNull(csvText);
     }
 
     @Test
-    public void serializeForNullFormResource()
+    public void serializeForNullQuestionnaireResource()
     {
         Resource originalResource = mock(Resource.class);
         Resource resource = mock(Resource.class);
         ResourceResolver resourceResolver = mock(ResourceResolver.class);
         ResourceMetadata resourceMetadata = mock(ResourceMetadata.class);
-        when(originalResource.getPath()).thenReturn(TEST_FORM_PATH);
+        when(originalResource.getPath()).thenReturn(TEST_QUESTIONNAIRE_PATH);
         when(originalResource.getResourceMetadata()).thenReturn(resourceMetadata);
         when(resourceMetadata.getResolutionPathInfo()).thenReturn("");
         when(originalResource.getResourceResolver()).thenReturn(resourceResolver);
         when(resourceResolver.resolve(anyString())).thenReturn(resource);
         when(resource.adaptTo(JsonObject.class)).thenReturn(null);
-        String markdown = this.formToTextAdapterFactory.serialize(originalResource);
-        assertNull(markdown);
+        String csvText = this.questionnaireToCsvProcessor.serialize(originalResource);
+        assertNull(csvText);
     }
 
     @Before
@@ -207,71 +180,77 @@ public class FormToTextAdapterFactoryTest
         this.context.load().json("/SerializableQuestionnaire.json", TEST_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
-                .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
-                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
+                .resource("/Subjects/Test", NODE_TYPE, SUBJECT_TYPE,
+                        TYPE_PROPERTY,
+                        this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class),
+                        IDENTIFIER_PROPERTY, "Root Subject").commit();
+        this.context.build().resource("/Subjects/Test/BranchTest", NODE_TYPE, SUBJECT_TYPE,
+                        TYPE_PROPERTY,
+                        this.context.resourceResolver().getResource("/SubjectTypes/Root/Branch").adaptTo(Node.class),
+                        IDENTIFIER_PROPERTY, "Branch Subject",
+                        PARENT_PROPERTY,
+                        this.context.resourceResolver().getResource("/Subjects/Test").adaptTo(Node.class))
                 .commit();
 
         Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         Node subject = session.getNode(TEST_SUBJECT_PATH);
-        subject.setProperty("fullIdentifier", subject.getIdentifier());
         Node questionnaire = session.getNode(TEST_QUESTIONNAIRE_PATH);
 
         this.context.build()
-                .resource(TEST_FORM_PATH,
+                .resource(TEST_FORM_1_PATH,
                         NODE_TYPE, FORM_TYPE,
                         QUESTIONNAIRE_PROPERTY, questionnaire,
                         SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource(TEST_FORM_PATH + "/s1",
+                        RELATED_SUBJECTS_PROPERTY, List.of(subject).toArray())
+                .resource(TEST_FORM_1_PATH + "/s1",
                         NODE_TYPE, ANSWER_SECTION_TYPE,
                         SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_1"))
-                .resource(TEST_FORM_PATH + "/s1/a1",
+                .resource(TEST_FORM_1_PATH + "/s1/a1",
                         NODE_TYPE, ANSWER_TYPE,
                         QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_1"),
                         "value", "2023-01-01")
-                .resource(TEST_FORM_PATH + "/s1/a2",
+                .resource(TEST_FORM_1_PATH + "/s1/a2",
                         NODE_TYPE, "cards:PedigreeAnswer",
                         QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_2"),
                         DISPLAYED_VALUE_PROPERTY, "pedigreeDisplayedValue",
                         "note", "Pedigree note")
-                .resource(TEST_FORM_PATH + "/s2",
+                .resource(TEST_FORM_1_PATH + "/s2",
                         NODE_TYPE, ANSWER_SECTION_TYPE,
                         SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_2"))
-                .resource(TEST_FORM_PATH + "/s2/a3",
+                .resource(TEST_FORM_1_PATH + "/s2/a3",
                         NODE_TYPE, ANSWER_TYPE,
                         QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_2/question_3"),
-                        DISPLAYED_VALUE_PROPERTY, "100")
+                        DISPLAYED_VALUE_PROPERTY, 100)
 
-                .resource("/Forms/f2",
+                .resource(TEST_FORM_2_PATH,
                         NODE_TYPE, FORM_TYPE,
                         QUESTIONNAIRE_PROPERTY, questionnaire,
                         SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource("/Forms/f2/s3",
+                        RELATED_SUBJECTS_PROPERTY, List.of(subject).toArray())
+                .resource(TEST_FORM_2_PATH + "/s3",
                         NODE_TYPE, ANSWER_SECTION_TYPE,
                         SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3"))
-                .resource("/Forms/f2/s3/a4",
+                .resource(TEST_FORM_2_PATH + "/s3/a4",
                         NODE_TYPE, ANSWER_TYPE,
                         QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/question_4"),
                         DISPLAYED_VALUE_PROPERTY, "true")
 
-                .resource("/Forms/f3",
+                .resource(TEST_FORM_3_PATH,
                         NODE_TYPE, FORM_TYPE,
                         QUESTIONNAIRE_PROPERTY, questionnaire,
                         SUBJECT_PROPERTY, subject,
-                        "relatedSubjects", List.of(subject).toArray())
-                .resource("/Forms/f3/s3",
+                        RELATED_SUBJECTS_PROPERTY, List.of(subject).toArray())
+                .resource(TEST_FORM_3_PATH + "/s3",
                         NODE_TYPE, ANSWER_SECTION_TYPE,
                         SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3"))
-                .resource("/Forms/f3/s3/a4",
+                .resource(TEST_FORM_3_PATH + "/s3/a4",
                         NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/question_4"),
-                        DISPLAYED_VALUE_PROPERTY, "true")
-                .resource("/Forms/f3/s3/s4",
+                        QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/question_4"))
+                .resource(TEST_FORM_3_PATH + "/s3/s4",
                         NODE_TYPE, ANSWER_SECTION_TYPE,
                         SECTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/section_4"))
-                .resource("/Forms/f3/s3/s4/a5",
+                .resource(TEST_FORM_3_PATH + "/s3/s4/a5",
                         NODE_TYPE, ANSWER_TYPE,
                         QUESTION_PROPERTY, session.getNode(TEST_QUESTIONNAIRE_PATH + "/section_3/section_4/question_5"),
                         DISPLAYED_VALUE_PROPERTY, "some text")
@@ -281,6 +260,16 @@ public class FormToTextAdapterFactoryTest
             JsonObjectBuilder jsonObject = null;
             try {
                 jsonObject = Json.createObjectBuilder(createPropertiesAndChildrenMap(resource));
+                jsonObject.add("@name", resource.getName());
+                if (resource.isResourceType("cards/Questionnaire")) {
+                    ResourceResolver resourceResolver = this.context.resourceResolver();
+                    JsonArray array = Json.createArrayBuilder()
+                            .add(resourceResolver.getResource(TEST_FORM_1_PATH).adaptTo(JsonObject.class))
+                            .add(resourceResolver.getResource(TEST_FORM_2_PATH).adaptTo(JsonObject.class))
+                            .add(resourceResolver.getResource(TEST_FORM_3_PATH).adaptTo(JsonObject.class))
+                            .build();
+                    jsonObject.add("@data", array);
+                }
             } catch (RepositoryException e) {
                 throw new RuntimeException(e);
             }
@@ -294,9 +283,8 @@ public class FormToTextAdapterFactoryTest
 
         // process properties of resource
         ValueMap valueMap = originalResource.getValueMap();
-        List<String> objectTypeProperties = List.of(QUESTIONNAIRE_PROPERTY, SUBJECT_PROPERTY, SECTION_PROPERTY,
-                QUESTION_PROPERTY);
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        final List<String> objectTypeProperties = List.of(QUESTIONNAIRE_PROPERTY, SUBJECT_PROPERTY, SECTION_PROPERTY,
+                QUESTION_PROPERTY, TYPE_PROPERTY, PARENT_PROPERTY);
         for (Map.Entry<String, Object> property : valueMap.entrySet()) {
             String key = property.getKey();
             Object value = property.getValue();
@@ -312,27 +300,36 @@ public class FormToTextAdapterFactoryTest
                         if (valueUnit instanceof Resource) {
                             arrayBuilder.add(Json.createObjectBuilder(
                                     createPropertiesAndChildrenMap((Resource) valueUnit)).build());
+                        } else if (REQUIRED_SUBJECT_TYPE_PROPERTY.equals(key)) {
+                            Resource reference = this.context.resourceResolver()
+                                    .getResource(getResourcePathByItsIdentifier((String) valueUnit));
+                            arrayBuilder.add(Json.createObjectBuilder(createPropertiesAndChildrenMap(reference))
+                                    .build());
                         } else {
                             arrayBuilder.add((String) valueUnit);
                         }
                     }
                     propertiesAndChildrenMap.put(key, arrayBuilder.build());
                 } else if (value instanceof GregorianCalendar) {
-                    sdf.setTimeZone(((GregorianCalendar) value).getTimeZone());
-                    value = ((GregorianCalendar) value).getTime();
-                    propertiesAndChildrenMap.put(key, sdf.format(value));
+                    propertiesAndChildrenMap.put(key, getFormattedDate((GregorianCalendar) value));
                 } else {
                     propertiesAndChildrenMap.put(key, value);
                 }
             }
         }
 
-        // process children of resource
-        for (Resource child : originalResource.getChildren()) {
-            JsonObject jsonObject = Json.createObjectBuilder(createPropertiesAndChildrenMap(child)).build();
-            propertiesAndChildrenMap.put(child.getName(), jsonObject);
+        if (originalResource.getResourceType().equals("cards/Subject")
+                || originalResource.getResourceType().equals("cards/SubjectType")) {
+            return propertiesAndChildrenMap;
         }
 
+        // process children of question/answer/section/answerSection/questionnaire/form resources to avoid collision
+        for (Resource child : originalResource.getChildren()) {
+            JsonObject jsonObject = Json.createObjectBuilder(createPropertiesAndChildrenMap(child))
+                    .add("@name", child.getName())
+                    .build();
+            propertiesAndChildrenMap.put(child.getName(), jsonObject);
+        }
         return propertiesAndChildrenMap;
     }
 
@@ -340,4 +337,13 @@ public class FormToTextAdapterFactoryTest
     {
         return this.context.resourceResolver().adaptTo(Session.class).getNodeByIdentifier(identifier).getPath();
     }
+
+    private String getFormattedDate(Calendar date)
+    {
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(date.getTimeZone());
+        String dateTime = sdf.format(date.getTime());
+        return dateTime;
+    }
+
 }
