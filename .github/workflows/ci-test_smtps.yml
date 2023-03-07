@@ -13,8 +13,6 @@ jobs:
         uses: ./.github/actions/install-ci-dependencies
       - name: Build CARDS
         uses: ./.github/actions/build-cards
-      - name: Build The Test Email Server
-        uses: ./.github/actions/build-postfix-docker
 
       - name: Perform SMTPS Tests
         uses: ./.github/actions/smtps-test
