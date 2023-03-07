@@ -22,6 +22,7 @@ import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
+import ExportButton from "./ExportButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Questionnaires(props) {
@@ -51,6 +52,7 @@ function Questionnaires(props) {
   ]
   const actions = [
     DeleteButton,
+    ExportButton,
     EditButton
   ]
 
