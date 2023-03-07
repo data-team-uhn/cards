@@ -43,7 +43,13 @@ const useStyles = makeStyles(theme => ({
   },
   startAligned: {
     "& > .MuiGrid-item:first-child" : {
-      paddingTop: theme.spacing(3),
+      marginTop: theme.spacing(3),
+    },
+  },
+  withSelect: {
+    marginBottom: theme.spacing(2),
+    "& > .MuiGrid-item:first-child" : {
+      marginTop: theme.spacing(2),
     },
   },
   entryActionIcon: {
@@ -437,7 +443,7 @@ function ExportButton(props) {
 
           <Typography variant="h6">Filters</Typography>
 
-          <Grid container alignItems='end' direction="row" className={classes.container}>
+          <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
             <Grid item xs={4}><Typography variant="subtitle2">Created by:</Typography></Grid>
             <Grid item xs={8}>
                 <FormControl variant="standard" fullWidth>
@@ -503,7 +509,7 @@ function ExportButton(props) {
               </Grid>
           </Grid>
 
-          <Grid container alignItems='end' direction="row" className={classes.container}>
+          <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
             <Grid item xs={4}>
               <Typography variant="subtitle2">{statusSelectionMode == "status" ? "Include only forms with the status flag:" : "Exclude all forms with the status flag:"}</Typography>
             </Grid>
