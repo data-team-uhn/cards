@@ -18,7 +18,7 @@
 //
 import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
@@ -191,7 +191,8 @@ const MainComponent = (withStyles(IndexStyle, {withTheme: true})(Main));
 
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
-ReactDOM.render(
+const root = createRoot(document.querySelector('#main-container'));
+root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
@@ -202,8 +203,7 @@ ReactDOM.render(
         </Switch>
       </Router>
     </ThemeProvider>
-  </StyledEngineProvider>,
-  document.querySelector('#main-container')
+  </StyledEngineProvider>
 );
 
 export default MainComponent;

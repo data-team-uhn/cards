@@ -110,6 +110,9 @@ export default function DragAndDrop(props) {
 
   useEffect(() => {
     let div = dropRef.current;
+    if (!div) {
+      return;
+    }
     div.addEventListener('dragenter', handleDragIn);
     div.addEventListener('dragleave', handleDragOut);
     div.addEventListener('dragover', handleDrag);
@@ -117,6 +120,9 @@ export default function DragAndDrop(props) {
 
     return () => {
       let div = dropRef.current;
+      if (!div) {
+        return;
+      }
       div.removeEventListener('dragenter', handleDragIn);
       div.removeEventListener('dragleave', handleDragOut);
       div.removeEventListener('dragover', handleDrag);

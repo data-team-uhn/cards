@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';;
 
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
@@ -33,11 +33,11 @@ export default function TokenExpired() {
   );
 }
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('token-expired-container'));
+root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <TokenExpired />
     </ThemeProvider>
-  </StyledEngineProvider>,
-  document.getElementById('token-expired-container')
+  </StyledEngineProvider>
 );
