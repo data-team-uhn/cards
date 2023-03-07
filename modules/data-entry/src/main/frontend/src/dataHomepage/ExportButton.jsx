@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
 
-import { Avatar, Checkbox, DialogActions, DialogContent, Divider, FormControl, Icon, Grid, Radio, RadioGroup,
+import { Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
   FormControlLabel, TextField, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
 
 import DownloadIcon from '@mui/icons-material/FileDownload';
@@ -85,10 +85,13 @@ const useStyles = makeStyles(theme => ({
     zoom: "75%"
   },
   dateRange: {
-    marginBottom: theme.spacing(2),
-    "& > .MuiTextField-root + .MuiTextField-root" : {
-      marginLeft: theme.spacing(4),
-    }
+    alignItems: "baseline",
+    "& .MuiInputLabel-shrink": {
+      visibility: "hidden",
+    },
+    "& + .MuiTypography-root": {
+      marginTop: theme.spacing(-2.5),
+    },
   },
 }));
 
@@ -290,9 +293,10 @@ function ExportButton(props) {
             </Avatar>);
   }
 
-  let getDatePicker = (value, setter, label, rangeIsInvalid) => {
-    return (<DatePicker
-                label={label}
+  let getDatePicker = (value, setter, rangeIsInvalid) => {
+    return (<LocalizationProvider dateAdapter={AdapterLuxon}>
+              <DatePicker
+                label={!value ? "Any date" : "Select date"}
                 value={value}
                 onChange={(value) => {
                   setter(value);
@@ -302,13 +306,33 @@ function ExportButton(props) {
                     variant="standard"
                     {...params}
                     error={rangeIsInvalid}
-                    helperText=""
+                    helperText=" "
                     InputProps={{
                       ...params.InputProps
                     }}
+                    inputProps={{
+                      ...params.inputProps,
+                      placeholder: "Any date"
+                    }}
                   />
                 }
-              />);
+              />
+            </LocalizationProvider>
+          );
+  }
+
+  let getDateRange = (valueA, setterA, valueB, setterB, rangeIsInvalid) => {
+    return (<>
+      <Stack direction="row" spacing={2} divider={<span>—</span>} className={classes.dateRange}>
+        { getDatePicker(valueA, setterA, rangeIsInvalid) }
+        { getDatePicker(valueB, setterB, rangeIsInvalid) }
+      </Stack>
+      { rangeIsInvalid &&
+        <Typography component="div" variant="caption" color="error">
+          The second date should be later than the first date
+        </Typography>
+      }
+    </>);
   }
 
   return(
@@ -464,33 +488,17 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='center' direction="row" className={classes.container}>
-            <Grid item xs={4}><Typography variant="subtitle2">Created:</Typography></Grid>
-            <Grid item xs={8} className={classes.dateRange}>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
-                { getDatePicker(createdAfter, setCreatedAfter, "after", createdRangeIsInvalid) }
-                { getDatePicker(createdBefore, setCreatedBefore, "before", createdRangeIsInvalid) }
-              </LocalizationProvider>
-              { createdRangeIsInvalid &&
-                <Typography component="div" variant="caption" color="error">
-                  The second date should be later than the first date
-                </Typography>
-              }
+          <Grid container alignItems='baseline' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Created between:</Typography></Grid>
+            <Grid item xs={8}>
+              { getDateRange(createdAfter, setCreatedAfter, createdBefore, setCreatedBefore, createdRangeIsInvalid) }
             </Grid>
           </Grid>
 
-          <Grid container alignItems='center' direction="row" className={classes.container}>
-            <Grid item xs={4}><Typography variant="subtitle2">Modified:</Typography></Grid>
-            <Grid item xs={8} className={classes.dateRange}>
-              <LocalizationProvider dateAdapter={AdapterLuxon}>
-                { getDatePicker(modifiedAfter, setModifiedAfter, "after", modifiedRangeIsInvalid) }
-                { getDatePicker(modifiedBefore, setModifiedBefore, "before", modifiedRangeIsInvalid) }
-              </LocalizationProvider>
-              { modifiedRangeIsInvalid &&
-                <Typography component="div" variant="caption" color="error">
-                  The second date should be later than the first date
-                </Typography>
-              }
+          <Grid container alignItems='baseline' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Modified between:</Typography></Grid>
+            <Grid item xs={8}>
+              { getDateRange(modifiedAfter, setModifiedAfter, modifiedBefore, setModifiedBefore, modifiedRangeIsInvalid) }
             </Grid>
           </Grid>
 
