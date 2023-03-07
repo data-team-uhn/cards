@@ -27,7 +27,7 @@ import { Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormCon
 import DownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 
@@ -196,11 +196,11 @@ function ExportButton(props) {
 
   // Determine if the before date is earlier than the after date
   useEffect(() => {
-    open && setCreatedRangeIsInvalid(!!createdAfter && !!createdBefore && new Date(createdBefore).valueOf() < new Date(createdAfter).valueOf());
+    open && setCreatedRangeIsInvalid(!!createdAfter && !!createdBefore && new Date(createdBefore).valueOf() <= new Date(createdAfter).valueOf());
   }, [createdAfter, createdBefore]);
 
   useEffect(() => {
-    open && setModifiedRangeIsInvalid(!!modifiedAfter && !!modifiedBefore && new Date(modifiedBefore).valueOf() < new Date(modifiedAfter).valueOf());
+    open && setModifiedRangeIsInvalid(!!modifiedAfter && !!modifiedBefore && new Date(modifiedBefore).valueOf() <= new Date(modifiedAfter).valueOf());
   }, [modifiedAfter, modifiedBefore]);
 
   let openDialog = () => {
@@ -235,16 +235,16 @@ function ExportButton(props) {
       path += ".dataFilter:createdBy=" + user;
     }
     if (createdAfter) {
-      path += ".dataFilter:createdAfter=" + createdAfter.toISODate();
+      path += ".dataFilter:createdAfter=" + createdAfter.toISO();
     }
     if (createdBefore) {
-      path += ".dataFilter:createdBefore=" + createdBefore.toISODate();
+      path += ".dataFilter:createdBefore=" + createdBefore.toISO();
     }
     if (modifiedAfter) {
-      path += ".dataFilter:modifiedAfter=" + modifiedAfter.toISODate();
+      path += ".dataFilter:modifiedAfter=" + modifiedAfter.toISO();
     }
     if (modifiedBefore) {
-      path += ".dataFilter:modifiedBefore=" + modifiedBefore.toISODate();
+      path += ".dataFilter:modifiedBefore=" + modifiedBefore.toISO();
     }
     if (status) {
       path += ".dataFilter";
@@ -295,7 +295,7 @@ function ExportButton(props) {
 
   let getDatePicker = (value, setter, rangeIsInvalid) => {
     return (<LocalizationProvider dateAdapter={AdapterLuxon}>
-              <DatePicker
+              <DateTimePicker
                 label={!value ? "Any date" : "Select date"}
                 value={value}
                 onChange={(value) => {
