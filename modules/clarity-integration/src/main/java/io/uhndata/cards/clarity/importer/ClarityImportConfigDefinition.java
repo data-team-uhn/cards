@@ -31,4 +31,7 @@ public @interface ClarityImportConfigDefinition
 
     @AttributeDefinition(name = "Import schedule", description = "Cron-readable import schedule")
     String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
+
+    @AttributeDefinition(name = "Past day to import", description = "0 means today, 1 means yesterday")
+    int pastDayToImport() default 1;
 }
