@@ -30,8 +30,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -82,6 +84,12 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     private static final String VALUE_NOT_SPECIFIED = "Not specified";
 
+    // xValueDictionary is used to cache the map from answer displayed values to raw values for the variable
+    private final ThreadLocal<Map<String, String>> xValueDictionary = new ThreadLocal<>();
+
+    // splitValueDictionary is used to cache the map from answer displayed values to raw values for the split variable
+    private final ThreadLocal<Map<String, String>> splitValueDictionary = new ThreadLocal<>();
+
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.REPLACE,
         policy = ReferencePolicy.DYNAMIC)
     private volatile List<ResourceJsonProcessor> allProcessors;
@@ -115,9 +123,14 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
             Node correctSubjectType = session.getNode(arguments.get("y-label"));
 
+            // Instantiate xLabels
+            this.xValueDictionary.set(new HashMap<>());
+
             // Grab all answers that have this question filled out, and the split var (if it exists)
             boolean isSplit = arguments.containsKey("splitVar");
             if (isSplit) {
+                // Instantiate splitLabels
+                this.splitValueDictionary.set(new HashMap<>());
                 Node split = session.getNode(arguments.get("splitVar"));
                 data = getAnswersWithType(data, "x", question, request.getResourceResolver());
                 data = getAnswersWithType(data, "split", split, request.getResourceResolver());
@@ -149,9 +162,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 String splitLabel = split.getProperty("text").getString();
                 builder.add("split-label", splitLabel);
                 addDataSplit(dataById, builder);
+                this.splitValueDictionary.remove();
             } else {
                 addData(answers, builder);
             }
+            this.xValueDictionary.remove();
 
             // Write the output
             final Writer out = response.getWriter();
@@ -304,10 +319,10 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         Node splitAnswer = splitVar.adaptTo(Node.class);
-        List<String> splitValues = getAnswerValues(splitAnswer);
+        List<String> splitValues = getAnswerValues(splitAnswer, this.splitValueDictionary.get());
 
         Node xAnswer = xVar.adaptTo(Node.class);
-        List<String> values = getAnswerValues(xAnswer);
+        List<String> values = getAnswerValues(xAnswer, this.xValueDictionary.get());
         Iterator<String> it = values.iterator();
         while (it.hasNext()) {
             String xValue = it.next();
@@ -379,6 +394,10 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             outerBuilder.add(key, keyBuilder.build());
         }
         builder.add("data", outerBuilder.build());
+
+        // Add value->raw value maps for nice display and filter generation on the frontend
+        builder.add("xValueDictionary", buildMapAsJson(this.xValueDictionary.get()));
+        builder.add("splitValueDictionary", buildMapAsJson(this.splitValueDictionary.get()));
     }
 
     /**
@@ -423,7 +442,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, Integer> counts = new LinkedHashMap<>();
         while (answers.hasNext()) {
             Node answer = answers.next().adaptTo(Node.class);
-            List<String> values = getAnswerValues(answer);
+            List<String> values = getAnswerValues(answer, this.xValueDictionary.get());
             Iterator<String> it = values.iterator();
             while (it.hasNext()) {
                 String value = it.next();
@@ -443,9 +462,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * Obtain the answer values as a list, regardless whether it is single or multi valued.
      *
      * @param answer The cards:Answer node
+     * @param valueDictionary a Map that contains all value -> raw value pairs encountered in any of the answers to
+     *     a specific variable (either x or split) used for generating the current statistic
      * @return A list of strings
      */
-    private List<String> getAnswerValues(Node answer)
+    private List<String> getAnswerValues(Node answer, Map<String, String> valueDictionary)
     {
         List<String> values = new LinkedList<>();
         // Call label processors to populate displayedValue
@@ -455,28 +476,57 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         JsonObject answerJson = builder.build();
         JsonValue jsonValue = answerJson.get(LABEL_PROP);
         try {
+            Property rawValue = answer.getProperty(VALUE_PROP);
             if (jsonValue == null) {
-                values.add(VALUE_NOT_SPECIFIED);
+                recordEmptyAnswerValue(values, valueDictionary);
             } else if (jsonValue.getValueType() == ValueType.ARRAY) {
                 JsonArray jsonArray = jsonValue.asJsonArray();
                 if (jsonArray.size() == 0) {
-                    values.add(VALUE_NOT_SPECIFIED);
+                    recordEmptyAnswerValue(values, valueDictionary);
                 } else {
+                    Value[] rawValues = rawValue.getValues();
                     for (int i = 0; i < jsonArray.size(); ++i) {
-                        values.add(jsonArray.getString(i));
+                        recordAnswerValue(values, valueDictionary, jsonArray.getString(i), rawValues[i].getString());
                     }
                 }
             } else {
-                String value = answerJson.getString(LABEL_PROP, VALUE_NOT_SPECIFIED);
-                values.add(value);
+                recordAnswerValue(values, valueDictionary, answerJson.getString(LABEL_PROP), rawValue.getString());
             }
-        } catch (ClassCastException e) {
+        } catch (ClassCastException | RepositoryException e) {
             LOGGER.error("Value could not be processed for question: {}", e.getMessage(), e);
             if (values.size() == 0) {
-                values.add(VALUE_NOT_SPECIFIED);
+                recordEmptyAnswerValue(values, valueDictionary);
             }
         }
         return values;
+    }
+
+    /**
+     * Records the "empty value" into a certain answer's value list and the statistic's overall value dictionary.
+     *
+     * @param values a List of strings holding all values for a particular answer
+     * @param valueDictionary a Map that contains all value -> raw value pairs encountered in any of the answers to
+     *     a specific variable (either x or split) used for generating the current statistic
+     */
+    private void recordEmptyAnswerValue(List<String> values, Map<String, String> valueDictionary)
+    {
+        recordAnswerValue(values, valueDictionary, VALUE_NOT_SPECIFIED, "");
+    }
+
+    /**
+     * Records an answer value into a certain answer's value list and the statistic's overall value dictionary.
+     *
+     * @param values a List of strings holding all values for a particular answer
+     * @param valueDictionary a Map that contains all value -> raw value pairs encountered in any of the answers to
+     *     a specific variable (either x or split) used for generating the current statistic
+     * @param value The value to record
+     * @param rawValue The corresponding raw value, recorder together with value in the dictionary
+     */
+    private void recordAnswerValue(List<String> values, Map<String, String> valueDictionary, String value,
+        String rawValue)
+    {
+        values.add(value);
+        valueDictionary.put(value, rawValue);
     }
 
     /**
@@ -498,8 +548,28 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             dataBuilder.add(key, counts.get(key));
         }
         builder.add("data", dataBuilder.build());
+
+        // Add value->label maps for nice display on the frontend)
+        builder.add("xValueDictionary", buildMapAsJson(this.xValueDictionary.get()));
     }
 
+    /**
+     * Build a JsonObject from a map.
+     *
+     * @param map A String->String map
+     * @return JsonObject the same data as a json object
+     */
+    private JsonObject buildMapAsJson(Map<String, String> map)
+    {
+        // Convert the Map into a JsonObject
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        Iterator<String> keysMap = map.keySet().iterator();
+        while (keysMap.hasNext()) {
+            String key = keysMap.next();
+            builder.add(key, map.get(key));
+        }
+        return builder.build();
+    }
     /**
      * Get the parent node type of a given cards:Answer node.
      *
