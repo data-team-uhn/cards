@@ -89,7 +89,7 @@ public class UpdatedDischargeDateFiller implements ClarityDataProcessor
             cutoff.add(Calendar.DATE, -this.pastDaysLimit);
             discharge.setTime(DATE_FORMAT.parse(input.getOrDefault("HOSP_DISCHARGE_DTTM", "")));
             final long length = ChronoUnit.DAYS.between(cutoff.toInstant(), discharge.toInstant());
-            if (length <= 0) {
+            if (length < 0) {
                 input.put("HOSP_DISCHARGE_DTTM", DATE_FORMAT.format(cutoff.getTime()));
                 LOGGER.warn("Updated visit {} discharge date from {} to {}",
                     input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"), DATE_FORMAT.format(discharge.getTime()),
