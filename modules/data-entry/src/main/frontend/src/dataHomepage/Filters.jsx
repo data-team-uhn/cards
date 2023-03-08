@@ -22,6 +22,7 @@ import { Autocomplete, DialogActions, DialogContent, DialogTitle, Grid, Select, 
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
+import { styled } from '@mui/system';
 
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
@@ -45,6 +46,10 @@ const FILTER_URL = "/Questionnaires.filters";
 const FilterPopper = function (props) {
   return <Popper {...props} style={{maxWidth: "fit-content"}} placement="bottom-start" />;
 };
+
+const GroupItems = styled('ul')({
+  padding: 0,
+});
 
 function Filters(props) {
   const { classes, disabled, onChangeFilters, questionnaire, filtersJsonString } = props;
@@ -116,7 +121,7 @@ function Filters(props) {
 
   useEffect(() => {
     if (filterableFields.length > 0 && Object.keys(filterableTitles).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelesList(filterableFields, false));
+      setAutoselectOptions(getFieldsLabelesList(filterableFields, false, "Add new filter..."));
     }
   }, [filterableFields, filterableTitles]);
 
@@ -422,26 +427,19 @@ function Filters(props) {
 
   // From an array of fields, turn it into a react component
   let GetReactComponentFromFields = (field, index) => {
-      if (field.path) {
-        // Straight strings are MenuItems
-        return <MenuItem value={field.path} key={field.path} className={field.className} onClick={(event) => handleChangeFilter(index, field.path)}>{field.label}</MenuItem>
-      } else {
-        // Arrays represent Questionnaires of Sections
-        // which we'll need to turn into opt groups
-        return <MenuItem key={field.label} className={field.className} disabled>{field.label}</MenuItem>
-      }
+    // Straight strings are MenuItems
+    return <MenuItem value={field.path} key={field.path} className={field.className} onClick={(event) => handleChangeFilter(index, field.path)}>{field.label}</MenuItem>
   }
 
-  let getFieldsLabelesList = (fields, nested=false) => {
+  let getFieldsLabelesList = (fields, nested=false, category) => {
     return fields.map((path) => {
       if (typeof path == "string") {
         // Straight strings are MenuItems
-        return {path: path, className: classes.categoryOption + (nested ? " " + classes.nestedSelectOption : ""), label: filterableTitles[path]}
+        return {path: path, className: classes.categoryOption + (nested ? " " + classes.nestedSelectOption : ""), label: filterableTitles[path], category: category}
       } else if (Array.isArray(path)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [{path: null, className: classes.categoryHeader, label: path[0]},
-          getFieldsLabelesList(path.slice(1), true)].flat();
+        return [getFieldsLabelesList(path.slice(1), true, path[0])].flat();
       }
     }).flat();
   }
@@ -534,8 +532,17 @@ function Filters(props) {
                       className={classes.answerField}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
                       options={autoselectOptions}
+                      groupBy={(option) => option.category}
                       getOptionLabel={(option) => option.label}
                       renderOption={(props, option) => GetReactComponentFromFields(option, index) }
+                      renderGroup={(params) => (
+                        <div key={params.key}>
+                          {params.group === "Add new filter..."
+                          ? <MenuItem value="" key={params.group} disabled><span className={classes.selectPlaceholder}>Add new filter...</span></MenuItem>
+                          : <MenuItem key={params.group} className={classes.categoryHeader} disabled>{params.group}</MenuItem>}
+                          <GroupItems>{params.children}</GroupItems>
+                        </div>
+                      )}
                       renderInput={(params) =>
                           <TextField
                             variant="standard"
