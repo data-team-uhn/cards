@@ -25,7 +25,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,20 +42,51 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  *
  * @version $Id$
  */
-@Component
+@Designate(ocd = UpdatedDischargeDateFiller.Config.class)
+@Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class UpdatedDischargeDateFiller implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdatedDischargeDateFiller.class);
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    private final boolean enabled;
+
+    private final int pastDaysLimit;
+
+    @ObjectClassDefinition(name = "Clarity import filter - Update discharge date",
+        description = "Configuration for the Clarity importer to set a more recent discharge date for events that"
+            + " happened too long ago")
+    public @interface Config
+    {
+        @AttributeDefinition(name = "Enabled")
+        boolean enable()
+
+        default false;
+
+        @AttributeDefinition(name = "Past days limit", description = "How many days ago is the cutoff before which the"
+            + " discharge date is moved up. 1 means anything older than 24 hours ago will be moved to exactly 24 hours"
+            + " before the import time.")
+        int pastDaysLimit() default 7;
+    }
+
+    @Activate
+    public UpdatedDischargeDateFiller(Config config)
+    {
+        this.enabled = config.enable();
+        this.pastDaysLimit = config.pastDaysLimit();
+    }
+
     @Override
     public Map<String, String> processEntry(final Map<String, String> input)
     {
+        if (!this.enabled) {
+            return input;
+        }
         try {
             final Calendar discharge = Calendar.getInstance();
             final Calendar cutoff = Calendar.getInstance();
-            cutoff.add(Calendar.DATE, -7);
+            cutoff.add(Calendar.DATE, -this.pastDaysLimit);
             discharge.setTime(DATE_FORMAT.parse(input.getOrDefault("HOSP_DISCHARGE_DTTM", "")));
             final long length = ChronoUnit.DAYS.between(cutoff.toInstant(), discharge.toInstant());
             if (length <= 0) {
