@@ -80,14 +80,14 @@ function Statistic(props) {
   let xVar = definition["xVar"];
 
   // If there are any answer options, use their defaultOrder for sorting
-  let xLabels = Object.values(xVar)
+  let xOptionLabels = Object.values(xVar)
     .filter(o => o["jcr:primaryType"] == "cards:AnswerOption")
     .sort((o1, o2) => (o1.defaultOrder - o2.defaultOrder));
 
-  if (xLabels.length) {
+  if (xOptionLabels.length) {
     rechartsData.sort((a, b) => {
-      let aIdx = xLabels.findIndex(i => i.label == a.x);
-      let bIdx = xLabels.findIndex(i => i.label == b.x);
+      let aIdx = xOptionLabels.findIndex(i => i.label == a.x);
+      let bIdx = xOptionLabels.findIndex(i => i.label == b.x);
       if (aIdx >= 0 && bIdx >= 0) {
         return aIdx - bIdx;
       } else if (aIdx >= 0) {
@@ -161,11 +161,13 @@ function Statistic(props) {
   let generateFilters = (xVal, splitVal) => {
     let result = [];
     let xVarDef = definition?.meta?.xVar;
-    let xVarFilter = generateFilter(xVarDef, xVal)
+    let xValueDictionary = definition?.xValueDictionary;
+    let xVarFilter = generateFilter(xVarDef, xValueDictionary ? xValueDictionary[xVal] : xVal)
     result.push(xVarFilter);
     if (isSplit) {
       let splitDef = definition?.meta?.splitVar;
-      let splitFilter = generateFilter(splitDef, splitVal);
+      let splitValueDictionary = definition?.splitValueDictionary;
+      let splitFilter = generateFilter(splitDef, splitValueDictionary ? splitValueDictionary[splitVal] : splitVal);
       result.push(splitFilter);
     }
     return result;
