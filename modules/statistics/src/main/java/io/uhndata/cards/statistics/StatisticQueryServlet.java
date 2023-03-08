@@ -43,6 +43,7 @@ import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -126,7 +127,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 // filter if split does not exist
                 final StringBuilder query =
                     // We select all answers that answer our question
-                    new StringBuilder("select n from [cards:Answer] as n where n.'question'='"
+                    new StringBuilder("select n from [" + getAnswerNodeType(question) + "] as n where n.'question'='"
                         + question.getIdentifier() + "' order by n.'value' desc");
                 answers = request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
                 answers = filterAnswersToSubjectType(answers, correctSubjectType);
@@ -197,7 +198,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     {
         final StringBuilder query =
             // We select all answers that answer our question
-            new StringBuilder("select n from [cards:Answer] as n where n.'question'='"
+            new StringBuilder("select n from [" + getAnswerNodeType(question) + "] as n where n.'question'='"
                 + question.getIdentifier() + "' order by n.'value' desc");
         Iterator<Resource> answers = resolver.findResources(query.toString(), Query.JCR_SQL2);
 
@@ -207,6 +208,25 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         return data;
+    }
+
+    /**
+     * Obtain the answer node type based on the dataType specified in the question definition.
+     *
+     * @param question The question node
+     * @return A string "cards:____Answer" (e.g., cards:TextAnswer, cards:LongAnswer) or "cards:Answer" if obtaining the
+     *     type fails
+     */
+    private String getAnswerNodeType(Node question)
+    {
+        String nodeType = "";
+        try {
+            final String dataTypeString = question.getProperty("dataType").getString();
+            nodeType = StringUtils.capitalize(dataTypeString);
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to obtain answer node type: {}", e.getMessage(), e);
+        }
+        return "cards:" + nodeType + "Answer";
     }
 
     /**
