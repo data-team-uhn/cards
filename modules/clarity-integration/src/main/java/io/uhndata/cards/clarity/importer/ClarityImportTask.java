@@ -26,7 +26,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -264,10 +266,14 @@ public class ClarityImportTask implements Runnable
             PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
             ResultSet results = statement.executeQuery();
 
+            // Sort the data processors
+            List<ClarityDataProcessor> sortedProcessors = new ArrayList<>(this.processors);
+            Collections.sort(sortedProcessors);
+
             while (results.next()) {
                 // Create the Subjects and Forms as is needed
                 try {
-                    createFormsAndSubjects(resolver, results);
+                    createFormsAndSubjects(resolver, results, sortedProcessors);
                     session.save();
                 } catch (ParseException | PersistenceException e) {
                     LOGGER.error("Exception while importing data to JCR", e);
@@ -290,11 +296,7 @@ public class ClarityImportTask implements Runnable
         } catch (RepositoryException e) {
             LOGGER.error("Error during Clarity import: {}", e.getMessage(), e);
         } finally {
-            // Cleanup all ThreadLocals
-            this.nodesToCheckin.remove();
-            this.versionManager.remove();
-            this.clarityImportConfiguration.remove();
-            this.sqlColumnToDataType.remove();
+            cleanupState();
             this.metricsAdjustments.remove();
             if (mustPopResolver) {
                 this.rrp.pop();
@@ -425,7 +427,8 @@ public class ClarityImportTask implements Runnable
 
     // Methods for handling a result row
 
-    private void createFormsAndSubjects(ResourceResolver resolver, ResultSet sqlRow)
+    private void createFormsAndSubjects(ResourceResolver resolver, ResultSet sqlRow,
+        List<ClarityDataProcessor> processors)
         throws ParseException, PersistenceException, RepositoryException, SQLException
     {
         Map<String, String> row = new HashMap<>();
@@ -434,7 +437,7 @@ public class ClarityImportTask implements Runnable
             row.put(sqlRow.getMetaData().getColumnName(column), sqlRow.getString(column));
         }
 
-        for (ClarityDataProcessor processor : this.processors) {
+        for (ClarityDataProcessor processor : processors) {
             try {
                 row = processor.processEntry(row);
                 if (row == null) {
@@ -700,5 +703,14 @@ public class ClarityImportTask implements Runnable
             props.put(ClarityImportTask.VALUE_PROP, multiValues);
         }
         return props;
+    }
+
+    private void cleanupState()
+    {
+        // Cleanup all ThreadLocals
+        this.nodesToCheckin.remove();
+        this.versionManager.remove();
+        this.clarityImportConfiguration.remove();
+        this.sqlColumnToDataType.remove();
     }
 }

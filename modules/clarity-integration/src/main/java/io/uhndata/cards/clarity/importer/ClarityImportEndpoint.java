@@ -19,7 +19,6 @@
 package io.uhndata.cards.clarity.importer;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,10 +73,8 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
 
         // Load configuration from environment variables
         final int pastDayToQuery = getPastDayToQuery(request);
-        List<ClarityDataProcessor> sortedProcessors = new ArrayList<>(this.processors);
-        sortedProcessors.sort(null);
         final Runnable importJob =
-            new ClarityImportTask(pastDayToQuery, this.resolverFactory, this.rrp, sortedProcessors);
+            new ClarityImportTask(pastDayToQuery, this.resolverFactory, this.rrp, this.processors);
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);
