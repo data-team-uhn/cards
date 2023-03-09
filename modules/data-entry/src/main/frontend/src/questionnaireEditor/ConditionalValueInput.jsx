@@ -31,7 +31,6 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Tooltip,
-  Typography,
 } from "@mui/material";
 
 import { makeStyles } from '@mui/styles';
@@ -82,7 +81,6 @@ let ConditionalValueInput = (props) => {
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed values
   let [ isDuplicate, setDuplicate ] = useState(false);
   let [ variables, setVariables ] = useState();
-  let [ error, setError ] = useState();
 
   let questions = useQuestionnaireReaderContext();
 
@@ -145,31 +143,6 @@ let ConditionalValueInput = (props) => {
     }
   }, [questions]);
 
-  // Input for adding a new value
-  let textField = (label, params) => (
-    <TextField
-        {...params}
-        variant="standard"
-        fullWidth
-        value={tempValue}
-        error={isDuplicate}
-        label={label}
-        helperText={isDuplicate ? 'Duplicated entry' : 'Press ENTER to add a new line'}
-        onChange={handleChange}
-        onBlur={handleValueSelected}
-        inputProps={Object.assign({
-          onKeyDown: (event) => {
-            if (event.key == 'Enter') {
-              // We need to stop the event so that it doesn't trigger a form submission
-              event.preventDefault();
-              event.stopPropagation();
-              handleValue(event.target.value);
-            }
-          }
-        })}
-      />
-  );
-
   return (
     <EditorInput name={objectKey} hint={hint}>
 
@@ -205,7 +178,7 @@ let ConditionalValueInput = (props) => {
       )}
 
       {/* Display a dropdown for variable names or a simple input for values */}
-      { isReference && !error ?
+      { isReference ?
         <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
           <InputLabel id={`label-${path}`}>Select the id of a question from this questionnaire</InputLabel>
           <Select
@@ -224,14 +197,27 @@ let ConditionalValueInput = (props) => {
           </Select>
         </FormControl>
         :
-        ( isReference && error ?
-          <>
-            <Typography color="error">{error}</Typography>
-            { textField("Enter the id of a question from this questionnaire") }
-          </>
-          :
-          textField("Enter a value")
-        )
+        <TextField
+          {...params}
+          variant="standard"
+          fullWidth
+          value={tempValue}
+          error={isDuplicate}
+          label="Enter a value"
+          helperText={isDuplicate ? 'Duplicated entry' : 'Press ENTER to add a new line'}
+          onChange={handleChange}
+          onBlur={handleValueSelected}
+          inputProps={Object.assign({
+            onKeyDown: (event) => {
+              if (event.key == 'Enter') {
+                // We need to stop the event so that it doesn't trigger a form submission
+                event.preventDefault();
+                event.stopPropagation();
+                handleValue(event.target.value);
+              }
+            }
+          })}
+        />
       }
 
       {/* Metadata to sent to the server */}
