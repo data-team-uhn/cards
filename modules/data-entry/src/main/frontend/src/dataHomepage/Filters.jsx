@@ -425,12 +425,6 @@ function Filters(props) {
         />);
   }
 
-  // From an array of fields, turn it into a react component
-  let GetReactComponentFromFields = (field, index) => {
-    // Straight strings are MenuItems
-    return <MenuItem value={field.path} key={field.path} className={field.className} onClick={(event) => handleChangeFilter(index, field.path)}>{field.label}</MenuItem>
-  }
-
   let getFieldsLabelesList = (fields, nested=false, category) => {
     return fields.map((path) => {
       if (typeof path == "string") {
@@ -534,7 +528,16 @@ function Filters(props) {
                       options={autoselectOptions}
                       groupBy={(option) => option.category}
                       getOptionLabel={(option) => option.label}
-                      renderOption={(props, option) => GetReactComponentFromFields(option, index) }
+                      renderOption={(props, option) =>
+                        <MenuItem
+                          value={option.path}
+                          key={option.path}
+                          className={option.className}
+                          onClick={(event) => handleChangeFilter(index, option.path)}
+                        >
+                          {option.label}
+                        </MenuItem>
+                      }
                       renderGroup={(params) => (
                         <div key={params.key}>
                           {params.group === "Add new filter..."
@@ -544,12 +547,12 @@ function Filters(props) {
                         </div>
                       )}
                       renderInput={(params) =>
-                          <TextField
-                            variant="standard"
-                            label="Add new filter..."
-                            helperText={null}
-                            {...params}
-                          />
+                        <TextField
+                          variant="standard"
+                          label="Add new filter..."
+                          helperText={null}
+                          {...params}
+                        />
                       }
                     />
                   </Grid>

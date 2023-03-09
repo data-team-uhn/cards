@@ -156,12 +156,6 @@ let ReferenceInput = (props) => {
     setPathMap(paths);
   }
 
-  // From an array of fields, turn it into a react component
-  let GetReactComponentFromFields = (field) => {
-    // Straight strings are MenuItems
-    return <MenuItem value={field.path} key={field.path} className={field.className} onClick={(event) => {changeCurValue(field.path); setOpen(false);}}>{field.label}</MenuItem>
-  }
-
   let getFieldsLabelesList = (fields, nested=false, category) => {
     return fields.map((path) => {
 	  // If we have a restriction, we might return nothing
@@ -298,7 +292,16 @@ let ReferenceInput = (props) => {
         options={autoselectOptions}
         groupBy={(option) => option.category}
         getOptionLabel={(option) => option.label}
-        renderOption={(props, option) => GetReactComponentFromFields(option) }
+        renderOption={(props, option) =>
+          <MenuItem
+            value={option.path}
+            key={option.path}
+            className={option.className}
+            onClick={(event) => {changeCurValue(option.path); setOpen(false);}}
+          >
+            {option.label}
+          </MenuItem>
+        }
         renderGroup={(params) => (
           <div key={params.key}>
             { params.group === "Add new var..."
@@ -314,8 +317,8 @@ let ReferenceInput = (props) => {
             helperText={null}
             {...params}
           />
-      }
-    />
+        }
+      />
     </EditorInput>
   )
 }
