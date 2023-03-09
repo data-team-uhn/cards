@@ -20,22 +20,36 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
-import { Avatar, Checkbox, DialogActions, DialogContent, FormControl, Icon, Grid, Radio, RadioGroup,
-  FormControlLabel, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
+
+import { Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
+  FormControlLabel, TextField, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
 
 import DownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
+
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 
 const useStyles = makeStyles(theme => ({
   container: {
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(.5),
+    "& + .MuiDivider-root" : {
+      margin: theme.spacing(3, -3),
+    },
   },
   startAligned: {
     "& > .MuiGrid-item:first-child" : {
-      paddingTop: theme.spacing(3),
+      marginTop: theme.spacing(3),
+    },
+  },
+  withSelect: {
+    marginBottom: theme.spacing(2),
+    "& > .MuiGrid-item:first-child" : {
+      marginTop: theme.spacing(2),
     },
   },
   entryActionIcon: {
@@ -69,7 +83,16 @@ const useStyles = makeStyles(theme => ({
     marginTop:  theme.spacing(1),
     alignSelf: "start",
     zoom: "75%"
-  }
+  },
+  dateRange: {
+    alignItems: "baseline",
+    "& .MuiInputLabel-shrink": {
+      visibility: "hidden",
+    },
+    "& + .MuiTypography-root": {
+      marginTop: theme.spacing(-2.5),
+    },
+  },
 }));
 
 let findQuestionsOrSections = (json, result = []) =>  {
@@ -106,6 +129,7 @@ function ExportButton(props) {
     hasHeaderIndentifiers: false,
     hasAnswerLabels: false,
     columnSelectionMode: "exclude",
+    statusSelectionMode: "status",
   }
 
   const [ open, setOpen ] = useState(false);
@@ -130,6 +154,20 @@ function ExportButton(props) {
   const [ selectedEntityIds, setSelectedEntityIds ] = useState([]);
   const [ tempValue, setTempValue ] = useState(''); // Holds new, non-selected values
 
+  const [ users, setUsers ] = useState();
+  const [ user, setUser ] = useState('');
+
+  const [ createdAfter, setCreatedAfter ] = useState(null);
+  const [ createdBefore, setCreatedBefore ] = useState(null);
+  const [ modifiedAfter, setModifiedAfter ] = useState(null);
+  const [ modifiedBefore, setModifiedBefore ] = useState(null);
+  const [ createdRangeIsInvalid, setCreatedRangeIsInvalid ] = useState(false);
+  const [ modifiedRangeIsInvalid, setModifiedRangeIsInvalid ] = useState(false);
+
+  const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED" ];
+  const [ statusSelectionMode, setStatusSelectionMode ] = useState(DEFAULTS.statusSelectionMode);
+  const [ status, setStatus ] = useState('');
+
   const classes = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -145,6 +183,25 @@ function ExportButton(props) {
         });
     }
   }, [entityData, open]);
+
+  useEffect(() => {
+    if (!users && open) {
+      fetchWithReLogin(globalLoginDisplay, "/home/users.json")
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => {
+          setUsers(json.rows);
+        });
+    }
+  }, [open]);
+
+  // Determine if the before date is earlier than the after date
+  useEffect(() => {
+    open && setCreatedRangeIsInvalid(!!createdAfter && !!createdBefore && new Date(createdBefore).valueOf() <= new Date(createdAfter).valueOf());
+  }, [createdAfter, createdBefore]);
+
+  useEffect(() => {
+    open && setModifiedRangeIsInvalid(!!modifiedAfter && !!modifiedBefore && new Date(modifiedBefore).valueOf() <= new Date(modifiedAfter).valueOf());
+  }, [modifiedAfter, modifiedBefore]);
 
   let openDialog = () => {
     entryPath && !open && setOpen(true);
@@ -173,6 +230,25 @@ function ExportButton(props) {
     }
     if (hasAnswerLabels) {
       path += ".labels";
+    }
+    if (user) {
+      path += ".dataFilter:createdBy=" + user;
+    }
+    if (createdAfter) {
+      path += ".dataFilter:createdAfter=" + createdAfter.toISO();
+    }
+    if (createdBefore) {
+      path += ".dataFilter:createdBefore=" + createdBefore.toISO();
+    }
+    if (modifiedAfter) {
+      path += ".dataFilter:modifiedAfter=" + modifiedAfter.toISO();
+    }
+    if (modifiedBefore) {
+      path += ".dataFilter:modifiedBefore=" + modifiedBefore.toISO();
+    }
+    if (status) {
+      let pref = `.dataFilter:${statusSelectionMode}=`;
+      path += pref + encodeURIComponent(encodeURIComponent(status));
     }
     path += fileFormat;
     window.open(path, '_blank');
@@ -215,6 +291,50 @@ function ExportButton(props) {
                 { entitySpecs[type].avatar ? <Icon>{entitySpecs[type].avatar}</Icon> : type?.charAt(0) }
             </Avatar>);
   }
+
+  let getDatePicker = (value, setter, rangeIsInvalid) => {
+    return (<LocalizationProvider dateAdapter={AdapterLuxon}>
+              <DateTimePicker
+                label={!value ? "Any date" : "Select date"}
+                inputFormat={"yyyy/MM/dd hh:mm a"}
+                value={value}
+                onChange={(value) => {
+                  setter(value);
+                }}
+                renderInput={(params) =>
+                  <TextField
+                    variant="standard"
+                    {...params}
+                    error={rangeIsInvalid}
+                    helperText=" "
+                    InputProps={{
+                      ...params.InputProps
+                    }}
+                    inputProps={{
+                      ...params.inputProps,
+                      placeholder: "Any date"
+                    }}
+                  />
+                }
+              />
+            </LocalizationProvider>
+          );
+  }
+
+  let getDateRange = (valueA, setterA, valueB, setterB, rangeIsInvalid) => {
+    return (<>
+      <Stack direction="row" spacing={2} divider={<span>—</span>} className={classes.dateRange}>
+        { getDatePicker(valueA, setterA, rangeIsInvalid) }
+        { getDatePicker(valueB, setterB, rangeIsInvalid) }
+      </Stack>
+      { rangeIsInvalid &&
+        <Typography component="div" variant="caption" color="error">
+          The second date should be later than the first date
+        </Typography>
+      }
+    </>);
+  }
+
   return(
     <React.Fragment>
       <ResponsiveDialog
@@ -223,7 +343,7 @@ function ExportButton(props) {
         width="md"
         onClose={closeDialog}
       >
-        <DialogContent>
+        <DialogContent dividers>
           <Grid container alignItems='center' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">File format:</Typography></Grid>
             <Grid item xs={8}>
@@ -277,6 +397,10 @@ function ExportButton(props) {
               </RadioGroup>
             </Grid>
           </Grid>
+
+          <Divider/>
+
+          <Typography variant="h6">Columns</Typography>
 
           <Grid container alignItems='center' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
@@ -338,12 +462,87 @@ function ExportButton(props) {
               </FormControl>
             </Grid>
           </Grid>
+
+          <Divider/>
+
+          <Typography variant="h6">Filters</Typography>
+
+          <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
+            <Grid item xs={4}><Typography variant="subtitle2">Created by:</Typography></Grid>
+            <Grid item xs={8}>
+                <FormControl variant="standard" fullWidth>
+                  <InputLabel id="label">Select user</InputLabel>
+                  <Select
+                    variant="standard"
+                    labelId="label"
+                    value={user}
+                    onChange={(event) => setUser(event.target.value)}
+                  >
+                    { users?.map(v =>
+                            <MenuItem value={v.name} key={`option-${v.principalName}`}>
+                              {v.principalName}
+                            </MenuItem>)
+                    }
+                  </Select>
+                </FormControl>
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='baseline' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Created between:</Typography></Grid>
+            <Grid item xs={8}>
+              { getDateRange(createdAfter, setCreatedAfter, createdBefore, setCreatedBefore, createdRangeIsInvalid) }
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='baseline' direction="row" className={classes.container}>
+            <Grid item xs={4}><Typography variant="subtitle2">Modified between:</Typography></Grid>
+            <Grid item xs={8}>
+              { getDateRange(modifiedAfter, setModifiedAfter, modifiedBefore, setModifiedBefore, modifiedRangeIsInvalid) }
+            </Grid>
+          </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container}>
+              <Grid item xs={4}><Typography variant="subtitle2">Status flag selection mode:</Typography></Grid>
+              <Grid item xs={8}>
+                <RadioGroup
+                  row
+                  name="statusSelectionMode"
+                  value={statusSelectionMode}
+                  onChange={(event) => setStatusSelectionMode(event.target.value)}
+                >
+                  <FormControlLabel value="status" control={<Radio />} label="Include" />
+                  <FormControlLabel value="statusNot" control={<Radio />} label="Exclude" />
+                </RadioGroup>
+              </Grid>
+          </Grid>
+
+          <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
+            <Grid item xs={4}>
+              <Typography variant="subtitle2">{statusSelectionMode == "status" ? "Include only forms with the status flag:" : "Exclude all forms with the status flag:"}</Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <FormControl variant="standard" fullWidth>
+                <InputLabel id="status">Select a status</InputLabel>
+                <Select
+                  variant="standard"
+                  labelId="status"
+                  value={status}
+                  label="Select a status flag"
+                  onChange={(event) => setStatus(event.target.value)}
+                >
+                  { statuses.map(v => <MenuItem value={v} key={v}>{v}</MenuItem>) }
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
             <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>
             <Button
               variant="contained"
               size="small"
+              disabled={createdRangeIsInvalid || modifiedRangeIsInvalid}
               onClick={() => handleExport()}
             >
               Export
