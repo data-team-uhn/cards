@@ -44,7 +44,7 @@ const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
 
 const FilterPopper = function (props) {
-  return <Popper {...props} style={{maxWidth: "fit-content"}} placement="bottom-start" />;
+  return <Popper {...props} style={{width: "80%"}} placement="bottom-start" />;
 };
 
 const GroupItems = styled('ul')({

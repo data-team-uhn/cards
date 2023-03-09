@@ -19,7 +19,8 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { Input, MenuItem, Select } from "@mui/material";
+import { Autocomplete, MenuItem, Popper, TextField } from "@mui/material";
+import { styled } from '@mui/system';
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -34,6 +35,14 @@ let FILTER_URL = "/Questionnaires.deep.json";
 // TODO: Figure out what we should do with the limit in the URL below
 let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 
+const FilterPopper = function (props) {
+  return <Popper {...props} style={{width: "80%"}} placement="bottom-start" />;
+};
+
+const GroupItems = styled('ul')({
+  padding: 0,
+});
+
 // Reference Input field used by Edit dialog component
 let ReferenceInput = (props) => {
   const { classes, objectKey, data, value, hint } = props;
@@ -45,6 +54,8 @@ let ReferenceInput = (props) => {
   let [ pathMap, setPathMap ] = useState({});
   const [ options, setOptions ] = useState([]);
   const [ restrictions, setRestrictions ] = useState([]);
+  const [ autoselectOptions, setAutoselectOptions ] = useState([]);
+  const [ open, setOpen ] = useState(false);
 
   const isNumeric = value.filter == "numeric";
   const allowOnlyApplicableFor = value.restriction;
@@ -59,6 +70,12 @@ let ReferenceInput = (props) => {
     getRestrictions(allowOnlyApplicableFor);
   },
   [fieldsReader[allowOnlyApplicableFor]]);
+
+  useEffect(() => {
+    if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
+      setAutoselectOptions(getFieldsLabelesList(options, false, "Add new var..."));
+    }
+  }, [options, titleMap]);
 
   // Obtain information about the questions that can be used as a reference
   let grabData = (urlBase, parser) => {
@@ -76,11 +93,11 @@ let ReferenceInput = (props) => {
     // It is a list of either strings (for options) or recursive lists
     // Each recursive list must have a string for its 0th option, which
     // is taken to be its title
-    let newFilterableFields = [""];
+    let newFilterableFields = [];
     // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
-    let newFilterableTitles = {"": "None"};
+    let newFilterableTitles = {};
     // newFilterablePaths is a mapping from a string in newFilterableFields to a path in the JCR
-    let newFilterablePaths = {"": ""};
+    let newFilterablePaths = {};
 
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
@@ -124,9 +141,9 @@ let ReferenceInput = (props) => {
 
   let parseSubjectTypeData = (subjectTypeJson) => {
     // Parse through, but keep a custom field for the subject
-    let fields = [""];
-    let titles = {"": "None"};
-    let paths = {"": ""};
+    let fields = [];
+    let titles = {};
+    let paths = {};
 
     for (let subjectType of subjectTypeJson["rows"]) {
       // For each reference, store its UUID and title
@@ -140,22 +157,23 @@ let ReferenceInput = (props) => {
   }
 
   // From an array of fields, turn it into a react component
-  let getReactComponentFromFields = (fields, nested=false) => {
+  let GetReactComponentFromFields = (field) => {
+    // Straight strings are MenuItems
+    return <MenuItem value={field.path} key={field.path} className={field.className} onClick={(event) => {changeCurValue(field.path); setOpen(false);}}>{field.label}</MenuItem>
+  }
+
+  let getFieldsLabelesList = (fields, nested=false, category) => {
     return fields.map((path) => {
-      if (typeof path == "string") {
+	  // If we have a restriction, we might return nothing
+      if (typeof path == "string" && !(restrictions && restrictions.length > 0 && !restrictions.includes(path))) {
         // Straight strings are MenuItems
-        // If we have a restriction, we might return nothing
-        if (restrictions && restrictions.length > 0 && !restrictions.includes(path)) {
-          return null;
-        }
-        return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{titleMap[path]}</MenuItem>
+        return {path: path, className: classes.categoryOption + (nested ? " " + classes.nestedSelectOption : ""), label: titleMap[path], category: category}
       } else if (Array.isArray(path)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
-          getReactComponentFromFields(path.slice(1), true)];
+        return [getFieldsLabelesList(path.slice(1), true, path[0])].flat();
       }
-    })
+    }).flat();
   }
 
   let getRestrictions = (restrictingField) => {
@@ -266,16 +284,38 @@ let ReferenceInput = (props) => {
     <EditorInput name={objectKey} hint={hint}>
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
       {hiddenInput}
-      <Select
-        variant="standard"
-        id={objectKey}
-        value={curValue || []}
-        onChange={(event) => {changeCurValue(event.target.value);}}
-        input={<Input id={objectKey} />}
-        renderValue={(value) => titleMap[value]}
-      >
-        {getReactComponentFromFields(options)}
-      </Select>
+      <Autocomplete
+        open={open}
+        onOpen={() => {
+            setOpen(true);
+        }}
+        onClose={() => {
+            setOpen(false);
+        }}
+        value={curValue && autoselectOptions.find(item => item.path == curValue) || null}
+        PopperComponent={FilterPopper}
+        className={classes.answerField}
+        options={autoselectOptions}
+        groupBy={(option) => option.category}
+        getOptionLabel={(option) => option.label}
+        renderOption={(props, option) => GetReactComponentFromFields(option) }
+        renderGroup={(params) => (
+          <div key={params.key}>
+            { params.group === "Add new var..."
+            ? <MenuItem value="" key={params.group} disabled><span className={classes.selectPlaceholder}>Add new var...</span></MenuItem>
+            : <MenuItem key={params.group} className={classes.categoryHeader} disabled>{params.group}</MenuItem> }
+            <GroupItems>{params.children}</GroupItems>
+          </div>
+        )}
+        renderInput={(params) =>
+          <TextField
+            variant="standard"
+            label="Add new var..."
+            helperText={null}
+            {...params}
+          />
+      }
+    />
     </EditorInput>
   )
 }
