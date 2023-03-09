@@ -247,7 +247,6 @@ function ExportButton(props) {
       path += ".dataFilter:modifiedBefore=" + modifiedBefore.toISO();
     }
     if (status) {
-      path += ".dataFilter";
       let pref = `.dataFilter:${statusSelectionMode}=`;
       path += pref + encodeURIComponent(encodeURIComponent(status));
     }
