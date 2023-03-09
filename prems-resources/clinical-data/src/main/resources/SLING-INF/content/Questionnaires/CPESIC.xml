@@ -70,7 +70,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>You should fill out this questionnaire only if you are the patient who received the invitation email. You may need to get help from a family member or friend to answer the questions. That’s okay.
+				<value>You should fill out this questionnaire only if you are the patient who received the invitation email. You may need to get help from a family member or friend to answer the questions. That's okay.
 
 Answer **all** the questions by selecting the circle to the left of your answer.
 
@@ -2007,7 +2007,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>After you left the hospital, did you go directly to your own home, to someone else’s home or to another health facility?</value>
+				<value>After you left the hospital, did you go directly to your own home, to someone else's home or to another health facility?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4776,7 +4776,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>description</name>
-				<value>Please answer on a scale where 0 is “not helped at all” and 10 is “helped completely.”</value>
+				<value>Please answer on a scale where 0 is "not helped at all" and 10 is "helped completely."</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5014,7 +5014,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
+				<value>Overall... (please answer on a scale where 0 is "I had a very poor experience" and 10 is "I had a very good experience")</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5743,7 +5743,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>description</name>
-				<value>Please write in; for example, “1934”.</value>
+				<value>Please write in; for example, "1934".</value>
 				<type>String</type>
 			</property>
 			<property>
