@@ -21,8 +21,8 @@ import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
 
-import { Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
-  FormControlLabel, TextField, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
+import { Autocomplete, Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
+  FormControlLabel, TextField, Typography, Button, IconButton, Popper, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
 
 import DownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
@@ -94,6 +94,10 @@ const useStyles = makeStyles(theme => ({
     },
   },
 }));
+
+const FilterPopper = function (props) {
+  return <Popper {...props} style={{width: "80%"}} placement="bottom-start" />;
+};
 
 let findQuestionsOrSections = (json, result = []) =>  {
   Object.entries(json || {}).forEach(([k,e]) => {
@@ -168,6 +172,8 @@ function ExportButton(props) {
   const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED" ];
   const [ statusSelectionMode, setStatusSelectionMode ] = useState(DEFAULTS.statusSelectionMode);
   const [ status, setStatus ] = useState('');
+
+  const [ autocompleteOpen, setAutocompleteOpen ] = useState(false);
 
   const classes = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -258,9 +264,8 @@ function ExportButton(props) {
     window.open(path, '_blank');
   }
 
-  let handleEntitySelected = (event) => {
-    if (event.target.value) {
-      let newValue = event.target.value.trim();
+  let handleEntitySelected = (newValue) => {
+    if (newValue) {
       setSelectedEntityIds(oldValue => {
         var newValues = oldValue.slice();
         newValues.push(newValue);
@@ -471,22 +476,39 @@ function ExportButton(props) {
                 </Grid>
               )}
               <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
-                <InputLabel id="label">Select questions/sections from this questionnaire</InputLabel>
-                <Select
-                  variant="standard"
-                  labelId="label"
-                  value={tempValue}
-                  label="Select questions/sections from this questionnaire"
-                  onChange={handleEntitySelected}
-                >
-                  { entities?.filter(v => !selectedEntityIds.includes(v.path))
-                      .map(v =>
-                        <MenuItem value={v.path} key={`option-${v.name}`} className={classes.variableOption}>
-                          { getAvatar(v.type) }
-                          <ListItemText primary={v.name} secondary={v.text} />
-                        </MenuItem>)
+                <Autocomplete
+                  open={autocompleteOpen}
+                  onOpen={() => {
+                    setAutocompleteOpen(true);
+                  }}
+                  onClose={() => {
+                    setAutocompleteOpen(false);
+                  }}
+                  value={tempValue && variables.find(item => item.path == tempValue) || null}
+                  PopperComponent={FilterPopper}
+                  className={classes.answerField}
+                  getOptionLabel={(option) => option.text || option.name}
+                  options={entities?.filter(v => !selectedEntityIds.includes(v.path)) || []}
+                  renderOption={(props, option) =>
+                    <MenuItem
+                      value={option.path}
+                      key={option.path}
+                      className={classes.variableOption}
+                      onClick={(event) => {handleEntitySelected(option.path); setAutocompleteOpen(false);}}
+                    >
+                      { getAvatar(option.type) }
+                      <ListItemText primary={option.name} secondary={option.text} />
+                    </MenuItem>
                   }
-                </Select>
+                  renderInput={(params) =>
+                    <TextField
+                      variant="standard"
+                      label="Select questions/sections from this questionnaire"
+                      helperText={null}
+                      {...params}
+                    />
+                  }
+                />
               </FormControl>
             </Grid>
           </Grid>

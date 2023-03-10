@@ -20,13 +20,13 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
+  Autocomplete,
   Grid,
   IconButton,
   FormControl,
-  InputLabel,
   ListItemText,
   MenuItem,
-  Select,
+  Popper,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -73,6 +73,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const FilterPopper = function (props) {
+  return <Popper {...props} style={{width: "80%"}} placement="bottom-start" />;
+};
+
 let ConditionalValueInput = (props) => {
   let { objectKey, data, saveButtonRef, hint } = props;
 
@@ -81,6 +85,7 @@ let ConditionalValueInput = (props) => {
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed values
   let [ isDuplicate, setDuplicate ] = useState(false);
   let [ variables, setVariables ] = useState();
+  let [ open, setOpen ] = useState(false);
 
   let questions = useQuestionnaireReaderContext();
 
@@ -143,6 +148,31 @@ let ConditionalValueInput = (props) => {
     }
   }, [questions]);
 
+  // Input for adding a new value
+  let textField = (label, params) => (
+    <TextField
+        {...params}
+        variant="standard"
+        fullWidth
+        value={tempValue}
+        error={isDuplicate}
+        label={label}
+        helperText={isDuplicate ? 'Duplicated entry' : 'Press ENTER to add a new line'}
+        onChange={handleChange}
+        onBlur={handleValueSelected}
+        inputProps={Object.assign({
+          onKeyDown: (event) => {
+            if (event.key == 'Enter') {
+              // We need to stop the event so that it doesn't trigger a form submission
+              event.preventDefault();
+              event.stopPropagation();
+              handleValue(event.target.value);
+            }
+          }
+        })}
+      />
+  );
+
   return (
     <EditorInput name={objectKey} hint={hint}>
 
@@ -178,46 +208,43 @@ let ConditionalValueInput = (props) => {
       )}
 
       {/* Display a dropdown for variable names or a simple input for values */}
-      { isReference ?
+      { isReference && variables ?
         <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
-          <InputLabel id={`label-${path}`}>Select the id of a question from this questionnaire</InputLabel>
-          <Select
-            variant="standard"
-            labelId={`label-${path}`}
-            id={path}
-            value={tempValue}
-            label="Select the id of a question from this questionnaire"
-            onChange={handleValueSelected}
-          >
-            { variables?.filter(v => !values.includes(v.name))
-                .map(v => <MenuItem value={v.name} key={`option-${v.name}`} className={classes.variableOption}>
-                <ListItemText primary={v.name} secondary={v.text} />
-              </MenuItem>)
+          <Autocomplete
+            open={open}
+            onOpen={() => {
+                setOpen(true);
+            }}
+            onClose={() => {
+                setOpen(false);
+            }}
+            value={tempValue && variables.find(item => item.name == tempValue) || null}
+            PopperComponent={FilterPopper}
+            className={classes.answerField}
+            getOptionLabel={(option) => option.text}
+            options={variables?.filter(v => !values.includes(v.name))}
+            renderOption={(props, option) =>
+                <MenuItem
+                  value={option.name}
+                  key={option.name}
+                  className={classes.variableOption}
+                  onClick={(event) => {handleValue(option.name); setOpen(false);}}
+                >
+                  <ListItemText primary={option.name} secondary={option.text} />
+                </MenuItem>
             }
-          </Select>
+            renderInput={(params) =>
+                <TextField
+                  variant="standard"
+                  label="Select the id of a question from this questionnaire"
+                  helperText={null}
+                  {...params}
+                />
+            }
+          />
         </FormControl>
         :
-        <TextField
-          {...params}
-          variant="standard"
-          fullWidth
-          value={tempValue}
-          error={isDuplicate}
-          label="Enter a value"
-          helperText={isDuplicate ? 'Duplicated entry' : 'Press ENTER to add a new line'}
-          onChange={handleChange}
-          onBlur={handleValueSelected}
-          inputProps={Object.assign({
-            onKeyDown: (event) => {
-              if (event.key == 'Enter') {
-                // We need to stop the event so that it doesn't trigger a form submission
-                event.preventDefault();
-                event.stopPropagation();
-                handleValue(event.target.value);
-              }
-            }
-          })}
-        />
+        textField("Enter a value")
       }
 
       {/* Metadata to sent to the server */}
@@ -258,7 +285,7 @@ let ConditionalValue = (props) => {
   let values = data[objectKey]?.value || [];
 
   if (values.length == 0) {
-	return null;
+    return null;
   }
 
   let isReference = data?.[objectKey]?.isReference;
