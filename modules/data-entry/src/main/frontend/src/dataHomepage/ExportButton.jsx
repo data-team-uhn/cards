@@ -130,7 +130,7 @@ function ExportButton(props) {
   const DEFAULTS = {
     fileFormat : ".csv",
     hasHeaderLabels: true,
-    hasHeaderIndentifiers: false,
+    hasHeaderIdentifiers: false,
     hasAnswerLabels: false,
     columnSelectionMode: "exclude",
     statusSelectionMode: "status",
