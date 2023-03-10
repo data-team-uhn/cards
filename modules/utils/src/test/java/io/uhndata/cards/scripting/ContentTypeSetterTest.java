@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.scripting;
 
+import javax.script.Bindings;
 
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.junit.Test;
@@ -23,8 +24,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import javax.script.Bindings;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -56,41 +55,41 @@ public class ContentTypeSetterTest
     public void htmlSetsHtmlContentType()
     {
         this.contentTypeSetter.html();
-        verify(response, times(1)).setContentType("text/html;charset=UTF-8");
+        verify(this.response, times(1)).setContentType("text/html;charset=UTF-8");
     }
 
     @Test
     public void javascriptSetsJavascriptContentType()
     {
         this.contentTypeSetter.javascript();
-        verify(response, times(1)).setContentType("application/javascript;charset=UTF-8");
+        verify(this.response, times(1)).setContentType("application/javascript;charset=UTF-8");
     }
 
     @Test
     public void jsonSetsJsonContentType()
     {
         this.contentTypeSetter.json();
-        verify(response, times(1)).setContentType("application/json;charset=UTF-8");
+        verify(this.response, times(1)).setContentType("application/json;charset=UTF-8");
     }
 
     @Test
     public void csvSetsCsvContentType()
     {
         this.contentTypeSetter.csv();
-        verify(response, times(1)).setContentType("text/csv;charset=UTF-8");
+        verify(this.response, times(1)).setContentType("text/csv;charset=UTF-8");
     }
 
     @Test
     public void textSetsPlainContentType()
     {
         this.contentTypeSetter.text();
-        verify(response, times(1)).setContentType("text/plain;charset=UTF-8");
+        verify(this.response, times(1)).setContentType("text/plain;charset=UTF-8");
     }
 
     @Test
     public void markdownSetsMarkdownContentType()
     {
         this.contentTypeSetter.markdown();
-        verify(response, times(1)).setContentType("text/markdown;charset=UTF-8");
+        verify(this.response, times(1)).setContentType("text/markdown;charset=UTF-8");
     }
 }
