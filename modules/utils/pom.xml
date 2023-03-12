@@ -31,7 +31,7 @@
   <name>CARDS - Utilities</name>
 
   <properties>
-    <coverage.instructionRatio>0.18</coverage.instructionRatio>
+    <coverage.instructionRatio>0.49</coverage.instructionRatio>
   </properties>
 
   <build>
@@ -108,6 +108,17 @@
       <groupId>io.uhndata.cards</groupId>
       <artifactId>cards-data-model-forms-api</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-data-model-subjects-api</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency><dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.resourcebuilder</artifactId>
+      <version>1.0.4</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>

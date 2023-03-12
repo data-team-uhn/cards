@@ -29,34 +29,36 @@ import org.mockito.InjectMocks;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import io.uhndata.cards.serialize.spi.ResourceCSVProcessor;
+import io.uhndata.cards.serialize.spi.ResourceMarkdownProcessor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link ResourceToCSVAdapterFactory}.
+ * Unit tests for {@link ResourceToMarkdownAdapterFactory}.
  *
  * @version $Id $
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ResourceToCSVAdapterFactoryTest
+public class ResourceToMarkdownAdapterFactoryTest
 {
     private static final String NODE_IDENTIFIER = "jcr:uuid";
     private static final String CREATED_BY_PROPERTY = "jcr:createdBy";
-    private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
+    private static final String TEST_FORM_PATH = "/Forms/f1";
 
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     @InjectMocks
-    private ResourceToCSVAdapterFactory factory;
+    private ResourceToMarkdownAdapterFactory factory;
 
     @Test
     public void getAdapterForNullAdaptableObjectReturnsNull()
     {
-        assertNull(this.factory.getAdapter(null, CSVString.class));
+        assertNull(this.factory.getAdapter(null, CharSequence.class));
     }
 
     @Test
@@ -64,7 +66,7 @@ public class ResourceToCSVAdapterFactoryTest
     {
         Resource adaptable = mock(Resource.class);
         String identifier = UUID.randomUUID().toString();
-        ResourceCSVProcessor processor = mock(ResourceCSVProcessor.class);
+        ResourceMarkdownProcessor processor = mock(ResourceMarkdownProcessor.class);
         String data = NODE_IDENTIFIER + "," + CREATED_BY_PROPERTY + "\n"
                 + identifier + ",admin";
 
@@ -72,23 +74,23 @@ public class ResourceToCSVAdapterFactoryTest
         when(processor.serialize(adaptable)).thenReturn(data);
 
         Whitebox.setInternalState(this.factory, "allProcessors", List.of(processor));
-        CSVString adapter = this.factory.getAdapter(adaptable, CSVString.class);
+        CharSequence adapter = this.factory.getAdapter(adaptable, CharSequence.class);
         assertNotNull(adapter);
-        assertEquals(data, adapter.toString());
+        assertEquals(data, adapter);
     }
 
     @Test
     public void getAdapterForResourceAdaptableObjectReturnsResourcePath()
     {
         Resource adaptable = mock(Resource.class);
-        ResourceCSVProcessor processor = mock(ResourceCSVProcessor.class);
+        ResourceMarkdownProcessor processor = mock(ResourceMarkdownProcessor.class);
 
-        when(adaptable.getPath()).thenReturn(TEST_SUBJECT_PATH);
+        when(adaptable.getPath()).thenReturn(TEST_FORM_PATH);
 
         Whitebox.setInternalState(this.factory, "allProcessors", List.of(processor));
-        CSVString adapter = this.factory.getAdapter(adaptable, CSVString.class);
+        CharSequence adapter = this.factory.getAdapter(adaptable, CharSequence.class);
         assertNotNull(adapter);
-        assertEquals(TEST_SUBJECT_PATH, adapter.toString());
+        assertEquals(TEST_FORM_PATH, adapter);
     }
 
 }
