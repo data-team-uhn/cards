@@ -73,7 +73,7 @@ let ReferenceInput = (props) => {
 
   useEffect(() => {
     if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelesList(options, false, "Add new var..."));
+      setAutoselectOptions(getFieldsLabelsList(options, false, "Add new var..."));
     }
   }, [options, titleMap]);
 
@@ -156,16 +156,16 @@ let ReferenceInput = (props) => {
     setPathMap(paths);
   }
 
-  let getFieldsLabelesList = (fields, nested=false, category) => {
+  let getFieldsLabelsList = (fields, nested=false, category) => {
     return fields.map((path) => {
-	  // If we have a restriction, we might return nothing
+      // If we have a restriction, we might return nothing
       if (typeof path == "string" && !(restrictions && restrictions.length > 0 && !restrictions.includes(path))) {
         // Straight strings are MenuItems
         return {path: path, className: classes.categoryOption + (nested ? " " + classes.nestedSelectOption : ""), label: titleMap[path], category: category}
       } else if (Array.isArray(path)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [getFieldsLabelesList(path.slice(1), true, path[0])].flat();
+        return [getFieldsLabelsList(path.slice(1), true, path[0])].flat();
       }
     }).flat();
   }
