@@ -496,7 +496,6 @@ function ExportButton(props) {
           <Typography variant="h6">Filters</Typography>
 
           { getUserSelector("Created by:", createdBy, setCreatedBy) }
-          { getUserSelector("Last modified by:", modifiedBy, setModifiedBy) }
 
           <Grid container alignItems='baseline' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">Created between:</Typography></Grid>
@@ -505,8 +504,10 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
+          { getUserSelector("Last modified by:", modifiedBy, setModifiedBy) }
+
           <Grid container alignItems='baseline' direction="row" className={classes.container}>
-            <Grid item xs={4}><Typography variant="subtitle2">Modified between:</Typography></Grid>
+            <Grid item xs={4}><Typography variant="subtitle2">Last modified between:</Typography></Grid>
             <Grid item xs={8}>
               { getDateRange(modifiedAfter, setModifiedAfter, modifiedBefore, setModifiedBefore, modifiedRangeIsInvalid) }
             </Grid>
