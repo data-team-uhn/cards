@@ -130,7 +130,7 @@ let ReferenceInput = (props) => {
         continue;
       }
 
-      newFilterableFields.push([title, ...parseSectionOrQuestionnaire(thisQuestionnaire)]);
+      newFilterableFields.push([thisQuestionnaire?.title || title, ...parseSectionOrQuestionnaire(thisQuestionnaire)]);
     }
 
     // We also need a filter over the subject
