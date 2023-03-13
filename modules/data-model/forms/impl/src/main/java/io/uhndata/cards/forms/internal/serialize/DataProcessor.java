@@ -252,6 +252,9 @@ public class DataProcessor implements ResourceJsonProcessor
                 case "modifiedBefore":
                     result.append(" and n.[jcr:lastModified] < '").append(value).append('\'');
                     break;
+                case "modifiedBy":
+                    result.append(" and n.[jcr:lastModifiedBy] = '").append(value).append('\'');
+                    break;
                 default:
                     break;
             }

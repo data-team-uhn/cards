@@ -155,7 +155,8 @@ function ExportButton(props) {
   const [ tempValue, setTempValue ] = useState(''); // Holds new, non-selected values
 
   const [ users, setUsers ] = useState();
-  const [ user, setUser ] = useState('');
+  const [ createdBy, setCreatedBy ] = useState('');
+  const [ modifiedBy, setModifiedBy ] = useState('');
 
   const [ createdAfter, setCreatedAfter ] = useState(null);
   const [ createdBefore, setCreatedBefore ] = useState(null);
@@ -231,8 +232,11 @@ function ExportButton(props) {
     if (hasAnswerLabels) {
       path += ".labels";
     }
-    if (user) {
-      path += ".dataFilter:createdBy=" + user;
+    if (createdBy) {
+      path += ".dataFilter:createdBy=" + createdBy;
+    }
+    if (modifiedBy) {
+      path += ".dataFilter:modifiedBy=" + modifiedBy;
     }
     if (createdAfter) {
       path += ".dataFilter:createdAfter=" + createdAfter.toISO();
@@ -333,6 +337,30 @@ function ExportButton(props) {
         </Typography>
       }
     </>);
+  }
+
+  let getUserSelector = (label, value, setter) => {
+    return (
+          <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
+            <Grid item xs={4}><Typography variant="subtitle2">{label}</Typography></Grid>
+            <Grid item xs={8}>
+                <FormControl variant="standard" fullWidth>
+                  <InputLabel id="label">Select user</InputLabel>
+                  <Select
+                    variant="standard"
+                    labelId="label"
+                    value={value}
+                    onChange={(event) => setter(event.target.value)}
+                  >
+                    { users?.map(v =>
+                            <MenuItem value={v.name} key={`option-${v.principalName}`}>
+                              {v.principalName}
+                            </MenuItem>)
+                    }
+                  </Select>
+                </FormControl>
+            </Grid>
+          </Grid>);
   }
 
   return(
@@ -467,26 +495,8 @@ function ExportButton(props) {
 
           <Typography variant="h6">Filters</Typography>
 
-          <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
-            <Grid item xs={4}><Typography variant="subtitle2">Created by:</Typography></Grid>
-            <Grid item xs={8}>
-                <FormControl variant="standard" fullWidth>
-                  <InputLabel id="label">Select user</InputLabel>
-                  <Select
-                    variant="standard"
-                    labelId="label"
-                    value={user}
-                    onChange={(event) => setUser(event.target.value)}
-                  >
-                    { users?.map(v =>
-                            <MenuItem value={v.name} key={`option-${v.principalName}`}>
-                              {v.principalName}
-                            </MenuItem>)
-                    }
-                  </Select>
-                </FormControl>
-            </Grid>
-          </Grid>
+          { getUserSelector("Created by:", createdBy, setCreatedBy) }
+          { getUserSelector("Last modified by:", modifiedBy, setModifiedBy) }
 
           <Grid container alignItems='baseline' direction="row" className={classes.container}>
             <Grid item xs={4}><Typography variant="subtitle2">Created between:</Typography></Grid>
