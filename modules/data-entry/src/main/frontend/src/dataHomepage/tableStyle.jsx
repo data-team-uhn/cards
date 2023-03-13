@@ -58,21 +58,18 @@ const liveTableStyle = theme => ({
         width: "100%",
     },
     categoryOption: {
-        whiteSpace: "normal",
-        padding: theme.spacing(0, 2),
+        padding: theme.spacing(.5, 2),
+        "& .MuiListItemText-secondary":{
+          wordBreak: "break-word",
+        },
     },
     categoryHeader: {
-        backgroundColor: theme.palette.background.paper,
-        lineHeight: 2,
         fontSize: "1em",
+        lineHeight: 1.5,
         paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(1),
-        color: theme.palette.primary.main,
+        paddingBottom: theme.spacing(2),
         fontWeight: "bold",
         top: theme.spacing(-1),
-        zIndex: 1,
-        position: "sticky",
-        opacity: "1 !important",
     },
     hidden: {
         visibility: "hidden"

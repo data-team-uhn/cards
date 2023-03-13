@@ -19,7 +19,8 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { Autocomplete, MenuItem, Popper, TextField } from "@mui/material";
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { List, ListItemButton, ListItemText, ListSubheader, TextField } from "@mui/material";
 import { styled } from '@mui/system';
 
 import withStyles from '@mui/styles/withStyles';
@@ -35,12 +36,8 @@ let FILTER_URL = "/Questionnaires.deep.json";
 // TODO: Figure out what we should do with the limit in the URL below
 let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 
-const FilterPopper = function (props) {
-  return <Popper {...props} style={{width: "80%"}} placement="bottom-start" />;
-};
-
-const GroupItems = styled('ul')({
-  padding: 0,
+const filterOptions = createFilterOptions({
+  stringify: (option) => `${option.label} ${option.path}`
 });
 
 // Reference Input field used by Edit dialog component
@@ -157,15 +154,21 @@ let ReferenceInput = (props) => {
   }
 
   let getFieldsLabelsList = (fields, nested=false, category) => {
-    return fields.map((path) => {
+    return fields.map((entry) => {
       // If we have a restriction, we might return nothing
-      if (typeof path == "string" && !(restrictions && restrictions.length > 0 && !restrictions.includes(path))) {
+      if (typeof entry == "string" && !(restrictions && restrictions.length > 0 && !restrictions.includes(entry))) {
         // Straight strings are MenuItems
-        return {path: path, className: classes.categoryOption + (nested ? " " + classes.nestedSelectOption : ""), label: titleMap[path], category: category}
-      } else if (Array.isArray(path)) {
+        return ({
+          uuid: entry,
+          path: pathMap[entry],
+          label: titleMap[entry],
+          category: category,
+          className: classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")
+        });
+      } else if (Array.isArray(entry)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [getFieldsLabelsList(path.slice(1), true, path[0])].flat();
+        return [getFieldsLabelsList(entry.slice(1), true, entry[0])].flat();
       }
     }).flat();
   }
@@ -279,34 +282,28 @@ let ReferenceInput = (props) => {
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
       {hiddenInput}
       <Autocomplete
-        open={open}
-        onOpen={() => {
-            setOpen(true);
-        }}
-        onClose={() => {
-            setOpen(false);
-        }}
-        value={curValue && autoselectOptions.find(item => item.path == curValue) || null}
-        PopperComponent={FilterPopper}
-        className={classes.answerField}
+        value={curValue && autoselectOptions.find(item => item.uuid == curValue) || null}
         options={autoselectOptions}
+        filterOptions={filterOptions}
         groupBy={(option) => option.category}
-        getOptionLabel={(option) => option.label}
+        onChange={(event, value) => {
+          setCurValue(value?.uuid || "");
+        }}
         renderOption={(props, option) =>
-          <MenuItem
-            value={option.path}
-            key={option.path}
+          <ListItemButton
+            value={option.uuid}
+            key={option.uuid}
             className={option.className}
-            onClick={(event) => {changeCurValue(option.path); setOpen(false);}}
+            {...props}
           >
-            {option.label}
-          </MenuItem>
+            <ListItemText primary={option.label} secondary={option.path} />
+          </ListItemButton>
         }
         renderGroup={(params) => (
-          <div key={params.key}>
-            <MenuItem key={params.group} className={classes.categoryHeader} disabled>{params.group}</MenuItem>
-            <GroupItems>{params.children}</GroupItems>
-          </div>
+          <List disablePadding key={params.key}>
+            <ListSubheader color="primary" key={params.group} className={classes.categoryHeader}>{params.group}</ListSubheader>
+            <>{params.children}</>
+          </List>
         )}
         renderInput={(params) =>
           <TextField
