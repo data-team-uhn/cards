@@ -17,13 +17,14 @@
 //  under the License.
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
-import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@mui/material";
-import { Autocomplete, DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, Popper, TextField } from "@mui/material";
+import { Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { Autocomplete, DialogActions, DialogContent, Grid, Select, MenuItem, Popper, TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/system';
 
+import ResponsiveDialog from "../components/ResponsiveDialog";
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -490,17 +491,15 @@ function Filters(props) {
         <Add fontSize="small" />
       </Button>
       {/* Dialog for setting up filters */}
-      <Dialog
+      <ResponsiveDialog
         open={dialogOpen}
         onClose={closeDialog}
         className={classes.dialog}
         BackdropProps={{invisible: true}}
-        fullWidth
+        width="md"
         disableEnforceFocus
+        title="Modify filters"
         >
-        <DialogTitle id="new-form-title">
-          Modify filters
-        </DialogTitle>
         <DialogContent dividers>
           {error &&
             <Typography color="error" className={classes.filterLabel}>
@@ -518,7 +517,7 @@ function Filters(props) {
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
-                  <Grid item xs={5}>
+                  <Grid item xs={12} sm={6}>
                     <Autocomplete
                       value={filterDatum.name && autoselectOptions.find(item => item.path == filterDatum.name) || null}
                       PopperComponent={FilterPopper}
@@ -557,7 +556,7 @@ function Filters(props) {
                     />
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
-                  <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid item xs={isUnary ? 11 : isNotesContain || isContain ? 3 : 1} sm={isUnary ? 5 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       variant="standard"
                       value={filterDatum.comparator || ""}
@@ -572,7 +571,7 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                    <Grid item xs={isNotesContain || isContain ? 8 : 10} sm={isNotesContain ? 2 : (isContain ? 3 : 4)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField variant="standard" disabled className={classes.answerField}></TextField>
@@ -615,7 +614,7 @@ function Filters(props) {
             {'Cancel'}
           </Button>
         </DialogActions>
-      </Dialog>
+      </ResponsiveDialog>
     </div>
   );
 }
