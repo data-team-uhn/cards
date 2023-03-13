@@ -73,7 +73,7 @@ let ReferenceInput = (props) => {
 
   useEffect(() => {
     if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelsList(options, false, "Add new var..."));
+      setAutoselectOptions(getFieldsLabelsList(options, false, ""));
     }
   }, [options, titleMap]);
 
@@ -304,17 +304,14 @@ let ReferenceInput = (props) => {
         }
         renderGroup={(params) => (
           <div key={params.key}>
-            { params.group === "Add new var..."
-            ? <MenuItem value="" key={params.group} disabled><span className={classes.selectPlaceholder}>Add new var...</span></MenuItem>
-            : <MenuItem key={params.group} className={classes.categoryHeader} disabled>{params.group}</MenuItem> }
+            <MenuItem key={params.group} className={classes.categoryHeader} disabled>{params.group}</MenuItem>
             <GroupItems>{params.children}</GroupItems>
           </div>
         )}
         renderInput={(params) =>
           <TextField
             variant="standard"
-            label="Add new var..."
-            helperText={null}
+            placeholder="Variable"
             {...params}
           />
         }
