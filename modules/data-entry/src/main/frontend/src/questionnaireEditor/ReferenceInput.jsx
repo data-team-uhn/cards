@@ -287,7 +287,7 @@ let ReferenceInput = (props) => {
         filterOptions={filterOptions}
         groupBy={(option) => option.category}
         onChange={(event, value) => {
-          setCurValue(value?.uuid || "");
+          changeCurValue(value?.uuid || "");
         }}
         renderOption={(props, option) =>
           <ListItemButton
