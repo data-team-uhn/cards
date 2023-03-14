@@ -46,6 +46,10 @@
       "start-order":"25"
     },
     {
+      "id":"io.netty:netty-transport-native-unix-common:4.1.89.Final",
+      "start-order":"25"
+    },
+    {
       "id":"io.netty:netty-resolver:4.1.89.Final",
       "start-order":"25"
     },
