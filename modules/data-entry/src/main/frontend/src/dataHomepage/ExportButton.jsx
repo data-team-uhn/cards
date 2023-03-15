@@ -497,8 +497,7 @@ function ExportButton(props) {
                   renderInput={(params) =>
                     <TextField
                       variant="standard"
-                      label="Select questions/sections from this questionnaire"
-                      helperText={null}
+                      placeholder="Select questions/sections from this questionnaire"
                       {...params}
                     />
                   }

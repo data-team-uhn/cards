@@ -230,8 +230,7 @@ let ConditionalValueInput = (props) => {
             renderInput={(params) =>
                 <TextField
                   variant="standard"
-                  label="Select the id of a question from this questionnaire"
-                  helperText={null}
+                  placeholder="Select the id of a question from this questionnaire"
                   {...params}
                 />
             }

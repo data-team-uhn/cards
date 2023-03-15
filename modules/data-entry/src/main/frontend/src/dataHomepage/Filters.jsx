@@ -17,8 +17,7 @@
 //  under the License.
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import { Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { Autocomplete, Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
 import { DialogActions, DialogContent, Grid, Select, MenuItem, TextField } from "@mui/material";
 import { List, ListItemButton, ListItemText, ListSubheader } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
@@ -44,10 +43,6 @@ import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterCo
 
 const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
-
-const filterOptions = createFilterOptions({
-  stringify: (option) => `${option.label} ${option.path}`
-});
 
 function Filters(props) {
   const { classes, disabled, onChangeFilters, questionnaire, filtersJsonString } = props;
@@ -119,7 +114,7 @@ function Filters(props) {
 
   useEffect(() => {
     if (filterableFields.length > 0 && Object.keys(filterableTitles).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelesList(filterableFields, false, "Add new filter..."));
+      setAutoselectOptions(getFieldsLabelesList(filterableFields, false, ""));
     }
   }, [filterableFields, filterableTitles]);
 
@@ -516,7 +511,6 @@ function Filters(props) {
                   {/* Select the field to filter */}
                   <Grid item xs={12} sm={6}>
                     <Autocomplete
-                      filterOptions={filterOptions}
                       value={filterDatum.name && autoselectOptions.find(item => item.path == filterDatum.name) || null}
                       onChange={(event, value) => {
                         handleChangeFilter(index, value.path);
@@ -532,27 +526,21 @@ function Filters(props) {
                           className={option.className}
                           {...props}
                         >
-                          <ListItemText primary={option.label} secondary={option.path} />
+                          <ListItemText primary={option.label} />
                         </ListItemButton>
                       }
                       renderGroup={(params) => (
                         <List disablePadding key={params.key}>
-                          { params.group === "Add new filter..."
-                          ? <ListSubheader color="primary" value="" key={params.group}>
-                              <span className={classes.selectPlaceholder}>Add new filter...</span>
-                            </ListSubheader>
-                          : <ListSubheader color="primary" key={params.group} className={classes.categoryHeader}>
+                          <ListSubheader color="primary" key={params.group} className={classes.categoryHeader}>
                               {params.group}
-                            </ListSubheader>
-                          }
-                            <>{params.children}</>
+                          </ListSubheader>
+                          <>{params.children}</>
                         </List>
                       )}
                       renderInput={(params) =>
                         <TextField
                           variant="standard"
-                          label="Add new filter..."
-                          helperText={null}
+                          placeholder="Add new filter..."
                           {...params}
                         />
                       }
