@@ -97,7 +97,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const filterOptions = createFilterOptions({
-  stringify: (option) => `${option.name} ${option.text}`
+  stringify: (option) => `${option.name} ${option.text || option.principalName}`
 });
 
 let findQuestionsOrSections = (json, result = []) =>  {
@@ -349,19 +349,32 @@ function ExportButton(props) {
             <Grid item xs={4}><Typography variant="subtitle2">{label}</Typography></Grid>
             <Grid item xs={8}>
                 <FormControl variant="standard" fullWidth>
-                  <InputLabel id="label">Select user</InputLabel>
-                  <Select
-                    variant="standard"
-                    labelId="label"
-                    value={value}
-                    onChange={(event) => setter(event.target.value)}
-                  >
-                    { users?.map(v =>
-                            <MenuItem value={v.name} key={`option-${v.principalName}`}>
-                              {v.principalName}
-                            </MenuItem>)
+                  <Autocomplete
+                    value={value && users.find(item => item.name == value) || null}
+                    filterOptions={filterOptions}
+                    onChange={(event, value) => {
+                      setter(value?.name);
+                    }}
+                    getOptionLabel={(option) => option?.name || ""}
+                    options={users || []}
+                    renderOption={(props, option) =>
+                      <ListItemButton
+                        value={option.name}
+                        key={option.name}
+                        className={classes.variableOption}
+                        {...props}
+                      >
+                        <ListItemText primary={option.principalName} />
+                      </ListItemButton>
                     }
-                  </Select>
+                    renderInput={(params) =>
+                      <TextField
+                        variant="standard"
+                        placeholder="Select user"
+                        {...params}
+                      />
+                    }
+                  />
                 </FormControl>
             </Grid>
           </Grid>);
@@ -549,16 +562,28 @@ function ExportButton(props) {
             </Grid>
             <Grid item xs={8}>
               <FormControl variant="standard" fullWidth>
-                <InputLabel id="status">Select a status</InputLabel>
-                <Select
-                  variant="standard"
-                  labelId="status"
-                  value={status}
-                  label="Select a status flag"
-                  onChange={(event) => setStatus(event.target.value)}
-                >
-                  { statuses.map(v => <MenuItem value={v} key={v}>{v}</MenuItem>) }
-                </Select>
+                <Autocomplete
+                    value={status}
+                    onChange={(event, value) => { setStatus(value); }}
+                    options={statuses || []}
+                    renderOption={(props, option) =>
+                      <ListItemButton
+                        value={option}
+                        key={option}
+                        className={classes.variableOption}
+                        {...props}
+                      >
+                        <ListItemText primary={option} />
+                      </ListItemButton>
+                    }
+                    renderInput={(params) =>
+                      <TextField
+                        variant="standard"
+                        placeholder="Select a status flag"
+                        {...params}
+                      />
+                    }
+                />
               </FormControl>
             </Grid>
           </Grid>
