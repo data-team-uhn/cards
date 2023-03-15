@@ -19,14 +19,14 @@
 
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import {
-  Autocomplete,
   Grid,
   IconButton,
   FormControl,
+  ListItemButton,
   ListItemText,
-  MenuItem,
-  Popper,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -73,9 +73,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const FilterPopper = function (props) {
-  return <Popper {...props} style={{width: "80%"}} placement="bottom-start" />;
-};
+const filterOptions = createFilterOptions({
+  stringify: (option) => `${option.name} ${option.text}`
+});
 
 let ConditionalValueInput = (props) => {
   let { objectKey, data, saveButtonRef, hint } = props;
@@ -85,7 +85,6 @@ let ConditionalValueInput = (props) => {
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed values
   let [ isDuplicate, setDuplicate ] = useState(false);
   let [ variables, setVariables ] = useState();
-  let [ open, setOpen ] = useState(false);
 
   let questions = useQuestionnaireReaderContext();
 
@@ -211,27 +210,22 @@ let ConditionalValueInput = (props) => {
       { isReference && variables ?
         <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
           <Autocomplete
-            open={open}
-            onOpen={() => {
-                setOpen(true);
-            }}
-            onClose={() => {
-                setOpen(false);
-            }}
+            filterOptions={filterOptions}
             value={tempValue && variables.find(item => item.name == tempValue) || null}
-            PopperComponent={FilterPopper}
-            className={classes.answerField}
+            onChange={(event, value) => {
+              handleValue(value.name);
+            }}
             getOptionLabel={(option) => option.text}
             options={variables?.filter(v => !values.includes(v.name))}
             renderOption={(props, option) =>
-                <MenuItem
+                <ListItemButton
                   value={option.name}
                   key={option.name}
                   className={classes.variableOption}
-                  onClick={(event) => {handleValue(option.name); setOpen(false);}}
+                  {...props}
                 >
                   <ListItemText primary={option.name} secondary={option.text} />
-                </MenuItem>
+                </ListItemButton>
             }
             renderInput={(params) =>
                 <TextField

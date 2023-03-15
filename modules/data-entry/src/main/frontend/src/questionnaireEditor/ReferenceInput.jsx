@@ -21,7 +21,6 @@ import React, { useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { List, ListItemButton, ListItemText, ListSubheader, TextField } from "@mui/material";
-import { styled } from '@mui/system';
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -52,7 +51,6 @@ let ReferenceInput = (props) => {
   const [ options, setOptions ] = useState([]);
   const [ restrictions, setRestrictions ] = useState([]);
   const [ autoselectOptions, setAutoselectOptions ] = useState([]);
-  const [ open, setOpen ] = useState(false);
 
   const isNumeric = value.filter == "numeric";
   const allowOnlyApplicableFor = value.restriction;

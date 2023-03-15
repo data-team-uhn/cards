@@ -21,9 +21,10 @@ import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
 
-import { Autocomplete, Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
-  FormControlLabel, TextField, Typography, Button, IconButton, Popper, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
-
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
+  FormControlLabel, TextField, Typography, Button, IconButton, Tooltip, InputLabel, Select, MenuItem } from "@mui/material";
+import { ListItemButton, ListItemText } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -95,9 +96,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const FilterPopper = function (props) {
-  return <Popper {...props} style={{width: "80%"}} placement="bottom-start" />;
-};
+const filterOptions = createFilterOptions({
+  stringify: (option) => `${option.name} ${option.text}`
+});
 
 let findQuestionsOrSections = (json, result = []) =>  {
   Object.entries(json || {}).forEach(([k,e]) => {
@@ -156,7 +157,7 @@ function ExportButton(props) {
   const [ columnSelectionMode, setColumnSelectionMode ] = useState(DEFAULTS.columnSelectionMode);
   // List of question or section ids to Include or Exclude
   const [ selectedEntityIds, setSelectedEntityIds ] = useState([]);
-  const [ tempValue, setTempValue ] = useState(''); // Holds new, non-selected values
+  const [ tempValue, setTempValue ] = useState(null); // Holds new, non-selected values
 
   const [ users, setUsers ] = useState();
   const [ createdBy, setCreatedBy ] = useState('');
@@ -172,8 +173,6 @@ function ExportButton(props) {
   const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED" ];
   const [ statusSelectionMode, setStatusSelectionMode ] = useState(DEFAULTS.statusSelectionMode);
   const [ status, setStatus ] = useState('');
-
-  const [ autocompleteOpen, setAutocompleteOpen ] = useState(false);
 
   const classes = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -272,7 +271,7 @@ function ExportButton(props) {
         return newValues;
       });
     }
-    tempValue && setTempValue('');
+    tempValue && setTempValue(null);
 
     // Have to manually invoke submit with timeout to let re-rendering of adding new selected entites complete
     // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
@@ -477,28 +476,23 @@ function ExportButton(props) {
               )}
               <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
                 <Autocomplete
-                  open={autocompleteOpen}
-                  onOpen={() => {
-                    setAutocompleteOpen(true);
+                  filterOptions={filterOptions}
+                  value={tempValue}
+                  onChange={(event, value) => {
+                    handleEntitySelected(value?.path);
                   }}
-                  onClose={() => {
-                    setAutocompleteOpen(false);
-                  }}
-                  value={tempValue && variables.find(item => item.path == tempValue) || null}
-                  PopperComponent={FilterPopper}
-                  className={classes.answerField}
-                  getOptionLabel={(option) => option.text || option.name}
+                  getOptionLabel={(option) => ""}
                   options={entities?.filter(v => !selectedEntityIds.includes(v.path)) || []}
                   renderOption={(props, option) =>
-                    <MenuItem
+                    <ListItemButton
                       value={option.path}
                       key={option.path}
                       className={classes.variableOption}
-                      onClick={(event) => {handleEntitySelected(option.path); setAutocompleteOpen(false);}}
+                      {...props}
                     >
                       { getAvatar(option.type) }
                       <ListItemText primary={option.name} secondary={option.text} />
-                    </MenuItem>
+                    </ListItemButton>
                   }
                   renderInput={(params) =>
                     <TextField

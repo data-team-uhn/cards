@@ -17,12 +17,13 @@
 //  under the License.
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
-import { Autocomplete, DialogActions, DialogContent, Grid, Select, MenuItem, Popper, TextField } from "@mui/material";
+import { DialogActions, DialogContent, Grid, Select, MenuItem, TextField } from "@mui/material";
+import { List, ListItemButton, ListItemText, ListSubheader } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
-import { styled } from '@mui/system';
 
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import LiveTableStyle from "./tableStyle.jsx";
@@ -44,12 +45,8 @@ import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterCo
 const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
 
-const FilterPopper = function (props) {
-  return <Popper {...props} style={{width: "80%"}} placement="bottom-start" />;
-};
-
-const GroupItems = styled('ul')({
-  padding: 0,
+const filterOptions = createFilterOptions({
+  stringify: (option) => `${option.label} ${option.path}`
 });
 
 function Filters(props) {
@@ -297,7 +294,7 @@ function Filters(props) {
 
   // Handle the user changing one of the active filter categories
   let handleChangeFilter = (index, path) => {
-    
+
     // Load up the comparators for this index, if not already loaded
     let [loadedComparators, component] = getOutputChoices(path);
 
@@ -519,31 +516,37 @@ function Filters(props) {
                   {/* Select the field to filter */}
                   <Grid item xs={12} sm={6}>
                     <Autocomplete
+                      filterOptions={filterOptions}
                       value={filterDatum.name && autoselectOptions.find(item => item.path == filterDatum.name) || null}
-                      PopperComponent={FilterPopper}
+                      onChange={(event, value) => {
+                        handleChangeFilter(index, value.path);
+                      }}
                       onClose={forceRegrabFocus}
-                      className={classes.answerField}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
                       options={autoselectOptions}
                       groupBy={(option) => option.category}
-                      getOptionLabel={(option) => option.label}
                       renderOption={(props, option) =>
-                        <MenuItem
+                        <ListItemButton
                           value={option.path}
                           key={option.path}
                           className={option.className}
-                          onClick={(event) => handleChangeFilter(index, option.path)}
+                          {...props}
                         >
-                          {option.label}
-                        </MenuItem>
+                          <ListItemText primary={option.label} secondary={option.path} />
+                        </ListItemButton>
                       }
                       renderGroup={(params) => (
-                        <div key={params.key}>
-                          {params.group === "Add new filter..."
-                          ? <MenuItem value="" key={params.group} disabled><span className={classes.selectPlaceholder}>Add new filter...</span></MenuItem>
-                          : <MenuItem key={params.group} className={classes.categoryHeader} disabled>{params.group}</MenuItem>}
-                          <GroupItems>{params.children}</GroupItems>
-                        </div>
+                        <List disablePadding key={params.key}>
+                          { params.group === "Add new filter..."
+                          ? <ListSubheader color="primary" value="" key={params.group}>
+                              <span className={classes.selectPlaceholder}>Add new filter...</span>
+                            </ListSubheader>
+                          : <ListSubheader color="primary" key={params.group} className={classes.categoryHeader}>
+                              {params.group}
+                            </ListSubheader>
+                          }
+                            <>{params.children}</>
+                        </List>
                       )}
                       renderInput={(params) =>
                         <TextField
