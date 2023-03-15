@@ -980,6 +980,7 @@ function SubjectSelectorList(props) {
         }}
         options={{
           search: true,
+          searchAutoFocus: true,
           header: false,
           actionsColumnIndex: -1,
           addRowPosition: 'first',
