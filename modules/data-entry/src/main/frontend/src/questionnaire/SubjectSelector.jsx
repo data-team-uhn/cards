@@ -237,6 +237,7 @@ function UnstyledSelectParentDialog (props) {
               }
               options={{
                 search: true,
+                searchAutoFocus: true,
                 header: false,
                 addRowPosition: 'first',
                 pageSize: pageSize,
