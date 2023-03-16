@@ -24,7 +24,7 @@ import { deepPurple, orange } from '@mui/material/colors';
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
   FormControlLabel, TextField, Typography, Button, IconButton, Tooltip, InputLabel, Select, MenuItem } from "@mui/material";
-import { ListItemButton, ListItemText } from "@mui/material";
+import { List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -37,56 +37,35 @@ import ResponsiveDialog from "../components/ResponsiveDialog";
 
 const useStyles = makeStyles(theme => ({
   container: {
-    paddingTop: theme.spacing(.5),
+    marginBottom: theme.spacing(1.5),
     "& + .MuiDivider-root" : {
       margin: theme.spacing(3, -3),
     },
   },
-  startAligned: {
+  withMultiSelect: {
     "& > .MuiGrid-item:first-child" : {
       marginTop: theme.spacing(3),
     },
+    "& .MuiListItem-root": {
+      paddingLeft: 0,
+    },
+    "& .MuiDivider-root": {
+      marginLeft: theme.spacing(7),
+    },
   },
   withSelect: {
-    marginBottom: theme.spacing(2),
     "& > .MuiGrid-item:first-child" : {
-      marginTop: theme.spacing(2),
+      marginTop: theme.spacing(.5),
     },
-  },
-  entryActionIcon: {
-    float: "right",
-    marginRight: theme.spacing(1),
-  },
-  variableDropdown: {
-    "& > .MuiInputLabel-root" : {
-      maxWidth: `calc(100% - ${theme.spacing(3)})`,
-    },
-  },
-  variableOption: {
-    whiteSpace: "normal",
-  },
-  valueEntry: {
-    border: "1px solid " + theme.palette.divider,
-    borderRadius: theme.spacing(.5, 3, 3, .5),
-    margin: theme.spacing(1, 0),
-    "& > .MuiGrid-item" : {
-      display: "flex",
-      paddingLeft: theme.spacing(1.5),
-      alignItems: "center",
-    },
-  },
-  valueActions: {
-    justifyContent: "flex-end",
-    paddingTop: "0!important"
   },
   avatar: {
-    marginRight: theme.spacing(1),
-    marginTop:  theme.spacing(1),
-    alignSelf: "start",
-    zoom: "75%"
+    backgroundColor: theme.palette.action.hover,
+    color: theme.palette.text.primary,
+    fontWeight: "bold",
   },
   dateRange: {
     alignItems: "baseline",
+    marginBottom: theme.spacing(-1.5),
     "& .MuiInputLabel-shrink": {
       visibility: "hidden",
     },
@@ -114,11 +93,11 @@ let findQuestionsOrSections = (json, result = []) =>  {
 
 let entitySpecs = {
   Question: {
-    avatarColor: deepPurple[700]
+    color: deepPurple[700]
   },
   Section: {
-    avatar: "view_stream",
-    avatarColor: orange[800]
+    icon: "view_stream",
+    color: orange[800]
   }
 }
 
@@ -292,12 +271,18 @@ function ExportButton(props) {
   }
 
   let getAvatar = (type) => {
-    return (<Avatar
-                style={{backgroundColor: entitySpecs[type].avatarColor || "black"}}
-                className={classes.avatar}
-            >
-                { entitySpecs[type].avatar ? <Icon>{entitySpecs[type].avatar}</Icon> : type?.charAt(0) }
-            </Avatar>);
+    return (
+      <ListItemAvatar>
+        <Tooltip title={type}>
+          <Avatar
+            style={{color: entitySpecs[type].color}}
+            className={classes.avatar}
+          >
+            { entitySpecs[type].icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0) }
+          </Avatar>
+        </Tooltip>
+      </ListItemAvatar>
+    );
   }
 
   let getDatePicker = (value, setter, rangeIsInvalid) => {
@@ -462,32 +447,29 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.startAligned}>
+          <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.withMultiSelect}>
             <Grid item xs={4}>
               <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
             </Grid>
             <Grid item xs={8}>
+              <List disablePadding dense>
               {/* List the entered values */}
-              { entities?.filter(v => selectedEntityIds.includes(v.path)).map((value, index) =>
-                <Grid container
+              { entities?.filter(v => selectedEntityIds.includes(v.path)).map((value, index) => <>
+                { !!index && <Divider key={`divider-${index}`} variant="inset" component="li" /> }
+                <ListItem
                   key={`${value.name}-${index}`}
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="stretch"
-                  className={classes.valueEntry}
-                >
-                  <Grid item xs={9}>
-                    { getAvatar(value.type) }
-                    <ListItemText primary={value.name} secondary={value.text} />
-                  </Grid>
-                  <Grid item xs={3} className={classes.valueActions}>
+                  secondaryAction={
                     <Tooltip title="Delete entry">
                       <IconButton onClick={() => unselectEntity(selectedEntityIds.indexOf(value.path))}><CloseIcon/></IconButton>
                     </Tooltip>
-                  </Grid>
-                </Grid>
-              )}
-              <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
+                  }
+                >
+                  { getAvatar(value.type) }
+                  <ListItemText primary={value.name} secondary={value.text} />
+                </ListItem>
+              </>)}
+              </List>
+              <FormControl variant="standard" fullWidth>
                 <Autocomplete
                   filterOptions={filterOptions}
                   value={tempValue}
@@ -500,7 +482,6 @@ function ExportButton(props) {
                     <ListItemButton
                       value={option.path}
                       key={option.path}
-                      className={classes.variableOption}
                       {...props}
                     >
                       { getAvatar(option.type) }
@@ -510,7 +491,7 @@ function ExportButton(props) {
                   renderInput={(params) =>
                     <TextField
                       variant="standard"
-                      placeholder="Select questions/sections from this questionnaire"
+                      label="Select questions/sections from this questionnaire"
                       {...params}
                     />
                   }
