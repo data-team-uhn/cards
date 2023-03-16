@@ -22,9 +22,11 @@ import PropTypes from "prop-types";
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import {
-  Grid,
   IconButton,
+  Divider,
   FormControl,
+  List,
+  ListItem,
   ListItemButton,
   ListItemText,
   TextField,
@@ -50,27 +52,17 @@ const useStyles = makeStyles(theme => ({
       textTransform: "none",
     },
   },
-  variableDropdown: {
-    "& > .MuiInputLabel-root" : {
-      maxWidth: `calc(100% - ${theme.spacing(3)})`,
+  withMultiSelect: {
+    "& > .MuiListItem-root:first-child" : {
+      marginTop: theme.spacing(1),
     },
-  },
-  variableOption: {
-    whiteSpace: "normal",
-  },
-  valueEntry: {
-    border: "1px solid " + theme.palette.divider,
-    borderRadius: theme.spacing(.5, 3, 3, .5),
-    margin: theme.spacing(1, 0),
-    "& > .MuiGrid-item" : {
-      display: "flex",
-      paddingLeft: theme.spacing(1.5),
-      alignItems: "center",
+    "& .MuiListItem-root": {
+      paddingLeft: 0,
     },
-  },
-  valueActions: {
-    justifyContent: "flex-end",
-  },
+    "& .MuiDivider-root": {
+      marginLeft: 0,
+    },
+  }
 }));
 
 const filterOptions = createFilterOptions({
@@ -186,51 +178,48 @@ let ConditionalValueInput = (props) => {
         <ToggleButton value="false">Value</ToggleButton>
       </ToggleButtonGroup>
 
-      {/* List the entered values */}
-      { values?.map((value, index) =>
-        <Grid container
-          key={`${value}-${index}`}
-          direction="row"
-          justifyContent="space-between"
-          alignItems="stretch"
-          className={classes.valueEntry}
-        >
-          <Grid item xs={9}>
+      <List disablePadding dense className={classes.withMultiSelect}>
+        {/* List the entered values */}
+        { values?.map((value, index) => <>
+          { !!index && <Divider key={`divider-${index}`} variant="inset" component="li" /> }
+          <ListItem
+	        key={`${value}-${index}`}
+	        secondaryAction={
+		      <Tooltip title="Delete entry">
+	            <IconButton onClick={() => deleteValue(index)}><CloseIcon/></IconButton>
+	          </Tooltip>
+	        }
+	      >
             <ListItemText primary={value} secondary={isReference && variables?.find(v => v.name == value)?.text} />
-          </Grid>
-          <Grid item xs={3} className={classes.valueActions}>
-            <Tooltip title="Delete entry">
-              <IconButton onClick={() => deleteValue(index)}><CloseIcon/></IconButton>
-            </Tooltip>
-          </Grid>
-        </Grid>
-      )}
-
+	      </ListItem>
+        </>)}
+      </List>
       {/* Display a dropdown for variable names or a simple input for values */}
       { isReference && variables ?
-        <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
+        <FormControl variant="standard" fullWidth>
           <Autocomplete
+            multiple
+            value={variables?.filter(v => values.includes(v.name)) || []}
+            renderTags={() => null}
             filterOptions={filterOptions}
-            value={tempValue && variables.find(item => item.name == tempValue) || null}
             onChange={(event, value) => {
-              handleValue(value.name);
+              setValues(value?.map(item => item.name));
             }}
             getOptionLabel={(option) => option.text}
-            options={variables?.filter(v => !values.includes(v.name))}
-            renderOption={(props, option) =>
+            options={variables}
+            renderOption={(props, option) => { return !values.includes(option.name) &&
                 <ListItemButton
                   value={option.name}
                   key={option.name}
-                  className={classes.variableOption}
                   {...props}
                 >
                   <ListItemText primary={option.name} secondary={option.text} />
                 </ListItemButton>
-            }
+            }}
             renderInput={(params) =>
                 <TextField
                   variant="standard"
-                  placeholder="Select the id of a question from this questionnaire"
+                  label="Select the id of a question from this questionnaire"
                   {...params}
                 />
             }

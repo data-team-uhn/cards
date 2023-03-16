@@ -23,7 +23,7 @@ import { deepPurple, orange } from '@mui/material/colors';
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
-  FormControlLabel, TextField, Typography, Button, IconButton, Tooltip, InputLabel, Select, MenuItem } from "@mui/material";
+  FormControlLabel, TextField, Typography, Button, IconButton, Tooltip } from "@mui/material";
 import { List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
@@ -136,7 +136,6 @@ function ExportButton(props) {
   const [ columnSelectionMode, setColumnSelectionMode ] = useState(DEFAULTS.columnSelectionMode);
   // List of question or section ids to Include or Exclude
   const [ selectedEntityIds, setSelectedEntityIds ] = useState([]);
-  const [ tempValue, setTempValue ] = useState(null); // Holds new, non-selected values
 
   const [ users, setUsers ] = useState();
   const [ createdBy, setCreatedBy ] = useState(null);
@@ -242,26 +241,6 @@ function ExportButton(props) {
     window.open(path, '_blank');
   }
 
-  let handleEntitySelected = (newValue) => {
-    if (newValue) {
-      setSelectedEntityIds(oldValue => {
-        var newValues = oldValue.slice();
-        newValues.push(newValue);
-        return newValues;
-      });
-    }
-    tempValue && setTempValue(null);
-
-    // Have to manually invoke submit with timeout to let re-rendering of adding new selected entites complete
-    // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
-    // Issue details: https://github.com/facebook/react/issues/4210
-    if (event?.relatedTarget?.type == "submit") {
-      const timer = setTimeout(() => {
-        saveButtonRef?.current?.click();
-      }, 500);
-    }
-  }
-
   let unselectEntity = (index) => {
     setSelectedEntityIds(oldValues => {
       let newValues = oldValues.slice();
@@ -335,12 +314,13 @@ function ExportButton(props) {
             <Grid item xs={8}>
                 <FormControl variant="standard" fullWidth>
                   <Autocomplete
+                    renderTags={() => null}
                     value={value && users.find(item => item.name == value) || null}
                     filterOptions={filterOptions}
                     onChange={(event, value) => {
                       setter(value?.name);
                     }}
-                    getOptionLabel={(option) => option?.name || ""}
+                    getOptionLabel={(option) => option?.name}
                     options={users || []}
                     renderOption={(props, option) =>
                       <ListItemButton
@@ -471,14 +451,16 @@ function ExportButton(props) {
               </List>
               <FormControl variant="standard" fullWidth>
                 <Autocomplete
+                  multiple
+                  value={entities?.filter(v => selectedEntityIds.includes(v.path)) || []}
                   filterOptions={filterOptions}
-                  value={tempValue}
                   onChange={(event, value) => {
-                    handleEntitySelected(value?.path);
+                    setSelectedEntityIds(value?.map(item => item.path));
                   }}
-                  getOptionLabel={(option) => ""}
-                  options={entities?.filter(v => !selectedEntityIds.includes(v.path)) || []}
-                  renderOption={(props, option) =>
+                  renderTags={() => null}
+                  getOptionLabel={(option) => option?.name}
+                  options={entities || []}
+                  renderOption={(props, option) => { return !selectedEntityIds.includes(option.path) &&
                     <ListItemButton
                       value={option.path}
                       key={option.path}
@@ -487,7 +469,7 @@ function ExportButton(props) {
                       { getAvatar(option.type) }
                       <ListItemText primary={option.name} secondary={option.text} />
                     </ListItemButton>
-                  }
+                  }}
                   renderInput={(params) =>
                     <TextField
                       variant="standard"
