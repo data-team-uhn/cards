@@ -604,6 +604,7 @@ const questionnaireStyle = theme => ({
       color: theme.palette.warning.main
     },
     selectionChild: {
+      cursor: "pointer",
       flexWrap: "wrap",
     },
     selectionDescription: {
