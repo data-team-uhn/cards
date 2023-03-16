@@ -19,12 +19,10 @@
 
 package io.uhndata.cards.prems.internal.importer;
 
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
@@ -47,18 +45,17 @@ import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
- * Clarity import processor that discards visits for patients who have recently been sent surveys.
+ * Clarity import processor that discards visits for patients who have unsubscribed from emails.
  *
  * @version $Id$
  */
 @Component
-@Designate(ocd = RecentVisitDiscardFilter.Config.class)
-public class RecentVisitDiscardFilter implements ClarityDataProcessor
+@Designate(ocd = UnsubscribedFilter.Config.class)
+public class UnsubscribedFilter implements ClarityDataProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RecentVisitDiscardFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UnsubscribedFilter.class);
 
     private final String subjectIDColumn;
-    private final int minimumFrequency;
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -75,24 +72,19 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
     @Reference
     private SubjectTypeUtils subjectTypeUtils;
 
-    @ObjectClassDefinition(name = "Clarity import filter - Recent Visit Discarder",
-        description = "Configuration for the Clarity importer filter that discards visits for patients who have had "
-        + "surveys sent to them recently.")
+    @ObjectClassDefinition(name = "Clarity import filter - Unsubscribed Patient Discarder",
+        description = "Configuration for the Clarity importer filter that discards visits for patients who have "
+        + "unsubscribed from survey emails.")
     public @interface Config
     {
-        @AttributeDefinition(name = "Minimum Frequency",
-            description = "Minimum period in days between sending surveys to a patient")
-        int minimum_visit_frequency();
-
         @AttributeDefinition(name = "Subject ID Column", description = "Clarity column containing the patient ID.")
         String subject_id_column();
     }
 
     @Activate
-    public RecentVisitDiscardFilter(Config configuration)
+    public UnsubscribedFilter(Config configuration)
     {
         this.subjectIDColumn = configuration.subject_id_column();
-        this.minimumFrequency = configuration.minimum_visit_frequency();
     }
 
     @Override
@@ -113,7 +105,8 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
             resolver.refresh();
             final Iterator<Resource> subjectResourceIter = resolver.findResources(subjectMatchQuery, "JCR-SQL2");
             // Should only be 0 or 1 patient with that MRN. Process it if found.
-            if (subjectResourceIter.hasNext() && subjectHasRecentSurveyEvent(subjectResourceIter.next(), id)) {
+            if (subjectResourceIter.hasNext() && patientHasUnsubscribed(subjectResourceIter.next(), id)) {
+                LOGGER.error("discarding patient");
                 return null;
             }
         }
@@ -126,78 +119,55 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
         return 10;
     }
 
-    private boolean subjectHasRecentSurveyEvent(Resource subjectResource, String id)
+    private boolean patientHasUnsubscribed(Resource subjectResource, String id)
     {
-        final Node subjectNode = subjectResource.adaptTo(Node.class);
+        final Node subject = subjectResource.adaptTo(Node.class);
         try {
-            // Iterate through all of the patients visits
-            for (final NodeIterator visits = subjectNode.getNodes(); visits.hasNext();) {
-                Node visit = visits.nextNode();
-                if (isVisitSubject(visit)) {
-                    // Iterate through all forms for that visit
-                    for (final PropertyIterator forms = visit.getReferences("subject"); forms.hasNext();) {
-                        final Node form = forms.nextProperty().getParent();
-                        if (formIsRecentSurveyEvent(form)) {
-                            // Discard the clarity row
-                            LOGGER.warn("Discarded visit {} due to recent survey event", id);
-                            return true;
-                        }
-                    }
+            // Iterate through forms for the patient for the patient
+            for (final PropertyIterator forms = subject.getReferences("subject"); forms.hasNext();) {
+                final Node form = forms.nextProperty().getParent();
+                if (formIsUnsubscribed(form)) {
+                    // Discard the clarity row
+                    LOGGER.warn("Discarded visit {} due to unsubscription", id);
+                    return true;
                 }
             }
         } catch (RepositoryException e) {
-            // Failed to get forms for this subject: Could not check if any recent invitations have been sent.
+            // Failed to get forms for this subject: Could not check if the patient has unsubscribed.
             // Default to discarding this visit
-            LOGGER.error("Discarded visit {}: Could not check for recent invitations", id);
+            LOGGER.error("Discarded visit {}: Could not check for unsubscription", id);
             return true;
         }
 
-        // No recent event was found
+        // No unsubscription was found
         return false;
     }
 
-    private boolean isVisitSubject(final Node subject)
-    {
-        final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
-        return "Visit".equals(subjectType);
-    }
-
-    private boolean isSurveyEventsForm(final Node questionnaire)
-    {
-        try {
-            return questionnaire != null && "/Questionnaires/Survey events".equals(questionnaire.getPath());
-        } catch (final RepositoryException e) {
-            LOGGER.warn("Failed check if form is Survey events form: {}", e.getMessage(), e);
-            return false;
-        }
-    }
-
-    private boolean formIsRecentSurveyEvent(Node form)
+    private boolean formIsUnsubscribed(Node form)
     {
         final Node questionnaire = this.formUtils.getQuestionnaire(form);
-        if (isSurveyEventsForm(questionnaire)) {
-            Node invitationSentQuestion =
-                this.questionnaireUtils.getQuestion(questionnaire, "invitation_sent");
+        if (isPatientInformationForm(questionnaire)) {
+            Node unsubscribedQuestion =
+                this.questionnaireUtils.getQuestion(questionnaire, "email_unsubscribed");
 
-            final Calendar invitationSent =
-                (Calendar) this.formUtils.getValue(
-                this.formUtils.getAnswer(form, invitationSentQuestion));
+            final Long unsubscribed =
+                (Long) this.formUtils.getValue(
+                this.formUtils.getAnswer(form, unsubscribedQuestion));
 
-            // If no value is set, survey is pending but has not yet been sent.
-            // If that is the case or an invitation was sent recently, discard this visit.
-            if (invitationSent == null || isRecent(invitationSent)) {
+            if (unsubscribed == 1) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isRecent(Calendar date)
+    private boolean isPatientInformationForm(final Node questionnaire)
     {
-        Calendar compareTo = Calendar.getInstance();
-        compareTo.add(Calendar.DATE, -this.minimumFrequency);
-
-        // Return true if the requested date is after the configured recent date.
-        return date.after(compareTo);
+        try {
+            return questionnaire != null && "/Questionnaires/Patient information".equals(questionnaire.getPath());
+        } catch (final RepositoryException e) {
+            LOGGER.warn("Failed check if form is Patient Information form: {}", e.getMessage(), e);
+            return false;
+        }
     }
 }
