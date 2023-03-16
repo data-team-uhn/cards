@@ -139,8 +139,8 @@ function ExportButton(props) {
   const [ tempValue, setTempValue ] = useState(null); // Holds new, non-selected values
 
   const [ users, setUsers ] = useState();
-  const [ createdBy, setCreatedBy ] = useState('');
-  const [ modifiedBy, setModifiedBy ] = useState('');
+  const [ createdBy, setCreatedBy ] = useState(null);
+  const [ modifiedBy, setModifiedBy ] = useState(null);
 
   const [ createdAfter, setCreatedAfter ] = useState(null);
   const [ createdBefore, setCreatedBefore ] = useState(null);
@@ -151,7 +151,7 @@ function ExportButton(props) {
 
   const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED" ];
   const [ statusSelectionMode, setStatusSelectionMode ] = useState(DEFAULTS.statusSelectionMode);
-  const [ status, setStatus ] = useState('');
+  const [ status, setStatus ] = useState(null);
 
   const classes = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
