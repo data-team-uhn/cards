@@ -123,7 +123,7 @@ public class UnsubscribedFilter implements ClarityDataProcessor
     {
         final Node subject = subjectResource.adaptTo(Node.class);
         try {
-            // Iterate through forms for the patient for the patient
+            // Iterate through forms for the patient looking for the patient information form
             for (final PropertyIterator forms = subject.getReferences("subject"); forms.hasNext();) {
                 final Node form = forms.nextProperty().getParent();
                 if (formIsUnsubscribed(form)) {
