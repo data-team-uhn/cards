@@ -1,0 +1,10 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Text Questionnaire",
+  "description": "A test text questionnaire",
+  "question_1": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Text Question",
+    "dataType": "text"
+  }
+}
