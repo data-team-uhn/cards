@@ -452,6 +452,8 @@ function ExportButton(props) {
               <FormControl variant="standard" fullWidth>
                 <Autocomplete
                   multiple
+                  disableCloseOnSelect
+                  disableClearable
                   value={entities?.filter(v => selectedEntityIds.includes(v.path)) || []}
                   filterOptions={filterOptions}
                   onChange={(event, value) => {
