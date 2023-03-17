@@ -76,8 +76,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const filterOptions = createFilterOptions({
-  stringify: (option) => `${option.name} ${option.text || option.principalName}`
+const filterQuestionnaireOptions = createFilterOptions({
+  stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
+});
+
+const filterUserOptions =  createFilterOptions({
+  stringify: (option) => `${option.name} ${option.principalName}`
 });
 
 let findQuestionsOrSections = (json, rootPath = json['@path'], result = []) =>  {
@@ -346,7 +350,7 @@ function ExportButton(props) {
                 <FormControl variant="standard" fullWidth>
                   <Autocomplete
                     value={value && users.find(item => item.name == value) || null}
-                    filterOptions={filterOptions}
+                    filterOptions={filterUserOptions}
                     onChange={(event, value) => {
                       setter(value?.name);
                     }}
@@ -468,7 +472,7 @@ function ExportButton(props) {
                   disableCloseOnSelect
                   disableClearable
                   value={entities?.filter(v => selectedEntityIds.includes(v.path)) || []}
-                  filterOptions={filterOptions}
+                  filterOptions={filterQuestionnaireOptions}
                   onChange={(event, value) => {
                     setSelectedEntityIds(value?.map(item => item.path));
                   }}
