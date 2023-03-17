@@ -34,6 +34,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ResponsiveDialog from "../components/ResponsiveDialog";
+import FormattedText from "../components/FormattedText";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -79,15 +80,21 @@ const filterOptions = createFilterOptions({
   stringify: (option) => `${option.name} ${option.text || option.principalName}`
 });
 
-let findQuestionsOrSections = (json, result = []) =>  {
-  Object.entries(json || {}).forEach(([k,e]) => {
-    if (e?.['jcr:primaryType'] == "cards:Question" || e?.['jcr:primaryType'] == "cards:Section") {
-      result.push({name: e['@name'], text: e['text'] || e['label'], path: e['@path'], type: e['jcr:primaryType'].replace("cards:", '')});
-      e?.['jcr:primaryType'] == "cards:Section" && findQuestionsOrSections(e, result);
-    } else if (typeof(e) == 'object') {
-      findQuestionsOrSections(e, result);
-    }
-  })
+let findQuestionsOrSections = (json, rootPath = json['@path'], result = []) =>  {
+  if (typeof(json) == "object") {
+    Object.entries(json || {}).forEach(([k,e]) => {
+      if (e?.['jcr:primaryType'] == "cards:Question" || e?.['jcr:primaryType'] == "cards:Section") {
+        result.push({
+          name: e['@name'],
+          text: e['text'] || e['label'],
+          path: e['@path'],
+          relativePath: e['@path']?.replace(`${rootPath}/`, '')?.replace(e['@name'], ''),
+          type: e['jcr:primaryType'].replace("cards:", '')
+        });
+      }
+      findQuestionsOrSections(e, rootPath, result);
+    });
+  }
   return result;
 }
 
@@ -261,6 +268,24 @@ function ExportButton(props) {
           </Avatar>
         </Tooltip>
       </ListItemAvatar>
+    );
+  }
+
+  let getQuestionnaireEntryText = (entry) => {
+    return (
+      <ListItemText
+        primary={
+          <FormattedText variant="inherit">
+            { entry.text }
+          </FormattedText>
+        }
+        secondary={
+          <>
+          <span style={{opacity: .6}}>{ entry.relativePath }</span>
+          { entry.name }
+          </>
+        }
+      />
     );
   }
 
@@ -445,7 +470,7 @@ function ExportButton(props) {
                   }
                 >
                   { getAvatar(value.type) }
-                  <ListItemText primary={value.name} secondary={value.text} />
+                  { getQuestionnaireEntryText(value) }
                 </ListItem>
               </>)}
               </List>
@@ -467,10 +492,11 @@ function ExportButton(props) {
                     <ListItemButton
                       value={option.path}
                       key={option.path}
+                      dense
                       {...props}
                     >
                       { getAvatar(option.type) }
-                      <ListItemText primary={option.name} secondary={option.text} />
+                      { getQuestionnaireEntryText(option) }
                     </ListItemButton>
                   }
                   renderInput={(params) =>
