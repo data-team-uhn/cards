@@ -129,6 +129,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             }
 
             // Write the output
+            response.setContentType("application/json;charset=UTF-8");
             final Writer out = response.getWriter();
             out.write(builder.build().toString());
 
