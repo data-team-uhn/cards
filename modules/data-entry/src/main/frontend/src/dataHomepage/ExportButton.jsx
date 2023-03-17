@@ -462,7 +462,8 @@ function ExportButton(props) {
                   renderTags={() => null}
                   getOptionLabel={(option) => option?.name}
                   options={entities || []}
-                  renderOption={(props, option) => { return !selectedEntityIds.includes(option.path) &&
+                  filterSelectedOptions
+                  renderOption={(props, option) =>
                     <ListItemButton
                       value={option.path}
                       key={option.path}
@@ -471,7 +472,7 @@ function ExportButton(props) {
                       { getAvatar(option.type) }
                       <ListItemText primary={option.name} secondary={option.text} />
                     </ListItemButton>
-                  }}
+                  }
                   renderInput={(params) =>
                     <TextField
                       variant="standard"
