@@ -261,11 +261,11 @@ function ExportButton(props) {
       <ListItemAvatar>
         <Tooltip title={type}>
           <Avatar
-            style={{color: entitySpecs[type].color}}
+            style={{color: entitySpecs[type].color, backgroundColor: selected ? "transparent" : undefined}}
             className={classes.avatar}
           >
             { selected ?
-              <Icon>check</Icon>
+              <Icon>check_box</Icon>
               :
               entitySpecs[type].icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0)
             }
@@ -460,23 +460,6 @@ function ExportButton(props) {
               <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
             </Grid>
             <Grid item xs={8}>
-              <List disablePadding dense>
-              {/* List the entered values */}
-              { entities?.filter(v => selectedEntityIds.includes(v.path)).map((value, index) => <>
-                { !!index && <Divider key={`divider-${index}`} variant="inset" component="li" /> }
-                <ListItem
-                  key={`${value.name}-${index}`}
-                  secondaryAction={
-                    <Tooltip title="Delete entry">
-                      <IconButton onClick={() => unselectEntity(selectedEntityIds.indexOf(value.path))}><CloseIcon/></IconButton>
-                    </Tooltip>
-                  }
-                >
-                  { getAvatar(value.type) }
-                  { getQuestionnaireEntryText(value) }
-                </ListItem>
-              </>)}
-              </List>
               <FormControl variant="standard" fullWidth>
                 <Autocomplete
                   multiple
@@ -510,6 +493,23 @@ function ExportButton(props) {
                   }
                 />
               </FormControl>
+              <List dense>
+              {/* List the entered values */}
+              { entities?.filter(v => selectedEntityIds.includes(v.path)).map((value, index) => <>
+                { !!index && <Divider key={`divider-${index}`} variant="inset" component="li" /> }
+                <ListItem
+                  key={`${value.name}-${index}`}
+                  secondaryAction={
+                    <Tooltip title="Delete entry">
+                      <IconButton onClick={() => unselectEntity(selectedEntityIds.indexOf(value.path))}><CloseIcon/></IconButton>
+                    </Tooltip>
+                  }
+                >
+                  { getAvatar(value.type) }
+                  { getQuestionnaireEntryText(value) }
+                </ListItem>
+              </>)}
+              </List>
             </Grid>
           </Grid>
 
