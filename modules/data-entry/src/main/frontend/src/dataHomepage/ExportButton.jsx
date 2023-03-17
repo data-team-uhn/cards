@@ -343,7 +343,6 @@ function ExportButton(props) {
             <Grid item xs={8}>
                 <FormControl variant="standard" fullWidth>
                   <Autocomplete
-                    renderTags={() => null}
                     value={value && users.find(item => item.name == value) || null}
                     filterOptions={filterOptions}
                     onChange={(event, value) => {
