@@ -94,7 +94,7 @@ function Filters(props) {
       // Parse out the filters
       let newFilters = [];
       try {
-        newFilters = JSON.parse(window.atob(filtersJsonString));
+        newFilters = JSON.parse(decodeURIComponent(window.atob(filtersJsonString)));
       } catch (err) {
         // Ignore silently malformed filters sent in the URL
         return;
