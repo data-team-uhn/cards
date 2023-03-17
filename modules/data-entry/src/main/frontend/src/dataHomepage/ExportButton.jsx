@@ -256,7 +256,7 @@ function ExportButton(props) {
     });
   }
 
-  let getAvatar = (type) => {
+  let getAvatar = (type, selected) => {
     return (
       <ListItemAvatar>
         <Tooltip title={type}>
@@ -264,7 +264,11 @@ function ExportButton(props) {
             style={{color: entitySpecs[type].color}}
             className={classes.avatar}
           >
-            { entitySpecs[type].icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0) }
+            { selected ?
+              <Icon>check</Icon>
+              :
+              entitySpecs[type].icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0)
+            }
           </Avatar>
         </Tooltip>
       </ListItemAvatar>
@@ -487,7 +491,6 @@ function ExportButton(props) {
                   renderTags={() => null}
                   getOptionLabel={(option) => option?.name}
                   options={entities || []}
-                  filterSelectedOptions
                   renderOption={(props, option) =>
                     <ListItemButton
                       value={option.path}
@@ -495,7 +498,7 @@ function ExportButton(props) {
                       dense
                       {...props}
                     >
-                      { getAvatar(option.type) }
+                      { getAvatar(option.type, selectedEntityIds.includes(option.path)) }
                       { getQuestionnaireEntryText(option) }
                     </ListItemButton>
                   }
