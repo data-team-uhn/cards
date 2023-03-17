@@ -84,11 +84,13 @@ let findQuestionsOrSections = (json, rootPath = json['@path'], result = []) =>  
   if (typeof(json) == "object") {
     Object.entries(json || {}).forEach(([k,e]) => {
       if (e?.['jcr:primaryType'] == "cards:Question" || e?.['jcr:primaryType'] == "cards:Section") {
+        let relativePath = e['@path']?.replace(`${rootPath}/`, '') || '';
+        relativePath = relativePath.substring(0, relativePath.lastIndexOf("/") + 1);
         result.push({
           name: e['@name'],
           text: e['text'] || e['label'],
           path: e['@path'],
-          relativePath: e['@path']?.replace(`${rootPath}/`, '')?.replace(e['@name'], ''),
+          relativePath: relativePath,
           type: e['jcr:primaryType'].replace("cards:", '')
         });
       }
