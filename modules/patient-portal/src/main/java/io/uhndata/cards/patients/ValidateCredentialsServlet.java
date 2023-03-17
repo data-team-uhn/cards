@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -207,7 +208,12 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         final SlingHttpServletResponse response, final Session session, String sessionSubjectIdentifier)
         throws IOException, RepositoryException
     {
-        final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
+        Node visitSubject = null;
+        try {
+            visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
+        } catch (ItemNotFoundException e) {
+            writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "Visit not found");
+        }
 
         if (this.patientAccessConfiguration.isPatientIdentificationRequired()) {
             // Look for the patient's information in the repository

@@ -201,7 +201,7 @@ function PatientIdentification(props) {
     if (auth_token) {
       let requestData = new FormData();
       requestData.append("auth_token", auth_token);
-      validateCredentials(requestData, () => {});
+      validateCredentials(requestData, (error) => { window.location = "/Expired.html"; });
     }
   }, [config?.tokenlessAuthEnabled]);
 
