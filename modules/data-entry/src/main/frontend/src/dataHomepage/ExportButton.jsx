@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
   },
   withMultiSelect: {
     "& > .MuiGrid-item:first-child" : {
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(1),
     },
     "& .MuiListItem-root": {
       paddingLeft: 0,
@@ -473,7 +473,7 @@ function ExportButton(props) {
                   renderInput={(params) =>
                     <TextField
                       variant="standard"
-                      label="Select questions/sections from this questionnaire"
+                      placeholder="Select questions/sections from this questionnaire"
                       {...params}
                     />
                   }
