@@ -356,16 +356,6 @@ function ExportButton(props) {
                     }}
                     getOptionLabel={(option) => option?.name}
                     options={users || []}
-                    renderOption={(props, option) =>
-                      <ListItemButton
-                        value={option.name}
-                        key={option.name}
-                        className={classes.variableOption}
-                        {...props}
-                      >
-                        <ListItemText primary={option.principalName} />
-                      </ListItemButton>
-                    }
                     renderInput={(params) =>
                       <TextField
                         variant="standard"
@@ -566,16 +556,6 @@ function ExportButton(props) {
                     value={status}
                     onChange={(event, value) => { setStatus(value); }}
                     options={statuses || []}
-                    renderOption={(props, option) =>
-                      <ListItemButton
-                        value={option}
-                        key={option}
-                        className={classes.variableOption}
-                        {...props}
-                      >
-                        <ListItemText primary={option} />
-                      </ListItemButton>
-                    }
                     renderInput={(params) =>
                       <TextField
                         variant="standard"
