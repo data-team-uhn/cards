@@ -22,11 +22,9 @@ import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import { Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
+import { Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Grid, Radio, RadioGroup,
   FormControlLabel, TextField, Typography, Button, IconButton, Tooltip } from "@mui/material";
-import { List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/FileDownload';
-import CloseIcon from '@mui/icons-material/Close';
 
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -34,7 +32,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ResponsiveDialog from "../components/ResponsiveDialog";
-import FormattedText from "../components/FormattedText";
+import QuestionnaireAutocomplete from "../questionnaire/QuestionnaireAutocomplete";
 import { findQuestionnaireEntries } from "../questionnaire/QuestionnaireUtilities";
 
 const useStyles = makeStyles(theme => ({
@@ -48,22 +46,11 @@ const useStyles = makeStyles(theme => ({
     "& > .MuiGrid-item:first-child" : {
       marginTop: theme.spacing(1),
     },
-    "& .MuiListItem-root": {
-      paddingLeft: 0,
-    },
-    "& .MuiDivider-root": {
-      marginLeft: theme.spacing(7),
-    },
   },
   withSelect: {
     "& > .MuiGrid-item:first-child" : {
       marginTop: theme.spacing(.5),
     },
-  },
-  avatar: {
-    backgroundColor: theme.palette.action.hover,
-    color: theme.palette.text.primary,
-    fontWeight: "bold",
   },
   dateRange: {
     alignItems: "baseline",
@@ -77,23 +64,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const filterQuestionnaireOptions = createFilterOptions({
-  stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
-});
-
 const filterUserOptions =  createFilterOptions({
   stringify: (option) => `${option.name} ${option.principalName}`
 });
-
-let entitySpecs = {
-  Question: {
-    color: deepPurple[700]
-  },
-  Section: {
-    icon: "view_stream",
-    color: orange[800]
-  }
-}
 
 /**
  * A component that renders an icon or button to open the export dialog that generates an export URL for an entry.
@@ -233,51 +206,6 @@ function ExportButton(props) {
     }
     path += fileFormat;
     window.open(path, '_blank');
-  }
-
-  let unselectEntity = (index) => {
-    setSelectedEntityIds(oldValues => {
-      let newValues = oldValues.slice();
-      newValues.splice(index, 1);
-      return newValues;
-    });
-  }
-
-  let getAvatar = (type, selected) => {
-    return (
-      <ListItemAvatar>
-        <Tooltip title={type}>
-          <Avatar
-            style={{color: entitySpecs[type].color, backgroundColor: selected ? "transparent" : undefined}}
-            className={classes.avatar}
-          >
-            { selected ?
-              <Icon>check_box</Icon>
-              :
-              entitySpecs[type].icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0)
-            }
-          </Avatar>
-        </Tooltip>
-      </ListItemAvatar>
-    );
-  }
-
-  let getQuestionnaireEntryText = (entry) => {
-    return (
-      <ListItemText
-        primary={
-          <FormattedText variant="inherit">
-            { entry.text }
-          </FormattedText>
-        }
-        secondary={
-          <>
-          <span style={{opacity: .6}}>{ entry.relativePath }</span>
-          { entry.name }
-          </>
-        }
-      />
-    );
   }
 
   let getDatePicker = (value, setter, rangeIsInvalid) => {
@@ -437,56 +365,11 @@ function ExportButton(props) {
               <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
             </Grid>
             <Grid item xs={8}>
-              <FormControl variant="standard" fullWidth>
-                <Autocomplete
-                  multiple
-                  disableCloseOnSelect
-                  disableClearable
-                  value={entities?.filter(v => selectedEntityIds.includes(v.path)) || []}
-                  filterOptions={filterQuestionnaireOptions}
-                  onChange={(event, value) => {
-                    setSelectedEntityIds(value?.map(item => item.path));
-                  }}
-                  renderTags={() => null}
-                  getOptionLabel={(option) => option?.name}
-                  options={entities || []}
-                  renderOption={(props, option) =>
-                    <ListItemButton
-                      value={option.path}
-                      key={option.path}
-                      dense
-                      {...props}
-                    >
-                      { getAvatar(option.type, selectedEntityIds.includes(option.path)) }
-                      { getQuestionnaireEntryText(option) }
-                    </ListItemButton>
-                  }
-                  renderInput={(params) =>
-                    <TextField
-                      variant="standard"
-                      placeholder="Select questions/sections from this questionnaire"
-                      {...params}
-                    />
-                  }
-                />
-              </FormControl>
-              <List dense>
-              {/* List the entered values */}
-              { entities?.filter(v => selectedEntityIds.includes(v.path)).map((value, index) => <>
-                { !!index && <Divider key={`divider-${index}`} variant="inset" component="li" /> }
-                <ListItem
-                  key={`${value.name}-${index}`}
-                  secondaryAction={
-                    <Tooltip title="Delete entry">
-                      <IconButton onClick={() => unselectEntity(selectedEntityIds.indexOf(value.path))}><CloseIcon/></IconButton>
-                    </Tooltip>
-                  }
-                >
-                  { getAvatar(value.type) }
-                  { getQuestionnaireEntryText(value) }
-                </ListItem>
-              </>)}
-              </List>
+              <QuestionnaireAutocomplete
+                entities={entities}
+                selection={selectedEntityIds}
+                onSelectionChanged={setSelectedEntityIds}
+              />
             </Grid>
           </Grid>
 
