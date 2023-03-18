@@ -127,16 +127,16 @@ let ConditionalValueInput = (props) => {
       }
 
       {/* Metadata to sent to the server */}
-      { values ?
+      { !!(values?.length) ?
         <>
           <input type='hidden' name={`${path}/jcr:primaryType`} value={'cards:ConditionalValue'} />
-          { values.map(v => <input type='hidden' key={v} name={`${path}/value`} value={v} />)}
+          { values.map(v => <input type='hidden' key={v} name={`${path}/value`} value={v} />) }
           <input type="hidden" name={`${path}/value@TypeHint`} value="String[]" />
           <input type="hidden" name={`${path}/isReference`} value={isReference || false} />
           <input type="hidden" name={`${path}/isReference@TypeHint`} value="Boolean" />
         </>
         :
-        <input type='hidden' name={`${path}@Delete`} value="0" />
+        <input type='hidden' name={`${path}/value@Delete`} value="0" />
       }
     </EditorInput>
   )
