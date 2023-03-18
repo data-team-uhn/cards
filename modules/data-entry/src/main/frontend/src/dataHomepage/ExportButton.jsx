@@ -35,6 +35,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import FormattedText from "../components/FormattedText";
+import { findQuestionnaireEntries } from "../questionnaire/QuestionnaireUtilities";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -83,26 +84,6 @@ const filterQuestionnaireOptions = createFilterOptions({
 const filterUserOptions =  createFilterOptions({
   stringify: (option) => `${option.name} ${option.principalName}`
 });
-
-let findQuestionsOrSections = (json, rootPath = json['@path'], result = []) =>  {
-  if (typeof(json) == "object") {
-    Object.entries(json || {}).forEach(([k,e]) => {
-      if (e?.['jcr:primaryType'] == "cards:Question" || e?.['jcr:primaryType'] == "cards:Section") {
-        let relativePath = e['@path']?.replace(`${rootPath}/`, '') || '';
-        relativePath = relativePath.substring(0, relativePath.lastIndexOf("/") + 1);
-        result.push({
-          name: e['@name'],
-          text: e['text'] || e['label'],
-          path: e['@path'],
-          relativePath: relativePath,
-          type: e['jcr:primaryType'].replace("cards:", '')
-        });
-      }
-      findQuestionsOrSections(e, rootPath, result);
-    });
-  }
-  return result;
-}
 
 let entitySpecs = {
   Question: {
@@ -170,13 +151,13 @@ function ExportButton(props) {
 
   useEffect(() => {
     if (entityData && !entities) {
-      setEntities(findQuestionsOrSections(entityData));
+      setEntities(findQuestionnaireEntries(entityData));
     }
     if (!entityData && entryPath && !entities && open) {
       fetchWithReLogin(globalLoginDisplay, `${entryPath}.deep.json`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
-          setEntities(findQuestionsOrSections(json));
+          setEntities(findQuestionnaireEntries(json));
         });
     }
   }, [entityData, open]);
