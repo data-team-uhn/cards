@@ -84,14 +84,14 @@ let entitySpecs = {
  * A component that renders an autocomplete component suggesting entries from a questionnaire
  */
 function QuestionnaireAutocomplete(props) {
-  const { entities, selection, onSelectionChanged, ...rest } = props;
+  const { entities, selection, onSelectionChanged, getOptionValue } = props;
 
   const classes = useStyles();
 
-  let unselectEntity = (entityPath) => {
+  let unselectEntity = (index) => {
     onSelectionChanged(oldValues => {
       let newValues = oldValues.slice();
-      newValues.splice(oldValues.indexOf(entityPath), 1);
+      newValues.splice(index, 1);
       return newValues;
     });
   }
@@ -140,22 +140,22 @@ function QuestionnaireAutocomplete(props) {
         multiple
         disableCloseOnSelect
         disableClearable
-        value={entities?.filter(v => selection.includes(v.path)) || []}
+        value={entities?.filter(v => selection.includes(getOptionValue(v))) || []}
         filterOptions={filterOptions}
         onChange={(event, value) => {
-          onSelectionChanged(value?.map(item => item.path));
+          onSelectionChanged(value?.map(item => getOptionValue(item)));
         }}
         renderTags={() => null}
         getOptionLabel={(option) => option?.name}
         options={entities || []}
         renderOption={(props, option) =>
           <ListItemButton
-            value={option.path}
+            value={getOptionValue(option)}
             key={option.path}
             dense
             {...props}
           >
-            { getAvatar(option.type, selection.includes(option.path)) }
+            { getAvatar(option.type, selection.includes(getOptionValue(option))) }
             { getQuestionnaireEntryText(option) }
           </ListItemButton>
         }
@@ -170,14 +170,14 @@ function QuestionnaireAutocomplete(props) {
     </FormControl>
     {/* List the entered values */}
     <List dense className={classes.selectionList}>
-      { entities?.filter(v => selection.includes(v.path)).map((value, index) =>
+      { entities?.filter(v => selection.includes(getOptionValue(v))).map((value, index) =>
         <React.Fragment key={`selection-list-item-${index}`}>
           { !!index && <Divider key={`divider-${index}`} variant="inset" component="li" /> }
           <ListItem
             key={`${value.name}-${index}`}
             secondaryAction={
               <Tooltip title="Delete entry">
-                <IconButton onClick={() => unselectEntity(value.path)}>
+                <IconButton onClick={() => unselectEntity(index)}>
                   <ClearIcon/>
                 </IconButton>
               </Tooltip>
@@ -190,6 +190,18 @@ function QuestionnaireAutocomplete(props) {
       )}
     </List>
   </>);
+}
+
+QuestionnaireAutocomplete.propTypes = {
+  entities: PropTypes.array.isRequired,
+  selection: PropTypes.array,
+  onSelectionChanged: PropTypes.func,
+  getOptionValue: PropTypes.func,
+}
+QuestionnaireAutocomplete.defaultProps = {
+  selection: [],
+  onSelectionChanged: () => {},
+  getOptionValue: (option) => option?.path,
 }
 
 export default QuestionnaireAutocomplete;
