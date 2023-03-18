@@ -305,8 +305,10 @@ let ReferenceInput = (props) => {
         )}
         renderInput={(params) =>
           <TextField
+            multiline
             variant="standard"
             placeholder="Variable"
+            helperText={curValue && autoselectOptions.find(item => item.uuid == curValue)?.path || null}
             {...params}
           />
         }
