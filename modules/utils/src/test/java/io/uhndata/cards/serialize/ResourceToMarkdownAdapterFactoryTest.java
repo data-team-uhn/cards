@@ -35,12 +35,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link ResourceToMarkdownAdapterFactory}.
  *
- * @version $Id $
+ * @version $Id$
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ResourceToMarkdownAdapterFactoryTest
@@ -80,7 +82,7 @@ public class ResourceToMarkdownAdapterFactoryTest
     }
 
     @Test
-    public void getAdapterForResourceAdaptableObjectReturnsResourcePath()
+    public void getAdapterForUnsupportedResourceReturnsResourcePath()
     {
         Resource adaptable = mock(Resource.class);
         ResourceMarkdownProcessor processor = mock(ResourceMarkdownProcessor.class);
@@ -91,6 +93,45 @@ public class ResourceToMarkdownAdapterFactoryTest
         CharSequence adapter = this.factory.getAdapter(adaptable, CharSequence.class);
         assertNotNull(adapter);
         assertEquals(TEST_FORM_PATH, adapter);
+    }
+
+    @Test
+    public void getAdapterWithNoProcessorsReturnsResourcePath()
+    {
+        Resource adaptable = mock(Resource.class);
+
+        when(adaptable.getPath()).thenReturn(TEST_FORM_PATH);
+
+        Whitebox.setInternalState(this.factory, "allProcessors", List.of());
+        CharSequence adapter = this.factory.getAdapter(adaptable, CharSequence.class);
+        assertNotNull(adapter);
+        assertEquals(TEST_FORM_PATH, adapter);
+    }
+
+    @Test
+    public void getAdapterUsesFirstProcessorThatCanProcess()
+    {
+        Resource adaptable = mock(Resource.class);
+
+        ResourceMarkdownProcessor processor1 = mock(ResourceMarkdownProcessor.class);
+        when(processor1.canProcess(adaptable)).thenReturn(false);
+
+        ResourceMarkdownProcessor processor2 = mock(ResourceMarkdownProcessor.class);
+        when(processor2.canProcess(adaptable)).thenReturn(true);
+        String data = NODE_IDENTIFIER + "," + CREATED_BY_PROPERTY + "\n"
+                + UUID.randomUUID() + ",admin";
+        when(processor2.serialize(adaptable)).thenReturn(data);
+
+        ResourceMarkdownProcessor processor3 = mock(ResourceMarkdownProcessor.class);
+
+        Whitebox.setInternalState(this.factory, "allProcessors",
+                List.of(processor1, processor2, processor3));
+        CharSequence adapter = this.factory.getAdapter(adaptable, CharSequence.class);
+        verify(processor1, times(0)).serialize(adaptable);
+        verify(processor2, times(1)).serialize(adaptable);
+        verify(processor3, times(0)).serialize(adaptable);
+        assertNotNull(adapter);
+        assertEquals(data, adapter);
     }
 
 }
