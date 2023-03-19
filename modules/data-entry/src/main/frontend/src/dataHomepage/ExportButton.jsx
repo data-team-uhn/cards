@@ -55,7 +55,10 @@ const useStyles = makeStyles(theme => ({
   dateRange: {
     alignItems: "baseline",
     marginBottom: theme.spacing(-1.5),
-    "& .MuiInputLabel-shrink": {
+    "& .MuiFormHelperText-root.Mui-focused:not(.Mui-error)" : {
+      color: theme.palette.primary.main,
+    },
+    "& .MuiFormHelperText-root:not(.Mui-focused, .Mui-error)" : {
       visibility: "hidden",
     },
     "& + .MuiTypography-root": {
@@ -82,6 +85,8 @@ function ExportButton(props) {
     columnSelectionMode: "exclude",
     statusSelectionMode: "status",
   }
+
+  const DATE_FORMAT = "yyyy/MM/dd hh:mm a";
 
   const [ open, setOpen ] = useState(false);
   // List of questions and sections to display in dropdown select to exclude/include
@@ -211,8 +216,7 @@ function ExportButton(props) {
   let getDatePicker = (value, setter, rangeIsInvalid) => {
     return (<LocalizationProvider dateAdapter={AdapterLuxon}>
               <DateTimePicker
-                label={!value ? "Any date" : "Select date"}
-                inputFormat={"yyyy/MM/dd hh:mm a"}
+                inputFormat={DATE_FORMAT}
                 value={value}
                 onChange={(value) => {
                   setter(value);
@@ -221,8 +225,8 @@ function ExportButton(props) {
                   <TextField
                     variant="standard"
                     {...params}
-                    error={rangeIsInvalid}
-                    helperText=" "
+                    error={rangeIsInvalid || params.error}
+                    helperText={rangeIsInvalid ? " " : DATE_FORMAT}
                     InputProps={{
                       ...params.InputProps
                     }}
