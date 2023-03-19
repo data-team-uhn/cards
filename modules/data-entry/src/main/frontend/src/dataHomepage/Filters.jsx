@@ -499,7 +499,7 @@ function Filters(props) {
           { /* If there is no error but also no data, show a progress circle */
           !error && !filterableFields &&
             <CircularProgress />}
-          <Grid container alignItems="flex-end" spacing={2} className={classes.filterTable}>
+          <Grid container alignItems="flex-start" spacing={2} className={classes.filterTable}>
             {editingFilters.map( (filterDatum, index) => {
               // We grab focus on the field if we were asked to
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);
@@ -519,6 +519,7 @@ function Filters(props) {
                       options={autoselectOptions}
                       groupBy={(option) => option?.category}
                       getOptionValue={option => option?.path}
+                      getHelperText={option => option?.category}
                       textFieldProps={{placeholder: "Add new filter..."}}
                     />
                   </Grid>

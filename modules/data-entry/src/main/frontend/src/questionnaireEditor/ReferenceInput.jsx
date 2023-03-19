@@ -282,6 +282,7 @@ let ReferenceInput = (props) => {
         getOptionSecondaryLabel={getOptionSecondaryLabel}
         groupBy={groupBy}
         onValueChanged={val => changeCurValue(val || '')}
+        getHelperText={getOptionSecondaryLabel}
         textFieldProps={{
           multiline: true,
           placeholder: `${typeLabel} variable`

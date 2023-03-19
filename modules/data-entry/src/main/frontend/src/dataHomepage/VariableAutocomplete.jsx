@@ -56,7 +56,7 @@ const variableAutocompleteStyle = theme => ({
 
 
 let VariableAutocomplete = (props) => {
-  const { classes, options, getOptionValue, getOptionLabel, getOptionSecondaryLabel, groupBy, selectedValue, onValueChanged, textFieldProps, ...rest } = props;
+  const { classes, options, getOptionValue, getOptionLabel, getOptionSecondaryLabel, groupBy, selectedValue, onValueChanged, getHelperText, textFieldProps, ...rest } = props;
 
   const filterOptions = createFilterOptions({
     stringify: (option) => `${getOptionLabel?.(option)} ${getOptionSecondaryLabel?.(option) || ''}`
@@ -92,7 +92,7 @@ let VariableAutocomplete = (props) => {
         <TextField
           variant="standard"
           placeholder="Variable"
-          helperText={selectedValue && getOptionSecondaryLabel(options.find(o => getOptionValue(o) == selectedValue)) || null}
+          helperText={selectedValue && getHelperText?.(options.find(o => getOptionValue(o) == selectedValue)) || null}
           {...params}
           {...textFieldProps}
         />
@@ -110,6 +110,7 @@ VariableAutocomplete.propTypes = {
   groupBy: PropTypes.func,
   value: PropTypes.string,
   onValueChanged: PropTypes.func,
+  getHelperText: PropTypes.func,
   textFieldProps: PropTypes.object,
 };
 
@@ -119,6 +120,7 @@ VariableAutocomplete.defaultProps = {
   getOptionLabel: (option) => option?.label,
   getOptionSecondaryLabel: () => {},
   onValueChanged: () => {},
+  getHelperText: () => {},
   textFieldProps: {}
 };
 const StyledVariableAutocomplete = withStyles(variableAutocompleteStyle)(VariableAutocomplete);
