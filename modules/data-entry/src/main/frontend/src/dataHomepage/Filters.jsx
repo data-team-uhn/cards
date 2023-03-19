@@ -114,7 +114,7 @@ function Filters(props) {
 
   useEffect(() => {
     if (filterableFields.length > 0 && Object.keys(filterableTitles).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelesList(filterableFields, false, ""));
+      setAutoselectOptions(getFieldsLabelsList(filterableFields, false, ""));
     }
   }, [filterableFields, filterableTitles]);
 
@@ -418,7 +418,7 @@ function Filters(props) {
         />);
   }
 
-  let getFieldsLabelesList = (fields, nested=false, category) => {
+  let getFieldsLabelsList = (fields, nested=false,  category) => {
     return fields.map((path) => {
       if (typeof path == "string") {
         // Straight strings are MenuItems
@@ -426,7 +426,7 @@ function Filters(props) {
       } else if (Array.isArray(path)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [getFieldsLabelesList(path.slice(1), true, path[0])].flat();
+        return [getFieldsLabelsList(path.slice(1), true, path[0])].flat();
       }
     }).flat();
   }
