@@ -486,7 +486,6 @@ function Filters(props) {
       <ResponsiveDialog
         open={dialogOpen}
         onClose={closeDialog}
-        className={classes.dialog}
         BackdropProps={{invisible: true}}
         width="md"
         disableEnforceFocus
@@ -546,7 +545,7 @@ function Filters(props) {
                       }
                     </Grid>}
                   {/* Deletion button */}
-                  <Grid item xs={1} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid item xs={1} className={index == editingFilters.length-1 ? classes.hidden : classes.tableActions}>
                     <IconButton
                       size="small"
                       onClick={()=>{
@@ -557,7 +556,6 @@ function Filters(props) {
                             return(newData);
                           });
                         }}
-                      className={classes.deleteButton}
                       >
                       <CloseIcon />
                     </IconButton>

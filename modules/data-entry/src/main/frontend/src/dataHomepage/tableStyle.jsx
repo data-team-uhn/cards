@@ -60,9 +60,6 @@ const liveTableStyle = theme => ({
     hidden: {
         visibility: "hidden"
     },
-    deleteButton: {
-        width: "100%",
-    },
     tableActions: {
         "& .MuiIconButton-root": {
             float : "right"
