@@ -25,6 +25,8 @@ import QuestionComponentManager from "./QuestionComponentManager";
 import VariableAutocomplete from "../dataHomepage/VariableAutocomplete";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import { useFieldsReaderContext, useFieldsWriterContext } from "./FieldsContext";
+import { stripCardsNamespace } from "../questionnaire/QuestionnaireUtilities";
+import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 // Use the filter code to get what sorts of variables can be used as references
 let FILTER_URL = "/Questionnaires.deep.json";
@@ -268,6 +270,7 @@ let ReferenceInput = (props) => {
 
   let groupBy = (value["primaryType"] == "cards:SubjectType") ? undefined : (option) => option?.category;
   let getOptionSecondaryLabel = option => option?.path;
+  let typeLabel = camelCaseToWords(stripCardsNamespace(value["primaryType"]));
 
   return (
     <EditorInput name={objectKey} hint={hint}>
@@ -281,7 +284,7 @@ let ReferenceInput = (props) => {
         onValueChanged={val => changeCurValue(val || '')}
         textFieldProps={{
           multiline: true,
-          placeholder: "Variable"
+          placeholder: `${typeLabel} variable`
         }}
       />
     </EditorInput>

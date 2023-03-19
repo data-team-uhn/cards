@@ -17,6 +17,7 @@
 //  under the License.
 //
 
+export function stripCardsNamespace (str) { return str?.replaceAll(/^cards:/g, ""); }
 
 export function findQuestionnaireEntries(
   json,
@@ -35,7 +36,7 @@ export function findQuestionnaireEntries(
           text: e['text'] || e['label'],
           path: e['@path'],
           relativePath: relativePath,
-          type: e['jcr:primaryType'].replace("cards:", '')
+          type: stripCardsNamespace(e['jcr:primaryType'])
         });
       }
       findQuestionnaireEntries(e, entryTypes, rootPath, result);
