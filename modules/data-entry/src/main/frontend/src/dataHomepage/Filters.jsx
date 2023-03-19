@@ -17,14 +17,14 @@
 //  under the License.
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
-import { Autocomplete, Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
 import { DialogActions, DialogContent, Grid, Select, MenuItem, TextField } from "@mui/material";
-import { List, ListItemButton, ListItemText, ListSubheader } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
 
 import ResponsiveDialog from "../components/ResponsiveDialog";
+import VariableAutocomplete from "./VariableAutocomplete";
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -114,7 +114,7 @@ function Filters(props) {
 
   useEffect(() => {
     if (filterableFields.length > 0 && Object.keys(filterableTitles).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelsList(filterableFields, false, ""));
+      setAutoselectOptions(getFieldsLabelsList(filterableFields, ""));
     }
   }, [filterableFields, filterableTitles]);
 
@@ -418,15 +418,15 @@ function Filters(props) {
         />);
   }
 
-  let getFieldsLabelsList = (fields, nested=false,  category) => {
+  let getFieldsLabelsList = (fields, category) => {
     return fields.map((path) => {
       if (typeof path == "string") {
         // Straight strings are MenuItems
-        return {path: path, className: classes.categoryOption + (nested ? " " + classes.nestedSelectOption : ""), label: filterableTitles[path], category: category}
+        return {path: path, label: filterableTitles[path], category: category}
       } else if (Array.isArray(path)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [getFieldsLabelsList(path.slice(1), true, path[0])].flat();
+        return [getFieldsLabelsList(path.slice(1), path[0])].flat();
       }
     }).flat();
   }
@@ -510,40 +510,17 @@ function Filters(props) {
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
                   <Grid item xs={12} sm={6}>
-                    <Autocomplete
-                      value={filterDatum.name && autoselectOptions.find(item => item.path == filterDatum.name) || null}
-                      onChange={(event, value) => {
-                        handleChangeFilter(index, value.path);
+                    <VariableAutocomplete
+                      selectedValue={filterDatum.name}
+                      onValueChanged={(value) => {
+                        handleChangeFilter(index, value);
                       }}
                       onClose={forceRegrabFocus}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
                       options={autoselectOptions}
-                      groupBy={(option) => option.category}
-                      renderOption={(props, option) =>
-                        <ListItemButton
-                          value={option.path}
-                          key={option.path}
-                          className={option.className}
-                          {...props}
-                        >
-                          <ListItemText primary={option.label} />
-                        </ListItemButton>
-                      }
-                      renderGroup={(params) => (
-                        <List disablePadding key={params.key}>
-                          <ListSubheader color="primary" key={params.group} className={classes.categoryHeader}>
-                              {params.group}
-                          </ListSubheader>
-                          <>{params.children}</>
-                        </List>
-                      )}
-                      renderInput={(params) =>
-                        <TextField
-                          variant="standard"
-                          placeholder="Add new filter..."
-                          {...params}
-                        />
-                      }
+                      groupBy={(option) => option?.category}
+                      getOptionValue={option => option?.path}
+                      textFieldProps={{placeholder: "Add new filter..."}}
                     />
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}

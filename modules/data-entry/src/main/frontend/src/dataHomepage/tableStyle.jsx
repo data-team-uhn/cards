@@ -57,25 +57,8 @@ const liveTableStyle = theme => ({
     answerField: {
         width: "100%",
     },
-    categoryOption: {
-        padding: theme.spacing(.5, 2),
-        "& .MuiListItemText-secondary":{
-          wordBreak: "break-word",
-        },
-    },
-    categoryHeader: {
-        fontSize: "1em",
-        lineHeight: 1.5,
-        paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(2),
-        fontWeight: "bold",
-        top: theme.spacing(-1),
-    },
     hidden: {
         visibility: "hidden"
-    },
-    selectPlaceholder: {
-        opacity: 0.3
     },
     deleteButton: {
         width: "100%",
@@ -84,9 +67,6 @@ const liveTableStyle = theme => ({
         "& .MuiIconButton-root": {
             float : "right"
         }
-    },
-    nestedSelectOption: {
-        paddingLeft: theme.spacing(4)
     },
 });
 
