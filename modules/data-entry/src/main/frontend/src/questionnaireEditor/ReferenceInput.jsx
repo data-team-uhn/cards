@@ -19,14 +19,10 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import { List, ListItemButton, ListItemText, ListSubheader, TextField } from "@mui/material";
-
-import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
-import LiveTableStyle from "../dataHomepage/tableStyle.jsx";
 import QuestionComponentManager from "./QuestionComponentManager";
+import VariableAutocomplete from "../dataHomepage/VariableAutocomplete";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import { useFieldsReaderContext, useFieldsWriterContext } from "./FieldsContext";
 
@@ -35,13 +31,9 @@ let FILTER_URL = "/Questionnaires.deep.json";
 // TODO: Figure out what we should do with the limit in the URL below
 let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 
-const filterOptions = createFilterOptions({
-  stringify: (option) => `${option.label} ${option.path}`
-});
-
 // Reference Input field used by Edit dialog component
 let ReferenceInput = (props) => {
-  const { classes, objectKey, data, value, hint } = props;
+  const { objectKey, data, value, hint } = props;
   const fieldsReader = useFieldsReaderContext();
   const fieldsWriter = useFieldsWriterContext();
 
@@ -274,43 +266,23 @@ let ReferenceInput = (props) => {
     hiddenInput = curValue.split(",").map((thisUUID) => <input type="hidden" name={objectKey} value={thisUUID} key={thisUUID}/>);
   }
 
+  let groupBy = (value["primaryType"] == "cards:SubjectType") ? undefined : (option) => option?.category;
+  let getOptionSecondaryLabel = option => option?.path;
+
   return (
     <EditorInput name={objectKey} hint={hint}>
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
       {hiddenInput}
-      <Autocomplete
-        value={curValue && autoselectOptions.find(item => item.uuid == curValue) || null}
+      <VariableAutocomplete
+        selectedValue={curValue}
         options={autoselectOptions}
-        filterOptions={filterOptions}
-        groupBy={(option) => option.category}
-        onChange={(event, value) => {
-          changeCurValue(value?.uuid || "");
+        getOptionSecondaryLabel={getOptionSecondaryLabel}
+        groupBy={groupBy}
+        onValueChanged={val => changeCurValue(val || '')}
+        textFieldProps={{
+          multiline: true,
+          placeholder: "Variable"
         }}
-        renderOption={(props, option) =>
-          <ListItemButton
-            value={option.uuid}
-            key={option.uuid}
-            className={option.className}
-            {...props}
-          >
-            <ListItemText primary={option.label} secondary={option.path} />
-          </ListItemButton>
-        }
-        renderGroup={(params) => (
-          <List disablePadding key={params.key}>
-            <ListSubheader color="primary" key={params.group} className={classes.categoryHeader}>{params.group}</ListSubheader>
-            <>{params.children}</>
-          </List>
-        )}
-        renderInput={(params) =>
-          <TextField
-            multiline
-            variant="standard"
-            placeholder="Variable"
-            helperText={curValue && autoselectOptions.find(item => item.uuid == curValue)?.path || null}
-            {...params}
-          />
-        }
       />
     </EditorInput>
   )
@@ -322,12 +294,10 @@ ReferenceInput.propTypes = {
   hint: PropTypes.string,
 };
 
-const StyledReferenceInput = withStyles(LiveTableStyle)(ReferenceInput);
-export default StyledReferenceInput;
+export default ReferenceInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
   if (definition.type && definition.type === "reference") {
-    return [StyledReferenceInput, 100];
+    return [ReferenceInput, 100];
   }
 });
-
