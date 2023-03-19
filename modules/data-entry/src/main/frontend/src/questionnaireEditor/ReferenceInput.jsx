@@ -68,7 +68,7 @@ let ReferenceInput = (props) => {
 
   useEffect(() => {
     if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelsList(options, false, ""));
+      setAutoselectOptions(getFieldsLabelsList(options, ""));
     }
   }, [options, titleMap]);
 
@@ -151,7 +151,7 @@ let ReferenceInput = (props) => {
     setPathMap(paths);
   }
 
-  let getFieldsLabelsList = (fields, nested=false, category) => {
+  let getFieldsLabelsList = (fields, category) => {
     return fields.map((entry) => {
       // If we have a restriction, we might return nothing
       if (typeof entry == "string" && !(restrictions && restrictions.length > 0 && !restrictions.includes(entry))) {
@@ -161,12 +161,11 @@ let ReferenceInput = (props) => {
           path: pathMap[entry],
           label: titleMap[entry],
           category: category,
-          className: classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")
         });
       } else if (Array.isArray(entry)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [getFieldsLabelsList(entry.slice(1), true, entry[0])].flat();
+        return [getFieldsLabelsList(entry.slice(1), entry[0])].flat();
       }
     }).flat();
   }
