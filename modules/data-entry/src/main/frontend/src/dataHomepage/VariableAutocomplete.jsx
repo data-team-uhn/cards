@@ -48,6 +48,9 @@ const variableAutocompleteStyle = theme => ({
       fontWeight: "bold",
       top: theme.spacing(-1),
     },
+    "& .MuiAutocomplete-groupLabel:empty": {
+      display: "none",
+    },
   },
 });
 
