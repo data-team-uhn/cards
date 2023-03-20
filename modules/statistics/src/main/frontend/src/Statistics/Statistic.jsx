@@ -154,7 +154,7 @@ function Statistic(props) {
   let navigateToDataset = (xVal, splitVal) => {;
     history.push(
       "/content.html/Subjects#subjects:activeTab=" + definition?.meta?.yVar?.["@name"] +
-      "&subjects:filters=" + window.btoa(JSON.stringify(generateFilters(xVal, splitVal)))
+      "&subjects:filters=" + window.btoa(encodeURIComponent(JSON.stringify(generateFilters(xVal, splitVal))))
     );
   }
 
