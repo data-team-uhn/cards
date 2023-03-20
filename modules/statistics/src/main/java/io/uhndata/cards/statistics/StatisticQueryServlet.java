@@ -476,6 +476,10 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         JsonObject answerJson = builder.build();
         JsonValue jsonValue = answerJson.get(LABEL_PROP);
         try {
+            if (!answer.hasProperty(VALUE_PROP)) {
+                recordEmptyAnswerValue(values, valueDictionary);
+                return values;
+            }
             Property rawValue = answer.getProperty(VALUE_PROP);
             if (jsonValue == null) {
                 recordEmptyAnswerValue(values, valueDictionary);
@@ -570,6 +574,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
         return builder.build();
     }
+
     /**
      * Get the parent node type of a given cards:Answer node.
      *
