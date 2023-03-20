@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for {@link IdentificationProcessor}.
  *
- * @version $Id $
+ * @version $Id$
  */
 @RunWith(MockitoJUnitRunner.class)
 public class IdentificationProcessorTest
@@ -100,7 +100,7 @@ public class IdentificationProcessorTest
     }
 
     @Test
-    public void leaveAddsPathAndNameAndReferencedParameters() throws RepositoryException
+    public void leaveAddsPathAndNameParameters() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node node = session.getNode(TEST_FORM_PATH);
@@ -109,12 +109,35 @@ public class IdentificationProcessorTest
         JsonObject jsonObject = json.build();
         assertFalse(jsonObject.isEmpty());
         assertTrue(jsonObject.containsKey("@path"));
-        assertEquals(Json.createValue(TEST_FORM_PATH), jsonObject.getJsonString("@path"));
+        assertEquals(TEST_FORM_PATH, jsonObject.getString("@path"));
         assertTrue(jsonObject.containsKey("@name"));
-        assertEquals(Json.createValue("f1"), jsonObject.getJsonString("@name"));
+        assertEquals("f1", jsonObject.getString("@name"));
+    }
+
+    @Test
+    public void leaveAddsReferencedParameterForFormNode() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Node node = session.getNode(TEST_FORM_PATH);
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        this.identificationProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+        assertFalse(jsonObject.isEmpty());
         assertTrue(jsonObject.containsKey("@referenced"));
         assertFalse(jsonObject.getBoolean("@referenced"));
+    }
 
+    @Test
+    public void leaveAddsReferencedParameterForQuestionnaireNode() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Node node = session.getNode(TEST_QUESTIONNAIRE_PATH);
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        this.identificationProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+        assertFalse(jsonObject.isEmpty());
+        assertTrue(jsonObject.containsKey("@referenced"));
+        assertTrue(jsonObject.getBoolean("@referenced"));
     }
 
     @Before
