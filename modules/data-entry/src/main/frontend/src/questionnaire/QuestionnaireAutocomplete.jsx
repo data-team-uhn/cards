@@ -66,10 +66,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const filterOptions = createFilterOptions({
-  stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
-});
-
 let entitySpecs = {
   Question: {
     color: deepPurple[700]
@@ -80,11 +76,23 @@ let entitySpecs = {
   }
 }
 
-/**
- * A component that renders an autocomplete component suggesting entries from a questionnaire
- */
+// Component that renders a multi-select autocomplete where the options are expected to be questions or sections
+// from a certain questionnaire
+//
+// Props:
+// * entities: an array of objects describing questionnaire entries; the object shape is expected to be:
+//   { uuid: string, name: string, text: string, path: string, relativePath: string }
+// * selection: an array of strings representing the values of the selected option (according to getOptionValue)
+// * onValueChanged: handler for when selection changes; passed to the Autocomplete component's `onChange` handler
+// * getOptionValue: a function that takes an option and retrieves its value; defaults to (option) => option.path
+// Any other props are passed directly to the Autocomplete component.
+
 function QuestionnaireAutocomplete(props) {
-  const { entities, selection, onSelectionChanged, getOptionValue } = props;
+  const { entities, selection, onSelectionChanged, getOptionValue, ...rest } = props;
+
+  const filterOptions = createFilterOptions({
+    stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
+  });
 
   const classes = useStyles();
 
@@ -166,6 +174,7 @@ function QuestionnaireAutocomplete(props) {
             {...params}
           />
         }
+        {...rest}
       />
     </FormControl>
     {/* List the entered values */}

@@ -22,11 +22,11 @@ import PropTypes from 'prop-types';
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { ListItemButton, ListItemText, Popper, TextField } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 import FormattedText from "../components/FormattedText";
 
-const variableAutocompleteStyle = theme => ({
+const useStyles = makeStyles(theme => ({
   autocompleteRoot: {
     "& .MuiFormHelperText-root" : {
         wordBreak: "break-word",
@@ -52,21 +52,51 @@ const variableAutocompleteStyle = theme => ({
       display: "none",
     },
   },
-});
+}));
 
+// Component that renders a single-select autocomplete where the options are expected to be resources
+//
+// Props:
+// * className: a class name to be applied to the Autocomplete component
+// * options: an array of objects; by default the object shape is expected to be:
+//   { uuid: string, label: string, path: string, relativePath: string }, however other structures are supported,
+//   together with defining the getOption* handlers accordingly. REQUIRED.
+// * getOptionValue: a function that takes an option and retrieves its value; defaults to (option) => option.uuid
+// * getOptionLabel: a function that takes an option and retrieves its label; defaults to (option) => option.label;
+//   also passed down to the rendered Autocomplete component as the `getOptionLabel` handler
+// * getOptionSecondaryLabel: a function that takes an option and retrieves its secondary label, i.e. the text;
+//   displayed as in textSecondary color under the option label in the dropdown.
+//   Filtering options in the autocomplete based on user input is set to take the secondary label into account when
+//   matching options.
+//   Defaults to () => {} (no secondary label)
+// * groupBy: a function that takes an option and retrieves the criterion to group by; defaults to undefined (no grouping);
+//   passed down to the rendered Autocomplete component as the `groupBy` handler
+// * selectedValue: a string representing the value of the selected option (according to getOptionValue)
+// * onValueChanged: handler for when selectedValue changes; passed to the Autocomplete component's `onChange` handler
+// * getHelperText: a function that takes an option and retrieves the text to be displayed under the Autocomplete's
+//   input when that option is selected; applied to the option that matches selectedValue; undefined by default.
+//   Example: option => option?.path would show the selected variable's path under the input.
+// * textFieldProps: an object allowing to specify properties that should be passed down to the TextField.
+//   Example: {multiline: true, placeholder: "Add a filter" }
+// Any other props are passed directly to the Autocomplete component.
 
 let VariableAutocomplete = (props) => {
-  const { classes, options, getOptionValue, getOptionLabel, getOptionSecondaryLabel, groupBy, selectedValue, onValueChanged, getHelperText, textFieldProps, ...rest } = props;
+  const { className, options, getOptionValue, getOptionLabel, getOptionSecondaryLabel, groupBy, selectedValue, onValueChanged, getHelperText, textFieldProps, ...rest } = props;
 
   const filterOptions = createFilterOptions({
     stringify: (option) => `${getOptionLabel?.(option)} ${getOptionSecondaryLabel?.(option) || ''}`
   });
 
+  const classes = useStyles();
+
+  const classNames = [ classes.autocompleteRoot ];
+  className && classNames.push(className);
+
   return (
     <Autocomplete
-      className={classes.autocompleteRoot}
+      className={classNames.join(' ')}
       PopperComponent={ groupBy ?
-        withStyles(variableAutocompleteStyle)((props) => <Popper {...props} className={classes.autocompletePopper} placement="bottom" />)
+        (props) => <Popper {...props} className={classes.autocompletePopper} placement="bottom" />
       : undefined }
       value={selectedValue && options.find(o => getOptionValue(o) == selectedValue) || null}
       options={options}
@@ -103,6 +133,7 @@ let VariableAutocomplete = (props) => {
 }
 
 VariableAutocomplete.propTypes = {
+  className: PropTypes.string,
   options: PropTypes.array.isRequired,
   getOptionValue: PropTypes.func,
   getOptionLabel: PropTypes.func,
@@ -115,7 +146,6 @@ VariableAutocomplete.propTypes = {
 };
 
 VariableAutocomplete.defaultProps = {
-  options: [],
   getOptionValue: (option) => option?.uuid,
   getOptionLabel: (option) => option?.label,
   getOptionSecondaryLabel: () => {},
@@ -123,5 +153,5 @@ VariableAutocomplete.defaultProps = {
   getHelperText: () => {},
   textFieldProps: {}
 };
-const StyledVariableAutocomplete = withStyles(variableAutocompleteStyle)(VariableAutocomplete);
-export default StyledVariableAutocomplete;
+
+export default VariableAutocomplete;
