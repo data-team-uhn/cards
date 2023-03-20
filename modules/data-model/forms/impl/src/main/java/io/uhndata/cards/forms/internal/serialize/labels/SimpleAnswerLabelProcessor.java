@@ -92,7 +92,7 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
                 final Node question = getQuestionNode(node);
                 final JsonValue label = getAnswerLabel(node, question);
                 if (label != null) {
-                    json.add(PROP_DISPLAYED_VALUE, getAnswerLabel(node, question));
+                    json.add(PROP_DISPLAYED_VALUE, label);
                 }
             }
         } catch (RepositoryException e) {
@@ -165,5 +165,16 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
             jsonArray.add(item);
         }
         return jsonArray.build();
+    }
+
+    protected JsonValue createJsonValue(final Collection<String> list, final boolean multivalued)
+    {
+        if (multivalued) {
+            return createJsonArrayFromList(list);
+        }
+        if (list.isEmpty()) {
+            return JsonValue.NULL;
+        }
+        return Json.createValue(list.iterator().next());
     }
 }
