@@ -23,6 +23,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.json.JsonValue;
 
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Rule;
@@ -31,21 +32,20 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link SimpleProcessor}.
  *
- * @version $Id $
+ * @version $Id$
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleProcessorTest
 {
     private static final String BASE_VERSION = "jcr:baseVersion";
+    private static final String CREATED = "jcr:created";
     private static final String RESOURCE_TYPE = "sling:resourceType";
     private static final String NAME = "simple";
     private static final int PRIORITY = 25;
@@ -69,6 +69,12 @@ public class SimpleProcessorTest
     }
 
     @Test
+    public void isEnabledByDefaultTest()
+    {
+        assertFalse(this.simpleProcessor.isEnabledByDefault(mock(Resource.class)));
+    }
+
+    @Test
     public void processPropertyForNullPropertyReturnsNull()
     {
         JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), null, mock(JsonValue.class),
@@ -81,6 +87,18 @@ public class SimpleProcessorTest
     {
         Property property = mock(Property.class);
         when(property.getName()).thenThrow(new RepositoryException());
+        JsonValue input = mock(JsonValue.class);
+        JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), property, input,
+                mock(Function.class));
+        assertNotNull(jsonValue);
+        assertEquals(input, jsonValue);
+    }
+
+    @Test
+    public void processPropertyReturnsInput() throws RepositoryException
+    {
+        Property property = mock(Property.class);
+        when(property.getName()).thenReturn(CREATED);
         JsonValue input = mock(JsonValue.class);
         JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), property, input,
                 mock(Function.class));
