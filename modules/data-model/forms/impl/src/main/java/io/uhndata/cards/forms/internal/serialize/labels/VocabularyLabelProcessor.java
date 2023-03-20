@@ -26,7 +26,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -64,10 +63,10 @@ public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implem
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
-            Map<String, String> propsMap = new LinkedHashMap<>();
-
-            Property nodeProp = node.getProperty(PROP_VALUE);
-            if (nodeProp.isMultiple()) {
+            final Map<String, String> propsMap = new LinkedHashMap<>();
+            final Property nodeProp = node.getProperty(PROP_VALUE);
+            final boolean multivalued = nodeProp.isMultiple();
+            if (multivalued) {
                 for (Value value : nodeProp.getValues()) {
                     propsMap.put(value.getString(), value.getString());
                 }
@@ -76,18 +75,14 @@ public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implem
             }
 
             if (question == null) {
-                return createJsonArrayFromList(propsMap.values());
+                return createJsonValue(propsMap.values(), multivalued);
             }
 
             processVocabularyLabels(node, question, propsMap);
 
             super.processOptions(question, propsMap);
 
-            if (propsMap.size() == 1) {
-                return Json.createValue((String) propsMap.values().toArray()[0]);
-            }
-
-            return createJsonArrayFromList(propsMap.values());
+            return createJsonValue(propsMap.values(), multivalued);
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }

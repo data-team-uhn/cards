@@ -27,7 +27,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -109,11 +108,7 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
                 }
             }
 
-            if (valueLabelMap.size() == 1) {
-                return Json.createValue((String) valueLabelMap.values().toArray()[0]);
-            }
-
-            return createJsonArrayFromList(valueLabelMap.values());
+            return createJsonValue(valueLabelMap.values(), valueProp.isMultiple());
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }

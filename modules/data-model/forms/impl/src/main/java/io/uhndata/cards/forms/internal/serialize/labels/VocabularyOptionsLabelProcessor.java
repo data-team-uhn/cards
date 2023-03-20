@@ -19,7 +19,6 @@
 package io.uhndata.cards.forms.internal.serialize.labels;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -27,7 +26,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -84,7 +82,7 @@ public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor 
                 propsMap.put(nodeProp.getString(), nodeProp.getString());
             }
 
-            for (String value : new LinkedHashSet<>(propsMap.keySet())) {
+            for (String value : propsMap.keySet()) {
                 if (value.startsWith("/Vocabularies/") && node.getSession().nodeExists(value)) {
                     Node term = node.getSession().getNode(value);
                     if (term.hasProperty(PROP_LABEL)) {
@@ -94,11 +92,7 @@ public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor 
                 }
             }
 
-            if (propsMap.size() == 1) {
-                return Json.createValue((String) propsMap.values().toArray()[0]);
-            }
-
-            return createJsonArrayFromList(propsMap.values());
+            return createJsonValue(propsMap.values(), nodeProp.isMultiple());
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }

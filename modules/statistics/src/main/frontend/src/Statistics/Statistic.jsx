@@ -79,26 +79,15 @@ function Statistic(props) {
   // Sort the data we provide to recharts according to its x value
   let xVar = definition["xVar"];
 
-  if (xVar["dataType"] == "date") {
-    // Date sort -- first convert string->moment to compare
-    let dateFormat = xVar["dateFormat"] || "yyyy-MM-dd";
-    rechartsData.sort((a, b) => {
-        return DateQuestionUtilities.toPrecision(a["x"], dateFormat).diff(DateQuestionUtilities.toPrecision(b["x"], dateFormat))
-    });
-    // Reformat to a human readable format
-    rechartsData = rechartsData.map((field) => {
-      field["x"] = DateTime.fromISO(field["x"]).toFormat("yyyy-MM-dd");
-      return field;
-    })
-  } else {
-    // If there are any answer options, use their defaultOrder for sorting
-    let xLabels = Object.values(xVar)
-      .filter(o => o["jcr:primaryType"] == "cards:AnswerOption")
-      .sort((o1, o2) => (o1.defaultOrder - o2.defaultOrder));
+  // If there are any answer options, use their defaultOrder for sorting
+  let xOptionLabels = Object.values(xVar)
+    .filter(o => o["jcr:primaryType"] == "cards:AnswerOption")
+    .sort((o1, o2) => (o1.defaultOrder - o2.defaultOrder));
 
+  if (xOptionLabels.length) {
     rechartsData.sort((a, b) => {
-      let aIdx = xLabels.findIndex(i => i.value == a.x);
-      let bIdx = xLabels.findIndex(i => i.value == b.x);
+      let aIdx = xOptionLabels.findIndex(i => i.label == a.x);
+      let bIdx = xOptionLabels.findIndex(i => i.label == b.x);
       if (aIdx >= 0 && bIdx >= 0) {
         return aIdx - bIdx;
       } else if (aIdx >= 0) {
@@ -112,10 +101,6 @@ function Statistic(props) {
         // Rely on the default (string-coerced) sort
         return a["x"].localeCompare(b["x"]);
       }
-    });
-    // Relabel x values according to answer option labels
-    rechartsData.forEach(e => {
-      e.x = (xLabels.find(i => i.value == e.x))?.label || e.x;
     });
   }
 
@@ -176,11 +161,13 @@ function Statistic(props) {
   let generateFilters = (xVal, splitVal) => {
     let result = [];
     let xVarDef = definition?.meta?.xVar;
-    let xVarFilter = generateFilter(xVarDef, xVal)
+    let xValueDictionary = definition?.xValueDictionary;
+    let xVarFilter = generateFilter(xVarDef, xValueDictionary ? xValueDictionary[xVal] : xVal)
     result.push(xVarFilter);
     if (isSplit) {
       let splitDef = definition?.meta?.splitVar;
-      let splitFilter = generateFilter(splitDef, splitVal);
+      let splitValueDictionary = definition?.splitValueDictionary;
+      let splitFilter = generateFilter(splitDef, splitValueDictionary ? splitValueDictionary[splitVal] : splitVal);
       result.push(splitFilter);
     }
     return result;
