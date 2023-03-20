@@ -27,6 +27,7 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
@@ -48,7 +49,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for {@link DereferenceProcessor}.
  *
- * @version $Id $
+ * @version $Id$
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DereferenceProcessorTest
@@ -232,6 +233,7 @@ public class DereferenceProcessorTest
         JsonValue json = Json.createValue(FORM_TYPE);
         JsonValue jsonValue = this.dereferenceProcessor.processProperty(node, property, json, this::serializeNode);
         assertNotNull(jsonValue);
+        assertEquals(property.getNode().getPath(), ((JsonString) jsonValue).getString());
     }
 
     @Test

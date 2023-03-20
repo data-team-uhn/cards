@@ -23,6 +23,7 @@ import javax.jcr.RepositoryException;
 import javax.json.Json;
 import javax.json.JsonValue;
 
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Rule;
@@ -31,15 +32,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link DeepProcessor}.
  *
- * @version $Id $
+ * @version $Id$
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DeepProcessorTest
@@ -64,6 +64,12 @@ public class DeepProcessorTest
     public void getPriorityTest()
     {
         assertEquals(PRIORITY, this.deepProcessor.getPriority());
+    }
+
+    @Test
+    public void isEnabledByDefaultTest()
+    {
+        assertFalse(this.deepProcessor.isEnabledByDefault(mock(Resource.class)));
     }
 
     @Test

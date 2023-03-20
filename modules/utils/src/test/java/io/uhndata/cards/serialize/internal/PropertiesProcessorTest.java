@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for {@link PropertiesProcessor}.
  *
- * @version $Id $
+ * @version $Id$
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PropertiesProcessorTest
