@@ -58,7 +58,7 @@ import static org.mockito.Mockito.when;
 /**
  * Unit tests for {@link BareProcessor}.
  *
- * @version $Id $
+ * @version $Id$
  */
 @RunWith(MockitoJUnitRunner.class)
 public class BareProcessorTest
@@ -98,6 +98,12 @@ public class BareProcessorTest
     public void getPriorityTest()
     {
         assertEquals(PRIORITY, this.bareProcessor.getPriority());
+    }
+
+    @Test
+    public void isEnabledByDefaultTest()
+    {
+        assertFalse(this.bareProcessor.isEnabledByDefault(mock(Resource.class)));
     }
 
     @Test
@@ -211,7 +217,7 @@ public class BareProcessorTest
     }
 
     @Test
-    public void leaveSerializeCreatedAndLastModifiedAndContent() throws RepositoryException, ParseException
+    public void leaveSerializesCreatedAndLastModifiedAndFileContent() throws RepositoryException, ParseException
     {
         Node node = mock(Node.class);
         when(this.depth.get()).thenReturn(1, 0);
@@ -229,16 +235,38 @@ public class BareProcessorTest
         verify(this.depth, times(3)).get();
         verify(this.depth).set(0);
 
-        String created = jsonObject.get("created").toString();
-        String lastModified = jsonObject.get("lastModified").toString();
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
         assertNotNull(jsonObject);
         assertTrue(jsonObject.containsKey("created"));
-        assertEquals(date.getTime(), format.parse(created.substring(1, created.length() - 1)));
+        assertEquals(date.getTime(), format.parse(jsonObject.getString("created")));
         assertTrue(jsonObject.containsKey("lastModified"));
-        assertEquals(date.getTime(),
-                format.parse(lastModified.substring(1, lastModified.length() - 1)));
+        assertEquals(date.getTime(), format.parse(jsonObject.getString("lastModified")));
+        assertTrue(jsonObject.containsKey("content"));
+    }
+
+    @Test
+    public void leaveWithNonRootNodeDoesNotAddMetadata() throws RepositoryException, ParseException
+    {
+        Node node = mock(Node.class);
+        when(this.depth.get()).thenReturn(2, 1);
+
+        Calendar date = Calendar.getInstance();
+        date.set(2023, Calendar.JANUARY, 1);
+        date.getTimeZone().getRawOffset();
+        mockCreatedAndLastModifiedDate(node, date);
+        mockFileContent(node);
+
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        this.bareProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+
+        verify(this.depth, times(3)).get();
+        verify(this.depth).set(1);
+
+        assertNotNull(jsonObject);
+        assertFalse(jsonObject.containsKey("created"));
+        assertFalse(jsonObject.containsKey("lastModified"));
         assertTrue(jsonObject.containsKey("content"));
     }
 
