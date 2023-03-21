@@ -31,6 +31,7 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue.ValueType;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -128,7 +129,8 @@ public class FilterServlet extends SlingSafeMethodsServlet
             Resource resource = results.next();
             String path = resource.getResourceMetadata().getResolutionPath();
             resource = resolver.resolve(path.concat(DEEP_JSON_SUFFIX));
-            this.copyQuestions(resource.adaptTo(JsonObject.class), builder, seenTypes, seenElements);
+            JsonObject resourceJson = resource.adaptTo(JsonObject.class);
+            this.copyQuestions(resourceJson, getTitle(resourceJson), builder, seenTypes, seenElements);
         }
         return builder.build();
     }
@@ -143,8 +145,8 @@ public class FilterServlet extends SlingSafeMethodsServlet
      * @param seenElements Either a map from field names to jcr:uuids, or null to disable tracking
      * @return the content matching the query
      */
-    private void copyQuestions(JsonObject questions, JsonObjectBuilder builder, Map<String, String> seenTypes,
-            Map<String, String> seenElements)
+    private void copyQuestions(JsonObject questions, String questionnaireTitle, JsonObjectBuilder builder,
+            Map<String, String> seenTypes, Map<String, String> seenElements)
     {
         // Copy over the keys
         for (String key : questions.keySet()) {
@@ -156,12 +158,13 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
             // Copy over information from children of sections
             if ("cards:Section".equals(datum.getString("jcr:primaryType"))) {
-                this.copyQuestions(datum, builder, seenTypes, seenElements);
+                this.copyQuestions(datum, questionnaireTitle, builder, seenTypes, seenElements);
             }
 
             // Copy over information from this object if this is a question
             if ("cards:Question".equals(datum.getString("jcr:primaryType"))) {
-                copyFields(datum, key, builder, seenTypes, seenElements);
+                JsonObject amendedDatum = amendWithQuestionnaireTitle(datum, questionnaireTitle);
+                copyFields(amendedDatum, key, builder, seenTypes, seenElements);
             }
         }
     }
@@ -170,12 +173,11 @@ public class FilterServlet extends SlingSafeMethodsServlet
      * Copies over every field from the input JsonObject, optionally handling questions that
      * may already exist in the builder.
      *
-     * @param question A JsonObject from an cards:Question
+     * @param question A JsonObject from a cards:Question resource
      * @param key The name of the cards:Question
      * @param builder A JsonObjectBuilder to copy results to
      * @param seenTypes Either a map from field names to dataTypes, or null to disable tracking
      * @param seenElements Either a map from field names to jcr:uuids, or null to disable tracking
-     * @return the content matching the query
      */
     private void copyFields(JsonObject question, String key, JsonObjectBuilder builder, Map<String, String> seenTypes,
             Map<String, String> seenElements)
@@ -228,10 +230,44 @@ public class FilterServlet extends SlingSafeMethodsServlet
      *
      * @param questions A JsonObject (from an cards:Questionnaire) whose fields may be cards:Questions
      * @param builder A JsonObjectBuilder to copy results to
-     * @return the content matching the query
      */
-    private void copyQuestions(JsonObject questions, JsonObjectBuilder builder)
+    private void copyQuestions(final JsonObject questions, final JsonObjectBuilder builder)
     {
-        this.copyQuestions(questions, builder, null, null);
+        this.copyQuestions(questions, getTitle(questions), builder, null, null);
+    }
+
+    /**
+     * Retrieves the title of a questionnaire.
+     *
+     * @param resourceJson The Questionnaire resource, as JsonObject
+     * @return the title field, or the name field if title is missing
+     */
+    private String getTitle(final JsonObject resourceJson)
+    {
+        String result = resourceJson.getString("title", "");
+        if (StringUtils.isBlank(result)) {
+            result = resourceJson.getString("@name", "");
+        }
+        return result;
+    }
+
+    /**
+     * Adds a questionnaireTitle field to a question JsonObject.
+     *
+     * @param question The question as a JsonObject
+     * @param title The title of the questionnaire the question belongs to
+     * @return a new JsonObject with all the fields of question, plus the questionnaireTitle field
+     */
+    private JsonObject amendWithQuestionnaireTitle(final JsonObject question, final String title)
+    {
+        JsonObjectBuilder amended = Json.createObjectBuilder();
+        // Copy over all the fields
+        for (String key : question.keySet()) {
+            amended.add(key, question.get(key));
+        }
+        // Add the questionnaire title
+        amended.add("questionnaireTitle", title);
+        // Build and return
+        return amended.build();
     }
 }
