@@ -358,7 +358,7 @@ function SubjectHeader(props) {
                />
                <DeleteButton
                  entryPath={path}
-                 entryName={title}
+                 entryName={identifier}
                  entryType={label}
                  onComplete={handleDeletion}
                  size="large"
@@ -480,7 +480,7 @@ function SubjectMemberInternal (props) {
                  />
                  <DeleteButton
                    entryPath={path}
-                   entryName={title}
+                   entryName={identifier}
                    entryType={label}
                    onComplete={onDelete}
                    className={classes.childSubjectHeaderButton}
