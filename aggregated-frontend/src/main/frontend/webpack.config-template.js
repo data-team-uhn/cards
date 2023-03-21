@@ -24,6 +24,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module_name = require("./package.json").name + ".";
 
+const isProduction = process.argv.find(arg => arg.startsWith("--mode"))?.substring(7) == 'production';
+
 module.exports = {
   mode: 'development',
   devtool: 'eval-cheap-module-source-map',
@@ -57,7 +59,7 @@ ENTRY_CONTENT
   },
   optimization: {
     usedExports: false,
-    minimize: true,
+    minimize: isProduction,
     minimizer: [
       new TerserPlugin({
         terserOptions: {
