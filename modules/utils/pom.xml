@@ -31,7 +31,7 @@
   <name>CARDS - Utilities</name>
 
   <properties>
-    <coverage.instructionRatio>0.91</coverage.instructionRatio>
+    <coverage.instructionRatio>0.94</coverage.instructionRatio>
   </properties>
 
   <build>
@@ -103,6 +103,15 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-jackrabbit-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>oak-api</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.uhndata.cards</groupId>
