@@ -82,6 +82,18 @@ function LiveTable(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  // When data is changed, trigger a new fetch in Forms table
+  useEffect(() => {
+    if (entryType == "Form") {
+      // subscribe event
+      window.addEventListener("SubjectDeleted",  refresh);
+      return () => {
+        // unsubscribe event
+        document.removeEventListener("SubjectDeleted",  refresh);
+      };
+    }
+  }, [entryType]);
+
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
@@ -230,7 +242,7 @@ function LiveTable(props) {
         key={index}
         entryPath={entry["@path"]}
         entryName={getEntityIdentifier(entry)}
-        onComplete={refresh}
+        onComplete={() => {refresh(); entryType == "Subject" && window.dispatchEvent(new Event("SubjectDeleted"));}}
         entryType={entryType}
         entryLabel={entry["jcr:primaryType"] == "cards:Subject" ? entry.type?.label : ''}
         admin={admin} />
