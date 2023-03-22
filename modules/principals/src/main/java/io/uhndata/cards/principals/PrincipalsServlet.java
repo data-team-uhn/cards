@@ -25,6 +25,7 @@ import java.util.Iterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
@@ -50,6 +51,8 @@ import org.slf4j.LoggerFactory;
  * A servlet that lists existing principals. It supports pagination and basic filtering. Depending on the path on which
  * it is invoked, it can either return only users (on {@code /home/users.json}), only groups (on
  * {@code /home/groups.json}), or both (on {@code /home.json}).
+ * Users queries support filtering by user type: only users (default), only service users ({@code type=service}),
+ * or both ({@code type=all}).
  * <p>
  * This servlet supports the following parameters:
  * </p>
@@ -57,6 +60,7 @@ import org.slf4j.LoggerFactory;
  * <li><code>filter</code>: a lucene search term, such as "david" or "adm*"; no filter set by default</li>
  * <li><code>offset</code>: a 0-based number representing how many principals to skip; 0 by default</li>
  * <li><code>limit</code>: a number representing how many principals to include at most in the result; 0 by default</li>
+ * <li><code>type</code>: a users type filter: "service" for only service users or "all" for all types</li>
  * </ul>
  *
  * @version $Id$
@@ -78,34 +82,47 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
 
         private final String filter;
 
+        private final String userType;
+
         private final long offset;
 
         private FilteredPrincipalsQuery(JackrabbitSession session, AuthorizableType type, long limit, String filter,
-            long offset)
+            String userType, long offset)
         {
             this.session = session;
             this.type = type;
             this.limit = limit;
             this.filter = filter;
             this.offset = offset;
+            this.userType = userType;
         }
 
         @Override
         public <T> void build(QueryBuilder<T> builder)
         {
             T condition = null;
-            // Ignore system users
-            // TODO Maybe this should be optional?
+            // Filter by user type
             try {
-                condition = builder.not(
-                    builder.eq("@jcr:primaryType", this.session.getValueFactory().createValue("rep:SystemUser")));
+                ValueFactory factory = this.session.getValueFactory();
+                T serviceUsers = builder.eq("@jcr:primaryType", factory.createValue("rep:SystemUser"));
+                if (StringUtils.isBlank(this.userType)) {
+                    // The default should stay as it is, only listing real users
+                    condition = builder.not(serviceUsers);
+                } else {
+                    if ("service".equals(this.userType)) {
+                        condition = serviceUsers;
+                    }
+                    // Otherwise include all user types, no conditions
+                }
             } catch (RepositoryException e) {
                 // This really shouldn't happen
             }
+
             // Apply the requested filter
             if (StringUtils.isNotBlank(this.filter)) {
                 // Full text search in the principal's node
-                condition = builder.and(condition, builder.contains(".", this.filter));
+                T filterBy = builder.contains(".", this.filter);
+                condition = (condition == null) ? filterBy : builder.and(condition, filterBy);
             }
             builder.setCondition(condition);
             // What type of principal to include
@@ -128,6 +145,7 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String filter = request.getParameter("filter");
+        String userType = request.getParameter("type");
         final long limit = getLongValueOrDefault(request.getParameter("limit"), 0);
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
         Session session = request.getResourceResolver().adaptTo(Session.class);
@@ -152,7 +170,7 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
                 // The magic number 8 is the prefix length for the protocol, https://
                 long[] principalCounts =
                     writePrincipals(jsonGen,
-                        queryPrincipals((JackrabbitSession) session, type, filter, 0, Long.MAX_VALUE),
+                        queryPrincipals((JackrabbitSession) session, type, filter, userType, 0, Long.MAX_VALUE),
                         request.getRequestURL().substring(0, request.getRequestURL().indexOf("/", 8))
                             + request.getContextPath(), offset, limit);
                 writeSummary(jsonGen, request, filter, offset, limit,
@@ -170,15 +188,16 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
      * @param session the current JCR session
      * @param type the type of principals to include in the results
      * @param filter an optional filter, in the lucene search term syntax
+     * @param userType a user type filter whether to include only users, service users or both
      * @param offset how many results to skip
      * @param limit how many results to include at most
      * @return the matching authorizables, may be empty
      * @throws RepositoryException if the query fails
      */
     private Iterator<Authorizable> queryPrincipals(final JackrabbitSession session, final AuthorizableType type,
-        final String filter, final long offset, final long limit) throws RepositoryException
+        final String filter, final String userType, final long offset, final long limit) throws RepositoryException
     {
-        final Query q = new FilteredPrincipalsQuery(session, type, limit, filter, offset);
+        final Query q = new FilteredPrincipalsQuery(session, type, limit, filter, userType, offset);
         final UserManager userManager = session.getUserManager();
         return userManager.findAuthorizables(q);
     }
