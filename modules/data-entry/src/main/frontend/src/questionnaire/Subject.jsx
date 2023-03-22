@@ -54,6 +54,7 @@ import EditButton from "../dataHomepage/EditButton.jsx";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
 import ResourceHeader from "./ResourceHeader.jsx"
 import SubjectTimeline from "./SubjectTimeline.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 /***
  * Create a URL that checks for the existence of a subject
@@ -345,8 +346,8 @@ function SubjectHeader(props) {
   }
 
   let identifier = subject?.data?.identifier || id;
-  let label = subject?.data?.type?.label || "Subject";
-  let title = `${label} ${identifier}`;
+  let label = subject?.data?.type?.label;
+  let title = `${label || "Subject"} ${identifier}`;
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let subjectMenu = (
             <div className={classes.actionsMenu}>
@@ -358,8 +359,9 @@ function SubjectHeader(props) {
                />
                <DeleteButton
                  entryPath={path}
-                 entryName={identifier}
-                 entryType={label}
+                 entryName={getEntityIdentifier(subject?.data)}
+                 entryType="Subject"
+                 entryLabel={label}
                  onComplete={handleDeletion}
                  size="large"
                />
@@ -458,8 +460,8 @@ function SubjectMemberInternal (props) {
   }
 
   let identifier = data && data.identifier ? data.identifier : id;
-  let label = data?.type?.label || "Subject";
-  let title = `${label} ${identifier}`;
+  let label = data?.type?.label;
+  let title = `${label || "Subject"} ${identifier}`;
   let path = data ? data["@path"] : "/Subjects/" + id;
   let avatar = <Avatar className={classes.subjectAvatar}><SubjectIcon/></Avatar>;
   let expandAction = (
@@ -480,8 +482,9 @@ function SubjectMemberInternal (props) {
                  />
                  <DeleteButton
                    entryPath={path}
-                   entryName={identifier}
-                   entryType={label}
+                   entryName={getEntityIdentifier(data)}
+                   entryType="Subject"
+                   entryLabel={label}
                    onComplete={onDelete}
                    className={classes.childSubjectHeaderButton}
                  />
