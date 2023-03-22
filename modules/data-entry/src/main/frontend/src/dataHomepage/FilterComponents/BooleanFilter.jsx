@@ -56,9 +56,9 @@ const BooleanFilter = forwardRef((props, ref) => {
     <Select
       variant="standard"
       value={selection}
-      onChange={(event) => {
+      onChange={(event, el) => {
         setSelection(event.target.value);
-        onChangeInput(event.target.value, event.currentTarget.dataset.label);
+        onChangeInput(event.target.value, el.props["data-label"]);
       }}
       className={classes.answerField}
       ref={ref}
