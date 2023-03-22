@@ -172,7 +172,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             this.formUtils.getSubject(this.formUtils.getForm(submittedAnswer)), session);
         final Node submittedDateAnswer = this.formUtils.getAnswer(surveyStatusForm,
             session.getNode("/Questionnaires/Survey events/responses_received"));
-        if (submittedDateAnswer != null) {
+        if (submittedDateAnswer != null && this.formUtils.getValue(submittedDateAnswer) == null) {
             submittedDateAnswer.setProperty("value", Calendar.getInstance());
             session.save();
         }
