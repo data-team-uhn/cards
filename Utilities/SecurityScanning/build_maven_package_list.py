@@ -34,6 +34,8 @@ packages = []
 for raw_line in sys.stdin.readlines():
 	line = raw_line.rstrip()
 	line = line[2:]
+	if len(line.split('/')) < 3:
+		continue
 	groupId = '.'.join(line.split('/')[0:-3])
 	artifactId = line.split('/')[-3]
 	version = line.split('/')[-2]
