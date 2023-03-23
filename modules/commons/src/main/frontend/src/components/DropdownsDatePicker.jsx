@@ -159,8 +159,10 @@ function DropdownsDatePicker(props) {
       [DropdownDate.day] : (type === DropdownDate.day) ? value : selectedDay
     };
 
+    let date = null;
+
     if (dateObj[DropdownDate.year] !== null && dateObj[DropdownDate.month] !== null && dateObj[DropdownDate.day] !== null) {
-      let date = new Date(dateObj[DropdownDate.year], dateObj[DropdownDate.month], dateObj[DropdownDate.day]);
+      date = new Date(dateObj[DropdownDate.year], dateObj[DropdownDate.month], dateObj[DropdownDate.day]);
 
       if (formatDate) {
         dateObj[DropdownDate.month] = dateObj[DropdownDate.month] + 1;
@@ -168,11 +170,9 @@ function DropdownsDatePicker(props) {
         if (dateObj[DropdownDate.day] < 10) dateObj[DropdownDate.day] = '0' + dateObj[DropdownDate.day];
         date = order.map(part => { return dateObj[part] }).join('-');
       }
-
-      onDateChange?.(date);
-    } else {
-      onDateChange?.(null);
     }
+
+    onDateChange?.(date);
   }
 
   let handleYearChange = (event, value) => {
@@ -181,9 +181,8 @@ function DropdownsDatePicker(props) {
     const monthDays = getDaysInMonth(year, selectedMonth);
     if (selectedDay > monthDays) {
       setSelectedDay(null);
-    } else {
-      handleDateChange(DropdownDate.year, year);
     }
+    handleDateChange(DropdownDate.year, year);
   }
 
   let handleMonthChange = (event, value) => {
@@ -192,9 +191,8 @@ function DropdownsDatePicker(props) {
     const monthDays = getDaysInMonth(selectedYear, month);
     if (selectedDay > monthDays) {
       setSelectedDay(null);
-    } else {
-      handleDateChange(DropdownDate.month, month);
     }
+    handleDateChange(DropdownDate.month, month);
   }
 
   let handleDayChange = (event, value) => {
