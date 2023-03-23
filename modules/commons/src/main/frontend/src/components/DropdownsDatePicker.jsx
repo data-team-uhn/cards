@@ -118,6 +118,8 @@ function DropdownsDatePicker(props) {
   const [ selectedMonth, setSelectedMonth ] = useState(selDate?.getMonth()) ?? null;
   const [ selectedDay, setSelectedDay ] = useState(selDate?.getDate() ?? null);
 
+  const [ focusedDateComponent, setFocusedDateComponent ] = useState();
+
   let getStringArray = (from, to) => Array.from({length: (to - from + 1)}, (_, i) => `${i + from}`)
 
   // Generate the year options in the beginning
@@ -149,6 +151,8 @@ function DropdownsDatePicker(props) {
   // Change handlers
 
   let handleDateChange = (type, value) => {
+    value !== null && focusNextDateComponent(type);
+
     let dateObj = {
       [DropdownDate.year] : (type === DropdownDate.year) ? value : selectedYear,
       [DropdownDate.month] : (type === DropdownDate.month) ? value : selectedMonth,
@@ -201,6 +205,8 @@ function DropdownsDatePicker(props) {
 
   let hasAutoFocus = (dateComponent) => autoFocus && order?.indexOf(dateComponent) == 0;
 
+  let focusNextDateComponent = (dateComponent) => setFocusedDateComponent(order[order.indexOf(dateComponent) + 1]);
+
   let aParams = {
     autoComplete: true,
     autoHighlight: true,
@@ -218,6 +224,8 @@ function DropdownsDatePicker(props) {
       variant="standard"
       placeholder={dateComponent.charAt(0).toUpperCase() + dateComponent.slice(1)}
       autoFocus={hasAutoFocus(dateComponent)}
+      onFocus={() => setFocusedDateComponent()}
+      inputRef={focusedDateComponent == dateComponent ? (input) => input?.focus() : null}
     />
 
   let renderYear = () => {
