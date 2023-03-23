@@ -34,12 +34,14 @@ packages = []
 for raw_line in sys.stdin.readlines():
 	line = raw_line.rstrip()
 	line = line[2:]
-	if not line.endswith('.pom'):
+	if len(line.split('/')) < 3:
 		continue
 	groupId = '.'.join(line.split('/')[0:-3])
 	artifactId = line.split('/')[-3]
 	version = line.split('/')[-2]
-	packages.append({'groupId': groupId, 'artifactId': artifactId, 'version': version})
+	package = {'groupId': groupId, 'artifactId': artifactId, 'version': version}
+	if package not in packages:
+		packages.append(package)
 
 with open(OUTPUT_JSON_FILE_PATH, 'w') as f_json:
 	json.dump(packages, f_json, indent=2)
