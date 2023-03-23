@@ -155,7 +155,7 @@
     <!-- Versions to be replaced in the feature files -->
     <asm.version>9.3</asm.version>
     <composum.nodes.version>4.1.1</composum.nodes.version>
-    <jackson.version>2.13.2</jackson.version>
+    <jackson.version>2.13.5</jackson.version>
     <groovy.version>3.0.10</groovy.version>
 
     <enforcer.skip>false</enforcer.skip>
