@@ -46,11 +46,11 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.jena:jena-osgi:3.17.0",
+      "id":"org.apache.jena:jena-osgi:4.1.0",
       "start-order":"25"
     },
     {
-      "id":"org.apache.thrift:libthrift:0.13.0",
+      "id":"org.apache.thrift:libthrift:0.14.1",
       "start-order":"25"
     },
     {
