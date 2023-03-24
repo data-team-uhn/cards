@@ -67,13 +67,6 @@ const useStyles = makeStyles(theme => ({
       minWidth: "33.33% !important"
     }
   },
-  emptyOption : {
-    opacity: "50%",
-    padding: theme.spacing(2),
-  },
-  placeholder : {
-    opacity: "50%"
-  },
 }));
 
 
