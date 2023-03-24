@@ -36,7 +36,7 @@ const DropdownDate = {
 }
 
 const getDaysInMonth = (year, month) => {
-  if (month < 0 || year < 0) return 31;
+  if (month == null || year == null) return 31;
   year = +(year);
   month = +(month) + 1;
   return new Date(year, month, 0).getDate();
@@ -178,20 +178,12 @@ function DropdownsDatePicker(props) {
   let handleYearChange = (event, value) => {
     const year = value ?? null;
     setSelectedYear(year);
-    const monthDays = getDaysInMonth(year, selectedMonth);
-    if (selectedDay > monthDays) {
-      setSelectedDay(null);
-    }
     handleDateChange(DropdownDate.year, year);
   }
 
   let handleMonthChange = (event, value) => {
     const month = value?.value ?? null;
     setSelectedMonth(month);
-    const monthDays = getDaysInMonth(selectedYear, month);
-    if (selectedDay > monthDays) {
-      setSelectedDay(null);
-    }
     handleDateChange(DropdownDate.month, month);
   }
 
@@ -200,6 +192,17 @@ function DropdownsDatePicker(props) {
     setSelectedDay(day);
     handleDateChange(DropdownDate.day, day);
   }
+
+  // Clear the Day dropdown value if it is out of range based on the current year/month selection
+  useEffect(() => {
+    if (
+      (selectedYear == startYear && selectedMonth == startMonth && selectedDay < startDay) ||
+      (selectedYear == endYear && selectedMonth == endMonth && selectedDay > endDay) ||
+      (selectedDay > getDaysInMonth(selectedYear, selectedMonth))
+    ) {
+      setSelectedDay(null);
+    }
+  }, [selectedYear, selectedMonth, selectedDay]);
 
   let hasAutoFocus = (dateComponent) => autoFocus && order?.indexOf(dateComponent) == 0;
 
