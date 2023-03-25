@@ -154,7 +154,7 @@ public class UnsubscribedFilter implements ClarityDataProcessor
                 (Long) this.formUtils.getValue(
                 this.formUtils.getAnswer(form, unsubscribedQuestion));
 
-            if (unsubscribed == 1) {
+            if (unsubscribed != null && unsubscribed == 1) {
                 return true;
             }
         }
