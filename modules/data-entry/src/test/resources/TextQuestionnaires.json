@@ -5,6 +5,7 @@
   "question_1": {
     "jcr:primaryType": "cards:Question",
     "text": "Text Question",
-    "dataType": "text"
+    "dataType": "text",
+    "maxAnswers": 2
   }
 }

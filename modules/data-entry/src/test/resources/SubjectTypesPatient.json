@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "cards:SubjectType",
+  "label": "Patient",
+  "subjectListLabel" : "Patients",
+  "cards:defaultOrder": 0
+}

@@ -5,6 +5,67 @@
   "question_1": {
     "jcr:primaryType": "cards:Question",
     "text": "Long Question",
-    "dataType": "long"
+    "dataType": "long",
+    "maxAnswers": 1
+  },
+  "question_2": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Double Question",
+    "dataType": "double",
+    "maxAnswers": 1
+  },
+  "question_3": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Decimal Question",
+    "dataType": "decimal",
+    "maxAnswers": 1
+  },
+  "question_4": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Boolean Question",
+    "dataType": "boolean",
+    "maxAnswers": 1
+  },
+  "question_5": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Date Question",
+    "dataType": "date",
+    "maxAnswers": 1,
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "section_1": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section 1",
+    "question_6": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Text Question",
+      "dataType": "text"
+    },
+    "question_7": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Text2 Question",
+      "dataType": "text"
+    }
+  },
+  "question_8": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Options Question",
+    "dataType": "vocabulary",
+    "displayMode": "list",
+    "maxAnswers": 1,
+    "o1": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": "/Vocabularies/Option1"
+    },
+    "o2": {
+      "jcr:primaryType": "cards:AnswerOption",
+      "value": "/Vocabularies/Option2"
+    }
+  },
+  "question_9": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Time Question",
+    "dataType": "time",
+    "maxAnswers": 1
   }
 }
