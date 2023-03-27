@@ -41,7 +41,6 @@ import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
 import ResourceFilter from "./FilterComponents/ResourceFilter.jsx";
 import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
-const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
 
 function Filters(props) {
@@ -51,19 +50,18 @@ function Filters(props) {
   const [activeFilters, setActiveFilters] = useState([]);
   // Information on the questionnaires
   const [filterableAnswers, setFilterableAnswers] = useState({});
-  const [filterableFields, setFilterableFields] = useState([]);
-  const [filterableTitles, setFilterableTitles] = useState({});
-  const [filterableUUIDs, setFilterableUUIDs] = useState({});
+  const [questionDefinitions, setQuestionDefinitions] = useState({});
+  const [autoselectOptions, setAutoselectOptions] = useState([]);
+
   const [filterComparators, setFilterComparators] = useState({});
   const [textFilterComponent, setTextFilterComponent] = useState({});
-  const [questionDefinitions, setQuestionDefinitions] = useState({});
+  
   // Other state variables
   const [error, setError] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [filterRequestSent, setFilterRequestSent] = useState(false);
   const [toFocus, setFocusRow] = useState(null);
   const notesComparator = "notes contain";
-  const [autoselectOptions, setAutoselectOptions] = useState([]);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -112,116 +110,53 @@ function Filters(props) {
     }
   }, [filtersJsonString, questionDefinitions]);
 
-  useEffect(() => {
-    if (filterableFields.length > 0 && Object.keys(filterableTitles).length > 0 && autoselectOptions.length == 0) {
-      setAutoselectOptions(getFieldsLabelsList(filterableFields, ""));
-    }
-  }, [filterableFields, filterableTitles]);
-
   // Obtain information about the filters that can be applied
   let grabFilters = () => {
     setFilterRequestSent(true);
-    let url;
+    // Setting the questionnaire prop will go through the fitler servlet (FilterServlet.java)
+    let url = new URL(FILTER_URL, window.location.origin);
+    questionnaire && url.searchParams.set("questionnaire", questionnaire);
+
+    fetchWithReLogin(globalLoginDisplay, url)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(parseFilterData)
+      .catch(setError);
+  }
+
+  // Parse the json response from FilterSerlet
+  let parseFilterData = (data) => {
+
+    let newQuestionDefinitions = {};
+    let newAutoselectOptions = [];
+
+    let parseQuestionnaire = (questions, title) => {
+      for (let question of questions) {
+        let path = question["@path"];
+        newQuestionDefinitions[path] = question;
+        
+        let option = {path : path, label: question.text, sectionBreadcrumbs: question.sectionBreadcrumbs};
+        if (title) {
+          option.category = title;
+        }
+        newAutoselectOptions.push(option);
+      }
+    }
+
+    if (data.metadataFilters) {
+	  parseQuestionnaire(data.metadataFilters);
+    }
 
     if (questionnaire) {
-      // Setting the questionnaire prop will go through the fitler servlet (FilterServlet.java)
-      url = new URL(FILTER_URL, window.location.origin);
-      url.searchParams.set("questionnaire", questionnaire);
-      fetchWithReLogin(globalLoginDisplay, url)
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then(parseFilterData)
-        .catch(setError);
+      parseQuestionnaire(data.questions);
     } else {
-      // Otherwise, we need a structured output -- go through all Questionnaires.deep.json instead
-      url = new URL(ALL_QUESTIONNAIRES_URL, window.location.origin);
-      fetchWithReLogin(globalLoginDisplay, url)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(parseQuestionnaireData)
-      .catch(setError);
-    }
-  }
-
-  // Parse the response from examining every questionnaire
-  let parseQuestionnaireData = (questionnaireJson) => {
-    // newFilterableFields is a list of fields that can be filtered on
-    // It is a list of either strings (for options) or recursive lists
-    // Each recursive list must have a string for its 0th option, which
-    // is taken to be its title
-    let newFilterableFields = ["Questionnaire", "Subject", "CreatedDate"];
-    // newFilterableUUIDs is a mapping from a string in newFilterableFields to a jcr:uuid
-    let newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
-    // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
-    let newFilterableTitles = {Questionnaire: "Questionnaire", Subject: "Subject", CreatedDate: "Created Date"};
-    // newQuestionDefinitions is normally the straight input from FilterServlet.java
-    // Instead, we need to reconstruct this client-side
-    let newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}}
-
-    // We'll need a helper recursive function to copy over data from sections/questions
-    let parseSectionOrQuestionnaire = (sectionJson, path="") => {
-      let retFields = [];
-      Object.entries(sectionJson).map(([title, object]) => {
-        // We only care about children that are cards:Questions or cards:Sections
-        if (object["jcr:primaryType"] == "cards:Question") {
-          // If this is an cards:Question, copy the entire thing over to our Json value
-          retFields.push(path+title);
-          // Also save the human-readable name, UUID, and data type
-          newQuestionDefinitions[path+title] = object;
-          newFilterableUUIDs[path+title] = object["jcr:uuid"];
-          newFilterableTitles[path+title] = object["text"];
-        } else if (object["jcr:primaryType"] == "cards:Section") {
-          // If this is an cards:Section, recurse deeper
-          retFields.push(...parseSectionOrQuestionnaire(object, path+title+"/"));
-        }
-        // Otherwise, we don't care about this value
-      });
-      return retFields;
-    }
-
-    // From the questionnaire homepage, we're looking for children that are objects of type cards:Questionnaire
-    for (let [title, thisQuestionnaire] of Object.entries(questionnaireJson)) {
-      if (thisQuestionnaire["jcr:primaryType"] != "cards:Questionnaire") {
-        continue;
+	  // Parse the response from examining every questionnaire
+      for (let [title, thisQuestionnaire] of Object.entries(data)) {
+        (thisQuestionnaire["jcr:primaryType"] == "cards:Questionnaire") && parseQuestionnaire(thisQuestionnaire.questions, title);
       }
-
-      newFilterableFields.push([thisQuestionnaire.title || title, ...parseSectionOrQuestionnaire(thisQuestionnaire, title+"/")]);
     }
 
-    newQuestionDefinitions["Subject"] = {
-      dataType: "subject"
-    };
-    newQuestionDefinitions["CreatedDate"] = {
-      dataType: "createddate"
-    };
-
-    // We also need a filter over the subject
-    setFilterableFields(newFilterableFields);
     setQuestionDefinitions(newQuestionDefinitions);
-    setFilterableTitles(newFilterableTitles);
-    setFilterableUUIDs(newFilterableUUIDs);
-  }
-
-  // Parse the response from our FilterServlet
-  let parseFilterData = (filterJson) => {
-    // Parse through, but keep a custom field for the subject
-    let fields = ["Subject", "CreatedDate"];
-    let uuids = {Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
-    let titles = {Subject: "Subject", CreatedDate: "Created Date"};
-    for (let [questionName, question] of Object.entries(filterJson)) {
-      // For each question, save the name, data type, and answers (if necessary)
-      fields.push(questionName);
-      uuids[questionName] = question["jcr:uuid"];
-      titles[questionName] = question["text"];
-    }
-    filterJson["Subject"] = {
-      dataType: "subject"
-    };
-    filterJson["CreatedDate"] = {
-      dataType: "createddate"
-    };
-    setFilterableFields(fields);
-    setQuestionDefinitions(filterJson);
-    setFilterableTitles(titles);
-    setFilterableUUIDs(uuids);
+    setAutoselectOptions(newAutoselectOptions);
   }
 
   let removeCreatedDateTimezone = (filters) => {
@@ -303,9 +238,9 @@ function Filters(props) {
       var newfilters = oldfilters.slice();
       var newfilter = {
         name: path,
-        uuid: filterableUUIDs[path],
+        uuid: questionDefinitions[path]["jcr:uuid"],
         comparator: loadedComparators[0],
-        title: filterableTitles[path],
+        title: questionDefinitions[path]?.text,
         type: questionDefinitions[path]?.dataType || "text"
       }
 
@@ -418,19 +353,6 @@ function Filters(props) {
         />);
   }
 
-  let getFieldsLabelsList = (fields, category) => {
-    return fields.map((path) => {
-      if (typeof path == "string") {
-        // Straight strings are MenuItems
-        return {path: path, label: filterableTitles[path], category: category}
-      } else if (Array.isArray(path)) {
-        // Arrays represent Questionnaires of Sections
-        // which we'll need to turn into opt groups
-        return [getFieldsLabelsList(path.slice(1), path[0])].flat();
-      }
-    }).flat();
-  }
-
   return(
     <div className={classes.filterContainer}>
       {/* Place the stuff in one row on the top */}
@@ -497,7 +419,7 @@ function Filters(props) {
               Error obtaining filter data: {error.status} {error.statusText}
             </Typography>}
           { /* If there is no error but also no data, show a progress circle */
-          !error && !filterableFields &&
+          !error && autoselectOptions.length == 0 &&
             <CircularProgress />}
           <Grid container alignItems="flex-start" spacing={2} className={classes.filterTable}>
             {editingFilters.map( (filterDatum, index) => {
@@ -518,8 +440,9 @@ function Filters(props) {
                       onClose={forceRegrabFocus}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
                       options={autoselectOptions}
-                      groupBy={(option) => option?.category}
+                      groupBy={option => option?.category}
                       getOptionValue={option => option?.path}
+                      getOptionSecondaryLabel={option => option?.sectionBreadcrumbs?.join(" / ")}
                       getHelperText={option => option?.category}
                       textFieldProps={{placeholder: "Add new filter..."}}
                     />
