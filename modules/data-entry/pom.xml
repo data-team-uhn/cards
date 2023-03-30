@@ -31,7 +31,7 @@
   <name>CARDS - Data entry module</name>
 
   <properties>
-    <coverage.instructionRatio>0.86</coverage.instructionRatio>
+    <coverage.instructionRatio>0.87</coverage.instructionRatio>
   </properties>
 
   <build>
