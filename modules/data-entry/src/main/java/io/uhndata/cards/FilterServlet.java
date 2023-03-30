@@ -189,7 +189,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
         if (seenTypes.containsKey(key)) {
             // If this question already exists, make sure that it has the same dataType
             String questionType = question.getString("dataType");
-            if (seenTypes.get(key) != questionType) {
+            if (!seenTypes.get(key).equals(questionType)) {
                 // DIFFERENT -- prepend a slightly differently named version
                 String newKey = questionType.concat("|").concat(key);
                 seenTypes.put(newKey, questionType);
