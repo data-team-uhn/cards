@@ -7,5 +7,15 @@
     "text": "Text Question",
     "dataType": "text",
     "maxAnswers": 2
+  },
+  "question_6": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Text1 Question",
+    "dataType": "text"
+  },
+  "question_10": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Text2 Question",
+    "dataType": "text"
   }
 }
