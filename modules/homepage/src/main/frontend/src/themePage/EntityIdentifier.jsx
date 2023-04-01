@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React from "react";
-import { getTextHierarchy } from "../questionnaire/Subject.jsx";
+import { getTextHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 
 // Get the identifier of the item wrt item primaryType
 export function getEntityIdentifier(row) {

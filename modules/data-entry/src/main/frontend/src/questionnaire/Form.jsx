@@ -42,7 +42,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { DateTime } from "luxon";
-import { getTextHierarchy, getHierarchyAsList } from "./Subject";
+import { getTextHierarchy, getHierarchyAsList } from "./SubjectIdentifier";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";

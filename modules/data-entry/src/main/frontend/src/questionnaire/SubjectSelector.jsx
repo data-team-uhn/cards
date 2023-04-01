@@ -28,7 +28,7 @@ import MaterialTable from "material-table";
 import Alert from '@mui/material/Alert';
 
 import { escapeJQL } from "../escape.jsx";
-import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
+import { getHierarchy, getSubjectIdFromPath } from "./SubjectIdentifier.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
