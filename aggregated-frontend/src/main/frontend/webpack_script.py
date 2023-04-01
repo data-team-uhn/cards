@@ -18,6 +18,7 @@
 #
 
 import json
+import re
 import sys
 import shutil
 import os
@@ -60,8 +61,7 @@ def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name
 
         entry_line_number = lines.index('  entry: {\n')
         for i in range(entry_line_number + 1, len(lines)):
-
-            if '}' in lines[i]:
+            if re.fullmatch(r'\s*\},\n', lines[i]):
                 break
             if lines[i].strip() == '{':
                 continue
