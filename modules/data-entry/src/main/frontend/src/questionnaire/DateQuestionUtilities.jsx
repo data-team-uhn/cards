@@ -26,7 +26,6 @@ export default class DateQuestionUtilities {
   static INTERVAL_TYPE = "interval";
   static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss";
   static VIEW_DATE_FORMAT = "yyyy/MM/dd";
-
   static YEAR_DATE_TYPE = "year";
   static MONTH_DATE_TYPE = "month";
   static FULL_DATE_TYPE = "date";
