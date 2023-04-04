@@ -48,6 +48,7 @@
             <Sling-Initial-Content>
               SLING-INF/content/apps/cards/config/;path:=/apps/cards/config/;overwrite:=false,
               SLING-INF/content/libs/cards/dataQuery/;path:=/libs/cards/dataQuery/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
               SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true
