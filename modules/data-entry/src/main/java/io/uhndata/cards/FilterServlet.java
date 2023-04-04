@@ -115,10 +115,13 @@ public class FilterServlet extends SlingSafeMethodsServlet
     {
         JsonArrayBuilder builder = Json.createArrayBuilder();
         if (includeQuestionnaireFilter) {
-            builder.add(getMetadataFilter("Questionnaire"));
+            builder.add(getMetadataFilter("Questionnaire", "Questionnaire", "questionnaire"));
         }
-        builder.add(getMetadataFilter("Subject"));
-        builder.add(getMetadataFilter("Created Date"));
+        builder.add(getMetadataFilter("Subject", "Subject", "subject"));
+        builder.add(getMetadataFilter("Created date", "Created", "datetime"));
+        builder.add(getMetadataFilter("Created by", "CreatedBy", "user"));
+        builder.add(getMetadataFilter("Last modification date", "LastModified", "datetime"));
+        builder.add(getMetadataFilter("Last modified by", "LastModifiedBy", "user"));
         return builder;
     }
 
@@ -128,14 +131,13 @@ public class FilterServlet extends SlingSafeMethodsServlet
      * @param label the label of the metadata filter to generate the definition for
      * @return the filter definition in a JsonObjectBuilder
      */
-    private JsonObjectBuilder getMetadataFilter(final String label)
+    private JsonObjectBuilder getMetadataFilter(final String label, final String path, final String dataType)
     {
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        final String path = label.replace(" ", "");
         builder.add("@path", path);
         builder.add("jcr:uuid", "cards:" + path);
         builder.add("text", label);
-        builder.add("dataType", path.toLowerCase());
+        builder.add("dataType", dataType);
         return builder;
     }
 

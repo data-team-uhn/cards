@@ -98,7 +98,16 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     private static final String QUESTIONNAIRE_IDENTIFIER = "cards:Questionnaire";
 
-    private static final String CREATED_DATE_IDENTIFIER = "cards:CreatedDate";
+    private static final String CREATED_DATE_IDENTIFIER = "cards:Created";
+
+    private static final String CREATED_BY_IDENTIFIER = "cards:CreatedBy";
+
+    private static final String MIDIFIED_BY_IDENTIFIER = "cards:LastModifiedBy";
+
+    private static final String MIDIFIED_DATE_IDENTIFIER = "cards:LastModified";
+
+    private static final List<String> NODE_FILTERS = Arrays.asList(CREATED_DATE_IDENTIFIER, CREATED_BY_IDENTIFIER,
+        MIDIFIED_BY_IDENTIFIER, MIDIFIED_DATE_IDENTIFIER);
 
     /**
      * Various supported filter types.
@@ -245,7 +254,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         for (Filter filter : filters.getOrDefault(FilterType.EMPTY, new ArrayList<Filter>())) {
             if (SUBJECT_IDENTIFIER.equals(filter.name)
                 || QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
-                || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+                || NODE_FILTERS.contains(filter.name)) {
                 return true;
             }
         }
@@ -514,7 +523,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
 
         for (Filter filter : filters) {
-            if (SUBJECT_IDENTIFIER.equals(filter.name) || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+            if (SUBJECT_IDENTIFIER.equals(filter.name) || NODE_FILTERS.contains(filter.name)) {
                 // For special node filters, all we need to do is record the source name in the filter
                 filter.source = "n";
                 continue;
@@ -782,6 +791,26 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         this.sanitizeComparator(filter.comparator),
                         this.sanitizeValue(filter.value)));
                 break;
+            case CREATED_BY_IDENTIFIER:
+                filterdata.append(
+                    String.format(" and n.'jcr:createdBy'%s'%s'",
+                        this.sanitizeComparator(filter.comparator),
+                        this.sanitizeValue(filter.value)));
+                break;
+            case MIDIFIED_DATE_IDENTIFIER:
+                filterdata.append(" and ");
+                filterdata.append(
+                    generateDateCompareQuery(
+                        "n.'jcr:lastModified'",
+                        this.sanitizeComparator(filter.comparator),
+                        this.sanitizeValue(filter.value)));
+                break;
+            case MIDIFIED_BY_IDENTIFIER:
+                filterdata.append(
+                    String.format(" and n.'jcr:lastModifiedBy'%s'%s'",
+                        this.sanitizeComparator(filter.comparator),
+                        this.sanitizeValue(filter.value)));
+                break;
             default:
                 break;
         }
@@ -802,7 +831,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
         if (SUBJECT_IDENTIFIER.equals(filter.name)
             || QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
-            || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+            || NODE_FILTERS.contains(filter.name)) {
             return "";
         }
 

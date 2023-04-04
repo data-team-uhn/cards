@@ -28,6 +28,7 @@ import VariableAutocomplete from "./VariableAutocomplete";
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities.jsx";
 
 // We have to import each filter dependency here to load them properly into the FilterComponentManager
 import DateFilter from "./FilterComponents/DateFilter.jsx";
@@ -39,6 +40,7 @@ import TextFilter from "./FilterComponents/TextFilter.jsx";
 import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
 import ResourceFilter from "./FilterComponents/ResourceFilter.jsx";
+import UserFilter from "./FilterComponents/UserFilter.jsx";
 import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
 const FILTER_URL = "/Questionnaires.filters";
@@ -50,6 +52,10 @@ function Filters(props) {
   const [activeFilters, setActiveFilters] = useState([]);
   // Information on the questionnaires
   const [filterableAnswers, setFilterableAnswers] = useState({});
+<<<<<<< HEAD
+=======
+  // maps from path to question definition
+>>>>>>> dbf153d66 (CARDS-1190: As a user, I can filter forms by Created by, Last modified by, Last modification date in the dashboard and on the Forms page)
   const [questionDefinitions, setQuestionDefinitions] = useState({});
   const [autoselectOptions, setAutoselectOptions] = useState([]);
 
@@ -161,49 +167,11 @@ function Filters(props) {
     setAutoselectOptions(newAutoselectOptions);
   }
 
-  let removeCreatedDateTimezone = (filters) => {
-    let newFilters = [];
-    filters.forEach( (filter) => {
-      if (filter.type === "createddate") {
-        newFilters.push({ ...filter, value: filter.value.split('T')[0]});
-      } else {
-        newFilters.push({ ...filter });
-      }
-    });
-    return newFilters;
-  };
-
-  let addCreatedDateTimezone = (filters) => {
-    const getClientTimezoneOffset = () => {
-      const padTwo = (s) => {
-        if (s.length < 2) {
-          return '0' + s;
-        }
-        return s;
-      };
-      let totalOffsetMinutes = new Date().getTimezoneOffset();
-      let offsetSign = (totalOffsetMinutes < 0) ? '+' : '-';
-      let offsetMinute = Math.abs(totalOffsetMinutes) % 60;
-      let offsetHour = Math.floor(Math.abs(totalOffsetMinutes) / 60);
-      return offsetSign + padTwo(offsetHour.toString()) + ":" + padTwo(offsetMinute.toString());
-    };
-    let newFilters = [];
-    filters.forEach( (filter) => {
-      if (filter.type === "createddate") {
-        newFilters.push({ ...filter, value: filter.value + "T00:00:00" + getClientTimezoneOffset() });
-      } else {
-        newFilters.push({ ...filter });
-      }
-    });
-    return newFilters;
-  };
-
   // Open the filter selection dialog
   let openDialogAndAdd = () => {
     setDialogOpen(true);
     // Replace our defaults with a deep copy of what's actually active, plus an empty one
     let newFilters = deepCopyFilters(activeFilters);
-    newFilters = removeCreatedDateTimezone(newFilters);
     setEditingFilters(newFilters);
 
     // Bugfix: also reload every active outputChoice, in order to refresh its copy of the state variables
@@ -315,7 +283,6 @@ function Filters(props) {
         toCheck
         :
         {...toCheck, comparator: (toCheck.comparator == "=" ? "is empty" : "is not empty")}));
-    newFilters = addCreatedDateTimezone(newFilters);
     setActiveFilters(newFilters);
     onChangeFilters && onChangeFilters(newFilters);
     setDialogOpen(false);
@@ -363,7 +330,7 @@ function Filters(props) {
       </Typography>
       { activeFilters.map( (activeFilter, index) => {
         let filterValue = activeFilter.label || activeFilter.value;
-        filterValue = (activeFilter.type === "createddate") ? filterValue.split('T')[0] : filterValue;
+
         return(
             <Chip
               key={`${activeFilter.title}-${index}`}

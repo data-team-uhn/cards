@@ -104,6 +104,10 @@ const questionnaireStyle = theme => ({
         position: 'relative',
         width: "100%",
     },
+    answerDateField: {
+        top: theme.spacing(-2),
+        width: "100%",
+    },
     nestedInput: {
         minWidth: "218px !important",
         marginLeft: theme.spacing(-2.5),
