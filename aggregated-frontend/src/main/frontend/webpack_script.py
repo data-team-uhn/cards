@@ -74,9 +74,9 @@ def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name
             line = lines[i].replace('module_name + \'', '\'' + module_name)
             webpack_config_entries.append(line)
 
-            path_to_source = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
-            path_to_base_source = os.path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'src')
-            shutil.copytree(path_to_source, path_to_base_source, dirs_exist_ok=True)
+        path_to_source = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
+        path_to_base_source = os.path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'src')
+        shutil.copytree(path_to_source, path_to_base_source, dirs_exist_ok=True)
 
 
 def main(args=sys.argv[1:]):
