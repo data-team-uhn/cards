@@ -30,7 +30,7 @@
   <name>Flags form answers as incomplete or invalid</name>
 
   <properties>
-    <coverage.instructionRatio>0.30</coverage.instructionRatio>
+    <coverage.instructionRatio>0.32</coverage.instructionRatio>
   </properties>
 
   <build>

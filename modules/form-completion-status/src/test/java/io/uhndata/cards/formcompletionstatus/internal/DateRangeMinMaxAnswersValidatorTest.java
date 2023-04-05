@@ -45,12 +45,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link MinMaxAnswersValidator}.
+ * Unit tests for {@link DateRangeMinMaxAnswersValidator}.
  *
  * @version $Id$
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MinMaxAnswersValidatorTest
+public class DateRangeMinMaxAnswersValidatorTest
 {
     private static final String NODE_TYPE = "jcr:primaryType";
     private static final String NODE_IDENTIFIER = "jcr:uuid";
@@ -60,30 +60,31 @@ public class MinMaxAnswersValidatorTest
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
     private static final String FLAG_INVALID = "INVALID";
     private static final String FLAG_INCOMPLETE = "INCOMPLETE";
-    private static final int PRIORITY = 10;
+    private static final int PRIORITY = 15;
 
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     @InjectMocks
-    private MinMaxAnswersValidator minMaxAnswersValidator;
+    private DateRangeMinMaxAnswersValidator dateRangeMinMaxAnswersValidator;
 
     @Test
     public void getPriorityTest()
     {
-        assertEquals(PRIORITY, this.minMaxAnswersValidator.getPriority());
+        assertEquals(PRIORITY, this.dateRangeMinMaxAnswersValidator.getPriority());
     }
 
     @Test
-    public void validateForAnswerWithoutValueProperty() throws RepositoryException
+    public void validateForAnswerWithDatesNotCreateIntervalValueProperty() throws RepositoryException
     {
         Node question = this.context.resourceResolver().adaptTo(Session.class)
-                .getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_2");
+                .getNode(TEST_QUESTIONNAIRE_PATH + "/question_3");
         String answerInSectionUuid = UUID.randomUUID().toString();
         NodeBuilder answerInSectionNodeBuilder = createTestAnswer(answerInSectionUuid, question.getIdentifier());
+        answerInSectionNodeBuilder.setProperty(VALUE_PROPERTY, Set.of("2023-01-01"), Type.STRINGS);
 
         Map<String, Boolean> flags = createStatusFlagsMap();
-        this.minMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, true, flags);
+        this.dateRangeMinMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, true, flags);
         assertTrue(flags.containsKey(FLAG_INCOMPLETE));
         assertTrue(flags.get(FLAG_INCOMPLETE));
         assertFalse(flags.containsKey(FLAG_INVALID));
@@ -93,29 +94,44 @@ public class MinMaxAnswersValidatorTest
     public void validateForAnswerWithMoreThanAllowedValueProperty() throws RepositoryException
     {
         Node question = this.context.resourceResolver().adaptTo(Session.class)
-                .getNode(TEST_QUESTIONNAIRE_PATH + "/section_1/question_2");
+                .getNode(TEST_QUESTIONNAIRE_PATH + "/question_3");
         String answerInSectionUuid = UUID.randomUUID().toString();
         NodeBuilder answerInSectionNodeBuilder = createTestAnswer(answerInSectionUuid, question.getIdentifier());
-        answerInSectionNodeBuilder.setProperty(VALUE_PROPERTY, Set.of("100", "200", "300"), Type.STRINGS);
+        answerInSectionNodeBuilder.setProperty(VALUE_PROPERTY, Set.of("2023-01-01", "2023-02-01"), Type.STRINGS);
 
         Map<String, Boolean> flags = createStatusFlagsMap();
-        this.minMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, true, flags);
+        this.dateRangeMinMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, true, flags);
         assertFalse(flags.containsKey(FLAG_INCOMPLETE));
-        assertTrue(flags.containsKey(FLAG_INVALID));
-        assertTrue(flags.get(FLAG_INVALID));
+        assertFalse(flags.containsKey(FLAG_INVALID));
     }
 
     @Test
     public void validateCatchesRepositoryException() throws RepositoryException
     {
         Node question = mock(Node.class);
-        when(question.hasProperty("minAnswers")).thenThrow(new RepositoryException());
+        when(question.getProperty("dataType")).thenThrow(new RepositoryException());
         String answerInSectionUuid = UUID.randomUUID().toString();
         NodeBuilder answerInSectionNodeBuilder = createTestAnswer(answerInSectionUuid, UUID.randomUUID().toString());
 
         Assertions.assertThatCode(
-                () -> this.minMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, true, new HashMap<>()))
-                .doesNotThrowAnyException();
+                () -> this.dateRangeMinMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, true,
+                        new HashMap<>())).doesNotThrowAnyException();
+    }
+
+    @Test
+    public void validateForNotDateTypeQuestionNotChangesFlagsMap() throws RepositoryException
+    {
+        Node question = this.context.resourceResolver().adaptTo(Session.class)
+                .getNode(TEST_QUESTIONNAIRE_PATH + "/question_1");
+        String answerInSectionUuid = UUID.randomUUID().toString();
+        NodeBuilder answerInSectionNodeBuilder = createTestAnswer(answerInSectionUuid, question.getIdentifier());
+
+        Map<String, Boolean> flags = createStatusFlagsMap();
+        this.dateRangeMinMaxAnswersValidator.validate(answerInSectionNodeBuilder, question, true, flags);
+        assertTrue(flags.containsKey(FLAG_INCOMPLETE));
+        assertFalse(flags.get(FLAG_INCOMPLETE));
+        assertTrue(flags.containsKey(FLAG_INVALID));
+        assertFalse(flags.get(FLAG_INVALID));
     }
 
     @Before

@@ -18,5 +18,14 @@
       "minAnswers": 1,
       "maxAnswers": 2
     }
+  },
+  "question_3": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Date Question",
+    "description": "A date question",
+    "dataType": "date",
+    "dateFormat": "yyyy-MM-dd",
+    "type": "interval",
+    "minAnswers": 1
   }
 }
