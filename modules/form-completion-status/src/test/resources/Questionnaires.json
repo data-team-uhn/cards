@@ -16,7 +16,9 @@
       "text": "Long Question",
       "dataType": "long",
       "minAnswers": 1,
-      "maxAnswers": 2
+      "maxAnswers": 2,
+      "minValue": 50,
+      "maxValue": 250
     }
   },
   "question_3": {
