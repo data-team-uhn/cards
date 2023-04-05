@@ -6,7 +6,7 @@
     "jcr:primaryType": "cards:Question",
     "text": "Boolean Question",
     "description": "A boolean question",
-    "dataType": "computed"
+    "dataType": "boolean"
   },
   "section_1": {
     "jcr:primaryType": "cards:Section",
@@ -15,7 +15,8 @@
       "jcr:primaryType": "cards:Question",
       "text": "Long Question",
       "dataType": "long",
-      "entryMode": "computed"
+      "minAnswers": 1,
+      "maxAnswers": 2
     }
   }
 }

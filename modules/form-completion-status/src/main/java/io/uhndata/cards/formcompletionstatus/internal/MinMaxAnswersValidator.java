@@ -49,14 +49,14 @@ public class MinMaxAnswersValidator implements AnswerValidator
     {
         try {
             final long valuesCount = getNumberOfValues(answer);
-            checkNumberOfValues(valuesCount, question, initialAnswer, flags);
+            checkNumberOfValues(valuesCount, question, flags);
         } catch (final RepositoryException ex) {
             // If something goes wrong then we cannot verify the answer, leave it as it was before
         }
     }
 
-    protected void checkNumberOfValues(final long valuesCount, final Node question, final boolean initialAnswer,
-        final Map<String, Boolean> flags) throws RepositoryException
+    protected void checkNumberOfValues(final long valuesCount, final Node question, final Map<String, Boolean> flags)
+            throws RepositoryException
     {
         final long minAnswers =
             question.hasProperty("minAnswers") ? question.getProperty("minAnswers").getLong() : 0;
