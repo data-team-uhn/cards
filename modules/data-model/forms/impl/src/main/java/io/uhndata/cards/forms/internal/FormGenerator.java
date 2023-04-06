@@ -95,7 +95,6 @@ public class FormGenerator
 
     private void createMissingChildren(final Node questionnaireNode, final NodeBuilder formNode)
     {
-        LOGGER.error("Creating Node");
         final Map<String, NodeBuilder> childFormNodes = new HashMap<>();
         for (final String childNodeName : formNode.getChildNodeNames()) {
             final NodeBuilder childNode = formNode.getChildNode(childNodeName);
