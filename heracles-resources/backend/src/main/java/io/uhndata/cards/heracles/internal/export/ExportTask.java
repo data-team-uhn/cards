@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -239,7 +240,8 @@ public class ExportTask implements Runnable
     private Set<SubjectIdentifier> getChangedSubjects(String requestDateStringLower,
         String requestDateStringUpper) throws LoginException
     {
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(Map.of(
+            ResourceResolverFactory.SUBSERVICE, "getChangedSubjects"))) {
             Set<SubjectIdentifier> subjects = new HashSet<>();
             String query = String.format(
                 "SELECT subject.* FROM [cards:Form] AS form INNER JOIN [cards:Subject] AS subject"
