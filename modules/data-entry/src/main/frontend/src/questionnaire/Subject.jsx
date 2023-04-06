@@ -590,7 +590,7 @@ function SubjectMemberInternal (props) {
                                          />
                                          <DeleteButton
                                            entryPath={rowData["@path"]}
-                                           entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
+                                           entryName={getEntityIdentifier(rowData)}
                                            entryType="Form"
                                            warning={rowData ? rowData["@referenced"] : false}
                                            onComplete={fetchTableData}
