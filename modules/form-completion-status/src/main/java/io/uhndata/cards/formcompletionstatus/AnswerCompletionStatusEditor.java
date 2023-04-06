@@ -120,7 +120,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     @Override
-    public void enter(final NodeState before, final NodeState after)
+    public void leave(final NodeState before, final NodeState after)
         throws CommitFailedException
     {
         if (this.isFormNode) {
