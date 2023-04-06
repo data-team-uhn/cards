@@ -56,6 +56,7 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
 import { getFirstIncompleteQuestionEl } from "./FormUtilities.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -417,7 +418,7 @@ function Form (props) {
                     <ListItem className={classes.actionsMenuItem}>
                       <DeleteButton
                           entryPath={data ? data["@path"] : formURL}
-                          entryName={(data?.subject?.fullIdentifier ? (data.subject.fullIdentifier + ": ") : '') + (title)}
+                          entryName={getEntityIdentifier(data)}
                           entryType="Form"
                           onComplete={onDelete}
                           variant="text"
