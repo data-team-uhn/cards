@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -274,7 +275,8 @@ public class ExportTask implements Runnable
             + ".dataFilter:statusNot=INCOMPLETE",
             path, requestDateStringLower, requestDateStringUpper);
         boolean mustPopResolver = false;
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
+            Map.of(ResourceResolverFactory.SUBSERVICE, "getSubjectContents"))) {
             this.rrp.push(resolver);
             mustPopResolver = true;
             Resource subjectData = resolver.resolve(subjectDataUrl);
