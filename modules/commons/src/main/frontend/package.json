@@ -20,7 +20,7 @@
   }, 
   "version": "0.1.0", 
   "dependencies": {
-    "@babel/runtime": "7.20.7",
+    "@babel/runtime": "7.21.0",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
     "@mui/icons-material": "5.11.0",
@@ -48,7 +48,7 @@
     "webpack-assets-manifest": "5.1.0"
   },
   "resolutions": {
-    "@babel/runtime": "^7.20.7"
+    "@babel/runtime": "^7.21.0"
   }, 
   "description": "Common CARDS modules"
 }

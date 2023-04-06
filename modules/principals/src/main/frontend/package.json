@@ -52,7 +52,7 @@
     "formik-material-fields": "0.0.6"
   },
   "resolutions": {
-    "@babel/runtime": "7.20.7"
+    "@babel/runtime": "7.21.0"
   }
 }
   

@@ -42,6 +42,6 @@
     "webpack-cli": "4.4.0"
   },
   "resolutions": {
-    "@babel/runtime": "7.20.7"
+    "@babel/runtime": "7.21.0"
   }
 }

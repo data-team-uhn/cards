@@ -51,6 +51,6 @@
     "yup": "0.32.11"
   },
   "resolutions": {
-    "@babel/runtime": "^7.20.7"
+    "@babel/runtime": "^7.21.0"
   }
 }

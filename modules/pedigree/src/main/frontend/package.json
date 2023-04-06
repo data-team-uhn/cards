@@ -41,6 +41,6 @@
     "raphael": "2.3.0"
   },
   "resolutions": {
-    "@babel/runtime": "7.20.7"
+    "@babel/runtime": "7.21.0"
   }
 }
