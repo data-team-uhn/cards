@@ -19,7 +19,6 @@
 
 const userboardStyle = theme => ({
     root: {
-      marginTop: theme.spacing(-6),
       "& .MuiPaper-root" : {
         backgroundColor: "transparent",
       },

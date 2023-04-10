@@ -39,7 +39,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import BackupIcon from '@mui/icons-material/Backup';
 import CloseIcon from '@mui/icons-material/Close';
 import GetApp from '@mui/icons-material/GetApp';
-import MaterialTable from "material-table";
+import MaterialReactTable from "material-react-table";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import DragAndDrop from "./components/dragAndDrop.jsx";
@@ -911,48 +911,60 @@ export default function VariantFilesContainer() {
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
-        <MaterialTable
+        <MaterialReactTable
           data={fileSelected?.sameFiles}
-          style={{ boxShadow : 'none' }}
-          options={{
-            toolbar: false,
-            rowStyle: {
+          enableColumnActions={false}
+          enableColumnFilters={false}
+          enableSorting={false}
+          enableTopToolbar={false}
+          enableToolbarInternalActions={false}
+          muiTableBodyRowProps={({ row }) => ({
+            sx: {
               verticalAlign: 'top',
-            }
-          }}
-          title={""}
+            },
+          })}
           columns={[
-            { title: 'Created',
-              cellStyle: {
-                paddingLeft: 0,
-                fontWeight: "bold",
-                width: '1%',
-                whiteSpace: 'nowrap',
-              },
-              render: rowData => <Link href={rowData["@path"]} underline="hover">
-                                  {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd")}
+            { header: 'Created',
+              muiTableBodyCellProps: ({ cell }) => ({
+	            sx: {
+                  paddingLeft: 0,
+                  fontWeight: "bold",
+                  width: '1%',
+                  whiteSpace: 'nowrap',
+                }
+              }),
+              Cell: ({ renderedCellValue, row }) =>
+                                <Link href={row.original["@path"]} underline="hover">
+                                  {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd")}
                                 </Link> },
-            { title: 'Uploaded By',
-              cellStyle: {
-                width: '50%',
-                whiteSpace: 'pre-wrap',
-                paddingBottom: "8px",
-              },
-              render: rowData => rowData["jcr:createdBy"] },
-            { title: 'Actions',
-              cellStyle: {
-                padding: '0',
-                width: '20px',
-                textAlign: 'end'
-              },
-              sorting: false,
-              render: rowData => <Tooltip title={"Download"}>
+            { header: 'Uploaded By',
+              muiTableBodyCellProps: ({ cell }) => ({
+	            sx: {
+                  width: '50%',
+                  whiteSpace: 'pre-wrap',
+                  paddingBottom: "8px",
+                }
+              }),
+              Cell: ({ renderedCellValue, row }) => row.original["jcr:createdBy"] },
+            { header: 'Actions',
+              muiTableBodyCellProps: ({ cell }) => ({
+	            sx: {
+                  padding: '0',
+                  width: '20px',
+                  textAlign: 'end'
+                }
+              }),
+              enableSorting: false,
+              Cell: ({ renderedCellValue, row }) =>
+                                <Tooltip title={"Download"}>
                                   <IconButton size="large">
-                                    <Link underline="none" color="inherit" href={rowData["@path"]} download><GetApp /></Link>
+                                    <Link underline="none" color="inherit" href={row.original["@path"]} download>
+                                      <GetApp />
+                                    </Link>
                                   </IconButton>
                                 </Tooltip> },
           ]}
-          />
+        />
       </DialogContent>
     </Dialog>
   </React.Fragment>

@@ -21,13 +21,11 @@ import React, { useEffect, useState } from "react";
 
 import {
   Grid,
-  TextField,
   Typography,
   Tooltip
 } from "@mui/material";
 
-import { useTheme } from '@mui/material/styles';
-import MaterialTable from "material-table";
+import MaterialReactTable from "material-react-table";
 import VocabularyActions from "./vocabularyActions"
 import Search from "./search";
 
@@ -37,10 +35,8 @@ export default function VocabularyTable(props) {
   const { vocabList, type  } = props;
   const [filterTable, setFilterTable] = useState(false);
   const [acronymFilterList, setAcronymFilterList] = useState([]);
-  const [rowCount, setRowCount] = useState(5);
   const [filteredVocabs, setFilteredVocabs] = useState([]);
   const [loading, setLoading] = React.useState(false);
-  const theme = useTheme();
 
   useEffect(() => {
     if (filterTable) {
@@ -51,17 +47,6 @@ export default function VocabularyTable(props) {
       }
     }
   }, [filterTable, acronymFilterList])
-
-  let filterComponent = ({ columnDef, onFilterChanged }) => (
-    <TextField
-      variant="standard"
-      placeholder="Filter..."
-      onChange={(e) => {
-        // Calling the onFilterChanged with the current tableId and the new value
-        onFilterChanged(columnDef.tableData.id, e.target.value);
-      }}
-    />
-  );
 
   return(
     <React.Fragment>
@@ -76,74 +61,63 @@ export default function VocabularyTable(props) {
 
       {(vocabList.length > 0) &&
       <Grid item>
-        <MaterialTable
+        <MaterialReactTable
+            enableColumnActions={false}
+            enableSorting={false}
+            enableTopToolbar={false}
+            enableToolbarInternalActions={false}
+            state={{ isLoading: loading }}
+            initialState={{ showColumnFilters: true }}
             columns={[
-              { title: 'Identifier',
-                cellStyle: {
-                  width: '10%',
-                  whiteSpace: "pre",
-                },
-                filterComponent: filterComponent,
-                field: 'acronym'
+              { header: 'Identifier', accessorKey: 'acronym', size: 30, filterFn: 'contains' },
+              { header: 'Name', accessorKey: 'name', filterFn: 'contains' },
+              { header: 'Version', accessorKey: 'version', size: 10, enableColumnFilter: false,
+                Cell: ({ renderedCellValue, row }) => row.original.version &&
+                  <Tooltip title={row.original.version}>
+                    <Typography style={{fontWeight: "inherit"}} noWrap>
+                      {row.original.version}
+                    </Typography>
+                  </Tooltip>
               },
-              { title: 'Name',
-                cellStyle: {
-                  width: "33%",
-                },
-                filterComponent: filterComponent,
-                field: 'name'
-              },
-              { title: 'Version',
-                cellStyle: {
-                  width: "20%",
-                  maxWidth: "100px",
-                },
-                filtering: false,
-                sorting: false,
-                render: rowData => rowData.version && <Tooltip title={rowData.version}><Typography style={{fontWeight: "inherit"}} noWrap>{rowData.version}</Typography></Tooltip>
-              },
-              {
-                title: type === "local" ? "Installation Date" : "Release Date",
-                cellStyle: {
-                  width: "14%",
-                  whiteSpace: "nowrap",
-                },
-                filtering: false,
-                sorting: false,
-                render: rowData => (new Date(type === "local" ? rowData.installed : rowData.released)).toString().substring(4,15)
-              },
-              { title: "",
-                cellStyle: {
-                  width: "23%",
-                  whiteSpace: "pre",
-                  textAlign: "right"
-                },
-                filtering: false,
-                sorting: false,
-                render: rowData => <VocabularyActions
-                                     type={type}
-                                     vocabulary={rowData}
-                                     updateLocalList={props.updateLocalList}
-                                     initPhase={props.acronymPhaseObject[rowData.acronym] || Phase["Not Installed"]}
-                                     setPhase={(phase) => props.setPhase(rowData.acronym, phase)}
-                                     addSetter={(setFunction) => props.addSetter(rowData.acronym, setFunction, type)}
-                                   />
+              { header: type === "local" ? "Installation Date" : "Release Date",
+                accessorKey: 'released',
+                size: 20,
+                enableColumnFilter: false,
+                Cell: ({ renderedCellValue, row }) => (new Date(type === "local" ? row.original.installed : row.original.released)).toString().substring(4,15)
               }
             ]}
+            muiTableHeadCellProps={{
+              sx: (theme) => ({
+                background: theme.palette.grey['200'],
+              }),
+            }}
+            displayColumnDefOptions={{
+              'mrt-row-actions': {
+                size: 50,
+                muiTableHeadCellProps: {align: "right"},
+                muiTableBodyCellProps: ({ cell }) => ({
+                  sx: {
+                    whiteSpace: "pre",
+                    textAlign: "right",
+                    paddingRight: "0.3rem"
+                  },
+                }),
+                enableColumnFilter: false,
+              },
+            }}
             data={filterTable ? filteredVocabs : vocabList}
-            options={{
-              toolbar: false,
-              filtering: true,
-              emptyRowsWhenPaging: false,
-              addRowPosition: 'first',
-              pageSize: rowCount,
-              headerStyle: { backgroundColor: theme.palette.grey['200'],
-                           },
-            }}
-            onChangeRowsPerPage={pageSize => {
-              setRowCount(pageSize);
-            }}
-            isLoading={loading}
+            enableRowActions
+            positionActionsColumn="last"
+            renderRowActions={({ row }) => (
+              <VocabularyActions
+                 type={type}
+                 vocabulary={row.original}
+                 updateLocalList={props.updateLocalList}
+                 initPhase={props.acronymPhaseObject[row.original.acronym] || Phase["Not Installed"]}
+                 setPhase={(phase) => props.setPhase(row.original.acronym, phase)}
+                 addSetter={(setFunction) => props.addSetter(row.original.acronym, setFunction, type)}
+               />
+            )}
           />
       </Grid>
       }

@@ -28,8 +28,9 @@ import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-import MaterialTable from 'material-table';
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy } from "./SubjectIdentifier";
+import MaterialReactTable from 'material-react-table';
+import { Box } from '@mui/material';
 
 import {
   Avatar,
@@ -462,57 +463,77 @@ function SubjectMemberInternal (props) {
         {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => (
             <Grid item key={questionnaireTitle}>
-              <MaterialTable
+              <MaterialReactTable
                 data={subjectGroups[questionnaireTitle]}
-                style={{ boxShadow : 'none' }}
-                options={{
-                  actionsColumnIndex: -1,
-                  emptyRowsWhenPaging: false,
-                  toolbar: false,
-                  paging: !!(subjectGroups[questionnaireTitle]?.length > pageSize),
-                  pageSize: pageSize,
-                  header: false,
-                  rowStyle: {
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableSorting={false}
+                enableTopToolbar={false}
+                enableToolbarInternalActions={false}
+                enablePagination={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
+                initialState={{ pagination: { pageSize: pageSize, pageIndex: 0 } }}
+                muiTableBodyRowProps={({ row }) => ({
+                  sx: {
                     verticalAlign: 'top',
-                  }
+                  },
+                })}
+                renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
+                displayColumnDefOptions={{
+                  'mrt-row-actions': {
+                    header: 'Actions',
+                    muiTableBodyCellProps: ({ cell }) => ({
+                      sx: {
+                        padding: '0',
+                        whiteSpace: 'nowrap',
+                        textAlign: 'end'
+                      },
+                    }),
+                  },
+                  'mrt-row-expand': {
+                    size: 8,
+                  },
                 }}
-                detailPanel={[
-                  { tooltip: 'Excerpt',
-                    render: rowData => <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> },
-                ]}
                 columns={[
-                  { title: 'Avatar',
-                    cellStyle: {
-                      paddingLeft: 0,
-                      paddingTop: "10px",
-                    },
-                    render: rowData => <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar> },
-                  { title: 'Questionnaire',
-                    cellStyle: {
-                      paddingLeft: 0,
-                      fontWeight: "bold",
-                      paddingTop: "10px",
-                      whiteSpace: 'nowrap',
-                    },
-                    render: rowData => <><Link to={"/content.html" + rowData["@path"]} underline="hover">
-                                           {questionnaireTitle} {subjectGroups[questionnaireTitle].length > 1 ? `#${rowData.tableData.id + 1}` : ''}
+                  { header: 'Avatar', size: 10,
+                    muiTableBodyCellProps: ({ cell }) => ({
+                      sx: {
+                        paddingLeft: 0,
+                        paddingTop: "10px",
+                      },
+                    }),
+                    Cell: ({ renderedCellValue, row }) => (<Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>),
+                  },
+                  { header: 'Questionnaire',
+                    muiTableBodyCellProps: ({ cell }) => ({
+                      sx: {
+                        paddingLeft: 0,
+                        fontWeight: "bold",
+                        paddingTop: "10px",
+                        whiteSpace: 'nowrap',
+                      },
+                    }),
+                    Cell: ({ renderedCellValue, row }) => (<>
+                                         <Link to={"/content.html" + row.original["@path"]} underline="hover">
+                                           {questionnaireTitle} {subjectGroups[questionnaireTitle].length > 1 ? `#${row.original.tableData.id + 1}` : ''}
                                          </Link>
                                          <Typography variant="caption" component="div" color="textSecondary">
-                                           Created {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                                           Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
                                          </Typography>
                                          <Typography variant="caption" component="div" color="textSecondary">
-                                           Last modified {DateTime.fromISO(rowData['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                                           Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
                                          </Typography>
-                                       </> },
-                  { title: 'Status',
-                    cellStyle: {
-                      width: '99%',
-                      whiteSpace: 'nowrap',
-                      paddingTop: "10px",
-                      paddingBottom: "8px",
-                    },
-                    render: rowData => <React.Fragment>
-                                         {rowData["statusFlags"].map((status) => {
+                                       </>) },
+                  { header: 'Status',
+                    muiTableBodyCellProps: ({ cell }) => ({
+                      sx: {
+                        width: '99%',
+                        whiteSpace: 'nowrap',
+                        paddingTop: "10px",
+                        paddingBottom: "8px",
+                      },
+                    }),
+                    Cell: ({ renderedCellValue, row }) => (<>
+                                         { row.original["statusFlags"].map((status) => {
                                            return <Chip
                                              key={status}
                                              label={wordToTitleCase(status)}
@@ -521,28 +542,28 @@ function SubjectMemberInternal (props) {
                                              size="small"
                                            />
                                          })}
-                                       </React.Fragment> },
-                  { title: 'Actions',
-                    cellStyle: {
-                      padding: '0',
-                      whiteSpace: 'nowrap',
-                      textAlign: 'end'
-                    },
-                    render: rowData => <React.Fragment>
-                                         <EditButton
-                                           entryPath={rowData["@path"]}
-                                           entryType="Form"
-                                         />
-                                         <DeleteButton
-                                           entryPath={rowData["@path"]}
-                                           entryName={getEntityIdentifier(rowData)}
-                                           entryType="Form"
-                                           warning={rowData ? rowData["@referenced"] : false}
-                                           onComplete={fetchTableData}
-                                         />
-                                       </React.Fragment> },
+                                       </>) },
                 ]}
-               />
+                enableRowActions
+                positionActionsColumn="last"
+                renderRowActions={({ row }) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8' }}>
+                    <>
+                      <EditButton
+                        entryPath={row.original["@path"]}
+                        entryType="Form"
+                      />
+                      <DeleteButton
+                        entryPath={row.original["@path"]}
+                        entryName={getEntityIdentifier(row.original)}
+                        entryType="Form"
+                        warning={row.original ? row.original["@referenced"] : false}
+                        onComplete={fetchTableData}
+                      />
+                    </>
+                    </Box>
+                )}
+              />
             </Grid>
           ))
         }

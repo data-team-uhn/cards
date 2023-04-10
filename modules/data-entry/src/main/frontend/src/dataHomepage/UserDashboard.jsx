@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 
-import MaterialTable from "material-table";
+import MaterialReactTable from "material-react-table";
 
 import { loadExtensions } from "../uiextension/extensionManager";
 import NewItemButton from "../components/NewItemButton.jsx";
@@ -61,7 +61,6 @@ function UserDashboard(props) {
   let [ selectedCreation, setSelectedCreation ] = useState(-1);
   let [ selectedRow, setSelectedRow ] = useState(undefined);
   let [ open, setOpen ] = useState(false);
-  let [ pageSize, setPageSize ] = useState(10);
 
   let onClose = () => {
     setSelectedCreation(-1);
@@ -102,26 +101,29 @@ function UserDashboard(props) {
       </Grid>
       <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
-          <MaterialTable
+          <MaterialReactTable
+            enableColumnActions={false}
+            enableColumnFilters={false}
+            enableSorting={false}
+            enableToolbarInternalActions={false}
+            initialState={{ showGlobalFilter: true }}
             columns={[
-              { field: 'cards:extensionName' },
+              { accessorKey: 'cards:extensionName' },
             ]}
             data={creationExtensions}
-            options={{
-              toolbar: false,
-              header: false,
-              pageSize: pageSize,
-              paging: creationExtensions.length > 5,
-              rowStyle: rowData => ({
-                // /* It doesn't seem possible to alter the className from here */
-                backgroundColor: (selectedRow && selectedRow["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
-              })
-            }}
-            onRowClick={(event, rowData) => {
-              setSelectedRow(rowData);
-            }}
-            onChangeRowsPerPage={setPageSize}
-            />
+            muiTableBodyRowProps={({ row }) => ({
+              sx: {
+                cursor: 'pointer',
+                backgroundColor:
+                  selectedRow && selectedRow["jcr:uuid"] === row.original["jcr:uuid"] ? theme.palette.grey["200"] : theme.palette.background.default
+              },
+              onClick: (event) => {
+                  setSelectedRow(row.original);
+                },
+            })}
+            enablePagination={creationExtensions.length > 5}
+            initialState={{ pagination: { pageSize: 10, pageIndex: 0 } }}
+          />
         </DialogContent>
         <DialogActions>
           <Button

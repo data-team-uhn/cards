@@ -24,7 +24,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Avatar, Button, CircularProgress, DialogActions, DialogContent, ListItem, ListItemAvatar, TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import MaterialTable from "material-table";
+import MaterialReactTable from "material-react-table";
 import Alert from '@mui/material/Alert';
 
 import { escapeJQL } from "../escape.jsx";
@@ -64,13 +64,20 @@ let createQueryURL = (query, type, order) => {
 function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
-  const [ pageSize, setPageSize ] = useState(5);
+
+  const [ data, setData ] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ isRefetching, setIsRefetching ] = useState(false);
+  const [ rowCount, setRowCount ] = useState(0);
+
+  //table state
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 5,
+  });
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
-
-  const COLUMNS = [
-    { title: 'Subject type', field: 'label' },
-  ];
 
   let changeType = (type) => {
     onChangeType(type);
@@ -83,6 +90,38 @@ function UnstyledNewSubjectDialog (props) {
       changeType(allowedTypes[0]);
     }
   }, [allowedTypes]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!data.length) {
+        setIsLoading(true);
+      } else {
+        setIsRefetching(true);
+      }
+
+      let url = createQueryURL(globalFilter ? ` WHERE CONTAINS(n.label, '*${escapeJQL(globalFilter)}*')` : "", "cards:SubjectType", "cards:defaultOrder");
+      url.searchParams.set("limit", pagination.pageSize);
+      url.searchParams.set("offset", pagination.pageIndex*pagination.pageSize);
+      const response = await fetchWithReLogin(globalLoginDisplay, url);
+      const json = await response.json();
+
+      // Auto-select if there's only one available SubjectType
+      if (json["rows"].length === 1) {
+        changeType(json["rows"][0]);
+      }
+
+      setData(json["rows"]);
+      setRowCount(json.totalrows);
+
+      setIsLoading(false);
+      setIsRefetching(false);
+    };
+    fetchData();
+  }, [
+    globalFilter,
+    pagination.pageIndex,
+    pagination.pageSize
+  ]);
 
   return(
     <React.Fragment>
@@ -100,43 +139,38 @@ function UnstyledNewSubjectDialog (props) {
               onChange={onChangeSubject}
               />
           </div>
-          <MaterialTable
-            title="Select a type"
-            columns={COLUMNS}
-            data={allowedTypes?.length ? allowedTypes :
-              query => {
-                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${escapeJQL(query.search)}*')` : "", "cards:SubjectType", "cards:defaultOrder");
-                url.searchParams.set("limit", query.pageSize);
-                url.searchParams.set("offset", query.page*query.pageSize);
-                return fetchWithReLogin(globalLoginDisplay, url)
-                  .then(response => response.json())
-                  .then(result => {
-                    // Auto-select if there's only one available SubjectType
-                    if (result["rows"].length === 1) {
-                      changeType(result["rows"][0]);
-                    }
-                    return {
-                      data: result["rows"],
-                      page: Math.trunc(result["offset"]/result["limit"]),
-                      totalCount: result["totalrows"],
-                    }}
-                  )
-              }
-            }
-            options={{
-              search: true,
-              header: false,
-              addRowPosition: 'first',
-              pageSize: pageSize,
-              rowStyle: rowData => ({
+          <MaterialReactTable
+            enableColumnActions={false}
+            enableColumnFilters={false}
+            enableSorting={false}
+            enableToolbarInternalActions={false}
+            manualPagination
+            onGlobalFilterChange={setGlobalFilter}
+            onPaginationChange={setPagination}
+            rowCount={rowCount}
+            state={{
+              globalFilter,
+              isLoading,
+              pagination,
+              showProgressBars: isRefetching
+            }}
+            initialState={{ showGlobalFilter: true }}
+            columns={[
+                { header: 'Select a subject type', accessorKey: 'label' }
+              ]}
+            data={ allowedTypes?.length ? allowedTypes : data }
+            muiTableHeadCellProps={{
+              sx: (theme) => ({
+                background: theme.palette.grey['200'],
+              }),
+            }}
+            muiTableBodyRowProps={({ row }) => ({
+              onClick: () => { changeType(row.original) },
+              sx: (theme) => ({
                 /* It doesn't seem possible to alter the className from here */
-                backgroundColor: (newSubjectType?.["label"] === rowData["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
+                backgroundColor: (newSubjectType?.["label"] === row.original["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
               })
-            }}
-            onRowClick={(event, rowData) => {
-              changeType(rowData);
-            }}
-            onChangeRowsPerPage={setPageSize}
+            })}
           />
         </DialogContent>
         <DialogActions>
@@ -180,20 +214,27 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
  * @param {object} parentType The object representing the cards:SubjectType of the parent that is being selected
- * @param {ref} tableRef Pass a reference to the MaterialTable object
+ * @param {ref} tableRef Pass a reference to the MaterialReactTable object
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
   const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
-  const [ pageSize, setPageSize ] = useState(5);
 
-  const COLUMNS = [
-    { title: 'Subject', field: 'hierarchy' },
-  ];
+  const [ data, setData ] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ isRefetching, setIsRefetching ] = useState(false);
+  const [ rowCount, setRowCount ] = useState(0);
 
-  // Convert from a MaterialTable row to whether or not it has a child of the same name as
+  //table state
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 5,
+  });
+
+  // Convert from a MaterialReactTable row to whether or not it has a child of the same name as
   // the one we're trying to avoid
   let hasChildWithId = (rowData, childId) => {
     return Object.values(rowData).find((rowValue) => (rowValue?.["identifier"] == childId));
@@ -201,60 +242,85 @@ function UnstyledSelectParentDialog (props) {
 
   let initialized = parentType && childType;
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!data.length) {
+        setIsLoading(true);
+      } else {
+        setIsRefetching(true);
+      }
+
+      let sql = ` WHERE n.type='${parentType?.["jcr:uuid"]}'`;
+      if (globalFilter) {
+        sql += ` AND CONTAINS(n.fullIdentifier, '*${escapeJQL(globalFilter)}*')`;
+      }
+      if (currentSubject) {
+        sql += ` AND ISDESCENDANTNODE(n, '${currentSubject["@path"]}')`;
+      }
+      let url = createQueryURL(sql, "cards:Subject", "fullIdentifier");
+      url.searchParams.set("limit", pagination.pageSize);
+      url.searchParams.set("offset", pagination.pageIndex*pagination.pageSize);
+      url.searchParams.set("serializeChildren", "1");
+
+      const response = await fetchWithReLogin(globalLoginDisplay, url);
+      const json = await response.json();
+
+      // Auto-select if there's only one available SubjectType
+      if (json["rows"].length === 1) {
+        changeType(json["rows"][0]);
+      }
+
+      setData(json["rows"].map((row) => ({
+        hierarchy: getHierarchy(row, React.Fragment, ()=>({})),
+        ...row })));
+      setRowCount(json.totalrows);
+
+      setIsLoading(false);
+      setIsRefetching(false);
+    };
+    fetchData();
+  }, [
+    globalFilter,
+    pagination.pageIndex,
+    pagination.pageSize
+  ]);
+
   return(
     <ResponsiveDialog open={open} onClose={onClose} keepMounted title={`Select ${parentType?.['label']} for ${childType?.['label']} ${childName}`}>
       <DialogContent dividers className={classes.dialogContentWithTable}>
         { error && <Alert severity="error">{error}</Alert>}
         {
           initialized &&
-            <MaterialTable
-              title=""
-              columns={COLUMNS}
-              data={query => {
-                  let sql = ` WHERE n.type='${parentType?.["jcr:uuid"]}'`;
-                  if (query.search) {
-                    sql += ` AND CONTAINS(n.fullIdentifier, '*${escapeJQL(query.search)}*')`;
-                  }
-                  if (currentSubject) {
-                    sql += ` AND ISDESCENDANTNODE(n, '${currentSubject["@path"]}')`;
-                  }
-                  let url = createQueryURL(sql, "cards:Subject", "fullIdentifier");
-                  url.searchParams.set("limit", query.pageSize);
-                  url.searchParams.set("offset", query.page*query.pageSize);
-                  url.searchParams.set("serializeChildren", "1");
-                  return fetchWithReLogin(globalLoginDisplay, url)
-                    .then(response => response.json())
-                    .then(result => {
-                      return {
-                        data: result["rows"].map((row) => ({
-                          hierarchy: getHierarchy(row, React.Fragment, ()=>({})),
-                          ...row })),
-                        page: Math.trunc(result["offset"]/result["limit"]),
-                        totalCount: result["totalrows"],
-                      }}
-                    )
-                }
-              }
-              options={{
-                search: true,
-                searchAutoFocus: true,
-                header: false,
-                addRowPosition: 'first',
-                pageSize: pageSize,
-                rowStyle: rowData => ({
+            <MaterialReactTable
+              tableInstanceRef={tableRef}
+              enableColumnActions={false}
+              enableColumnFilters={false}
+              enableSorting={false}
+              enableToolbarInternalActions={false}
+              manualPagination
+              onGlobalFilterChange={setGlobalFilter}
+              onPaginationChange={setPagination}
+              rowCount={rowCount}
+              state={{
+                globalFilter,
+                isLoading,
+                pagination,
+                showProgressBars: isRefetching
+              }}
+              initialState={{ showGlobalFilter: true }}
+              columns={[
+                  { header: 'Subject', accessorKey: 'label' }
+              ]}
+              data={data}
+              muiTableBodyRowProps={({ row }) => ({
+                onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent(row.original) },
+                sx: (theme) => ({
                   /* It doesn't seem possible to alter the className from here */
-                  backgroundColor: (value?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+                  backgroundColor: (value?.["jcr:uuid"] === row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
                   // grey out subjects that already have something by this name
-                  color: (hasChildWithId(rowData, childName) ? theme.palette.grey["500"] : theme.palette.grey["900"])
+                  color: (hasChildWithId(row.original, childName) ? theme.palette.grey["500"] : theme.palette.grey["900"])
                 })
-              }}
-              onRowClick={(event, rowData) => {
-                if (!hasChildWithId(rowData, childName)) {
-                  onChangeParent(rowData);
-                }
-              }}
-              onChangeRowsPerPage={setPageSize}
-              tableRef={tableRef}
+              })}
             />
         }
       </DialogContent>
@@ -838,11 +904,20 @@ SubjectListItem.defaultProps = {
 function SubjectSelectorList(props) {
   const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject, selectedQuestionnaire, disableProgress,
     currentSubject, theme, ...rest } = props;
-  const COLUMNS = [
-    { title: 'Identifier', field: 'hierarchy' },
-  ];
+
   const [ relatedSubjects, setRelatedSubjects ] = useState();
-  const [ pageSize, setPageSize ] = useState(5);
+  const [ data, setData ] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ isRefetching, setIsRefetching ] = useState(false);
+  const [ rowCount, setRowCount ] = useState(0);
+
+  //table state
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 5,
+  });
+
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -859,154 +934,108 @@ function SubjectSelectorList(props) {
     }
   }
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!data.length) {
+        setIsLoading(true);
+      } else {
+        setIsRefetching(true);
+      }
+
+      let conditions = [];
+      if (allowedTypes?.length) {
+        conditions.push("(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")");
+      }
+      if (globalFilter) {
+        conditions.push(`CONTAINS(n.fullIdentifier, '*${escapeJQL(globalFilter)}*')`);
+      }
+      if (currentSubject) {
+        let subjectID = currentSubject["jcr:uuid"];
+        conditions.push(`(n.'ancestors'='${subjectID}' OR isdescendantnode(n,'${currentSubject["@path"]}') OR n.'jcr:uuid'='${subjectID}')`);
+      }
+      let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
+
+      // fetch all subjects
+      let url = createQueryURL( condition, "cards:Subject", "fullIdentifier");
+      url.searchParams.set("limit", pagination.pageSize);
+      url.searchParams.set("offset", pagination.pageIndex*pagination.pageSize);
+
+      const response = await fetchWithReLogin(globalLoginDisplay, url);
+      const json = await response.json();
+
+      let filteredData = json["rows"];
+      let querySubjectSubset = "";
+      for (let i = 0; i < filteredData.length; i++) {
+        querySubjectSubset += "s.'jcr:uuid'='" + filteredData[i]['jcr:uuid'] + "'";
+        if ((i+1) != filteredData.length) {
+          querySubjectSubset += " or ";
+        }
+      }
+      let querySubjectSubsetClause = (querySubjectSubset.length > 0) ? (" and (" + querySubjectSubset + ") ") : " ";
+      // fetch the Subjects of each form of this questionnaire type for all listed subjects
+      url = `/query?rawResults=true&query=SELECT s.[jcr:uuid] FROM [cards:Subject] AS s `
+          + `inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' `
+          + `where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}`
+          + `order by s.'fullIdentifier'&limit=${selectedQuestionnaire?.["maxPerSubject"] * pagination.pageSize}`;
+      const responseSubject = await fetchWithReLogin(globalLoginDisplay, url);
+      const relatedSubjectsResp = await responseSubject.json();
+
+      setRelatedSubjects(relatedSubjectsResp.rows);
+      let latestRelatedSubjects = relatedSubjectsResp.rows;
+
+      // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
+      let atMax = (latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["s.jcr:uuid"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+      if (filteredData.length === 1 && !atMax) {
+        onSelect(filteredData[0]);
+        handleSelection(filteredData[0]);
+      }
+      setData(filteredData.map((row) => ({
+        hierarchy: getHierarchy(row, React.Fragment, () => ({})),
+          ...row })));
+      setRowCount(relatedSubjectsResp["totalrows"]);
+
+      setIsLoading(false);
+      setIsRefetching(false);
+    };
+    fetchData();
+  }, [
+    globalFilter,
+    pagination.pageIndex,
+    pagination.pageSize
+  ]);
+
   return(
     <React.Fragment>
-      <MaterialTable
-        title=""
-        columns={COLUMNS}
-        data={query => {
-            let conditions = [];
-            if (allowedTypes?.length) {
-              conditions.push("(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")");
-            }
-            if (query.search) {
-              conditions.push(`CONTAINS(n.fullIdentifier, '*${escapeJQL(query.search)}*')`);
-            }
-            if (currentSubject) {
-              let subjectID = currentSubject["jcr:uuid"];
-              conditions.push(`(n.'ancestors'='${subjectID}' OR isdescendantnode(n,'${currentSubject["@path"]}') OR n.'jcr:uuid'='${subjectID}')`);
-            }
-            let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
-
-            // fetch all subjects
-            let url = createQueryURL( condition, "cards:Subject", "fullIdentifier");
-            url.searchParams.set("limit", query.pageSize);
-            url.searchParams.set("offset", query.page*query.pageSize);
-            return fetchWithReLogin(globalLoginDisplay, url)
-              .then(response => response.json())
-              .then(result => {
-                let filteredData = result["rows"];
-                let querySubjectSubset = "";
-                for (let i = 0; i < filteredData.length; i++) {
-                  querySubjectSubset += "s.'jcr:uuid'='" + filteredData[i]['jcr:uuid'] + "'";
-                  if ((i+1) != filteredData.length) {
-                    querySubjectSubset += " or ";
-                  }
-                }
-                let querySubjectSubsetClause = (querySubjectSubset.length > 0) ? (" and (" + querySubjectSubset + ") ") : " ";
-                // fetch the Subjects of each form of this questionnaire type for all listed subjects
-                return fetchWithReLogin(globalLoginDisplay, `/query?rawResults=true&query=SELECT s.[jcr:uuid] FROM [cards:Subject] AS s inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}order by s.'fullIdentifier'&limit=${selectedQuestionnaire?.["maxPerSubject"] * query.pageSize}`)
-                .then((relatedSubjectsResp) => relatedSubjectsResp.json())
-                .then((relatedSubjectsResp) => {
-                  setRelatedSubjects(relatedSubjectsResp.rows);
-                  return relatedSubjectsResp.rows;
-                })
-                .then((latestRelatedSubjects) => {
-                  // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
-                  let atMax = (latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["s.jcr:uuid"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
-                  if (filteredData.length === 1 && !atMax) {
-                    onSelect(filteredData[0]);
-                    handleSelection(filteredData[0]);
-                  }
-                  return {
-                    data: filteredData.map((row) => ({
-                            hierarchy: getHierarchy(row, React.Fragment, () => ({})),
-                              ...row })),
-                    page: Math.trunc(result["offset"]/result["limit"]),
-                    totalCount: result["totalrows"],
-                  }
-                })
-              })
-          }
-        }
-        editable={{
-          onRowAdd: (allowAddSubjects ? newData => {
-            // Do not allow blank subjects
-            if (!newData["identifier"]) {
-              onError("You cannot create a blank subject");
-              return Promise.resolve();
-            }
-
-            // Add the new data
-            let url = new URL("/Subjects/" + uuidv4(), window.location.origin);
-
-            // Make a POST request to create a new subject
-            let request_data = new FormData();
-            request_data.append('jcr:primaryType', 'cards:Subject');
-            request_data.append('identifier', newData["identifier"]);
-
-            let check_url = createQueryURL(` WHERE n.'identifier'='${escapeJQL(newData["identifier"])}'`, "cards:Subject");
-            return fetchWithReLogin(globalLoginDisplay, check_url)
-              .then( (response) => response.ok ? response.json() : Promise.reject(response))
-              .then( (json) => {
-                if (json?.rows?.length > 0) {
-                  onError("Subject already exists");
-                  return Promise.reject();
-                }
-              })
-              .then( () => (
-                fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: request_data })
-                  .then( () => (
-                    // Continually attempt to query the newly inserted data until we are certain it is findable
-                    new Promise((resolve, reject) => {
-                      let checkForNew = () => {
-                        fetchWithReLogin(globalLoginDisplay, check_url)
-                        .then((response) => response.ok ? response.json() : Promise.reject(response))
-                        .then((json) => {
-                          if (json.returnedrows > 0) {
-                            onError();
-                            resolve();
-                          } else {
-                            return Promise.reject(json);
-                          }
-                        })
-                        .catch((error) => {console.log(error); setTimeout(checkForNew, 1000)});
-                      }
-                      setTimeout(checkForNew, 1000);
-                    }))
-                  )
-                )
-              );
-          } : undefined),
-          onRowDelete: (allowDeleteSubjects ? oldData => {
-            // Get the URL of the old data
-            let url = new URL(oldData["@path"], window.location.origin);
-
-            // Make a POST request to delete the given subject
-            let request_data = new FormData();
-            request_data.append(':operation', 'delete');
-            onDelete(oldData);
-            return fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: request_data })
-            } : undefined),
+      <MaterialReactTable
+        enableColumnActions={false}
+        enableColumnFilters={false}
+        enableSorting={false}
+        enableToolbarInternalActions={false}
+        manualPagination
+        onGlobalFilterChange={setGlobalFilter}
+        onPaginationChange={setPagination}
+        rowCount={rowCount}
+        state={{
+          globalFilter,
+          isLoading,
+          pagination,
+          showProgressBars: isRefetching
         }}
-        options={{
-          search: true,
-          searchAutoFocus: true,
-          header: false,
-          actionsColumnIndex: -1,
-          addRowPosition: 'first',
-          pageSize: pageSize,
-          rowStyle: rowData => ({
-            /* It doesn't seem possible to alter the className from here */
-            backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+        initialState={{ showGlobalFilter: true }}
+        columns={[{ header: 'Identifier', accessorKey: 'hierarchy' }]}
+        data={data}
+        muiTableBodyRowProps={({ row }) => ({
+            onClick: () => { onSelect(row.original); handleSelection(row.original) },
+            sx: (theme) => ({
+              /* It doesn't seem possible to alter the className from here */
+              backgroundColor: (selectedSubject?.["jcr:uuid"] === row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
             // grey out subjects that have already reached maxPerSubject
-            color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == rowData["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+            color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
             ? theme.palette.grey["500"]
             : theme.palette.grey["900"]
             )
-          })
-        }}
-        localization={{
-          body: {
-            addTooltip: "Add a new subject",
-            editRow: {
-              /* NB: We can't escape the h6 placed around the delete text, so we instead override the style */
-              deleteText: <span className={classes.deleteText}>Are you sure you want to delete this row?</span>
-            }
-          }
-        }}
-        onRowClick={(event, rowData) => {onSelect(rowData); handleSelection(rowData)}}
-        onChangeRowsPerPage={setPageSize}
+          }),
+        })}
       />
     </React.Fragment>
   )

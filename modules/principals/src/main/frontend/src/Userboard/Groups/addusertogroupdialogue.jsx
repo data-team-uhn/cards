@@ -22,24 +22,25 @@ import userboardStyle from '../userboardStyle.jsx';
 
 import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@mui/material";
 
-import MaterialTable from 'material-table';
+import MaterialReactTable from 'material-react-table';
 
 const GROUP_URL="/system/userManager/group/";
 
 class AddUserToGroupDialogue extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            selectedUsers: []
-        }
+      super(props);
+      this.state = {
+        freeUsers: []
+      }
+      this.tableRef = React.createRef();
     }
 
     handleAddUsers() {
         let formData = new FormData();
 
-        var i;
-        for (i = 0; i < this.state.selectedUsers.length; ++i) {
-            formData.append(':member', this.state.selectedUsers[i]);
+        let selectedUsers = Object.keys(this.tableRef.current.getState().rowSelection);
+        for (var i = 0; i < selectedUsers.length; ++i) {
+            formData.append(':member', this.state.freeUsers[selectedUsers[i]].name);
         }
 
         fetch(GROUP_URL + this.props.name + ".update.html",
@@ -49,18 +50,12 @@ class AddUserToGroupDialogue extends React.Component {
                 body: formData
             })
             .then(() => {
-                this.setState({ selectedUsers: [] });
                 this.props.reload();
                 this.handleExit();
             })
             .catch((error) => {
                 console.log(error);
             });
-    }
-
-    handleSelectRowClick(rows) {
-        let chosens = rows.map((row) => row.name);
-        this.setState({ selectedUsers: chosens });
     }
 
     handleEntering() {
@@ -77,18 +72,11 @@ class AddUserToGroupDialogue extends React.Component {
     }
 
     handleExit() {
-        this.setState({ selectedUsers: [] });
-        this.props.allUsers.forEach(function(item, index) {
-          if (item.tableData) {
-              item.tableData.checked = false;
-          }
-        })
         this.props.handleClose();
     }
 
     render() {
         const { classes } = this.props;
-        const headerBackground = this.props.theme.palette.grey['200'];
 
         return (
             <Dialog
@@ -104,33 +92,45 @@ class AddUserToGroupDialogue extends React.Component {
                 <DialogContent>
                     <Grid container>
                         <div>
-                            <MaterialTable
-                              title=""
-                              style={{ boxShadow : 'none' }}
-                              options={{
-                                headerStyle: { backgroundColor: headerBackground },
-                                emptyRowsWhenPaging: false,
-                                selection: true,
-                                showSelectAllCheckbox : false,
-                                showTextRowsSelected: false,
-                                selectionProps: rowData => ({
-                                    color: 'primary'
-                                  })
+                            <MaterialReactTable
+                              tableInstanceRef={this.tableRef}
+                              enableColumnActions={false}
+                              enableColumnFilters={false}
+                              enableSorting={false}
+                              enableTopToolbar={false}
+                              enableToolbarInternalActions={false}
+                              muiTableHeadCellProps={{
+                                sx: (theme) => ({
+                                  background: theme.palette.grey['200'],
+                                }),
                               }}
+                              enableRowSelection
+                              enableSelectAll={false}
+                              muiSelectCheckboxProps={{ color: 'primary' }}
+                              muiTableBodyRowProps={({ row }) => ({
+                                onClick: row.getToggleSelectedHandler(),
+                                sx: {
+                                  cursor: 'pointer',
+                                },
+                              })}
                               columns={[
-                                { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
-                                { title: 'User Name', field: 'name' },
-                                { title: 'Admin', field: 'isAdmin', type: 'boolean' },
-                                { title: 'Disabled', field: 'isDisabled', type: 'boolean' },
+                                { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
+                                  Cell: ({ renderedCellValue, row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
+                                { header: 'User Name', accessorKey: 'name' },
+                                { header: 'Admin', accessorKey: 'isAdmin', size: 10,
+                                  Cell: ({ renderedCellValue, row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+                                },
+                                { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
+                                  Cell: ({ renderedCellValue, row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+                                },
                               ]}
                               data={this.state.freeUsers}
-                              onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
                             />
                         </div>
                     </Grid>
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
-                    <Button variant="contained" size="small" color="primary" onClick={() => this.handleAddUsers()} disabled={this.state.selectedUsers.length == 0}>Add</Button>
+                    <Button variant="contained" size="small" color="primary" onClick={() => this.handleAddUsers()}>Add</Button>
                     <Button variant="outlined" size="small" onClick={() => this.handleExit()}>Close</Button>
                 </DialogActions>
             </Dialog>
