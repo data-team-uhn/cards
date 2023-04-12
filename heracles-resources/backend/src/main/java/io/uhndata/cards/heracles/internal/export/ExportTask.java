@@ -21,7 +21,6 @@ package io.uhndata.cards.heracles.internal.export;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +40,6 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -86,16 +84,20 @@ public class ExportTask implements Runnable
     @Override
     public void run()
     {
-        if ("nightly".equals(this.exportRunMode) || "manualToday".equals(this.exportRunMode)) {
-            doNightlyExport();
-        } else if ("manualAfter".equals(this.exportRunMode)) {
-            doManualExport(this.exportLowerBound, null);
-        } else if ("manualBetween".equals(this.exportRunMode)) {
-            doManualExport(this.exportLowerBound, this.exportUpperBound);
+        try {
+            if ("nightly".equals(this.exportRunMode) || "manualToday".equals(this.exportRunMode)) {
+                doNightlyExport();
+            } else if ("manualAfter".equals(this.exportRunMode)) {
+                doManualExport(this.exportLowerBound, null);
+            } else if ("manualBetween".equals(this.exportRunMode)) {
+                doManualExport(this.exportLowerBound, this.exportUpperBound);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
         }
     }
 
-    public void doManualExport(LocalDate lower, LocalDate upper)
+    public void doManualExport(LocalDate lower, LocalDate upper) throws LoginException
     {
         LOGGER.info("Executing ManualExport");
         String fileDateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -120,7 +122,7 @@ public class ExportTask implements Runnable
         }
     }
 
-    public void doNightlyExport()
+    public void doNightlyExport() throws LoginException
     {
         LOGGER.info("Executing NightlyExport");
         LocalDate today = LocalDate.now();
@@ -235,7 +237,7 @@ public class ExportTask implements Runnable
     }
 
     private Set<SubjectIdentifier> getChangedSubjects(String requestDateStringLower,
-        String requestDateStringUpper)
+        String requestDateStringUpper) throws LoginException
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Set<SubjectIdentifier> subjects = new HashSet<>();
@@ -255,14 +257,13 @@ public class ExportTask implements Runnable
                 subjects.add(new SubjectIdentifier(path, participantId));
             }
             return subjects;
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            throw e;
         }
-        return Collections.emptySet();
     }
 
     private SubjectContents getSubjectContents(String path, String requestDateStringLower,
-        String requestDateStringUpper)
+        String requestDateStringUpper) throws LoginException
     {
         String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
@@ -280,9 +281,8 @@ public class ExportTask implements Runnable
             Resource identifiedSubjectData = resolver.resolve(identifiedSubjectDataUrl);
             return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(),
                 identifiedSubjectData.adaptTo(JsonObject.class), subjectDataUrl);
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
-            return null;
+        } catch (Exception e) {
+            throw e;
         } finally {
             if (mustPopResolver) {
                 this.rrp.pop();
@@ -309,8 +309,8 @@ public class ExportTask implements Runnable
             s3.putObject(s3BucketName, filename, input.getData());
             input.getSummary().forEach(form -> LOGGER.info("Exported {}", form));
             LOGGER.info("Exported {} to {}", input.getUrl(), filename);
-        } catch (AmazonServiceException e) {
-            LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
+        } catch (Exception e) {
+            throw e;
         }
     }
 }
