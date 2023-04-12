@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { withRouter } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -71,6 +71,7 @@ function NewFormDialog(props) {
     pageIndex: 0,
     pageSize: 5,
   });
+  const tableRef = useRef();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -185,6 +186,7 @@ function NewFormDialog(props) {
 
   let goBack = () => {
     setError(false);
+    tableRef.current.resetGlobalFilter();
     // Exit the dialog if we're at the first page or if there is a preset path
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
       setDialogOpen(false);
@@ -353,6 +355,7 @@ function NewFormDialog(props) {
           <React.Fragment>
             {relatedForms &&
               <MaterialReactTable
+                tableInstanceRef={tableRef}
                 enableColumnActions={false}
                 enableColumnFilters={false}
                 enableSorting={false}
