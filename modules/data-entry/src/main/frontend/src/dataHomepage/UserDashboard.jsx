@@ -105,8 +105,15 @@ function UserDashboard(props) {
             enableColumnActions={false}
             enableColumnFilters={false}
             enableSorting={false}
+            enableGrouping={false}
             enableToolbarInternalActions={false}
-            initialState={{ showGlobalFilter: true }}
+            enableTopToolbar={creationExtensions.length > 5}
+            enableBottomToolbar={creationExtensions.length > 5}
+            muiTableHeadProps={{ sx: { display: creationExtensions.length < 5 ? 'none' : 'contents' } }}
+            enablePagination={creationExtensions.length > 5}
+            initialState={{ showGlobalFilter: (creationExtensions.length > 5),
+                            pagination: { pageSize: 10, pageIndex: 0 }
+                         }}
             columns={[
               { accessorKey: 'cards:extensionName' },
             ]}
@@ -121,8 +128,11 @@ function UserDashboard(props) {
                   setSelectedRow(row.original);
                 },
             })}
-            enablePagination={creationExtensions.length > 5}
-            initialState={{ pagination: { pageSize: 10, pageIndex: 0 } }}
+            muiTableBodyCellProps={({ cell }) => ({
+              sx: {
+                fontSize: '1rem'
+              },
+            })}
           />
         </DialogContent>
         <DialogActions>
