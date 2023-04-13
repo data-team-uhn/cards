@@ -470,40 +470,60 @@ function SubjectMemberInternal (props) {
                 enableSorting={false}
                 enableTopToolbar={false}
                 enableToolbarInternalActions={false}
+                enableBottomToolbar={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
                 enablePagination={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
                 initialState={{ pagination: { pageSize: pageSize, pageIndex: 0 } }}
-                muiTableBodyRowProps={({ row }) => ({
+                muiTablePaperProps={{
+                  elevation: 0,
+                }}
+                muiTableBodyRowProps={{
                   sx: {
                     verticalAlign: 'top',
                   },
-                })}
+                }}
+                muiTableHeadProps={{
+                  sx: {
+                    display: 'none',
+                  },
+                }}
+                muiTableFooterProps={{
+                  sx: {
+                    display: 'none',
+                  },
+                }}
                 renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
                 displayColumnDefOptions={{
                   'mrt-row-actions': {
-                    header: 'Actions',
+                    id: 'Actions',
                     muiTableBodyCellProps: ({ cell }) => ({
                       sx: {
                         padding: '0',
                         whiteSpace: 'nowrap',
-                        textAlign: 'end'
+                        textAlign: 'right'
                       },
                     }),
                   },
                   'mrt-row-expand': {
-                    size: 8,
+                    size: 4,
+                    muiTableBodyCellProps: ({ cell }) => ({
+                      sx: {
+                        paddingRight: '0',
+                      },
+                    }),
                   },
                 }}
                 columns={[
-                  { header: 'Avatar', size: 10,
+                  { id: 'Avatar', size: 4,
                     muiTableBodyCellProps: ({ cell }) => ({
                       sx: {
                         paddingLeft: 0,
+                        paddingRight: 0,
                         paddingTop: "10px",
                       },
                     }),
                     Cell: ({ renderedCellValue, row }) => (<Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>),
                   },
-                  { header: 'Questionnaire',
+                  { id: 'Questionnaire',
                     muiTableBodyCellProps: ({ cell }) => ({
                       sx: {
                         paddingLeft: 0,
@@ -523,7 +543,7 @@ function SubjectMemberInternal (props) {
                                            Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
                                          </Typography>
                                        </>) },
-                  { header: 'Status',
+                  { id: 'Status',
                     muiTableBodyCellProps: ({ cell }) => ({
                       sx: {
                         width: '99%',
@@ -547,7 +567,7 @@ function SubjectMemberInternal (props) {
                 enableRowActions
                 positionActionsColumn="last"
                 renderRowActions={({ row }) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8' }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8', float: 'right' }}>
                     <>
                       <EditButton
                         entryPath={row.original["@path"]}
