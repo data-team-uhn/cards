@@ -26,6 +26,7 @@ import shutil
 import argparse
 
 LFS_DOCKER_TAG = "latest"
+MINIO_DOCKER_RELEASE_TAG = "RELEASE.2022-09-17T00-09-45Z"
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
@@ -36,6 +37,7 @@ argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer ser
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
+argparser.add_argument('--s3_test_container', help='Add a MinIO S3 Bucket Docker container for testing S3 data exports', action='store_true')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
@@ -233,6 +235,13 @@ yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=${LFS_RELOA
 if args.oak_filesystem:
     yaml_obj['services']['lfsinitial']['environment'].append("OAK_FILESYSTEM=true")
 
+if args.s3_test_container:
+  yaml_obj['services']['lfsinitial']['environment'].append("S3_ENDPOINT_URL=http://minio:9000")
+  yaml_obj['services']['lfsinitial']['environment'].append("S3_ENDPOINT_REGION=us-west-1")
+  yaml_obj['services']['lfsinitial']['environment'].append("S3_BUCKET_NAME=uhn")
+  yaml_obj['services']['lfsinitial']['environment'].append("AWS_KEY=minioadmin")
+  yaml_obj['services']['lfsinitial']['environment'].append("AWS_SECRET=minioadmin")
+
 if not (args.oak_filesystem or args.external_mongo):
     yaml_obj['services']['lfsinitial']['depends_on'] = ['router']
 
@@ -259,6 +268,20 @@ if args.external_mongo:
 	if len(ext_mongo_db_name) != 0:
 		yaml_obj['services']['lfsinitial']['environment'].append("CUSTOM_MONGO_DB_NAME={}".format(ext_mongo_db_name))
 
+
+# Configure the minio S3 container
+if args.s3_test_container:
+  print("Configuring service: s3_test_container")
+  yaml_obj['services']['s3_test_container'] = {}
+  yaml_obj['services']['s3_test_container']['image'] = "minio/minio:" + MINIO_DOCKER_RELEASE_TAG
+  yaml_obj['services']['s3_test_container']['networks'] = {}
+  yaml_obj['services']['s3_test_container']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['s3_test_container']['networks']['internalnetwork']['aliases'] = ['minio']
+  yaml_obj['services']['s3_test_container']['ports'] = ["127.0.0.1:9001:9001"]
+  yaml_obj['services']['s3_test_container']['environment'] = []
+  yaml_obj['services']['s3_test_container']['environment'].append("MINIO_ROOT_USER=minioadmin")
+  yaml_obj['services']['s3_test_container']['environment'].append("MINIO_ROOT_PASSWORD=minioadmin")
+  yaml_obj['services']['s3_test_container']['command'] = ["server", "/data", "--console-address", ":9001"]
 
 #Configure the proxy container
 print("Configuring service: proxy")
