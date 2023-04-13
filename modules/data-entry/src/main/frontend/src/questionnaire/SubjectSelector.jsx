@@ -156,14 +156,20 @@ function UnstyledNewSubjectDialog (props) {
             }}
             initialState={{ showGlobalFilter: true }}
             columns={[
-                { header: 'Select a subject type', accessorKey: 'label' }
+                { header: 'Select a type', accessorKey: 'label' }
               ]}
             data={ allowedTypes?.length ? allowedTypes : data }
             muiTableHeadCellProps={{
-              sx: (theme) => ({
-                background: theme.palette.grey['200'],
-              }),
+              sx: {
+                fontSize: 'large',
+                paddingTop: '0',
+              },
             }}
+            muiTableBodyCellProps={({ cell }) => ({
+              sx: {
+                fontSize: '1rem'
+              },
+            })}
             muiTableBodyRowProps={({ row }) => ({
               onClick: () => { changeType(row.original) },
               sx: (theme) => ({
@@ -320,6 +326,11 @@ function UnstyledSelectParentDialog (props) {
                   // grey out subjects that already have something by this name
                   color: (hasChildWithId(row.original, childName) ? theme.palette.grey["500"] : theme.palette.grey["900"])
                 })
+              })}
+              muiTableBodyCellProps={({ cell }) => ({
+                sx: {
+                  fontSize: '1rem'
+                },
               })}
             />
         }
@@ -1022,7 +1033,7 @@ function SubjectSelectorList(props) {
           showProgressBars: isRefetching
         }}
         initialState={{ showGlobalFilter: true }}
-        columns={[{ header: 'Identifier', accessorKey: 'hierarchy' }]}
+        columns={[{ accessorKey: 'hierarchy' }]}
         data={data}
         muiTableBodyRowProps={({ row }) => ({
             onClick: () => { onSelect(row.original); handleSelection(row.original) },
@@ -1035,6 +1046,11 @@ function SubjectSelectorList(props) {
             : theme.palette.grey["900"]
             )
           }),
+        })}
+        muiTableBodyCellProps={({ cell }) => ({
+          sx: {
+            fontSize: '1rem'
+          },
         })}
       />
     </React.Fragment>

@@ -185,7 +185,7 @@ function NewFormDialog(props) {
   }
 
   let goBack = () => {
-    setError(false);
+    resetDialogState();
     tableRef.current.resetGlobalFilter();
     // Exit the dialog if we're at the first page or if there is a preset path
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
@@ -384,7 +384,7 @@ function NewFormDialog(props) {
                 }]}
                 data={data}
                 muiTableBodyRowProps={({ row }) => ({
-                  onClick: () => { !isFetching && setSelectedQuestionnaire(row.original) },
+                  onClick: () => { !isFetching && setSelectedQuestionnaire(row.original); setError(false); },
                   sx: (theme) => ({
                     // /* It doesn't seem possible to alter the className from here */
                     backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,

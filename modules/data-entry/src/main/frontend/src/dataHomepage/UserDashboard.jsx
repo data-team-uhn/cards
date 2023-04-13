@@ -109,7 +109,6 @@ function UserDashboard(props) {
             enableToolbarInternalActions={false}
             enableTopToolbar={creationExtensions.length > 5}
             enableBottomToolbar={creationExtensions.length > 5}
-            muiTableHeadProps={{ sx: { display: creationExtensions.length < 5 ? 'none' : 'contents' } }}
             enablePagination={creationExtensions.length > 5}
             initialState={{ showGlobalFilter: (creationExtensions.length > 5),
                             pagination: { pageSize: 10, pageIndex: 0 }
@@ -118,6 +117,11 @@ function UserDashboard(props) {
               { accessorKey: 'cards:extensionName' },
             ]}
             data={creationExtensions}
+            muiTableHeadProps={{
+              sx: {
+                display: creationExtensions.length < 5 ? 'none' : 'contents',
+              },
+            }}
             muiTableBodyRowProps={({ row }) => ({
               sx: {
                 cursor: 'pointer',
