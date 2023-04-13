@@ -28,6 +28,7 @@ import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
+import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -198,26 +199,44 @@ public class PauseResumeFormEditor extends DefaultEditor
         if ("paused".equals(status)) {
             // New form must be a resume form
             String id = String.valueOf(this.formUtils.getValue(this.formUtils.getAnswer(latestForm, idQuestion)));
-            this.createAnswer(questionnaire, "pause_resume_index", id);
-            this.createAnswer(questionnaire, "enrollment_status", "resumed");
+            this.createOrEditAnswer(questionnaire, "pause_resume_index", id);
+            this.createOrEditAnswer(questionnaire, "enrollment_status", "resumed");
         } else {
             // Default, New form must be a pause form
-            this.createAnswer(questionnaire, "pause_resume_index", null);
-            this.createAnswer(questionnaire, "enrollment_status", "paused");
+            this.createOrEditAnswer(questionnaire, "pause_resume_index", null);
+            this.createOrEditAnswer(questionnaire, "enrollment_status", "paused");
         }
     }
 
-    private Node createAnswer(final Node questionnaire, final String questionPath, final String value)
+    private void createOrEditAnswer(final Node questionnaire, final String questionPath,
+        final String value)
     {
-        final String uuid = UUID.randomUUID().toString();
-        String questionUUID;
         try {
-            questionUUID = this.questionnaireUtils.getQuestion(questionnaire, questionPath).getProperty("jcr:uuid")
-                .getString();
+            String questionUUID = this.questionnaireUtils.getQuestion(questionnaire, questionPath)
+                .getProperty("jcr:uuid").getString();
+            for (String answerName : this.currentNodeBuilder.getChildNodeNames()) {
+                NodeBuilder answer = this.currentNodeBuilder.getChildNode(answerName);
+                PropertyState question = answer.getNodeState().getProperty("question");
+                if (question != null && questionUUID != null && questionUUID.equals(question.getValue(Type.STRING)))
+                {
+                    this.editAnswer(answer, answerName, value);
+                    return;
+                }
+            }
+            this.createAnswer(questionUUID, value);
         } catch (RepositoryException e) {
             LOGGER.error("Could not create question " + questionPath, e);
-            return null;
         }
+    }
+
+    private void editAnswer(final NodeBuilder node, final String nodeName, final String value)
+    {
+        node.setProperty("value", value == null ? nodeName : value);
+    }
+
+    private void createAnswer(final String questionUUID, final String value)
+    {
+        final String uuid = UUID.randomUUID().toString();
         NodeBuilder node = this.currentNodeBuilder.setChildNode(uuid);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         node.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
@@ -227,9 +246,8 @@ public class PauseResumeFormEditor extends DefaultEditor
         node.setProperty("sling:resourceSuperType", FormUtils.ANSWER_RESOURCE, Type.STRING);
         node.setProperty("sling:resourceType", "cards/TextAnswer", Type.STRING);
         node.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
-        // If no calue is specified, set the value to be an ID
+        // If no value is specified, set the value to be an ID
         node.setProperty("value", value == null ? uuid : value, Type.STRING);
-        return null;
     }
 
     /**
