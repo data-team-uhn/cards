@@ -103,7 +103,7 @@ public class CreateMissingAnswersEditor extends DefaultEditor
     }
 
     @Override
-    public void enter(final NodeState before, final NodeState after)
+    public void leave(final NodeState before, final NodeState after)
     {
         if (!this.isFormNode) {
             return;
