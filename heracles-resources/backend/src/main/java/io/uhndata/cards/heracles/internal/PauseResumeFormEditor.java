@@ -199,16 +199,16 @@ public class PauseResumeFormEditor extends DefaultEditor
         if ("paused".equals(status)) {
             // New form must be a resume form
             String id = String.valueOf(this.formUtils.getValue(this.formUtils.getAnswer(latestForm, idQuestion)));
-            this.createOrEditAnswer(after, questionnaire, "pause_resume_index", id);
-            this.createOrEditAnswer(after, questionnaire, "enrollment_status", "resumed");
+            this.createOrEditAnswer(questionnaire, "pause_resume_index", id);
+            this.createOrEditAnswer(questionnaire, "enrollment_status", "resumed");
         } else {
             // Default, New form must be a pause form
-            this.createOrEditAnswer(after, questionnaire, "pause_resume_index", null);
-            this.createOrEditAnswer(after, questionnaire, "enrollment_status", "paused");
+            this.createOrEditAnswer(questionnaire, "pause_resume_index", null);
+            this.createOrEditAnswer(questionnaire, "enrollment_status", "paused");
         }
     }
 
-    private void createOrEditAnswer(final NodeState after, final Node questionnaire, final String questionPath,
+    private void createOrEditAnswer(final Node questionnaire, final String questionPath,
         final String value)
     {
         try {
