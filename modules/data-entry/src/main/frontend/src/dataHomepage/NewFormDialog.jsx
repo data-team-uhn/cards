@@ -385,15 +385,19 @@ function NewFormDialog(props) {
                 data={data}
                 muiTableBodyRowProps={({ row }) => ({
                   onClick: () => { !isFetching && setSelectedQuestionnaire(row.original); setError(false); },
-                  sx: (theme) => ({
+                  sx: {
+                    cursor: 'pointer',
+                  },
+                })}
+                muiTableBodyCellProps={({ cell }) => ({
+                  sx: {
                     // /* It doesn't seem possible to alter the className from here */
-                    backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+                    backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === cell.row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
                     // // grey out subjects that have already reached maxPerSubject
-                    color: ((relatedForms?.length && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["q.jcr:uuid"] == row.original["jcr:uuid"])).length >= (+(row.original?.["maxPerSubject"]) || undefined)))
+                    color: ((relatedForms?.length && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["q.jcr:uuid"] == cell.row.original["jcr:uuid"])).length >= (+(cell.row.original?.["maxPerSubject"]) || undefined)))
                     ? theme.palette.grey["500"]
                     : theme.palette.grey["900"]
-                    )
-                  }),
+                    )},
                 })}
               />
             }

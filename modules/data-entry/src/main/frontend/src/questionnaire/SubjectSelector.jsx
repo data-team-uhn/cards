@@ -167,15 +167,16 @@ function UnstyledNewSubjectDialog (props) {
             }}
             muiTableBodyCellProps={({ cell }) => ({
               sx: {
-                fontSize: '1rem'
+                fontSize: '1rem',
+                /* It doesn't seem possible to alter the className from here */
+                backgroundColor: (newSubjectType?.["label"] === cell.row.original["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
               },
             })}
             muiTableBodyRowProps={({ row }) => ({
               onClick: () => { changeType(row.original) },
-              sx: (theme) => ({
-                /* It doesn't seem possible to alter the className from here */
-                backgroundColor: (newSubjectType?.["label"] === row.original["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
-              })
+              sx: {
+                cursor: 'pointer',
+              },
             })}
           />
         </DialogContent>
@@ -320,16 +321,17 @@ function UnstyledSelectParentDialog (props) {
               data={data}
               muiTableBodyRowProps={({ row }) => ({
                 onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent(row.original) },
-                sx: (theme) => ({
-                  /* It doesn't seem possible to alter the className from here */
-                  backgroundColor: (value?.["jcr:uuid"] === row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
-                  // grey out subjects that already have something by this name
-                  color: (hasChildWithId(row.original, childName) ? theme.palette.grey["500"] : theme.palette.grey["900"])
-                })
+                sx: {
+                  cursor: 'pointer',
+                },
               })}
               muiTableBodyCellProps={({ cell }) => ({
                 sx: {
-                  fontSize: '1rem'
+                  fontSize: '1rem',
+                  /* It doesn't seem possible to alter the className from here */
+                  backgroundColor: (value?.["jcr:uuid"] === cell.row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+                  // grey out subjects that already have something by this name
+                  color: (hasChildWithId(cell.row.original, childName) ? theme.palette.grey["500"] : theme.palette.grey["900"])
                 },
               })}
             />
@@ -1036,20 +1038,21 @@ function SubjectSelectorList(props) {
         columns={[{ accessorKey: 'hierarchy' }]}
         data={data}
         muiTableBodyRowProps={({ row }) => ({
-            onClick: () => { onSelect(row.original); handleSelection(row.original) },
-            sx: (theme) => ({
-              /* It doesn't seem possible to alter the className from here */
-              backgroundColor: (selectedSubject?.["jcr:uuid"] === row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
-            // grey out subjects that have already reached maxPerSubject
-            color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
-            ? theme.palette.grey["500"]
-            : theme.palette.grey["900"]
-            )
-          }),
+          onClick: () => { onSelect(row.original); handleSelection(row.original) },
+          sx: {
+            cursor: 'pointer',
+          },
         })}
         muiTableBodyCellProps={({ cell }) => ({
           sx: {
-            fontSize: '1rem'
+            fontSize: '1rem',
+            /* It doesn't seem possible to alter the className from here */
+            backgroundColor: (selectedSubject?.["jcr:uuid"] === cell.row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
+            // grey out subjects that have already reached maxPerSubject
+            color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+            ? theme.palette.grey["500"]
+            : theme.palette.grey["900"]
+            )
           },
         })}
       />
