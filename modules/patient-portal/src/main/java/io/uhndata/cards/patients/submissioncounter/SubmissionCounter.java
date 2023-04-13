@@ -118,5 +118,8 @@ public final class SubmissionCounter
         if (this.session != null) {
             this.session.logout();
         }
+        if (this.resolver != null) {
+            this.resolver.close();
+        }
     }
 }
