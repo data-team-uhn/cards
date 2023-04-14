@@ -469,7 +469,6 @@ function SubjectMemberInternal (props) {
                 enableColumnFilters={false}
                 enableSorting={false}
                 enableTopToolbar={false}
-                enableToolbarInternalActions={false}
                 enableBottomToolbar={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
                 enablePagination={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
                 initialState={{ pagination: { pageSize: pageSize, pageIndex: 0 } }}

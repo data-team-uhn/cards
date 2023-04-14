@@ -21,7 +21,7 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Avatar, Button, CircularProgress, DialogActions, DialogContent, ListItem, ListItemAvatar, TextField } from "@mui/material";
+import { Avatar, Button, CircularProgress, DialogActions, DialogContent, ListItem, ListItemAvatar, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import MaterialReactTable from "material-react-table";
@@ -156,9 +156,12 @@ function UnstyledNewSubjectDialog (props) {
             }}
             initialState={{ showGlobalFilter: true }}
             columns={[
-                { header: 'Select a type', accessorKey: 'label' }
+                { accessorKey: 'label' }
               ]}
             data={ allowedTypes?.length ? allowedTypes : data }
+            renderTopToolbarCustomActions={() => {
+              return <Typography variant="h6" sx={{ paddingLeft: theme.spacing(2) }}>Select a type</Typography>;
+            }}
             muiTableHeadCellProps={{
               sx: {
                 fontSize: 'large',
@@ -277,9 +280,7 @@ function UnstyledSelectParentDialog (props) {
         changeType(json["rows"][0]);
       }
 
-      setData(json["rows"].map((row) => ({
-        hierarchy: getHierarchy(row, React.Fragment, ()=>({})),
-        ...row })));
+      setData(json["rows"].map((row) => ({ hierarchy: getHierarchy(row, React.Fragment, ()=>({})),...row })));
       setRowCount(json.totalrows);
 
       setIsLoading(false);
@@ -289,7 +290,8 @@ function UnstyledSelectParentDialog (props) {
   }, [
     globalFilter,
     pagination.pageIndex,
-    pagination.pageSize
+    pagination.pageSize,
+    getHierarchy
   ]);
 
   return(
