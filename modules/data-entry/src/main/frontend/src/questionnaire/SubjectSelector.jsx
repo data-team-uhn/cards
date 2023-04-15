@@ -89,6 +89,7 @@ function UnstyledNewSubjectDialog (props) {
     if (allowedTypes?.length === 1) {
       changeType(allowedTypes[0]);
     }
+    allowedTypes?.length && setRowCount(allowedTypes?.length);
   }, [allowedTypes]);
 
   useEffect(() => {
