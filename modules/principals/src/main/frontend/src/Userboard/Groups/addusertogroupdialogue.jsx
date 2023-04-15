@@ -38,7 +38,7 @@ class AddUserToGroupDialogue extends React.Component {
     handleAddUsers() {
         let formData = new FormData();
 
-        let selectedUsers = Object.keys(this.tableRef.current.getState().rowSelection);
+        let selectedUsers = Object.keys(this.tableRef.current?.getState().rowSelection);
         for (var i = 0; i < selectedUsers.length; ++i) {
             formData.append(':member', this.state.freeUsers[selectedUsers[i]].name);
         }
@@ -98,7 +98,6 @@ class AddUserToGroupDialogue extends React.Component {
                               enableColumnFilters={false}
                               enableSorting={false}
                               enableTopToolbar={false}
-                              enableToolbarInternalActions={false}
                               muiTableHeadCellProps={{
                                 sx: (theme) => ({
                                   background: theme.palette.grey['200'],

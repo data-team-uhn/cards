@@ -99,6 +99,8 @@ class UsersManager extends React.Component {
               enableColumnActions={false}
               enableColumnFilters={false}
               enableSorting={false}
+              enableToolbarInternalActions={false}
+              initialState={{ showGlobalFilter: true }}
               muiTableHeadCellProps={{
                 sx: (theme) => ({
                   background: theme.palette.grey['200'],

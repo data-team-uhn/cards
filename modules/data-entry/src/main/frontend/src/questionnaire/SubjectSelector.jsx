@@ -275,12 +275,9 @@ function UnstyledSelectParentDialog (props) {
       const response = await fetchWithReLogin(globalLoginDisplay, url);
       const json = await response.json();
 
-      // Auto-select if there's only one available SubjectType
-      if (json["rows"].length === 1) {
-        changeType(json["rows"][0]);
-      }
-
-      setData(json["rows"].map((row) => ({ hierarchy: getHierarchy(row, React.Fragment, ()=>({})),...row })));
+      setData(json["rows"].map((row) => ({
+	    hierarchy: getHierarchy(row, React.Fragment, ()=>({})),
+	    ...row })));
       setRowCount(json.totalrows);
 
       setIsLoading(false);
@@ -318,7 +315,7 @@ function UnstyledSelectParentDialog (props) {
               }}
               initialState={{ showGlobalFilter: true }}
               columns={[
-                  { header: 'Subject', accessorKey: 'label' }
+                  { accessorKey: 'hierarchy' }
               ]}
               data={data}
               muiTableBodyRowProps={({ row }) => ({

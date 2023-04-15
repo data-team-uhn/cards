@@ -69,7 +69,7 @@ class GroupsManager extends React.Component {
   handleRemoveUsers(currentGroupName, groupUsers) {
     let formData = new FormData();
 
-    let selectedUsers = Object.keys(this.tableRef.current.getState().rowSelection);
+    let selectedUsers = Object.keys(this.tableRef.current?.getState().rowSelection);
     for (var i = 0; i < selectedUsers.length; ++i) {
       formData.append(':member@Delete', groupUsers[selectedUsers[i]].name);
     }
@@ -90,7 +90,7 @@ class GroupsManager extends React.Component {
 
   handleReload (doClear) {
     doClear && this.clearSelectedGroup();
-    this.tableRef.current.resetRowSelection();
+    this.tableRef.current?.resetRowSelection();
     this.props.reload();
   }
 
@@ -122,6 +122,8 @@ class GroupsManager extends React.Component {
             enableColumnActions={false}
             enableColumnFilters={false}
             enableSorting={false}
+            enableToolbarInternalActions={false}
+            initialState={{ showGlobalFilter: true }}
             muiTableHeadCellProps={{
               sx: (theme) => ({
                 background: theme.palette.grey['200'],
@@ -129,6 +131,7 @@ class GroupsManager extends React.Component {
             }}
             displayColumnDefOptions={{
               'mrt-row-actions': {
+                size: 10,
                 muiTableHeadCellProps: {align: 'right'},
                 muiTableBodyCellProps: ({ cell }) => ({
                   sx: {
@@ -144,9 +147,9 @@ class GroupsManager extends React.Component {
               { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
                 Cell: ({ renderedCellValue, row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar>)
               },
-              { header: 'Name', accessorKey: 'name' },
-              { header: 'Members', accessorKey: 'members' },
-              { header: 'Declared Members', accessorKey: 'declaredMembers' },
+              { header: 'Name', accessorKey: 'name', size: 300, },
+              { header: 'Members', accessorKey: 'members', size: 10, },
+              { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
             ]}
             data={this.props.groups}
             enableRowActions
@@ -168,7 +171,6 @@ class GroupsManager extends React.Component {
                     <Card className={classes.cardRoot}>
                       <CardContent>
                         { groupUsers.length > 0 &&
-                          <div>
                             <MaterialReactTable
                               tableInstanceRef={this.tableRef}
                               enableColumnActions={false}
@@ -185,6 +187,11 @@ class GroupsManager extends React.Component {
                               enableRowSelection
                               enableSelectAll={false}
                               muiSelectCheckboxProps={{ color: 'primary' }}
+                              displayColumnDefOptions={{
+                                'mrt-row-select': {
+                                  size: 7,
+                                },
+                              }}
                               muiTableBodyRowProps={({ row }) => ({
                                 onClick: row.getToggleSelectedHandler(),
                                 sx: {
@@ -198,7 +205,7 @@ class GroupsManager extends React.Component {
                                   { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
                                     Cell: ({ renderedCellValue, row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
                                   },
-                                  { header: 'User Name', accessorKey: 'name' },
+                                  { header: 'User Name', accessorKey: 'name', size: 300, },
                                   { header: 'Admin', accessorKey: 'isAdmin', size: 10,
                                     Cell: ({ renderedCellValue, row }) => (row.original.isAdmin ? <CheckIcon /> : "")
                                   },
@@ -209,7 +216,6 @@ class GroupsManager extends React.Component {
                               }]}
                               data={groupUsers}
                               />
-                          </div>
                         }
                         <Grid container className={classes.cardActions}>
                           <Button

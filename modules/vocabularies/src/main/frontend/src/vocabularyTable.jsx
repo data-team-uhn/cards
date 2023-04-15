@@ -65,7 +65,6 @@ export default function VocabularyTable(props) {
             enableColumnActions={false}
             enableSorting={false}
             enableTopToolbar={false}
-            enableToolbarInternalActions={false}
             state={{ isLoading: loading }}
             initialState={{ showColumnFilters: true }}
             columns={[

@@ -917,16 +917,15 @@ export default function VariantFilesContainer() {
           enableColumnFilters={false}
           enableSorting={false}
           enableTopToolbar={false}
-          enableToolbarInternalActions={false}
           muiTableBodyRowProps={({ row }) => ({
             sx: {
               verticalAlign: 'top',
             },
           })}
           columns={[
-            { header: 'Created',
+            { header: 'Created', size: 10,
               muiTableBodyCellProps: ({ cell }) => ({
-	            sx: {
+                sx: {
                   paddingLeft: 0,
                   fontWeight: "bold",
                   width: '1%',
@@ -939,31 +938,38 @@ export default function VariantFilesContainer() {
                                 </Link> },
             { header: 'Uploaded By',
               muiTableBodyCellProps: ({ cell }) => ({
-	            sx: {
+                sx: {
                   width: '50%',
                   whiteSpace: 'pre-wrap',
                   paddingBottom: "8px",
                 }
               }),
-              Cell: ({ renderedCellValue, row }) => row.original["jcr:createdBy"] },
-            { header: 'Actions',
-              muiTableBodyCellProps: ({ cell }) => ({
-	            sx: {
-                  padding: '0',
-                  width: '20px',
-                  textAlign: 'end'
-                }
-              }),
-              enableSorting: false,
-              Cell: ({ renderedCellValue, row }) =>
-                                <Tooltip title={"Download"}>
-                                  <IconButton size="large">
-                                    <Link underline="none" color="inherit" href={row.original["@path"]} download>
-                                      <GetApp />
-                                    </Link>
-                                  </IconButton>
-                                </Tooltip> },
+              Cell: ({ renderedCellValue, row }) => row.original["jcr:createdBy"] }
           ]}
+           displayColumnDefOptions={{
+            'mrt-row-actions': {
+              header: 'Actions',
+              size: 10,
+              muiTableHeadCellProps: {align: 'right'},
+              muiTableBodyCellProps: ({ cell }) => ({
+                sx: {
+                  padding: '0',
+                  textAlign: 'right'
+                },
+              }),
+            },
+          }}
+          enableRowActions
+          positionActionsColumn="last"
+          renderRowActions={({ row }) => (
+            <Tooltip title={"Download"}>
+              <IconButton size="large">
+                <Link underline="none" color="inherit" href={row.original["@path"]} download>
+                  <GetApp />
+                </Link>
+              </IconButton>
+            </Tooltip>
+          )}
         />
       </DialogContent>
     </Dialog>
