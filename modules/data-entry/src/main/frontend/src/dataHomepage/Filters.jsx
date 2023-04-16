@@ -510,6 +510,7 @@ function Filters(props) {
                   {/* Select the field to filter */}
                   <Grid item xs={12} sm={6}>
                     <VariableAutocomplete
+                      disableClearable
                       selectedValue={filterDatum.name}
                       onValueChanged={(value) => {
                         handleChangeFilter(index, value);
