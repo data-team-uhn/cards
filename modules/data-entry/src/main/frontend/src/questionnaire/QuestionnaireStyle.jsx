@@ -501,6 +501,9 @@ const questionnaireStyle = theme => ({
     newSubjectInput: {
         padding: theme.spacing(3, 3, 5),
     },
+    subjectFilter: {
+      marginTop: 0,
+    },
     invalidSubjectText: {
         fontStyle: "italic"
     },

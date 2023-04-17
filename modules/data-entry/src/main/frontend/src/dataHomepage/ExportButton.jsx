@@ -21,11 +21,10 @@ import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
 
-import { Avatar, Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Icon, Grid, Radio, RadioGroup,
-  FormControlLabel, TextField, Typography, Button, IconButton, Tooltip, InputLabel, Select, ListItemText, MenuItem } from "@mui/material";
-
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Grid, Radio, RadioGroup,
+  FormControlLabel, TextField, Typography, Button, IconButton, Tooltip } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/FileDownload';
-import CloseIcon from '@mui/icons-material/Close';
 
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -33,60 +32,33 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ResponsiveDialog from "../components/ResponsiveDialog";
+import QuestionnaireAutocomplete from "../questionnaire/QuestionnaireAutocomplete";
+import { findQuestionnaireEntries } from "../questionnaire/QuestionnaireUtilities";
 
 const useStyles = makeStyles(theme => ({
   container: {
-    paddingTop: theme.spacing(.5),
+    marginBottom: theme.spacing(1.5),
     "& + .MuiDivider-root" : {
       margin: theme.spacing(3, -3),
     },
   },
-  startAligned: {
+  withMultiSelect: {
     "& > .MuiGrid-item:first-child" : {
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(1),
     },
   },
   withSelect: {
-    marginBottom: theme.spacing(2),
     "& > .MuiGrid-item:first-child" : {
-      marginTop: theme.spacing(2),
+      marginTop: theme.spacing(.5),
     },
-  },
-  entryActionIcon: {
-    float: "right",
-    marginRight: theme.spacing(1),
-  },
-  variableDropdown: {
-    "& > .MuiInputLabel-root" : {
-      maxWidth: `calc(100% - ${theme.spacing(3)})`,
-    },
-  },
-  variableOption: {
-    whiteSpace: "normal",
-  },
-  valueEntry: {
-    border: "1px solid " + theme.palette.divider,
-    borderRadius: theme.spacing(.5, 3, 3, .5),
-    margin: theme.spacing(1, 0),
-    "& > .MuiGrid-item" : {
-      display: "flex",
-      paddingLeft: theme.spacing(1.5),
-      alignItems: "center",
-    },
-  },
-  valueActions: {
-    justifyContent: "flex-end",
-    paddingTop: "0!important"
-  },
-  avatar: {
-    marginRight: theme.spacing(1),
-    marginTop:  theme.spacing(1),
-    alignSelf: "start",
-    zoom: "75%"
   },
   dateRange: {
     alignItems: "baseline",
-    "& .MuiInputLabel-shrink": {
+    marginBottom: theme.spacing(-1.5),
+    "& .MuiFormHelperText-root.Mui-focused:not(.Mui-error)" : {
+      color: theme.palette.primary.main,
+    },
+    "& .MuiFormHelperText-root:not(.Mui-focused, .Mui-error)" : {
       visibility: "hidden",
     },
     "& + .MuiTypography-root": {
@@ -95,27 +67,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-let findQuestionsOrSections = (json, result = []) =>  {
-  Object.entries(json || {}).forEach(([k,e]) => {
-    if (e?.['jcr:primaryType'] == "cards:Question" || e?.['jcr:primaryType'] == "cards:Section") {
-      result.push({name: e['@name'], text: e['text'] || e['label'], path: e['@path'], type: e['jcr:primaryType'].replace("cards:", '')});
-      e?.['jcr:primaryType'] == "cards:Section" && findQuestionsOrSections(e, result);
-    } else if (typeof(e) == 'object') {
-      findQuestionsOrSections(e, result);
-    }
-  })
-  return result;
-}
-
-let entitySpecs = {
-  Question: {
-    avatarColor: deepPurple[700]
-  },
-  Section: {
-    avatar: "view_stream",
-    avatarColor: orange[800]
-  }
-}
+const filterUserOptions =  createFilterOptions({
+  stringify: (option) => `${option.name} ${option.principalName}`
+});
 
 /**
  * A component that renders an icon or button to open the export dialog that generates an export URL for an entry.
@@ -126,11 +80,13 @@ function ExportButton(props) {
   const DEFAULTS = {
     fileFormat : ".csv",
     hasHeaderLabels: true,
-    hasHeaderIndentifiers: false,
+    hasHeaderIdentifiers: false,
     hasAnswerLabels: false,
     columnSelectionMode: "exclude",
     statusSelectionMode: "status",
   }
+
+  const DATE_FORMAT = "yyyy/MM/dd hh:mm a";
 
   const [ open, setOpen ] = useState(false);
   // List of questions and sections to display in dropdown select to exclude/include
@@ -152,11 +108,10 @@ function ExportButton(props) {
   const [ columnSelectionMode, setColumnSelectionMode ] = useState(DEFAULTS.columnSelectionMode);
   // List of question or section ids to Include or Exclude
   const [ selectedEntityIds, setSelectedEntityIds ] = useState([]);
-  const [ tempValue, setTempValue ] = useState(''); // Holds new, non-selected values
 
   const [ users, setUsers ] = useState();
-  const [ createdBy, setCreatedBy ] = useState('');
-  const [ modifiedBy, setModifiedBy ] = useState('');
+  const [ createdBy, setCreatedBy ] = useState(null);
+  const [ modifiedBy, setModifiedBy ] = useState(null);
 
   const [ createdAfter, setCreatedAfter ] = useState(null);
   const [ createdBefore, setCreatedBefore ] = useState(null);
@@ -167,20 +122,20 @@ function ExportButton(props) {
 
   const statuses = [ "DRAFT", "INCOMPLETE", "INVALID", "SUBMITTED" ];
   const [ statusSelectionMode, setStatusSelectionMode ] = useState(DEFAULTS.statusSelectionMode);
-  const [ status, setStatus ] = useState('');
+  const [ status, setStatus ] = useState(null);
 
   const classes = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
     if (entityData && !entities) {
-      setEntities(findQuestionsOrSections(entityData));
+      setEntities(findQuestionnaireEntries(entityData));
     }
     if (!entityData && entryPath && !entities && open) {
       fetchWithReLogin(globalLoginDisplay, `${entryPath}.deep.json`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
-          setEntities(findQuestionsOrSections(json));
+          setEntities(findQuestionnaireEntries(json));
         });
     }
   }, [entityData, open]);
@@ -258,49 +213,10 @@ function ExportButton(props) {
     window.open(path, '_blank');
   }
 
-  let handleEntitySelected = (event) => {
-    if (event.target.value) {
-      let newValue = event.target.value.trim();
-      setSelectedEntityIds(oldValue => {
-        var newValues = oldValue.slice();
-        newValues.push(newValue);
-        return newValues;
-      });
-    }
-    tempValue && setTempValue('');
-
-    // Have to manually invoke submit with timeout to let re-rendering of adding new selected entites complete
-    // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
-    // Issue details: https://github.com/facebook/react/issues/4210
-    if (event?.relatedTarget?.type == "submit") {
-      const timer = setTimeout(() => {
-        saveButtonRef?.current?.click();
-      }, 500);
-    }
-  }
-
-  let unselectEntity = (index) => {
-    setSelectedEntityIds(oldValues => {
-      let newValues = oldValues.slice();
-      newValues.splice(index, 1);
-      return newValues;
-    });
-  }
-
-  let getAvatar = (type) => {
-    return (<Avatar
-                style={{backgroundColor: entitySpecs[type].avatarColor || "black"}}
-                className={classes.avatar}
-            >
-                { entitySpecs[type].avatar ? <Icon>{entitySpecs[type].avatar}</Icon> : type?.charAt(0) }
-            </Avatar>);
-  }
-
   let getDatePicker = (value, setter, rangeIsInvalid) => {
     return (<LocalizationProvider dateAdapter={AdapterLuxon}>
               <DateTimePicker
-                label={!value ? "Any date" : "Select date"}
-                inputFormat={"yyyy/MM/dd hh:mm a"}
+                inputFormat={DATE_FORMAT}
                 value={value}
                 onChange={(value) => {
                   setter(value);
@@ -309,8 +225,8 @@ function ExportButton(props) {
                   <TextField
                     variant="standard"
                     {...params}
-                    error={rangeIsInvalid}
-                    helperText=" "
+                    error={rangeIsInvalid || params.error}
+                    helperText={rangeIsInvalid ? " " : DATE_FORMAT}
                     InputProps={{
                       ...params.InputProps
                     }}
@@ -345,19 +261,22 @@ function ExportButton(props) {
             <Grid item xs={4}><Typography variant="subtitle2">{label}</Typography></Grid>
             <Grid item xs={8}>
                 <FormControl variant="standard" fullWidth>
-                  <InputLabel id="label">Select user</InputLabel>
-                  <Select
-                    variant="standard"
-                    labelId="label"
-                    value={value}
-                    onChange={(event) => setter(event.target.value)}
-                  >
-                    { users?.map(v =>
-                            <MenuItem value={v.name} key={`option-${v.principalName}`}>
-                              {v.principalName}
-                            </MenuItem>)
+                  <Autocomplete
+                    value={value && users.find(item => item.name == value) || null}
+                    filterOptions={filterUserOptions}
+                    onChange={(event, value) => {
+                      setter(value?.name);
+                    }}
+                    getOptionLabel={(option) => option?.name}
+                    options={users || []}
+                    renderInput={(params) =>
+                      <TextField
+                        variant="standard"
+                        placeholder="Select user"
+                        {...params}
+                      />
                     }
-                  </Select>
+                  />
                 </FormControl>
             </Grid>
           </Grid>);
@@ -445,49 +364,16 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.startAligned}>
+          <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.withMultiSelect}>
             <Grid item xs={4}>
               <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
             </Grid>
             <Grid item xs={8}>
-              {/* List the entered values */}
-              { entities?.filter(v => selectedEntityIds.includes(v.path)).map((value, index) =>
-                <Grid container
-                  key={`${value.name}-${index}`}
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="stretch"
-                  className={classes.valueEntry}
-                >
-                  <Grid item xs={9}>
-                    { getAvatar(value.type) }
-                    <ListItemText primary={value.name} secondary={value.text} />
-                  </Grid>
-                  <Grid item xs={3} className={classes.valueActions}>
-                    <Tooltip title="Delete entry">
-                      <IconButton onClick={() => unselectEntity(selectedEntityIds.indexOf(value.path))}><CloseIcon/></IconButton>
-                    </Tooltip>
-                  </Grid>
-                </Grid>
-              )}
-              <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
-                <InputLabel id="label">Select questions/sections from this questionnaire</InputLabel>
-                <Select
-                  variant="standard"
-                  labelId="label"
-                  value={tempValue}
-                  label="Select questions/sections from this questionnaire"
-                  onChange={handleEntitySelected}
-                >
-                  { entities?.filter(v => !selectedEntityIds.includes(v.path))
-                      .map(v =>
-                        <MenuItem value={v.path} key={`option-${v.name}`} className={classes.variableOption}>
-                          { getAvatar(v.type) }
-                          <ListItemText primary={v.name} secondary={v.text} />
-                        </MenuItem>)
-                  }
-                </Select>
-              </FormControl>
+              <QuestionnaireAutocomplete
+                entities={entities || []}
+                selection={selectedEntityIds}
+                onSelectionChanged={setSelectedEntityIds}
+              />
             </Grid>
           </Grid>
 
@@ -534,16 +420,18 @@ function ExportButton(props) {
             </Grid>
             <Grid item xs={8}>
               <FormControl variant="standard" fullWidth>
-                <InputLabel id="status">Select a status</InputLabel>
-                <Select
-                  variant="standard"
-                  labelId="status"
-                  value={status}
-                  label="Select a status flag"
-                  onChange={(event) => setStatus(event.target.value)}
-                >
-                  { statuses.map(v => <MenuItem value={v} key={v}>{v}</MenuItem>) }
-                </Select>
+                <Autocomplete
+                    value={status}
+                    onChange={(event, value) => { setStatus(value); }}
+                    options={statuses || []}
+                    renderInput={(params) =>
+                      <TextField
+                        variant="standard"
+                        placeholder="Select a status flag"
+                        {...params}
+                      />
+                    }
+                />
               </FormControl>
             </Grid>
           </Grid>

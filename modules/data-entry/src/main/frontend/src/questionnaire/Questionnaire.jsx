@@ -52,21 +52,9 @@ import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard"
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
 import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
+import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
 
-let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
-
-export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
-
-let findQuestions = (json, result = []) =>  {
-  Object.entries(json || {}).forEach(([k,e]) => {
-    if (e?.['jcr:primaryType'] == "cards:Question") {
-      result.push({id: e['jcr:uuid'], name: e['@name'], text: e['text']});
-    } else if (typeof(e) == 'object') {
-      findQuestions(e, result);
-    }
-  })
-  return result;
-}
+export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -343,12 +331,12 @@ let QuestionnaireItemSet = (props) => {
         EntryType => <Grid item key={key}>
                        <EntryType
                          data={value}
-                         model={typeModels?.[_stripCardsNamespace(value['jcr:primaryType'])]}
+                         model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
                          onActionDone={onActionDone}
                          classes={classes}
                        />
                      </Grid>
-        )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
+        )(eval(stripCardsNamespace(value['jcr:primaryType'])))
       )
     }
     </>
@@ -389,7 +377,7 @@ let QuestionnaireContents = (props) => {
 
   useEffect(() => {
     // Load initial data
-    changeQuestionnaireContext(findQuestions(data));
+    changeQuestionnaireContext(findQuestionnaireEntries(data, ["cards:Question"]));
     // Clear context when unmounting component
     return (() => changeQuestionnaireContext([]));
   }, []);

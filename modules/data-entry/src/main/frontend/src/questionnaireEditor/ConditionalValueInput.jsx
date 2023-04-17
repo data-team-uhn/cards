@@ -19,58 +19,31 @@
 
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+
 import {
-  Grid,
-  IconButton,
-  FormControl,
-  InputLabel,
+  Autocomplete,
   ListItemText,
-  MenuItem,
-  Select,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Tooltip,
-  Typography,
 } from "@mui/material";
 
 import { makeStyles } from '@mui/styles';
 
-import CloseIcon from '@mui/icons-material/Close';
-
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
+import QuestionnaireAutocomplete from "../questionnaire/QuestionnaireAutocomplete";
 import { useQuestionnaireReaderContext } from "../questionnaire/QuestionnaireContext";
 
 const useStyles = makeStyles(theme => ({
   referenceToggle: {
+    marginBottom: theme.spacing(2),
     "& .MuiToggleButton-root" : {
       paddinTop: theme.spacing(.5),
       paddingBottom: theme.spacing(0.5),
       textTransform: "none",
     },
-  },
-  variableDropdown: {
-    "& > .MuiInputLabel-root" : {
-      maxWidth: `calc(100% - ${theme.spacing(3)})`,
-    },
-  },
-  variableOption: {
-    whiteSpace: "normal",
-  },
-  valueEntry: {
-    border: "1px solid " + theme.palette.divider,
-    borderRadius: theme.spacing(.5, 3, 3, .5),
-    margin: theme.spacing(1, 0),
-    "& > .MuiGrid-item" : {
-      display: "flex",
-      paddingLeft: theme.spacing(1.5),
-      alignItems: "center",
-    },
-  },
-  valueActions: {
-    justifyContent: "flex-end",
   },
 }));
 
@@ -79,96 +52,19 @@ let ConditionalValueInput = (props) => {
 
   let [ values, setValues ] = useState(data[objectKey]?.value || []);
   let [ isReference, setReference ] = useState(data[objectKey] ? data[objectKey].isReference : (objectKey == 'operandA'));
-  let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed values
-  let [ isDuplicate, setDuplicate ] = useState(false);
-  let [ variables, setVariables ] = useState();
-  let [ error, setError ] = useState();
+  let [ valueExists, setValueExists ] = useState();
 
-  let questions = useQuestionnaireReaderContext();
+  let variables = useQuestionnaireReaderContext();
 
   let path = (data?.['@path'] || props.path) + `/${objectKey}`;
 
   const classes = useStyles();
 
-  let handleValue = (inputValue) => {
-    if (inputValue && !isDuplicate) {
-      let newValue = (inputValue || '').trim();
-      setValues(oldValue => {
-        var newValues = oldValue.slice();
-        newValues.push(newValue);
-        return newValues;
-      });
-    }
-    tempValue && setTempValue('');
-    setDuplicate(false);
-
-    // Have to manually invoke submit with timeout to let re-rendering of adding new answer option complete
-    // Cause: Calling onBlur and mutating state can cause onClick for form submit to not fire
-    // Issue details: https://github.com/facebook/react/issues/4210
-    if (event?.relatedTarget?.type == "submit") {
-      const timer = setTimeout(() => {
-        saveButtonRef?.current?.click();
-      }, 500);
-    }
+  const checkValueExists = (inputValue) => {
+    let isDuplicate = !!(values?.some(v => v == inputValue?.trim()));
+    setValueExists(isDuplicate);
+    return isDuplicate;
   }
-
-  let deleteValue = (index) => {
-    setValues(oldValues => {
-      let newValues = oldValues.slice();
-      newValues.splice(index, 1);
-      return newValues;
-    });
-  }
-
-  let validateEntry = (inputValue) => {
-    if (inputValue) {
-      let newValue = (inputValue || '').trim();
-      let isDuplicateValue = values?.some(v => v == newValue);
-      setDuplicate(isDuplicateValue);
-      return isDuplicateValue;
-    }
-    return false;
-  }
-
-  let handleChange = (event) => {
-    setTempValue(event.target.value);
-    validateEntry(event.target.value);
-  }
-
-  let handleValueSelected = (event) => {
-    handleValue(event.target.value);
-  }
-
-  useEffect(() => {
-    if (questions && !variables) {
-      setVariables(questions);
-    }
-  }, [questions]);
-
-  // Input for adding a new value
-  let textField = (label, params) => (
-    <TextField
-        {...params}
-        variant="standard"
-        fullWidth
-        value={tempValue}
-        error={isDuplicate}
-        label={label}
-        helperText={isDuplicate ? 'Duplicated entry' : 'Press ENTER to add a new line'}
-        onChange={handleChange}
-        onBlur={handleValueSelected}
-        inputProps={Object.assign({
-          onKeyDown: (event) => {
-            if (event.key == 'Enter') {
-              // We need to stop the event so that it doesn't trigger a form submission
-              event.preventDefault();
-              event.stopPropagation();
-              handleValue(event.target.value);
-            }
-          }
-        })}
-      />
-  );
 
   return (
     <EditorInput name={objectKey} hint={hint}>
@@ -184,67 +80,63 @@ let ConditionalValueInput = (props) => {
         <ToggleButton value="false">Value</ToggleButton>
       </ToggleButtonGroup>
 
-      {/* List the entered values */}
-      { values?.map((value, index) =>
-        <Grid container
-          key={`${value}-${index}`}
-          direction="row"
-          justifyContent="space-between"
-          alignItems="stretch"
-          className={classes.valueEntry}
-        >
-          <Grid item xs={9}>
-            <ListItemText primary={value} secondary={isReference && variables?.find(v => v.name == value)?.text} />
-          </Grid>
-          <Grid item xs={3} className={classes.valueActions}>
-            <Tooltip title="Delete entry">
-              <IconButton onClick={() => deleteValue(index)}><CloseIcon/></IconButton>
-            </Tooltip>
-          </Grid>
-        </Grid>
-      )}
-
-      {/* Display a dropdown for variable names or a simple input for values */}
-      { isReference && !error ?
-        <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
-          <InputLabel id={`label-${path}`}>Select the id of a question from this questionnaire</InputLabel>
-          <Select
-            variant="standard"
-            labelId={`label-${path}`}
-            id={path}
-            value={tempValue}
-            label="Select the id of a question from this questionnaire"
-            onChange={handleValueSelected}
-          >
-            { variables?.filter(v => !values.includes(v.name))
-                .map(v => <MenuItem value={v.name} key={`option-${v.name}`} className={classes.variableOption}>
-                <ListItemText primary={v.name} secondary={v.text} />
-              </MenuItem>)
-            }
-          </Select>
-        </FormControl>
+      { isReference && variables ?
+        <QuestionnaireAutocomplete
+          entities={variables}
+          selection={values}
+          onSelectionChanged={setValues}
+          getOptionValue={option => option.name}
+        />
         :
-        ( isReference && error ?
-          <>
-            <Typography color="error">{error}</Typography>
-            { textField("Enter the id of a question from this questionnaire") }
-          </>
-          :
-          textField("Enter a value")
-        )
+        <Autocomplete
+          multiple
+          freeSolo
+          autoSelect
+          options={[]}
+          value={values}
+          onChange={(event, value) => setValues(value)}
+          onInputChange={(event, value) => checkValueExists(value)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="standard"
+              placeholder="Enter a value"
+              error={valueExists}
+              helperText={valueExists ? "This value has already been added" : "Press ENTER to add the value"}
+              inputProps={{
+                ...params.inputProps,
+                onKeyDown: (event) => {
+                  if (event.key == 'Enter') {
+                    if (checkValueExists(event.target.value)) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                    }
+                  }
+                },
+                onBlur: (event) => {
+                  if (checkValueExists(event.target.value)) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }
+                  params.inputProps?.onBlur?.(event);
+                }
+              }}
+            />
+          )}
+        />
       }
 
       {/* Metadata to sent to the server */}
-      { values ?
+      { !!(values?.length) ?
         <>
           <input type='hidden' name={`${path}/jcr:primaryType`} value={'cards:ConditionalValue'} />
-          { values.map(v => <input type='hidden' key={v} name={`${path}/value`} value={v} />)}
+          { values.map(v => <input type='hidden' key={v} name={`${path}/value`} value={v} />) }
           <input type="hidden" name={`${path}/value@TypeHint`} value="String[]" />
           <input type="hidden" name={`${path}/isReference`} value={isReference || false} />
           <input type="hidden" name={`${path}/isReference@TypeHint`} value="Boolean" />
         </>
         :
-        <input type='hidden' name={`${path}@Delete`} value="0" />
+        <input type='hidden' name={`${path}/value@Delete`} value="0" />
       }
     </EditorInput>
   )
@@ -267,30 +159,23 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
 // View mode component
 let ConditionalValue = (props) => {
   let { objectKey, data } = props;
-  let [ variables, setVariables ] = useState();
 
   let values = data[objectKey]?.value || [];
 
   if (values.length == 0) {
-	return null;
+    return null;
   }
 
   let isReference = data?.[objectKey]?.isReference;
-  let questions = useQuestionnaireReaderContext();
-
-  useEffect(() => {
-    if (isReference && questions && !variables) {
-      setVariables(questions);
-    }
-  }, [questions]);
+  let variables = useQuestionnaireReaderContext();
 
   return (
     values.map(value => (
       <ListItemText
         style={{marginTop: 0}}
         key={value}
-        primary={value}
-        secondary={isReference && variables?.find(v => v.name == value)?.text}
+        primary={isReference ? variables?.find(v => v.name == value)?.text : value}
+        secondary={isReference && value}
       />
     ))
   );
