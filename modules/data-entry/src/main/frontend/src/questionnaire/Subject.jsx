@@ -490,62 +490,81 @@ function SubjectMemberInternal (props) {
                     display: 'none',
                   },
                 }}
+                layoutMode="grid"
+                muiTableHeadCellProps={{
+                    sx: {
+                      flex: '0 0 auto',
+                    },
+                  }}
+                muiTableBodyCellProps={{
+                    sx: {
+                      flex: '0 0 auto',
+                    },
+                }}
                 renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
+                defaultColumn={{
+                  minSize: 20,
+                  maxSize: 9001
+                }}
                 displayColumnDefOptions={{
                   'mrt-row-actions': {
                     id: 'Actions',
+                    size: 80,
                     muiTableBodyCellProps: ({ cell }) => ({
                       sx: {
                         padding: '0',
                         whiteSpace: 'nowrap',
-                        textAlign: 'right'
+                        textAlign: 'right',
+                        flex: '0 0 auto',
                       },
                     }),
                   },
                   'mrt-row-expand': {
-                    size: 4,
+                    size: 40,
+                    minSize: 40,
+                    maxSize: 40,
                     muiTableBodyCellProps: ({ cell }) => ({
                       sx: {
-                        paddingRight: '0',
+                        paddingRight: '2px',
+                        paddingLeft: '0',
+                        flex: '0 0 auto',
+                        alignItems: 'start'
                       },
                     }),
                   },
                 }}
                 columns={[
-                  { id: 'Avatar', size: 4,
-                    muiTableBodyCellProps: ({ cell }) => ({
-                      sx: {
-                        paddingLeft: 0,
-                        paddingRight: 0,
-                        paddingTop: "10px",
-                      },
-                    }),
-                    Cell: ({ renderedCellValue, row }) => (<Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>),
-                  },
                   { id: 'Questionnaire',
+                    size: 400,
                     muiTableBodyCellProps: ({ cell }) => ({
-                      sx: {
+                      sx: (theme) => ({
                         paddingLeft: 0,
                         fontWeight: "bold",
                         paddingTop: "10px",
                         whiteSpace: 'nowrap',
-                      },
+                      }),
                     }),
                     Cell: ({ renderedCellValue, row }) => (<>
-                                         <Link to={"/content.html" + row.original["@path"]} underline="hover">
-                                           {questionnaireTitle} {subjectGroups[questionnaireTitle].length > 1 ? `#${row.original.tableData.id + 1}` : ''}
-                                         </Link>
-                                         <Typography variant="caption" component="div" color="textSecondary">
-                                           Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
-                                         </Typography>
-                                         <Typography variant="caption" component="div" color="textSecondary">
-                                           Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
-                                         </Typography>
-                                       </>) },
+                                   <Grid container direction="row" spacing={1} justifyContent="flex-start">
+                                     <Grid item xs={false}>
+                                       <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
+                                     </Grid>
+                                     <Grid item xs={false}>
+                                       <Link to={"/content.html" + row.original["@path"]} underline="hover">
+                                         {questionnaireTitle} {subjectGroups[questionnaireTitle].length > 1 ? `#${row.original.tableData.id + 1}` : ''}
+                                       </Link>
+                                       <Typography variant="caption" component="div" color="textSecondary">
+                                         Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                                       </Typography>
+                                       <Typography variant="caption" component="div" color="textSecondary">
+                                         Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                                       </Typography>
+                                     </Grid>
+                                   </Grid>
+                                 </>) },
                   { id: 'Status',
                     muiTableBodyCellProps: ({ cell }) => ({
                       sx: {
-                        width: '99%',
                         whiteSpace: 'nowrap',
                         paddingTop: "10px",
                         paddingBottom: "8px",

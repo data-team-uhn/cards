@@ -238,6 +238,7 @@ const questionnaireStyle = theme => ({
     subjectFormAvatar : {
         backgroundColor: theme.palette.primary.main,
         marginTop: theme.spacing(-.5),
+        marginRight: theme.spacing(1.5),
         zoom: .75,
     },
     childSubjectHeader: {
