@@ -551,7 +551,7 @@ function SubjectMemberInternal (props) {
                                      </Grid>
                                      <Grid item xs={false}>
                                        <Link to={"/content.html" + row.original["@path"]} underline="hover">
-                                         {questionnaireTitle} {subjectGroups[questionnaireTitle].length > 1 ? `#${row.original.tableData.id + 1}` : ''}
+                                         {questionnaireTitle}
                                        </Link>
                                        <Typography variant="caption" component="div" color="textSecondary">
                                          Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
