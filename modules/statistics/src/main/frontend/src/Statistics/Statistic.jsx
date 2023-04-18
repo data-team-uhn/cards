@@ -46,7 +46,13 @@ function Statistic(props) {
   const { classes, theme, definition, disableClick } = props;
   // Colours to be used before relying on the google palette
   const DEFAULT_PALETTE = [
-    theme.palette.primary.main,
+    "#f94900",
+    "#ff9900",
+    "#36b37e",
+    "#00b8d9",
+    "#3c78d8",
+    "#974efd",
+    "#9e4973",
   ];
 
   // Transform our input data from the statistics servlet into something recharts can understand
