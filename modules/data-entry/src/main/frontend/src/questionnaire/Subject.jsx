@@ -537,14 +537,14 @@ function SubjectMemberInternal (props) {
                   { id: 'Questionnaire',
                     size: 400,
                     muiTableBodyCellProps: ({ cell }) => ({
-                      sx: (theme) => ({
+                      sx: {
                         paddingLeft: 0,
                         fontWeight: "bold",
                         paddingTop: "10px",
                         whiteSpace: 'nowrap',
-                      }),
+                      },
                     }),
-                    Cell: ({ renderedCellValue, row }) => (<>
+                    Cell: ({ renderedCellValue, row }) => (
                                    <Grid container direction="row" spacing={1} justifyContent="flex-start">
                                      <Grid item xs={false}>
                                        <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
@@ -561,7 +561,7 @@ function SubjectMemberInternal (props) {
                                        </Typography>
                                      </Grid>
                                    </Grid>
-                                 </>) },
+                                 ) },
                   { id: 'Status',
                     muiTableBodyCellProps: ({ cell }) => ({
                       sx: {
@@ -586,7 +586,6 @@ function SubjectMemberInternal (props) {
                 positionActionsColumn="last"
                 renderRowActions={({ row }) => (
                     <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8', float: 'right' }}>
-                    <>
                       <EditButton
                         entryPath={row.original["@path"]}
                         entryType="Form"
@@ -598,7 +597,6 @@ function SubjectMemberInternal (props) {
                         warning={row.original ? row.original["@referenced"] : false}
                         onComplete={fetchTableData}
                       />
-                    </>
                     </Box>
                 )}
               />
