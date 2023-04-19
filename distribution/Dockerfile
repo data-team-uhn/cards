@@ -15,11 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Start from a small JRE8 base image
-FROM openjdk:8-jre-alpine
+# Start from a small Alpine Linux base image
+FROM alpine:3.17
 
-# Install utilities for patching the JAR file, if such is necessary
+# Install Java JRE and the utilities for patching the JAR file, if such is necessary
 RUN apk add \
+  openjdk11-jre \
   unzip \
   zip \
   tzdata
