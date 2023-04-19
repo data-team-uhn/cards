@@ -76,8 +76,8 @@
     org.apache.pdfbox/pdfbox/2.0.12
     org.apache.pdfbox/fontbox/2.0.12
     org.apache.pdfbox/jempbox/1.8.16
-    org.apache.tika/tika-core/1.19.1
-    org.apache.tika/tika-parsers/1.19.1
+    org.apache.tika/tika-core/1.28.5
+    org.apache.tika/tika-parsers/1.28.5
 
 # Extra JCR features
 [artifacts startLevel=15]
