@@ -46,10 +46,7 @@ import org.osgi.service.component.annotations.Component;
  * </p>
  * <ul>
  * <li><code>questionnaire</code>: a path to a questionnaire whose filterable options to retrieve; if absent, retrieve all filterable options from all questionnaires</li>
- * <li><code>include</code>: a parameter include that allows to specify which kinds of filters to retrieve</li>
- * <li>by default both metadata filters and question filters are retrieved</li>
- * <li><code>include=metadata</code> returns only metadata filters</li>
- * <li><code>include=questions</code> returns only question filters</li>
+ * <li><code>include</code>: a parameter include that allows to specify which kinds of filters to retrieve. By default, both metadata filters and question filters are retrieved; <code>include=metadata</code> returns only metadata filters, <code>include=questions</code> returns only question filters</li>
  * </ul>
  *
  * @version $Id$
