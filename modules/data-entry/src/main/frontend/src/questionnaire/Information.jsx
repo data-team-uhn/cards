@@ -20,7 +20,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Card, CardContent } from "@mui/material";
+import { Alert, Card, CardContent } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -30,9 +30,9 @@ import FormattedText from "../components/FormattedText.jsx";
 // GUI for displaying Information cards
 function Information (props) {
   let { classes, infoDefinition } = props;
-  let { text } = { ...infoDefinition }
+  let { text, type } = { ...infoDefinition }
 
-  return (
+  return (type == "plain" ?
     <Card
       className={classes.informationCard}
       variant="outlined"
@@ -41,6 +41,10 @@ function Information (props) {
         <FormattedText>{text}</FormattedText>
       </CardContent>
     </Card>
+    :
+    <Alert severity={type} icon={false}>
+      <FormattedText>{text}</FormattedText>
+    </Alert>
   )
 }
 
@@ -48,7 +52,12 @@ Information.propTypes = {
   classes: PropTypes.object.isRequired,
   infoDefinition: PropTypes.objectOf(PropTypes.shape({
     text: PropTypes.string,
+    type: PropTypes.oneOf(["plain", "info", "warning", "error", "success"]),
   })),
+};
+
+Information.defaultProps = {
+  type: "plain",
 };
 
 export default withStyles(QuestionnaireStyle)(Information);
