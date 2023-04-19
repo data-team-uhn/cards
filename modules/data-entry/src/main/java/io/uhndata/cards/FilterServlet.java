@@ -45,8 +45,7 @@ import org.osgi.service.component.annotations.Component;
  * This servlet supports the following parameters:
  * </p>
  * <ul>
- * <li><code>questionnaire</code>: a path to a questionnaire whose filterable options to retrievec
- * <li>if absent, by default generating all filters from all questionnaires<li>
+ * <li><code>questionnaire</code>: a path to a questionnaire whose filterable options to retrieve; if absent, retrieve all filterable options from all questionnaires</li>
  * <li><code>include</code>: a parameter include that allows to specify which kinds of filters to retrieve</li>
  * <li>by default both metadata filters and question filters are retrieved</li>
  * <li><code>include=metadata</code> returns only metadata filters</li>
