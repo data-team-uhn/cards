@@ -1328,6 +1328,89 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</node>
 		</node>
 		<node>
+			<name>phq9_9_help</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition1</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value><![CDATA[>]]></value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>phq9_9</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>0</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>phq9_9_info</name>
+				<primaryNodeType>cards:Information</primaryNodeType>
+				<property>
+					<name>type</name>
+					<value>error</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>
+Your responses indicate that you are having thoughts of hurting yourself. We strongly encourage you to seek immediate help from a professional mental health provider using the below resources.
+
+### Crisis Services Canada
+
+Call [1-833-456-4566](tel:1-833-456-4566)
+- Suicide Prevention Services are available 24/7/365
+- Can connect you to responders immediately
+- Online chat and text options are also available
+
+For more information, see [Crisis Services Canada's website](https://www.crisisservicescanada.ca/en/).
+
+### Telehealth Ontario (across Ontario)
+
+Call [1-866-797-0000](tel:1-866-797-0000)
+- Telehealth is available 24/7/365 and can provide you with immediate assistance
+- Free, confidential service provided by a Registered Nurse
+
+For more information, see [Telehealth Ontario's website](https://www.ontario.ca/page/get-medical-advice-telehealth-ontario).
+
+### Immediate Assistance
+
+**If you need immediate assistance, please proceed to your nearest Emergency Department or call 911.**
+					</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+
+		<node>
 			<name>phq9_10</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
