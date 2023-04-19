@@ -33,12 +33,6 @@ import PageStart from "../PageStart";
 import IndexStyle from "./indexStyle.jsx";
 import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
 
-const materialTableStyles = <GlobalStyles styles={{
-  "div[class^=MTablePaginationInner-root] .MuiTypography-caption" : {
-    display: "none"
-  }
-}} />;
-
 class Main extends React.Component {
   constructor(props) {
     super(props);
@@ -111,7 +105,6 @@ class Main extends React.Component {
 
     return (
       <React.Fragment>
-      {materialTableStyles}
       <GlobalLoginContext.Provider
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {

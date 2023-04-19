@@ -483,15 +483,15 @@ function SubjectMemberInternal (props) {
                 enableTableHead={false}
                 enableTableFooter={false}
                 layoutMode="grid"
-                muiTableHeadCellProps={{
-                    sx: {
-                      flex: '0 0 auto',
-                    },
-                  }}
                 muiTableBodyCellProps={{
-                    sx: {
-                      flex: '0 0 auto',
-                    },
+                  sx: {
+                    flex: '0 0 auto',
+                  },
+                }}
+                muiTableDetailPanelProps={{
+                  sx: {
+                    paddingTop: '0',
+                  }
                 }}
                 renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
                 defaultColumn={{
@@ -505,6 +505,7 @@ function SubjectMemberInternal (props) {
                     muiTableBodyCellProps: ({ cell }) => ({
                       sx: {
                         padding: '0',
+                        paddingRight: '16px',
                         whiteSpace: 'nowrap',
                         textAlign: 'right',
                         flex: '0 0 auto',
@@ -537,7 +538,7 @@ function SubjectMemberInternal (props) {
                       },
                     }),
                     Cell: ({ renderedCellValue, row }) => (
-                                   <Grid container direction="row" spacing={1} justifyContent="flex-start">
+                                   <Grid container direction="row" spacing={1} justifyContent="flex-start" wrap="nowrap">
                                      <Grid item xs={false}>
                                        <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
                                      </Grid>
@@ -577,7 +578,7 @@ function SubjectMemberInternal (props) {
                 enableRowActions
                 positionActionsColumn="last"
                 renderRowActions={({ row }) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8', float: 'right' }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
                       <EditButton
                         entryPath={row.original["@path"]}
                         entryType="Form"
