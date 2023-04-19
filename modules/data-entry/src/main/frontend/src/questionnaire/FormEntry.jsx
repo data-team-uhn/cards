@@ -18,10 +18,11 @@
 //
 
 import React from "react";
-import { Card, CardContent, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import Section from "./Section";
+import Information from "./Information";
 
 // FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
 
@@ -41,8 +42,6 @@ import QuestionMatrix from "./QuestionMatrix";
 import ResourceQuestion from "./ResourceQuestion";
 import DicomQuestion from "./DicomQuestion";
 import ReferenceQuestion from "./ReferenceQuestion";
-
-import FormattedText from "../components/FormattedText";
 
 import { hasWarningFlags } from "./FormUtilities";
 
@@ -142,14 +141,7 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
   return (
     isEdit && pageActive && infoDefinition.text &&
     <Grid item key={key}>
-      <Card
-        className={classes.informationCard}
-        variant="outlined"
-        >
-        <CardContent>
-          <FormattedText>{infoDefinition.text}</FormattedText>
-        </CardContent>
-      </Card>
+      <Information infoDefinition={infoDefinition} />
     </Grid>
     || null
   );
