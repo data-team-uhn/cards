@@ -21,13 +21,10 @@ import React, { useState, useEffect }  from 'react';
 import {
   Button,
   CircularProgress,
-  Dialog,
   DialogContent,
-  DialogTitle,
   FormControl,
   FormHelperText,
   Grid,
-  IconButton,
   Input,
   InputLabel,
   List,
@@ -36,11 +33,11 @@ import {
   Typography,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import CloseIcon from '@mui/icons-material/Close';
 import AppointmentIcon from '@mui/icons-material/Event';
 
 import Logo from "../components/Logo.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import ToUDialog from "./ToUDialog.jsx";
 
 import DropdownsDatePicker from "../components/DropdownsDatePicker.jsx";
@@ -86,9 +83,6 @@ const useStyles = makeStyles(theme => ({
   },
   identifierContainer : {
     alignItems: "start",
-  },
-  closeButton: {
-    float: 'right',
   },
   mrnHelperImage: {
     maxWidth: '100%',
@@ -276,13 +270,12 @@ function PatientIdentification(props) {
 
     {/* MRN hint dialog*/}
 
-    <Dialog onClose={() => {setMrnHelperOpen(false)}} open={mrnHelperOpen}>
-      <DialogTitle>
-        Where can I find my MRN?
-        <IconButton onClick={() => setMrnHelperOpen(false)} className={classes.closeButton} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
+    <ResponsiveDialog
+      title="Where can I find my MRN?"
+      withCloseButton
+      open={mrnHelperOpen}
+      onClose={() => {setMrnHelperOpen(false)}}
+    >
       <DialogContent>
         <Typography paragraph>
           1. Check the top right-hand corner of your Patient Itinerary.
@@ -293,7 +286,7 @@ function PatientIdentification(props) {
         </Typography>
         <img src="/libs/cards/resources/media/patient-portal/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
       </DialogContent>
-    </Dialog>
+    </ResponsiveDialog>
 
     {/* Patient identification form */}
 
