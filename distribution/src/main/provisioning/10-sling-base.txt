@@ -60,7 +60,7 @@
     org.apache.commons/commons-collections4/4.2
     commons-codec/commons-codec/1.11
     commons-lang/commons-lang/2.6
-    commons-io/commons-io/2.6
+    commons-io/commons-io/2.11.0
     org.apache.commons/commons-lang3/3.8.1
     org.apache.commons/commons-math/2.2
     org.apache.geronimo.bundles/commons-httpclient/3.1_2
