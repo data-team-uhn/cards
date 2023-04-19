@@ -100,7 +100,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
         // Generate the metadata filters
         if (StringUtils.isBlank(include) || "metadata".equals(include)) {
-            builder.add("metadataFilters", this.addMetadatalFilters(false));
+            builder.add("metadataFilters", this.addMetadataFilters(false));
         }
 
         if (StringUtils.isBlank(include) || "questions".equals(include)) {
@@ -134,7 +134,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
         // Generate the metadata filters
         if (StringUtils.isBlank(include) || "metadata".equals(include)) {
-            builder.add("metadataFilters", this.addMetadatalFilters(true));
+            builder.add("metadataFilters", this.addMetadataFilters(true));
         }
 
         if (StringUtils.isBlank(include) || "questions".equals(include)) {
@@ -151,7 +151,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
         return builder.build();
     }
 
-    private JsonArrayBuilder addMetadatalFilters(final boolean addQuestionnaireFilter)
+    private JsonArrayBuilder addMetadataFilters(final boolean addQuestionnaireFilter)
     {
         JsonArrayBuilder builder = Json.createArrayBuilder();
         if (addQuestionnaireFilter) {
