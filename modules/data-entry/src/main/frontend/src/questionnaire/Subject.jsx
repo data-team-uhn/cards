@@ -503,13 +503,13 @@ function SubjectMemberInternal (props) {
                     id: 'Actions',
                     size: 80,
                     muiTableBodyCellProps: ({ cell }) => ({
-                      sx: {
+                      sx: (theme) => ({
                         padding: '0',
-                        paddingRight: '16px',
+                        paddingRight: theme.spacing(2),
                         whiteSpace: 'nowrap',
                         textAlign: 'right',
                         flex: '0 0 auto',
-                      },
+                      }),
                     }),
                   },
                   'mrt-row-expand': {
