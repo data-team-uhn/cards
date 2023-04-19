@@ -33,7 +33,6 @@ import PageStart from "../PageStart";
 import IndexStyle from "./indexStyle.jsx";
 import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
 
-// Temporary fix for the duplicate displayedRows occurring in material-react-table 2.0.3
 const materialTableStyles = <GlobalStyles styles={{
   "div[class^=MTablePaginationInner-root] .MuiTypography-caption" : {
     display: "none"

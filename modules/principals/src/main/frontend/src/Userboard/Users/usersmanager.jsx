@@ -137,7 +137,6 @@ class UsersManager extends React.Component {
               positionActionsColumn="last"
               renderRowActions={({ row }) => (
                 <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '0', float: 'right' }}>
-                <>
                   <Tooltip title="Change Password">
                     <IconButton onClick={ () => this.setState({currentUserName: row.original.name, deployChangeUserPassword: true}) } >
                       <LockIcon />
@@ -148,7 +147,6 @@ class UsersManager extends React.Component {
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
-                </>
                 </Box>
               )}
               renderDetailPanel={({ row }) => {

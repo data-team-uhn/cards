@@ -107,6 +107,8 @@ function UserDashboard(props) {
             enableSorting={false}
             enableGrouping={false}
             enableToolbarInternalActions={false}
+            enableTableHead={creationExtensions.length > 5}
+            enableTableFooter={creationExtensions.length > 5}
             enableTopToolbar={creationExtensions.length > 5}
             enableBottomToolbar={creationExtensions.length > 5}
             enablePagination={creationExtensions.length > 5}

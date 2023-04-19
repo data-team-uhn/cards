@@ -480,16 +480,8 @@ function SubjectMemberInternal (props) {
                     verticalAlign: 'top',
                   },
                 }}
-                muiTableHeadProps={{
-                  sx: {
-                    display: 'none',
-                  },
-                }}
-                muiTableFooterProps={{
-                  sx: {
-                    display: 'none',
-                  },
-                }}
+                enableTableHead={false}
+                enableTableFooter={false}
                 layoutMode="grid"
                 muiTableHeadCellProps={{
                     sx: {
