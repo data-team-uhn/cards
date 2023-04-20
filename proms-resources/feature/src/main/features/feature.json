@@ -71,20 +71,20 @@
         "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]",
         "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]"
       ]
-    },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
-      "name": "InitialNotificationsTask",
-      "metricName": "Initial Emails Sent",
-      "clinicId": "/Proms/ClinicMapping/853703519",
-      "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/InitialNotification",
-      "daysToVisit": 3
-    },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
-      "name": "ReminderNotificationsTask",
-      "metricName": "Reminder Emails Sent",
-      "clinicId": "/Proms/ClinicMapping/853703519",
-      "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/ReminderNotification",
-      "daysToVisit": 1
+    // },
+    // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
+    //   "name": "InitialNotificationsTask",
+    //   "metricName": "Initial Emails Sent",
+    //   "clinicId": "/Proms/ClinicMapping/853703519",
+    //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/InitialNotification",
+    //   "daysToVisit": 3
+    // },
+    // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
+    //   "name": "ReminderNotificationsTask",
+    //   "metricName": "Reminder Emails Sent",
+    //   "clinicId": "/Proms/ClinicMapping/853703519",
+    //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/ReminderNotification",
+    //   "daysToVisit": 1
     }
   }
 }
