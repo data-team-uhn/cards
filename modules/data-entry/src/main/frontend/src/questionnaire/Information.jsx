@@ -50,10 +50,10 @@ function Information (props) {
 
 Information.propTypes = {
   classes: PropTypes.object.isRequired,
-  infoDefinition: PropTypes.objectOf(PropTypes.shape({
+  infoDefinition: PropTypes.shape({
     text: PropTypes.string,
     type: PropTypes.oneOf(["plain", "info", "warning", "error", "success"]),
-  })),
+  }),
 };
 
 Information.defaultProps = {
