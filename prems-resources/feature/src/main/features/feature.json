@@ -51,8 +51,6 @@
         "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,provider) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/provider) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Survey*events) \n end",
         // Deny access to the patient's name to the validation servlet, which would otherwise return it to the patient portal
         "create service user patient-validation \n set ACL for patient-validation \n   deny jcr:all on /Questionnaires restriction(rep:itemNames,last_name,first_name) \n     deny jcr:all on /Forms restriction(cards:question,/Questionnaires/Patient*information/last_name,/Questionnaires/Patient*information/first_name) \n end",
-        // This isn't actually used, but Patient.json references it; needs to be removed along with the torch import
-        "create service user proms-import-backend",
         // Allow the CSV export of Survey Events to include the proper label for the assigned survey
         "create service user csv-export \n set ACL on /Survey \n   allow jcr:read for csv-export \n end"
       ]
