@@ -48,7 +48,7 @@ export const MODE_DIALOG = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { children, classes, presetPath, currentSubject, theme, mode, open, onClose } = { mode:MODE_ACTION, open: false, ...props };
+  const { children, classes, presetPath, currentSubject, theme, mode, open, onClose } = { mode: MODE_ACTION, open: false, ...props };
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
@@ -356,12 +356,10 @@ function NewFormDialog(props) {
             {relatedForms &&
               <MaterialReactTable
                 tableInstanceRef={tableRef}
-                enableColumnActions={false}
-                enableColumnFilters={false}
-                enableSorting={false}
                 enableToolbarInternalActions={false}
-                manualPagination
+                enableTableHead={false}
                 onGlobalFilterChange={setGlobalFilter}
+                manualPagination
                 onPaginationChange={setPagination}
                 rowCount={rowCount}
                 state={{
@@ -371,29 +369,31 @@ function NewFormDialog(props) {
                   showProgressBars: isRefetching
                 }}
                 initialState={{ showGlobalFilter: true, columnVisibility: { description: false } }}
-                columns={[{
-                  accessorKey: 'title',
-                  Cell: ({ renderedCellValue, row }) => (<>
+                columns={[
+                  { accessorKey: 'title',
+                    Cell: ({ row }) => (<>
                                   <Typography component="div">{row.original.title}</Typography>
                                   <FormattedText variant="caption" color="textSecondary">
                                     {row.original.description}
                                   </FormattedText>
                                 </>)
-                }, {
-                  accessorKey: 'description',
-                }]}
+                  },
+                  { accessorKey: 'description' }
+                ]}
                 data={data}
                 muiTableBodyRowProps={({ row }) => ({
-                  onClick: () => { !isFetching && setSelectedQuestionnaire(row.original); setError(false); },
                   sx: {
                     cursor: 'pointer',
                   },
+                  onClick: () => { !isFetching && setSelectedQuestionnaire(row.original);
+                                   setError(false);
+                                   row.toggleSelected();
+                                 },
+                  selected: row.original["jcr:uuid"] === selectedQuestionnaire?.["jcr:uuid"],
                 })}
                 muiTableBodyCellProps={({ cell }) => ({
                   sx: {
-                    // /* It doesn't seem possible to alter the className from here */
-                    backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === cell.row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
-                    // // grey out subjects that have already reached maxPerSubject
+                    // grey out subjects that have already reached maxPerSubject
                     color: ((relatedForms?.length && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["q.jcr:uuid"] == cell.row.original["jcr:uuid"])).length >= (+(cell.row.original?.["maxPerSubject"]) || undefined)))
                     ? theme.palette.grey["500"]
                     : theme.palette.grey["900"]
@@ -458,9 +458,7 @@ function NewFormDialog(props) {
         onClose={() => {
           resetDialogState();
           closeAllDialogs();
-          if (onClose) {
-            onClose();
-          }
+          onClose && onClose();
         }}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         currentSubject={currentSubject}

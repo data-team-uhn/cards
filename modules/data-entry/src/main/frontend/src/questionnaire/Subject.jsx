@@ -465,10 +465,9 @@ function SubjectMemberInternal (props) {
             <Grid item key={questionnaireTitle}>
               <MaterialReactTable
                 data={subjectGroups[questionnaireTitle]}
-                enableColumnActions={false}
-                enableColumnFilters={false}
-                enableSorting={false}
                 enableTopToolbar={false}
+                enableTableHead={false}
+                enableTableFooter={false}
                 enableBottomToolbar={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
                 enablePagination={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
                 initialState={{ pagination: { pageSize: pageSize, pageIndex: 0 } }}
@@ -480,8 +479,6 @@ function SubjectMemberInternal (props) {
                     verticalAlign: 'top',
                   },
                 }}
-                enableTableHead={false}
-                enableTableFooter={false}
                 layoutMode="grid"
                 muiTableBodyCellProps={{
                   sx: {
@@ -502,42 +499,39 @@ function SubjectMemberInternal (props) {
                   'mrt-row-actions': {
                     id: 'Actions',
                     size: 80,
-                    muiTableBodyCellProps: ({ cell }) => ({
+                    muiTableBodyCellProps: {
                       sx: (theme) => ({
-                        padding: '0',
                         paddingRight: theme.spacing(2),
-                        whiteSpace: 'nowrap',
-                        textAlign: 'right',
                         flex: '0 0 auto',
                       }),
-                    }),
+                    },
                   },
                   'mrt-row-expand': {
                     size: 40,
                     minSize: 40,
                     maxSize: 40,
-                    muiTableBodyCellProps: ({ cell }) => ({
+                    muiTableBodyCellProps: {
                       sx: {
                         paddingRight: '2px',
                         paddingLeft: '0',
                         flex: '0 0 auto',
                         alignItems: 'start'
                       },
-                    }),
+                    },
                   },
                 }}
                 columns={[
                   { id: 'Questionnaire',
                     size: 400,
-                    muiTableBodyCellProps: ({ cell }) => ({
+                    muiTableBodyCellProps: {
                       sx: {
                         paddingLeft: 0,
                         fontWeight: "bold",
                         paddingTop: "10px",
                         whiteSpace: 'nowrap',
                       },
-                    }),
-                    Cell: ({ renderedCellValue, row }) => (
+                    },
+                    Cell: ({ row }) => (
                                    <Grid container direction="row" spacing={1} justifyContent="flex-start" wrap="nowrap">
                                      <Grid item xs={false}>
                                        <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
@@ -556,14 +550,14 @@ function SubjectMemberInternal (props) {
                                    </Grid>
                                  ) },
                   { id: 'Status',
-                    muiTableBodyCellProps: ({ cell }) => ({
-                      sx: {
+                    muiTableBodyCellProps: {
+                      sx: (theme) => ({
                         whiteSpace: 'nowrap',
                         paddingTop: "10px",
-                        paddingBottom: "8px",
-                      },
-                    }),
-                    Cell: ({ renderedCellValue, row }) => (<>
+                        paddingBottom: theme.spacing(1),
+                      }),
+                    },
+                    Cell: ({ row }) => (<>
                                          { row.original["statusFlags"].map((status) => {
                                            return <Chip
                                              key={status}
@@ -578,7 +572,7 @@ function SubjectMemberInternal (props) {
                 enableRowActions
                 positionActionsColumn="last"
                 renderRowActions={({ row }) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
+                    <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
                       <EditButton
                         entryPath={row.original["@path"]}
                         entryType="Form"

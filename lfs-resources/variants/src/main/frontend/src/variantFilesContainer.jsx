@@ -917,52 +917,50 @@ export default function VariantFilesContainer() {
           enableColumnFilters={false}
           enableSorting={false}
           enableTopToolbar={false}
-          muiTableBodyRowProps={({ row }) => ({
+          muiTableBodyRowProps={{
             sx: {
               verticalAlign: 'top',
             },
-          })}
+          }}
           columns={[
             { header: 'Created', size: 10,
-              muiTableBodyCellProps: ({ cell }) => ({
+              muiTableBodyCellProps: {
                 sx: {
                   paddingLeft: 0,
                   fontWeight: "bold",
-                  width: '1%',
                   whiteSpace: 'nowrap',
                 }
-              }),
-              Cell: ({ renderedCellValue, row }) =>
-                                <Link href={row.original["@path"]} underline="hover">
+              },
+              Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
                                   {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd")}
-                                </Link> },
+                                </Link>
+            },
             { header: 'Uploaded By',
-              muiTableBodyCellProps: ({ cell }) => ({
+              muiTableBodyCellProps: {
                 sx: {
-                  width: '50%',
                   whiteSpace: 'pre-wrap',
                   paddingBottom: "8px",
                 }
-              }),
-              Cell: ({ renderedCellValue, row }) => row.original["jcr:createdBy"] }
+              },
+              Cell: ({ row }) => row.original["jcr:createdBy"] }
           ]}
            displayColumnDefOptions={{
             'mrt-row-actions': {
               header: 'Actions',
               size: 10,
               muiTableHeadCellProps: {align: 'right'},
-              muiTableBodyCellProps: ({ cell }) => ({
+              muiTableBodyCellProps: {
                 sx: {
                   padding: '0',
                   textAlign: 'right'
                 },
-              }),
+              },
             },
           }}
           enableRowActions
           positionActionsColumn="last"
           renderRowActions={({ row }) => (
-            <Tooltip title={"Download"}>
+            <Tooltip title="Download">
               <IconButton size="large">
                 <Link underline="none" color="inherit" href={row.original["@path"]} download>
                   <GetApp />

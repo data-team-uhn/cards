@@ -114,13 +114,13 @@ class AddUserToGroupDialogue extends React.Component {
                               })}
                               columns={[
                                 { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
-                                  Cell: ({ renderedCellValue, row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
+                                  Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
                                 { header: 'User Name', accessorKey: 'name' },
                                 { header: 'Admin', accessorKey: 'isAdmin', size: 10,
-                                  Cell: ({ renderedCellValue, row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+                                  Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
                                 },
                                 { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
-                                  Cell: ({ renderedCellValue, row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+                                  Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
                                 },
                               ]}
                               data={this.state.freeUsers}

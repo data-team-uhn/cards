@@ -133,11 +133,11 @@ class GroupsManager extends React.Component {
               'mrt-row-actions': {
                 size: 10,
                 muiTableHeadCellProps: {align: 'right'},
-                muiTableBodyCellProps: ({ cell }) => ({
+                muiTableBodyCellProps: {
                   sx: {
                     textAlign: 'right'
                   },
-                }),
+                },
               },
               'mrt-row-expand': {
                 size: 8,
@@ -145,7 +145,7 @@ class GroupsManager extends React.Component {
             }}
             columns={[
               { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-                Cell: ({ renderedCellValue, row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar>)
+                Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar>)
               },
               { header: 'Name', accessorKey: 'name', size: 300, },
               { header: 'Members', accessorKey: 'members', size: 10, },
@@ -177,8 +177,6 @@ class GroupsManager extends React.Component {
                               enableColumnFilters={false}
                               enableSorting={false}
                               enableTopToolbar={false}
-                              enableToolbarInternal
-                              Actions={false}
                               muiTableHeadCellProps={{
                                 sx: (theme) => ({
                                   color: theme.palette.text.primary,
@@ -203,19 +201,19 @@ class GroupsManager extends React.Component {
                                 header: tableTitle,
                                 columns: [
                                   { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-                                    Cell: ({ renderedCellValue, row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
+                                    Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
                                   },
                                   { header: 'User Name', accessorKey: 'name', size: 300, },
                                   { header: 'Admin', accessorKey: 'isAdmin', size: 10,
-                                    Cell: ({ renderedCellValue, row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+                                    Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
                                   },
                                   { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
-                                    Cell: ({ renderedCellValue, row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+                                    Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
                                   },
                                 ]
                               }]}
                               data={groupUsers}
-                              />
+                            />
                         }
                         <Grid container className={classes.cardActions}>
                           <Button

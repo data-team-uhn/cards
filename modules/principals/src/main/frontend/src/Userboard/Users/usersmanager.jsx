@@ -108,25 +108,24 @@ class UsersManager extends React.Component {
               }}
               columns={[
                 { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-                  Cell: ({ renderedCellValue, row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
+                  Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
                 },
                 { header: 'User Name', accessorKey: 'name' },
                 { header: 'Admin', accessorKey: 'isAdmin', size: 10,
-                  Cell: ({ renderedCellValue, row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+                  Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
                 },
                 { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
-                  Cell: ({ renderedCellValue, row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+                  Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
                 },
               ]}
               displayColumnDefOptions={{
                 'mrt-row-actions': {
                   muiTableHeadCellProps: {align: 'right'},
-                  muiTableBodyCellProps: ({ cell }) => ({
+                  muiTableBodyCellProps: {
                     sx: {
                       padding: '0',
-                      textAlign: 'right'
                     },
-                  }),
+                  },
                 },
                 'mrt-row-expand': {
                   size: 8,
@@ -136,7 +135,7 @@ class UsersManager extends React.Component {
               enableRowActions
               positionActionsColumn="last"
               renderRowActions={({ row }) => (
-                <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '0', float: 'right' }}>
+                <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
                   <Tooltip title="Change Password">
                     <IconButton onClick={ () => this.setState({currentUserName: row.original.name, deployChangeUserPassword: true}) } >
                       <LockIcon />
@@ -170,7 +169,7 @@ class UsersManager extends React.Component {
                                 header: tableTitle,
                                 columns: [
                                   { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-                                    Cell: ({ renderedCellValue, row }) => ( <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar> )
+                                    Cell: ({ row }) => ( <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar> )
                                   },
                                   { header: 'Name', accessorKey: 'name', muiTableBodyCellProps: {align: 'left'} },
                                   { header: 'Members', accessorKey: 'members', size: 10,

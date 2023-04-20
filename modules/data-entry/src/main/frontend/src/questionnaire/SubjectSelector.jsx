@@ -80,7 +80,7 @@ function UnstyledNewSubjectDialog (props) {
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let changeType = (type) => {
-    onChangeType(type);
+    onChangeType && onChangeType(type);
     setNewSubjectType(type);
   }
 
@@ -138,12 +138,10 @@ function UnstyledNewSubjectDialog (props) {
               disabled={disabled}
               value={value}
               onChange={onChangeSubject}
-              />
+            />
           </div>
           <MaterialReactTable
-            enableColumnActions={false}
-            enableColumnFilters={false}
-            enableSorting={false}
+            enableTableHead={false}
             enableToolbarInternalActions={false}
             manualPagination
             onGlobalFilterChange={setGlobalFilter}
@@ -158,7 +156,7 @@ function UnstyledNewSubjectDialog (props) {
             initialState={{ showGlobalFilter: true }}
             columns={[
                 { accessorKey: 'label' }
-              ]}
+            ]}
             data={ allowedTypes?.length ? allowedTypes : data }
             renderTopToolbarCustomActions={() => {
               return <Typography variant="h6" sx={{ paddingLeft: theme.spacing(2) }}>Select a type</Typography>;
@@ -169,15 +167,14 @@ function UnstyledNewSubjectDialog (props) {
                 paddingTop: '0',
               },
             }}
-            muiTableBodyCellProps={({ cell }) => ({
+            muiTableBodyCellProps={{
               sx: {
                 fontSize: '1rem',
-                /* It doesn't seem possible to alter the className from here */
-                backgroundColor: (newSubjectType?.["label"] === cell.row.original["label"]) ? theme.palette.grey["200"] : theme.palette.background.default
               },
-            })}
+            }}
             muiTableBodyRowProps={({ row }) => ({
-              onClick: () => { changeType(row.original) },
+              onClick: () => { changeType(row.original); row.toggleSelected(); },
+              selected: row.original['label'] === newSubjectType?.['label'],
               sx: {
                 cursor: 'pointer',
               },
@@ -277,8 +274,8 @@ function UnstyledSelectParentDialog (props) {
       const json = await response.json();
 
       setData(json["rows"].map((row) => ({
-	    hierarchy: getHierarchy(row, React.Fragment, ()=>({})),
-	    ...row })));
+        hierarchy: getHierarchy(row, React.Fragment, ()=>({})),
+        ...row })));
       setRowCount(json.totalrows);
 
       setIsLoading(false);
@@ -304,6 +301,7 @@ function UnstyledSelectParentDialog (props) {
               enableColumnFilters={false}
               enableSorting={false}
               enableToolbarInternalActions={false}
+              enableTableHead={false}
               manualPagination
               onGlobalFilterChange={setGlobalFilter}
               onPaginationChange={setPagination}
@@ -320,7 +318,8 @@ function UnstyledSelectParentDialog (props) {
               ]}
               data={data}
               muiTableBodyRowProps={({ row }) => ({
-                onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent(row.original) },
+                onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent && onChangeParent(row.original); row.toggleSelected(); },
+                selected: row.original["jcr:uuid"] === value?.["jcr:uuid"],
                 sx: {
                   cursor: 'pointer',
                 },
@@ -328,8 +327,6 @@ function UnstyledSelectParentDialog (props) {
               muiTableBodyCellProps={({ cell }) => ({
                 sx: {
                   fontSize: '1rem',
-                  /* It doesn't seem possible to alter the className from here */
-                  backgroundColor: (value?.["jcr:uuid"] === cell.row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
                   // grey out subjects that already have something by this name
                   color: (hasChildWithId(cell.row.original, childName) ? theme.palette.grey["500"] : theme.palette.grey["900"])
                 },
@@ -1005,7 +1002,7 @@ function SubjectSelectorList(props) {
       setData(filteredData.map((row) => ({
         hierarchy: getHierarchy(row, React.Fragment, () => ({})),
           ...row })));
-      setRowCount(relatedSubjectsResp["totalrows"]);
+      setRowCount(filteredData.length);
 
       setIsLoading(false);
       setIsRefetching(false);
@@ -1024,6 +1021,7 @@ function SubjectSelectorList(props) {
         enableColumnFilters={false}
         enableSorting={false}
         enableToolbarInternalActions={false}
+        enableTableHead={false}
         manualPagination
         onGlobalFilterChange={setGlobalFilter}
         onPaginationChange={setPagination}
@@ -1035,10 +1033,13 @@ function SubjectSelectorList(props) {
           showProgressBars: isRefetching
         }}
         initialState={{ showGlobalFilter: true }}
-        columns={[{ accessorKey: 'hierarchy' }]}
+        columns={[
+          { accessorKey: 'hierarchy' }
+        ]}
         data={data}
         muiTableBodyRowProps={({ row }) => ({
-          onClick: () => { onSelect(row.original); handleSelection(row.original) },
+          onClick: () => { onSelect(row.original); handleSelection(row.original); row.toggleSelected(); },
+          selected: row.original["jcr:uuid"] === selectedSubject?.["jcr:uuid"],
           sx: {
             cursor: 'pointer',
           },
@@ -1046,8 +1047,6 @@ function SubjectSelectorList(props) {
         muiTableBodyCellProps={({ cell }) => ({
           sx: {
             fontSize: '1rem',
-            /* It doesn't seem possible to alter the className from here */
-            backgroundColor: (selectedSubject?.["jcr:uuid"] === cell.row.original["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
             // grey out subjects that have already reached maxPerSubject
             color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
             ? theme.palette.grey["500"]

@@ -71,7 +71,7 @@ export default function VocabularyTable(props) {
               { header: 'Identifier', accessorKey: 'acronym', size: 30, filterFn: 'contains' },
               { header: 'Name', accessorKey: 'name', filterFn: 'contains' },
               { header: 'Version', accessorKey: 'version', size: 10, enableColumnFilter: false,
-                Cell: ({ renderedCellValue, row }) => row.original.version &&
+                Cell: ({ row }) => row.original.version &&
                   <Tooltip title={row.original.version}>
                     <Typography style={{fontWeight: "inherit"}} noWrap>
                       {row.original.version}
@@ -82,7 +82,7 @@ export default function VocabularyTable(props) {
                 accessorKey: 'released',
                 size: 20,
                 enableColumnFilter: false,
-                Cell: ({ renderedCellValue, row }) => (new Date(type === "local" ? row.original.installed : row.original.released)).toString().substring(4,15)
+                Cell: ({ row }) => (new Date(type === "local" ? row.original.installed : row.original.released)).toString().substring(4,15)
               }
             ]}
             muiTableHeadCellProps={{
@@ -94,13 +94,13 @@ export default function VocabularyTable(props) {
               'mrt-row-actions': {
                 size: 50,
                 muiTableHeadCellProps: {align: "right"},
-                muiTableBodyCellProps: ({ cell }) => ({
+                muiTableBodyCellProps: {
                   sx: {
                     whiteSpace: "pre",
                     textAlign: "right",
                     paddingRight: "0.3rem"
                   },
-                }),
+                },
                 enableColumnFilter: false,
               },
             }}

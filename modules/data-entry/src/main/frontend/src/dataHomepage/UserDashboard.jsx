@@ -53,7 +53,7 @@ async function getMenuItems() {
 // visible by the user. Each LiveTable contains all forms that use the given
 // questionnaire.
 function UserDashboard(props) {
-  const { classes, theme } = props;
+  const { classes } = props;
   let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
   let [ creationExtensions, setCreationExtensions ] = useState([]);
   let [ loading, setLoading ] = useState(true);
@@ -102,12 +102,8 @@ function UserDashboard(props) {
       <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
           <MaterialReactTable
-            enableColumnActions={false}
-            enableColumnFilters={false}
-            enableSorting={false}
-            enableGrouping={false}
             enableToolbarInternalActions={false}
-            enableTableHead={creationExtensions.length > 5}
+            enableTableHead={false}
             enableTableFooter={creationExtensions.length > 5}
             enableTopToolbar={creationExtensions.length > 5}
             enableBottomToolbar={creationExtensions.length > 5}
@@ -127,25 +123,22 @@ function UserDashboard(props) {
             muiTableBodyRowProps={({ row }) => ({
               sx: {
                 cursor: 'pointer',
-                backgroundColor:
-                  selectedRow && selectedRow["jcr:uuid"] === row.original["jcr:uuid"] ? theme.palette.grey["200"] : theme.palette.background.default
               },
-              onClick: (event) => {
-                  setSelectedRow(row.original);
-                },
+              onClick: () => { setSelectedRow(row.original); row.toggleSelected(); },
+              selected: row.original["jcr:uuid"] === selectedRow?.["jcr:uuid"],
             })}
-            muiTableBodyCellProps={({ cell }) => ({
+            muiTableBodyCellProps={{
               sx: {
                 fontSize: '1rem'
               },
-            })}
+            }}
           />
         </DialogContent>
         <DialogActions>
           <Button
             variant="outlined"
             onClick={onClose}
-            >
+          >
             Cancel
           </Button>
           <Button
@@ -185,4 +178,4 @@ function UserDashboard(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle, {withTheme: true})(UserDashboard);
+export default withStyles(QuestionnaireStyle)(UserDashboard);
