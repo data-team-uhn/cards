@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -28,6 +28,7 @@ import {
   CardHeader,
   Divider,
   IconButton,
+  LinearProgress,
   Tab,
   Tabs,
   Tooltip,
@@ -44,11 +45,10 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function FormView(props) {
   const { questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
-  
+
   const [ title, setTitle ] = useState(props.title);
   const [ subtitle, setSubtitle ] = useState(props.subtitle);
-  const [ questionnairePath, setQuestionnairePath ] = useState();
-  const [ qFetchSent, setQFetchStatus ] = useState(false);
+  const [ qFilter, setQFilter ] = useState();
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
 
   // Column configuration for the LiveTables
@@ -86,26 +86,23 @@ function FormView(props) {
   let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
   const [ activeTab, setActiveTab ] = useState(activeTabIndex);
 
-  let qFilter = '';
-
-  if (questionnaire) {
-    // Set the questionnaire filter for displayed forms
-    qFilter = '&fieldname=questionnaire&fieldvalue=' + encodeURIComponent(questionnaire);
-    // Also fetch the title and other info if we haven't yet
-    if (!qFetchSent) {
-      setQFetchStatus(true);
-      fetch('/query?query=' + encodeURIComponent(`select * from [cards:Questionnaire] as n WHERE n.'jcr:uuid'='${questionnaire}'`))
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        let qData = json["rows"][0];
-        if (qData) {
+  useEffect (() => {
+    // If a questionnaire parameter is specified:
+    if (questionnaire) {
+      // Fetch the questionnaire info and update the title, subtitle and query filter
+      fetch(`${questionnaire}.json`)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then(qData => {
           setTitle(qData["title"]);
           setSubtitle(qData["description"]);
-          setQuestionnairePath(qData["@path"]);
-        }
-      });
+          setQFilter('&fieldname=questionnaire&fieldvalue=' + encodeURIComponent(qData["jcr:uuid"]));
+        })
+        .catch(err => setQFilter(''));
+    } else {
+      // No filtering by questionnaire
+      setQFilter('');
     }
-  }
+  }, [questionnaire]);
 
   return (
     <Card className={classes.formView}>
@@ -145,6 +142,7 @@ function FormView(props) {
       }
       <Divider />
       <CardContent>
+      { typeof(qFilter) == "undefined" ? <LinearProgress /> :
         <LiveTable
           columns={props.columns || columns}
           customUrl={`/Forms.paginate?descending=true${qFilter}${tabFilter[tabs[activeTab]]}`}
@@ -157,8 +155,9 @@ function FormView(props) {
           onFiltersChange={(str) => { setFiltersJsonString(str); }}
           filtersJsonString={filtersJsonString}
         />
-      {expanded &&
-        <NewFormDialog presetPath={questionnairePath}>
+      }
+      { expanded &&
+        <NewFormDialog presetPath={questionnaire}>
           New questionnaire
         </NewFormDialog>
       }
