@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.proms.internal.importer;
+package io.uhndata.cards.torch.internal;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;

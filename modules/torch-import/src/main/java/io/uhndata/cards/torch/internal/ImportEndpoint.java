@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.proms.internal.importer;
+package io.uhndata.cards.torch.internal;
 
 import java.io.IOException;
 import java.util.List;
