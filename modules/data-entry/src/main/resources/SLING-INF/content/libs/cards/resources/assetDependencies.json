@@ -1,0 +1,12 @@
+{
+  "cards-dataentry.LiveTable.js": ["asset:cards-login.loginDialogue.js"],
+  "cards-dataentry.Forms.js": ["asset:cards-dataentry.LiveTable.js", "asset:cards-pedigree.Pedigree.js"],
+  "cards-dataentry.Questionnaires.js": ["asset:cards-dataentry.Forms.js"],
+  "cards-dataentry.Subjects.js": ["asset:cards-dataentry.LiveTable.js", "asset:cards-dataentry.Forms.js"],
+  "cards-dataentry.SubjectTypes.js": ["asset:cards-dataentry.LiveTable.js"],
+  "cards-dataentry.FormView.js": ["asset:cards-dataentry.Forms.js"],
+  "cards-dataentry.SubjectView.js": ["asset:cards-dataentry.Subjects.js"],
+  "cards-dataentry.SubjectSelector.js": ["asset:cards-login.loginDialogue.js"],
+  "cards-dataentry.NewFormDialog.js": ["asset:cards-login.loginDialogue.js", "asset:cards-dataentry.SubjectSelector.js"],
+  "cards-dataentry.userDashboard.js": ["asset:cards-login.loginDialogue.js", "asset:cards-dataentry.SubjectSelector.js", "asset:cards-dataentry.NewFormDialog.js"]
+}

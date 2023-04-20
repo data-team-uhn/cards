@@ -51,6 +51,7 @@
               SLING-INF/content/libs/cards/resources/media/patient-portal/;path:=/libs/cards/resources/media/patient-portal/;overwrite:=true;uninstall:=true,
               SLING-INF/content/Survey.json;path:=/Survey,
               SLING-INF/content/libs/cards/PatientHomepage/;path:=/libs/cards/PatientHomepage/;overwrite:=true,
+              SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
               SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwriteProperties:=true;uninstall:=true,

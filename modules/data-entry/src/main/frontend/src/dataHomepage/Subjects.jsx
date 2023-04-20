@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from "react";
 import Subject from "../questionnaire/Subject.jsx";
 import SubjectView from "./SubjectView.jsx";
-import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/Subject.jsx";
+import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 import { Grid } from "@mui/material";
