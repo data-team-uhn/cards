@@ -263,6 +263,11 @@
   // The text provided as information. Optional, it is possible not to have any text.
   - text (string)
 
+  // The type dictates the text and background colors used when displaying the information.
+  // One of: plain (normal text and background), info (blue), warning (orange), error (red),
+  // success (green). Optional, defaults to plain styling when absent.
+  - type (string)
+
 //-----------------------------------------------------------------------------
 // A section is a collection of questions.
 [cards:Section] > sling:Folder, mix:referenceable
