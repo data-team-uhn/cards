@@ -55,8 +55,6 @@
         "create service user survey-tracker \n set ACL for survey-tracker \n   allow jcr:read on / \n     allow jcr:read,rep:write,jcr:versionManagement on /Forms \n end",
         // Prevent the cleanup task from deleting the survey status form
         "create service user patient-visit-backend \n set ACL for patient-visit-backend \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Survey*events) \n end",
-        // This isn't actually used, but Patient.json references it; needs to be removed along with the torch import
-        "create service user proms-import-backend",
         // Allow the CSV export of Survey Events to include the proper label for the assigned survey
         "create service user csv-export \n set ACL on /Survey \n   allow jcr:read for csv-export \n end"
       ]
