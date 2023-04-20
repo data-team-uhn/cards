@@ -20,7 +20,9 @@ package io.uhndata.cards;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.query.Query;
 import javax.json.Json;
@@ -79,60 +81,89 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
         // Generate the metadata filters
         if (includeMetadata) {
-            builder.add("metadataFilters", this.addMetadataFilters(false));
+            builder.add("metadataFilters", getMetadataFilters(questionnaire == null));
         }
 
-        String homepagePath = request.getResource().getPath();
+        if (includeQuestions) {
+            String homepagePath = request.getResource().getPath();
+            ResourceResolver resolver = request.getResourceResolver();
 
-        // If a questionnaire is specified, return all fields by the given questionnaire
-        // Otherwise, we return all questionnaires under this node that are visible by the user
-        JsonObject allProperties = questionnaire == null
-            ? getAllFieldsFromAllQuestionnaires(request.getResourceResolver(), homepagePath, builder, includeQuestions)
-            : getAllFields(request.getResourceResolver(), homepagePath + "/" + questionnaire, builder,
-                includeQuestions);
+            // If a questionnaire is specified, return all fields by the given questionnaire
+            // Otherwise, we return all questionnaires under this node that are visible by the user
+            if (questionnaire != null) {
+                addQuestionsFromQuestionnaire(resolver, questionnaire, builder);
+            } else {
+                addAllQuestions(resolver, homepagePath, builder);
+            }
+        }
 
         // Return the entire thing as a json file
         final Writer out = response.getWriter();
-        out.write(allProperties.toString());
+        out.write(builder.build().toString());
     }
 
     /**
-     * Create a JsonObject of all filterable fields from the given questionnaire.
+     * Builds the metadata filters associated with questionnaire resources.
+     *
+     * @param includeQuestionnaireFilter a flag whether filtering by Questionnaire should be enabled
+     * @return a the filters definitions in a JsonArrayBuilder
+     */
+    private JsonArrayBuilder getMetadataFilters(final boolean includeQuestionnaireFilter)
+    {
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        if (includeQuestionnaireFilter) {
+            builder.add(getMetadataFilter("Questionnaire"));
+        }
+        builder.add(getMetadataFilter("Subject"));
+        builder.add(getMetadataFilter("Created Date"));
+        return builder;
+    }
+
+    /**
+     * Builds the definition for a metadata filter associated with questionnaire resources.
+     *
+     * @param label the label of the metadata filter to generate the definition for
+     * @return the filter definition in a JsonObjectBuilder
+     */
+    private JsonObjectBuilder getMetadataFilter(final String label)
+    {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        final String path = label.replace(" ", "");
+        builder.add("@path", path);
+        builder.add("jcr:uuid", "cards:" + path);
+        builder.add("text", label);
+        builder.add("dataType", path.toLowerCase());
+        return builder;
+    }
+
+    /**
+     * Adds all filterable fields from the given questionnaire to the JsonObjectBuilder.
      *
      * @param resolver a reference to a ResourceResolver
      * @param questionnairePath the path to the questionnaire to look up
      * @param builder a builder for creating JsonObject models from scratch
-     * @param includeQuestions a boolean indicator of whether to include questions
-     * @return a JsonObject of filterable fields
      */
-    private JsonObject getAllFields(ResourceResolver resolver, String questionnairePath, JsonObjectBuilder builder,
-        boolean includeQuestions)
+    private void addQuestionsFromQuestionnaire(ResourceResolver resolver, String questionnairePath,
+        JsonObjectBuilder builder)
     {
         // First, ensure that we're accessing the deep jsonification of the questionnaire
         String fullPath = questionnairePath.endsWith(DEEP_JSON_SUFFIX)
             ? questionnairePath : questionnairePath.concat(DEEP_JSON_SUFFIX);
 
-        if (includeQuestions) {
-            // Next, convert it to a deep json object
-            final Resource resource = resolver.resolve(fullPath);
-            JsonObject resourceJson = resource.adaptTo(JsonObject.class);
-            this.copyQuestionnaire(resourceJson, builder);
-        }
-        return builder.build();
+        // Next, convert it to a deep json object
+        final Resource resource = resolver.resolve(fullPath);
+        JsonObject resourceJson = resource.adaptTo(JsonObject.class);
+        copyQuestionnaire(resourceJson, builder);
     }
 
     /**
-     * Creates a JsonObject of all filterable fields from every questionnaire under
-     * the given QuestionnaireHomepage node.
+     * Adds all filterable fields from every questionnaire under the given QuestionnaireHomepage node.
      *
      * @param resolver a reference to a ResourceResolver
      * @param parentPath the path of the parent QuestionnaireHomepage
      * @param builder a builder for creating JsonObject models from scratch
-     * @param includeQuestions a boolean indicator of whether to include questions
-     * @return a JsonObject of filterable fields
      */
-    private JsonObject getAllFieldsFromAllQuestionnaires(ResourceResolver resolver, String parentPath,
-        JsonObjectBuilder builder, boolean includeQuestions)
+    private void addAllQuestions(ResourceResolver resolver, String parentPath, JsonObjectBuilder builder)
     {
         final StringBuilder query =
             // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
@@ -140,84 +171,63 @@ public class FilterServlet extends SlingSafeMethodsServlet
                 + parentPath + "')");
         final Iterator<Resource> results = resolver.findResources(query.toString(), Query.JCR_SQL2);
 
-        if (includeQuestions) {
-            while (results.hasNext()) {
-                Resource resource = results.next();
-                String path = resource.getResourceMetadata().getResolutionPath();
-                resource = resolver.resolve(path.concat(DEEP_JSON_SUFFIX));
-                JsonObjectBuilder questionnaire = Json.createObjectBuilder();
-                JsonObject resourceJson = resource.adaptTo(JsonObject.class);
-                this.copyQuestionnaire(resourceJson, questionnaire);
-                builder.add(resourceJson.getString("@name"), questionnaire);
-            }
+        while (results.hasNext()) {
+            Resource resource = results.next();
+            String path = resource.getResourceMetadata().getResolutionPath().concat(DEEP_JSON_SUFFIX);
+            JsonObject resourceJson = resolver.resolve(path).adaptTo(JsonObject.class);
+            JsonObjectBuilder questionnaireBuilder = Json.createObjectBuilder();
+            copyQuestionnaire(resourceJson, questionnaireBuilder);
+            builder.add(resourceJson.getString("title"), questionnaireBuilder);
         }
-        return builder.build();
     }
 
-    private JsonArrayBuilder addMetadataFilters(final boolean addQuestionnaireFilter)
+    /**
+     * Copies the questionnaire definition and all questions as a flat array into a JsonObjectBuilder.
+     *
+     * @param resourceJson A JsonObject representing the definition of the questionnaire to copy
+     * @param builder A JsonObjectBuilder where the questionnaire metadata and its questions will be copied
+     */
+    private void copyQuestionnaire(JsonObject resourceJson, JsonObjectBuilder builder)
     {
-        JsonArrayBuilder builder = Json.createArrayBuilder();
-        if (addQuestionnaireFilter) {
-            builder.add(generateMetadataFilter("Questionnaire"));
-        }
-        builder.add(generateMetadataFilter("Subject"));
-        builder.add(generateMetadataFilter("Created Date"));
-        return builder;
-    }
-
-    private JsonObjectBuilder generateMetadataFilter(final String text)
-    {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-        final String path = text.replace(" ", "");
-        builder.add("@path", path);
-        builder.add("jcr:uuid", "cards:" + path);
-        builder.add("text", text);
-        builder.add("dataType", path.toLowerCase());
-        return builder;
-    }
-
-    private void copyQuestionnaire(JsonObject resourceJson, JsonObjectBuilder questionnaire)
-    {
-        JsonArrayBuilder sectionBreadcrumbs = Json.createArrayBuilder();
-        JsonArrayBuilder questions = Json.createArrayBuilder();
+        List<String> ancestorSectionLabels = new ArrayList<>();
+        JsonArrayBuilder questionsBuilder = Json.createArrayBuilder();
 
         for (String key : resourceJson.keySet()) {
             if (resourceJson.get(key).getValueType() != ValueType.OBJECT) {
                 // Copy over the non-object keys
-                questionnaire.add(key, resourceJson.get(key));
+                builder.add(key, resourceJson.get(key));
             }
         }
 
-        this.copyQuestions(resourceJson, questions, sectionBreadcrumbs);
-        questionnaire.add("questions", questions);
+        copyQuestions(resourceJson, questionsBuilder, ancestorSectionLabels);
+        builder.add("questions", questionsBuilder);
     }
 
     /**
-     * Accumulates cards:Question fields from the input JsonObject, optionally handling questions that
-     * may already exist in the builder.
+     * Accumulates cards:Question fields from the input JsonObject.
      *
      * @param datum A JsonObject (from an cards:Questionnaire or cards:Section) whose fields may be cards:Questions
-     * @param questions questions
-     * @param sectionBreadcrumbs sectionBreadcrumbs
-     * @return the content matching the query
+     * @param builder A JsonArrayBuilder where the questions are accumulated
+     * @param ancestorSectionLabels A List of Strings containing the labels of all sections that are ancestors of this
+     *     resource according to the parent questionnaire structure
      */
-    private void copyQuestions(JsonObject datum, JsonArrayBuilder questions, JsonArrayBuilder sectionBreadcrumbs)
+    private void copyQuestions(JsonObject datum, JsonArrayBuilder builder, List<String> ancestorSectionLabels)
     {
         for (String key : datum.keySet()) {
             if (datum.get(key).getValueType() == ValueType.OBJECT) {
                 JsonObject object = datum.getJsonObject(key);
                 // Copy over information from children of sections
                 if ("cards:Section".equals(object.getString("jcr:primaryType"))) {
+                    List<String> newAncestorSectionLabels = new ArrayList<>(ancestorSectionLabels);
                     if (object.get("label") != null) {
-                        sectionBreadcrumbs.add(object.get("label"));
+                        newAncestorSectionLabels.add(object.getString("label"));
                     }
-                    this.copyQuestions(object, questions, sectionBreadcrumbs);
+                    this.copyQuestions(object, builder, newAncestorSectionLabels);
                 }
 
                 // Copy over information from this object if this is a question
                 if ("cards:Question".equals(object.getString("jcr:primaryType"))) {
-                    JsonObject amendedDatum = amendWithSectionBreadcrumbs(object, sectionBreadcrumbs);
-                    questions.add(amendedDatum);
+                    builder.add(amendWithSectionBreadcrumbs(object, ancestorSectionLabels));
                 }
             }
         }
@@ -227,19 +237,24 @@ public class FilterServlet extends SlingSafeMethodsServlet
      * Adds a sectionBreadcrumbs field to a question JsonObject.
      *
      * @param question The question as a JsonObject
-     * @param sectionBreadcrumbs sectionBreadcrumbs
-     * @return a new JsonObject with all the fields of question, plus the questionnaireTitle field
+     * @param ancestorSectionLabels A List of Strings containing the labels of all sections that are ancestors of this
+     *     question according to the parent questionnaire structure
+     * @return a JsonObjectBuilder with all the fields of question, plus the list of ancestor section labels
      */
-    private JsonObject amendWithSectionBreadcrumbs(final JsonObject question, final JsonArrayBuilder sectionBreadcrumbs)
+    private JsonObjectBuilder amendWithSectionBreadcrumbs(final JsonObject question,
+        final List<String> ancestorSectionLabels)
     {
         JsonObjectBuilder amended = Json.createObjectBuilder();
         // Copy over all the fields
         for (String key : question.keySet()) {
             amended.add(key, question.get(key));
         }
-        // Add the questionnaire title
-        amended.add("sectionBreadcrumbs", sectionBreadcrumbs);
-        // Build and return
-        return amended.build();
+        // Add the labels of any ancestor sections
+        JsonArrayBuilder ancestorsBuilder = Json.createArrayBuilder();
+        for (String label : ancestorSectionLabels) {
+            ancestorsBuilder.add(label);
+        }
+        amended.add("sectionBreadcrumbs", ancestorsBuilder);
+        return amended;
     }
 }
