@@ -27,6 +27,8 @@ import java.util.UUID;
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.version.VersionManager;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -53,6 +55,8 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
 public class PauseResumeFormEditor extends DefaultEditor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(PauseResumeFormEditor.class);
+
+    private static final String CREATED_STRING = "jcr:created";
 
     private final NodeBuilder currentNodeBuilder;
 
@@ -159,7 +163,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             for (final PropertyIterator forms = subject.getReferences("subject"); forms.hasNext();) {
                 final Node referencedForm = forms.nextProperty().getParent();
                 if (isPauseResumeForm(referencedForm)) {
-                    Calendar referencedDate = referencedForm.getProperty("jcr:created").getDate();
+                    Calendar referencedDate = referencedForm.getProperty(CREATED_STRING).getDate();
                     if (!referencedDate.equals(newDate)
                         && (latestFormDate == null || referencedDate.after(latestFormDate))) {
                         latestFormDate = referencedDate;
@@ -176,7 +180,7 @@ public class PauseResumeFormEditor extends DefaultEditor
 
     private Calendar getFormDate(NodeState after)
     {
-        final String newDateString = after.getProperty("jcr:created").getValue(Type.DATE);
+        final String newDateString = after.getProperty(CREATED_STRING).getValue(Type.DATE);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         final Calendar newDate = Calendar.getInstance();
         try {
@@ -201,6 +205,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             String id = String.valueOf(this.formUtils.getValue(this.formUtils.getAnswer(latestForm, idQuestion)));
             this.createOrEditAnswer(questionnaire, "pause_resume_index", id);
             this.createOrEditAnswer(questionnaire, "enrollment_status", "resumed");
+            this.addFormReference(latestForm, id);
         } else {
             // Default, New form must be a pause form
             this.createOrEditAnswer(questionnaire, "pause_resume_index", null);
@@ -239,7 +244,7 @@ public class PauseResumeFormEditor extends DefaultEditor
         final String uuid = UUID.randomUUID().toString();
         NodeBuilder node = this.currentNodeBuilder.setChildNode(uuid);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        node.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
+        node.setProperty(CREATED_STRING, dateFormat.format(new Date()), Type.DATE);
         node.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
         node.setProperty(FormUtils.QUESTION_PROPERTY, questionUUID, Type.REFERENCE);
         node.setProperty("jcr:primaryType", "cards:TextAnswer", Type.NAME);
@@ -248,6 +253,42 @@ public class PauseResumeFormEditor extends DefaultEditor
         node.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
         // If no value is specified, set the value to be an ID
         node.setProperty("value", value == null ? uuid : value, Type.STRING);
+    }
+
+    private void addFormReference(Node latestForm, String id)
+    {
+        try {
+            final VersionManager versionManager = this.rrp.getThreadResourceResolver().adaptTo(Session.class)
+                .getWorkspace().getVersionManager();
+            String formPath = latestForm.getPath();
+            LOGGER.error("adding reference to {}", formPath);
+            versionManager.checkout(formPath);
+            LOGGER.error("checkout");
+            try {
+                Node latestReference = latestForm.addNode("formReference");
+                latestReference.setProperty(CREATED_STRING, Calendar.getInstance());
+                latestReference.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID());
+                latestReference.setProperty("reference",
+                    this.currentNodeBuilder.getProperty("@path").getValue(Type.STRING));
+                latestReference.setProperty("sling:resourceSuperType", "cards/Resource");
+                latestReference.setProperty("sling:resourceType", "cards/FormReference");
+                latestReference.setPrimaryType("cards:FormReference");
+            } catch (RepositoryException e) {
+                LOGGER.error("Failed to create form reference to {}: {}", id, e.getMessage());
+            }
+            versionManager.checkin(formPath);
+
+            NodeBuilder reference = this.currentNodeBuilder.setChildNode("formReference");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            reference.setProperty(CREATED_STRING, dateFormat.format(new Date()), Type.DATE);
+            reference.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
+            reference.setProperty("reference", latestForm.getIdentifier(), Type.REFERENCE);
+            reference.setProperty("jcr:primaryType", "cards:FormReference", Type.NAME);
+            reference.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
+            reference.setProperty("sling:resourceType", "cards/FormReference", Type.STRING);
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to create form reference for {}: {}", id, e.getMessage());
+        }
     }
 
     /**

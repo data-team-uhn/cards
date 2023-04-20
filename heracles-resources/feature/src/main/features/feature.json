@@ -83,10 +83,16 @@
     }
   ],
   "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~heracles":{
+      "service.ranking:Integer":300,
+      "scripts": [
+        "create service user pause-resume-editor \n set ACL for pause-resume-editor \n   allow jcr:alljcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end"
+      ]
+    },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~heracles":{
       "user.mapping":[
         "io.uhndata.cards.heracles-backend=[sling-readall]",
-        "io.uhndata.cards.heracles-backend:PauseResumeEditor=[sling-readall]"
+        "io.uhndata.cards.heracles-backend:PauseResumeEditor=[pause-resume-editor]"
       ]
     }
   }

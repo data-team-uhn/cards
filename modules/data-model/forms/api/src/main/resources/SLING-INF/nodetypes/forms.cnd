@@ -796,6 +796,9 @@
   // The answers and answer sections recorded in this form.
   + * (cards:Answer, cards:AnswerSection) = cards:Answer
 
+  // A link to another form
+  + * (cards:FormReference) = cards:FormReference
+
 //-----------------------------------------------------------------------------
 // The homepage for the Forms space.
 [cards:FormsHomepage] > sling:Folder
@@ -834,6 +837,30 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/ExternalLink" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+// A link between two forms
+[cards:FormReference] > sling:Folder
+  // Properties:
+
+  // A pseudo-link to the form this answer belongs to.
+  // Normally this wouldn't be necessary, since the hierarchy of the two nodes makes it redundant,
+  // but in queries ISDESCENDANTNODE(answer, form) is not yet efficiently implemented,
+  // so we add this property to be able to do joins on answer.form = form.jcr:uuid.
+  // This doesn't have to be a REFERENCE, since we don't want to overcrowd the references index,
+  // and we don't want to list all the answers when trying to delete a form.
+  - form (STRING) nofulltext
+
+  // The form being referenced.
+  - reference (reference) mandatory nofulltext
+
+  // An optional label to be displayed instead of the default reference display.
+  - label (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/FormReference" mandatory autocreated protected
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected

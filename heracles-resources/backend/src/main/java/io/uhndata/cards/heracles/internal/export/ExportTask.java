@@ -280,7 +280,7 @@ public class ExportTask implements Runnable
     private SubjectContents getSubjectContents(String path, String requestDateStringLower,
         String requestDateStringUpper) throws LoginException
     {
-        String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
+        String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates.relatedForms"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
             + ".dataFilter:statusNot=INCOMPLETE",
             path, escapeForDataUrl(requestDateStringLower),
