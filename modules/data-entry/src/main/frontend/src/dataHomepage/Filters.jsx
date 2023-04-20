@@ -143,13 +143,13 @@ function Filters(props) {
     }
 
     if (data.metadataFilters) {
-	  parseQuestionnaire(data.metadataFilters);
+      parseQuestionnaire(data.metadataFilters);
     }
 
     if (questionnaire) {
       parseQuestionnaire(data.questions);
     } else {
-	  // Parse the response from examining every questionnaire
+      // Parse the response from examining every questionnaire
       for (let [title, thisQuestionnaire] of Object.entries(data)) {
         (thisQuestionnaire["jcr:primaryType"] == "cards:Questionnaire") && parseQuestionnaire(thisQuestionnaire.questions, title);
       }

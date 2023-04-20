@@ -71,16 +71,27 @@ public class FilterServlet extends SlingSafeMethodsServlet
         // Is there a questionnaire specified?
         String questionnaire = request.getParameter("questionnaire");
         String include = request.getParameter("include");
+        boolean includeMetadata = StringUtils.isBlank(include) || "metadata".equals(include);
+        boolean includeQuestions = StringUtils.isBlank(include) || "questions".equals(include);
+
+        // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+
+        // Generate the metadata filters
+        if (includeMetadata) {
+            builder.add("metadataFilters", this.addMetadataFilters(false));
+        }
 
         String homepagePath = request.getResource().getPath();
 
         // If a questionnaire is specified, return all fields by the given questionnaire
         // Otherwise, we return all questionnaires under this node that are visible by the user
         JsonObject allProperties = questionnaire == null
-            ? getAllFieldsFromAllQuestionnaires(request.getResourceResolver(), homepagePath, include)
-            : getAllFields(request.getResourceResolver(), homepagePath + "/" + questionnaire, include);
+            ? getAllFieldsFromAllQuestionnaires(request.getResourceResolver(), homepagePath, builder, includeQuestions)
+            : getAllFields(request.getResourceResolver(), homepagePath + "/" + questionnaire, builder,
+                includeQuestions);
 
-        // Return the entire thing as a json file, except join together fields that have the same name and type
+        // Return the entire thing as a json file
         final Writer out = response.getWriter();
         out.write(allProperties.toString());
     }
@@ -90,24 +101,18 @@ public class FilterServlet extends SlingSafeMethodsServlet
      *
      * @param resolver a reference to a ResourceResolver
      * @param questionnairePath the path to the questionnaire to look up
-     * @param include a parameter that allows to specify which kinds of filters to retrieve
+     * @param builder a builder for creating JsonObject models from scratch
+     * @param includeQuestions a boolean indicator of whether to include questions
      * @return a JsonObject of filterable fields
      */
-    private JsonObject getAllFields(ResourceResolver resolver, String questionnairePath, String include)
+    private JsonObject getAllFields(ResourceResolver resolver, String questionnairePath, JsonObjectBuilder builder,
+        boolean includeQuestions)
     {
         // First, ensure that we're accessing the deep jsonification of the questionnaire
         String fullPath = questionnairePath.endsWith(DEEP_JSON_SUFFIX)
             ? questionnairePath : questionnairePath.concat(DEEP_JSON_SUFFIX);
 
-        // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-
-        // Generate the metadata filters
-        if (StringUtils.isBlank(include) || "metadata".equals(include)) {
-            builder.add("metadataFilters", this.addMetadataFilters(false));
-        }
-
-        if (StringUtils.isBlank(include) || "questions".equals(include)) {
+        if (includeQuestions) {
             // Next, convert it to a deep json object
             final Resource resource = resolver.resolve(fullPath);
             JsonObject resourceJson = resource.adaptTo(JsonObject.class);
@@ -122,10 +127,12 @@ public class FilterServlet extends SlingSafeMethodsServlet
      *
      * @param resolver a reference to a ResourceResolver
      * @param parentPath the path of the parent QuestionnaireHomepage
-     * @param include a parameter that allows to specify which kinds of filters to retrieve
+     * @param builder a builder for creating JsonObject models from scratch
+     * @param includeQuestions a boolean indicator of whether to include questions
      * @return a JsonObject of filterable fields
      */
-    private JsonObject getAllFieldsFromAllQuestionnaires(ResourceResolver resolver, String parentPath, String include)
+    private JsonObject getAllFieldsFromAllQuestionnaires(ResourceResolver resolver, String parentPath,
+        JsonObjectBuilder builder, boolean includeQuestions)
     {
         final StringBuilder query =
             // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
@@ -133,15 +140,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
                 + parentPath + "')");
         final Iterator<Resource> results = resolver.findResources(query.toString(), Query.JCR_SQL2);
 
-        // Generate the output via recursively adding all fields from each questionnaire.
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-
-        // Generate the metadata filters
-        if (StringUtils.isBlank(include) || "metadata".equals(include)) {
-            builder.add("metadataFilters", this.addMetadataFilters(true));
-        }
-
-        if (StringUtils.isBlank(include) || "questions".equals(include)) {
+        if (includeQuestions) {
             while (results.hasNext()) {
                 Resource resource = results.next();
                 String path = resource.getResourceMetadata().getResolutionPath();
