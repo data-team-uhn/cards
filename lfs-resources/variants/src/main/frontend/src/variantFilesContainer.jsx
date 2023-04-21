@@ -926,7 +926,7 @@ export default function VariantFilesContainer() {
             { header: 'Created', size: 10,
               muiTableBodyCellProps: {
                 sx: (theme) => ({
-                  paddingLeft: theme.spacing(1),
+                  paddingLeft: theme.spacing(2),
                   fontWeight: "bold",
                   whiteSpace: 'nowrap',
                 })
