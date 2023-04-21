@@ -51,7 +51,7 @@ function FormView(props) {
   const [ qFetchSent, setQFetchStatus ] = useState(false);
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
   // When a new subject is added, state will be updated from event listener and trigger a livetable refresh
-  const [ requestFetchData, setRequestFetchData ] = useState();
+  const [ refreshRequest, setRefreshRequest ] = useState();
 
   // Column configuration for the LiveTables
   const columns = [
@@ -112,7 +112,7 @@ function FormView(props) {
   // When subject is deleted, trigger a new fetch in Forms live table
   useEffect(() => {
     function updateRequestFetchData(event) {
-      setRequestFetchData(event);
+      setRefreshRequest(event);
     }
     // subscribe event
     window.addEventListener("SubjectDeleted",  updateRequestFetchData);
@@ -168,7 +168,7 @@ function FormView(props) {
           questionnaire={questionnaire}
           entryType="Form"
           actions={actions}
-          updateData={requestFetchData}
+          updateData={refreshRequest}
           disableTopPagination={!topPagination}
           onFiltersChange={(str) => { setFiltersJsonString(str); }}
           filtersJsonString={filtersJsonString}

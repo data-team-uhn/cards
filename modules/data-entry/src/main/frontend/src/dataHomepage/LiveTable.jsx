@@ -237,7 +237,7 @@ function LiveTable(props) {
         key={index}
         entryPath={entry["@path"]}
         entryName={getEntityIdentifier(entry)}
-        onComplete={() => {refresh(); onDone && onDone();}}
+        onComplete={() => {refresh(); onDone?.();}}
         entryType={entryType}
         entryLabel={entry["jcr:primaryType"] == "cards:Subject" ? entry.type?.label : ''}
         admin={admin} />
