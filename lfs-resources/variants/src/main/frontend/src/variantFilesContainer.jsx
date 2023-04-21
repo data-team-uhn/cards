@@ -90,6 +90,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(5)
   },
   dialogContent: {
+    padding: theme.spacing(0, 1),
     minWidth: "500px"
   },
   closeButton: {
@@ -917,6 +918,7 @@ export default function VariantFilesContainer() {
           enableColumnFilters={false}
           enableSorting={false}
           enableTopToolbar={false}
+          muiTablePaperProps={{ elevation: 0 }}
           muiTableBodyRowProps={{
             sx: {
               verticalAlign: 'top',
