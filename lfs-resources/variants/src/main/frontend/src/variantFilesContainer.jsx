@@ -925,11 +925,11 @@ export default function VariantFilesContainer() {
           columns={[
             { header: 'Created', size: 10,
               muiTableBodyCellProps: {
-                sx: {
-                  paddingLeft: 0,
+                sx: (theme) => ({
+                  paddingLeft: theme.spacing(1),
                   fontWeight: "bold",
                   whiteSpace: 'nowrap',
-                }
+                })
               },
               Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
                                   {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd")}
