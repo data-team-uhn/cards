@@ -65,6 +65,9 @@ const questionnaireStyle = theme => ({
       }
     },
     informationCard: {
+      "& .MuiCardContent-root" : {
+        padding: theme.spacing(1.5, 2),
+      },
     },
     viewModeAnswers :{
       "& .MuiList-root": {
