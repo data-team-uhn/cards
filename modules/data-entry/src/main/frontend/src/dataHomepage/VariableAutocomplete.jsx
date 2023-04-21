@@ -106,10 +106,10 @@ let VariableAutocomplete = (props) => {
       onChange={(event, value) => onValueChanged(getOptionValue(value))}
       renderOption={(props, option) =>
         <ListItemButton
+          {...props}
           value={getOptionValue(option)}
           key={getOptionValue(option)}
           dense
-          {...props}
         >
           <ListItemText
             sx={groupBy ? {marginLeft: !!groupBy(option) ? 1 : -1} : undefined}
