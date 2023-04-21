@@ -120,7 +120,7 @@ public class QueryBuilder implements Use
     private ResourceResolver resourceResolver;
 
     /** Whether or not the input should be escaped, if it is used in a contains() call. */
-    private boolean shouldEscape;
+    private boolean disableEscaping;
 
     /** A token sent in the request to be copied in the response, to help distinguish between multiple requests. */
     private String requestID;
@@ -168,7 +168,7 @@ public class QueryBuilder implements Use
             this.limit = getLongValueOrDefault(request.getParameter("limit"), 10);
             this.resourceTypes = request.getParameterValues("allowedResourceTypes");
             final String doNotEscape = request.getParameter("doNotEscapeQuery");
-            this.shouldEscape = !("true".equals(doNotEscape));
+            this.disableEscaping = "true".equals(doNotEscape);
             final String showTotalRowsParam = request.getParameter("showTotalRows");
             this.showTotalRows = StringUtils.isBlank(showTotalRowsParam) || "true".equals(showTotalRowsParam);
 
@@ -511,7 +511,7 @@ public class QueryBuilder implements Use
      */
     private String fullTextEscape(String input)
     {
-        if (!this.shouldEscape) {
+        if (this.disableEscaping) {
             return input;
         }
 
