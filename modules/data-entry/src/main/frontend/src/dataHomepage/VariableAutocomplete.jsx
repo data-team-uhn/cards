@@ -113,8 +113,9 @@ let VariableAutocomplete = (props) => {
         >
           <ListItemText
             sx={groupBy ? {marginLeft: !!groupBy(option) ? 1 : -1} : undefined}
-            primary={<FormattedText variant="inherit">{ getOptionLabel(option) }</FormattedText>}
-            secondary={getOptionSecondaryLabel(option)}
+            disableTypography
+            primary={<FormattedText variant="body1">{ getOptionLabel(option) }</FormattedText>}
+            secondary={<FormattedText variant="body2" color="textSecondary">{ getOptionSecondaryLabel(option) }</FormattedText>}
           />
         </ListItemButton>
       }
