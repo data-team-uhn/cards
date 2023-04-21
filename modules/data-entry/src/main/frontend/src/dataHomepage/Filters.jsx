@@ -129,12 +129,16 @@ function Filters(props) {
     let newQuestionDefinitions = {};
     let newAutoselectOptions = [];
 
-    let parseQuestionnaire = (questions, title) => {
-      for (let question of questions) {
-        let path = question["@path"];
-        newQuestionDefinitions[path] = question;
-        
-        let option = {path : path, label: question.text, sectionBreadcrumbs: question.sectionBreadcrumbs};
+    let parseFilterList = (entries, title) => {
+      for (let entry of entries) {
+        let path = entry["@path"];
+        newQuestionDefinitions[path] = entry;
+
+        let option = {
+          path : path,
+          label: entry.text,
+          breadcrumbs: entry.sectionBreadcrumbs?.join(" / ")
+        };
         if (title) {
           option.category = title;
         }
@@ -143,15 +147,15 @@ function Filters(props) {
     }
 
     if (data.metadataFilters) {
-      parseQuestionnaire(data.metadataFilters);
+      parseFilterList(data.metadataFilters);
     }
 
     if (questionnaire) {
-      parseQuestionnaire(data.questions);
+      parseFilterList(data.questions);
     } else {
       // Parse the response from examining every questionnaire
       for (let [title, thisQuestionnaire] of Object.entries(data)) {
-        (thisQuestionnaire["jcr:primaryType"] == "cards:Questionnaire") && parseQuestionnaire(thisQuestionnaire.questions, title);
+        (thisQuestionnaire["jcr:primaryType"] == "cards:Questionnaire") && parseFilterList(thisQuestionnaire.questions, title);
       }
     }
 
@@ -442,7 +446,7 @@ function Filters(props) {
                       options={autoselectOptions}
                       groupBy={option => option?.category}
                       getOptionValue={option => option?.path}
-                      getOptionSecondaryLabel={option => option?.sectionBreadcrumbs?.join(" / ")}
+                      getOptionSecondaryLabel={option => option?.breadcrumbs}
                       getHelperText={option => option?.category}
                       textFieldProps={{placeholder: "Add new filter..."}}
                     />
