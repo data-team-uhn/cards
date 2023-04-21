@@ -96,6 +96,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     private final ThreadLocal<List<ResourceJsonProcessor>> labelProcessors = new ThreadLocal<>();
 
+    private final ThreadLocal<Boolean> groupNullAndFalse = new ThreadLocal<>();
+
     @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -137,10 +139,14 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 // filter if splitVar exists
                 dataById = filterAnswersWithType(data, correctSubjectType);
             } else {
+                final String answerNodeType = getAnswerNodeType(question);
+                final String groupNullAndFalseFlag = arguments.get("groupNullAndFalse");
+                this.groupNullAndFalse.set("cards:BooleanAnswer".equals(answerNodeType)
+                    && "true".equals(groupNullAndFalseFlag));
                 // filter if split does not exist
                 final StringBuilder query =
                     // We select all answers that answer our question
-                    new StringBuilder("select n from [" + getAnswerNodeType(question) + "] as n where n.'question'='"
+                    new StringBuilder("select n from [" + answerNodeType + "] as n where n.'question'='"
                         + question.getIdentifier() + "' order by n.'value' desc");
                 answers = request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
                 answers = filterAnswersToSubjectType(answers, correctSubjectType);
@@ -478,7 +484,13 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         JsonValue jsonValue = answerJson.get(LABEL_PROP);
         try {
             if (!answer.hasProperty(VALUE_PROP)) {
-                recordEmptyAnswerValue(values, valueDictionary);
+                if (this.groupNullAndFalse.get()) {
+                    // for any Boolean variables, count all “Not specified” answers under “false”
+                    // if groupNullAndFalse is true for that statistic
+                    recordAnswerValue(values, valueDictionary, "false", "false");
+                } else {
+                    recordEmptyAnswerValue(values, valueDictionary);
+                }
                 return values;
             }
             Property rawValue = answer.getProperty(VALUE_PROP);

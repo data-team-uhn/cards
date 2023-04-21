@@ -17,6 +17,7 @@
     "type": "reference",
     "primaryType": "cards:Question"
   },
+  "groupNullAndFalse" : "boolean",
   "order": "long",
   "//REQUIRED": ["name", "xVar", "yVar"]
 }
