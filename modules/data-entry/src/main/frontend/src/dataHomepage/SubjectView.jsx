@@ -78,7 +78,9 @@ function SubjectView(props) {
     },
   ]
   const actions = [
-    DeleteButton
+    { component: DeleteButton,
+      onActionDone: () => window.dispatchEvent(new Event("SubjectDeleted"))
+    }
   ]
 
   let fetchSubjectTypes = () => {
@@ -153,7 +155,7 @@ function SubjectView(props) {
               columns={columns || defaultColumns}
               customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
               defaultLimit={10}
-              entryType={"Subject"}
+              entryType="Subject"
               actions={actions}
               disableTopPagination={!topPagination}
               filters

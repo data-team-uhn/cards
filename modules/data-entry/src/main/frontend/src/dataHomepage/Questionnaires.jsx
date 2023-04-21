@@ -51,9 +51,9 @@ function Questionnaires(props) {
     },
   ]
   const actions = [
-    DeleteButton,
-    ExportButton,
-    EditButton
+    { component: DeleteButton },
+    { component: ExportButton },
+    { component: EditButton }
   ]
 
   return (

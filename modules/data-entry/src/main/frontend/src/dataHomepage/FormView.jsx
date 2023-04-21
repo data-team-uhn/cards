@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -50,6 +50,8 @@ function FormView(props) {
   const [ questionnairePath, setQuestionnairePath ] = useState();
   const [ qFetchSent, setQFetchStatus ] = useState(false);
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
+  // When a new subject is added, state will be updated from event listener and trigger a livetable refresh
+  const [ requestFetchData, setRequestFetchData ] = useState();
 
   // Column configuration for the LiveTables
   const columns = [
@@ -71,8 +73,8 @@ function FormView(props) {
     },
   ]
   const actions = [
-    DeleteButton,
-    EditButton
+    { component: DeleteButton },
+    { component: EditButton }
   ]
 
   const tabFilter = {
@@ -106,6 +108,19 @@ function FormView(props) {
       });
     }
   }
+
+  // When subject is deleted, trigger a new fetch in Forms live table
+  useEffect(() => {
+    function updateRequestFetchData(event) {
+      setRequestFetchData(event);
+    }
+    // subscribe event
+    window.addEventListener("SubjectDeleted",  updateRequestFetchData);
+    return () => {
+      // unsubscribe event
+      document.removeEventListener("SubjectDeleted",  updateRequestFetchData);
+    };
+  }, []);
 
   return (
     <Card className={classes.formView}>
@@ -151,8 +166,9 @@ function FormView(props) {
           defaultLimit={10}
           filters
           questionnaire={questionnaire}
-          entryType={"Form"}
+          entryType="Form"
           actions={actions}
+          updateData={requestFetchData}
           disableTopPagination={!topPagination}
           onFiltersChange={(str) => { setFiltersJsonString(str); }}
           filtersJsonString={filtersJsonString}

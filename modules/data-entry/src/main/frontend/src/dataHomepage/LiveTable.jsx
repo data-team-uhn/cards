@@ -82,18 +82,6 @@ function LiveTable(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  // When data is changed, trigger a new fetch in Forms table
-  useEffect(() => {
-    if (entryType == "Form") {
-      // subscribe event
-      window.addEventListener("SubjectDeleted",  refresh);
-      return () => {
-        // unsubscribe event
-        document.removeEventListener("SubjectDeleted",  refresh);
-      };
-    }
-  }, [entryType]);
-
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
@@ -107,6 +95,11 @@ function LiveTable(props) {
       refresh();
     }
   }, [customUrl]);
+
+  // Initialize the component: if there's no data loaded yet, fetch the first page
+  useEffect(() => {
+    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
+  }, [fetchStatus.currentRequestNumber]);
 
   let refresh = () => {
     setFetchStatus(Object.assign({}, fetchStatus, {
@@ -237,12 +230,14 @@ function LiveTable(props) {
   };
 
   let makeActions = (entry, actions, index) => {
-    let content = actions.map((Action, index) => {
+    let content = actions.map((item, index) => {
+      let Action = item.component;
+      let onDone = item.onActionDone;
       return <Action
         key={index}
         entryPath={entry["@path"]}
         entryName={getEntityIdentifier(entry)}
-        onComplete={() => {refresh(); entryType == "Subject" && window.dispatchEvent(new Event("SubjectDeleted"));}}
+        onComplete={() => {refresh(); onDone && onDone();}}
         entryType={entryType}
         entryLabel={entry["jcr:primaryType"] == "cards:Subject" ? entry.type?.label : ''}
         admin={admin} />
@@ -337,11 +332,6 @@ function LiveTable(props) {
       });
     }
   }
-
-  // Initialize the component: if there's no data loaded yet, fetch the first page
-  useEffect(() => {
-    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
-  }, [fetchStatus.currentRequestNumber]);
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // The rendering code
