@@ -447,7 +447,7 @@ function Filters(props) {
                       groupBy={option => option?.category}
                       getOptionValue={option => option?.path}
                       getOptionSecondaryLabel={option => option?.breadcrumbs}
-                      getHelperText={option => option?.category}
+                      getHelperText={option => [option?.category, option?.breadcrumbs].filter(t=>t).join(": ")}
                       textFieldProps={{placeholder: "Add new filter..."}}
                     />
                   </Grid>
