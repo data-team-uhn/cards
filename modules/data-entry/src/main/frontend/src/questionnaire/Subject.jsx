@@ -483,11 +483,6 @@ function SubjectMemberInternal (props) {
                 muiTableBodyCellProps={{
                   sx: {
                     flex: '0 0 auto',
-                  },
-                }}
-                muiTableDetailPanelProps={{
-                  sx: {
-                    paddingTop: '0',
                   }
                 }}
                 renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
