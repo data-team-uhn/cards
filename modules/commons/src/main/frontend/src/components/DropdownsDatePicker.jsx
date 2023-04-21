@@ -23,7 +23,7 @@
 //
 
 import React, { useState, useEffect } from "react";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Stack, TextField } from "@mui/material";
 import { createFilterOptions } from "@mui/material/Autocomplete";
 import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from "prop-types";
@@ -55,12 +55,15 @@ const useStyles = makeStyles(theme => ({
     }
   },
   stretch: {
-    "& > *" : {
-      minWidth: "25%",
+    "& > .dropdowndate-year" : {
+      minWidth: "30%",
     },
     "& > .dropdowndate-month" : {
       minWidth: "50%",
-    }
+    },
+    "& > .dropdowndate-day" : {
+      minWidth: "20%",
+    },
   },
   withShortMonth : {
     "& > *" : {
@@ -230,6 +233,7 @@ function DropdownsDatePicker(props) {
         options={years}
         onChange={handleYearChange}
         value={selectedYear}
+        className="dropdowndate-year"
         renderInput={(params) => renderInput(params, DropdownDate.year)}
       />
     )
@@ -239,6 +243,7 @@ function DropdownsDatePicker(props) {
     return (
       <Autocomplete
         key="month"
+        openOnFocus
         {...aParams}
         options={months}
         filterOptions={filterOptions}
@@ -254,11 +259,13 @@ function DropdownsDatePicker(props) {
     return (
       <Autocomplete
         key="day"
+        openOnFocus
         {...aParams}
         options={days}
         filterOptions={filterOptions}
-        value={selectedDay}
         onChange={handleDayChange}
+        value={selectedDay}
+        className="dropdowndate-day"
         renderInput={(params) => renderInput(params, DropdownDate.day)}
       />
     )
@@ -279,9 +286,9 @@ function DropdownsDatePicker(props) {
   }
 
   return (
-    <div id="dropdown-date" className={containerClasses.join(' ')}>
+    <Stack direction="row" id="dropdown-date" className={containerClasses.join(' ')}>
       { order.map(part => { return renderParts[part]() }) }
-    </div>
+    </Stack>
   );
 }
 
