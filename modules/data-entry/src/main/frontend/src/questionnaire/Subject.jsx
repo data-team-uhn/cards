@@ -485,6 +485,12 @@ function SubjectMemberInternal (props) {
                     flex: '0 0 auto',
                   }
                 }}
+                muiTableDetailPanelProps={{
+                  sx: (theme) => ({
+                    marginLeft: theme.spacing(9),
+                    width: '100%'
+                  })
+                }}
                 renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
                 defaultColumn={{
                   minSize: 20,

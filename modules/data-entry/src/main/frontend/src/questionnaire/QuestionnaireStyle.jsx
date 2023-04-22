@@ -548,7 +548,6 @@ const questionnaireStyle = theme => ({
     },
     formPreview: {
         padding: theme.spacing(1),
-        marginLeft: theme.spacing(9),
         background: theme.palette.action.hover,
     },
     formPreviewQuestion: {
