@@ -207,22 +207,6 @@ function NewFormDialog(props) {
     }
   }
 
-  // if the number of related forms of a certain questionnaire type is at the maxPerSubject, an error is set
-  useEffect(() => {
-    // only considers currentSubject, since setting this error would only be necessary on the 'Subject' page, which would set a currentSubject
-    if (currentSubject && relatedForms && selectedQuestionnaire) {
-      let atMax = (relatedForms.length && (relatedForms.filter((i) => (i["q.jcr:uuid"] == selectedQuestionnaire["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)));
-      if (atMax) {
-        setError(`${currentSubject?.["type"]["@name"]} ${currentSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
-        setDisableProgress(true);
-      }
-      else {
-        setError("");
-        setDisableProgress(false);
-      }
-    }
-  }, [selectedQuestionnaire]);
-
   // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
     fetchWithReLogin(globalLoginDisplay, `/query?rawResults=true&query=SELECT q.[jcr:uuid] FROM [cards:Questionnaire] AS q inner join [cards:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}'&limit=1000`)
@@ -336,6 +320,29 @@ function NewFormDialog(props) {
     pagination.pageSize
   ]);
 
+  // If the number of related forms of a certain questionnaire type is at the maxPerSubject,
+  // the corresponding row should not be selectable
+  let isRowDisabled = (row) => (
+    relatedForms?.length
+      && (selectedSubject || currentSubject)
+      && (relatedForms.filter(f => f["q.jcr:uuid"] == row.original["jcr:uuid"]).length >= (+(row.original?.["maxPerSubject"]) || undefined))
+  );
+
+  // On click, select the questionnaire row if eligible
+  let onClickRow = (row) => {
+    if (isRowDisabled(row) && currentSubject) {
+      // only considers currentSubject, since setting this error would only be necessary on the 'Subject' page, which would set a currentSubject
+      setError(`${currentSubject?.["type"]["@name"]} ${currentSubject?.["identifier"]} already has ${row.original?.["maxPerSubject"]} ${row.original?.["title"]} form(s) filled out.`);
+      setDisableProgress(true);
+    } else {
+      setSelectedQuestionnaire(row.original);
+      setError("");
+      setDisableProgress(false);
+    }
+  }
+
+  let isRowSelected = (row) => (row.original["jcr:uuid"] === selectedQuestionnaire?.["jcr:uuid"]);
+
   return (
     <React.Fragment>
       <ResponsiveDialog
@@ -383,21 +390,16 @@ function NewFormDialog(props) {
                 data={data}
                 muiTableBodyRowProps={({ row }) => ({
                   sx: {
-                    cursor: 'pointer',
+                    cursor: isRowDisabled(row) ? 'default' : 'pointer',
                   },
-                  onClick: () => { !isFetching && setSelectedQuestionnaire(row.original);
-                                   setError(false);
-                                   row.toggleSelected();
-                                 },
-                  selected: row.original["jcr:uuid"] === selectedQuestionnaire?.["jcr:uuid"],
+                  onClick: () => { onClickRow(row); },
+                  selected: isRowSelected(row),
                 })}
                 muiTableBodyCellProps={({ cell }) => ({
                   sx: {
                     // grey out subjects that have already reached maxPerSubject
-                    color: ((relatedForms?.length && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["q.jcr:uuid"] == cell.row.original["jcr:uuid"])).length >= (+(cell.row.original?.["maxPerSubject"]) || undefined)))
-                    ? theme.palette.grey["500"]
-                    : theme.palette.grey["900"]
-                    )},
+                    color: isRowDisabled(cell.row) ? theme.palette.text.disabled : theme.palette.text.primary,
+                  },
                 })}
               />
             }
