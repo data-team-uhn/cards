@@ -82,6 +82,16 @@ function LiveTable(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  // When data is changed, trigger a new fetch in the table
+  useEffect(() => {
+    // subscribe event
+    window.addEventListener("LivetableRefresh",  refresh);
+    return () => {
+      // unsubscribe event
+      document.removeEventListener("LivetableRefresh",  refresh);
+    };
+  }, [entryType]);
+
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
@@ -230,14 +240,12 @@ function LiveTable(props) {
   };
 
   let makeActions = (entry, actions, index) => {
-    let content = actions.map((item, index) => {
-      let Action = item.component;
-      let onDone = item.onActionDone;
+    let content = actions.map((Action, index) => {
       return <Action
         key={index}
         entryPath={entry["@path"]}
         entryName={getEntityIdentifier(entry)}
-        onComplete={() => {refresh(); onDone?.();}}
+        onComplete={refresh}
         entryType={entryType}
         entryLabel={entry["jcr:primaryType"] == "cards:Subject" ? entry.type?.label : ''}
         admin={admin} />

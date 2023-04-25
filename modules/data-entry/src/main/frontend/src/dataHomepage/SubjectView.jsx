@@ -38,7 +38,7 @@ import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LaunchIcon from '@mui/icons-material/Launch';
-import DeleteButton from "./DeleteButton.jsx";
+import DeleteRefreshButton from "./DeleteRefreshButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import NewItemButton from "../components/NewItemButton.jsx";
@@ -78,9 +78,7 @@ function SubjectView(props) {
     },
   ]
   const actions = [
-    { component: DeleteButton,
-      onActionDone: () => window.dispatchEvent(new Event("SubjectDeleted"))
-    }
+    DeleteRefreshButton
   ]
 
   let fetchSubjectTypes = () => {
@@ -155,7 +153,7 @@ function SubjectView(props) {
               columns={columns || defaultColumns}
               customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
               defaultLimit={10}
-              entryType="Subject"
+              entryType={"Subject"}
               actions={actions}
               disableTopPagination={!topPagination}
               filters
