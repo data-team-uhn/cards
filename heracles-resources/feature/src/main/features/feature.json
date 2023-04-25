@@ -103,7 +103,7 @@
         "set properties on /Metrics/S3ExportFailures/name \n   default value{String} to \"{003} Number Of Failed S3 export jobs\" \n end",
         "set properties on /Metrics/S3ExportFailures/prevTotal \n   default value{Long} to 0 \n end",
         "create service user cards-exporter with path system/cards \n set ACL for cards-exporter \n   allow jcr:read on / \n end",
-        "create service user pause-resume-editor \n set ACL for pause-resume-editor \n   allow jcr:alljcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end"
+        "create service user pause-resume-editor \n set ACL for pause-resume-editor \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~heracles":{
