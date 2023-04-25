@@ -38,7 +38,7 @@ import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LaunchIcon from '@mui/icons-material/Launch';
-import DeleteRefreshButton from "./DeleteRefreshButton.jsx";
+import DeleteWithRefreshButton from "./DeleteWithRefreshButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import NewItemButton from "../components/NewItemButton.jsx";
@@ -78,7 +78,7 @@ function SubjectView(props) {
     },
   ]
   const actions = [
-    DeleteRefreshButton
+    DeleteWithRefreshButton
   ]
 
   let fetchSubjectTypes = () => {
