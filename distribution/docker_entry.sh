@@ -54,7 +54,7 @@ fi
 [[ "${CARDS_PROJECT}" == 'cards4proms' || "${CARDS_PROJECT}" == 'cards4prems' ]] && SMTPS_ENABLED="true"
 
 [[ "${CARDS_PROJECT}" == 'cards4prems' ]] && CSV_EXPORT_ENABLED="true"
-[[ "${CARDS_PROJECT}" == 'cards4prems' ]] && CLARITY_IMPORT_ENABLED="true"
+[[ "${CARDS_PROJECT}" == 'cards4proms' || "${CARDS_PROJECT}" == 'cards4prems' ]] && CLARITY_IMPORT_ENABLED="true"
 
 if [ ! -z $DEV ]
 then
