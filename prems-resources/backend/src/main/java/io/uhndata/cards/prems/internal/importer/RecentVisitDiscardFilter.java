@@ -60,8 +60,6 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
 
     private final boolean enabled;
 
-    private final String subjectIDColumn;
-
     private final int minimumFrequency;
 
     @Reference
@@ -90,16 +88,12 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
         @AttributeDefinition(name = "Minimum Frequency",
             description = "Minimum period in days between sending surveys to a patient")
         int minimum_visit_frequency();
-
-        @AttributeDefinition(name = "Subject ID Column", description = "Clarity column containing the patient ID.")
-        String subject_id_column();
     }
 
     @Activate
     public RecentVisitDiscardFilter(final Config configuration)
     {
         this.enabled = configuration.enable();
-        this.subjectIDColumn = configuration.subject_id_column();
         this.minimumFrequency = configuration.minimum_visit_frequency();
     }
 
@@ -109,21 +103,21 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
         if (!this.enabled || this.minimumFrequency <= 0) {
             return input;
         }
-        final String mrn = input.get(this.subjectIDColumn);
+        final String subjectId = input.get("/SubjectTypes/Patient");
         final String id = input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown");
 
-        if (mrn == null || mrn.length() == 0) {
-            LOGGER.warn("Discarded visit {} due to no mrn", id);
+        if (subjectId == null || subjectId.length() == 0) {
+            LOGGER.warn("Discarded visit {} due to no subject identifier", id);
             return null;
         } else {
-            // Get all patients with that MRN
+            // Get all patients with that identifier
             ResourceResolver resolver = this.rrp.getThreadResourceResolver();
             String subjectMatchQuery = String.format(
                 "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
-                mrn);
+                subjectId);
             resolver.refresh();
             final Iterator<Resource> subjectResourceIter = resolver.findResources(subjectMatchQuery, "JCR-SQL2");
-            // Should only be 0 or 1 patient with that MRN. Process it if found.
+            // Should only be 0 or 1 patient with that identifier. Process it if found.
             if (subjectResourceIter.hasNext() && subjectHasRecentSurveyEvent(subjectResourceIter.next(), id)) {
                 return null;
             }

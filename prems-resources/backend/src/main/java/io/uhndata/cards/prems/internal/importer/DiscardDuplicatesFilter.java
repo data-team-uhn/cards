@@ -46,36 +46,37 @@ public class DiscardDuplicatesFilter implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscardDuplicatesFilter.class);
 
-    private final ThreadLocal<Set<String>> seenMrns = ThreadLocal.withInitial(HashSet::new);
+    private final ThreadLocal<Set<String>> seenIdentifiers = ThreadLocal.withInitial(HashSet::new);
 
     private final boolean enabled;
 
-    private final String column;
+    private final String subjectType;
 
     @ObjectClassDefinition(name = "Clarity import filter - Discard duplicates",
-        description = "Configuration for the Clarity importer to discard duplicate entries for the same patient")
+        description = "Configuration for the Clarity importer to discard duplicate entries for the same subject")
     public @interface Config
     {
         @AttributeDefinition(name = "Enabled")
         boolean enable() default false;
 
-        @AttributeDefinition(name = "Column", description = "The Clarity column to use for checking uniqueness")
-        String column() default "PAT_MRN";
+        @AttributeDefinition(name = "Subject type",
+            description = "Subject type for which to discard duplicates: a patient or a visit.")
+        String subjectType() default "/SubjectTypes/Patient";
     }
 
     @Activate
     public DiscardDuplicatesFilter(Config config)
     {
         this.enabled = config.enable();
-        this.column = config.column();
+        this.subjectType = config.subjectType();
     }
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
         if (this.enabled) {
-            final String value = input.get(this.column);
-            if (value != null && !this.seenMrns.get().add(value)) {
+            final String subjectIdentifier = input.get(this.subjectType);
+            if (subjectIdentifier != null && !this.seenIdentifiers.get().add(subjectIdentifier)) {
                 LOGGER.warn("DiscardDuplicatesFilter discarded visit {} as duplicate",
                     input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
                 return null;
@@ -87,7 +88,7 @@ public class DiscardDuplicatesFilter implements ClarityDataProcessor
     @Override
     public void end()
     {
-        this.seenMrns.remove();
+        this.seenIdentifiers.remove();
     }
 
     @Override

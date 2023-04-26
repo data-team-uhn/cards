@@ -249,13 +249,11 @@
     // Only send surveys to patients once every 6 months
     "io.uhndata.cards.prems.internal.importer.RecentVisitDiscardFilter": {
       "enable": true,
-      "subject.id.column": "PAT_MRN",
       "minimum.visit.frequency": 183
     },
     // Don't import visits for patients who have opted out of emails
     "io.uhndata.cards.prems.internal.importer.UnsubscribedFilter": {
-      "enable": true,
-      "subject.id.column": "PAT_MRN"
+      "enable": true
     },
     // Only look at events from the participating hospitals, discard everything else
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
@@ -371,7 +369,7 @@
     // Discard duplicates if there's more than one even per patient
     "io.uhndata.cards.prems.internal.importer.DiscardDuplicatesFilter":{
       "enable": true,
-      "column": "PAT_MRN"
+      "subjectType": "/SubjectTypes/Patient"
     },
     // Submission event listener
     "io.uhndata.cards.patients.submissioncounter.SubmissionCounter~SurveysSubmitted":{
