@@ -36,8 +36,8 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  *
  * @version $Id$
  */
-@Designate(ocd = ConfiguredDiscardFilter.Config.class, factory = true)
 @Component
+@Designate(ocd = ConfiguredDiscardFilter.Config.class, factory = true)
 public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfiguredDiscardFilter.class);

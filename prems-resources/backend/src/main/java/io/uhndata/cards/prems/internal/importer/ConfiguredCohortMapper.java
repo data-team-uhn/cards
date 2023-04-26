@@ -36,8 +36,8 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  *
  * @version $Id$
  */
-@Designate(ocd = ConfiguredCohortMapper.Config.class, factory = true)
 @Component
+@Designate(ocd = ConfiguredCohortMapper.Config.class, factory = true)
 public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfiguredCohortMapper.class);

@@ -32,6 +32,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
@@ -51,13 +52,16 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@Component
+@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = RecentVisitDiscardFilter.Config.class)
 public class RecentVisitDiscardFilter implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecentVisitDiscardFilter.class);
 
+    private final boolean enabled;
+
     private final String subjectIDColumn;
+
     private final int minimumFrequency;
 
     @Reference
@@ -77,9 +81,12 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
 
     @ObjectClassDefinition(name = "Clarity import filter - Recent Visit Discarder",
         description = "Configuration for the Clarity importer filter that discards visits for patients who have had "
-        + "surveys sent to them recently.")
+            + "surveys sent to them recently.")
     public @interface Config
     {
+        @AttributeDefinition(name = "Enabled")
+        boolean enable() default false;
+
         @AttributeDefinition(name = "Minimum Frequency",
             description = "Minimum period in days between sending surveys to a patient")
         int minimum_visit_frequency();
@@ -89,15 +96,19 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
     }
 
     @Activate
-    public RecentVisitDiscardFilter(Config configuration)
+    public RecentVisitDiscardFilter(final Config configuration)
     {
+        this.enabled = configuration.enable();
         this.subjectIDColumn = configuration.subject_id_column();
         this.minimumFrequency = configuration.minimum_visit_frequency();
     }
 
     @Override
-    public Map<String, String> processEntry(Map<String, String> input)
+    public Map<String, String> processEntry(final Map<String, String> input)
     {
+        if (!this.enabled || this.minimumFrequency <= 0) {
+            return input;
+        }
         final String mrn = input.get(this.subjectIDColumn);
         final String id = input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown");
 
@@ -181,7 +192,7 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
 
             final Calendar invitationSent =
                 (Calendar) this.formUtils.getValue(
-                this.formUtils.getAnswer(form, invitationSentQuestion));
+                    this.formUtils.getAnswer(form, invitationSentQuestion));
 
             // If no value is set, survey is pending but has not yet been sent.
             // If that is the case or an invitation was sent recently, discard this visit.
