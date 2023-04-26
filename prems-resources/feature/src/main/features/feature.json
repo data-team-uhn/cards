@@ -244,7 +244,9 @@
 
     // Discard patients with invalid or non-consented emails
     "io.uhndata.cards.prems.internal.importer.FilterEmailConsent": {
-      "enable": true
+      "enable": true,
+      "emailColumn": "EMAIL_ADDRESS",
+      "emailConsentColumn": "EMAIL_CONSENT_YN"
     },
     // Only send surveys to patients once every 6 months
     "io.uhndata.cards.prems.internal.importer.RecentVisitDiscardFilter": {

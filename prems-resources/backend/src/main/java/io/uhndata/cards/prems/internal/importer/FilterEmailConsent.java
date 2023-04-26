@@ -21,6 +21,7 @@ package io.uhndata.cards.prems.internal.importer;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -47,6 +48,10 @@ public class FilterEmailConsent implements ClarityDataProcessor
 
     private final boolean enabled;
 
+    private final String consentColumn;
+
+    private final String emailColumn;
+
     @ObjectClassDefinition(name = "Clarity import filter - Discard invalid or non-consented emails",
         description = "Configuration for the Clarity importer to discard entries for patients who did not consent to"
             + " receving emails, or who provided an invalid email address")
@@ -54,12 +59,20 @@ public class FilterEmailConsent implements ClarityDataProcessor
     {
         @AttributeDefinition(name = "Enabled")
         boolean enable() default false;
+
+        @AttributeDefinition(name = "Email address column", description = "If not provided, validity is not checked")
+        String emailColumn();
+
+        @AttributeDefinition(name = "Email consent column.", description = "If not provided, consent is not checked")
+        String emailConsentColumn();
     }
 
     @Activate
     public FilterEmailConsent(Config config)
     {
         this.enabled = config.enable();
+        this.consentColumn = config.emailConsentColumn();
+        this.emailColumn = config.emailColumn();
     }
 
     @Override
@@ -68,13 +81,23 @@ public class FilterEmailConsent implements ClarityDataProcessor
         if (!this.enabled) {
             return input;
         }
-        final String email = input.get("EMAIL_ADDRESS");
-        final Boolean consent = "Yes".equalsIgnoreCase(input.get("EMAIL_CONSENT_YN"));
-        if (consent && EmailValidator.getInstance().isValid(email)) {
-            return input;
+
+        // Discard invalid email addresses, if configured
+        if (StringUtils.isNotBlank(this.emailColumn)
+            && !EmailValidator.getInstance().isValid(input.get(this.emailColumn))) {
+            LOGGER.warn("Discarded visit {} due to invalid email",
+                input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
+            return null;
         }
-        LOGGER.warn("Discarded visit {}", input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
-        return null;
+
+        // Discard non-consented patients, if configured
+        if (StringUtils.isNotBlank(this.consentColumn) && !"Yes".equalsIgnoreCase(input.get(this.consentColumn))) {
+            LOGGER.warn("Discarded visit {} due to patient not consenting to receiving emails",
+                input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
+            return null;
+        }
+
+        return input;
     }
 
     @Override
