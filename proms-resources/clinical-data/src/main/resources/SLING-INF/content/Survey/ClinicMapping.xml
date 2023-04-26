@@ -26,25 +26,6 @@
         <type>String</type>
     </property>
     <node>
-        <name>481110456</name>
-        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
-        <property>
-            <name>clinicName</name>
-            <value>3542-CPH-Mood Disorders/Psychopharmacology</value>
-            <type>String</type>
-        </property>
-        <property>
-            <name>survey</name>
-            <value>Mood</value>
-            <type>String</type>
-        </property>
-        <property>
-            <name>displayName</name>
-            <value>Mood Disorders</value>
-            <type>String</type>
-        </property>
-    </node>
-    <node>
         <name>853703519</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
