@@ -59,6 +59,11 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
+      <groupId>commons-validator</groupId>
+      <artifactId>commons-validator</artifactId>
+      <version>1.7</version>
+    </dependency>
+    <dependency>
       <groupId>javax.json</groupId>
       <artifactId>javax.json-api</artifactId>
     </dependency>
@@ -90,6 +95,16 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>cards-resolver-provider</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-data-model-forms-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-data-model-subjects-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
