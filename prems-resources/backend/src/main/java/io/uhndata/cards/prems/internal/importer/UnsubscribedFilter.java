@@ -58,8 +58,6 @@ public class UnsubscribedFilter implements ClarityDataProcessor
 
     private final boolean enabled;
 
-    private final String subjectIDColumn;
-
     @Reference
     private ThreadResourceResolverProvider rrp;
 
@@ -82,16 +80,12 @@ public class UnsubscribedFilter implements ClarityDataProcessor
     {
         @AttributeDefinition(name = "Enabled")
         boolean enable() default false;
-
-        @AttributeDefinition(name = "Subject ID Column", description = "Clarity column containing the patient ID.")
-        String subject_id_column();
     }
 
     @Activate
     public UnsubscribedFilter(Config configuration)
     {
         this.enabled = configuration.enable();
-        this.subjectIDColumn = configuration.subject_id_column();
     }
 
     @Override
@@ -100,7 +94,7 @@ public class UnsubscribedFilter implements ClarityDataProcessor
         if (!this.enabled) {
             return input;
         }
-        final String mrn = input.get(this.subjectIDColumn);
+        final String mrn = input.get("/SubjectTypes/Patient");
         final String id = input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown");
 
         if (mrn == null || mrn.length() == 0) {
