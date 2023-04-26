@@ -40,8 +40,8 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  *
  * @version $Id$
  */
+@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = DiscardDuplicatesFilter.Config.class)
-@Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DiscardDuplicatesFilter implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscardDuplicatesFilter.class);

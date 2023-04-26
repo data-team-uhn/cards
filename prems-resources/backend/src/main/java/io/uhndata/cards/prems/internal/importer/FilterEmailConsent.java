@@ -22,7 +22,12 @@ package io.uhndata.cards.prems.internal.importer;
 import java.util.Map;
 
 import org.apache.commons.validator.routines.EmailValidator;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,14 +39,35 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  *
  * @version $Id$
  */
-@Component
+@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Designate(ocd = FilterEmailConsent.Config.class)
 public class FilterEmailConsent implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(FilterEmailConsent.class);
 
+    private final boolean enabled;
+
+    @ObjectClassDefinition(name = "Clarity import filter - Discard invalid or non-consented emails",
+        description = "Configuration for the Clarity importer to discard entries for patients who did not consent to"
+            + " receving emails, or who provided an invalid email address")
+    public @interface Config
+    {
+        @AttributeDefinition(name = "Enabled")
+        boolean enable() default false;
+    }
+
+    @Activate
+    public FilterEmailConsent(Config config)
+    {
+        this.enabled = config.enable();
+    }
+
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
+        if (!this.enabled) {
+            return input;
+        }
         final String email = input.get("EMAIL_ADDRESS");
         final Boolean consent = "Yes".equalsIgnoreCase(input.get("EMAIL_CONSENT_YN"));
         if (consent && EmailValidator.getInstance().isValid(email)) {
