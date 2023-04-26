@@ -368,7 +368,7 @@
       "clinic": "/Survey/ClinicMapping/-1792626663",
       "conditions": ["CLINIC is empty"]
     },
-    // Discard duplicates if there's more than one even per patient
+    // Discard duplicates if there's more than one event per patient
     "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
       "enable": true,
       "subjectType": "/SubjectTypes/Patient"

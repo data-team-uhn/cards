@@ -68,7 +68,7 @@
         "io.uhndata.cards.proms-permissions:UnsubmittedFormsRestriction=[sling-readall]",
         "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]"
       ]
-    // },
+    },
     // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
     //   "name": "InitialNotificationsTask",
     //   "metricName": "Initial Emails Sent",
@@ -82,12 +82,58 @@
     //   "clinicId": "/Proms/ClinicMapping/853703519",
     //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/ReminderNotification",
     //   "daysToVisit": 1
-    },
+    // },
 
     // Enable the Survey Tracker
     "io.uhndata.cards.patients.surveytracker.SurveyTracker":{
       "trackSubmissions": true,
       "trackEmails": true
+    },
+
+    // Clarity import
+    "io.uhndata.cards.clarity.importer.NightlyClarityImport": {
+      "nightly.import.schedule": "0 15 7 * * ? *",
+      "pastDayToImport": 0
+    },
+
+    // Clarity import filters and mappers
+
+    // Discard patients with invalid emails
+    "io.uhndata.cards.clarity.importer.internal.EmailConsentFilter": {
+      "enable": true,
+      "emailColumn": "EMAIL",
+      "emailConsentColumn": ""
+    },
+    // Only look at events from the participating clinics, discard everything else
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingClinics":{
+      "priority": 10,
+      "conditions": [
+        "ENCOUNTER_CLINIC <> TG-PMCC CARDIAC CLINICS DIAGNOSTIC"
+      ]
+    },
+    // Only look at non-canceled events
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingClinics":{
+      "priority": 10,
+      "conditions": ["ENCOUNTER_STATUS = Canceled"
+      ]
+    },
+    // Assign patients from the cardiac clinic to the Cardio cohort
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-Cardio":{
+      "priority": 40,
+      "clinic": "/Survey/ClinicMapping/853703519",
+      "conditions": ["ENCOUNTER_CLINIC = TG-PMCC CARDIAC CLINICS DIAGNOSTIC"]
+    },
+    // Discard duplicates if there's more than one event per visit
+    "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
+      "enable": true,
+      "subjectType": "/SubjectTypes/Patient/Visit"
+    },
+    // Submission event listener
+    "io.uhndata.cards.patients.submissioncounter.SubmissionCounter~SurveysSubmitted":{
+      "name": "Patient Survey Completion Listener",
+      "submittedFlagPath": "/Questionnaires/Visit information/surveys_submitted",
+      "linkingSubjectType": "/SubjectTypes/Patient/Visit",
+      "excludedQuestionnaires": ["/Questionnaires/Survey events"]
     }
   }
 }
