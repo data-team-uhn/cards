@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.internal.importer;
+package io.uhndata.cards.clarity.importer.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
