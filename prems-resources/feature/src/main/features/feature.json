@@ -243,7 +243,7 @@
     // Clarity import filters and mappers
 
     // Discard patients with invalid or non-consented emails
-    "io.uhndata.cards.clarity.importer.internal.FilterEmailConsent": {
+    "io.uhndata.cards.clarity.importer.internal.EmailConsentFilter": {
       "enable": true,
       "emailColumn": "EMAIL_ADDRESS",
       "emailConsentColumn": "EMAIL_CONSENT_YN"

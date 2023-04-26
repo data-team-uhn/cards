@@ -41,10 +41,10 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  * @version $Id$
  */
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
-@Designate(ocd = FilterEmailConsent.Config.class)
-public class FilterEmailConsent implements ClarityDataProcessor
+@Designate(ocd = EmailConsentFilter.Config.class)
+public class EmailConsentFilter implements ClarityDataProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilterEmailConsent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailConsentFilter.class);
 
     private final boolean enabled;
 
@@ -68,7 +68,7 @@ public class FilterEmailConsent implements ClarityDataProcessor
     }
 
     @Activate
-    public FilterEmailConsent(Config config)
+    public EmailConsentFilter(Config config)
     {
         this.enabled = config.enable();
         this.consentColumn = config.emailConsentColumn();
