@@ -91,7 +91,7 @@ public class UnsubscribedFilter implements ClarityDataProcessor
     public Map<String, String> processEntry(Map<String, String> input)
     {
         final String mrn = input.get(this.subjectIDColumn);
-        final String id = input.getOrDefault("PAT_ENC_CSN_ID", "Unknown");
+        final String id = input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown");
 
         if (mrn == null || mrn.length() == 0) {
             LOGGER.warn("Discarded visit {} due to no mrn", id);

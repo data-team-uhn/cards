@@ -436,6 +436,7 @@ public class ClarityImportTask implements Runnable
         for (int column = 1; column <= columnCount; column++) {
             row.put(sqlRow.getMetaData().getColumnName(column), sqlRow.getString(column));
         }
+        addSubjectIdentifiersToData(row, this.clarityImportConfiguration.get());
 
         for (ClarityDataProcessor processor : processors) {
             try {
@@ -450,6 +451,12 @@ public class ClarityImportTask implements Runnable
         // Recursively move down the local Clarity Import configuration tree
         walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
             resolver.resolve("/Subjects"));
+    }
+
+    private void addSubjectIdentifiersToData(final Map<String, String> row, final ClaritySubjectMapping subjectMapping)
+    {
+        row.put(subjectMapping.subjectType, row.get(subjectMapping.subjectIdColumn));
+        subjectMapping.childSubjects.forEach(child -> addSubjectIdentifiersToData(row, child));
     }
 
     private void walkThroughLocalConfig(ResourceResolver resolver, Map<String, String> row,
