@@ -77,7 +77,7 @@ public class DiscardDuplicatesFilter implements ClarityDataProcessor
             final String value = input.get(this.column);
             if (value != null && !this.seenMrns.get().add(value)) {
                 LOGGER.warn("DiscardDuplicatesFilter discarded visit {} as duplicate",
-                    input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"));
+                    input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
                 return null;
             }
         }

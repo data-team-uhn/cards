@@ -80,7 +80,7 @@ public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProce
     protected Map<String, String> handleAllConditionsMatched(Map<String, String> input)
     {
         LOGGER.warn("{} discarded visit {} due to all conditions met", this.id,
-            input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"));
+            input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
         return null;
     }
 
