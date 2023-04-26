@@ -414,27 +414,42 @@ function QuestionnaireSet(props) {
   // After the visit is loaded and we know the questionnaire set identifier, load all questionnaires that need to be filled out
   useEffect(loadQuestionnaireSet, [id]);
 
+  const getMessageScreen = (message) => (
+    <>
+      <Header
+        key="header"
+        greeting={username}
+        withSignout={!!(config?.PIIAuthRequired)}
+        progress={0}
+      />
+      <QuestionnaireSetScreen className={classes.screen}>
+        { message }
+      </QuestionnaireSetScreen>
+    </>
+  );
+
   if (!id) {
     return (
-      <QuestionnaireSetScreen className={classes.screen}>
+      getMessageScreen(
         <Typography variant="h4" color="textSecondary">You do not have any pending surveys</Typography>
-      </QuestionnaireSetScreen>
+      )
     );
   }
 
   if (error) {
     return (
-      <QuestionnaireSetScreen className={classes.screen}>
+      getMessageScreen(
         <Typography variant="subtitle1" color="error">{error}</Typography>
-      </QuestionnaireSetScreen>
+      )
     );
   }
 
   if (!questionnaireIds || !questionnaires || !subjectData) {
     return (
-      <QuestionnaireSetScreen className={classes.screen}>
+      getMessageScreen(<>
+        <Typography variant="h4" color="textSecondary">Loading...</Typography>
         <CircularProgress />
-      </QuestionnaireSetScreen>
+      </>)
     );
   }
 
