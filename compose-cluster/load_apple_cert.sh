@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+JAVA_HOME=/usr/lib/jvm/default-jvm
+
 keytool -import -trustcacerts -file /AppleIncRootCertificate.pem \
  -keystore $JAVA_HOME/lib/security/cacerts \
  -keypass changeit -storepass changeit -noprompt
