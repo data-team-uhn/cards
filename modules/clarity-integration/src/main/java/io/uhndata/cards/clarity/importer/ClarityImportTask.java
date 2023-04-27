@@ -695,9 +695,7 @@ public class ClarityImportTask implements Runnable
         }
 
         // Fix any instances where VALUE should be transformed into [VALUE]
-        props = fixAnswerMultiValues(props, questionResource);
-
-        return props;
+        return fixAnswerMultiValues(props, questionResource);
     }
 
     /*
