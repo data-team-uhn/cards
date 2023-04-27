@@ -32,6 +32,9 @@ public @interface ClarityImportConfigDefinition
     @AttributeDefinition(name = "Import schedule", description = "Cron-readable import schedule")
     String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
 
-    @AttributeDefinition(name = "Past day to import", description = "0 means today, 1 means yesterday")
-    int pastDayToImport() default 1;
+    @AttributeDefinition(name = "Day to import",
+        description = "Difference from today. 0 means today, 1 means tomorrow, -1 means yesterday. "
+            + "As a special value, 2147483647 (Integer.MAX_VALUE) means no date filtering, "
+            + "all data found in the table will be imported. ")
+    int dayToImport() default Integer.MAX_VALUE;
 }

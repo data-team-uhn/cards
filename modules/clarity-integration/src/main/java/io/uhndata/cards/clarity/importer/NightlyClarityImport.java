@@ -85,7 +85,7 @@ public class NightlyClarityImport
         options.canRunConcurrently(true);
 
         final Runnable importJob =
-            new ClarityImportTask(config.pastDayToImport(), this.resolverFactory, this.rrp, this.processors);
+            new ClarityImportTask(config.dayToImport(), this.resolverFactory, this.rrp, this.processors);
         try {
             this.scheduler.schedule(importJob, options);
             LOGGER.info("Activated Clarity Importer configuration");
