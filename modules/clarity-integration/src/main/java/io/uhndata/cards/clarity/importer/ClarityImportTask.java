@@ -417,7 +417,7 @@ public class ClarityImportTask implements Runnable
                 queryString += ", ";
             }
         }
-        queryString += " FROM " + System.getenv("CLARITY_SQL_SCHEMA") + "." + System.getenv("CLARITY_SQL_TABLE");
+        queryString += " FROM " + System.getenv("CLARITY_SQL_SCHEMA") + ".[" + System.getenv("CLARITY_SQL_TABLE") + "]";
         if (this.dayToQuery != Integer.MAX_VALUE && System.getenv("CLARITY_EVENT_TIME_COLUMN") != null) {
             queryString += " WHERE CAST(" + System.getenv("CLARITY_EVENT_TIME_COLUMN") + " AS DATE) = CAST(GETDATE()"
                 + (this.dayToQuery >= 0 ? "+" : "") + this.dayToQuery + " AS DATE)";
