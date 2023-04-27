@@ -237,7 +237,7 @@
     // Clarity import
     "io.uhndata.cards.clarity.importer.NightlyClarityImport": {
       "nightly.import.schedule": "0 0 3 * * ? *",
-      "pastDayToImport": 7
+      "dayToImport": -7
     },
 
     // Clarity import filters and mappers
