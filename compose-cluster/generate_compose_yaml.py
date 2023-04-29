@@ -951,12 +951,16 @@ if args.subnet:
   yaml_obj['networks']['internalnetwork']['ipam']['driver'] = 'default'
   yaml_obj['networks']['internalnetwork']['ipam']['config'] = [{'subnet': args.subnet}]
 
-#Add timezone configuration to services
+# Configuration items that should be added to *all* services
 for service_name in yaml_obj['services']:
+  # Timezone
   if 'environment' in yaml_obj['services'][service_name]:
     yaml_obj['services'][service_name]['environment'].append("TZ={}".format(getTimezoneName()))
   else:
     yaml_obj['services'][service_name]['environment'] = ["TZ={}".format(getTimezoneName())]
+
+  # Automatic restart policy
+  yaml_obj['services'][service_name]['restart'] = "unless-stopped"
 
 #Save it
 with open(OUTPUT_FILENAME, 'w') as f_out:
