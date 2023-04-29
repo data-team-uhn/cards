@@ -104,6 +104,9 @@ function PatientIdentification(props) {
   // Callback for reporting successful authentication
   const { config, onSuccess, displayText } = props;
 
+  // The authentication token from the personalized link
+  const [ authToken, setAuthToken ] = useState();
+
   // The values entered by the user
   const [ dob, setDob ] = useState();
   const [ mrn, setMrn ] = useState();
@@ -164,6 +167,7 @@ function PatientIdentification(props) {
       return null;
     }
     let requestData = new FormData();
+    authToken && requestData.append("auth_token", authToken);
     dob && requestData.append("date_of_birth", dob);
     mrn && requestData.append("mrn", mrn);
     hc && requestData.append("health_card", hc);
@@ -186,24 +190,28 @@ function PatientIdentification(props) {
   }
 
   // ------------------------------------------------------------------------------------
-  // When the configuration that specifies if the auth token is required is loaded,
-  // process the auth_token accordingly
+  // After loading the patient access configuration that specifies if the auth token and/or
+  // PII identification are required, decide how we will proceed with the authentication
   useEffect(() => {
+    // If the configuration is still empty, don't make any decisions yet
+    if (Object.keys(config).length == 0) return;
+
     let auth_token = new URLSearchParams(window.location.search).get("auth_token");
+    setAuthToken(authToken);
     setCanAuthenticate(!!(config?.tokenlessAuthEnabled || auth_token));
-    // If an auth token is provided, use it to initiate the authentication process
-    if (auth_token) {
+
+    // If an auth token is provided and no further identification is required,
+    // initiate the authentication process
+    if (auth_token && !(config?.PIIAuthRequired)) {
       let requestData = new FormData();
       requestData.append("auth_token", auth_token);
       validateCredentials(requestData, (error) => { window.location = "/Expired.html"; });
     }
-  }, [config?.tokenlessAuthEnabled]);
 
-  // The identification form should be made availavle whenever tokenless auth is enabled,
-  // as well as when specifically required according to the patient access config
-  useEffect(() => {
+    // The identification form should be made available whenever tokenless auth is enabled,
+    // as well as when specifically required according to the patient access config
     setShowIdentificationForm(config?.tokenlessAuthEnabled || config?.PIIAuthRequired);
-  }, [config?.tokenlessAuthEnabled, config?.PIIAuthRequired]);
+  }, [config]);
 
   // Once a visit is selected, finalize the identification
   useEffect(() => {
