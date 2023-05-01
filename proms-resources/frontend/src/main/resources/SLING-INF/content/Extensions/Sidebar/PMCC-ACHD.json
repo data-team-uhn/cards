@@ -2,7 +2,7 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
   "cards:extensionName": "PMCC - ACHD",
-  "cards:targetURL": "/content.html/Dashboard/853703519",
+  "cards:targetURL": "/content.html/Dashboard/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
   "cards:icon": "asset:patient-portal.clinicIcon.js",
   "cards:defaultOrder": 10
 }
