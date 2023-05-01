@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -96,9 +97,10 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     private final ThreadLocal<List<ResourceJsonProcessor>> labelProcessors = new ThreadLocal<>();
 
-    private final ThreadLocal<Boolean> groupNullAndFalse = new ThreadLocal<>();
+    private final ThreadLocal<Boolean> groupNullAndFalseXVar = new ThreadLocal<>();
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
+    private final ThreadLocal<Boolean> groupNullAndFalseSplitVar = new ThreadLocal<>();
+
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws IOException
@@ -113,66 +115,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             processors.sort((o1, o2) -> o1.getPriority() - o2.getPriority());
             this.labelProcessors.set(processors);
 
-            // Steps to returning the calculated statistic:
-            // Grab the question that has data for the given x-axis (xVar)
-            Session session = request.getResourceResolver().adaptTo(Session.class);
-            Node question = session.getNode(arguments.get("x-label"));
-
-            Iterator<Resource> answers = null;
-            Map<Resource, String> data = new LinkedHashMap<>();
-            Map<String, Map<Resource, String>> dataById = null;
-
-            // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
-            Node correctSubjectType = session.getNode(arguments.get("y-label"));
-
-            // Instantiate xLabels
-            this.xValueDictionary.set(new HashMap<>());
-
-            // Grab all answers that have this question filled out, and the split var (if it exists)
-            boolean isSplit = arguments.containsKey("splitVar");
-            if (isSplit) {
-                // Instantiate splitLabels
-                this.splitValueDictionary.set(new HashMap<>());
-                Node split = session.getNode(arguments.get("splitVar"));
-                data = getAnswersWithType(data, "x", question, request.getResourceResolver());
-                data = getAnswersWithType(data, "split", split, request.getResourceResolver());
-                // filter if splitVar exists
-                dataById = filterAnswersWithType(data, correctSubjectType);
-            } else {
-                final String answerNodeType = getAnswerNodeType(question);
-                final String groupNullAndFalseFlag = arguments.get("groupNullAndFalse");
-                this.groupNullAndFalse.set("cards:BooleanAnswer".equals(answerNodeType)
-                    && "true".equals(groupNullAndFalseFlag));
-                // filter if split does not exist
-                final StringBuilder query =
-                    // We select all answers that answer our question
-                    new StringBuilder("select n from [" + answerNodeType + "] as n where n.'question'='"
-                        + question.getIdentifier() + "' order by n.'value' desc");
-                answers = request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
-                answers = filterAnswersToSubjectType(answers, correctSubjectType);
-            }
-
-            String xLabel = question.getProperty("text").getString();
-            String yLabel = correctSubjectType.getProperty("label").getString();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            String date = simpleDateFormat.format(new Date());
-
-            // Add inputs and time generated to the output JSON
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("timeGenerated", date);
-            builder.add("name", arguments.get("name"));
-            builder.add("x-label", xLabel);
-            builder.add("y-label", yLabel);
-            if (isSplit) {
-                Node split = session.getNode(arguments.get("splitVar"));
-                String splitLabel = split.getProperty("text").getString();
-                builder.add("split-label", splitLabel);
-                addDataSplit(dataById, builder);
-                this.splitValueDictionary.remove();
-            } else {
-                addData(answers, builder);
-            }
-            this.xValueDictionary.remove();
+            ResourceResolver resolver = request.getResourceResolver();
+            JsonObjectBuilder builder = aggregateBuild(resolver, arguments);
 
             // Write the output
             response.setContentType("application/json;charset=UTF-8");
@@ -182,6 +126,79 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         } catch (RepositoryException e) {
             LOGGER.error("Failed to obtain statistic: {}", e.getMessage(), e);
         }
+    }
+
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
+    private JsonObjectBuilder aggregateBuild(ResourceResolver resolver, Map<String, String> arguments)
+        throws PathNotFoundException, RepositoryException
+    {
+        // Steps to returning the calculated statistic:
+        // Grab the question that has data for the given x-axis (xVar)
+        Session session = resolver.adaptTo(Session.class);
+        Node question = session.getNode(arguments.get("x-label"));
+
+        final String answerNodeType = getAnswerNodeType(question);
+        final String groupNullAndFalseXVarFlag = arguments.get("groupNullAndFalseXVar");
+        this.groupNullAndFalseXVar.set("cards:BooleanAnswer".equals(answerNodeType)
+            && "true".equals(groupNullAndFalseXVarFlag));
+
+        Iterator<Resource> answers = null;
+        Map<Resource, String> data = new LinkedHashMap<>();
+        Map<String, Map<Resource, String>> dataById = null;
+
+        // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
+        Node correctSubjectType = session.getNode(arguments.get("y-label"));
+
+        // Instantiate xLabels
+        this.xValueDictionary.set(new HashMap<>());
+
+        // Grab all answers that have this question filled out, and the split var (if it exists)
+        boolean isSplit = arguments.containsKey("splitVar");
+        if (isSplit) {
+            final String groupNullAndFalseSplitVarFlag = arguments.get("groupNullAndFalseSplitVar");
+            this.groupNullAndFalseSplitVar.set("cards:BooleanAnswer".equals(answerNodeType)
+                && "true".equals(groupNullAndFalseSplitVarFlag));
+
+            // Instantiate splitLabels
+            this.splitValueDictionary.set(new HashMap<>());
+            Node split = session.getNode(arguments.get("splitVar"));
+            data = getAnswersWithType(data, "x", question, resolver);
+            data = getAnswersWithType(data, "split", split, resolver);
+            // filter if splitVar exists
+            dataById = filterAnswersWithType(data, correctSubjectType);
+        } else {
+            // filter if split does not exist
+            final StringBuilder query =
+                // We select all answers that answer our question
+                new StringBuilder("select n from [" + answerNodeType + "] as n where n.'question'='"
+                    + question.getIdentifier() + "' order by n.'value' desc");
+            answers = resolver.findResources(query.toString(), Query.JCR_SQL2);
+            answers = filterAnswersToSubjectType(answers, correctSubjectType);
+        }
+
+        String xLabel = question.getProperty("text").getString();
+        String yLabel = correctSubjectType.getProperty("label").getString();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        String date = simpleDateFormat.format(new Date());
+
+        // Add inputs and time generated to the output JSON
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("timeGenerated", date);
+        builder.add("name", arguments.get("name"));
+        builder.add("x-label", xLabel);
+        builder.add("y-label", yLabel);
+        if (isSplit) {
+            Node split = session.getNode(arguments.get("splitVar"));
+            String splitLabel = split.getProperty("text").getString();
+            builder.add("split-label", splitLabel);
+            addDataSplit(dataById, builder);
+            this.splitValueDictionary.remove();
+        } else {
+            addData(answers, builder);
+        }
+        this.xValueDictionary.remove();
+
+        return builder;
     }
 
     /**
@@ -315,6 +332,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param counts Map of {SubjectID, {Split variable label, count}}
      * @return map of {x var, {split var, count}}
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private Map<String, Map<String, Integer>> aggregateSplitCounts(Resource xVar, Resource splitVar,
         Map<String, Map<String, Integer>> counts) throws RepositoryException
     {
@@ -326,9 +344,21 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         Node splitAnswer = splitVar.adaptTo(Node.class);
+        if (this.groupNullAndFalseSplitVar.get() && !splitAnswer.hasProperty(VALUE_PROP)) {
+            // for any Boolean variables, count all “Not specified” answers under “false”
+            // if groupNullAndFalse is true for that statistic
+            splitAnswer.setProperty(VALUE_PROP, 0);
+        }
+
         List<String> splitValues = getAnswerValues(splitAnswer, this.splitValueDictionary.get());
 
         Node xAnswer = xVar.adaptTo(Node.class);
+        if (this.groupNullAndFalseXVar.get() && !xAnswer.hasProperty(VALUE_PROP)) {
+            // for any Boolean variables, count all “Not specified” answers under “false”
+            // if groupNullAndFalse is true for that statistic
+            xAnswer.setProperty(VALUE_PROP, 0);
+        }
+
         List<String> values = getAnswerValues(xAnswer, this.xValueDictionary.get());
         Iterator<String> it = values.iterator();
         while (it.hasNext()) {
@@ -449,6 +479,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, Integer> counts = new LinkedHashMap<>();
         while (answers.hasNext()) {
             Node answer = answers.next().adaptTo(Node.class);
+            if (this.groupNullAndFalseXVar.get() && !answer.hasProperty(VALUE_PROP)) {
+                // for any Boolean variables, count all “Not specified” answers under “false”
+                // if groupNullAndFalse is true for that statistic
+                answer.setProperty(VALUE_PROP, 0);
+            }
             List<String> values = getAnswerValues(answer, this.xValueDictionary.get());
             Iterator<String> it = values.iterator();
             while (it.hasNext()) {
@@ -484,13 +519,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         JsonValue jsonValue = answerJson.get(LABEL_PROP);
         try {
             if (!answer.hasProperty(VALUE_PROP)) {
-                if (this.groupNullAndFalse.get()) {
-                    // for any Boolean variables, count all “Not specified” answers under “false”
-                    // if groupNullAndFalse is true for that statistic
-                    recordAnswerValue(values, valueDictionary, "false", "false");
-                } else {
-                    recordEmptyAnswerValue(values, valueDictionary);
-                }
+                recordEmptyAnswerValue(values, valueDictionary);
                 return values;
             }
             Property rawValue = answer.getProperty(VALUE_PROP);
