@@ -803,11 +803,11 @@
 
   // Children
 
+  // A link to another form
+  + formReference (cards:FormReference)
+
   // The answers and answer sections recorded in this form.
   + * (cards:Answer, cards:AnswerSection) = cards:Answer
-
-  // A link to another form
-  + * (cards:FormReference) = cards:FormReference
 
 //-----------------------------------------------------------------------------
 // The homepage for the Forms space.
