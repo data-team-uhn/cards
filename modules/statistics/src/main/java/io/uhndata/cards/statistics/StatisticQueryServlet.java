@@ -138,7 +138,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Node question = session.getNode(arguments.get("x-label"));
 
         final String answerNodeType = getAnswerNodeType(question);
-        this.groupNullAndFalseXVar.set(isNullFalse(arguments, answerNodeType, "groupNullAndFalseXVar"));
+        this.groupNullAndFalseXVar.set(isNullFalse(arguments, answerNodeType,
+            "groupNullAndFalseAnswersForXVar"));
 
         Iterator<Resource> answers = null;
         Map<Resource, String> data = new LinkedHashMap<>();
@@ -157,7 +158,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             this.splitValueDictionary.set(new HashMap<>());
             Node split = session.getNode(arguments.get("splitVar"));
             final String splitNodeType = getAnswerNodeType(split);
-            this.groupNullAndFalseSplitVar.set(isNullFalse(arguments, splitNodeType, "groupNullAndFalseSplitVar"));
+            this.groupNullAndFalseSplitVar.set(isNullFalse(arguments, splitNodeType,
+                "groupNullAndFalseAnswersForSplitVar"));
 
             data = getAnswersWithType(data, "x", question, resolver);
             data = getAnswersWithType(data, "split", split, resolver);
