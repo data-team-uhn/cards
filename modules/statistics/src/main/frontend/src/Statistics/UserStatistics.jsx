@@ -86,7 +86,8 @@ function UserStatistics(props) {
           'name': fullJson.name,
           'x-label': fullJson.xVar['@path'],
           'y-label': fullJson.yVar['@path'],
-          'groupNullAndFalse': (!!fullJson.groupNullAndFalse).toString(),
+          'groupNullAndFalseAnswersForXVar': (!!fullJson.groupNullAndFalseAnswersForXVar).toString(),
+          'groupNullAndFalseAnswersForSplitVar': (!!fullJson.groupNullAndFalseAnswersForSplitVar).toString(),
         }
         if (fullJson.splitVar) {
           requestData['splitVar'] = fullJson.splitVar['@path']

@@ -8,6 +8,7 @@
     "type": "reference",
     "primaryType": "cards:Question"
   },
+  "groupNullAndFalseAnswersForXVar": "boolean",
   "yVar": {
     "type": "reference",
     "primaryType": "cards:SubjectType",
@@ -17,8 +18,7 @@
     "type": "reference",
     "primaryType": "cards:Question"
   },
-  "groupNullAndFalseXVar" : "boolean",
-  "groupNullAndFalseSplitVar" : "boolean",
+  "groupNullAndFalseAnswersForSplitVar": "boolean",
   "order": "long",
   "//REQUIRED": ["name", "xVar", "yVar"]
 }

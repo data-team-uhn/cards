@@ -116,7 +116,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             this.labelProcessors.set(processors);
 
             ResourceResolver resolver = request.getResourceResolver();
-            JsonObjectBuilder builder = aggregateBuild(resolver, arguments);
+            JsonObjectBuilder builder = buildResponse(resolver, arguments);
 
             // Write the output
             response.setContentType("application/json;charset=UTF-8");
@@ -129,7 +129,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
-    private JsonObjectBuilder aggregateBuild(ResourceResolver resolver, Map<String, String> arguments)
+    private JsonObjectBuilder buildResponse(ResourceResolver resolver, Map<String, String> arguments)
         throws PathNotFoundException, RepositoryException
     {
         // Steps to returning the calculated statistic:
@@ -138,9 +138,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Node question = session.getNode(arguments.get("x-label"));
 
         final String answerNodeType = getAnswerNodeType(question);
-        final String groupNullAndFalseXVarFlag = arguments.get("groupNullAndFalseXVar");
-        this.groupNullAndFalseXVar.set("cards:BooleanAnswer".equals(answerNodeType)
-            && "true".equals(groupNullAndFalseXVarFlag));
+        this.groupNullAndFalseXVar.set(isNullFalse(arguments, answerNodeType, "groupNullAndFalseXVar"));
 
         Iterator<Resource> answers = null;
         Map<Resource, String> data = new LinkedHashMap<>();
@@ -155,13 +153,12 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         // Grab all answers that have this question filled out, and the split var (if it exists)
         boolean isSplit = arguments.containsKey("splitVar");
         if (isSplit) {
-            final String groupNullAndFalseSplitVarFlag = arguments.get("groupNullAndFalseSplitVar");
-            this.groupNullAndFalseSplitVar.set("cards:BooleanAnswer".equals(answerNodeType)
-                && "true".equals(groupNullAndFalseSplitVarFlag));
-
             // Instantiate splitLabels
             this.splitValueDictionary.set(new HashMap<>());
             Node split = session.getNode(arguments.get("splitVar"));
+            final String splitNodeType = getAnswerNodeType(split);
+            this.groupNullAndFalseSplitVar.set(isNullFalse(arguments, splitNodeType, "groupNullAndFalseSplitVar"));
+
             data = getAnswersWithType(data, "x", question, resolver);
             data = getAnswersWithType(data, "split", split, resolver);
             // filter if splitVar exists
@@ -332,7 +329,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param counts Map of {SubjectID, {Split variable label, count}}
      * @return map of {x var, {split var, count}}
      */
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private Map<String, Map<String, Integer>> aggregateSplitCounts(Resource xVar, Resource splitVar,
         Map<String, Map<String, Integer>> counts) throws RepositoryException
     {
@@ -344,20 +340,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         Node splitAnswer = splitVar.adaptTo(Node.class);
-        if (this.groupNullAndFalseSplitVar.get() && !splitAnswer.hasProperty(VALUE_PROP)) {
-            // for any Boolean variables, count all “Not specified” answers under “false”
-            // if groupNullAndFalse is true for that statistic
-            splitAnswer.setProperty(VALUE_PROP, 0);
-        }
-
+        amendAnswerValue(splitAnswer, this.groupNullAndFalseSplitVar.get());
         List<String> splitValues = getAnswerValues(splitAnswer, this.splitValueDictionary.get());
 
         Node xAnswer = xVar.adaptTo(Node.class);
-        if (this.groupNullAndFalseXVar.get() && !xAnswer.hasProperty(VALUE_PROP)) {
-            // for any Boolean variables, count all “Not specified” answers under “false”
-            // if groupNullAndFalse is true for that statistic
-            xAnswer.setProperty(VALUE_PROP, 0);
-        }
+        amendAnswerValue(xAnswer, this.groupNullAndFalseXVar.get());
 
         List<String> values = getAnswerValues(xAnswer, this.xValueDictionary.get());
         Iterator<String> it = values.iterator();
@@ -479,11 +466,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, Integer> counts = new LinkedHashMap<>();
         while (answers.hasNext()) {
             Node answer = answers.next().adaptTo(Node.class);
-            if (this.groupNullAndFalseXVar.get() && !answer.hasProperty(VALUE_PROP)) {
-                // for any Boolean variables, count all “Not specified” answers under “false”
-                // if groupNullAndFalse is true for that statistic
-                answer.setProperty(VALUE_PROP, 0);
-            }
+            amendAnswerValue(answer, this.groupNullAndFalseXVar.get());
             List<String> values = getAnswerValues(answer, this.xValueDictionary.get());
             Iterator<String> it = values.iterator();
             while (it.hasNext()) {
@@ -645,5 +628,20 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             LOGGER.warn("Failed to access Form: {}", e.getMessage());
             return null;
         }
+    }
+
+    private void amendAnswerValue(Node answer, boolean groupNullAndFalse) throws RepositoryException
+    {
+        if (groupNullAndFalse && !answer.hasProperty(VALUE_PROP)) {
+            // for any Boolean variables, count all “Not specified” answers under “false”
+            // if groupNullAndFalse is true for that statistic
+            answer.setProperty(VALUE_PROP, 0);
+        }
+    }
+
+    private boolean isNullFalse(Map<String, String> arguments, String answerNodeType, String flagName)
+    {
+        final String flag = arguments.get(flagName);
+        return "cards:BooleanAnswer".equals(answerNodeType) && "true".equals(flag);
     }
 }
