@@ -27,8 +27,6 @@ import java.util.UUID;
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.version.VersionManager;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -258,26 +256,6 @@ public class PauseResumeFormEditor extends DefaultEditor
     private void addFormReference(Node latestForm, String id)
     {
         try {
-            final VersionManager versionManager = this.rrp.getThreadResourceResolver().adaptTo(Session.class)
-                .getWorkspace().getVersionManager();
-            String formPath = latestForm.getPath();
-            LOGGER.error("adding reference to {}", formPath);
-            versionManager.checkout(formPath);
-            LOGGER.error("checkout");
-            try {
-                Node latestReference = latestForm.addNode("formReference");
-                latestReference.setProperty(CREATED_STRING, Calendar.getInstance());
-                latestReference.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID());
-                latestReference.setProperty("reference",
-                    this.currentNodeBuilder.getProperty("@path").getValue(Type.STRING));
-                latestReference.setProperty("sling:resourceSuperType", "cards/Resource");
-                latestReference.setProperty("sling:resourceType", "cards/FormReference");
-                latestReference.setPrimaryType("cards:FormReference");
-            } catch (RepositoryException e) {
-                LOGGER.error("Failed to create form reference to {}: {}", id, e.getMessage());
-            }
-            versionManager.checkin(formPath);
-
             NodeBuilder reference = this.currentNodeBuilder.setChildNode("formReference");
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
             reference.setProperty(CREATED_STRING, dateFormat.format(new Date()), Type.DATE);
