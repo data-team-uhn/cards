@@ -895,7 +895,7 @@ function SubjectSelectorList(props) {
                 }
                 let querySubjectSubsetClause = (querySubjectSubset.length > 0) ? (" and (" + querySubjectSubset + ") ") : " ";
                 // fetch the Subjects of each form of this questionnaire type for all listed subjects
-                return fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct s.* FROM [cards:Subject] AS s inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}order by s.'fullIdentifier'&limit=${query.pageSize}`)
+                return fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct s.* FROM [cards:Subject] AS s inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}order by s.'fullIdentifier'&limit=${selectedQuestionnaire?.["maxPerSubject"] * query.pageSize}`)
                 .then((relatedSubjectsResp) => relatedSubjectsResp.json())
                 .then((relatedSubjectsResp) => {
                   setRelatedSubjects(relatedSubjectsResp.rows);
