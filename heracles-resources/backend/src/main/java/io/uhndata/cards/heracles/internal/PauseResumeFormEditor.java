@@ -54,7 +54,7 @@ public class PauseResumeFormEditor extends DefaultEditor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(PauseResumeFormEditor.class);
 
-    private static final String CREATED_STRING = "jcr:created";
+    private static final String CREATED_PROP = "jcr:created";
 
     private final NodeBuilder currentNodeBuilder;
 
@@ -161,7 +161,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             for (final PropertyIterator forms = subject.getReferences("subject"); forms.hasNext();) {
                 final Node referencedForm = forms.nextProperty().getParent();
                 if (isPauseResumeForm(referencedForm)) {
-                    Calendar referencedDate = referencedForm.getProperty(CREATED_STRING).getDate();
+                    Calendar referencedDate = referencedForm.getProperty(CREATED_PROP).getDate();
                     if (!referencedDate.equals(newDate)
                         && (latestFormDate == null || referencedDate.after(latestFormDate))) {
                         latestFormDate = referencedDate;
@@ -178,7 +178,7 @@ public class PauseResumeFormEditor extends DefaultEditor
 
     private Calendar getFormDate(NodeState after)
     {
-        final String newDateString = after.getProperty(CREATED_STRING).getValue(Type.DATE);
+        final String newDateString = after.getProperty(CREATED_PROP).getValue(Type.DATE);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         final Calendar newDate = Calendar.getInstance();
         try {
@@ -242,7 +242,7 @@ public class PauseResumeFormEditor extends DefaultEditor
         final String uuid = UUID.randomUUID().toString();
         NodeBuilder node = this.currentNodeBuilder.setChildNode(uuid);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        node.setProperty(CREATED_STRING, dateFormat.format(new Date()), Type.DATE);
+        node.setProperty(CREATED_PROP, dateFormat.format(new Date()), Type.DATE);
         node.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
         node.setProperty(FormUtils.QUESTION_PROPERTY, questionUUID, Type.REFERENCE);
         node.setProperty("jcr:primaryType", "cards:TextAnswer", Type.NAME);
@@ -258,7 +258,7 @@ public class PauseResumeFormEditor extends DefaultEditor
         try {
             NodeBuilder reference = this.currentNodeBuilder.setChildNode("formReference");
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            reference.setProperty(CREATED_STRING, dateFormat.format(new Date()), Type.DATE);
+            reference.setProperty(CREATED_PROP, dateFormat.format(new Date()), Type.DATE);
             reference.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
             reference.setProperty("reference", latestForm.getIdentifier(), Type.REFERENCE);
             reference.setProperty("jcr:primaryType", "cards:FormReference", Type.NAME);
