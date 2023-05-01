@@ -72,14 +72,14 @@
     // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
     //   "name": "InitialNotificationsTask",
     //   "metricName": "Initial Emails Sent",
-    //   "clinicId": "/Proms/ClinicMapping/853703519",
+    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
     //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/InitialNotification",
     //   "daysToVisit": 3
     // },
     // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
     //   "name": "ReminderNotificationsTask",
     //   "metricName": "Reminder Emails Sent",
-    //   "clinicId": "/Proms/ClinicMapping/853703519",
+    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
     //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/ReminderNotification",
     //   "daysToVisit": 1
     // },
@@ -120,7 +120,7 @@
     // Assign patients from the cardiac clinic to the Cardio cohort
     "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-Cardio":{
       "priority": 40,
-      "clinic": "/Survey/ClinicMapping/853703519",
+      "clinic": "/Survey/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
       "conditions": ["ENCOUNTER_CLINIC = TG-PMCC CARDIAC CLINICS DIAGNOSTIC"]
     },
     // Discard duplicates if there's more than one event per visit
