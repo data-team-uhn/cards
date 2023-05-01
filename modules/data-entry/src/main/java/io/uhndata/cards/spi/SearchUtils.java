@@ -82,6 +82,38 @@ public final class SearchUtils
      * Searches through a list of Strings and returns the first String in that list for which in itself contains a given
      * substring.
      *
+     * @param value the raw answer value, may be a single or multivalue of any JCR type
+     * @param str the String to check if the value contains this substring
+     * @return the (single) value, or the first value in a multivalue that contains the query substring
+     */
+    public static String getMatch(Object value, String str)
+    {
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof String[]) {
+            return getMatchFromArray((String[]) value, str);
+        } else if (value instanceof Object[]) {
+            Object[] valueArray = (Object[]) value;
+            String[] valueStr = new String[valueArray.length];
+            for (int i = 0; i < valueArray.length; ++i) {
+                valueStr[i] = String.valueOf(valueArray[i]);
+            }
+            return getMatchFromArray(valueStr, str);
+        } else if (value != null) {
+            if (StringUtils.containsIgnoreCase(value.toString(), str)) {
+                return value.toString();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Searches through a list of Strings and returns the first String in that list for which in itself contains a given
+     * substring.
+     *
      * @param arr the list of Strings to search through
      * @param str the String to check if any array elements contain this substring
      * @return the first String in the list that contains the given substring
@@ -168,6 +200,7 @@ public final class SearchUtils
 
     /**
      * Check whether the given name is a valid node name.
+     *
      * @param name Node name to check
      * @return True if the given name is a valid node name
      */

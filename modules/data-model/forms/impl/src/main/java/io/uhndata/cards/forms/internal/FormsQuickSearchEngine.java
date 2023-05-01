@@ -19,11 +19,12 @@
 package io.uhndata.cards.forms.internal;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.query.RowIterator;
 import javax.json.JsonObject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,9 +32,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.spi.QuickSearchEngine;
 import io.uhndata.cards.spi.SearchParameters;
 import io.uhndata.cards.spi.SearchUtils;
@@ -46,9 +49,14 @@ import io.uhndata.cards.spi.SearchUtils;
 @Component(immediate = true)
 public class FormsQuickSearchEngine implements QuickSearchEngine
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuickSearchEngine.class);
+
     private static final List<String> SUPPORTED_TYPES = Collections.singletonList("cards:Form");
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Reference
+    private FormUtils formUtils;
 
     @Override
     public List<String> getSupportedTypes()
@@ -60,39 +68,44 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
     public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
         final List<JsonObject> output)
     {
-        if (output.size() >= query.getMaxResults() && !query.showTotalResults()) {
-            return;
-        }
-
-        final String xpathQuery = getXPathQuery(query.getQuery());
-        Iterator<Resource> foundResources = resourceResolver.findResources(xpathQuery.toString(), "xpath");
-
-        while (foundResources.hasNext()) {
-            try {
-                // No need to go through results list if we do not want total number of matches
-                if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
-                    break;
-                }
-                Resource thisResource = foundResources.next();
-
-                Pair<String, Boolean> match = getMatch(query.getQuery(), thisResource);
-
-                String questionText = null;
-                String questionPath = "";
-                final Node questionNode = getQuestion(thisResource.adaptTo(Node.class));
-                questionText = questionNode.getProperty("text").getString();
-                questionPath = questionNode.getPath();
-
-                if (match != null && questionText != null) {
-                    final Resource parent = getForm(thisResource);
-
-                    output.add(SearchUtils.addMatchMetadata(
-                        match.getLeft(), query.getQuery(), questionText, parent.adaptTo(JsonObject.class),
-                        match.getRight(), questionPath));
-                }
-            } catch (RepositoryException e) {
-                this.logger.warn("Failed to process search results: {}", e.getMessage(), e);
+        try {
+            if (output.size() >= query.getMaxResults() && !query.showTotalResults()) {
+                return;
             }
+
+            final String xpathQuery = getXPathQuery(query.getQuery());
+            RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
+                .createQuery(xpathQuery.toString(), "xpath").execute().getRows();
+
+            while (queryResults.hasNext()) {
+                try {
+                    // No need to go through results list if we do not want total number of matches
+                    if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
+                        break;
+                    }
+                    Node item = queryResults.nextRow().getNode();
+
+                    Pair<String, Boolean> match = getMatch(query.getQuery(), item);
+
+                    String questionText = null;
+                    String questionPath = "";
+                    final Node questionNode = getQuestion(item);
+                    questionText = questionNode.getProperty("text").getString();
+                    questionPath = questionNode.getPath();
+
+                    if (match != null && questionText != null) {
+                        final Resource parent = getForm(item, resourceResolver);
+
+                        output.add(SearchUtils.addMatchMetadata(
+                            match.getLeft(), query.getQuery(), questionText, parent.adaptTo(JsonObject.class),
+                            match.getRight(), questionPath));
+                    }
+                } catch (RepositoryException e) {
+                    this.logger.warn("Failed to process search results: {}", e.getMessage(), e);
+                }
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to search for subjects: {}", e.getMessage(), e);
         }
     }
 
@@ -126,14 +139,11 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
      *
      * @param answer an answer node matched by the query
      * @return the form node, non-null if the database is well formed
+     * @throws RepositoryException if accessing the repository fails
      */
-    private Resource getForm(Resource answer)
+    private Resource getForm(final Node answer, final ResourceResolver resourceResolver) throws RepositoryException
     {
-        Resource result = answer;
-        while (result != null && !"cards/Form".equals(result.getResourceType())) {
-            result = result.getParent();
-        }
-        return result;
+        return resourceResolver.getResource(this.formUtils.getForm(answer).getPath());
     }
 
     /**
@@ -144,16 +154,17 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
      * @return a pair, with the matched value (or notes field) in the left side, and a boolean indicating whether the
      *         match was in an answer value ({@code false}) or in the notes ({@code true}), or {@code null} if the query
      *         text couldn't be found in the answer
+     * @throws RepositoryException if accessing the repository fails
      */
-    private Pair<String, Boolean> getMatch(final String query, final Resource answer)
+    private Pair<String, Boolean> getMatch(final String query, final Node answer) throws RepositoryException
     {
-        String[] answerValues = answer.getValueMap().get("value", String[].class);
-        String matchedValue = SearchUtils.getMatchFromArray(answerValues, query);
+        Object answerValues = this.formUtils.getValue(answer);
+        String matchedValue = SearchUtils.getMatch(answerValues, query);
 
         // As a fallback for when the match isn't in the value field, attempt to use the note field
         boolean matchedNotes = false;
-        if (matchedValue == null) {
-            String noteValue = answer.getValueMap().get("note", String.class);
+        if (matchedValue == null && answer.hasProperty("note")) {
+            String noteValue = answer.getProperty("note").getString();
             if (StringUtils.containsIgnoreCase(noteValue, query)) {
                 matchedValue = noteValue;
                 matchedNotes = true;
