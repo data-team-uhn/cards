@@ -848,7 +848,7 @@ function SubjectSelectorList(props) {
 
   // if the number of related forms of a certain questionnaire/subject is at the maxPerSubject, an error is set
   let handleSelection = (rowData) => {
-    let atMax = (relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["jcr:uuid"] == rowData["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+    let atMax = (relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == rowData["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
     if (atMax) {
       onError(`${rowData?.["type"]["@name"]} ${rowData?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
       disableProgress(true);
@@ -895,7 +895,7 @@ function SubjectSelectorList(props) {
                 }
                 let querySubjectSubsetClause = (querySubjectSubset.length > 0) ? (" and (" + querySubjectSubset + ") ") : " ";
                 // fetch the Subjects of each form of this questionnaire type for all listed subjects
-                return fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct s.* FROM [cards:Subject] AS s inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}order by s.'fullIdentifier'&limit=${query.pageSize}`)
+                return fetchWithReLogin(globalLoginDisplay, `/query?rawResults=true&query=SELECT s.[jcr:uuid] FROM [cards:Subject] AS s inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}order by s.'fullIdentifier'&limit=${selectedQuestionnaire?.["maxPerSubject"] * query.pageSize}`)
                 .then((relatedSubjectsResp) => relatedSubjectsResp.json())
                 .then((relatedSubjectsResp) => {
                   setRelatedSubjects(relatedSubjectsResp.rows);
@@ -903,7 +903,7 @@ function SubjectSelectorList(props) {
                 })
                 .then((latestRelatedSubjects) => {
                   // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
-                  let atMax = (latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["jcr:uuid"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+                  let atMax = (latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["s.jcr:uuid"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
                   if (filteredData.length === 1 && !atMax) {
                     onSelect(filteredData[0]);
                     handleSelection(filteredData[0]);
@@ -990,7 +990,7 @@ function SubjectSelectorList(props) {
             /* It doesn't seem possible to alter the className from here */
             backgroundColor: (selectedSubject?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
             // grey out subjects that have already reached maxPerSubject
-            color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["jcr:uuid"] == rowData["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+            color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == rowData["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
             ? theme.palette.grey["500"]
             : theme.palette.grey["900"]
             )
