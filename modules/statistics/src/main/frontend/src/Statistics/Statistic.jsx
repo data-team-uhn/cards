@@ -227,8 +227,8 @@ function Statistic(props) {
               :
                 <Line dataKey={field.label || field} type="monotone" stroke={chartColours[idx]} key={idx} />
             )}
-            </ChartType>
-          </ResponsiveContainer>
+          </ChartType>
+        </ResponsiveContainer>
       }
       </CardContent>
     </Card>
