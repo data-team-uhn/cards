@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { Tooltip, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import { Delete, Close } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";

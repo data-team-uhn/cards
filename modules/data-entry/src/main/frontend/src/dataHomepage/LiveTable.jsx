@@ -82,6 +82,16 @@ function LiveTable(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  // When data is changed, trigger a new fetch in the table
+  useEffect(() => {
+    // subscribe event
+    window.addEventListener("LivetableRefresh",  refresh);
+    return () => {
+      // unsubscribe event
+      document.removeEventListener("LivetableRefresh",  refresh);
+    };
+  }, [entryType]);
+
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
@@ -95,6 +105,11 @@ function LiveTable(props) {
       refresh();
     }
   }, [customUrl]);
+
+  // Initialize the component: if there's no data loaded yet, fetch the first page
+  useEffect(() => {
+    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
+  }, [fetchStatus.currentRequestNumber]);
 
   let refresh = () => {
     setFetchStatus(Object.assign({}, fetchStatus, {
@@ -325,11 +340,6 @@ function LiveTable(props) {
       });
     }
   }
-
-  // Initialize the component: if there's no data loaded yet, fetch the first page
-  useEffect(() => {
-    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
-  }, [fetchStatus.currentRequestNumber]);
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // The rendering code

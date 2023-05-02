@@ -151,7 +151,7 @@ function FormView(props) {
           defaultLimit={10}
           filters
           questionnaire={questionnaire}
-          entryType={"Form"}
+          entryType="Form"
           actions={actions}
           disableTopPagination={!topPagination}
           onFiltersChange={(str) => { setFiltersJsonString(str); }}
