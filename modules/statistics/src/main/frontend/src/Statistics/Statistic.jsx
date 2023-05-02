@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React from "react";
 import {
   Avatar,
   Card,
@@ -32,14 +32,12 @@ import { deepPurple, indigo } from '@mui/material/colors';
 
 import { useHistory } from 'react-router-dom';
 
-import { DateTime } from "luxon";
 import palette from "google-palette";
 import {
    BarChart, Bar, CartesianGrid, Line, LineChart, Label, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from "recharts";
 
 import statisticsStyle from "./statisticsStyle.jsx";
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 
 // A single statistic, displayed as a chart
 function Statistic(props) {
