@@ -347,6 +347,24 @@ function Form (props) {
     props.history.push(urlBase + (data?.subject?.['@path'] || ''));
   }
 
+  let getDistinctHierarchyAsList = (reference) => {
+    let referencedHierarchy = getHierarchyAsList(reference);
+    let currentHierarchy = getHierarchyAsList(data.subject);
+
+    let distinctHierarchy = [];
+    for (let i = 0; i < referencedHierarchy.length; i++) {
+      if (i < currentHierarchy.length && referencedHierarchy[i] == currentHierarchy[i]) {
+        // Skip all matching parents
+        continue;
+      } else {
+        // Non-matching parent found: return all future ancestors
+        distinctHierarchy.concat(referencedHierarchy.slice(i));
+        break;
+      }
+    }
+    return distinctHierarchy;
+  }
+
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
   useEffect(() => {
@@ -524,17 +542,18 @@ function Form (props) {
           </Breadcrumbs>
           {
             data && data['formReference'] && data['formReference']['reference'] ?
-              <>
+              <Typography variant="overline">
+                {"Related: "}
                 {
                   data['formReference']['label'] ?
-                    <Typography><Link to={"/content.html" + data.formReference.reference['@path']} underline="hover">{data.formReference.label}</Link></Typography>
+                    <Link to={"/content.html" + data.formReference.reference['@path']} underline="hover">{data.formReference.label}</Link>
                     :
-                    <Breadcrumbs separator="/">
-                      {getHierarchyAsList(data.formReference.reference.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}
+                    <Breadcrumbs separator="/" style={{display: "inline-flex"}}>
+                      {getDistinctHierarchyAsList(data.formReference.reference.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}
                       <Typography variant="overline" key=''><Link to={"/content.html" + data.formReference.reference['@path']} underline="hover">{data.formReference.reference.questionnaire['@name']}</Link></Typography>
                     </Breadcrumbs>
                 }
-              </>
+              </Typography>
             : <></>
           }
         </ResourceHeader>
