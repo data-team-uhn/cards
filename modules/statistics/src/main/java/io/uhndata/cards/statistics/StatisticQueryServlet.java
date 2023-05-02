@@ -78,6 +78,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticQueryServlet.class);
 
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
     private static final String VALUE_PROP = "value";
 
     private static final String LABEL_PROP = "displayedValue";
@@ -96,7 +98,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     private final ThreadLocal<List<ResourceJsonProcessor>> labelProcessors = new ThreadLocal<>();
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
         throws IOException
@@ -111,62 +112,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             processors.sort((o1, o2) -> o1.getPriority() - o2.getPriority());
             this.labelProcessors.set(processors);
 
-            // Steps to returning the calculated statistic:
-            // Grab the question that has data for the given x-axis (xVar)
-            Session session = request.getResourceResolver().adaptTo(Session.class);
-            Node question = session.getNode(arguments.get("x-label"));
-
-            Iterator<Resource> answers = null;
-            Map<Resource, String> data = new LinkedHashMap<>();
-            Map<String, Map<Resource, String>> dataById = null;
-
-            // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
-            Node correctSubjectType = session.getNode(arguments.get("y-label"));
-
-            // Instantiate xLabels
-            this.xValueDictionary.set(new HashMap<>());
-
-            // Grab all answers that have this question filled out, and the split var (if it exists)
-            boolean isSplit = arguments.containsKey("splitVar");
-            if (isSplit) {
-                // Instantiate splitLabels
-                this.splitValueDictionary.set(new HashMap<>());
-                Node split = session.getNode(arguments.get("splitVar"));
-                data = getAnswersWithType(data, "x", question, request.getResourceResolver());
-                data = getAnswersWithType(data, "split", split, request.getResourceResolver());
-                // filter if splitVar exists
-                dataById = filterAnswersWithType(data, correctSubjectType);
-            } else {
-                // filter if split does not exist
-                final StringBuilder query =
-                    // We select all answers that answer our question
-                    new StringBuilder("select n from [" + getAnswerNodeType(question) + "] as n where n.'question'='"
-                        + question.getIdentifier() + "' order by n.'value' desc");
-                answers = request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
-                answers = filterAnswersToSubjectType(answers, correctSubjectType);
-            }
-
-            String xLabel = question.getProperty("text").getString();
-            String yLabel = correctSubjectType.getProperty("label").getString();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            String date = simpleDateFormat.format(new Date());
-
-            // Add inputs and time generated to the output JSON
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("timeGenerated", date);
-            builder.add("name", arguments.get("name"));
-            builder.add("x-label", xLabel);
-            builder.add("y-label", yLabel);
-            if (isSplit) {
-                Node split = session.getNode(arguments.get("splitVar"));
-                String splitLabel = split.getProperty("text").getString();
-                builder.add("split-label", splitLabel);
-                addDataSplit(dataById, builder);
-                this.splitValueDictionary.remove();
-            } else {
-                addData(answers, builder);
-            }
-            this.xValueDictionary.remove();
+            ResourceResolver resolver = request.getResourceResolver();
+            JsonObjectBuilder builder = buildResponse(resolver, arguments);
 
             // Write the output
             response.setContentType("application/json;charset=UTF-8");
@@ -201,6 +148,73 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
+     * Builds the statistic data accordong to the provided arguments.
+     *
+     * @param resolver the resolver used for accessing the contributing resources
+     * @param arguments the statistic specification
+     * @return builder a JsonObjectBuilder containing the computed counts and the metadata (labels, time generated)
+     */
+    private JsonObjectBuilder buildResponse(ResourceResolver resolver, Map<String, String> arguments)
+        throws RepositoryException
+    {
+        // Steps to returning the calculated statistic:
+        // Grab the question that has data for the given x-axis (xVar)
+        Session session = resolver.adaptTo(Session.class);
+        Node xVar = session.getNode(arguments.get("x-label"));
+        String xLabel = xVar.getProperty("text").getString();
+        this.xValueDictionary.set(new HashMap<>());
+
+        // Grab the type of subjects being counted for the y-axis (yVar)
+        // Answers will be filtered based on whether or not their form's subject is of this SubjectType
+        Node ySubjectType = session.getNode(arguments.get("y-label"));
+        String yLabel = ySubjectType.getProperty("label").getString();
+
+        // Start building the response:
+
+        // Add inputs and time generated to the output JSON
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("timeGenerated", SIMPLE_DATE_FORMAT.format(new Date()));
+        builder.add("name", arguments.get("name"));
+        builder.add("x-label", xLabel);
+        builder.add("y-label", yLabel);
+
+        // Grab all answers that have this question filled out, and the split var (if it exists)
+        boolean isSplit = arguments.containsKey("splitVar");
+
+        if (isSplit) {
+            Node splitVar = session.getNode(arguments.get("splitVar"));
+            String splitLabel = splitVar.getProperty("text").getString();
+            this.splitValueDictionary.set(new HashMap<>());
+
+            Map<Resource, String> data = new LinkedHashMap<>();
+            Map<String, Map<Resource, String>> dataById = null;
+
+            data = getAnswersWithType(data, "x", xVar, resolver);
+            data = getAnswersWithType(data, "split", splitVar, resolver);
+            // filter if splitVar exists
+            dataById = filterAnswersWithType(data, ySubjectType);
+
+            // Add the x and split counts to the builder
+            builder.add("split-label", splitLabel);
+            addDataSplit(dataById, builder);
+
+            // Clean up split variable value dictionary
+            this.splitValueDictionary.remove();
+        } else {
+            Iterator<Resource> answers = getAnswers(xVar, resolver);
+            answers = filterAnswersToSubjectType(answers, ySubjectType);
+
+            // Add the x counts to the builder
+            addData(answers, builder);
+        }
+
+        // Clean up split variable value dictionary
+        this.xValueDictionary.remove();
+
+        return builder;
+    }
+
+    /**
      * Split: Get all answers that have a given question filled out.
      *
      * @param data the map that the return values will be added to
@@ -212,11 +226,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     private Map<Resource, String> getAnswersWithType(Map<Resource, String> data, String type, Node question,
         ResourceResolver resolver) throws RepositoryException
     {
-        final StringBuilder query =
-            // We select all answers that answer our question
-            new StringBuilder("select n from [" + getAnswerNodeType(question) + "] as n where n.'question'='"
-                + question.getIdentifier() + "' order by n.'value' desc");
-        Iterator<Resource> answers = resolver.findResources(query.toString(), Query.JCR_SQL2);
+        Iterator<Resource> answers = getAnswers(question, resolver);
 
         while (answers.hasNext()) {
             Resource answer = answers.next();
@@ -224,6 +234,23 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         return data;
+    }
+
+    /**
+     * Get all answers that have a given question filled out.
+     *
+     * @param question The question node that the answers is to
+     * @param resolver Reference to the resource resolver
+     * @return a Resource iterator over all nodes corresponding to answers to the given question
+     */
+    private Iterator<Resource> getAnswers(Node question, ResourceResolver resolver)
+        throws RepositoryException
+    {
+        final StringBuilder query =
+            // We select all answers that answer our question
+            new StringBuilder("select n from [" + getAnswerNodeType(question) + "] as n where n.'question'='"
+                + question.getIdentifier() + "' order by n.'value' desc");
+        return resolver.findResources(query.toString(), Query.JCR_SQL2);
     }
 
     /**
