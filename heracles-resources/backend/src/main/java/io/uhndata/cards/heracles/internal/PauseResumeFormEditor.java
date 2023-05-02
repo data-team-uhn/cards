@@ -261,6 +261,9 @@ public class PauseResumeFormEditor extends DefaultEditor
             reference.setProperty(CREATED_PROP, dateFormat.format(new Date()), Type.DATE);
             reference.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
             reference.setProperty("reference", latestForm.getIdentifier(), Type.REFERENCE);
+            reference.setProperty("label", "Pause Form", Type.STRING);
+            // Delete a resume form when the related pause form is deleted
+            reference.setProperty("deleteWithReference", true, Type.BOOLEAN);
             reference.setProperty("jcr:primaryType", "cards:FormReference", Type.NAME);
             reference.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
             reference.setProperty("sling:resourceType", "cards/FormReference", Type.STRING);

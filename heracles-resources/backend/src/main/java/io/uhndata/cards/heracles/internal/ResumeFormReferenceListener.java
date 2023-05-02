@@ -136,6 +136,9 @@ public class ResumeFormReferenceListener implements ResourceChangeListener
         try {
             Node latestReference = pauseForm.addNode("formReference");
             latestReference.setProperty("reference", resumeForm);
+            latestReference.setProperty("label", "Resume Form");
+            // Do not delete a pause form when the linked resume form is deleted
+            latestReference.setProperty("deleteWithReference", false);
             latestReference.setPrimaryType("cards:FormReference");
         } catch (RepositoryException e) {
             LOGGER.error("Failed to create form reference to {}: {}", resumeForm.getPath(), e.getMessage());
