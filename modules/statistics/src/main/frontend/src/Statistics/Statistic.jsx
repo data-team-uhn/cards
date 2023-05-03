@@ -53,6 +53,9 @@ function Statistic(props) {
     "#9e4973",
   ];
 
+  const groupNullAndFalseAnswersForXVar = definition.meta.groupNullAndFalseAnswersForXVar && definition.xVar?.dataType == "boolean";
+  const groupNullAndFalseAnswersForSplitVar = definition.meta.groupNullAndFalseAnswersForSplitVar && definition.splitVar?.dataType == "boolean";
+
   // Transform our input data from the statistics servlet into something recharts can understand
   // Note that keys is transformed in this process
   let isSplit = false;
@@ -98,7 +101,7 @@ function Statistic(props) {
         return -1;
       } else if (bIdx >= 0) {
         return 1;
-      } else if (["long", "double", "decimal"].includes(definition["xVar"]["dataType"])) {
+      } else if (["long", "double", "decimal"].includes(xVar["dataType"])) {
         // Numeric sort
         return a["x"] - b["x"];
       } else {
@@ -106,6 +109,14 @@ function Statistic(props) {
         return a["x"].localeCompare(b["x"]);
       }
     });
+  }
+
+  if (groupNullAndFalseAnswersForXVar) {
+	// group No and Not specified answers in one chart
+	let noIndex = rechartsData.findIndex( item => item.x == "No");
+	let notSpecifiedIndex = rechartsData.findIndex( item => item.x == "Not specified");
+	rechartsData[noIndex]["Not specified"] = rechartsData[notSpecifiedIndex][definition["y-label"]];
+	rechartsData.splice(notSpecifiedIndex, 1);
   }
 
   let allFields = Object.keys(allFieldsDict);
@@ -127,6 +138,7 @@ function Statistic(props) {
         .map(field => ({value : field == "Not specified" ? undefined : field, label: field}))
       );
   }
+  groupNullAndFalseAnswersForXVar && allFields.push("Not specified");
 
   let isBar = definition["type"] == "bar";
 
@@ -223,7 +235,14 @@ function Statistic(props) {
             {isSplit && <Legend align="right" verticalAlign="top" height={legendHeight} />}
             {allFields.map((field, idx) =>
               isBar ?
-                <Bar dataKey={field.label || field} fill={chartColours[idx]} key={idx} onClick={(data, index) => handleClick(data, field)} style={customStyle}/>
+                <Bar
+                  dataKey={field.label || field}
+                  stackId="a"
+                  fill={chartColours[idx]}
+                  key={idx}
+                  onClick={(data, index) => handleClick(data, field)}
+                  style={customStyle}
+                />
               :
                 <Line dataKey={field.label || field} type="monotone" stroke={chartColours[idx]} key={idx} />
             )}
