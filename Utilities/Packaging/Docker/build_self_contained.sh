@@ -32,8 +32,10 @@ cd $CARDS_DIRECTORY
 mvn clean install -Pdocker || { echo "Failed to build CARDS Docker image. Exiting."; exit -1; }
 
 # Get the name of the newly built Docker image
-# TODO: IMPLEMENT ME!
-INPUT_DOCKER_IMAGE="cards/cards:latest"
+CARDS_VERSION=$(cat ${CARDS_DIRECTORY}/pom.xml | grep --max-count=1 '<version>' | cut '-d>' -f2 | cut '-d<' -f1)
+
+INPUT_DOCKER_IMAGE="cards/cards:${CARDS_VERSION}"
+(echo "$CARDS_VERSION" | grep -e '-SNAPSHOT$' -q) && INPUT_DOCKER_IMAGE="cards/cards:latest"
 
 # Switch back to the Utilities/Packaging/Docker directory
 cd $UTILITIES_PACKAGING_DOCKER_DIRECTORY
@@ -41,8 +43,6 @@ cd $UTILITIES_PACKAGING_DOCKER_DIRECTORY
 # --- Based on run.sh from cards-sling-feature-downloader utility
 
 export DEPLOYMENT_M2_DIRECTORY=$(realpath $(mktemp -d -p .))
-
-CARDS_VERSION=$(cat ${CARDS_DIRECTORY}/pom.xml | grep --max-count=1 '<version>' | cut '-d>' -f2 | cut '-d<' -f1)
 
 IFS=$'\n'
 for pkg in $(cat cards_feature_list.txt | grep -v -e '^#' | grep -e '^.' | PROJECT_VERSION=$CARDS_VERSION envsubst)
