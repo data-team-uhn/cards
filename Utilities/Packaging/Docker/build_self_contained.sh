@@ -19,7 +19,8 @@
 
 OUTPUT_DOCKER_IMAGE=$1
 
-# TODO: First check that the cards/sling-feature-downloader Docker image exists on the local machine
+# First check that the cards/sling-feature-downloader Docker image exists on the local machine
+(docker image inspect cards/sling-feature-downloader > /dev/null) || exit -1
 
 UTILITIES_PACKAGING_DOCKER_DIRECTORY=$(pwd)
 export CARDS_DIRECTORY=$(realpath ../../../)
