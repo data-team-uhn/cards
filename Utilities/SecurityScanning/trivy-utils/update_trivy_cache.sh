@@ -17,8 +17,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
+resolve_ip () {
+	HOSTNAME=$1 python3 -c 'import os; import socket; print(os.environ["HOSTNAME"] + ":" + socket.gethostbyname(os.environ["HOSTNAME"]))'
+}
+
 docker run \
 	--rm \
+	--add-host $(resolve_ip ghcr.io) \
+	--add-host $(resolve_ip index.docker.io) \
+	--add-host $(resolve_ip production.cloudflare.docker.com) \
 	-v $(realpath ~/trivy-cache):/root/.cache \
 	aquasec/trivy fs \
 	--download-db-only
