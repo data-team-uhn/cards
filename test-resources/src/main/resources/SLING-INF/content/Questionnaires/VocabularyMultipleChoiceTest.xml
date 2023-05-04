@@ -796,11 +796,6 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>boolean</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>enableUnknown</name>
 			<value>True</value>
 			<type>Boolean</type>
