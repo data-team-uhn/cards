@@ -131,12 +131,9 @@
       "conditions": ["ENCOUNTER_STATUS = Canceled"
       ]
     },
-    // Assign patients from the cardiac clinic to the Cardio cohort
-    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-Cardio":{
-      "priority": 40,
-      "clinic": "/Survey/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
-      "conditions": ["ENCOUNTER_CLINIC = TG-PMCC CARDIAC CLINICS DIAGNOSTIC"]
-    },
+
+    // ClinicMapper automatically turns ENCOUNTER_CLINIC into CLINIC
+
     // Discard duplicates if there's more than one event per visit
     "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
       "enable": true,
