@@ -106,6 +106,24 @@
       "emailColumn": "EMAIL",
       "emailConsentColumn": ""
     },
+
+    // Discard patients without DoB, since they won't be able to authenticate
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NoDateOfBirth":{
+      "priority": 10,
+      "conditions": [
+        "DATE_OF_BIRTH is empty"
+      ]
+    },
+
+    // Discard patients without MRN and OHIP, since they won't be able to authenticate
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NoMrnAndOhip":{
+      "priority": 10,
+      "conditions": [
+        "MRN is empty",
+        "OHIP_NBR is empty"
+      ]
+    },
+
     // Only look at events from the participating clinics, discard everything else
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingClinics":{
       "priority": 10,
