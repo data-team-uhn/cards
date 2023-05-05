@@ -125,12 +125,6 @@
         "ENCOUNTER_CLINIC <> TG-PMCC CARDIAC CLINICS DIAGNOSTIC"
       ]
     },
-    // Only look at non-canceled events
-    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingClinics":{
-      "priority": 10,
-      "conditions": ["ENCOUNTER_STATUS = Canceled"
-      ]
-    },
 
     // ClinicMapper automatically turns ENCOUNTER_CLINIC into CLINIC
 
