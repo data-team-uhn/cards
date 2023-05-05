@@ -87,6 +87,15 @@ function ClinicVisits(props) {
       "format": "date:yyyy-MM-dd HH:mm"
     },
     {
+      "key": "email_sent",
+      "label": "Email sent",
+      "format" : (row) => {
+         let email_date = row.reminder2_sent || row.reminder1_sent || row.invitation_sent;
+         let label = row.reminder2_sent || row.reminder1_sent ? "(reminder)" : row.invitation_sent ? "(initial)" : "";
+         return email_date ? `${email_date.substring(0, 10)} ${label}` : "N/A";
+      }
+    },
+    {
       "key" : "status",
       "label" : "Survey completion",
       "format" : (row) => (
