@@ -189,7 +189,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
                     session.getNode("/Questionnaires/Visit information/time")), session);
             } else if (isAnswerForSurveysSubmitted(node) && isSubmitted(node)) {
                 updateSurveySubmittedDate(node, session);
-            } else if (isAnswerForDischargeTime(node)) {
+            } else if (isAnswerForVisitTime(node)) {
                 updateSurveyExpirationDate(node, session);
             }
         } catch (final LoginException e) {
@@ -248,14 +248,18 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
 
     private boolean hasSurveys(final Node hasSurveysAnswer) throws RepositoryException
     {
-        final Long hasSurveys = (Long) this.formUtils.getValue(hasSurveysAnswer);
-        return hasSurveys != null && hasSurveys == 1;
+        return isTrue(hasSurveysAnswer);
     }
 
     private boolean isSubmitted(final Node submittedAnswer) throws RepositoryException
     {
-        final Long submitted = (Long) this.formUtils.getValue(submittedAnswer);
-        return submitted != null && submitted == 1;
+        return isTrue(submittedAnswer);
+    }
+
+    private boolean isTrue(final Node answer) throws RepositoryException
+    {
+        final Long value = (Long) this.formUtils.getValue(answer);
+        return value != null && value == 1;
     }
 
     private Node ensureSurveyStatusFormExists(final Node surveyStatusQuestionnaire, final Node visitSubject,
@@ -323,12 +327,12 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
     }
 
     /**
-     * Check if an answer is for the "patient discharge date" question.
+     * Check if an answer is for the "visit time" question.
      *
      * @param answer the answer node to check
      * @return {@code true} if the answer is indeed for the target question
      */
-    private boolean isAnswerForDischargeTime(final Node answer)
+    private boolean isAnswerForVisitTime(final Node answer)
     {
         return isAnswerForQuestion(answer, "time");
     }
