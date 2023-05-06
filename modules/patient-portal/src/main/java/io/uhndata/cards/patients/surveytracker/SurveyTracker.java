@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.prems.internal.surveytracker;
+package io.uhndata.cards.patients.surveytracker;
 
 import java.util.Calendar;
 import java.util.List;
