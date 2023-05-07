@@ -145,20 +145,20 @@
                 <name>expression</name>
                 <value><![CDATA[
                     return (
-                        ( 0 < @{phq9_9} ? "Your responses indicate that you are having thoughts of hurting yourself. We strongly encourage you to seek immediate help from a professional mental health provider using the below resources."
-                            + "\n\n" + "**Crisis Services Canada**"
+                        ( 0 < @{phq9_9} ? "Your responses indicate that you are having thoughts of hurting yourself or being better off dead. If you feel like your safety is at risk, please seek immediate help from a professional mental health provider using the below resources."
+                            + "\n\n" + "**Talk Suicide** (across Canada)"
                             + "\n\n" + "Call [1-833-456-4566](tel:1-833-456-4566)"
-                            + "\n" + "- Suicide Prevention Services are available 24/7/365"
+                            + "\n\n" + "Text [45645](sms:45645)"
+                            + "\n" + "- Support for anyone facing suicide available 24/7/365"
                             + "\n" + "- Can connect you to responders immediately"
-                            + "\n" + "- Online chat and text options are also available"
-                            + "\n" + "For more information, see [Crisis Services Canada's website](https://www.crisisservicescanada.ca/en/)."
-                            + "\n\n" + "**Telehealth Ontario** (across Ontario)"
-                            + "\n\n" + "Call [1-866-797-0000](tel:1-866-797-0000)"
-                            + "\n" + "- Telehealth is available 24/7/365 and can provide you with immediate assistance"
-                            + "\n" + "- Free, confidential service provided by a Registered Nurse"
-                            + "\n" + "For more information, see [Telehealth Ontario's website](https://www.ontario.ca/page/get-medical-advice-telehealth-ontario)."
+                            + "\n\n" + "For more information, see [Talk Suicide’s website](https://talksuicide.ca)."
+                            + "\n\n" + "**Distress and Crisis Ontario**"
+                            + "\n\n" + "Visit [Distress and Crisis Ontario’s website](https://www.dcontario.org/locations/) to find a Distress Centre or Crisis Line near you."
+                            + "\n" + "- Free, confidential, immediate support"
+                            + "\n" + "- Text SUPPORT to [258258](sms:258258?&body=SUPPORT) (available 2PM-2AM EST daily)"
+                            + "\n" + "- Online chat option is also available"
                             + "\n\n" + "**Immediate Assistance**"
-                            + "\n\n" + "**If you need immediate assistance, please proceed to your nearest Emergency Department or call 911.**"
+                            + "\n\n" + "If you need immediate assistance, please proceed to your nearest Emergency Department or call 911."
                             : null
                         )
                     )]]>
@@ -191,7 +191,7 @@
                       return (
                           "Your Score: " + score
                           + "\n\n" +
-                          ( 14 >= score ? "If your symptoms result in a score of 0 - 14, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+                          ( 14 >= score ? "If your symptoms result in a score of 0 - 14, consider accessing self-care resources available on the [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
                               : "If your symptoms result in a score of 15 or more, make sure to bring them up to your provider at your next appointment as further assessment of depressive symptoms may be required. Note that if your symptoms are severe (for example 20 - 27), you should consider telling your health care team right away or go to the closest emergency department."
                           )
                       )
@@ -278,7 +278,7 @@
                     return (
                         "Your Score: " + score
                         + "\n\n" +
-                        ( 10 >= score ? "If your symptoms result in a score of 0 - 10, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+                        ( 10 >= score ? "If your symptoms result in a score of 0 - 10, consider accessing self-care resources available on [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
                             : "If your symptoms result in a score of 11 or more, make sure to bring them up to your provider at your next appointment as further assessment of anxiety symptoms may be required. Note that if your symptoms are severe (for example 15 - 21), you should consider telling your health care team right away or go to the closest emergency department."
                         )
                     )
@@ -362,9 +362,9 @@
                 <name>expression</name>
                 <value>
                   var score = (+@{audit_1:-0} + +@{audit_2:-0} + +@{audit_3:-0});
-                  var maleText = 4 > score ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+                  var maleText = 4 > score ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
                       : "If your symptoms result in a score of 4 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
-                  var femaleText = 3 > score ? "If your symptoms result in a score of 0 - 2, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+                  var femaleText = 3 > score ? "If your symptoms result in a score of 0 - 2, consider accessing self-care resources available on [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
                       : "If your symptoms result in a score of 3 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
                   return (
                     "Your Score: " + score
