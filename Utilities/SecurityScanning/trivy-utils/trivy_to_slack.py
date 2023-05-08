@@ -106,7 +106,10 @@ class TrivyToSlackConverter:
 		return slack_block
 
 	def getMarkdownReportMessages(self):
-		return [v[1] for v in self.getSortedVulnerabilityList()]
+		if len(self.getSortedVulnerabilityList()) > 0:
+			return [v[1] for v in self.getSortedVulnerabilityList()]
+		else:
+			return [":heavy_check_mark:    No vulnerabilities detected!    :heavy_check_mark:"]
 
 if __name__ == '__main__':
 	import sys
