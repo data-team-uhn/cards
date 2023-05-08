@@ -58,6 +58,12 @@
       ]
     },
 
+    // Enable the Survey Tracker
+    "io.uhndata.cards.patients.surveytracker.SurveyTracker":{
+      "trackSubmissions": true,
+      "trackEmails": true
+    },
+
     // Email notifications for patients
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~CPES-InitialInvitationTask":{

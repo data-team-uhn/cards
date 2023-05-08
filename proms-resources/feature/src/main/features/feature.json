@@ -85,6 +85,12 @@
     //   "clinicId": "/Proms/ClinicMapping/853703519",
     //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/ReminderNotification",
     //   "daysToVisit": 1
+    },
+
+    // Enable the Survey Tracker
+    "io.uhndata.cards.patients.surveytracker.SurveyTracker":{
+      "trackSubmissions": true,
+      "trackEmails": true
     }
   }
 }
