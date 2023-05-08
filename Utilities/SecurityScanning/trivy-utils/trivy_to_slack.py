@@ -120,7 +120,10 @@ if __name__ == '__main__':
 	args = argparser.parse_args()
 
 	trivy_report = json.load(sys.stdin)
-	detected_vulnerabilities = trivy_report['Results'][0]['Vulnerabilities']
+	if 'Vulnerabilities' in trivy_report['Results'][0]:
+		detected_vulnerabilities = trivy_report['Results'][0]['Vulnerabilities']
+	else:
+		detected_vulnerabilities = []
 	trivy_to_slack_converter = TrivyToSlackConverter(software_package_emoji=args.package_emoji)
 	trivy_to_slack_converter.processVulnerabilities(detected_vulnerabilities)
 
