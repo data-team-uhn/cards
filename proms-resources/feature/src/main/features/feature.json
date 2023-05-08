@@ -71,19 +71,22 @@
         "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]"
       ]
     },
-    // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
-    //   "name": "InitialNotificationsTask",
-    //   "metricName": "Initial Emails Sent",
-    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
-    //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/InitialNotification",
-    //   "daysToVisit": 3
-    // },
-    // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
-    //   "name": "ReminderNotificationsTask",
-    //   "metricName": "Reminder Emails Sent",
-    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
-    //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/ReminderNotification",
-    //   "daysToVisit": 1
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
+      "name": "InitialNotificationsTask",
+      "notificationType": "Invitation",
+      "metricName": "Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
+      "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/InitialNotification",
+      "daysToVisit": 3
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
+      "name": "ReminderNotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
+      "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/ReminderNotification",
+      "daysToVisit": 1
+    },
 
     // Enable the Survey Tracker
     "io.uhndata.cards.patients.surveytracker.SurveyTracker":{
