@@ -66,7 +66,8 @@ public class LengthOfStayMapper implements ClarityDataProcessor
                 length = ChronoUnit.DAYS.between(admission.toInstant(), discharge.toInstant());
                 input.put("LENGTH_OF_STAY_DAYS", String.valueOf(length));
 
-                LOGGER.warn("Updated visit {} length of stay", input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"));
+                LOGGER.warn("Updated visit {} length of stay",
+                    input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
             } catch (ParseException | NullPointerException e) {
                 // Do nothing, could not calculate a new length so leave empty
             }

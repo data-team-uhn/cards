@@ -69,5 +69,6 @@
     <module>saml</module>
     <module>scheduled-csv-export</module>
     <module>clarity-integration</module>
+    <module>torch-import</module>
   </modules>
 </project>

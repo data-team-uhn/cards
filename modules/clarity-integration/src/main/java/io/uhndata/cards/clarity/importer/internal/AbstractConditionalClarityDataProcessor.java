@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.internal.importer;
+package io.uhndata.cards.clarity.importer.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,7 +86,7 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
         NOT_MATCHES(" not matches ", false, (input, value) -> input == null || !input.matches(value)),
         MATCHES(" matches ", false, (input, value) -> input != null && input.matches(value)),
         NOT_IN(" not in ", false, (input, value) -> input == null
-            && !Arrays.stream(value.split("\\s*+;\\s*+")).anyMatch(input::equalsIgnoreCase)),
+            || !Arrays.stream(value.split("\\s*+;\\s*+")).anyMatch(input::equalsIgnoreCase)),
         IN(" in ", false, (input, value) -> input != null
             && Arrays.stream(value.split("\\s*+;\\s*+")).anyMatch(input::equalsIgnoreCase)),
         EMPTY(" is empty", true, (input, value) -> input == null || input.length() == 0),

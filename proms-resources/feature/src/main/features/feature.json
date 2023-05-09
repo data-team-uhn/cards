@@ -59,38 +59,91 @@
         "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n end",
         // Access rights for the special "guest-patient" user (not using a link from the notification email): only allow access to the session subject data, excluding certain clinician-only sections/questions and PII
         "create user guest-patient \n set ACL for guest-patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,time,location,provider,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/time,/Questionnaires/Visit*information/location,/Questionnaires/Visit*information/provider,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n end",
-        // Importing visits
-        "create service user proms-import-backend \n set ACL on /Questionnaires,/SubjectTypes \n   allow jcr:read for proms-import-backend \n end \n set ACL on /Forms,/Subjects \n   allow jcr:read,rep:write,jcr:versionManagement for proms-import-backend \n end",
         // Trusted users can only access forms submitted by their patients, and delete forms that they created
-        "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms restriction(rep:ntNames,cards:Form,cards:Subject) \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n    deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end "
+        "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms restriction(rep:ntNames,cards:Form,cards:Subject) \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n    deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end ",
+        // Allow the Clarity import to access the clinic names
+        "create service user clarity-import \n set ACL for clarity-import \n   allow jcr:read on /Survey \n end "
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~proms":{
       "user.mapping":[
         "io.uhndata.cards.proms-permissions:UnsubmittedFormsRestriction=[sling-readall]",
-        "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]",
         "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]"
       ]
-    // },
+    },
     // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
     //   "name": "InitialNotificationsTask",
     //   "metricName": "Initial Emails Sent",
-    //   "clinicId": "/Proms/ClinicMapping/853703519",
+    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
     //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/InitialNotification",
     //   "daysToVisit": 3
     // },
     // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
     //   "name": "ReminderNotificationsTask",
     //   "metricName": "Reminder Emails Sent",
-    //   "clinicId": "/Proms/ClinicMapping/853703519",
+    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
     //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/ReminderNotification",
     //   "daysToVisit": 1
-    },
 
     // Enable the Survey Tracker
     "io.uhndata.cards.patients.surveytracker.SurveyTracker":{
       "trackSubmissions": true,
       "trackEmails": true
+    },
+
+    // Clarity import
+    "io.uhndata.cards.clarity.importer.NightlyClarityImport": {
+      "nightly.import.schedule": "0 15 7 * * ? *",
+      "dayToImport": 0
+    },
+
+    // Clarity import filters and mappers
+
+    // Discard patients with invalid emails
+    "io.uhndata.cards.clarity.importer.internal.EmailConsentFilter": {
+      "enable": true,
+      "emailColumn": "EMAIL",
+      "emailConsentColumn": ""
+    },
+
+    // Discard patients without DoB, since they won't be able to authenticate
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NoDateOfBirth":{
+      "priority": 10,
+      "conditions": [
+        "DATE_OF_BIRTH is empty"
+      ]
+    },
+
+    // Discard patients without MRN and OHIP, since they won't be able to authenticate
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NoMrnAndOhip":{
+      "priority": 10,
+      "conditions": [
+        "MRN is empty",
+        "OHIP_NBR is empty"
+      ]
+    },
+
+    // Only look at events from the participating clinics, discard everything else
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingClinics":{
+      "priority": 10,
+      "conditions": [
+        "ENCOUNTER_CLINIC <> TG-PMCC CARDIAC CLINICS DIAGNOSTIC"
+      ]
+    },
+
+    // ClinicMapper automatically turns ENCOUNTER_CLINIC into CLINIC
+
+    // Discard duplicates if there's more than one event per visit
+    "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
+      "enable": true,
+      "subjectType": "/SubjectTypes/Patient/Visit"
+    },
+    // Submission event listener
+    "io.uhndata.cards.patients.submissioncounter.SubmissionCounter~SurveysSubmitted":{
+      "name": "Patient Survey Completion Listener",
+      "submittedFlagPath": "/Questionnaires/Visit information/surveys_submitted",
+      "linkingSubjectType": "/SubjectTypes/Patient/Visit",
+      "excludedQuestionnaires": ["/Questionnaires/Survey events"]
     }
   }
 }

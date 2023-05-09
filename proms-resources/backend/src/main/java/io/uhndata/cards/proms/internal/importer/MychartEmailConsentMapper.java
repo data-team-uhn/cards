@@ -19,26 +19,38 @@
 
 package io.uhndata.cards.proms.internal.importer;
 
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
+import java.util.Map;
+
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.metatype.annotations.Designate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, service = ImportConfig.class)
-@Designate(ocd = ImportConfigDefinition.class, factory = true)
-public class ImportConfig
+import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
+
+/**
+ * Clarity import processor that sets a patients email consent to yes if they signed up for mychart.
+ *
+ * @version $Id$
+ */
+@Component
+public class MychartEmailConsentMapper implements ClarityDataProcessor
 {
-    private ImportConfigDefinition config;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MychartEmailConsentMapper.class);
 
-    @Activate
-    protected void activate(final ImportConfigDefinition config, final ComponentContext componentContext)
-        throws Exception
+    @Override
+    public Map<String, String> processEntry(Map<String, String> input)
     {
-        this.config = config;
+        if ("Activated".equalsIgnoreCase(input.get("MYCHART_STATUS"))) {
+            input.put("EMAIL_CONSENT", "Yes");
+            LOGGER.warn("Set visit {} EMAIL_CONSENT to 'Yes' due to MYCHART_STATUS 'Activated'",
+                input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
+        }
+        return input;
     }
 
-    public ImportConfigDefinition getConfig()
+    @Override
+    public int getPriority()
     {
-        return this.config;
+        return 0;
     }
 }
