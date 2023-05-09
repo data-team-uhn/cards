@@ -56,12 +56,16 @@ class TrivyToSlackConverter:
 	def __init__(self, software_package_emoji=':package:'):
 		self.software_package_emoji = software_package_emoji
 		self.vulnerability_lists = {}
+		self.vulnerability_lists['EOSL'] = []
 		self.vulnerability_lists['CRITICAL'] = []
 		self.vulnerability_lists['HIGH'] = []
 		self.vulnerability_lists['MEDIUM'] = []
 		self.vulnerability_lists['LOW'] = []
 
-	def processVulnerabilities(self, detected_vulnerabilities):
+	def processVulnerabilities(self, detected_vulnerabilities, eosl=False):
+		if eosl:
+			self.vulnerability_lists['EOSL'].append((":no_entry:    Security support is no longer available.    :no_entry:", ":no_entry:    Security support is no longer available.    :no_entry:"))
+
 		for vulnerabilityIndex in range(0, len(detected_vulnerabilities)):
 			pkgName = detected_vulnerabilities[vulnerabilityIndex]['PkgName']
 			installedVersion = detected_vulnerabilities[vulnerabilityIndex]['InstalledVersion']
@@ -78,7 +82,7 @@ class TrivyToSlackConverter:
 
 	def getSortedVulnerabilityList(self):
 		ordered_vulnerabilities = []
-		for severity in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
+		for severity in ['EOSL', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
 			ordered_vulnerabilities += self.vulnerability_lists[severity]
 		return ordered_vulnerabilities
 
@@ -106,7 +110,10 @@ class TrivyToSlackConverter:
 		return slack_block
 
 	def getMarkdownReportMessages(self):
-		return [v[1] for v in self.getSortedVulnerabilityList()]
+		if len(self.getSortedVulnerabilityList()) > 0:
+			return [v[1] for v in self.getSortedVulnerabilityList()]
+		else:
+			return [":heavy_check_mark:    No vulnerabilities detected!    :heavy_check_mark:"]
 
 if __name__ == '__main__':
 	import sys
@@ -120,9 +127,22 @@ if __name__ == '__main__':
 	args = argparser.parse_args()
 
 	trivy_report = json.load(sys.stdin)
-	detected_vulnerabilities = trivy_report['Results'][0]['Vulnerabilities']
+
+	# Were there detected vulnerabilities?
+	if 'Vulnerabilities' in trivy_report['Results'][0]:
+		detected_vulnerabilities = trivy_report['Results'][0]['Vulnerabilities']
+	else:
+		detected_vulnerabilities = []
+
+	# Is this OS no longer getting security updates?
+	eosl = False
+	if 'Metadata' in trivy_report:
+		if 'OS' in trivy_report['Metadata']:
+			if 'EOSL' in trivy_report['Metadata']['OS']:
+				eosl = trivy_report['Metadata']['OS']['EOSL']
+
 	trivy_to_slack_converter = TrivyToSlackConverter(software_package_emoji=args.package_emoji)
-	trivy_to_slack_converter.processVulnerabilities(detected_vulnerabilities)
+	trivy_to_slack_converter.processVulnerabilities(detected_vulnerabilities, eosl=eosl)
 
 	if args.markdown_report_file:
 		with open(args.markdown_report_file, 'w') as f_markdown_report:
