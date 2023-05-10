@@ -862,7 +862,7 @@
   // How the current form should behave when the referenced form is deleted
   // If true, delete the formReference's parent form when the referenced form is deleted.
   // If false, only delete the formReference
-  - deleteWithReference (BOOLEAN) = false mandatory autocreated
+  - recursiveDeleteParent (BOOLEAN) = false mandatory autocreated
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/FormReference" mandatory autocreated protected
