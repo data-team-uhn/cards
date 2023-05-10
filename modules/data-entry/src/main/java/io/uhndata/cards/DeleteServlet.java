@@ -297,6 +297,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
                 continue;
             }
             iterateReferrers(referrer, consumer, true);
+            iterateParentIfRequired(referrer, consumer);
         }
 
         if (includeRoot) {
@@ -344,16 +345,34 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
+     * Recursively call a function all children of the current node's parent if required.
+     *
+     * @param node the node to have its referrers and self operated on
+     * @param consumer the function to be called on each node
+     * @throws RepositoryException if any function call fails due to repository errors
+     */
+    private void iterateParentIfRequired(
+        Node node,
+        NodeConsumer consumer
+    ) throws RepositoryException
+    {
+        if (node.hasProperty("recursiveDeleteParent") && node.getProperty("recursiveDeleteParent").getBoolean()) {
+            iterateChildren(node.getParent(), consumer, true);
+        }
+    }
+
+    /**
      * Get a string explaining which nodes refer to the node traversed by parent node.
      *
      * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes
      */
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS"})
     private String listReferrersFromTraversal()
     {
         try {
             int formCount = 0;
             int answerSectionCount = 0;
+            int formReferenceCount = 0;
             int answerCount = 0;
             int otherCount = 0;
             List<String> subjects = new ArrayList<>();
@@ -367,6 +386,15 @@ public class DeleteServlet extends SlingAllMethodsServlet
                         break;
                     case "cards:AnswerSection":
                         answerSectionCount++;
+                        break;
+                    case "cards:FormReference":
+                        // If the form reference leads to the parent form being deleted,
+                        // don't list the form reference as a deleted item as it's parent form
+                        // will be listed instead.
+                        if (!n.hasProperty("recursiveDeleteParent")
+                            || !n.getProperty("recursiveDeleteParent").getBoolean()) {
+                            formReferenceCount++;
+                        }
                         break;
                     case "cards:Subject":
                         subjects.add(n.getProperty("identifier").getString());
@@ -393,6 +421,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
                 addNodesToResult(results, "answer section", answerSectionCount);
             } else if (answerCount > 0) {
                 addNodesToResult(results, "answer", answerCount);
+            }
+            if (formReferenceCount > 0) {
+                addNodesToResult(results, "form reference", formReferenceCount);
             }
             addNodesToResult(results, "subject", subjects);
             addNodesToResult(results, "subject type", subjectTypes);
