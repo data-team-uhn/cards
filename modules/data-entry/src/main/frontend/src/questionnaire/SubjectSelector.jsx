@@ -317,6 +317,7 @@ function UnstyledSelectParentDialog (props) {
                   { accessorKey: 'hierarchy' }
               ]}
               data={data}
+              muiSearchTextFieldProps={{ autoFocus: true }}
               muiTableBodyRowProps={({ row }) => ({
                 onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent && onChangeParent(row.original); row.toggleSelected(); },
                 selected: row.original["jcr:uuid"] === value?.["jcr:uuid"],
@@ -1037,6 +1038,7 @@ function SubjectSelectorList(props) {
           { accessorKey: 'hierarchy' }
         ]}
         data={data}
+        muiSearchTextFieldProps={{ autoFocus: true }}
         muiTableBodyRowProps={({ row }) => ({
           onClick: () => { onSelect(row.original); handleSelection(row.original); row.toggleSelected(); },
           selected: row.original["jcr:uuid"] === selectedSubject?.["jcr:uuid"],

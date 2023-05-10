@@ -388,6 +388,7 @@ function NewFormDialog(props) {
                   { accessorKey: 'description' }
                 ]}
                 data={data}
+                muiSearchTextFieldProps={{ autoFocus: true }}
                 muiTableBodyRowProps={({ row }) => ({
                   sx: {
                     cursor: isRowDisabled(row) ? 'default' : 'pointer',
