@@ -5,7 +5,7 @@
   "jcr:reference:surveys_submitted": "/Questionnaires/Visit information/surveys_submitted",
   "jcr:reference:invitation_sent": "/Questionnaires/Survey events/invitation_sent",
   "jcr:reference:reminder1_sent": "/Questionnaires/Survey events/reminder1_sent",
-  "jcr:reference:remindoe2_sent": "/Questionnaires/Survey events/reminder2_sent",
+  "jcr:reference:reminder2_sent": "/Questionnaires/Survey events/reminder2_sent",
   "jcr:reference:has_surveys": "/Questionnaires/Visit information/has_surveys",
   "jcr:reference:email_unsubscribed": "/Questionnaires/Patient information/email_unsubscribed",
   "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
