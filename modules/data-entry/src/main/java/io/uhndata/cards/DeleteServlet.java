@@ -236,9 +236,16 @@ public class DeleteServlet extends SlingAllMethodsServlet
             this.resolver.get().adaptTo(Session.class).save();
         } else {
             String referencedNodes = listReferrersFromTraversal();
-            // Will not be able to delete node due to references. Inform user.
-            sendJsonError(response, SlingHttpServletResponse.SC_CONFLICT, String.format("This item is referenced %s.",
-                StringUtils.isEmpty(referencedNodes) ? "by unknown item(s)" : "in " + referencedNodes));
+            if (referencedNodes == null || referencedNodes.length() > 0) {
+                // Will not be able to delete node due to references. Inform user.
+                sendJsonError(response, SlingHttpServletResponse.SC_CONFLICT,
+                    String.format("This item is referenced %s.",
+                    StringUtils.isEmpty(referencedNodes) ? "by unknown item(s)" : "in " + referencedNodes));
+            } else {
+                // References were found but they are not references that need user prompting to delete.
+                // Do not inform user, just delete.
+                handleRecursiveDeleteChildren(node);
+            }
         }
     }
 
@@ -364,15 +371,15 @@ public class DeleteServlet extends SlingAllMethodsServlet
     /**
      * Get a string explaining which nodes refer to the node traversed by parent node.
      *
-     * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes
+     * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes,
+     *         an empty string if there are no nodes needing confirmation or {@code null} in case of error.
      */
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS"})
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
     private String listReferrersFromTraversal()
     {
         try {
             int formCount = 0;
             int answerSectionCount = 0;
-            int formReferenceCount = 0;
             int answerCount = 0;
             int otherCount = 0;
             List<String> subjects = new ArrayList<>();
@@ -387,15 +394,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
                     case "cards:AnswerSection":
                         answerSectionCount++;
                         break;
-                    case "cards:FormReference":
-                        // If the form reference leads to the parent form being deleted,
-                        // don't list the form reference as a deleted item as it's parent form
-                        // will be listed instead.
-                        if (!n.hasProperty("recursiveDeleteParent")
-                            || !n.getProperty("recursiveDeleteParent").getBoolean()) {
-                            formReferenceCount++;
-                        }
-                        break;
                     case "cards:Subject":
                         subjects.add(n.getProperty("identifier").getString());
                         break;
@@ -404,6 +402,11 @@ public class DeleteServlet extends SlingAllMethodsServlet
                         break;
                     case "cards:Questionnaire":
                         questionnaires.add(n.getProperty("title").getString());
+                        break;
+                    case "cards:FormReference":
+                        // Do not add formReferences to the user's prompt:
+                        // The user be prompted to delete the formReferences parent form if it is being deleted
+                        // or the formReference should be deleted silently
                         break;
                     default:
                         if ("cards/Answer".equals(n.getProperty("sling:resourceSuperType").getString())) {
@@ -421,9 +424,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
                 addNodesToResult(results, "answer section", answerSectionCount);
             } else if (answerCount > 0) {
                 addNodesToResult(results, "answer", answerCount);
-            }
-            if (formReferenceCount > 0) {
-                addNodesToResult(results, "form reference", formReferenceCount);
             }
             addNodesToResult(results, "subject", subjects);
             addNodesToResult(results, "subject type", subjectTypes);
