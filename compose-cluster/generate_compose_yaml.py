@@ -80,6 +80,7 @@ argparser.add_argument('--smtps_test_mail_path', help='Host OS path where the em
 argparser.add_argument('--s3_test_container', help='Add a MinIO S3 Bucket Docker container for testing S3 data exports', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--self_signed_ssl_proxy', help='Generate a self-signed SSL certificate for the proxy to use (used mainly for testing purposes).', action='store_true')
+argparser.add_argument('--behind_ssl_termination', help='Listen only for non-encrypted HTTP connections but apply all HTTPS headers (as client connections are made through an upstream SSL-terminating reverse proxy)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
 argparser.add_argument('--vault_dev_server', help='Add a HashiCorp Vault (development mode) container to the set of services', action='store_true')
@@ -720,7 +721,7 @@ if args.s3_test_container:
   yaml_obj['services']['cardsinitial']['environment'].append("AWS_KEY=minioadmin")
   yaml_obj['services']['cardsinitial']['environment'].append("AWS_SECRET=minioadmin")
 
-if SSL_PROXY:
+if SSL_PROXY or args.behind_ssl_termination:
   yaml_obj['services']['cardsinitial']['environment'].append("BEHIND_SSL_PROXY=true")
 
 if ENABLE_BACKUP_SERVER:
@@ -828,6 +829,11 @@ if SSL_PROXY:
   yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificate.crt:/etc/cert/certificate.crt:ro")
   yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatekey.key:/etc/cert/certificatekey.key:ro")
   yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatechain.crt:/etc/cert/certificatechain.crt:ro")
+elif args.behind_ssl_termination:
+  if args.saml:
+    shutil.copyfile("proxy/terminated-ssl_saml_000-default.conf", "proxy/000-default.conf")
+  else:
+    shutil.copyfile("proxy/terminated-ssl_000-default.conf", "proxy/000-default.conf")
 else:
   if args.saml:
     shutil.copyfile("proxy/http_saml_000-default.conf", "proxy/000-default.conf")
