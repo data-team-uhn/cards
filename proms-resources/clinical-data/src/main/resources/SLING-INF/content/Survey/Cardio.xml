@@ -278,7 +278,7 @@
                     return (
                         "Your Score: " + score
                         + "\n\n" +
-                        ( 10 >= score ? "If your symptoms result in a score of 0 - 10, consider accessing self-care resources available on [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
+                        ( 10 >= score ? "If your symptoms result in a score of 0 - 10, consider accessing self-care resources available on the [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
                             : "If your symptoms result in a score of 11 or more, make sure to bring them up to your provider at your next appointment as further assessment of anxiety symptoms may be required. Note that if your symptoms are severe (for example 15 - 21), you should consider telling your health care team right away or go to the closest emergency department."
                         )
                     )
@@ -362,9 +362,9 @@
                 <name>expression</name>
                 <value>
                   var score = (+@{audit_1:-0} + +@{audit_2:-0} + +@{audit_3:-0});
-                  var maleText = 4 > score ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
+                  var maleText = 4 > score ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on the [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
                       : "If your symptoms result in a score of 4 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
-                  var femaleText = 3 > score ? "If your symptoms result in a score of 0 - 2, consider accessing self-care resources available on [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
+                  var femaleText = 3 > score ? "If your symptoms result in a score of 0 - 2, consider accessing self-care resources available on the [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
                       : "If your symptoms result in a score of 3 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
                   return (
                     "Your Score: " + score
