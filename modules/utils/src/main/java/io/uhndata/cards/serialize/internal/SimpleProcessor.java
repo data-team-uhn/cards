@@ -67,7 +67,7 @@ public class SimpleProcessor implements ResourceJsonProcessor
             final String name = property.getName();
             JsonValue result = input;
             result = removeSlingProperties(name, result);
-            result = removeJcrProperties(node, name, result);
+            result = removeJcrProperties(name, result);
             result = removeFormProperty(name, result);
             return result;
         } catch (RepositoryException e) {
@@ -84,7 +84,7 @@ public class SimpleProcessor implements ResourceJsonProcessor
         return input;
     }
 
-    private JsonValue removeJcrProperties(final Node node, final String propertyName, final JsonValue input)
+    private JsonValue removeJcrProperties(final String propertyName, final JsonValue input)
         throws RepositoryException
     {
         // Only keep important JCR properties
