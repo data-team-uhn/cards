@@ -130,7 +130,7 @@ for i in range(args.n):
 
     # Email
     insertion_values['EMAIL'] = 'test' + str(mrn) + '@test.com'
-    insertion_values['EMAIL_CONSENT'] = random.choices(['Yes', 'No'], [10, 1])[0]
+    insertion_values['EMAIL_CONSENT'] = random.choices(['UHN_EXTERNAL_EMAIL', None], [10, 1])[0]
     insertion_values['MYCHART_STATUS'] = random.choices([None, 'Activating', 'Activated'], [2, 1, 3])[0]
 
     # Encounter details
