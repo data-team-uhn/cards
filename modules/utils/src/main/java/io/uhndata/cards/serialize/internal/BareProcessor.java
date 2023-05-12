@@ -92,6 +92,7 @@ public class BareProcessor implements ResourceJsonProcessor
             JsonValue result = input;
             result = removeSlingProperties(name, result);
             result = removeJcrProperties(node, name, result);
+            result = removeFormProperty(name, result);
             return result;
         } catch (RepositoryException e) {
             // Really shouldn't happen
@@ -134,6 +135,15 @@ public class BareProcessor implements ResourceJsonProcessor
         throws RepositoryException
     {
         if (propertyName.startsWith("jcr:")) {
+            return null;
+        }
+        return input;
+    }
+
+    private JsonValue removeFormProperty(final String propertyName, final JsonValue input)
+        throws RepositoryException
+    {
+        if (propertyName.equals("form")) {
             return null;
         }
         return input;
