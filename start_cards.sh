@@ -272,6 +272,14 @@ do
         ARGS_LENGTH=${ARGS_LENGTH}+1
         ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-email-notifications/${CARDS_VERSION}/slingosgifeature
         ARGS_LENGTH=${ARGS_LENGTH}+1
+
+        # cards4proms requires the clarity-integration module, make sure it's enabled
+        ARGS[$ARGS_LENGTH]=-f
+        ARGS_LENGTH=${ARGS_LENGTH}+1
+        ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-clarity-integration/${CARDS_VERSION}/slingosgifeature
+        ARGS_LENGTH=${ARGS_LENGTH}+1
+
+        # cards4proms uses the Trusted permission scheme by default
         if [[ ${PERMISSIONS_EXPLICITLY_SET} == 'false' ]]
         then
           PERMISSIONS="trusted"

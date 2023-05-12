@@ -17,33 +17,41 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.internal.importer;
+package io.uhndata.cards.proms.internal.importer;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
- * Clarity import processor that sets a patients email consent to yes if they signed up for mychart.
+ * Clarity import processor doesn't import canceled visits, unless they were previously imported.
  *
  * @version $Id$
  */
 @Component
-public class MychartEmailConsentMapper implements ClarityDataProcessor
+public class DiscardCanceledEvents implements ClarityDataProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MychartEmailConsentMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiscardCanceledEvents.class);
+
+    @Reference
+    private ThreadResourceResolverProvider trrp;
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        if ("Activated".equalsIgnoreCase(input.get("MYCHART STATUS"))) {
-            input.put("EMAIL_CONSENT_YN", "Yes");
-            LOGGER.warn("Set visit {} EMAIL_CONSENT_YN to 'Yes' due to MYCHART STATUS 'Activated'",
-                input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
+        final String status = input.get("ENCOUNTER_STATUS");
+        if (StringUtils.equalsIgnoreCase("cancelled", status) && this.trrp.getThreadResourceResolver().getResource(
+            "/Subjects/" + input.get("/SubjectTypes/Patient") + "/"
+                + input.get("/SubjectTypes/Patient/Visit")) == null) {
+            LOGGER.warn("Discarded canceled visit {} ", input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
+            return null;
         }
         return input;
     }
@@ -51,6 +59,6 @@ public class MychartEmailConsentMapper implements ClarityDataProcessor
     @Override
     public int getPriority()
     {
-        return 0;
+        return 10;
     }
 }

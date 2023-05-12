@@ -17,43 +17,40 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.internal.importer;
+package io.uhndata.cards.proms.internal.importer;
 
 import java.util.Map;
 
-import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
- * Clarity import processor that only allows visits for patients with a valid email address who have given consent to
- * receiving emails.
+ * Clarity import processor that replaces the custom status values with the FHIR standard.
  *
  * @version $Id$
  */
 @Component
-public class FilterEmailConsent implements ClarityDataProcessor
+public class EncounterStatusFhirMapper implements ClarityDataProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilterEmailConsent.class);
+    private static final String COLUMN = "ENCOUNTER_STATUS";
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        final String email = input.get("EMAIL_ADDRESS");
-        final Boolean consent = "Yes".equalsIgnoreCase(input.get("EMAIL_CONSENT_YN"));
-        if (consent && EmailValidator.getInstance().isValid(email)) {
-            return input;
+        final String value = input.get(COLUMN);
+        if (StringUtils.equalsIgnoreCase("Canceled", value)) {
+            input.put(COLUMN, "cancelled");
+        } else if (StringUtils.equalsIgnoreCase("Scheduled", value)) {
+            input.put(COLUMN, "planned");
         }
-        LOGGER.warn("Discarded visit {}", input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"));
-        return null;
+        return input;
     }
 
     @Override
     public int getPriority()
     {
-        return 5;
+        return 0;
     }
 }

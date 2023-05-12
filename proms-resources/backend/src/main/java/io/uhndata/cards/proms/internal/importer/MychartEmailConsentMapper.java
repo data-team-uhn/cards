@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.internal.importer;
+package io.uhndata.cards.proms.internal.importer;
 
 import java.util.Map;
 
@@ -40,9 +40,9 @@ public class MychartEmailConsentMapper implements ClarityDataProcessor
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        if ("Activated".equalsIgnoreCase(input.get("MYCHART STATUS"))) {
-            input.put("EMAIL_CONSENT_YN", "Yes");
-            LOGGER.warn("Set visit {} EMAIL_CONSENT_YN to 'Yes' due to MYCHART STATUS 'Activated'",
+        if ("Activated".equalsIgnoreCase(input.get("MYCHART_STATUS"))) {
+            input.put("EMAIL_CONSENT", "Yes");
+            LOGGER.warn("Set visit {} EMAIL_CONSENT to 'Yes' due to MYCHART_STATUS 'Activated'",
                 input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
         }
         return input;

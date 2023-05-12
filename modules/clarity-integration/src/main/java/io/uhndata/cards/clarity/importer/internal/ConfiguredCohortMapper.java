@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.internal.importer;
+package io.uhndata.cards.clarity.importer.internal;
 
 import java.util.Map;
 
@@ -32,24 +32,29 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
- * Clarity import processor that discards any visits meeting all conditions configured via OSGI configurations.
+ * Clarity import processor that assigns a cohort to an imported visit based on OSGi configured conditions.
  *
  * @version $Id$
  */
-@Designate(ocd = ConfiguredDiscardFilter.Config.class, factory = true)
 @Component
-public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProcessor implements ClarityDataProcessor
+@Designate(ocd = ConfiguredCohortMapper.Config.class, factory = true)
+public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProcessor implements ClarityDataProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfiguredDiscardFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfiguredCohortMapper.class);
 
-    @ObjectClassDefinition(name = "Clarity import filter - Discard Conditions",
-        description = "Configuration for the Clarity importer filter to discard any questionnaires matching these"
-            + " conditions")
+    @ObjectClassDefinition(name = "Clarity import filter - Cohort mapping conditions",
+        description = "Configuration for the Clarity importer to map visits matching these conditions to a specified"
+            + " cohort")
     public @interface Config
     {
         @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
             + " Processors are run in ascending priority order")
         int priority();
+
+        @AttributeDefinition(name = "Clinic",
+            description = "Clinic mapping path that should be assigned if all conditions are met"
+                + " (eg. /Survey/ClinicMapping/123456789)")
+        String clinic();
 
         @AttributeDefinition(name = "Conditions",
             description = "Conditions for this cohort to be assigned."
@@ -66,12 +71,15 @@ public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProce
         String service_pid();
     }
 
+    private final String cohort;
+
     private final String id;
 
     @Activate
-    public ConfiguredDiscardFilter(Config configuration)
+    public ConfiguredCohortMapper(Config configuration)
     {
         super(configuration.priority(), configuration.conditions());
+        this.cohort = configuration.clinic();
         String pid = configuration.service_pid();
         this.id = pid.substring(pid.lastIndexOf("~") + 1);
     }
@@ -79,14 +87,20 @@ public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProce
     @Override
     protected Map<String, String> handleAllConditionsMatched(Map<String, String> input)
     {
-        LOGGER.warn("{} discarded visit {} due to all conditions met", this.id,
-            input.getOrDefault("PAT_ENC_CSN_ID", "Unknown"));
-        return null;
+        input.put("CLINIC", this.cohort);
+        LOGGER.warn("{} mapped visit {} to {} due to all conditions met", this.id,
+            input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"),
+            this.cohort);
+        return input;
     }
 
     @Override
     protected Map<String, String> handleUnmatchedCondition(Map<String, String> input, String condition)
     {
+        if (!condition.startsWith("CLINIC")) {
+            LOGGER.warn("{} skipped visit {} due to {}", this.id,
+                input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"), condition);
+        }
         return input;
     }
 }

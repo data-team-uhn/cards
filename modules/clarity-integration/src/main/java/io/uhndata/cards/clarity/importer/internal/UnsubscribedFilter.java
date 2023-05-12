@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.internal.importer;
+package io.uhndata.cards.clarity.importer.internal;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +30,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
@@ -49,13 +50,13 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@Component
+@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = UnsubscribedFilter.Config.class)
 public class UnsubscribedFilter implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(UnsubscribedFilter.class);
 
-    private final String subjectIDColumn;
+    private final boolean enabled;
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -74,24 +75,27 @@ public class UnsubscribedFilter implements ClarityDataProcessor
 
     @ObjectClassDefinition(name = "Clarity import filter - Unsubscribed Patient Discarder",
         description = "Configuration for the Clarity importer filter that discards visits for patients who have "
-        + "unsubscribed from survey emails.")
+            + "unsubscribed from survey emails.")
     public @interface Config
     {
-        @AttributeDefinition(name = "Subject ID Column", description = "Clarity column containing the patient ID.")
-        String subject_id_column();
+        @AttributeDefinition(name = "Enabled")
+        boolean enable() default false;
     }
 
     @Activate
     public UnsubscribedFilter(Config configuration)
     {
-        this.subjectIDColumn = configuration.subject_id_column();
+        this.enabled = configuration.enable();
     }
 
     @Override
-    public Map<String, String> processEntry(Map<String, String> input)
+    public Map<String, String> processEntry(final Map<String, String> input)
     {
-        final String mrn = input.get(this.subjectIDColumn);
-        final String id = input.getOrDefault("PAT_ENC_CSN_ID", "Unknown");
+        if (!this.enabled) {
+            return input;
+        }
+        final String mrn = input.get("/SubjectTypes/Patient");
+        final String id = input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown");
 
         if (mrn == null || mrn.length() == 0) {
             LOGGER.warn("Discarded visit {} due to no mrn", id);
@@ -152,7 +156,7 @@ public class UnsubscribedFilter implements ClarityDataProcessor
 
             final Long unsubscribed =
                 (Long) this.formUtils.getValue(
-                this.formUtils.getAnswer(form, unsubscribedQuestion));
+                    this.formUtils.getAnswer(form, unsubscribedQuestion));
 
             if (unsubscribed != null && unsubscribed == 1) {
                 return true;

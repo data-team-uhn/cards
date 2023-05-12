@@ -26,30 +26,11 @@
         <type>String</type>
     </property>
     <node>
-        <name>481110456</name>
+        <name>TG-PMCC CARDIAC CLINICS DIAGNOSTIC</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
-            <value>3542-CPH-Mood Disorders/Psychopharmacology</value>
-            <type>String</type>
-        </property>
-        <property>
-            <name>survey</name>
-            <value>Mood</value>
-            <type>String</type>
-        </property>
-        <property>
-            <name>displayName</name>
-            <value>Mood Disorders</value>
-            <type>String</type>
-        </property>
-    </node>
-    <node>
-        <name>853703519</name>
-        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
-        <property>
-            <name>clinicName</name>
-            <value>6012-HC-Congenital Cardiac</value>
+            <value>TG-PMCC CARDIAC CLINICS DIAGNOSTIC</value>
             <type>String</type>
         </property>
         <property>

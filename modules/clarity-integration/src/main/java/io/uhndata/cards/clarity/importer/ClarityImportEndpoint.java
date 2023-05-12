@@ -109,9 +109,9 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
     private int getPastDayToQuery(final SlingHttpServletRequest request)
     {
         try {
-            return Integer.parseInt(request.getParameter("pastDayToQuery"));
+            return Integer.parseInt(request.getParameter("dayToQuery"));
         } catch (NumberFormatException e) {
-            return 1;
+            return Integer.MAX_VALUE;
         }
     }
 }

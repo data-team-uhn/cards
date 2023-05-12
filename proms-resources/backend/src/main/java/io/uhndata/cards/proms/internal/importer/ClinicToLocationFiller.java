@@ -17,33 +17,46 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.internal.importer;
+package io.uhndata.cards.proms.internal.importer;
 
 import java.util.Map;
 
+import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
- * Clarity import processor that sets a patients email consent to yes if they signed up for mychart.
+ * Clarity import processor that copies the selected clinic's display name to the LOCATION computed column.
  *
  * @version $Id$
  */
 @Component
-public class MychartEmailConsentMapper implements ClarityDataProcessor
+public class ClinicToLocationFiller implements ClarityDataProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MychartEmailConsentMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClinicToLocationFiller.class);
+
+    @Reference
+    private ThreadResourceResolverProvider trrp;
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        if ("Activated".equalsIgnoreCase(input.get("MYCHART STATUS"))) {
-            input.put("EMAIL_CONSENT_YN", "Yes");
-            LOGGER.warn("Set visit {} EMAIL_CONSENT_YN to 'Yes' due to MYCHART STATUS 'Activated'",
-                input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
+        final String clinicPath = input.get("ENCOUNTER_CLINIC");
+        if (clinicPath != null) {
+            final Resource clinic = this.trrp.getThreadResourceResolver().getResource(clinicPath);
+            if (clinic == null) {
+                LOGGER.warn("Unknown clinic: {}", clinicPath);
+                return input;
+            }
+            final String clinicLabel = (String) clinic.getValueMap().get("displayName");
+            input.put("LOCATION", clinicLabel);
+            LOGGER.warn("Set visit {} LOCATION to {}", input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"),
+                clinicLabel);
         }
         return input;
     }
@@ -51,6 +64,6 @@ public class MychartEmailConsentMapper implements ClarityDataProcessor
     @Override
     public int getPriority()
     {
-        return 0;
+        return 300;
     }
 }

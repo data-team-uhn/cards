@@ -82,7 +82,7 @@ public class ClarityImportTask implements Runnable
 
     private static final String VALUE_PROP = "value";
 
-    private final int pastDayToQuery;
+    private final int dayToQuery;
 
     private final ThreadLocal<Map<String, String>> sqlColumnToDataType = ThreadLocal.withInitial(HashMap::new);
 
@@ -228,10 +228,10 @@ public class ClarityImportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
-    ClarityImportTask(final int pastDayToQuery, final ResourceResolverFactory resolverFactory,
+    ClarityImportTask(final int dayToQuery, final ResourceResolverFactory resolverFactory,
         final ThreadResourceResolverProvider rrp, final List<ClarityDataProcessor> processors)
     {
-        this.pastDayToQuery = pastDayToQuery;
+        this.dayToQuery = dayToQuery;
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
         this.processors = processors;
@@ -417,10 +417,14 @@ public class ClarityImportTask implements Runnable
                 queryString += ", ";
             }
         }
-        queryString += " FROM " + System.getenv("CLARITY_SQL_SCHEMA") + "." + System.getenv("CLARITY_SQL_TABLE");
-        queryString += " WHERE CAST(" + System.getenv("CLARITY_EVENT_TIME_COLUMN") + " AS DATE) = CAST(GETDATE()-"
-            + this.pastDayToQuery + " AS DATE)";
-        queryString += " ORDER BY " + System.getenv("CLARITY_EVENT_TIME_COLUMN") + ";";
+        queryString += " FROM " + System.getenv("CLARITY_SQL_SCHEMA") + ".[" + System.getenv("CLARITY_SQL_TABLE") + "]";
+        if (this.dayToQuery != Integer.MAX_VALUE && System.getenv("CLARITY_EVENT_TIME_COLUMN") != null) {
+            queryString += " WHERE CAST(" + System.getenv("CLARITY_EVENT_TIME_COLUMN") + " AS DATE) = CAST(GETDATE()"
+                + (this.dayToQuery >= 0 ? "+" : "") + this.dayToQuery + " AS DATE)";
+        }
+        if (System.getenv("CLARITY_EVENT_TIME_COLUMN") != null) {
+            queryString += " ORDER BY " + System.getenv("CLARITY_EVENT_TIME_COLUMN") + ";";
+        }
 
         return queryString;
     }
@@ -436,6 +440,7 @@ public class ClarityImportTask implements Runnable
         for (int column = 1; column <= columnCount; column++) {
             row.put(sqlRow.getMetaData().getColumnName(column), sqlRow.getString(column));
         }
+        addSubjectIdentifiersToData(row, this.clarityImportConfiguration.get());
 
         for (ClarityDataProcessor processor : processors) {
             try {
@@ -450,6 +455,12 @@ public class ClarityImportTask implements Runnable
         // Recursively move down the local Clarity Import configuration tree
         walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
             resolver.resolve("/Subjects"));
+    }
+
+    private void addSubjectIdentifiersToData(final Map<String, String> row, final ClaritySubjectMapping subjectMapping)
+    {
+        row.put(subjectMapping.subjectType, row.get(subjectMapping.subjectIdColumn));
+        subjectMapping.childSubjects.forEach(child -> addSubjectIdentifiersToData(row, child));
     }
 
     private void walkThroughLocalConfig(ResourceResolver resolver, Map<String, String> row,
@@ -684,9 +695,7 @@ public class ClarityImportTask implements Runnable
         }
 
         // Fix any instances where VALUE should be transformed into [VALUE]
-        props = fixAnswerMultiValues(props, questionResource);
-
-        return props;
+        return fixAnswerMultiValues(props, questionResource);
     }
 
     /*
