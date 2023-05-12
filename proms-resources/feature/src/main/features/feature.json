@@ -132,8 +132,6 @@
       ]
     },
 
-    // ClinicMapper automatically turns ENCOUNTER_CLINIC into CLINIC
-
     // Discard duplicates if there's more than one event per visit
     "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
       "enable": true,

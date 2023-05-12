@@ -270,18 +270,13 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>CLINIC</value>
+                <value>ENCOUNTER_CLINIC</value>
                 <type>String</type>
               </property>
               <property>
                 <name>question</name>
                 <value>/Questionnaires/Visit information/clinic</value>
                 <type>String</type>
-              </property>
-              <property>
-                <name>computed</name>
-                <value>True</value>
-                <type>Boolean</type>
               </property>
             </node>
             <node>
@@ -300,20 +295,6 @@
             </node>
             <node>
               <name>00000006</name>
-              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-              <property>
-                <name>column</name>
-                <value>ENCOUNTER_CLINIC</value>
-                <type>String</type>
-              </property>
-              <property>
-                <name>question</name>
-                <value></value>
-                <type>String</type>
-              </property>
-            </node>
-            <node>
-              <name>00000007</name>
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>

@@ -46,7 +46,7 @@ public class ClinicToLocationFiller implements ClarityDataProcessor
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        final String clinicPath = input.get("CLINIC");
+        final String clinicPath = input.get("ENCOUNTER_CLINIC");
         if (clinicPath != null) {
             final Resource clinic = this.trrp.getThreadResourceResolver().getResource(clinicPath);
             if (clinic == null) {

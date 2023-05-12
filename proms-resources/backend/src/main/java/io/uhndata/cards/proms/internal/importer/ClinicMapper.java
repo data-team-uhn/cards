@@ -65,8 +65,8 @@ public class ClinicMapper implements ClarityDataProcessor
             return null;
         }
 
-        input.put("CLINIC", clinicPath);
-        LOGGER.warn("Updated visit {} CLINIC to {}",
+        input.put("ENCOUNTER_CLINIC", clinicPath);
+        LOGGER.warn("Updated visit {} ENCOUNTER_CLINIC to {}",
             input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"), clinicPath);
         return input;
     }
