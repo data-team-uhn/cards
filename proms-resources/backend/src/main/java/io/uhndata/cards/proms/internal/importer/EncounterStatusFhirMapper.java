@@ -23,35 +23,27 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
-import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
- * Clarity import processor doesn't import canceled visits, unless they were previously imported.
+ * Clarity import processor that replaces the custom status values with the FHIR standard.
  *
  * @version $Id$
  */
 @Component
-public class DiscardCanceledEvents implements ClarityDataProcessor
+public class EncounterStatusFhirMapper implements ClarityDataProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DiscardCanceledEvents.class);
-
-    @Reference
-    private ThreadResourceResolverProvider trrp;
+    private static final String COLUMN = "ENCOUNTER_STATUS";
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        final String status = input.get("ENCOUNTER_STATUS");
-        if (StringUtils.equalsIgnoreCase("cancelled", status) && this.trrp.getThreadResourceResolver().getResource(
-            "/Subjects/" + input.get("/SubjectTypes/Patient") + "/"
-                + input.get("/SubjectTypes/Patient/Visit")) == null) {
-            LOGGER.warn("Discarded canceled visit {} ", input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
-            return null;
+        final String value = input.get(COLUMN);
+        if (StringUtils.equalsIgnoreCase("Canceled", value)) {
+            input.put(COLUMN, "cancelled");
+        } else if (StringUtils.equalsIgnoreCase("Scheduled", value)) {
+            input.put(COLUMN, "planned");
         }
         return input;
     }
@@ -59,6 +51,6 @@ public class DiscardCanceledEvents implements ClarityDataProcessor
     @Override
     public int getPriority()
     {
-        return 10;
+        return 0;
     }
 }
