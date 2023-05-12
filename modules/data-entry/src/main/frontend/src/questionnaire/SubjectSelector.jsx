@@ -174,7 +174,7 @@ function UnstyledNewSubjectDialog (props) {
             }}
             muiTableBodyRowProps={({ row }) => ({
               onClick: () => { changeType(row.original); row.toggleSelected(); },
-              selected: row.original['label'] === newSubjectType?.['label'],
+              selected: !isLoading && row.original['label'] === newSubjectType?.['label'],
               sx: {
                 cursor: 'pointer',
               },
@@ -320,7 +320,7 @@ function UnstyledSelectParentDialog (props) {
               muiSearchTextFieldProps={{ autoFocus: true }}
               muiTableBodyRowProps={({ row }) => ({
                 onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent && onChangeParent(row.original); row.toggleSelected(); },
-                selected: row.original["jcr:uuid"] === value?.["jcr:uuid"],
+                selected: !isLoading && row.original["jcr:uuid"] === value?.["jcr:uuid"],
                 sx: {
                   cursor: 'pointer',
                 },
@@ -1041,7 +1041,7 @@ function SubjectSelectorList(props) {
         muiSearchTextFieldProps={{ autoFocus: true }}
         muiTableBodyRowProps={({ row }) => ({
           onClick: () => { onSelect(row.original); handleSelection(row.original); row.toggleSelected(); },
-          selected: row.original["jcr:uuid"] === selectedSubject?.["jcr:uuid"],
+          selected: !isLoading && row.original["jcr:uuid"] === selectedSubject?.["jcr:uuid"],
           sx: {
             cursor: 'pointer',
           },
