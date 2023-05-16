@@ -40,16 +40,16 @@ const statisticsStyle = theme => ({
     whiteSpace: "normal",
   },
   customTooltip: {
-	margin: 0,
+    margin: 0,
     padding: "10px",
     backgroundColor: theme.palette.grey[50],
     border: `1px solid ${theme.palette.grey[50]}`,
     whiteSpace: "nowrap",
   },
   label : {
-	margin: 0,
-	padding: 0,
-	listStyleType: "none"
+    margin: 0,
+    padding: 0,
+    listStyleType: "none"
   }
 });
 
