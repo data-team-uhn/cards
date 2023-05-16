@@ -19,6 +19,12 @@
 
 OUTPUT_DOCKER_IMAGE=$1
 
+if [ -z $OUTPUT_DOCKER_IMAGE ]
+then
+	echo "You must specify an output Docker image name (eg. ./build_self_contained.sh cards/cards:latest-dev)"
+	exit 1
+fi
+
 # First check that the cards/sling-feature-downloader Docker image exists on the local machine
 (docker image inspect cards/sling-feature-downloader > /dev/null) || { echo "Fail: The cards/sling-feature-downloader Docker image does not exist. Exiting."; exit -1; }
 
