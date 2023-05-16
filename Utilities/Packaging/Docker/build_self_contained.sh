@@ -28,12 +28,17 @@ export CARDS_DIRECTORY=$(realpath ../../../)
 # Switch to the root of the CARDS repository
 cd $CARDS_DIRECTORY
 
-# Build CARDS including a Docker image
-mvn clean install -Pdocker || { echo "Failed to build CARDS Docker image. Exiting."; exit -1; }
-
-# Get the name of the newly built Docker image
+# Get the version of CARDS that we will build
 CARDS_VERSION=$(cat ${CARDS_DIRECTORY}/pom.xml | grep --max-count=1 '<version>' | cut '-d>' -f2 | cut '-d<' -f1)
 
+# If this is a release, build in production mode, otherwise build in dev mode
+MAVEN_BUILD_ARGS=""
+(echo "$CARDS_VERSION" | grep -e '-SNAPSHOT$' -q) || MAVEN_BUILD_ARGS="-Prelease -Dgpg.skip -Dmaven.javadoc.skip"
+
+# Build CARDS including a Docker image
+mvn clean install -Pdocker $MAVEN_BUILD_ARGS || { echo "Failed to build CARDS Docker image. Exiting."; exit -1; }
+
+# Get the name of the newly built Docker image
 INPUT_DOCKER_IMAGE="cards/cards:${CARDS_VERSION}"
 (echo "$CARDS_VERSION" | grep -e '-SNAPSHOT$' -q) && INPUT_DOCKER_IMAGE="cards/cards:latest"
 
