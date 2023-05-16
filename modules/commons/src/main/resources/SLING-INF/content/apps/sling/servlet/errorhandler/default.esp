@@ -1,0 +1,103 @@
+<%
+/**
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+*/
+
+let statusCode = request.getAttribute("javax.servlet.error.status_code");
+response.setStatus(statusCode);
+let statusMessage = request.getAttribute("javax.servlet.error.message");
+if (statusMessage == null) {
+  if (statusCode == 400) {
+    statusMessage = "Bad Request";
+  } else if (statusCode == 401) {
+    statusMessage = "Unauthorized";
+  } else if (statusCode == 403) {
+    statusMessage = "Forbidden";
+  } else if (statusCode == 404) {
+    statusMessage = "Not Found";
+  } else if (statusCode == 405) {
+    statusMessage = "Method Not Allowed";
+  } else if (statusCode == 408) {
+    statusMessage = "Request Timeout";
+  } else if (statusCode == 409) {
+    statusMessage = "Conflict";
+  } else if (statusCode == 412) {
+    statusMessage = "Precondition Failed";
+  } else if (statusCode == 417) {
+    statusMessage = "Expectation Failed";
+  } else if (statusCode == 422) {
+    statusMessage = "Unprocessable Entity";
+  } else if (statusCode == 423) {
+    statusMessage = "Locked";
+  } else if (statusCode == 500) {
+    statusMessage = "Internal Server Error";
+  } else if (statusCode == 501) {
+    statusMessage = "Not Implemented";
+  } else if (statusCode == 503) {
+    statusMessage = "Service Unavailable";
+  }
+}
+if ("application/json".equals(request.getHeader("Accept"))) {
+  out.print('{"status":"error","status.message":"' + statusMessage + '","status.code":' + statusCode + '}');
+} else {
+  let version = currentSession.getNode("/libs/cards/conf/Version").getProperty("Version").getString();
+  let appName = currentSession.getNode("/libs/cards/conf/AppName").getProperty("AppName").getString();
+  let platformName = currentSession.getNode("/libs/cards/conf/PlatformName").getProperty("PlatformName").getString();
+  let colors = currentSession.getNode("/libs/cards/conf/ThemeColor");
+  let media = currentSession.getNode("/libs/cards/conf/Media");
+  let assets = currentSession.getNode("/libs/cards/resources/assets");
+%>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="version" content="${version}">
+    <meta name="platformName" content="${platformName}">
+    <meta name="title" content="${appName}">
+    <title>${appName}</title>
+    <meta name="statusCode" content="${statusCode}">
+    <meta name="statusMessage" content="${statusMessage}">
+    <meta name="themeColor" content="${colors['ThemeColor']}">
+    <meta name="primaryColor" content="${colors['PrimaryColor']}">
+    <meta name="secondaryColor" content="${colors['SecondaryColor']}">
+<%
+      let mediaProps = media.getProperties();
+      for (let i in mediaProps) {
+        if (!i.startsWith("jcr:")) {
+          out.println('    <meta name="' + i + '" content="' + mediaProps[i] + '"/>');
+        }
+      }
+%>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" class="next-head"/>
+    <script src="/system/sling.js"></script>
+    <script src="/libs/cards/resources/${assets['vendor.js']}"></script>
+    <script src="/libs/cards/resources/${assets['runtime.js']}"></script>
+  </head>
+  <body>
+    <div id="main-error-container"></div>
+    <sly data-sly-use.assets="/libs/cards/resources/assets">
+      <script src="/libs/cards/resources/${assets['cards-commons.GenericErrorPage.js']}"></script>
+    </sly>
+  </body>
+</html>
+<%
+}
+%>

@@ -47,6 +47,7 @@
             <Sling-Initial-Content>
               SLING-INF/content/libs/cards/Resource/;path:=/libs/cards/Resource/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/ResourceHomepage/;path:=/libs/cards/ResourceHomepage/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/apps/sling/servlet/errorhandler/;path:=/apps/sling/servlet/errorhandler/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/sling/servlet/errorhandler/;path:=/libs/sling/servlet/errorhandler/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/ROOT/;path:=/;overwriteProperties:=true,
             </Sling-Initial-Content>
