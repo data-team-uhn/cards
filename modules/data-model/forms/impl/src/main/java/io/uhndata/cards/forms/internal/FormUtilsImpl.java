@@ -46,15 +46,12 @@ import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.spi.AbstractNodeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -66,9 +63,8 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
 @Component
 public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
 {
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Reference
     private QuestionnaireUtils questionnaires;
@@ -93,7 +89,22 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public boolean isForm(final NodeState node)
     {
-        return isNodeType(node, FORM_NODETYPE, getSession(this.rrf));
+        return isNodeType(node, FORM_NODETYPE, getSession(this.rrp));
+    }
+
+    @Override
+    public Node getForm(final Node answer)
+    {
+        try {
+            Node parent = answer;
+            while (parent != null && !isForm(parent)) {
+                parent = parent.getParent();
+            }
+            return parent;
+        } catch (RepositoryException e) {
+            // Not expected, or the session user doesn't have access to it
+        }
+        return null;
     }
 
     @Override
@@ -151,6 +162,14 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     }
 
     @Override
+    public Node getSubject(final Node form, final String subjectTypePath)
+    {
+        return isForm(form)
+            ? getReferencedNodeOfType(form, RELATED_SUBJECTS_PROPERTY, subjectTypePath, SubjectUtils.TYPE_PROPERTY)
+            : null;
+    }
+
+    @Override
     public String getSubjectIdentifier(final Node form)
     {
         return isForm(form) ? getStringProperty(form, SUBJECT_PROPERTY) : null;
@@ -179,7 +198,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public boolean isAnswerSection(final NodeState node)
     {
-        return isNodeType(node, ANSWER_SECTION_NODETYPE, getSession(this.rrf));
+        return isNodeType(node, ANSWER_SECTION_NODETYPE, getSession(this.rrp));
     }
 
     @Override
@@ -241,7 +260,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public boolean isAnswer(final NodeState node)
     {
-        return isNodeType(node, ANSWER_NODETYPE, getSession(this.rrf));
+        return isNodeType(node, ANSWER_NODETYPE, getSession(this.rrp));
     }
 
     @Override
@@ -381,7 +400,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     public Node getAnswer(final Node form, final Node question)
     {
         try {
-            if (isForm(form)) {
+            if (isForm(form) && this.questionnaires.isQuestion(question)) {
                 return findNode(form, QUESTION_PROPERTY, question.getIdentifier());
             }
         } catch (final RepositoryException e) {

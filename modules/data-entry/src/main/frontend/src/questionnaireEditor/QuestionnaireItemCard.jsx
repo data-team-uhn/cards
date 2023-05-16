@@ -29,7 +29,6 @@ import {
   IconButton,
   Popover,
   Tooltip,
-  Typography,
 } from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';
@@ -41,6 +40,8 @@ import MoreIcon from '@mui/icons-material/MoreHoriz';
 
 import EditDialog from "./EditDialog";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+
+import FormattedText from "../components/FormattedText.jsx";
 
 import { camelCaseToWords }  from "./LabeledField";
 
@@ -159,6 +160,7 @@ let QuestionnaireItemCard = (props) => {
   return (
     <Card variant="outlined" ref={highlight ? itemRef : undefined} className={cardClasses.join(" ")}>
       <CardHeader
+        disableTypography
         avatar={!plain && (avatar || type) ?
           <Avatar style={{backgroundColor: avatarColor || "black"}}>
             { avatar ? <Icon>{avatar}</Icon> : type?.charAt(0) }
@@ -167,7 +169,7 @@ let QuestionnaireItemCard = (props) => {
         }
         title={
           <>
-            { <Typography className={titleClasses.join(" ")} variant="h6">{titleText}</Typography> }
+            { <FormattedText className={titleClasses.join(" ")} variant="h6">{titleText}</FormattedText> }
             { moreInfo &&
               <Tooltip title="Properties">
                 <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">

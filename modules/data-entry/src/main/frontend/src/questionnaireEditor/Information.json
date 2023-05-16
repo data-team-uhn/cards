@@ -1,5 +1,12 @@
 [
   {
+    "type" : {
+       "plain" : {},
+       "info" : {},
+       "warning": {},
+       "error": {},
+       "success" : {}
+    },
     "text": "markdown"
   }
 ]

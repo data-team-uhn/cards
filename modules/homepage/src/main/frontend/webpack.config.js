@@ -11,9 +11,9 @@ module.exports = {
     [module_name + 'variantsIcon']: '@mui/icons-material/Subtitles.js',
     [module_name + 'adminIcon']: '@mui/icons-material/Settings.js',
     [module_name + 'adminDashboard']: './src/adminDashboard/AdminDashboard.jsx',
-    [module_name + 'QuickSearchResults']: './src/themePage/QuickSearchResults.jsx',
+    [module_name + 'QuickSearchResults']: { 'dependOn': ['cards-dataentry.Forms'], 'import': './src/themePage/QuickSearchResults.jsx' },
     [module_name + 'QuickSearchConfigurationIcon']: '@mui/icons-material/Pageview.js',
-    [module_name + 'QuickSearchConfiguration']: './src/themePage/QuickSearchConfiguration',
+    [module_name + 'QuickSearchConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/themePage/QuickSearchConfiguration' },
   },
   plugins: [
     new CleanWebpackPlugin(),

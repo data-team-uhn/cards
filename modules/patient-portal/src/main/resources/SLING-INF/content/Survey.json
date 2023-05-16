@@ -4,7 +4,6 @@
     { "principal": "everyone", "granted": ["jcr:read"] },
     { "principal": "anonymous", "granted": ["jcr:read"] },
     { "principal": "patient-visit-backend", "granted": ["jcr:read"] },
-    { "principal": "proms-import-backend", "granted": ["jcr:read"] },
     { "principal": "patient-validation", "granted": ["jcr:read"] }
   ]
 }

@@ -436,7 +436,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Shows the **list+input** display mode with **single answer** for **Vocabulary** Questions</value>
+			<value>Shows the **list+input** display mode with **single answer** for **Vocabulary** Questions. The vocabulary browser is **not** enabled.</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -569,7 +569,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Shows the **list+input** display mode with **multiple answers** for **Vocabulary** Questions</value>
+			<value>Shows the **list+input** display mode with **multiple answers** for **Vocabulary** Questions. The vocabulary browser is **not** enabled.</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -702,7 +702,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Shows what the **Vocabulary** Question suggestion list looks like when there are **multiple source vocabulaies** and **one vocabulary cannot be accessed**</value>
+			<value>Shows what the **Vocabulary** Question suggestion list looks like when there are **multiple source vocabulaies** and **one vocabulary cannot be accessed**. The vocabulary browser is enabled.</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -720,6 +720,11 @@
 			<value>vocabulary</value>
 			<type>String</type>
 		</property>
+                <property>
+                        <name>enableVocabularyBrowser</name>
+                        <value>True</value>
+                        <type>Boolean</type>
+                </property>
 		<property>
 			<name>sourceVocabularies</name>
 			<values>

@@ -34,6 +34,12 @@ const questionnaireStyle = theme => ({
     questionCard : {
       "& .MuiCardHeader-root" : {
         padding: theme.spacing(1, 3, 0, 3),
+        "& h6 ol" : {
+           paddingLeft: 0,
+        },
+        "& h6 li" : {
+           listStylePosition: "inside",
+        },
       },
       "& .MuiCardContent-root" : {
         paddingLeft: theme.spacing(3),
@@ -42,6 +48,15 @@ const questionnaireStyle = theme => ({
       "& .MuiList-root": {
         marginLeft: theme.spacing(-2),
       },
+      "& .cards-answerInstructions" : {
+        margin: theme.spacing(-3,0,1),
+        padding: theme.spacing(1, 0),
+      },
+    },
+    hideAnswerInstructions: {
+      "& .cards-answerInstructions" : {
+        display: "none",
+      }
     },
     editModeAnswers: {
       "& .MuiListItem-root:hover" : {
@@ -50,6 +65,9 @@ const questionnaireStyle = theme => ({
       }
     },
     informationCard: {
+      "& .MuiCardContent-root" : {
+        padding: theme.spacing(1.5, 2),
+      },
     },
     viewModeAnswers :{
       "& .MuiList-root": {
@@ -132,10 +150,6 @@ const questionnaireStyle = theme => ({
     },
     hiddenQuestion: {
         display: "none"
-    },
-    answerInstructions: {
-        margin: theme.spacing(-3,0,1),
-        padding: theme.spacing(1, 0),
     },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,
@@ -438,9 +452,13 @@ const questionnaireStyle = theme => ({
           width: "100%",
         },
     },
+    only_next: {
+        marginLeft: 0,
+    },
     paginationButton: {
         float: "right",
         margin: theme.spacing(1),
+        minWidth: "fit-content",
     },
     formStepperBufferBar: {
         backgroundColor: theme.palette.secondary.main,
@@ -486,20 +504,14 @@ const questionnaireStyle = theme => ({
     newSubjectInput: {
         padding: theme.spacing(3, 3, 5),
     },
+    subjectFilter: {
+      marginTop: 0,
+    },
     invalidSubjectText: {
         fontStyle: "italic"
     },
     NCRLoadingIndicator: {
         disable: "flex"
-    },
-    closeButton: {
-        position: 'absolute',
-        right: theme.spacing(1),
-        top: theme.spacing(1),
-        color: theme.palette.grey[500]
-    },
-    dialogTitle: {
-        marginRight: theme.spacing(5)
     },
     dialogContentWithTable: {
         padding: 0,
@@ -567,6 +579,14 @@ const questionnaireStyle = theme => ({
         outline: `2px solid ${theme.palette.primary.main}`,
       },
     },
+    questionnaireItemWithError: {
+      "&.MuiCard-root, > .MuiCard-root" : {
+        outline: `1px solid ${theme.palette.error.light}`,
+      },
+      "& p[class*='-answerInstructions']" : {
+        display: "block",
+      }
+    },
     fileResourceAnswerList: {
       listStyleType: 'none',
       paddingInlineStart: "0",
@@ -590,6 +610,7 @@ const questionnaireStyle = theme => ({
       color: theme.palette.warning.main
     },
     selectionChild: {
+      cursor: "pointer",
       flexWrap: "wrap",
     },
     selectionDescription: {

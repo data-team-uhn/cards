@@ -19,6 +19,7 @@ package io.uhndata.cards.patients.submissioncounter;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
@@ -30,36 +31,78 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.metrics.Metrics;
-import io.uhndata.cards.patients.emailnotifications.AppointmentUtils;
 
 public final class SubmissionEventListener implements EventListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubmissionEventListener.class);
 
-    private ResourceResolverFactory resolverFactory;
-    private ResourceResolver resolver;
-    private String submittedFlagUUID;
-    private String linkingSubjectType;
+    private static final String SINGLE_QUOTE = "'";
 
-    public SubmissionEventListener(ResourceResolverFactory resolverFactory,
-        ResourceResolver resolver, Map<String, String> listenerParams)
+    private final ResourceResolverFactory resolverFactory;
+
+    private final ResourceResolver resolver;
+
+    private final FormUtils formUtils;
+
+    private final String linkingSubjectType;
+
+    private final String submittedFlagPath;
+
+    private final String[] excludedQuestionnairePaths;
+
+    private String submittedFlagUUID;
+
+    private String[] excludedQuestionnaireUUIDs;
+
+    public SubmissionEventListener(FormUtils formUtils, ResourceResolverFactory resolverFactory,
+        ResourceResolver resolver, Map<String, Object> listenerParams)
     {
+        this.formUtils = formUtils;
         this.resolverFactory = resolverFactory;
         this.resolver = resolver;
-        this.submittedFlagUUID = listenerParams.get("submittedFlagUUID");
-        this.linkingSubjectType = listenerParams.get("linkingSubjectType");
+        this.submittedFlagPath = ((String) listenerParams.get("submittedFlagPath"));
+        this.linkingSubjectType = ((String) listenerParams.get("linkingSubjectType"));
+        this.excludedQuestionnairePaths = ((String[]) listenerParams.get("excludedQuestionnairePaths"));
+    }
+
+    private String getSubmittedFlagUUID()
+    {
+        if (this.submittedFlagUUID != null) {
+            return this.submittedFlagUUID;
+        }
+
+        this.submittedFlagUUID = this.resolver.getResource(this.submittedFlagPath).getValueMap().get("jcr:uuid", "");
+        return this.submittedFlagUUID;
+    }
+
+    private String[] getExcludedQuestionnaireUUIDs()
+    {
+        if (this.excludedQuestionnaireUUIDs != null) {
+            return this.excludedQuestionnaireUUIDs;
+        }
+
+        this.excludedQuestionnaireUUIDs = new String[this.excludedQuestionnairePaths.length];
+        for (int i = 0; i < this.excludedQuestionnairePaths.length; i++) {
+            this.excludedQuestionnaireUUIDs[i] =
+                this.resolver.getResource(this.excludedQuestionnairePaths[i]).getValueMap().get("jcr:uuid", "");
+        }
+        return this.excludedQuestionnaireUUIDs;
     }
 
     private long countVisitForms(String visitUUID, String excludeFormUUID)
     {
         long count = 0;
+
+        String sqlQuery = "SELECT * FROM [cards:Form] as f WHERE f.'relatedSubjects'='" + visitUUID + SINGLE_QUOTE;
+        sqlQuery += " AND f.'jcr:uuid'<>'" + excludeFormUUID + SINGLE_QUOTE;
+        for (String excludeQuestionnaireUUID : this.getExcludedQuestionnaireUUIDs()) {
+            sqlQuery += " AND f.'questionnaire'<>'" + excludeQuestionnaireUUID + SINGLE_QUOTE;
+        }
+
         Iterator<Resource> results;
-        results = this.resolver.findResources(
-            "SELECT * FROM [cards:Form] as f WHERE f.'relatedSubjects'='" + visitUUID + "'"
-            + " AND f.'jcr:uuid'<>'" + excludeFormUUID + "'",
-            "JCR-SQL2"
-        );
+        results = this.resolver.findResources(sqlQuery, "JCR-SQL2");
         while (results.hasNext()) {
             count += 1;
             results.next();
@@ -80,17 +123,11 @@ public final class SubmissionEventListener implements EventListener
         return modifiedValueNodePath;
     }
 
-    private boolean isSubmissionEvent(Resource modifiedValueNode, String submittedFlagUUID)
+    private boolean isSubmissionEvent(Node modifiedValueNode)
     {
-        String modifiedValueNodeQuestion = modifiedValueNode.getValueMap().get("question", "");
-        if (!submittedFlagUUID.equals(modifiedValueNodeQuestion)) {
-            return false;
-        }
-        long modifiedValue = modifiedValueNode.getValueMap().get("value", 0);
-        if (modifiedValue != 1) {
-            return false;
-        }
-        return true;
+        return this.formUtils.isAnswer(modifiedValueNode)
+            && this.getSubmittedFlagUUID().equals(this.formUtils.getQuestionIdentifier(modifiedValueNode))
+            && ((Long) this.formUtils.getValue(modifiedValueNode)) == 1L;
     }
 
     @Override
@@ -104,10 +141,10 @@ public final class SubmissionEventListener implements EventListener
                     continue;
                 }
 
-                Resource modifiedValueNode = this.resolver.getResource(modifiedValueNodePath);
+                Node modifiedValueNode = this.resolver.getResource(modifiedValueNodePath).adaptTo(Node.class);
 
                 // Check that this event is a "surveys submission" event
-                if (!isSubmissionEvent(modifiedValueNode, this.submittedFlagUUID)) {
+                if (!isSubmissionEvent(modifiedValueNode)) {
                     continue;
                 }
 
@@ -115,18 +152,17 @@ public final class SubmissionEventListener implements EventListener
                 Metrics.increment(this.resolverFactory, "AppointmentSurveysSubmitted", 1);
 
                 // Get the cards:Form node that this modified value property descends from
-                Resource modifiedFormNode = AppointmentUtils.getFormForAnswer(this.resolver, modifiedValueNode);
+                Node modifiedFormNode = this.formUtils.getForm(modifiedValueNode);
                 if (modifiedFormNode == null) {
                     continue;
                 }
-                String modifiedFormNodeUUID = modifiedFormNode.getValueMap().get("jcr:uuid", "");
+                String modifiedFormNodeUUID = modifiedFormNode.getIdentifier();
 
-                Resource formRelatedSubject = AppointmentUtils.getRelatedSubjectOfType(
-                    this.resolver, modifiedFormNode, this.linkingSubjectType);
+                Node formRelatedSubject = this.formUtils.getSubject(modifiedFormNode, this.linkingSubjectType);
                 if (formRelatedSubject == null) {
                     continue;
                 }
-                String formRelatedSubjectUUID = formRelatedSubject.getValueMap().get("jcr:uuid", "");
+                String formRelatedSubjectUUID = formRelatedSubject.getIdentifier();
 
                 // Get the count of submitted Forms for this appointment
                 long formsForAppointmentCount = countVisitForms(formRelatedSubjectUUID, modifiedFormNodeUUID);

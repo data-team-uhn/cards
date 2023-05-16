@@ -36,14 +36,14 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import io.uhndata.cards.formcompletionstatus.spi.AnswerValidator;
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * A {@link EditorProvider} returning {@link AnswerCompletionStatusEditor}.
  *
  * @version $Id$
  */
-@Component(immediate = true)
+@Component(property = "service.ranking:Integer=100")
 public class AnswerCompletionStatusEditorProvider implements EditorProvider
 {
     @Reference
@@ -64,13 +64,11 @@ public class AnswerCompletionStatusEditorProvider implements EditorProvider
     {
         final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
         if (resolver != null) {
-            this.allValidators.sort((o1, o2) -> o1.getPriority() - o2.getPriority());
+            final List<AnswerValidator> sortedValidators = new ArrayList<>(this.allValidators);
+            sortedValidators.sort(null);
             // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
-            final List<NodeBuilder> tmpList = new ArrayList<>();
-            tmpList.add(builder);
-            return new AnswerCompletionStatusEditor(tmpList, null, false, resolver.adaptTo(Session.class),
-                this.formUtils,
-                this.allValidators);
+            return new AnswerCompletionStatusEditor(builder, false, resolver.adaptTo(Session.class), this.formUtils,
+                sortedValidators);
         }
         return null;
     }

@@ -26,6 +26,16 @@
 		<type>String</type>
 	</property>
 	<property>
+		<name>requireCompletion</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>hideAnswerInstructions</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>requiredSubjectTypes</name>
 		<values>
 			<value>/SubjectTypes/Patient/Visit</value>

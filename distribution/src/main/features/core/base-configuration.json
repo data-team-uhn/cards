@@ -24,7 +24,8 @@
             "servlet.post.checkinNewVersionableNodes":true
         },
         "org.apache.sling.engine.parameters":{
-            "sling.default.parameter.encoding":"UTF-8"
+            "sling.default.parameter.encoding":"UTF-8",
+            "request.max.file.count": 1000000
         },
         // By default, deny self-registration
         "org.apache.sling.jackrabbit.usermanager.impl.post.CreateUserServlet":{

@@ -6,7 +6,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'admin-page']: './src/vocabulariesAdminPage.jsx',
+    [module_name + 'admin-page']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/vocabulariesAdminPage.jsx' },
     [module_name + 'vocabulariesIcon']: '@mui/icons-material/AccountTree'
   },
   plugins: [

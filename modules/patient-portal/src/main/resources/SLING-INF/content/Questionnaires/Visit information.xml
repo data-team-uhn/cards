@@ -62,7 +62,7 @@
 		</property>
 		<property>
 			<name>labelProperty</name>
-			<value>clinicName</value>
+			<value>displayName</value>
 			<type>String</type>
 		</property>
 		<property>

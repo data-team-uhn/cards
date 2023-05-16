@@ -27,6 +27,26 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+// QuestionnaireConflict: a reference to a questionnaire that should prevent a QuestionnaireSet from being generated
+[cards:QuestionnaireConflict] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // We can use questionnaire references in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QuestionnaireConflict" mandatory autocreated protected
+
+  // A questionnaire path
+  // Mandatory, each QuestionnaireConflict must point to a questionnaire.
+  - questionnaire (reference) mandatory
+
+  // A frequency for how long the conflict should prevent the questionnaire set from being used for
+  - frequency (long) mandatory
+
+//-----------------------------------------------------------------------------
 // QuestionnaireRef: a reference to a questionnaire included in a QuestionnaireSet
 [cards:QuestionnaireRef] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes
@@ -84,8 +104,27 @@
   // Mandatory, each QuestionnaireSet must have a name.
   - name (string) mandatory
 
+  // An optional intro text about the survey to guide the patient
+  - intro (string)
+
+  // An optional setting whether to show a review screen after survey completion
+  // Optional, defaults to the global setting for the patient portal
+  - enableReviewScreen (boolean)
+
   // An emergency contact for the clinic
   - emergencyContact (string)
+
+  // If true, apply the questionnaire's frequency across all clinics for these questionnaires
+  - frequencyIgnoreClinic (boolean)
+
+  // How any questionnaires not included in this set should be checked for conflicts
+  // Supported values are:
+  // "anyListed" (default): Only conflict with questionnaires listed as a cards:QuestionnaireConflict
+  // "any": Conflict with any questionnaires
+  - conflictMode (STRING)
+
+  // Any forms which should prevent this questionnaire set from being created if present
+  + * (cards:QuestionnaireConflict) = cards:QuestionnaireConflict
 
   // Children
 

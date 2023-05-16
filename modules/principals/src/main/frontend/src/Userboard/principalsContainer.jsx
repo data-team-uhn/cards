@@ -57,9 +57,7 @@ class PrincipalsContainer extends React.Component {
     fetch("/home/groups.json",
       {
         method: 'GET',
-        headers: {
-          'Authorization' : 'Basic' + btoa('admin:admin')
-        }
+        credentials: 'include'
     })
     .then((response) => {
       return response.json();

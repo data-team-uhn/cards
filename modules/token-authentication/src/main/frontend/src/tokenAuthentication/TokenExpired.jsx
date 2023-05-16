@@ -17,62 +17,27 @@
 //  under the License.
 //
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';;
 
-import { Grid, Paper, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 
-const useStyles = makeStyles(theme => ({
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: theme.spacing(12, 3, 3),
-    "& .MuiGrid-item" : {
-      textAlign: "center",
-    },
-  },
-  logo: {
-    maxWidth: "240px",
-  },
-  extendedIcon: {
-    marginRight: theme.spacing(1),
-  },
-}));
+import ErrorPage from "../components/ErrorPage.jsx";
 
 export default function TokenExpired() {
-  const classes = useStyles();
-
   return (
-    <Paper className={`${classes.paper}`} elevation={0}>
-      <Grid
-        container
-        direction="column"
-        spacing={7}
-        alignItems="center"
-        alignContent="center"
-        className={classes.notFoundContainer}
-      >
-        <Grid item>
-          <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
-        </Grid>
-        <Grid item>
-          <Typography variant="h1" color="primary" gutterBottom>
-            This link is no longer valid, please close the page.
-          </Typography>
-        </Grid>
-      </Grid>
-    </Paper>
+    <ErrorPage
+      title="This link is no longer valid"
+      message="Please close the page"
+    />
   );
 }
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('token-expired-container'));
+root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <TokenExpired />
     </ThemeProvider>
-  </StyledEngineProvider>,
-  document.getElementById('token-expired-container')
+  </StyledEngineProvider>
 );

@@ -32,5 +32,6 @@
 
   <modules>
     <module>ExpressJS-Docker</module>
+    <module>Postfix-Docker</module>
   </modules>
 </project>

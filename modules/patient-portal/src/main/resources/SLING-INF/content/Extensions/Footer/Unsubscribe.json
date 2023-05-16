@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "patient-portal/footer",
+  "cards:extensionName": "Unsubscribe",
+  "cards:extensionRenderURL": "asset:patient-portal.UnsubscribeLink.js",
+  "cards:defaultOrder": 20
+}

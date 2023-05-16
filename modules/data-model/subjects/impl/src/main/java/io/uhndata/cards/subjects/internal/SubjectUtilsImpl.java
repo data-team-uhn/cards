@@ -21,13 +21,10 @@ import javax.jcr.RepositoryException;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.spi.AbstractNodeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -39,16 +36,15 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
 @Component
 public final class SubjectUtilsImpl extends AbstractNodeUtils implements SubjectUtils
 {
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     // Subject methods
 
     @Override
     public Node getSubject(final String identifier)
     {
-        final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));
+        final Node result = getNodeByIdentifier(identifier, getSession(this.rrp));
         return isSubject(result) ? result : null;
     }
 
@@ -67,7 +63,7 @@ public final class SubjectUtilsImpl extends AbstractNodeUtils implements Subject
     @Override
     public boolean isSubject(final NodeState node)
     {
-        return isNodeType(node, SUBJECT_NODETYPE, getSession(this.rrf));
+        return isNodeType(node, SUBJECT_NODETYPE, getSession(this.rrp));
     }
 
     @Override

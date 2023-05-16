@@ -7,7 +7,7 @@ module.exports = {
   mode: 'development',
   entry: {
     [module_name + 'variantsIcon']: '@mui/icons-material/Subtitles.js',
-    [module_name + 'variantFilesContainer']: './src/variantFilesContainer.jsx'
+    [module_name + 'variantFilesContainer']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/variantFilesContainer.jsx' },
   },
   plugins: [
     new CleanWebpackPlugin(),

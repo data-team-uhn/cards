@@ -86,7 +86,8 @@ const useStyles = makeStyles(theme => ({
  * </AdminConfigScreen>
  *
  * @param {string} title  - the title of the administration screen, required
- * @param {string} configPath  - the path of the configuration node; will be used for loading and saving the data
+ * @param {string} configPath  - the path of the configuration node; will be used for loading and saving the data, required
+ * @param {object} configTemplate - what an empty config would look like; should list all the possible fields with empty values, required
  * @param {function} onConfigFetched  - handler to pass the loaded configuration json to the parent component
  * @param {boolean} hasChanges  - how the parent component notifies that the user changed the form values
  * @param {string} configError  - how the parent component notifies that there's a data sanity issue
@@ -97,7 +98,7 @@ const useStyles = makeStyles(theme => ({
  */
 
 function AdminConfigScreen(props) {
-  const { title, configPath, onConfigFetched, hasChanges, configError, buildConfigData, onConfigSaved, children } = props;
+  const { title, configPath, configTemplate, onConfigFetched, hasChanges, configError, buildConfigData, onConfigSaved, children } = props;
   const [ config, setConfig ] = useState();
   const [ configIsInitial, setConfigIsInitial ] = useState(true);
   const [ error, setError ] = useState();
@@ -107,16 +108,17 @@ function AdminConfigScreen(props) {
   const history = useHistory();
   const classes = useStyles();
 
-  useEffect(() => getConfig(), []);
-  useEffect(() => hasChanges && setConfigIsInitial(false), [hasChanges]);
+  useEffect(() => {getConfig()}, []);
+  useEffect(() => {hasChanges && setConfigIsInitial(false)}, [hasChanges]);
 
   // Loading the existing configuration
   const getConfig = () => {
     fetchWithReLogin(globalContext, `${configPath}.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(json => {
-         setConfig(json);
-         onConfigFetched?.(json);
+         let conf = Object.assign({}, configTemplate, json);
+         setConfig(conf);
+         onConfigFetched?.(conf);
       })
       .catch(err => {
          setConfig(null);
@@ -138,7 +140,20 @@ function AdminConfigScreen(props) {
 
     // Build formData object.
     let formData = new URLSearchParams();
-    buildConfigData?.(formData);
+    if (event) {
+      // If the submit is user-initiated, grab values form the form
+      buildConfigData?.(formData);
+      // Use the config template to Fill in any missing values
+      for (let key of Object.keys(configTemplate)) {
+        formData.get(key) == null && Array.of(configTemplate[key]).flat().forEach(v => formData.append(key, v));
+      }
+    } else {
+      // Otherwise just save the existing config
+      // Use the template keys to avoid attempts to save reserved properties like "jcr:...", "sling:...", "@..."
+      for (let key of Object.keys(configTemplate)) {
+        Array.of(config[key]).flat().forEach(v => formData.append(key, v));
+      }
+    }
 
     fetchWithReLogin(globalContext, configPath,
       {
@@ -189,7 +204,7 @@ function AdminConfigScreen(props) {
               variant="contained"
               color="primary"
               size="small"
-              disabled={configError || !hasChanges}
+              disabled={!!configError || !hasChanges}
             >
               Save
             </Button>
@@ -207,7 +222,7 @@ function AdminConfigScreen(props) {
           { /* Confirmation dialog for resetting the changes */ }
           <Dialog className={classes.confirmationDialog} open={resetConfirmationPending}>
             <DialogTitle>
-              <Typography variant="h6" color="error" className={classes.dialogTitle}>Confirm configuration reset</Typography>
+              Confirm configuration reset
             </DialogTitle>
             <DialogContent>
               <FormattedText>
@@ -234,7 +249,8 @@ function AdminConfigScreen(props) {
 
 AdminConfigScreen.propTypes = {
   title: PropTypes.string.isRequired,
-  configPath: PropTypes.string,
+  configPath: PropTypes.string.isRequired,
+  configTemplate: PropTypes.object.isRequired,
   onConfigFetched: PropTypes.func,
   hasChanges: PropTypes.bool,
   configError: PropTypes.string,

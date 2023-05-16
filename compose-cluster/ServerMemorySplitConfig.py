@@ -23,8 +23,8 @@
 # 25% for the CARDS Java process
 MEMORY_SPLIT_CARDS_JAVA = 0.25
 
-# 60% for MongoDB shards and replicas
-MEMORY_SPLIT_MONGO_SHARDS_REPLICAS = 0.60
+# 60% for MongoDB data storage nodes (either a single container or the set of shards and replicas)
+MEMORY_SPLIT_MONGO_DATA_STORAGE = 0.60
 
 # 15% for other processes
 MEMORY_SPLIT_OTHER_PROCESSES = 0.15

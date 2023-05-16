@@ -18,7 +18,7 @@
 //
 import React, { useEffect, useState } from "react";
 import Form from "../questionnaire/Form.jsx";
-import { getHierarchy } from "../questionnaire/Subject.jsx";
+import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 
 import { Grid } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';

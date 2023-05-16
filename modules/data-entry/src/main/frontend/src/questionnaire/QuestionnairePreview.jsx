@@ -72,7 +72,7 @@ function QuestionnairePreview (props) {
     );
   }
 
-  return (<>
+  return (<div className={data?.hideAnswerInstructions ? classes.hideAnswerInstructions : null}>
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
       { /* Added dummy save functionality for mocking file and pedigree questions functionality. */ }
       <FormProvider additionalFormData={{
@@ -107,6 +107,8 @@ function QuestionnairePreview (props) {
       </FormProvider>
       <Grid item xs={12} className={classes.formFooter} id="cards-resource-footer">
         <FormPagination
+            variant={data?.paginationVariant}
+            navMode={data?.paginationMode}
             enabled={paginationEnabled}
             questionnaireData={data}
             setPagesCallback={setPages}
@@ -122,7 +124,7 @@ function QuestionnairePreview (props) {
         label="Close"
       />
     }
-  </>);
+  </div>);
 };
 
 export default withStyles(QuestionnaireStyle)(QuestionnairePreview);

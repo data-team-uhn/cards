@@ -19,24 +19,35 @@
 
 package io.uhndata.cards.patients.emailnotifications;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
+import io.uhndata.cards.emailnotifications.Email;
+import io.uhndata.cards.emailnotifications.EmailTemplate;
 import io.uhndata.cards.emailnotifications.EmailUtils;
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import jakarta.mail.MessagingException;
 
 abstract class AbstractEmailNotification
@@ -54,149 +65,138 @@ abstract class AbstractEmailNotification
 
     protected final ThreadResourceResolverProvider resolverProvider;
 
+    private final EventAdmin eventAdmin;
+
     private final TokenManager tokenManager;
 
     private final MailService mailService;
+
+    private final FormUtils formUtils;
 
     private final PatientAccessConfiguration patientAccessConfiguration;
 
     AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
         final ThreadResourceResolverProvider resolverProvider,
-        final TokenManager tokenManager, final MailService mailService,
-        final PatientAccessConfiguration patientAccessConfiguration)
+        final TokenManager tokenManager, final MailService mailService, final FormUtils formUtils,
+        final PatientAccessConfiguration patientAccessConfiguration, final EventAdmin eventAdmin)
     {
         this.resolverFactory = resolverFactory;
         this.resolverProvider = resolverProvider;
         this.tokenManager = tokenManager;
         this.mailService = mailService;
+        this.formUtils = formUtils;
         this.patientAccessConfiguration = patientAccessConfiguration;
-
-    }
-
-    /*
-     * Sends notification emails based on clinic-associated templates for appointments in the past or future.
-     *
-     * @param differenceInDays the difference in days between now and the day of the appointment.
-     * Positive values if the appointment is in the future, negative values if the appointment is in the past.
-     *
-     * @param emailTextTemplateName the name of the plain text email template associated with the Visit's clinic.
-     * @param emailHtmlTemplateName the name of the HTML email template associated with the Visit's clinic.
-     * @param emailSubject The subject line of the notification email
-     * @return the number of notification emails that have been sent
-     */
-    public long sendNotification(final int differenceInDays, final String emailTextTemplateName,
-        final String emailHtmlTemplateName, final String emailSubject)
-    {
-        return sendNotification(differenceInDays, emailTextTemplateName, emailHtmlTemplateName, emailSubject, null);
+        this.eventAdmin = eventAdmin;
     }
 
     /*
      * Sends notification emails based on templates for appointments in the past or future.
-     *
-     * @param differenceInDays the difference in days between now and the day of the appointment.
-     * Positive values if the appointment is in the future, negative values if the appointment is in the past.
-     *
-     * @param emailTextTemplateName the name of the plain text email template associated with the Visit's clinic,
-     * if clinicId is null, otherwise the absolute JCR path to the template.
-     *
-     * @param emailHtmlTemplateName the name of the HTML email template associated with the Visit's clinic,
-     * if clinicId is null, otherwise the absolute JCR path to the template.
-     *
+     * @param differenceInDays the difference in days between now and the day of the appointment. Positive values if the
+     * appointment is in the future, negative values if the appointment is in the past.
+     * @param emailTextTemplateName the name of the plain text email template associated with the Visit's clinic, if
+     * clinicId is null, otherwise the absolute JCR path to the template.
+     * @param emailHtmlTemplateName the name of the HTML email template associated with the Visit's clinic, if clinicId
+     * is null, otherwise the absolute JCR path to the template.
      * @param emailSubject The subject line of the notification email
      * @param clinicId only send notifications for appointments with a clinic specified by this ID.
      * @return the number of notification emails that have been sent
      */
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
-    public long sendNotification(final int differenceInDays, final String emailTextTemplateName,
-        final String emailHtmlTemplateName, final String emailSubject, final String clinicId)
+    public long sendNotification(final int differenceInDays, final EmailTemplate template, final String clinicId)
     {
         final Calendar dateToQuery = Calendar.getInstance();
         dateToQuery.add(Calendar.DATE, differenceInDays);
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
         long emailsSent = 0;
+        boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
             this.resolverProvider.push(resolver);
-            Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver,
+            mustPopResolver = true;
+            final Session session = resolver.adaptTo(Session.class);
+            NodeIterator appointmentResults = AppointmentUtils.getAppointmentsForDay(session,
                 dateToQuery, clinicId);
             while (appointmentResults.hasNext()) {
-                Resource appointmentDate = appointmentResults.next();
-                Resource appointmentForm = AppointmentUtils.getFormForAnswer(resolver, appointmentDate);
-                if (appointmentForm == null) {
+                Node appointmentDate = appointmentResults.nextNode();
+                Node appointmentForm = this.formUtils.getForm(appointmentDate);
+                if (appointmentForm == null || isSurveyCompleted(appointmentForm, session)) {
                     continue;
                 }
+                Node visitSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient/Visit");
                 // Get the Patient Subject associated with this appointment Form
-                Resource patientSubject = AppointmentUtils.getRelatedSubjectOfType(
-                    resolver, appointmentForm, "/SubjectTypes/Patient");
-                Resource visitSubject = AppointmentUtils.getRelatedSubjectOfType(
-                    resolver, appointmentForm, "/SubjectTypes/Patient/Visit");
-                // Skip the email if there are no incomplete surveys for the patient
-                boolean patientSurveysComplete = AppointmentUtils.getVisitSurveysComplete(resolver, visitSubject);
-                if (patientSurveysComplete) {
-                    continue;
-                }
-                String patientEmailAddress =
-                    AppointmentUtils.getPatientConsentedEmail(resolver, patientSubject, visitSubject);
-                if (patientEmailAddress == null) {
-                    continue;
-                }
+                Node patientSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient");
 
-                /* If a clinicId is specified, then emailTextTemplateName and emailHtmlTemplateName are JCR
-                 * paths to the plaintext and HTML email templates, respectively. Otherwise, if clinicId is null,
-                 * then we need to resolve the full JCR path to the email templates based on the clinic specified
-                 * in the Visit information Form and the given emailTextTemplateName, and emailHtmlTemplateName values.
-                 */
-                String emailTextTemplate = null;
-                String emailHtmlTemplate = null;
-                if (clinicId != null) {
-                    emailTextTemplate = AppointmentUtils.getEmailTemplateFromPath(resolver, emailTextTemplateName);
-                    emailHtmlTemplate = AppointmentUtils.getEmailTemplateFromPath(resolver, emailHtmlTemplateName);
-                } else {
-                    emailTextTemplate = AppointmentUtils.getVisitEmailTemplate(resolver,
-                        visitSubject, emailTextTemplateName);
-                    emailHtmlTemplate = AppointmentUtils.getVisitEmailTemplate(resolver,
-                        visitSubject, emailHtmlTemplateName);
-                }
-
-                if (emailTextTemplate == null || emailHtmlTemplate == null) {
-                    continue;
-                }
-
-                String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
-                Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
-                tokenExpiryDate.add(
-                    Calendar.DATE,
-                    this.patientAccessConfiguration.getAllowedPostVisitCompletionTime()
-                );
-                atMidnight(tokenExpiryDate);
-                final String token = this.tokenManager.create(
-                    "patient",
-                    tokenExpiryDate,
-                    Collections.singletonMap(
-                        "cards:sessionSubject",
-                        visitSubject.getPath()))
-                    .getToken();
-                // Send the Notification Email
-                Map<String, String> valuesMap = Map.of(
-                    "surveysLink", "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token,
-                    "unsubscribeLink",
-                    "https://" + CARDS_HOST_AND_PORT + "/Survey.unsubscribe.html?auth_token=" + token);
-                String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, valuesMap);
-                String emailHtmlBody = EmailUtils.renderEmailTemplate(emailHtmlTemplate, valuesMap);
                 try {
-                    EmailUtils.sendNotificationHtmlEmail(this.mailService, patientEmailAddress,
-                        patientFullName, emailSubject, emailTextBody, emailHtmlBody);
+                    Email email = renderTemplate(template, appointmentDate, visitSubject, patientSubject, session);
+                    if (email == null) {
+                        continue;
+                    }
+                    EmailUtils.sendHtmlEmail(email, this.mailService);
+                    Event event = new Event(getNotificationType(), Map.of(
+                        "visit", visitSubject.getPath(),
+                        "patient", patientSubject.getPath()));
+                    this.eventAdmin.postEvent(event);
                     emailsSent += 1;
                 } catch (MessagingException e) {
                     LOGGER.warn("Failed to send Initial Notification Email");
                 }
             }
-        } catch (LoginException e) {
+        } catch (LoginException | RepositoryException e) {
             LOGGER.warn("Failed to results.next().getPath()");
         } finally {
-            this.resolverProvider.pop();
+            if (mustPopResolver) {
+                this.resolverProvider.pop();
+            }
         }
         return emailsSent;
+    }
+
+    protected abstract String getNotificationType();
+
+    private Email renderTemplate(final EmailTemplate template, final Node appointmentDate,
+        final Node visitSubject, final Node patientSubject, final Session session) throws RepositoryException
+    {
+        String patientEmailAddress =
+            AppointmentUtils.getPatientConsentedEmail(this.formUtils, patientSubject, visitSubject);
+        if (StringUtils.isBlank(patientEmailAddress)) {
+            return null;
+        }
+        String patientFullName = AppointmentUtils.getPatientFullName(this.formUtils, patientSubject);
+        Calendar visitDate = (Calendar) this.formUtils.getValue(appointmentDate);
+        Calendar tokenExpiryDate = (Calendar) visitDate.clone();
+        tokenExpiryDate.add(
+            Calendar.DATE,
+            this.patientAccessConfiguration.getAllowedPostVisitCompletionTime());
+        atMidnight(tokenExpiryDate);
+        final String token = this.tokenManager.create(
+            "patient",
+            tokenExpiryDate,
+            Collections.singletonMap(
+                "cards:sessionSubject",
+                visitSubject.getPath()))
+            .getToken();
+        // Send the Notification Email
+        Map<String, String> valuesMap = new HashMap<>();
+        valuesMap.put("surveysLink", "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token);
+        valuesMap.put("unsubscribeLink",
+            "https://" + CARDS_HOST_AND_PORT + "/Survey.unsubscribe.html?auth_token=" + token);
+        final DateFormat sdf = DateFormat.getDateInstance();
+        sdf.setTimeZone(tokenExpiryDate.getTimeZone());
+        valuesMap.put("expirationDate", sdf.format(tokenExpiryDate.getTime()));
+        return template.getEmailBuilderForSubject(visitSubject, valuesMap, this.formUtils)
+            .withRecipient(patientEmailAddress, patientFullName)
+            .build();
+    }
+
+    private boolean isSurveyCompleted(final Node appointmentForm, final Session session) throws RepositoryException
+    {
+        Node surveysCompleteQuestion = session.getNode("/Questionnaires/Visit information/surveys_complete");
+        // Skip the email if there are no incomplete surveys for the patient
+        return this.formUtils
+            .findAllFormRelatedAnswers(appointmentForm, surveysCompleteQuestion,
+                EnumSet.of(FormUtils.SearchType.FORM))
+            .stream()
+            .map(n -> this.formUtils.getValue(n))
+            .anyMatch(v -> Long.valueOf(1).equals(v));
     }
 
     private void atMidnight(final Calendar c)

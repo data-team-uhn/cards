@@ -132,7 +132,7 @@ function VocabularyQuery(props) {
   return (
       <ResourceQuery
         {... props}
-        infoDisplayer={VocabularyBrowser}
+        infoDisplayer={questionDefinition?.enableVocabularyBrowser ? VocabularyBrowser : undefined}
         fetchSuggestions={fetchSuggestions}
         formatSuggestionData={formatSuggestionData}
       />

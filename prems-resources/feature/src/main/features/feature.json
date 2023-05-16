@@ -22,15 +22,23 @@
   "bundles":[
     {
       "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
-      "start-order":"20"
+      "start-order": "20"
     },
     {
       "id":"${project.groupId}:cards-visit-subject-type:${project.version}",
-      "start-order":"21"
+      "start-order": "21"
+    },
+    {
+      "id":"${project.groupId}:cards-statistics:${project.version}",
+      "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:prems-backend:${project.version}",
+      "start-order": "26"
     },
     {
       "id":"${project.groupId}:prems-resources-clinical-data:${project.version}",
-      "start-order":"26"
+      "start-order": "26"
     }
   ],
   "configurations":{
@@ -40,82 +48,337 @@
         // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
         "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes \n create path (cards:Homepage) /content",
         // Access rights for the special "patient" user: do not allow access to PII
-        "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,time,location,provider) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/time,/Questionnaires/Visit*information/location,/Questionnaires/Visit*information/provider) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n end",
-        // This isn't actually used, but Patient.json references it; needs to be removed along with the torch import
-        "create service user proms-import-backend"
+        "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,provider) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/provider) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Survey*events) \n end",
+        // Deny access to the patient's name to the validation servlet, which would otherwise return it to the patient portal
+        "create service user patient-validation \n set ACL for patient-validation \n   deny jcr:all on /Questionnaires restriction(rep:itemNames,last_name,first_name) \n     deny jcr:all on /Forms restriction(cards:question,/Questionnaires/Patient*information/last_name,/Questionnaires/Patient*information/first_name) \n end",
+        // Allow the CSV export of Survey Events to include the proper label for the assigned survey
+        "create service user csv-export \n set ACL on /Survey \n   allow jcr:read for csv-export \n end"
       ]
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDInitialInvitationTask":{
-      "name": "CPESInitialNotificationsTask",
-      "metricName": "Initial Emails Sent",
+
+    // Enable the Survey Tracker
+    "io.uhndata.cards.patients.surveytracker.SurveyTracker":{
+      "trackSubmissions": true,
+      "trackEmails": true
+    },
+
+    // Email notifications for patients
+
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~CPES-InitialInvitationTask":{
+      "name": "CPES-InitialNotificationsTask",
+      "notificationType": "Invitation",
+      "metricName": "{004} CPES Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/2075099",
-      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/CPES/mailTemplates/invitation.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/CPES/mailTemplates/invitation.html",
+      "emailConfiguration": "/apps/cards/clinics/CPES/mailTemplates/InitialInvitation",
       "daysToVisit": -7
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDReminderNotificationsTask":{
-      "name": "CPESReminderNotificationsTask",
-      "metricName": "Reminder Emails Sent",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~CPES-Reminder1NotificationsTask":{
+      "name": "CPES-Reminder1NotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "{005} CPES 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/2075099",
-      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/CPES/mailTemplates/reminder.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/CPES/mailTemplates/reminder.html",
-      "daysToVisit": -14
+      "emailConfiguration": "/apps/cards/clinics/CPES/mailTemplates/ReminderNotification",
+      "daysToVisit": -9
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWIPInitialInvitationTask":{
-      "name": "UHNIPInitialNotificationsTask",
-      "metricName": "Initial Emails Sent",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~CPES-Reminder2NotificationsTask":{
+      "name": "CPES-Reminder2NotificationsTask",
+      "notificationType": "Reminder2",
+      "metricName": "{006} CPES 2nd Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/2075099",
+      "emailConfiguration": "/apps/cards/clinics/CPES/mailTemplates/ReminderNotification",
+      "daysToVisit": -11
+    },
+
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IP-InitialInvitationTask":{
+      "name": "UHN-IP-InitialInvitationsTask",
+      "notificationType": "Invitation",
+      "metricName": "{007} UHN-IP Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626663",
-      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-IP/mailTemplates/invitation.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-IP/mailTemplates/invitation.html",
+      "emailConfiguration": "/apps/cards/clinics/UHN-IP/mailTemplates/InitialInvitation",
       "daysToVisit": -7
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWIPReminderNotificationsTask":{
-      "name": "UHNIPReminderNotificationsTask",
-      "metricName": "Reminder Emails Sent",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IP-Reminder1NotificationsTask":{
+      "name": "UHN-IP-Reminder1NotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "{008} UHN-IP 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626663",
-      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-IP/mailTemplates/reminder.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-IP/mailTemplates/reminder.html",
-      "daysToVisit": -14
+      "emailConfiguration": "/apps/cards/clinics/UHN-IP/mailTemplates/ReminderNotification",
+      "daysToVisit": -9
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHEDInitialInvitationTask":{
-      "name": "UHNEDInitialNotificationsTask",
-      "metricName": "Initial Emails Sent",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IP-Reminder2NotificationsTask":{
+      "name": "UHN-IP-Reminder2NotificationsTask",
+      "notificationType": "Reminder2",
+      "metricName": "{009} UHN-IP 2nd Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/-1792626663",
+      "emailConfiguration": "/apps/cards/clinics/UHN-IP/mailTemplates/ReminderNotification",
+      "daysToVisit": -11
+    },
+
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-ED-InitialInvitationTask":{
+      "name": "UHN-ED-InitialInvitationsTask",
+      "notificationType": "Invitation",
+      "metricName": "{010} UHN-ED Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626799",
-      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-ED/mailTemplates/invitation.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-ED/mailTemplates/invitation.html",
+      "emailConfiguration": "/apps/cards/clinics/UHN-ED/mailTemplates/InitialInvitation",
       "daysToVisit": -7
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHEDReminderNotificationsTask":{
-      "name": "UHNEDReminderNotificationsTask",
-      "metricName": "Reminder Emails Sent",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-ED-Reminder1NotificationsTask":{
+      "name": "UHN-ED-Reminder1NotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "{011} UHN-ED 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626799",
-      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-ED/mailTemplates/reminder.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-ED/mailTemplates/reminder.html",
-      "daysToVisit": -14
+      "emailConfiguration": "/apps/cards/clinics/UHN-ED/mailTemplates/ReminderNotification",
+      "daysToVisit": -9
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHIPInitialInvitationTask":{
-      "name": "UHNEDIPInitialNotificationsTask",
-      "metricName": "Initial Emails Sent",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-ED-Reminder2NotificationsTask":{
+      "name": "UHN-ED-Reminder2NotificationsTask",
+      "notificationType": "Reminder2",
+      "metricName": "{012} UHN-ED 2nd Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/-1792626799",
+      "emailConfiguration": "/apps/cards/clinics/UHN-ED/mailTemplates/ReminderNotification",
+      "daysToVisit": -11
+    },
+
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIP-InitialInvitationTask":{
+      "name": "UHN-EDIP-InitialInvitationsTask",
+      "notificationType": "Invitation",
+      "metricName": "{013} UHN-EDIP Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465800",
-      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-EDIP/mailTemplates/invitation.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-EDIP/mailTemplates/invitation.html",
+      "emailConfiguration": "/apps/cards/clinics/UHN-EDIP/mailTemplates/InitialInvitation",
       "daysToVisit": -7
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHIPReminderNotificationsTask":{
-      "name": "UHNEDIPReminderNotificationsTask",
-      "metricName": "Reminder Emails Sent",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIP-Reminder1NotificationsTask":{
+      "name": "UHN-EDIP-Reminder1NotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "{014} UHN-EDIP 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465800",
-      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-EDIP/mailTemplates/reminder.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-EDIP/mailTemplates/reminder.html",
-      "daysToVisit": -14
+      "emailConfiguration": "/apps/cards/clinics/UHN-EDIP/mailTemplates/ReminderNotification",
+      "daysToVisit": -9
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIP-Reminder2NotificationsTask":{
+      "name": "UHN-EDIP-Reminder2NotificationsTask",
+      "notificationType": "Reminder2",
+      "metricName": "{015} UHN-EDIP 2nd Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/-432465800",
+      "emailConfiguration": "/apps/cards/clinics/UHN-EDIP/mailTemplates/ReminderNotification",
+      "daysToVisit": -11
+    },
+
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-Rehab-InitialInvitationTask":{
+      "name": "UHN-Rehab-InitialInvitationsTask",
+      "notificationType": "Invitation",
+      "metricName": "{016} UHN-Rehab Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/78840662",
+      "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/InitialInvitation",
+      "daysToVisit": -7
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-Rehab-Reminder1NotificationsTask":{
+      "name": "UHN-Rehab-Reminder1NotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "{017} UHN-Rehab 1st Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/78840662",
+      "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/ReminderNotification",
+      "daysToVisit": -9
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-Rehab-Reminder2NotificationsTask":{
+      "name": "UHN-Rehab-Reminder2NotificationsTask",
+      "notificationType": "Reminder2",
+      "metricName": "{018} UHN-Rehab 2nd Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/78840662",
+      "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/ReminderNotification",
+      "daysToVisit": -11
+    },
+
+    // Periodic CSV exports of all new and updated data
+
+    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Labeled-Forms":{
+      "name": "UHN-Labeled-Forms",
+      "frequency.in.days": 7,
+      "export.schedule": "0 0 2 ? * SAT *",
+      "questionnaires.to.be.exported": [
+        "/Questionnaires/CPESIC",
+        "/Questionnaires/OAIP",
+        "/Questionnaires/OED",
+        "/Questionnaires/Rehab"
+      ],
+      "selectors": ".labels.dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
+      "save.path": "/csv-export",
+      "file.name.format": "{questionnaire}_{period}_labels.csv",
+      "export.format": "csv"
+    },
+    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Raw-Forms":{
+      "name": "UHN-Raw-Forms",
+      "frequency.in.days": 7,
+      "export.schedule": "0 0 2 ? * SAT *",
+      "questionnaires.to.be.exported": [
+        "/Questionnaires/CPESIC",
+        "/Questionnaires/OAIP",
+        "/Questionnaires/OED",
+        "/Questionnaires/Rehab"
+      ],
+      "selectors": ".dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
+      "save.path": "/csv-export",
+      "file.name.format": "{questionnaire}_{period}.csv",
+      "export.format": "csv"
+    },
+    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Survey-Events":{
+      "name": "UHN-Survey-Events",
+      "frequency.in.days": 7,
+      "export.schedule": "0 0 2 ? * SAT *",
+      "questionnaires.to.be.exported": [
+        "/Questionnaires/Survey events"
+      ],
+      "selectors": ".dataFilter:statusNot=INCOMPLETE.labels",
+      "save.path": "/csv-export",
+      "file.name.format": "{questionnaire}_{period}.csv",
+      "export.format": "csv"
+    },
+
+    // Clarity import
+    "io.uhndata.cards.clarity.importer.NightlyClarityImport": {
+      "nightly.import.schedule": "0 0 3 * * ? *",
+      "dayToImport": -7
+    },
+
+    // Clarity import filters and mappers
+
+    // Discard patients with invalid or non-consented emails
+    "io.uhndata.cards.clarity.importer.internal.EmailConsentFilter": {
+      "enable": true,
+      "emailColumn": "EMAIL_ADDRESS",
+      "emailConsentColumn": "EMAIL_CONSENT_YN"
+    },
+    // Only send surveys to patients once every 6 months
+    "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter": {
+      "enable": true,
+      "minimum.visit.frequency": 183
+    },
+    // Don't import visits for patients who have opted out of emails
+    "io.uhndata.cards.clarity.importer.internal.UnsubscribedFilter": {
+      "enable": true
+    },
+    // Only look at events from the participating hospitals, discard everything else
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
+      "priority": 10,
+      "conditions": [
+        "DISCH_LOC_NAME <> Toronto General Hospital",
+        "DISCH_LOC_NAME <> Toronto Western Hospital",
+        "DISCH_LOC_NAME <> Princess Margaret Cancer Centre",
+        "DISCH_LOC_NAME <> Toronto Rehab - Bickle Centre",
+        "DISCH_LOC_NAME <> Toronto Rehab - Lyndhurst Centre",
+        "DISCH_LOC_NAME <> Toronto Rehab - Rumsey Neuro",
+        "DISCH_LOC_NAME <> Toronto Rehab - Rumsey Cardiac",
+        "DISCH_LOC_NAME <> Toronto Rehab - University Centre"
+      ]
+    },
+    // Discard deceased patients
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DeathDate":{
+      "priority": 20,
+      "conditions": ["DEATH_DATE is not empty"]
+    },
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Deceased":{
+      "priority": 20,
+      "conditions": ["DISCH_DISPOSITION in Cad Donor; Deceased; Died on Leav; Died; Donor; Stillbirth; Suicide Out; Death After; MAID; Death on Arr; IP Medically; IP In-Facili; IP Died Whil; IP Out of Fa; DOA; OP Medically; OP In-Facili; Suicide fac; Still Born; Pt. suicide; Expired LOA; Expired; Med assist d; Suicide fac; DOA"]
+    },
+    // Discard patients discharged to another institution or not arrived at all
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DischargeToLocation":{
+      "priority": 20,
+      "conditions": ["DISCH_DISPOSITION in Not Arrived; Jail; Diverted; Shelter; Jail or half; Inpatient Ps; IP Trnsfr; OP Transfer"]
+    },
+    // Discard patients with special care
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-AlternativeLevelOfCare":{
+      "priority": 20,
+      "conditions": ["LEVEL_OF_CARE matches ALC.*"]
+    },
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Psychiatric":{
+      "priority": 20,
+      "conditions": ["DISCH_DEPT_NAME = TG-8ES PSYCHIATRY"]
+    },
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Palliative":{
+      "priority": 20,
+      "conditions": ["DISCH_DEPT_NAME in PM-PALLIATIVE CARE ONCOLOGY CLINIC; TW-PALLIATIVE CARE CLINIC; TG-PALLIATIVE CARE; PM-16P PALLIATIVE CARE"]
+    },
+    // Assign patients from Toronto Rehab to the Rehab cohort
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-Rehab":{
+      "priority": 40,
+      "clinic": "/Survey/ClinicMapping/78840662",
+      "conditions": ["DISCH_LOC_NAME matches Toronto Rehab .*"]
+    },
+    // From the Rehab, exclude patients from the Special Dementia Unit
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-Dementia":{
+      "priority": 60,
+      "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME = UC-5 SOUTH IP"]
+    },
+    // From the Rehab, exclude Complex Continuing Care patients
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-ComplexContinuingCare":{
+      "priority": 60,
+      "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME in BC-3 NORTH TCU IP; BC-5A NORTH IP; BC-5B NORTH IP; BC-3 SOUTH IP; BC-5 SOUTH IP"]
+    },
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-ComplexContinuingMatch":{
+      "priority": 60,
+      "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME matches .*CCC.*"]
+    },
+    // Only non-rehab patients from now on.
+    // Discard patients not from Rehab, and with psychiatric or substance abuse as primary diagnosis
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NotRehab-PsychiatricOrSubstanceAbusePrimaryDiagnosis":{
+      "priority": 60,
+      "conditions": ["CLINIC is empty", "DX_NAME in Acute alcoholic intoxication; Acute delirium; Adjustment disorder; Adjustment disorder with mixed anxiety and depressed mood; Adjustment disorders, unspecified; Agitation; Alcohol dependence in remission; Alcohol intoxication; Alcohol use; Alcohol use disorder; Alcohol withdrawal; Alcoholism in recovery; Alzheimer disease; Anoxic brain injury; Anxiety; Anxiety about health; Anxiety and depression; Bipolar 1 disorder; Bipolar affective disorder, current episode manic; Bipolar disorder; Cocaine use; Cocaine use disorder, severe, dependence; Cognitive impairment; Confusion; Delirium; Delirium superimposed on dementia; Dementia; Depression; Depression, prolonged; Developmental delay; Drug-induced psychotic disorder; Essential tremor; Generalized anxiety disorder; Impaired cognition; Major depressive disorder; Memory impairment; MDD (major depressive disorder); Mood disorder; Overdose; Overdose of drug/medicinal substance; Overdose of tricyclic antidepressants; Polysubstance dependence; Schizoaffective disorder; Schizoaffective disorder, bipolar type; Schizophrenia; Seizure; Seizure disorder; Seizures; Severe anxiety with panic; Stress; Stress and adjustment reaction; Substance abuse; Substance use; Substance use disorder; Suicidal ideation; Tremor; Unspecified intellectual developmental disorder (intellectual disability); Unspecified schizophrenia spectrum and other psychotic disorder; Unspecified trauma- and stressor-related disorder; Vapes nicotine containing substance; Withdrawal symptoms, alcohol"]
+    },
+    // Discard patients not from Rehab, and discharged to long term care
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NotRehab-LongTermCare":{
+      "priority": 60,
+      "conditions": ["CLINIC is empty", "DISCH_DISPOSITION in Residential; Discharge; IP Transfer; LTC; Res Care; Board & Care"]
+    },
+    // Assign patients that were only at the emergency department to the ED cohort
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-ED-NoTransferTG":{
+      "priority": 80,
+      "clinic": "/Survey/ClinicMapping/-1792626799",
+      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = no", "DISCH_DEPT_NAME = TG-EMERGENCY"]
+    },
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-ED-NoTransferTW":{
+      "priority": 80,
+      "clinic": "/Survey/ClinicMapping/-1792626799",
+      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = no", "DISCH_DEPT_NAME = TW-EMERGENCY"]
+    },
+    // Discard patients that were discharged from the emergency department to in-patient for now;
+    // a follow up event will be generated later when they are discharged from in-patient
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-ED-Transfer":{
+      "priority": 100,
+      "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME matches .*EMERGENCY.*"]
+    },
+    // Only in-patients from now on.
+    // As a special filter, a small percentage of patients are assigned to the long-form CPESIC cohort
+    "io.uhndata.cards.prems.internal.importer.SendCPESForDepartmentFrequency":{
+      "default.frequency": 0.04,
+      "frequency.per.department": [
+        // This applies to the DISCH_DEPT_NAME column. For example:
+        // "Department name = 0.02"
+      ]
+    },
+    // Only non-CPESIC patients from now on.
+    // Assign patients that were both in the emergency and in-patient to the EDIP cohort
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-EDIP-Transfer":{
+      "priority": 140,
+      "clinic": "/Survey/ClinicMapping/-432465800",
+      "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = yes"]
+    },
+    // Assign patients that were only in-patient to the IP cohort
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-IP":{
+      "priority": 160,
+      "clinic": "/Survey/ClinicMapping/-1792626663",
+      "conditions": ["CLINIC is empty"]
+    },
+    // Discard duplicates if there's more than one event per patient
+    "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
+      "enable": true,
+      "subjectType": "/SubjectTypes/Patient"
+    },
+    // Submission event listener
+    "io.uhndata.cards.patients.submissioncounter.SubmissionCounter~SurveysSubmitted":{
+      "name": "Patient Survey Completion Listener",
+      "submittedFlagPath": "/Questionnaires/Visit information/surveys_submitted",
+      "linkingSubjectType": "/SubjectTypes/Patient/Visit",
+      "excludedQuestionnaires": ["/Questionnaires/Survey events"]
     }
   }
 }

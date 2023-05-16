@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jackrabbit.oak.api.Type;
@@ -56,15 +57,17 @@ public class ComputedAnswersEditor extends AnswersEditor
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
+     * @param currentSession the current user session
      * @param rrf the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param expressionUtils for evaluating the computed questions
      */
-    public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final ExpressionUtils expressionUtils)
+    public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final Session currentSession,
+        final ResourceResolverFactory rrf, final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils,
+        final ExpressionUtils expressionUtils)
     {
-        super(nodeBuilder, rrf, questionnaireUtils, formUtils, "computedAnswers");
+        super(nodeBuilder, currentSession, rrf, questionnaireUtils, formUtils);
         this.expressionUtils = expressionUtils;
     }
 
@@ -72,6 +75,12 @@ public class ComputedAnswersEditor extends AnswersEditor
     protected Logger getLogger()
     {
         return LOGGER;
+    }
+
+    @Override
+    protected String getServiceName()
+    {
+        return "computedAnswers";
     }
 
     @Override
@@ -84,14 +93,7 @@ public class ComputedAnswersEditor extends AnswersEditor
     protected ComputedAnswersEditor getNewEditor(String name)
     {
         return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-            this.rrf, this.questionnaireUtils, this.formUtils, this.expressionUtils);
-    }
-
-    @Override
-    protected ComputedAnswerNodeTypes getNewAnswerNodeTypes(Node node)
-        throws RepositoryException
-    {
-        return new ComputedAnswerNodeTypes(node);
+            this.currentSession, this.rrf, this.questionnaireUtils, this.formUtils, this.expressionUtils);
     }
 
     @Override
@@ -128,30 +130,27 @@ public class ComputedAnswersEditor extends AnswersEditor
 
         // There are missing computed questions, let's create them!
         if (computedQuestionsTree != null) {
-            // Create the missing structure, i.e. AnswerSection and Answer nodes
-            final Map<QuestionTree, NodeBuilder> answersToCompute =
-                createMissingNodes(computedQuestionsTree, this.currentNodeBuilder);
-
+            Map<Node, NodeBuilder> questionAndAnswers =
+                computedQuestionsTree.getQuestionAndAnswers(this.currentNodeBuilder);
             // Try to determine the right order in which answers should be computed, so that the answers that depend on
             // other computed answers are evaluated after all their dependencies have been evaluated
-            final Set<String> questionNames = answersToCompute.keySet().stream()
-                .map(QuestionTree::getNode)
+            final Set<String> questionNames = questionAndAnswers.keySet().stream()
                 .map(this.questionnaireUtils::getQuestionName)
                 .collect(Collectors.toSet());
             final Map<String, Set<String>> computedAnswerDependencies =
-                answersToCompute.keySet().stream().map(question -> {
-                    Set<String> dependencies = this.expressionUtils.getDependencies(question.getNode());
+                questionAndAnswers.keySet().stream().map(question -> {
+                    Set<String> dependencies = this.expressionUtils.getDependencies(question);
                     dependencies.retainAll(questionNames);
-                    return Pair.of(this.questionnaireUtils.getQuestionName(question.getNode()), dependencies);
+                    return Pair.of(this.questionnaireUtils.getQuestionName(question), dependencies);
                 }).collect(Collectors.toConcurrentMap(Pair::getKey, Pair::getValue));
             final List<String> orderedAnswersToCompute = sortDependencies(computedAnswerDependencies);
 
             // We have the right order, compute all the missing answers
             orderedAnswersToCompute.stream()
                 // Get the right answer node
-                .map(questionName -> answersToCompute.entrySet().stream()
+                .map(questionName -> questionAndAnswers.entrySet().stream()
                     .filter(
-                        entry -> questionName.equals(this.questionnaireUtils.getQuestionName(entry.getKey().getNode())))
+                        entry -> questionName.equals(this.questionnaireUtils.getQuestionName(entry.getKey())))
                     .findFirst().get())
                 // Evaluate it
                 .forEachOrdered(entry -> {
@@ -160,19 +159,13 @@ public class ComputedAnswersEditor extends AnswersEditor
         }
     }
 
-    private void computeAnswer(final Map.Entry<QuestionTree, NodeBuilder> entry,
+    private void computeAnswer(final Map.Entry<Node, NodeBuilder> entry,
         final Map<String, Object> answersByQuestionName)
     {
-        final QuestionTree question = entry.getKey();
+        final Node question = entry.getKey();
         final NodeBuilder answer = entry.getValue();
-        Type<?> resultType = Type.STRING;
-        try {
-            ComputedAnswerNodeTypes types = new ComputedAnswerNodeTypes(question.getNode());
-            resultType = types.getDataType();
-        } catch (RepositoryException e) {
-            LOGGER.error("Error typing value for question. " + e.getMessage());
-        }
-        Object result = this.expressionUtils.evaluate(question.getNode(), answersByQuestionName, resultType);
+        Type<?> resultType = getAnswerType(question);
+        Object result = this.expressionUtils.evaluate(question, answersByQuestionName, resultType);
 
         if (result == null || (result instanceof String && "null".equals(result))) {
             answer.removeProperty(FormUtils.VALUE_PROPERTY);
@@ -184,7 +177,7 @@ public class ComputedAnswersEditor extends AnswersEditor
             answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
         }
         // Update the computed value in the map of existing answers
-        String questionName = this.questionnaireUtils.getQuestionName(question.getNode());
+        String questionName = this.questionnaireUtils.getQuestionName(question);
         if (answersByQuestionName.containsKey(questionName)) {
             // Question has multiple answers. Ignore this answer, just keep previous.
             // TODO: Implement better recurrent section handling
@@ -262,14 +255,6 @@ public class ComputedAnswersEditor extends AnswersEditor
                 }
             }
             return false;
-        }
-    }
-
-    private final class ComputedAnswerNodeTypes extends AnswerNodeTypes
-    {
-        ComputedAnswerNodeTypes(final Node questionNode) throws RepositoryException
-        {
-            super(questionNode, "cards:ComputedAnswer", "cards/ComputedAnswer");
         }
     }
 }

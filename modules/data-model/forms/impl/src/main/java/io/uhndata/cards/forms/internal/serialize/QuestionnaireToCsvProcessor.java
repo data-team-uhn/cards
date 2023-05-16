@@ -30,7 +30,6 @@ import java.util.Set;
 
 import javax.jcr.query.Query;
 import javax.json.JsonArray;
-import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
@@ -107,22 +106,32 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             final List<String> columns = new ArrayList<>();
             columns.add(IDENTIFIER_HEADER);
 
+            final List<String> rawColumns = new ArrayList<>();
+            rawColumns.add("@name");
+
             // Fetch the subject types expected to be for the questionnaire
             if (questionnaire.containsKey("requiredSubjectTypes")) {
-                getSubjectTypes(questionnaire.getJsonArray("requiredSubjectTypes"), csvData, columns);
+                getSubjectTypes(questionnaire.getJsonArray("requiredSubjectTypes"), csvData, columns, rawColumns);
             } else {
                 // No specific subject types for this questionnaire, output all known subject types
-                getSubjectTypes(resolver, csvData, columns);
+                getSubjectTypes(resolver, csvData, columns, rawColumns);
             }
             csvData.put(CREATED_HEADER, new HashMap<>());
             csvData.put(LAST_MODIFIED_HEADER, new HashMap<>());
             columns.add(CREATED_HEADER);
+            rawColumns.add("jcr:created");
             columns.add(LAST_MODIFIED_HEADER);
+            rawColumns.add("jcr:lastModified");
 
             // Get header titles from the questionnaire question objects
-            processSectionToHeaderRow(questionnaire, csvData, columns);
+            processSectionToHeaderRow(questionnaire, csvData, columns, rawColumns);
             // Print header
-            csvPrinter.printRecord(columns);
+            if (!resolutionPathInfo.contains("-csvHeader:labels")) {
+                csvPrinter.printRecord(columns);
+            }
+            if (resolutionPathInfo.contains("csvHeader:raw")) {
+                csvPrinter.printRecord(rawColumns);
+            }
 
             // Aggregate form answers to the csvData collector for the CSV output
             if (questionnaire.containsKey("@data")) {
@@ -139,19 +148,21 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     }
 
     private void getSubjectTypes(final ResourceResolver resolver, final Map<String, Map<Integer, String>> csvData,
-        final List<String> columns)
+        final List<String> columns, final List<String> rawColumns)
     {
         final Iterator<Resource> subjectTypes = resolver.findResources(
             "SELECT st.* FROM [cards:SubjectType] AS st ORDER BY st.[cards:defaultOrder] ASC", Query.JCR_SQL2);
         while (subjectTypes.hasNext()) {
-            final ValueMap subjectTypeProperties = subjectTypes.next().getValueMap();
+            final Resource subjectType = subjectTypes.next();
+            final ValueMap subjectTypeProperties = subjectType.getValueMap();
             columns.add(subjectTypeProperties.get("label", String.class).concat(" ID"));
+            rawColumns.add(subjectType.getPath());
             csvData.put(subjectTypeProperties.get(UUID_PROP, String.class), new HashMap<>());
         }
     }
 
     private void getSubjectTypes(final JsonArray subjectTypesArray, final Map<String, Map<Integer, String>> csvData,
-        final List<String> columns)
+        final List<String> columns, final List<String> rawColumns)
     {
         final List<JsonObject> subjectTypes = new ArrayList<>();
         subjectTypesArray.stream().map(JsonValue::asJsonObject)
@@ -159,6 +170,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         subjectTypes.sort((t1, t2) -> t1.getInt("cards:defaultOrder") - t2.getInt("cards:defaultOrder"));
         subjectTypes.forEach(subjectType -> {
             columns.add(subjectType.getString("label").concat(" ID"));
+            rawColumns.add(subjectType.getString("@path"));
             csvData.put(subjectType.getString(UUID_PROP), new HashMap<>());
         });
     }
@@ -175,13 +187,13 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
 
     private void processSectionToHeaderRow(final JsonObject questionnaire,
         final Map<String, Map<Integer, String>> csvData,
-        final List<String> columns)
+        final List<String> columns, final List<String> rawColumns)
     {
         questionnaire.values().stream()
             .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
             .map(JsonValue::asJsonObject)
             .filter(value -> value.containsKey(PRIMARY_TYPE_PROP))
-            .forEach(value -> processHeaderElement(value, csvData, columns));
+            .forEach(value -> processHeaderElement(value, csvData, columns, rawColumns));
     }
 
     /**
@@ -193,13 +205,14 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
      * @param columns a list of column headers
      */
     private void processHeaderElement(final JsonObject nodeJson, final Map<String, Map<Integer, String>> csvData,
-        final List<String> columns)
+        final List<String> columns, final List<String> rawColumns)
     {
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_PROP);
         if ("cards:Section".equals(nodeType)) {
-            processSectionToHeaderRow(nodeJson, csvData, columns);
+            processSectionToHeaderRow(nodeJson, csvData, columns, rawColumns);
         } else if ("cards:Question".equals(nodeType)) {
             String label = nodeJson.getString("@name");
+            rawColumns.add(label);
             if (nodeJson.containsKey("text")) {
                 label = nodeJson.getString("text");
             }
@@ -381,21 +394,5 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         } else {
             return value.toString();
         }
-    }
-
-    /**
-     * Retrieves the display mode specified for a question or section, if any.
-     *
-     * @param elementJson a JSON serialization of a question or section
-     * @return the display mode as String, e.g. hidden, default, header, footer, summary.
-     */
-    private String getDisplayMode(final JsonObject elementJson)
-    {
-        try {
-            return (elementJson.getString("displayMode"));
-        } catch (JsonException | NullPointerException ex) {
-            // Not there, return
-        }
-        return null;
     }
 }

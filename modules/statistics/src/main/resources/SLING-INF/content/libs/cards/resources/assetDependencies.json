@@ -1,0 +1,4 @@
+{
+  "cards-statistics.AdminStatistics.js": ["asset:cards-dataentry.Forms.js", "asset:cards-dataentry.Questionnaires.js"],
+  "cards-statistics.UserStatistics.js": ["asset:cards-login.loginDialogue.js"]
+}

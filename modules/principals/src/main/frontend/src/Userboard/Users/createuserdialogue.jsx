@@ -17,7 +17,7 @@
 
 import React from "react";
 import withStyles from '@mui/styles/withStyles';
-import { Grid, Dialog, DialogContent, Typography } from "@mui/material";
+import { Grid, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
 
 import SignUpForm from "../../login/signUpForm.js";
@@ -44,7 +44,7 @@ class CreateUserDialogue extends React.Component {
                 open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
-                <Typography component="h2" variant="h5" className={classes.dialogTitle}>Create New User</Typography>
+                <DialogTitle>Register a new user</DialogTitle>
                 <DialogContent>
                   <Grid container>
                     <SignUpForm loginOnSuccess={false} handleSuccess={() => this.handleCreateUser()} handleExit={() => this.props.handleClose()}/>

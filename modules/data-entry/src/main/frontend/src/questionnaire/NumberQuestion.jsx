@@ -28,7 +28,7 @@ import {
 import makeStyles from '@mui/styles/makeStyles';
 import withStyles from '@mui/styles/withStyles';
 
-import NumberFormat from 'react-number-format';
+import { NumericFormat } from 'react-number-format';
 
 import PropTypes from "prop-types";
 
@@ -337,7 +337,7 @@ function NumberQuestion(props) {
         <Typography
           component="p"
           color="error"
-          className={classes.answerInstructions}
+          className="cards-answerInstructions"
           variant="caption"
         >
           { errorText }
@@ -347,7 +347,7 @@ function NumberQuestion(props) {
         <Typography
           component="p"
           color={minMaxError ? 'error' : 'textSecondary'}
-          className={classes.answerInstructions}
+          className="cards-answerInstructions"
           variant="caption"
         >
           { minMaxMessage }
@@ -364,7 +364,7 @@ function NumberQuestion(props) {
           <Typography
             component="p"
             color="error"
-            className={classes.answerInstructions}
+            className="cards-answerInstructions"
             variant="caption"
           >
           { rangeErrorMessage }
@@ -460,7 +460,7 @@ export const NumberFormatCustom = forwardRef(function NumberFormatCustom(
   const { inputRef, onChange, ...other } = props;
 
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={ref}
       onValueChange={values => {
@@ -475,8 +475,7 @@ export const NumberFormatCustom = forwardRef(function NumberFormatCustom(
 });
 
 NumberFormatCustom.propTypes = {
-  ref: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired
 };
 
 NumberQuestion.propTypes = {

@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
-		<value>6</value>
+		<value>0</value>
 		<type>Long</type>
 	</property>
 	<property>

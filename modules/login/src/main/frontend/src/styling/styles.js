@@ -36,9 +36,6 @@ const styles = theme => ({
     marginTop: theme.spacing(14),
     marginBottom: theme.spacing(2),
   },
-  logo: {
-    maxWidth: "200px",
-  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
@@ -67,18 +64,6 @@ const styles = theme => ({
     float: 'right',
     marginLeft: theme.spacing(2),
     marginBottom: theme.spacing(2)
-  },
-  dialogTitle: {
-    padding: theme.spacing(2,0,2,3)
-  },
-  errorDialogTitle: {
-    marginRight: theme.spacing(5)
-  },
-  errorCloseButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500]
   },
 });
 

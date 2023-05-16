@@ -45,6 +45,9 @@ const useStyles = makeStyles(theme => ({
       borderLeft: "0 none",
       color: "inherit",
       fontStyle: "italic",
+      "& a" : {
+        wordBreak: "break-all",
+      },
     }
   },
   actionErrorMessage: {
@@ -123,12 +126,14 @@ function ToUDialog(props) {
       .catch( err => setError("Loading the Terms of Use failed, please try again later") );
   }, []);
 
+  useEffect(() => {
+    if (tou && (!tou.acceptanceRequired || touAcceptedVersion && tou.version == touAcceptedVersion) ) {
+      onCleared && onCleared();
+    }
+  }, [tou?.acceptanceRequired, tou?.version, touAcceptedVersion]);
+
   if ((!tou || actionRequired && !touAcceptedVersion) && !error) {
     return null;
-  }
-
-  if (tou && (!tou.acceptanceRequired || touAcceptedVersion && tou.version == touAcceptedVersion) ) {
-    onCleared && onCleared();
   }
 
   // When the patient user accepts the terms of use, save their preference and hide the ToU dialog

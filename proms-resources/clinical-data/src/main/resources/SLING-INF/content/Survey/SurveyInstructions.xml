@@ -25,11 +25,11 @@
 
 ### Welcome to APP_NAME
 
-APP_NAME is designed to ask you the most important questions about your health and well being. Your responses will remain confidential and will help your provider determine how we can best help you.
+APP_NAME is designed to ask you important questions about your health and well-being. Your responses will remain confidential and will help your provider determine how we can best help you.
 
-Completing the questionnaire is voluntary, so if you would rather not complete it, you do not have to.
+Completing the questionnaire is voluntary, and its completion is valuable to the provision of care.
 
-If routine service evaluations or research projects are undertaken, your responses may be analyzed in a completely anonymous way.
+The information you share can be used for quality improvement or research purposes only with permission from the UHN Quality Improvement Review Committee or Research Ethics Board. In order to protect your privacy, your name and other information that could directly identify you will be removed.
 
         </value>
         <type>String</type>
@@ -60,13 +60,18 @@ If routine service evaluations or research projects are undertaken, your respons
         <type>Boolean</type>
     </property>
     <property>
+        <name>enableReviewScreen</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <property>
         <name>surveyIntro</name>
         <value>Tell us about your symptoms prior to your appointment.</value>
         <type>String</type>
     </property>
     <property>
         <name>disclaimer</name>
-        <value>Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.</value>
+        <value>Your responses may not always be reviewed by a member of your healthcare team. To help us help you, please raise any concerns you have directly with a member of your healthcare team at your next appointment. If your symptoms are worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.</value>
         <type>String</type>
     </property>
     <property>

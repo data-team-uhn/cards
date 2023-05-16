@@ -33,7 +33,8 @@ import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 export const SURVEY_INSTRUCTIONS_PATH = "/Survey/SurveyInstructions";
 export const DEFAULT_INSTRUCTIONS = {
   noEventsMessage: "We could not find any pending surveys to fill out.",
-  noSurveysMessage: "You have no pending surveys to fill out."
+  noSurveysMessage: "You have no pending surveys to fill out.",
+  surveyDraftInfo: "If you close your browser window before finishing the survey, your answers will be automatically saved.  \nYou can return to the survey to complete and submit it by following the link you received in your invitation email."
 };
 
 const useStyles = makeStyles(theme => ({
@@ -53,7 +54,8 @@ function SurveyInstructionsConfiguration() {
   const labels = {
     welcomeMessage: ["welcomeMessage"],
     eventSelectionScreen: ["noEventsMessage", "eventSelectionMessage"],
-    startScreen: [ "enableStartScreen", "eventLabel", "noSurveysMessage", "surveyIntro" ],
+    startScreen: [ "enableStartScreen", "eventLabel", "noSurveysMessage", "surveyIntro", "surveyDraftInfo" ],
+    reviewScreen: ["enableReviewScreen"],
     summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
   };
 
@@ -65,14 +67,11 @@ function SurveyInstructionsConfiguration() {
 
   let getUnsetValue = (key) => (key?.startsWith("enable") ? false : "");
 
-  useEffect(() => {
-    setHasChanges(true);
-  }, [surveyInstructions]);
-
   return (
       <AdminConfigScreen
         title="Patient Portal Survey Instructions"
         configPath={SURVEY_INSTRUCTIONS_PATH}
+        configTemplate={Object.values(labels).flat().reduce((t, k) => ({...t, [k]: getUnsetValue(k)}), {})}
         onConfigFetched={setSurveyInstructions}
         hasChanges={hasChanges}
         buildConfigData={buildConfigData}
@@ -88,14 +87,20 @@ function SurveyInstructionsConfiguration() {
                   { key == "welcomeMessage" ?
                       <WelcomeMessageConfiguration
                         welcomeMessage={surveyInstructions?.[key]}
-                        onChange={(text) => { setSurveyInstructions({...surveyInstructions, [key]: text}); }}
+                        onChange={(text) => {
+                          setSurveyInstructions({...surveyInstructions, [key]: text});
+                          setHasChanges(true);
+                        }}
                       />
                     :
                     key.startsWith("enable") ?
                       <FormControlLabel control={
                         <Checkbox
                           checked={!!(surveyInstructions?.[key])}
-                          onChange={event => setSurveyInstructions({...surveyInstructions, [key]: !!event.target.checked})}
+                          onChange={event => {
+                            setSurveyInstructions({...surveyInstructions, [key]: !!event.target.checked});
+                            setHasChanges(true);
+                          }}
                         />}
                         label={camelCaseToWords(key)}
                       />
@@ -111,7 +116,10 @@ function SurveyInstructionsConfiguration() {
                         label={camelCaseToWords(key)}
                         value={surveyInstructions?.[key] || ""}
                         placeholder={DEFAULT_INSTRUCTIONS[key] || ""}
-                        onChange={(event) => { setSurveyInstructions({...surveyInstructions, [key]: event.target.value}); }}
+                        onChange={(event) => {
+                           setSurveyInstructions({...surveyInstructions, [key]: event.target.value});
+                           setHasChanges(true);
+                        }}
                         fullWidth
                       />
                   }

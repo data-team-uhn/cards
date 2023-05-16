@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import { Paper, Grid, Button, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Alert from '@mui/material/Alert';
@@ -25,6 +25,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
+import Logo from "../components/Logo.jsx";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -37,9 +38,9 @@ const useStyles = makeStyles(theme => ({
       textAlign: "center",
     },
   },
-  logo: {
-    maxWidth: "240px",
-  },
+  submit : {
+    marginTop: theme.spacing(5),
+  }
 }));
 
 function Unsubscribe (props) {
@@ -48,6 +49,16 @@ function Unsubscribe (props) {
   const [ error, setError ] = useState();
   const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
   const classes = useStyles();
+
+  useEffect(() => {
+    fetch("/Survey.unsubscribe", {method: 'GET'})
+      .then( (response) => response.ok ? response.json() : Promise.reject(response) )
+      .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
+      .catch((response) => {
+        let errMsg = "Cannot unsubscribe: ";
+        setError(errMsg + (response.status ? response.statusText : response));
+      });
+  }, []);
 
   let unsubscribe = (value) => {
     let request_data = new FormData();
@@ -72,15 +83,7 @@ function Unsubscribe (props) {
     );
   }
 
-  useEffect(() => {
-    fetch("/Survey.unsubscribe", {method: 'GET'})
-      .then( (response) => response.ok ? response.json() : Promise.reject(response) )
-      .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
-      .catch((response) => {
-        let errMsg = "Cannot unsubscribe: ";
-        setError(errMsg + (response.status ? response.statusText : response));
-      });
-  }, []);
+  let appName = document.querySelector('meta[name="title"]')?.content;
 
   return (
     <Paper className={classes.paper} elevation={0}>
@@ -91,9 +94,7 @@ function Unsubscribe (props) {
           alignItems="center"
           alignContent="center"
         >
-          <Grid item>
-            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
-          </Grid>
+          <Logo component={Grid} item xs={12} />
           <Grid item>
             { error && <Alert severity="error">
               <AlertTitle>An error occurred</AlertTitle>
@@ -102,7 +103,7 @@ function Unsubscribe (props) {
             }
             { alreadyUnsubscribed ?
               <>
-                <Alert icon={false} severity="info">You are already unsubscribed.</Alert>
+                <Alert icon={false} severity="info">{ `You are already unsubscribed from ${appName}.` }</Alert>
                 <Button
                   type="submit"
                   variant="contained"
@@ -114,20 +115,32 @@ function Unsubscribe (props) {
                 </Button>
               </>
               : confirmed !== null ?
-              <Alert icon={false} severity="info">
-                You have been {confirmed ? "unsubscribed" : "resubscribed"}.
-              </Alert>
+              <>
+                <Alert icon={false} severity="info">
+                  You have been {confirmed ? "unsubscribed from" : "resubscribed to"} {appName}.
+                </Alert>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={() => unsubscribe(1-confirmed)}
+                  >
+                  {confirmed ? "Resubscribe" : "Unsubscribe"}
+                </Button>
+              </>
               :
-              <><Typography>This will unsubscribe you from receiving all emails via DATA-PRO. If you wish to unsubscribe from all UHN communication, please contact your care team.</Typography>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={() => unsubscribe(1)}
-                >
-                Unsubscribe
-              </Button>
+              <>
+                <Typography>{`This will unsubscribe you from all ${appName} emails.`}</Typography>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={() => unsubscribe(1)}
+                  >
+                  Unsubscribe
+                </Button>
               </>
             }
           </Grid>
@@ -136,13 +149,13 @@ function Unsubscribe (props) {
   );
 }
 
-ReactDOM.render(
+const root = createRoot(document.querySelector('#patient-portal-unsubscribe-container'));
+root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <Unsubscribe />
     </ThemeProvider>
-  </StyledEngineProvider>,
-  document.querySelector('#patient-portal-unsubscribe-container')
+  </StyledEngineProvider>
 );
 
 export default Unsubscribe;

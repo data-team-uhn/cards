@@ -72,13 +72,10 @@ import io.uhndata.cards.spi.SearchUtils;
  * @version $Id$
  */
 @Component(service = Servlet.class,
-
     property = {
-    "service.description=Data Import Servlet",
-    "service.vendor=DATA@UHN",
-    }
-
-)
+        "service.description=Data Import Servlet",
+        "service.vendor=DATA@UHN",
+    })
 @SlingServletResourceTypes(resourceTypes = { "cards/FormsHomepage" }, methods = { "POST" })
 @SlingServletName(servletName = "Data Import Servlet")
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")

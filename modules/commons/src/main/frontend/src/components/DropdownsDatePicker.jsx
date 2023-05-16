@@ -22,8 +22,9 @@
 //SOFTWARE.
 //
 
-import React, { useState } from "react";
-import { Select, MenuItem } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Autocomplete, Stack, TextField } from "@mui/material";
+import { createFilterOptions } from "@mui/material/Autocomplete";
 import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from "prop-types";
 import { Info } from "luxon";
@@ -35,7 +36,7 @@ const DropdownDate = {
 }
 
 const getDaysInMonth = (year, month) => {
-  if (month < 0 || year < 0) return 31;
+  if (month == null || year == null) return 31;
   year = +(year);
   month = +(month) + 1;
   return new Date(year, month, 0).getDate();
@@ -47,30 +48,27 @@ const useStyles = makeStyles(theme => ({
     "& > *:not(:first-child)" : {
       paddingLeft: theme.spacing(2),
     },
-    "& .MuiSelect-root" : {
+    "& .MuiAutocomplete-root" : {
+      display: "inline-block",
       paddingLeft: theme.spacing(2),
       marginLeft: theme.spacing(-2),
     }
   },
   stretch: {
-    "& > *" : {
-      minWidth: "25%",
+    "& > .dropdowndate-year" : {
+      minWidth: "30%",
     },
     "& > .dropdowndate-month" : {
       minWidth: "50%",
-    }
+    },
+    "& > .dropdowndate-day" : {
+      minWidth: "20%",
+    },
   },
   withShortMonth : {
     "& > *" : {
       minWidth: "33.33% !important"
     }
-  },
-  emptyOption : {
-    opacity: "50%",
-    padding: theme.spacing(2),
-  },
-  placeholder : {
-    opacity: "50%"
   },
 }));
 
@@ -108,66 +106,59 @@ function DropdownsDatePicker(props) {
   const endMonth = eDate.getMonth();
   const endDay = eDate.getDate();
 
-  const [ selectedYear, setSelectedYear ] = useState( selDate ? selDate.getFullYear() : -1);
-  const [ selectedMonth, setSelectedMonth ] = useState( selDate ? selDate.getMonth() : -1);
-  const [ selectedDay, setSelectedDay ] = useState( selDate ? selDate.getDate() : -1);
+  const [ years, setYears ] = useState([]);
+  const [ months, setMonths ] = useState([]);
+  const [ days, setDays ] = useState([]);
 
+  const [ selectedYear, setSelectedYear ] = useState(selDate?.getFullYear() ?? null);
+  const [ selectedMonth, setSelectedMonth ] = useState(selDate?.getMonth()) ?? null;
+  const [ selectedDay, setSelectedDay ] = useState(selDate?.getDate() ?? null);
 
-  let generateYearOptions = () => {
-    let yearOptions = [];
-    yearOptions.push(<MenuItem key={-1} value="-1" className={classes.emptyOption}>Year</MenuItem>);
+  const [ focusedDateComponent, setFocusedDateComponent ] = useState();
 
-    let years = []
-    for (let i = startYear; i <= endYear; i++) {
-      years.push( <MenuItem key={i} value={i}>{i}</MenuItem> );
-    }
-    yearReverse && years.reverse();
+  let getStringArray = (from, to) => Array.from({length: (to - from + 1)}, (_, i) => `${i + from}`)
 
-    return yearOptions.concat(years);
-  }
+  // Generate the year options in the beginning
+  useEffect(() => {
+    let yearOptions = getStringArray(startYear, endYear);
+    yearReverse && yearOptions.reverse();
+    setYears(yearOptions);
+  }, []);
 
-  let generateMonthOptions = () => {
+  // Generate month options whenever the selected year changes
+  useEffect(() => {
     let monthOptions = [];
-    monthOptions.push( <MenuItem key={-1} value="-1" className={classes.emptyOption}>Month</MenuItem> );
-
-    let start = selectedYear === startYear ? startMonth : 0;
-    let end = selectedYear === endYear ? endMonth : 11;
-
+    let start = selectedYear == startYear ? startMonth : 0;
+    let end = selectedYear == endYear ? endMonth : 11;
     for (let i = start; i <= end; i++) {
-      monthOptions.push(
-        <MenuItem key={i} value={i}>
-          {monthShort ? Info.months('short')[i] : Info.months()[i]}
-        </MenuItem>
-      );
+      monthOptions.push({ value: i, label: (monthShort ? Info.months('short')[i] : Info.months()[i])});
     }
+    setMonths(monthOptions);
+  }, [selectedYear]);
 
-    return monthOptions;
-  }
-
-  let generateDayOptions = () => {
-    let dayOptions = [];
-    dayOptions.push(<MenuItem key={-1} value="-1" className={classes.emptyOption}>Day</MenuItem>);
-
-    let start = (selectedYear === startYear && selectedMonth === startMonth) ? startDay : 1;
+  // Generate day options whenever selected year or month changes
+  useEffect(() => {
+    let start = (selectedYear == startYear && selectedMonth == startMonth) ? startDay : 1;
     const monthDays = getDaysInMonth(selectedYear, selectedMonth);
-    let end = (selectedYear === endYear && selectedMonth === endMonth) ? endDay : monthDays;
+    let end = (selectedYear == endYear && selectedMonth == endMonth) ? endDay : monthDays;
+    setDays(getStringArray(start, end));
+  }, [selectedYear, selectedMonth]);
 
-    for (let i = start; i <= end; i++) {
-      dayOptions.push(<MenuItem key={i} value={i}>{i}</MenuItem>);
-    }
-
-    return dayOptions;
-  }
+  // Change handlers
 
   let handleDateChange = (type, value) => {
+    value !== null && focusNextDateComponent(type);
+
     let dateObj = {
       [DropdownDate.year] : (type === DropdownDate.year) ? value : selectedYear,
       [DropdownDate.month] : (type === DropdownDate.month) ? value : selectedMonth,
       [DropdownDate.day] : (type === DropdownDate.day) ? value : selectedDay
     };
 
-    if (dateObj[DropdownDate.year] !== -1 && dateObj[DropdownDate.month] !== -1 && dateObj[DropdownDate.day] !== -1) {
-      let date = new Date(dateObj[DropdownDate.year], dateObj[DropdownDate.month], dateObj[DropdownDate.day]);
+    let date = null;
+
+    if (dateObj[DropdownDate.year] !== null && dateObj[DropdownDate.month] !== null && dateObj[DropdownDate.day] !== null) {
+      date = new Date(dateObj[DropdownDate.year], dateObj[DropdownDate.month], dateObj[DropdownDate.day]);
 
       if (formatDate) {
         dateObj[DropdownDate.month] = dateObj[DropdownDate.month] + 1;
@@ -175,102 +166,108 @@ function DropdownsDatePicker(props) {
         if (dateObj[DropdownDate.day] < 10) dateObj[DropdownDate.day] = '0' + dateObj[DropdownDate.day];
         date = order.map(part => { return dateObj[part] }).join('-');
       }
-
-      onDateChange(date);
     }
+
+    onDateChange?.(date);
   }
 
-  let handleYearChange = (event) => {
-    const year = parseInt(event.target.value);
+  let handleYearChange = (event, value) => {
+    const year = value ?? null;
     setSelectedYear(year);
-    const monthDays = getDaysInMonth(year, selectedMonth);
-    if (selectedDay > monthDays) {
-      setSelectedDay(-1);
-    } else {
-      onDateChange && handleDateChange(DropdownDate.year, year);
-    }
+    handleDateChange(DropdownDate.year, year);
   }
 
-  let handleMonthChange = (event) => {
-    const month = parseInt(event.target.value);
+  let handleMonthChange = (event, value) => {
+    const month = value?.value ?? null;
     setSelectedMonth(month);
-    const monthDays = getDaysInMonth(selectedYear, month);
-    if (selectedDay > monthDays) {
-      setSelectedDay(-1);
-    } else {
-      onDateChange && handleDateChange(DropdownDate.month, month);
-    }
+    handleDateChange(DropdownDate.month, month);
   }
 
-  let handleDayChange = (event) => {
-    const day = parseInt(event.target.value);
+  let handleDayChange = (event, value) => {
+    const day = value ?? null;
     setSelectedDay(day);
-    onDateChange && handleDateChange(DropdownDate.day, day);
+    handleDateChange(DropdownDate.day, day);
   }
+
+  // Clear the Day dropdown value if it is out of range based on the current year/month selection
+  useEffect(() => {
+    if (
+      (selectedYear == startYear && selectedMonth == startMonth && selectedDay < startDay) ||
+      (selectedYear == endYear && selectedMonth == endMonth && selectedDay > endDay) ||
+      (selectedDay > getDaysInMonth(selectedYear, selectedMonth))
+    ) {
+      setSelectedDay(null);
+    }
+  }, [selectedYear, selectedMonth, selectedDay]);
+
+  let hasAutoFocus = (dateComponent) => autoFocus && order?.indexOf(dateComponent) == 0;
+
+  let focusNextDateComponent = (dateComponent) => setFocusedDateComponent(order[order.indexOf(dateComponent) + 1]);
+
+  let aParams = {
+    autoComplete: true,
+    autoHighlight: true,
+    autoSelect: true,
+    disabled: disabled
+  };
+
+  const filterOptions = createFilterOptions({
+    matchFrom: 'start',
+  })
+
+  let renderInput = (params, dateComponent) =>
+    <TextField
+      {...params}
+      variant="standard"
+      placeholder={dateComponent.charAt(0).toUpperCase() + dateComponent.slice(1)}
+      autoFocus={hasAutoFocus(dateComponent)}
+      onFocus={() => setFocusedDateComponent()}
+      inputRef={focusedDateComponent == dateComponent ? (input) => input?.focus() : null}
+    />
 
   let renderYear = () => {
     return (
-      <Select
-        variant="standard"
+      <Autocomplete
         key="year"
+        {...aParams}
+        options={years}
         onChange={handleYearChange}
         value={selectedYear}
-        disabled={disabled}
         className="dropdowndate-year"
-        autoFocus={autoFocus && order.indexOf("year") == 0}
-        renderValue={(selected) => {
-            if (selected < 0 ) {
-              return <div className={classes.placeholder}>Year</div>;
-            }
-            return selected;
-        }}
-      >
-        {generateYearOptions()}
-      </Select>
+        renderInput={(params) => renderInput(params, DropdownDate.year)}
+      />
     )
   }
 
   let renderMonth = () => {
     return (
-      <Select
-        variant="standard"
+      <Autocomplete
         key="month"
+        openOnFocus
+        {...aParams}
+        options={months}
+        filterOptions={filterOptions}
         onChange={handleMonthChange}
-        value={selectedMonth}
-        disabled={disabled}
+        value={months.find(option => option.value == selectedMonth) ?? null}
         className="dropdowndate-month"
-        autoFocus={autoFocus && order.indexOf("month") == 0}
-        renderValue={(selected) => {
-            if (selected < 0 ) {
-              return <div className={classes.placeholder}>Month</div>;
-            }
-            return monthShort ? Info.months('short')[selected] : Info.months()[selected];
-        }}
-      >
-        {generateMonthOptions()}
-      </Select>
+        renderInput={(params) => renderInput(params, DropdownDate.month)}
+      />
     )
   }
 
   let renderDay = () => {
     return (
-      <Select
-        variant="standard"
+      <Autocomplete
         key="day"
-        value={selectedDay}
+        openOnFocus
+        {...aParams}
+        options={days}
+        filterOptions={filterOptions}
         onChange={handleDayChange}
-        disabled={disabled}
+        value={selectedDay}
         className="dropdowndate-day"
-        autoFocus={autoFocus && order.indexOf("day") == 0}
-        renderValue={(selected) => {
-            if (selected < 0 ) {
-              return <div className={classes.placeholder}>Day</div>;
-            }
-            return selected;
-        }}
-      >
-        {generateDayOptions()}
-      </Select>
+        renderInput={(params) => renderInput(params, DropdownDate.day)}
+      />
     )
   }
 
@@ -289,9 +286,9 @@ function DropdownsDatePicker(props) {
   }
 
   return (
-    <div id="dropdown-date" className={containerClasses.join(' ')}>
+    <Stack direction="row" id="dropdown-date" className={containerClasses.join(' ')}>
       { order.map(part => { return renderParts[part]() }) }
-    </div>
+    </Stack>
   );
 }
 

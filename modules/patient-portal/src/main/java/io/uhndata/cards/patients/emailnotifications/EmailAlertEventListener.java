@@ -16,55 +16,82 @@
  */
 package io.uhndata.cards.patients.emailnotifications;
 
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Map;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.emailnotifications.EmailTemplate;
 import io.uhndata.cards.emailnotifications.EmailUtils;
+import io.uhndata.cards.forms.api.FormUtils;
 import jakarta.mail.MessagingException;
 
 public final class EmailAlertEventListener implements EventListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailAlertEventListener.class);
 
-    private ResourceResolver resolver;
+    private final ResourceResolverFactory rrf;
+
+    private FormUtils formUtils;
+
     private MailService mailService;
+
     private String alertName;
+
     private String submittedFlagUUID;
+
     private String linkingSubjectType;
-    private String alertingQuestionUUID;
-    private String alertingQuestionDataType;
-    private String triggerExpression;
+
+    private String alertingQuestionPath;
+
+    private String triggerOperator;
+
+    private String triggerOperand;
+
     private String alertDescription;
+
     private String clinicIdLink;
+
     private String clinicsJcrPath;
+
     private String clinicEmailProperty;
 
-    public EmailAlertEventListener(ResourceResolver resolver,
+    private String emailFromAddress;
+
+    private EmailTemplate template;
+
+    public EmailAlertEventListener(ResourceResolverFactory rrf, FormUtils formUtils,
         MailService mailService, Map<String, String> listenerParams)
     {
-        this.resolver = resolver;
+        this.rrf = rrf;
+        this.formUtils = formUtils;
         this.mailService = mailService;
         this.alertName = listenerParams.get("alertName");
         this.submittedFlagUUID = listenerParams.get("submittedFlagUUID");
         this.linkingSubjectType = listenerParams.get("linkingSubjectType");
-        this.alertingQuestionUUID = listenerParams.get("alertingQuestionUUID");
-        this.alertingQuestionDataType = listenerParams.get("alertingQuestionDataType");
-        this.triggerExpression = listenerParams.get("triggerExpression");
+        this.alertingQuestionPath = listenerParams.get("alertingQuestionPath");
+        this.triggerOperator = listenerParams.get("triggerOperator");
+        this.triggerOperand = listenerParams.get("triggerOperand");
         this.alertDescription = listenerParams.get("alertDescription");
         this.clinicIdLink = listenerParams.get("clinicIdLink");
         this.clinicsJcrPath = listenerParams.get("clinicsJcrPath");
         this.clinicEmailProperty = listenerParams.get("clinicEmailProperty");
+        this.emailFromAddress = listenerParams.get("emailFromAddress");
+
+        this.template = EmailTemplate.builder().withSubject("DATAPRO Alert: " + this.alertName)
+            .withSender(this.emailFromAddress, this.alertName).build();
     }
 
     private String getModifedValueNodePath(Event thisEvent) throws RepositoryException
@@ -80,23 +107,19 @@ public final class EmailAlertEventListener implements EventListener
         return modifiedValueNodePath;
     }
 
-    private boolean isSubmissionEvent(Resource modifiedValueNode, String submittedFlagUUID)
+    private boolean isSubmissionEvent(final Node modifiedValueNode)
     {
-        String modifiedValueNodeQuestion = modifiedValueNode.getValueMap().get("question", "");
-        if (!submittedFlagUUID.equals(modifiedValueNodeQuestion)) {
-            return false;
-        }
-        long modifiedValue = modifiedValueNode.getValueMap().get("value", 0);
-        if (modifiedValue != 1) {
-            return false;
-        }
-        return true;
+        return this.formUtils.isAnswer(modifiedValueNode)
+            && this.submittedFlagUUID.equals(this.formUtils.getQuestionIdentifier(modifiedValueNode))
+            && ((Long) this.formUtils.getValue(modifiedValueNode)) == 1L;
     }
 
     @Override
     public void onEvent(EventIterator events)
     {
-        try {
+        try (ResourceResolver resolver =
+            this.rrf.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "EmailNotifications"))) {
+            final Session session = resolver.adaptTo(Session.class);
             while (events.hasNext()) {
                 Event thisEvent = events.nextEvent();
                 String modifiedValueNodePath = getModifedValueNodePath(thisEvent);
@@ -104,36 +127,29 @@ public final class EmailAlertEventListener implements EventListener
                     continue;
                 }
 
-                Resource modifiedValueNode = this.resolver.getResource(modifiedValueNodePath);
+                Node modifiedValueNode = session.getNode(modifiedValueNodePath);
 
                 // Check that this event is a "surveys submission" event
-                if (!isSubmissionEvent(modifiedValueNode, this.submittedFlagUUID)) {
+                if (!isSubmissionEvent(modifiedValueNode)) {
                     continue;
                 }
 
                 // Get the cards:Form node that this modified value property descends from
-                Resource modifiedFormNode = AppointmentUtils.getFormForAnswer(this.resolver, modifiedValueNode);
-                if (modifiedFormNode == null) {
-                    continue;
-                }
-
+                Node modifiedFormNode = this.formUtils.getForm(modifiedValueNode);
                 /*
-                 * Get the subject of given type (eg. /SubjectTypes/Patient, /SubjectTypes/Patient/Visit)
-                 * that this Form is related to.
+                 * Get the subject of given type (eg. /SubjectTypes/Patient, /SubjectTypes/Patient/Visit) that this Form
+                 * is related to.
                  */
-                Resource formRelatedSubject = AppointmentUtils.getRelatedSubjectOfType(
-                    this.resolver, modifiedFormNode, this.linkingSubjectType);
+                Node formRelatedSubject = this.formUtils.getSubject(modifiedFormNode, this.linkingSubjectType);
                 if (formRelatedSubject == null) {
                     continue;
                 }
-                String formRelatedSubjectUUID = formRelatedSubject.getValueMap().get("jcr:uuid", "");
 
                 /*
-                 * This subject is of type Visit, therefore get the value of
-                 * /Questionnaires/Visit information/surveys associated with
-                 * this visit.
+                 * This subject is of type Visit, therefore get the value of /Questionnaires/Visit information/surveys
+                 * associated with this visit.
                  */
-                String clinicAlertEmail = AppointmentUtils.getValidClinicEmail(this.resolver,
+                String clinicAlertEmail = AppointmentUtils.getValidClinicEmail(this.formUtils,
                     formRelatedSubject, this.clinicIdLink, this.clinicsJcrPath, this.clinicEmailProperty);
                 if (clinicAlertEmail == null) {
                     continue;
@@ -143,21 +159,18 @@ public final class EmailAlertEventListener implements EventListener
                  * Find all the answer nodes that match the trigger filter criteria and are linked with the submit
                  * button whose setting caused this event to occur.
                  */
-                Iterator<Resource> results;
-                results = this.resolver.findResources(
-                    "SELECT a.* FROM [" + this.alertingQuestionDataType + "] as a INNER JOIN [cards:Form] AS f ON"
-                    + " isdescendantnode(a, f) WHERE a.'question'='" + this.alertingQuestionUUID + "'"
-                    + " AND f.'relatedSubjects'='" + formRelatedSubjectUUID + "'"
-                    + " AND a.'value'" + this.triggerExpression,
-                    "JCR-SQL2");
+                Collection<Node> answers = this.formUtils.findAllSubjectRelatedAnswers(formRelatedSubject,
+                    session.getNode(this.alertingQuestionPath),
+                    EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS, FormUtils.SearchType.DESCENDANTS_FORMS));
 
-                while (results.hasNext()) {
-                    Resource triggeringAnswer = results.next();
-                    Resource triggeringForm = AppointmentUtils.getFormForAnswer(this.resolver, triggeringAnswer);
-                    Resource triggeringSubject = AppointmentUtils.getRelatedSubjectOfType(
-                        this.resolver, triggeringForm, "/SubjectTypes/Patient");
+                for (Node answer : answers) {
+                    if (!answerMatchesExpression(answer)) {
+                        continue;
+                    }
+                    Node triggeringForm = this.formUtils.getForm(answer);
+                    Node triggeringSubject = this.formUtils.getSubject(triggeringForm, "/SubjectTypes/Patient");
                     String triggeringPatientFullName = AppointmentUtils.getPatientFullName(
-                        this.resolver, triggeringSubject);
+                        this.formUtils, triggeringSubject);
 
                     // Generate the email alert for this event
                     String emailBody = "Alert " + this.alertName + " has been triggered for patient "
@@ -167,8 +180,9 @@ public final class EmailAlertEventListener implements EventListener
 
                     // Send this email
                     try {
-                        EmailUtils.sendNotificationEmail(this.mailService,
-                            clinicAlertEmail, clinicAlertEmail, "DATAPRO Alert: " + this.alertName, emailBody);
+                        EmailUtils.sendTextEmail(this.template.getEmailBuilder().withBody(null, emailBody)
+                            .withRecipient(clinicAlertEmail, clinicAlertEmail).build(),
+                            this.mailService);
                     } catch (MessagingException e) {
                         LOGGER.warn("Failed to send Alert Email: {}", e.getMessage());
                     }
@@ -176,6 +190,37 @@ public final class EmailAlertEventListener implements EventListener
             }
         } catch (Exception e) {
             LOGGER.warn("Error happened in EmailAlertEventListener: {}", e.getMessage());
+        }
+    }
+
+    @SuppressWarnings({ "checkstyle:CyclomaticComplexity", "checkstyle:ReturnCount" })
+    private boolean answerMatchesExpression(final Node answer)
+    {
+        try {
+            Object value = this.formUtils.getValue(answer);
+            if (value == null) {
+                return "is empty".equals(this.triggerOperator);
+            }
+            switch (this.triggerOperator) {
+                case "=":
+                    return this.triggerOperand.equals(String.valueOf(value));
+                case ">":
+                    return ((Number) value).doubleValue() > Double.parseDouble(this.triggerOperand);
+                case ">=":
+                    return ((Number) value).doubleValue() >= Double.parseDouble(this.triggerOperand);
+                case "<":
+                    return ((Number) value).doubleValue() < Double.parseDouble(this.triggerOperand);
+                case "<=":
+                    return ((Number) value).doubleValue() <= Double.parseDouble(this.triggerOperand);
+                case "is not empty":
+                    return value != null && !String.valueOf(value).isEmpty();
+                case "is empty":
+                    return value == null || String.valueOf(value).isEmpty();
+                default:
+                    return false;
+            }
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 }

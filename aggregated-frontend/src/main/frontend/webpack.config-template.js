@@ -17,19 +17,48 @@
  * under the License.
  */
 
+const RuntimeGlobals = require("webpack/lib/RuntimeGlobals");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
+/*
+ * Webpack 5.25.0 changed how the code is generated to no longer return the module by default when eval-ing it.
+ * Our dynamic UIX loading depends on this, so this is a simple library plugin that forces webpack to "return" the module.
+ */
+class ReturnModulePlugin {
+  constructor() {
+    this.pluginName = 'returnModule';
+  }
+  apply(compiler) {
+    compiler.hooks.thisCompilation.tap(this.pluginName, compilation => {
+      compilation.hooks.additionalChunkRuntimeRequirements.tap(
+        this.pluginName,
+        (chunk, set, { chunkGraph }) => {
+          set.add(RuntimeGlobals.returnExportsFromRuntime);
+        }
+      );
+      }
+    );
+  }
+}
+
 module_name = require("./package.json").name + ".";
+
+const isProduction = process.argv.find(arg => arg.startsWith("--mode"))?.substring(7) == 'production';
 
 module.exports = {
   mode: 'development',
+  devtool: 'eval-cheap-module-source-map',
+  cache: {
+    type: 'filesystem'
+  },
   entry: {
 ENTRY_CONTENT
   },
   plugins: [
+    new ReturnModulePlugin(),
     new CleanWebpackPlugin(),
     new WebpackAssetsManifest({
       output: "assets.json"
@@ -53,7 +82,7 @@ ENTRY_CONTENT
   },
   optimization: {
     usedExports: false,
-    minimize: true,
+    minimize: isProduction,
     minimizer: [
       new TerserPlugin({
         terserOptions: {

@@ -23,35 +23,30 @@ import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
+
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * A {@link EditorProvider} returning {@link LastModifiedEditor}.
  *
  * @version $Id$
  */
-@Component
+@Component(property = "service.ranking:Integer=70")
 public class LastModifiedEditorProvider implements EditorProvider
 {
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)
         throws CommitFailedException
     {
-        if (this.rrf != null) {
-            final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
-            if (myResolver != null) {
-                // Each LastModifiedEditor maintains a state, so a new instance must be returned each time
-                return new LastModifiedEditor(builder, myResolver, null);
-            }
+        final ResourceResolver myResolver = this.rrp.getThreadResourceResolver();
+        if (myResolver != null) {
+            // Each LastModifiedEditor maintains a state, so a new instance must be returned each time
+            return new LastModifiedEditor(builder, myResolver, null);
         }
         return null;
     }

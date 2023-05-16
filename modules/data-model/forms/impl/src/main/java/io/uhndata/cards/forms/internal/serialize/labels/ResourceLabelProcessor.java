@@ -31,10 +31,10 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
@@ -48,7 +48,7 @@ public class ResourceLabelProcessor extends AbstractResourceLabelProcessor imple
 {
     /** Provides access to resources. */
     @Reference
-    private ResourceResolverFactory resolverFactory;
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public int getPriority()
@@ -74,7 +74,7 @@ public class ResourceLabelProcessor extends AbstractResourceLabelProcessor imple
         try {
             // Find the property of the resource that should be used as the label
             String labelPropertyName = getLabelPropertyName(question);
-            ResourceResolver resolver = this.resolverFactory.getThreadResourceResolver();
+            ResourceResolver resolver = this.rrp.getThreadResourceResolver();
             if (resolver == null) {
                 return null;
             }

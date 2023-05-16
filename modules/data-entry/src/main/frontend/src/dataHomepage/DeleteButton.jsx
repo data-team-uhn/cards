@@ -23,10 +23,11 @@ import PropTypes from "prop-types";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { Tooltip, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import { Delete, Close } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import ErrorDialog from "../components/ErrorDialog.jsx";
 
 /**
  * A component that renders an icon to open a dialog to delete an entry.
@@ -41,6 +42,7 @@ function DeleteButton(props) {
   const [ dialogAction, setDialogAction ] = useState("");
   const [ deleteRecursive, setDeleteRecursive ] = useState(false);
   const [ entryNotFound, setEntryNotFound ] = useState(false);
+  const [ deletionInProgress, setDeletionInProgress ] = useState(false);
 
   const buttonText = label || ("Delete " + (entryType?.toLowerCase() || '')).trim();
   const defaultDialogAction = `Are you sure you want to delete ${entryType} ${entryName}?`;
@@ -128,15 +130,17 @@ function DeleteButton(props) {
     if (deleteRecursive) {
       url.searchParams.set("recursive", true);
     }
+    setDeletionInProgress(true);
     fetchWithReLogin(globalLoginDisplay, url, {
       method: 'DELETE',
       headers: {
         Accept: "application/json"
       }
     }).then((response) => {
+      setDeletionInProgress(false);
       if (response.ok)  {
-        if (onComplete) {onComplete();}
         closeDialog();
+        if (onComplete) {onComplete();}
         if (navigateBack) {goBack();}
       } else {
         handleError(response.status, response);
@@ -162,30 +166,28 @@ function DeleteButton(props) {
 
   return (
     <React.Fragment>
-      <Dialog open={errorOpen} onClose={closeError}>
-        <DialogTitle>
-          <Typography variant="h6" color="error" className={classes.dialogTitle}>Error</Typography>
-          <IconButton onClick={closeError} className={classes.closeButton} size="large">
-            <Close />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-            <Typography variant="body1">{errorMessage}</Typography>
-        </DialogContent>
-      </Dialog>
+      <ErrorDialog open={errorOpen} onClose={closeError}>
+        <Typography variant="body1">{errorMessage}</Typography>
+      </ErrorDialog>
       <Dialog open={open} onClose={closeDialog}>
         <DialogTitle>
-        <Typography variant="h6">Delete {entryLabel ? entryLabel.concat(' ') : ''}{entryName}{deleteRecursive ? " and dependent items": null }</Typography>
+          Delete {entryLabel ? entryLabel.concat(' ') : ''}{entryName}{deleteRecursive ? " and dependent items": null }
         </DialogTitle>
         <DialogContent>
             <Typography variant="body1">{dialogMessage}</Typography>
             <Typography variant="body1">{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="contained" color="error" size="small" onClick={() => handleDelete()}>
-              { deleteRecursive ? "Delete All" : "Delete" }
+            <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              onClick={() => handleDelete()}
+              disabled={deletionInProgress}
+            >
+              { deletionInProgress ? "Deleting..." : deleteRecursive ? "Delete All" : "Delete" }
             </Button>
-            <Button variant="outlined" size="small" onClick={closeDialog}>Close</Button>
         </DialogActions>
       </Dialog>
       {variant == "icon" ?

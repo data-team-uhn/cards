@@ -145,7 +145,8 @@ public class TreeGraph
     {
         if (this.isSection) {
             this.children.forEach(child -> child.tabulateData(csvData));
-        } else {
+        } else if (csvData.containsKey(this.answeredElementId)) {
+            // We first check if csvData already knows about this element to avoid adding data for unknown columns
             csvData.computeIfAbsent(this.answeredElementId, key -> new HashMap<>()).put(this.startingRow, this.data);
         }
     }

@@ -14,7 +14,22 @@
     "title" : "string",
     "description" : "markdown",
     "maxPerSubject": "long",
-    "paginate": "boolean",
+    "requireCompletion" : "boolean",
+    "hideAnswerInstructions" : "boolean",
+    "paginate": {
+      "true" : {
+        "paginationVariant" : {
+          "progress" : {},
+          "dots": {},
+          "text" : {}
+        },
+        "paginationMode" : {
+           "back_next" : {},
+           "only_next" : {}
+        }
+      },
+      "false" : {}
+    },
     "requiredSubjectTypes": {
       "type": "list",
       "primaryType": "cards:SubjectType",

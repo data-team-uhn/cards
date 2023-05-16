@@ -18,6 +18,7 @@
 #
 
 import json
+import re
 import sys
 import shutil
 import os
@@ -26,7 +27,7 @@ from os import path
 
 package_name = 'cards-aggregated-frontend'
 
-def merge_packache_json_files(root, dir_name, project_to_name_map, package_merged):
+def merge_package_json_files(root, dir_name, project_to_name_map, package_merged):
     fl = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'package.json')
     if path.exists(fl):
         with open(fl, "r") as f:
@@ -60,8 +61,7 @@ def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name
 
         entry_line_number = lines.index('  entry: {\n')
         for i in range(entry_line_number + 1, len(lines)):
-
-            if '}' in lines[i]:
+            if re.fullmatch(r'\s*\},\n', lines[i]):
                 break
             if lines[i].strip() == '{':
                 continue
@@ -74,9 +74,9 @@ def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name
             line = lines[i].replace('module_name + \'', '\'' + module_name)
             webpack_config_entries.append(line)
 
-            path_to_source = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
-            path_to_base_source = os.path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'src')
-            shutil.copytree(path_to_source, path_to_base_source, dirs_exist_ok=True)
+        path_to_source = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
+        path_to_base_source = os.path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'src')
+        shutil.copytree(path_to_source, path_to_base_source, dirs_exist_ok=True)
 
 
 def main(args=sys.argv[1:]):
@@ -102,7 +102,7 @@ def main(args=sys.argv[1:]):
 
             for name in dirs:
                 if not name == "aggregated-frontend":
-                    merge_packache_json_files(root, name, project_to_name_map, package_merged)
+                    merge_package_json_files(root, name, project_to_name_map, package_merged)
                     merge_webpack_files(root, name, aggregated_frontend_dir, project_to_name_map, webpack_config_entries)
 
     # Write aggregated package.json file

@@ -69,6 +69,10 @@
         "create service user patient-tou \n set ACL for patient-tou \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
         // Unsubscribe from email notifications
         "create service user patient-unsubscribe \n set ACL for patient-unsubscribe \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
+        // Tracking the status of the surveys
+        "create service user survey-tracker \n set ACL for survey-tracker \n   allow jcr:read on / \n     allow jcr:read,rep:write,jcr:versionManagement on /Forms \n end",
+        // Prevent the survey status form from being handled by the visit handling code, e.g. data cleanup or including it in the "survey is all completed" computation
+        "create service user patient-visit-backend \n set ACL for patient-visit-backend \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Survey*events) \n end",
         // Special handling of the 404 page button: patients go to the Patient UI, all other users go to the dashboard
         "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n   allow jcr:read for guest-patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Survey.html \n   set RedirectLabel to \"Go to my surveys\" \n end ",
         // A /Metrics sling:Folder for storing performance info to be sent periodically via Slack
@@ -81,11 +85,11 @@
         "create path (sling:Folder) /Metrics/ImportedAppointments/name(nt:unstructured)",
         "create path (sling:Folder) /Metrics/ImportedAppointments/prevTotal(nt:unstructured)",
         "create path (sling:Folder) /Metrics/ImportedAppointments/total(nt:unstructured mixin mix:atomicCounter)",
-        "set properties on /Metrics/TotalSurveysSubmitted/name \n   default value{String} to \"Total Surveys Submitted\" \n end",
+        "set properties on /Metrics/TotalSurveysSubmitted/name \n   default value{String} to \"{003} Number Of Surveys Submitted\" \n end",
         "set properties on /Metrics/TotalSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
-        "set properties on /Metrics/AppointmentSurveysSubmitted/name \n   default value{String} to \"Appointment Surveys Submitted\" \n end",
+        "set properties on /Metrics/AppointmentSurveysSubmitted/name \n   default value{String} to \"{002} Number Of Patients Who Responded\" \n end",
         "set properties on /Metrics/AppointmentSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
-        "set properties on /Metrics/ImportedAppointments/name \n   default value{String} to \"Imported Appointments\" \n end",
+        "set properties on /Metrics/ImportedAppointments/name \n   default value{String} to \"{001} Imported Appointments\" \n end",
         "set properties on /Metrics/ImportedAppointments/prevTotal \n   default value{Long} to 0 \n end"
       ]
     },
@@ -96,6 +100,7 @@
         "io.uhndata.cards.patient-portal:tou=[patient-tou]",
         "io.uhndata.cards.patient-portal:unsubscribe=[patient-unsubscribe]",
         "io.uhndata.cards.patient-portal:EmailNotifications=[sling-readall]",
+        "io.uhndata.cards.patient-portal:SurveyTracker=[survey-tracker]",
         "io.uhndata.cards.patient-portal:MetricLogger=[cards-metrics]",
         "io.uhndata.cards.patient-portal:SlackNotifications=[cards-metrics]"
       ]

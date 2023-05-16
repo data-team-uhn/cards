@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>UHN Patient Experience Emergency Department Survey - Short Form</value>
+		<value>UHN Patient Experience Emergency Department Survey</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -33,52 +33,72 @@
 		<type>Reference</type>
 	</property>
 	<property>
+		<name>requireCompletion</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>hideAnswerInstructions</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>paginate</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>paginationVariant</name>
+		<value>text</value>
+		<type>String</type>
+	</property>
+	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
 		<type>Long</type>
 	</property>
 	<node>
-		<name>oed_hospital</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>Please answer the questions about your recent emergency visit at the hospital named below. Do not include any other hospital stays in your answers.</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>formatted</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>entryMode</name>
-			<value>reference</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>question</name>
-			<value>/Questionnaires/Visit information/location</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>oed_section</name>
+		<name>oed_module1</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>During this emergency department visit...</value>
 			<type>String</type>
 		</property>
+		<node>
+			<name>oed_hospital</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Hospital</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>reference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>question</name>
+				<value>/Questionnaires/Visit information/location</value>
+				<type>String</type>
+			</property>
+		</node>
 		<node>
 			<name>oed_1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -108,7 +128,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>3</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -117,7 +137,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>3</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -127,7 +147,7 @@
 				</property>
 			</node>
 			<node>
-				<name>1</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -136,7 +156,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>1</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -146,7 +166,7 @@
 				</property>
 			</node>
 			<node>
-				<name>2</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -155,7 +175,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>2</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -184,7 +204,7 @@
 				</property>
 			</node>
 			<node>
-				<name>4</name>
+				<name>3</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -193,7 +213,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>4</value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -428,7 +448,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Do you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
+				<value>Did you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -681,130 +701,6 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Do you feel that you were treated with kindness, compassion and concern?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Never</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Sometimes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Usually</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>3</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Always</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>-1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Don’t know/Not sure</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>-1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>5</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>oed_7</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
 				<value>Did care providers do everything they could do to ease your discomfort or symptoms?</value>
 				<type>String</type>
 			</property>
@@ -920,7 +816,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oed_8</name>
+			<name>oed_7</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1025,7 +921,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oed_9</name>
+			<name>oed_8</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1039,12 +935,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall... </value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience.”</value>
+				<value>Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1268,7 +1159,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oed_10</name>
+			<name>oed_9</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1282,7 +1173,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>How likely are you to recommend this hospital to your friends and family?</value>
+				<value>Would you recommend this hospital to your friends and family? </value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1506,7 +1397,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oed_11</name>
+			<name>oed_10</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1520,7 +1411,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>What else would you like to say about this emergency department experience?</value>
+				<value>What else would you like to say about this experience?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1528,6 +1419,139 @@
 				<value>textbox</value>
 				<type>String</type>
 			</property>
+		</node>
+	</node>
+	<node>
+		<name>oed_module2</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Additional question about your recent emergency visit</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>oed_11</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Do you feel that you were treated with kindness and compassion?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Never</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Sometimes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Usually</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Always</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>-1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Don’t know/Not sure</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>-1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
 		</node>
 	</node>
 </node>

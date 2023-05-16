@@ -17,101 +17,11 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
-import PropTypes from 'prop-types';
-import { InputAdornment, TextField } from "@mui/material";
-
-import withStyles from '@mui/styles/withStyles';
-
 import AnswerComponentManager from "./AnswerComponentManager";
-import Question from "./Question";
-import FormattedText from "../components/FormattedText";
-import QuestionnaireStyle from './QuestionnaireStyle';
-import { useFormWriterContext } from "./FormContext";
-
-
-// Component that displays a reference question of any type.
-//
-// Mandatory props:
-// text: the question to be displayed
-// dataType: the type of answer to be displayed
-//
-// Other options are passed to the <question> widget
-let ReferenceQuestion = (props) => {
-  const { existingAnswer, classes, pageActive, questionName} = props;
-  const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...props};
-
-  let initialValue = existingAnswer?.[1].value || "";
-  let answer = initialValue === "" ? [] : [["value", initialValue]];
-  const [muiInputProps, changeMuiInputProps] = useState({});
-  const [isFormatted, changeIsFormatted] = useState(false);
-
-  // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
-  const changeFormContext = useFormWriterContext();
-
-  // When the answers change, we inform the FormContext
-  useEffect(() => {
-    if (answer) {
-      changeFormContext((oldContext) => ({...oldContext, [questionName]: answer}));
-    }
-  }, [answer]);
-
-  useEffect(() => {
-    if (unitOfMeasurement) {
-      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>}));
-    } else {
-      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined}));
-    }
-  }, [unitOfMeasurement])
-
-  useEffect(() => {
-    let formatted = (displayMode === "formatted" || displayMode === "summary");
-    if (formatted !== isFormatted) {
-      changeIsFormatted(formatted)
-    };
-  }, [displayMode])
-
-  return (
-    <Question
-      defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : undefined}
-      currentAnswers={typeof(initialValue) !== "undefined" && initialValue !== "" ? 1 : 0}
-      {...props}
-      >
-      {
-        pageActive && <>
-          { isFormatted ? <FormattedText>
-              {initialValue + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
-            </FormattedText>
-          :
-          <TextField
-            variant="standard"
-            disabled={true}
-            className={classes.textField + " " + classes.answerField}
-            value={initialValue}
-            InputProps={muiInputProps}
-          />
-          }
-        </>
-      }
-    </Question>
-  )
-}
-
-ReferenceQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
-  questionDefinition: PropTypes.shape({
-    text: PropTypes.string.isRequired,
-    description: PropTypes.string,
-    displayMode: PropTypes.oneOf(['input', 'formatted', 'hidden', 'summary']),
-    unitOfMeasurement: PropTypes.string
-  }).isRequired
-};
-
-const StyledReferenceQuestion = withStyles(QuestionnaireStyle)(ReferenceQuestion);
-export default StyledReferenceQuestion;
+import AutocreatedQuestion from './AutocreatedQuestion';
 
 AnswerComponentManager.registerAnswerComponent((definition) => {
   if (definition.entryMode === "reference") {
-    return [StyledReferenceQuestion, 80];
+    return [AutocreatedQuestion, 80];
   }
 });

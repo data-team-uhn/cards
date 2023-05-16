@@ -16,12 +16,15 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import javax.jcr.Session;
+
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.FieldOption;
@@ -31,6 +34,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
@@ -38,12 +42,15 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@Component
+@Component(property = "service.ranking:Integer=60")
 public class ReferenceAnswersEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Reference
     private QuestionnaireUtils questionnaireUtils;
@@ -58,9 +65,10 @@ public class ReferenceAnswersEditorProvider implements EditorProvider
     public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)
         throws CommitFailedException
     {
-        if (this.rrf != null) {
+        final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
+        if (resolver != null) {
             // Each ReferenceEditor maintains a state, so a new instance must be returned each time
-            return new ReferenceAnswersEditor(builder, this.rrf,
+            return new ReferenceAnswersEditor(builder, resolver.adaptTo(Session.class), this.rrf,
                 this.questionnaireUtils, this.formUtils, this.subjectUtils);
         }
         return null;

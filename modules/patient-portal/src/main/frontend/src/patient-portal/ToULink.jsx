@@ -17,24 +17,19 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import {
-  Link,
-} from "@mui/material";
+import { FooterLink } from "./Footer";
 import ToUDialog from "./ToUDialog.jsx";
 
 function ToULink (props) {
   const [ showTou, setShowTou ] = useState(false);
 
   return (<>
-    <Link
-      component="button"
-      color="inherit"
-      variant="caption"
-      onClick={() => {setShowTou(true);}}
-      underline="hover"
+    <FooterLink
+      href="#TermsOfUse"
+      onClick={event => {event.preventDefault(); setShowTou(true);}}
     >
       Terms of Use and Privacy Policy
-    </Link>
+    </FooterLink>
     <ToUDialog
       open={showTou}
       onClose={() => {setShowTou(false);}}

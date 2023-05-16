@@ -29,6 +29,7 @@ import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import MaterialTable from 'material-table';
+import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy } from "./SubjectIdentifier";
 
 import {
   Avatar,
@@ -54,6 +55,7 @@ import EditButton from "../dataHomepage/EditButton.jsx";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
 import ResourceHeader from "./ResourceHeader.jsx"
 import SubjectTimeline from "./SubjectTimeline.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 /***
  * Create a URL that checks for the existence of a subject
@@ -63,62 +65,6 @@ let createQueryURL = (query, type) => {
   url.searchParams.set("query", `SELECT * FROM [${type}] as n` + query);
   url.searchParams.set("limit", 1000);
   return url;
-}
-
-let defaultCreator = (node) => {
-  return {to: "/content.html" + node["@path"]}
-}
-
-// Extract the subject id from the subject path
-// returns null if the parameter is not a valid subject path (expected format: Subjects/<id>)
-export function getSubjectIdFromPath (path) {
-  return /Subjects\/([^.]+)/.exec(path || '')?.[1];
-}
-
-// Recursive function to get a flat list of parents
-export function getHierarchy (node, RenderComponent, propsCreator) {
-  let HComponent = RenderComponent || Link;
-  let hpropsCreator = propsCreator || defaultCreator;
-  let props = hpropsCreator(node);
-  let output = <React.Fragment>{node.type.label} <HComponent {...props}>{node.identifier}</HComponent></React.Fragment>;
-  if (node["parents"] && node["parents"].type) {
-    let ancestors = getHierarchy(node["parents"], HComponent, propsCreator);
-    return <React.Fragment>{ancestors} / {output}</React.Fragment>
-  } else {
-    return output;
-  }
-}
-
-// Recursive function to get a flat list of parents with no links and subject labels
-export function getTextHierarchy (node, withType = false) {
-  let type = withType ? (node?.["type"]?.["@name"] + " "): "";
-  let output = node.identifier;
-  if (node["parents"]) {
-    let ancestors = getTextHierarchy(node["parents"], withType);
-    return `${ancestors} / ${type}${output}`;
-  } else {
-    return type + output;
-  }
-}
-
-// Recursive function to get the list of ancestors as an array
-export function getHierarchyAsList (node, includeHomepage) {
-  let props = defaultCreator(node);
-  let parent = <>{node.type.label} <Link {...props} underline="hover">{node.identifier}</Link></>;
-  if (node["parents"]) {
-    let ancestors = getHierarchyAsList(node["parents"]);
-    ancestors.push(parent);
-    return ancestors;
-  } else {
-    let result = [parent];
-    includeHomepage && result.unshift(getHomepageLink(node));
-    return result;
-  }
-}
-
-export function getHomepageLink (subjectNode) {
-  let props = defaultCreator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`});
-  return (<Link {...props} underline="hover">{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
 }
 
 /**
@@ -345,8 +291,8 @@ function SubjectHeader(props) {
   }
 
   let identifier = subject?.data?.identifier || id;
-  let label = subject?.data?.type?.label || "Subject";
-  let title = `${label} ${identifier}`;
+  let label = subject?.data?.type?.label;
+  let title = `${label || "Subject"} ${identifier}`;
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let subjectMenu = (
             <div className={classes.actionsMenu}>
@@ -358,14 +304,15 @@ function SubjectHeader(props) {
                />
                <DeleteButton
                  entryPath={path}
-                 entryName={title}
-                 entryType={label}
+                 entryName={getEntityIdentifier(subject?.data)}
+                 entryType="Subject"
+                 entryLabel={label}
                  onComplete={handleDeletion}
                  size="large"
                />
             </div>
   );
-  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true) || [getHomepageLink(subject?.data)]);
+  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true));
 
   return (
     subject?.data &&
@@ -458,8 +405,8 @@ function SubjectMemberInternal (props) {
   }
 
   let identifier = data && data.identifier ? data.identifier : id;
-  let label = data?.type?.label || "Subject";
-  let title = `${label} ${identifier}`;
+  let label = data?.type?.label;
+  let title = `${label || "Subject"} ${identifier}`;
   let path = data ? data["@path"] : "/Subjects/" + id;
   let avatar = <Avatar className={classes.subjectAvatar}><SubjectIcon/></Avatar>;
   let expandAction = (
@@ -480,8 +427,9 @@ function SubjectMemberInternal (props) {
                  />
                  <DeleteButton
                    entryPath={path}
-                   entryName={title}
-                   entryType={label}
+                   entryName={getEntityIdentifier(data)}
+                   entryType="Subject"
+                   entryLabel={label}
                    onComplete={onDelete}
                    className={classes.childSubjectHeaderButton}
                  />
@@ -587,7 +535,7 @@ function SubjectMemberInternal (props) {
                                          />
                                          <DeleteButton
                                            entryPath={rowData["@path"]}
-                                           entryName={`${identifier}: ${rowData.questionnaire["@name"]}`}
+                                           entryName={getEntityIdentifier(rowData)}
                                            entryType="Form"
                                            warning={rowData ? rowData["@referenced"] : false}
                                            onComplete={fetchTableData}

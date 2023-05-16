@@ -17,11 +17,11 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { appTheme } from "../themePalette.jsx";
+import { portalTheme } from "./portalTheme.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import Footer from "./Footer.jsx";
@@ -30,7 +30,7 @@ import PageStartWrapper from '../PageStartWrapper';
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
-const CONFIG = "/Survey/PatientIdentification.json";
+const CONFIG = "/Survey/PatientAccess.json";
 
 function PatientPortalHomepage (props) {
   // Current user and associated subject
@@ -104,7 +104,10 @@ function PatientPortalHomepage (props) {
 
   return (<>
     <PageStartWrapper extensionsName="SurveyPageStart">
-      <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
+      <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
+        ...accessConfig,
+        ...surveyInstructions
+      }} />
       <Footer />
     </PageStartWrapper>
   </>);
@@ -112,9 +115,10 @@ function PatientPortalHomepage (props) {
 
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
-ReactDOM.render(
+const root = createRoot(document.querySelector('#patient-portal-container'));
+root.render(
   <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={appTheme}>
+    <ThemeProvider theme={portalTheme}>
       <Router history={hist}>
         <Switch color="secondary">
           <Route path="/Survey.html/" component={PatientPortalHomepage} />
@@ -122,8 +126,7 @@ ReactDOM.render(
         </Switch>
       </Router>
     </ThemeProvider>
-  </StyledEngineProvider>,
-  document.querySelector('#patient-portal-container')
+  </StyledEngineProvider>
 );
 
 export default PatientPortalHomepage;

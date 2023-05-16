@@ -36,6 +36,8 @@
     </sly>
     <sly data-sly-use.config="/libs/cards/conf/ThemeColor">
       <meta name="themeColor" content="${config['ThemeColor']}">
+      <meta name="primaryColor" content="${config['PrimaryColor']}">
+      <meta name="secondaryColor" content="${config['SecondaryColor']}">
     </sly>
     <sly data-sly-use.config="/libs/cards/conf/Media">
       <sly data-sly-repeat="${config.valueMap.entrySet.iterator}">

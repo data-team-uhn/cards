@@ -60,3 +60,39 @@
   // Whether to show the total number of results.
   // Can be set to 'false' in case of performance issues.
   - showTotalRows (BOOLEAN) = 'true'
+
+//-----------------------------------------------------------------------------
+[cards:QueryCache] > nt:unstructured
+  // Attributes
+
+  // We can query the cache for saved counts.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QueryCache" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each queryCache is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // Children
+
+//-----------------------------------------------------------------------------
+// The homepage for the QueryCache space.
+[cards:QueryCacheHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QueryCacheHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the QueryCacheHomepage is a resource homepage.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
+
+  // Children
+  + * (cards:QueryCache)

@@ -51,16 +51,6 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 3,
     border: 0
   },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    marginLeft: theme.spacing(5),
-    color: theme.palette.grey[500],
-  },
-  dialogTitle: {
-    marginRight: theme.spacing(5)
-  },
   browseAction: {
     margin: theme.spacing(1),
     textTransform: "none",
@@ -97,7 +87,7 @@ export default function VocabularyDetails(props) {
       <Dialog onClose={handleClose} open={displayPopup}>
 
         <DialogTitle>
-          <Typography variant="h4" className={classes.dialogTitle}>{vocabulary.name} ({vocabulary.acronym})</Typography>
+          {vocabulary.name} ({vocabulary.acronym})
         </DialogTitle>
 
         <DialogContent dividers>

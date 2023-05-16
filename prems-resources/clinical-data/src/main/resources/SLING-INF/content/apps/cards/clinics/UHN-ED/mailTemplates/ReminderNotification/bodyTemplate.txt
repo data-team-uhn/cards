@@ -1,0 +1,36 @@
+Dear ${first_name} ${last_name},
+
+You are receiving this email because you have recently been discharged from a
+University Health Network (UHN) hospital and our records indicate that we sent
+you a survey asking about your experience. However we have not heard back from you.
+
+We’d like to hear about your experience while you were a patient in UHN’s Emergency Department.
+Your opinions are valuable to us. Your responses will be anonymous and will
+be used to help UHN continuously improve the quality of care patients receive.
+
+Completing this survey is voluntary. Your responses will not be shared with
+the care team and answering will not impact future care you receive at UHN.
+
+The questionnaire contains 11 questions and will take about 5-10 minutes to complete.
+
+To begin the survey, click the following link:
+${surveysLink}
+
+If you have any questions or concerns or wish to be removed from the survey,
+please contact us at yourexperience@uhn.ca. You can also unsubscribe from all
+further emails from Your Experience by following this link:
+${unsubscribeLink}
+
+The survey will be available until ${expirationDate}. Please do not delay.
+
+Thank you for your time and help. Your effort will help us provide better care to
+all our patients and ensure it is reflective of UHN’s Patient Declaration of Values
+https://www.uhn.ca/corporate/AboutUHN/Quality_Patient_Safety/Pages/patient_values.aspx.
+
+Best regards,
+The Patient Experience Team
+University Health Network
+
+------------------------------------------------------------------------
+
+Unsubscribe from further emails from Your Experience: ${unsubscribeLink}

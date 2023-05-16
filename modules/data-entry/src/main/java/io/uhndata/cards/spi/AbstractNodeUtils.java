@@ -19,12 +19,14 @@ package io.uhndata.cards.spi;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * Some utilities for working with JCR nodes.
@@ -98,6 +100,37 @@ public abstract class AbstractNodeUtils
     }
 
     /**
+     * Retrieve a referenced node of a given type, for example a form's related subject of type Patient.
+     *
+     * @param node a JCR node
+     * @param relatingProperty the name of the property holding a list of references to other nodes, must be
+     *            multi-valued, e.g. {@code relatedSubjects}
+     * @param typePath a path to a node type, e.g. {@code /SubjectTypes/Patient}
+     * @param typeProperty the name of the property of the related node referencing the type, e.g. {@code type}
+     * @return the target node, or {@code null} if the requested reference is not valid or is inaccessible
+     */
+    protected Node getReferencedNodeOfType(final Node node, final String relatingProperty, final String typePath,
+        final String typeProperty)
+    {
+        try {
+            Value[] values = node.getProperty(relatingProperty).getValues();
+            for (Value value : values) {
+                try {
+                    Node referenced = node.getSession().getNodeByIdentifier(value.getString());
+                    if (referenced.getProperty(typeProperty).getNode().getPath().equals(typePath)) {
+                        return referenced;
+                    }
+                } catch (Exception e) {
+                    // The current user may not have access to all the referenced nodes
+                }
+            }
+        } catch (final RepositoryException e) {
+            // We're allowed to just return null in case of exceptions
+        }
+        return null;
+    }
+
+    /**
      * Get the value of a String-like property.
      *
      * @param node a JCR node
@@ -140,16 +173,16 @@ public abstract class AbstractNodeUtils
     /**
      * Obtain the current session from the resource resolver factory.
      *
-     * @param rrf the resource resolver factory service, may be {@code null}
+     * @param rrp the resource resolver factory service, may be {@code null}
      * @return the current session, or {@code null} if a session may not be obtained
      */
-    protected Session getSession(final ResourceResolverFactory rrf)
+    protected Session getSession(final ThreadResourceResolverProvider rrp)
     {
-        if (rrf == null) {
+        if (rrp == null) {
             return null;
         }
 
-        final ResourceResolver rr = rrf.getThreadResourceResolver();
+        final ResourceResolver rr = rrp.getThreadResourceResolver();
         if (rr == null) {
             return null;
         }

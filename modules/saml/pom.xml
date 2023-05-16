@@ -32,5 +32,6 @@
 
   <modules>
     <module>cloud-iam-demo-saml</module>
+    <module>cloud-iam-demo-saml-ssl</module>
   </modules>
 </project>

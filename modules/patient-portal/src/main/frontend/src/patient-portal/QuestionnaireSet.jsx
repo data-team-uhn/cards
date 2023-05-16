@@ -38,6 +38,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import NextStepIcon from '@mui/icons-material/ChevronRight';
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
+import SurveyIcon from '@mui/icons-material/Assignment';
 
 import { DateTime } from "luxon";
 
@@ -65,25 +66,34 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     margin: "auto",
     maxWidth: "780px",
+    width: "100%",
     "& > .MuiGrid-item" : {
       paddingLeft: 0,
     },
-    "& h4, h6" : {
+    "& h4, h6, .MuiTypography-paragraph" : {
       textAlign: "center",
     }
   },
+  reviewScreen : {
+    "& > .MuiGrid-item:last-child" : {
+      position: "sticky",
+      bottom: theme.spacing(1),
+    },
+  },
   stepIndicator : {
-    border: "1px solid " + theme.palette.text.secondary,
+    border: "1px solid " + theme.palette.action.disabled,
     background: "transparent",
-    color: theme.palette.text.secondary,
+    color: theme.palette.action.disabled,
   },
   incompleteIndicator : {
-    border: "1px solid " + theme.palette.secondary.main,
+    border: "1px solid " + theme.palette.error.main,
     background: "transparent",
-    color: theme.palette.secondary.main,
+    color: theme.palette.error.main,
   },
   doneIndicator : {
-    background: theme.palette.success.main,
+    border: "1px solid " + theme.palette.success.main,
+    background: "transparent",
+    color: theme.palette.success.main,
   },
   survey : {
     alignItems: "stretch",
@@ -101,8 +111,9 @@ function QuestionnaireSet(props) {
 
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
-  // Questionnaire set title, to display to the patient user
+  // Questionnaire set title and intro text, to display to the patient user
   const [ title, setTitle ] = useState();
+  const [ intro, setIntro ] = useState();
   // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
   const [ questionnaires, setQuestionnaires ] = useState();
   // The ids of the questionnaires in this set, in the order they must be filled in
@@ -124,8 +135,16 @@ function QuestionnaireSet(props) {
   const [ visitInformation, setVisitInformation ] = useState();
   // Did the user make it to the last screen?
   const [ endReached, setEndReached ] = useState();
+  // Configuration specifying if the patient sees a review
+  // screen after completing the surveys.
+  // It can be set globally in Survey Instructions,
+  // and overridden by each QuestionnaireSet definition.
+  const [ enableReviewScreen, setEnableReviewScreen ] = useState();
   // Is the user reviewing an already complete form?
   const [ reviewMode, setReviewMode ] = useState(false);
+  // Did the user just click on Submit and we're waiting
+  // for the request to complete?
+  const [ submissionInProgress, setSubmissionInProgress ] = useState(false);
   // Has the user submitted their answers?
   const [ isSubmitted, setSubmitted ] = useState(false);
   // Has everything been filled out?
@@ -143,6 +162,8 @@ function QuestionnaireSet(props) {
   const [ error, setError ] = useState("");
   // Screen layout props
   const [ screenType, setScreenType ] = useState();
+  // Subtype for non-survey screens
+  const [screenSubtype, setScreenSubtype ] = useState();
 
   const classes = useStyles();
 
@@ -154,10 +175,28 @@ function QuestionnaireSet(props) {
     return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
   }
 
+  // If the `enableReviewScreen` state is not already defined, initialize it with the value passed via config
+  useEffect(() => {
+    typeof(enableReviewScreen) == "undefined" && setEnableReviewScreen(config?.enableReviewScreen);
+  }, [config?.enableReviewScreen]);
+
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
     setScreenType(crtStep >= 0 && crtStep < questionnaireIds?.length ? "survey" : "screen");
   }, [crtStep]);
+
+  useEffect(() => {
+    setScreenSubtype(
+      screenType == "screen" ?
+        isComplete ?
+          isSubmitted ?
+            "summaryScreen"
+            :
+            "reviewScreen"
+        : "incompleteScreen"
+      : ""
+    )
+  }, [screenType, isComplete, isSubmitted]);
 
   // Reset the crtFormId when returning to the welcome screen
   useEffect(() => {
@@ -203,6 +242,11 @@ function QuestionnaireSet(props) {
     setComplete(Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length);
   }, [subjectDataLoadCount]);
 
+  // Automatically log out the user at the end
+  useEffect(() => {
+    isSubmitted && fetch('/system/sling/logout', {"redirect": "manual"});
+  }, [isSubmitted]);
+
   // Determine if the user has already submitted their forms
   useEffect(() => {
     let submittedQuestionUuid = visitInformation?.questionnaire?.surveys_submitted?.["jcr:uuid"] || null;
@@ -215,12 +259,19 @@ function QuestionnaireSet(props) {
     }
   }, [subjectDataLoadCount]);
 
-  // When the user lands on a completed visit that has not been submitted, proceed to reviewing their forms
+  // When the user lands on a completed visit that has not been submitted, proceed to the last step
   useEffect(() => {
     if(isComplete && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
       setCrtStep(questionnaireIds.length)
     }
   }, [isComplete, isSubmitted])
+
+  // At the last step, if the configuration specifies to skip the review, automatically submit
+  useEffect(() => {
+    if (isComplete && !isSubmitted && endReached && !enableReviewScreen) {
+      onSubmit();
+    }
+  }, [isComplete, isSubmitted, endReached, enableReviewScreen]);
 
   const loadExistingData = () => {
     setComplete(undefined);
@@ -230,7 +281,7 @@ function QuestionnaireSet(props) {
         if (!questionnaires) {
           setSubjectData(json);
           setVisitInformation(json[visitInformationFormTitle]?.[0] || {});
-          let clinicPath = Object.values(json[visitInformationFormTitle]?.[0]).find(o => o?.question?.text == "Clinic")?.value;
+          let clinicPath = Object.values(json[visitInformationFormTitle]?.[0]).find(o => o?.question?.["@name"] == "clinic")?.value;
           return fetchWithReLogin(globalLoginDisplay, `${clinicPath}.deep.json`)
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then((json) => {
@@ -239,9 +290,7 @@ function QuestionnaireSet(props) {
         }
         selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
       })
-      .catch((response) => {
-        setError(`Loading the visit failed with error code ${response.status}: ${response.statusText}`);
-      });
+      .catch(() => setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance."));
   }
 
   const loadQuestionnaireSet = () => {
@@ -255,26 +304,30 @@ function QuestionnaireSet(props) {
       })
       .catch((response) => {
         if (response.status == 404) {
-          setError("The survey you are trying to access does not exist. Please contact your care team for further assistance.");
+          setError("The survey you are trying to access does not exist. Please contact the sender of the survey for further assistance.");
         } else {
-          setError(`Loading the survey failed with error code ${response.status}: ${response.statusText}`);
+          setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance.");
         }
         setQuestionnaires(null);
       });
   }
 
   let parseQuestionnaireSet = (json) => {
-    // Extract the title
+    // Extract the title and intro
     setTitle(json.name);
+    setIntro(json.intro || "");
+    // If the questionnaire set specifies a value for `enableReviewScreen`, overwrite the curently stored value
+    typeof(json.enableReviewScreen) != "undefined" && setEnableReviewScreen(json.enableReviewScreen);
 
     // Map the relevant questionnaire info
     let data = {};
-    Object.values(json || {})
-      .filter(value => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
-      .forEach(value => {
+    Object.entries(json || {})
+      .filter(([key, value]) => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
+      .forEach(([key, value]) => {
         let addons = Object.values(value).filter(filterValue => ENTRY_TYPES.includes(filterValue['jcr:primaryType']));
         data[value.questionnaire['@name']] = {
-          'title': value.questionnaire?.title || value.questionnaire?.['@name'],
+          'title': value.questionnaire?.title || key,
+          'alias': key,
           '@path': value.questionnaire?.['@path'],
           '@name': value.questionnaire?.['@name'],
           'hasInterpretation': hasInterpretation(value.questionnaire) || addons.some(hasInterpretation),
@@ -322,7 +375,7 @@ function QuestionnaireSet(props) {
           newPreviews[formId] = text;
           return newPreviews;
         }))
-        .catch(response => setError(`Loading the survey response preview for ${formId} failed with error code ${response.status}: ${response.statusText}`));
+        .catch(() => setError("Your responses cannot be previewed at this time. Please try again later or contact the sender of the survey for further assistance."));
     })
   }
 
@@ -387,7 +440,7 @@ function QuestionnaireSet(props) {
 
   let stepIndicator = (step, withTotal) => {
     return (
-      step >=0 && step < questionnaireIds?.length ?
+      step >=0 && questionnaireIds?.length > 1 && step < questionnaireIds?.length ?
       <Avatar className={classes.stepIndicator}>{step + 1}{withTotal ? ("/" + questionnaireIds?.length) : ""}</Avatar>
       : <></>);
   }
@@ -407,6 +460,7 @@ function QuestionnaireSet(props) {
     let url = visitInformation?.["@path"];
 
     if (submittedQuestionUuid && url) {
+      setSubmissionInProgress(true);
       let answerUuid = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.["@name"] || uuidv4();
       let data = new FormData();
       data.append("./" + answerUuid + "/jcr:primaryType", "cards:BooleanAnswer");
@@ -419,9 +473,11 @@ function QuestionnaireSet(props) {
         url,
         { method: 'POST', body: data }
       )
+        .then(response => response.ok ? response.text() : Promise.reject(response))
+        .then(() => setSubmitted(true))
+        .catch(() => setError("Recording the submission of your responses has failed. Please try again later or contact the sender of the survey for further assistance."))
+        .finally(() => setSubmissionInProgress(false));
     }
-
-    setSubmitted(true);
   }
 
   let checkinForms = () => {
@@ -447,9 +503,12 @@ function QuestionnaireSet(props) {
         }
       })
       .catch((response) => {
-        setError(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
+        // The error is not important enough to display to the user
+        console.log(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
       });
   }
+
+  let surveyIndicator = <Avatar className={classes.stepIndicator}><SurveyIcon /></Avatar>;
 
   let doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
 
@@ -479,13 +538,14 @@ function QuestionnaireSet(props) {
   }
 
   let appointmentAlert = () => {
+    const eventLabel = displayText("eventLabel", AlertTitle);
     const time = appointmentDate();
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
-    return (time || location || provider) ?
-      <Alert severity="info">
-        {displayText("eventLabel", AlertTitle)}
+    return (eventLabel && (time || location || provider)) ?
+      <Alert severity="info" key="appointment-notification">
+        {eventLabel}
         {time ? <> {time} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
@@ -517,11 +577,8 @@ function QuestionnaireSet(props) {
       diffString("hours", diffStrings, diffs);
       diffString("minutes", diffStrings, diffs);
 
-      if (diffStrings.length > 1) {
-        result = " and " + diffStrings.pop();
-      }
       if (diffStrings.length > 0) {
-        result = " This survey link will expire in " + diffStrings.join(", ") + result + ".";
+        result = " This survey link will expire in " + diffStrings[0] + ".";
       }
     } else {
       // Visit date could not be retrieved, this token will expire 1 hour from creation.
@@ -531,32 +588,30 @@ function QuestionnaireSet(props) {
     return result;
   }
 
-  let withWelcomeMessage = !(config?.PIIAuthRequired);
-  let appName = document.querySelector('meta[name="title"]')?.content;
-  let welcomeMessageTemplate = displayText('welcomeMessage');
-  let welcomeMessage = withWelcomeMessage && welcomeMessageTemplate ?
-    <FormattedText>{ welcomeMessageTemplate.replaceAll("APP_NAME", appName) }</FormattedText>
-    : "";
-
-  let closeButton = <Fab key="close-button" variant="extended" color="primary" onClick={
-      () => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)
-    }>Close</Fab>;
-
+  // The questionnaire set intro may reference data from the visit information form, with default values
+  // For example @{visit.location:-UHN} specifies that the `location` field needs to be displayed,
+  // and it should default to "UHN" if the field is empty.
+  let pattern = /@\{visit\.([a-zA-z0-9_]*)(\:\-(.+))?\}/g;
+  // First, find the field name and default value
+  // It is necessary to find them separately first, as we need to call a function on the field name to
+  // obtain its value for replacement, and this won't work in one go directly in `replaceAll`, as
+  // the function will end up being called before the matching groups are identified.
+  let pieces = pattern.exec(intro);
+  // Replace the occurrence of the pattern with the value
+  let introMessage = intro.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
     displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "survey-info"}),
-    closeButton,
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
-    welcomeMessage,
     appointmentAlert(),
-    displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
+    introMessage ? <FormattedText paragraph key="intro-message">{introMessage}</FormattedText> : displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
-        <ListItemAvatar>{isFormComplete(q) ? doneIndicator : stepIndicator(i)}</ListItemAvatar>
+        <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
           secondary={!isFormComplete(q) && (displayEstimate(q)
@@ -565,10 +620,11 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
+    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>,
     <Typography paragraph key="expiry-message" color="textSecondary">
         {expiryDate()}
     </Typography>,
-    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>
+    displayText("surveyDraftInfo", FormattedText, {paragraph: true, variant: "body2", key: "draft-info"}),
   ];
 
   let formScreen = [
@@ -579,17 +635,21 @@ function QuestionnaireSet(props) {
           disableHeader
           questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
-          doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Review"}
+          doneLabel={nextQuestionnaire ? "Next survey" : enableReviewScreen ? "Review" : "Submit my answers"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset || 0}
         />
   ];
 
-  let reviewScreen = [
-    <Typography variant="h4">Please review your answers</Typography>,
-    <Typography paragraph>You can update the answers for each survey and continue to this review screen before final submission.</Typography>,
-    <Grid container direction="column" spacing={8}>
+  let reviewScreen = !enableReviewScreen ? [
+    <Grid alignItems="center" justifyContent="center">
+      <Grid item key="review-loading"><CircularProgress/></Grid>
+    </Grid>
+  ] : [
+    <Typography variant="h4" key="review-title">Please review and submit your answers</Typography>,
+    <FormattedText paragraph key="review-desc">You can update the response for each question in the survey by using the **Update this Survey** button below. After reviewing, please click on **Submit my answers** to send your responses.</FormattedText>,
+    <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).map((q, i) => (
       <Grid item key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
@@ -612,28 +672,31 @@ function QuestionnaireSet(props) {
       </Grid>
       ))}
     </Grid>,
-    <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my answers</Fab>
+    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key="review-submit">{submissionInProgress ? "Submitting...." : "Submit my answers"}</Fab>
   ];
 
   // Are there any response interpretations to display to the patient?
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
+  let finalInstructions = (
+      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions", paragraph: true})
+  );
+
   let disclaimer = (
-      displayText("disclaimer", Alert, {severity: "warning"})
-  )
+      displayText("disclaimer", Alert, {severity: "warning", key: "disclaimer"})
+  );
 
   let summaryScreen = hasInterpretations ? [
-      <Typography variant="h4">Thank you for your submission</Typography>,
-      displayText("summaryInstructions", Typography, {color: "textSecondary"}),
+      <Typography variant="h4" key="summary-title">Thank you</Typography>,
+      finalInstructions,
       disclaimer,
-      <Typography variant="h4">Interpreting your results</Typography>,
-      displayText("interpretationInstructions", Typography, {color: "textSecondary"}),
-      <Grid container direction="column" spacing={3}>
+      <Typography variant="h4" key="summary-intro">Interpreting your results</Typography>,
+      displayText("interpretationInstructions", Typography, {color: "textSecondary", key: "summary-interpretation-instructions"}),
+      <Grid container direction="column" spacing={3} key="summary-list">
       { (questionnaireIds || []).map((q, i) => (
-        <Grid item>
+        <Grid item key={q+"Summary"}>
         {
           questionnaires?.[q]?.hasInterpretation ? <Form
-              key={q+"Summary"}
               id={subjectData?.[q]?.['@name']}
               mode="summary"
               questionnaireAddons={questionnaires?.[q]?.questionnaireAddons}
@@ -646,17 +709,16 @@ function QuestionnaireSet(props) {
         </Grid>
       ))}
       </Grid>,
-      closeButton,
     ] : [
-      <Typography variant="h4">Thank you for your submission</Typography>,
+      <Typography variant="h4" key="summary-title">Thank you</Typography>,
+      finalInstructions,
       disclaimer,
-      closeButton,
     ];
 
-  let loadingScreen = [ <CircularProgress /> ];
+  let loadingScreen = [ <CircularProgress key="exit-loading"/> ];
 
   let incompleteScreen = [
-        <List>
+        <List key="incomplete-list">
         { (questionnaireIds || []).map((q, i) => (
           <ListItem key={q+"Exit"}>
             <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
@@ -667,8 +729,8 @@ function QuestionnaireSet(props) {
           </ListItem>
         ))}
         </List>,
-        <Typography color="error">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
-        <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update my answers</Fab>
+        <Typography color="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
+        <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
   ];
 
   let exitScreen = (typeof(isComplete) == 'undefined') ? loadingScreen : (isComplete ? (isSubmitted ? summaryScreen : reviewScreen) : incompleteScreen);
@@ -677,13 +739,15 @@ function QuestionnaireSet(props) {
 
   return (<>
       <Header
+        key="title"
         title={title}
         greeting={username}
+        withSignout={!!(config?.PIIAuthRequired)}
         progress={progress}
         subtitle={questionnaires[questionnaireIds[crtStep]]?.title}
         step={stepIndicator(crtStep, true)}
       />
-      <QuestionnaireSetScreen className={classes[screenType]}>
+      <QuestionnaireSetScreen className={classes[screenType] + (screenSubtype && classes[screenSubtype] ? (" " + classes[screenSubtype]) : "")} key="screen">
         {
           crtStep == -1 ? welcomeScreen :
           crtStep < questionnaireIds.length ? formScreen :

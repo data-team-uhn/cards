@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Canadian Patient Experiences Survey — Inpatient Care</value>
+		<value>Canadian Patient Experience Survey</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -33,9 +33,24 @@
 		<type>Reference</type>
 	</property>
 	<property>
+		<name>requireCompletion</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>hideAnswerInstructions</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>paginate</name>
 		<value>True</value>
 		<type>Boolean</type>
+	</property>
+	<property>
+		<name>paginationVariant</name>
+		<value>progress</value>
+		<type>String</type>
 	</property>
 	<property>
 		<name>maxPerSubject</name>
@@ -49,18 +64,13 @@
 			<name>cpesic_intro</name>
 			<primaryNodeType>cards:Information</primaryNodeType>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
 				<name>dataType</name>
 				<value>info</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value>You should fill out this questionnaire only if you the patient who received the invitation email. You may need to get help from a family member or friend to answer the questions. That’s okay.
+				<value>You should fill out this questionnaire only if you are the patient who received the invitation email. You may need to get help from a family member or friend to answer the questions. That’s okay.
 
 Answer **all** the questions by selecting the circle to the left of your answer.
 
@@ -83,12 +93,12 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Please answer the questions about your recent stay at the hospital named below. Do not include any other hospital stays in your answers.</value>
+				<value>Hospital</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>formatted</value>
+				<value>hidden</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -105,11 +115,6 @@ Your response to this survey is voluntary but will provide us with important inf
 		<node>
 			<name>cpesic_department</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
 			<property>
 				<name>dataType</name>
 				<value>text</value>
@@ -160,7 +165,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did nurses treat you with courtesy and respect?</value>
+				<value>During this hospital stay, how often did nurses treat you with _courtesy and respect_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -265,7 +270,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did nurses listen carefully to you?</value>
+				<value>During this hospital stay, how often did nurses _listen carefully to you_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -370,7 +375,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did nurses explain things in a way you could understand?</value>
+				<value>During this hospital stay, how often did nurses _explain things_ in a way you could understand?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -608,7 +613,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did doctors treat you with courtesy and respect?</value>
+				<value>During this hospital stay, how often did doctors treat you with _courtesy and respect_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -713,7 +718,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did doctors listen carefully to you?</value>
+				<value>During this hospital stay, how often did doctors _listen carefully to you_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -818,7 +823,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>During this hospital stay, how often did doctors explain things in a way you could understand?</value>
+				<value>During this hospital stay, how often did doctors _explain things_ in a way you could understand?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1237,6 +1242,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1406,6 +1416,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1550,6 +1565,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<node>
 					<name>0</name>
@@ -1720,6 +1740,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1864,6 +1889,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<node>
 					<name>0</name>
@@ -2151,6 +2181,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<type>Long</type>
 				</property>
 				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>boolean</value>
 					<type>String</type>
@@ -2265,6 +2300,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<type>Long</type>
 				</property>
 				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>boolean</value>
 					<type>String</type>
@@ -2300,7 +2340,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Please answer the following questions about your stay at the hospital named below. Do not include any other hospital stays in your answers.</value>
+				<value> </value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2310,12 +2350,12 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>entryMode</name>
-				<value>reference</value>
+				<value>computed</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>question</name>
-				<value>/Questionnaires/Visit information/location</value>
+				<name>expression</name>
+				<value>return "Please answer the following questions about your stay at **" + @{cpesic_hospital:-UHN} + "**. Do not include any other hospital stays in your answers."</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -2782,6 +2822,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2926,6 +2971,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<node>
 					<name>0</name>
@@ -3072,6 +3122,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3217,6 +3272,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3357,6 +3417,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>After you knew that you needed to be admitted to a hospital bed, did you have to wait too long before getting there?</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -3425,6 +3490,11 @@ Your response to this survey is voluntary but will provide us with important inf
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<node>
 					<name>0</name>
@@ -4944,12 +5014,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall...</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience.”</value>
+				<value>Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5444,7 +5509,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>What is the highest grade or level of school that you have completed?</value>
+				<value>What is the highest grade or level of school that you have _completed_?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5686,6 +5751,16 @@ Your response to this survey is voluntary but will provide us with important inf
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>minValue</name>
+				<value>1900</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>2023</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>cpesic_47</name>
@@ -5726,7 +5801,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>People living in Canada come from many different cultural and racial backgrounds. The following question will help us to better understand the experiences of the communities that we serve. Do you consider yourself to be . . .</value>
+				<value>People living in Canada come from many different cultural and racial backgrounds. The following question will help us to better understand the experiences of the communities that we serve. Do you consider yourself to be...</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5736,7 +5811,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list+input</value>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -6028,6 +6103,107 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>15</value>
 					<type>Long</type>
 				</property>
+			</node>
+			<node>
+				<name>other</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Other</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Other</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>16</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>cpesic_48_othersection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>cpesic_48</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Other</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>cpesic_48_other</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>dataType</name>
+					<value>vocabulary</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>What other ethnicity would you consider yourself to be?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>input</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>HANCESTRO</value>
+					</values>
+					<type>String</type>
+				</property>
+				<node>
+					<name>vocabularyFilters</name>
+					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
+					<property>
+						<name>HANCESTRO</name>
+						<values>
+							<value>HANCESTRO_0004</value>
+						</values>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>

@@ -31,8 +31,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.spi.AbstractNodeUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Basic utilities for grabbing patient authentication config details.
@@ -43,7 +43,7 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements PatientAccessConfiguration
 {
     /** The location of the configuration node for patient auth. */
-    private static final String CONFIG_NODE = "/Survey/PatientIdentification";
+    private static final String CONFIG_NODE = "/Survey/PatientAccess";
 
     /** Property on config node for whether or not tokenless auth is enabled. */
     private static final String TOKENLESS_AUTH_ENABLED_PROP = "tokenlessAuthEnabled";
@@ -54,6 +54,9 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     /** Property on config node for the number of days a token is valid for. */
     private static final String TOKEN_LIFETIME_PROP = "allowedPostVisitCompletionTime";
 
+    /** Property on config node for the number of days draft responses from patients are kept. */
+    private static final String DRAFT_LIFETIME_PROP = "draftLifetime";
+
     /** Whether or not tokenless auth is enabled by default (used in case of errors). */
     private static final Boolean TOKENLESS_AUTH_ENABLED_DEFAULT = false;
 
@@ -62,6 +65,9 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
 
     /** The number of days a token is valid for by default (used in case of errors). */
     private static final int TOKEN_LIFETIME_DEFAULT = 0;
+
+    /** The number of days a patient's draft response is kept for by default (used in case of errors). */
+    private static final int DRAFT_LIFETIME_DEFAULT = -1;
 
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
@@ -123,6 +129,19 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
             return lifetime == null ? TOKEN_LIFETIME_DEFAULT : (int) lifetime.getLong();
         } catch (RepositoryException e) {
             return TOKEN_LIFETIME_DEFAULT;
+        }
+    }
+
+    @Override
+    public int getDraftLifetime()
+    {
+        try
+        {
+            Property lifetime = getConfig(DRAFT_LIFETIME_PROP);
+            int value = lifetime == null ? DRAFT_LIFETIME_DEFAULT : (int) lifetime.getLong();
+            return value < -1 ? DRAFT_LIFETIME_DEFAULT : value;
+        } catch (RepositoryException e) {
+            return DRAFT_LIFETIME_DEFAULT;
         }
     }
 }

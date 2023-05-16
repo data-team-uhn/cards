@@ -31,6 +31,16 @@
 		<type>Boolean</type>
 	</property>
 	<property>
+		<name>requireCompletion</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>hideAnswerInstructions</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>requiredSubjectTypes</name>
 		<values>
 			<value>/SubjectTypes/Patient/Visit</value>
@@ -1357,7 +1367,7 @@ Click on the program you want to register in.</value>
 				</property>
 				<property>
 					<name>description</name>
-					<value>This program can help you:
+					<value>This **self-referral** program can help you:
 * Get weekly counseling and treatments to help you quit or reduce your smoking
 * Get private support in-person and over the phone</value>
 					<type>String</type>
@@ -1479,6 +1489,9 @@ Click on the program you want to register in.</value>
 				<name>expression</name>
 				<value>
 return @{smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months:-0} == 0 ? null :
+     @{smoking_history_v2_program_referral_requested_by_patient} == "Nicotine Dependence Clinic at the Centre for Addiction and Mental Health (CAMH) (in Toronto)" ?
+      "You have selected **" + @{smoking_history_v2_program_referral_requested_by_patient} + "**. This clinic accepts **self-referral**. Please call Access CAMH at 416-535-8501 and press 2.\n\nFor more details read the UHN pamphlet *Smoking: It’s never too late to quit*"
+     :
      @{smoking_history_v2_program_referral_requested_by_patient:-none} != "none" ?
        "You have selected **" + @{smoking_history_v2_program_referral_requested_by_patient} + "**. Someone from the program will call you to share more details and finish registering you in the program. Your health care team will also be informed that you have registered.\n\nFor more details read the UHN pamphlet *Smoking: It’s never too late to quit*"
      : "You have selected not to be referred to a program. Your health care team will be informed of your choice.\n\nFor more details read the UHN pamphlet on quitting smoking during your treatment."

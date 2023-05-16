@@ -55,6 +55,15 @@ async function getHeaderExtensions() {
     )
 }
 
+let headerExtensions = [];
+getHeaderExtensions()
+  .then(extensions => {
+    headerExtensions = extensions || [];
+  })
+  .catch(err => {
+    console.log("Something went wrong loading the print header extensions", err);
+  })
+
 // Component that renders a form in a format/style ready for printing.
 // Internally, it queries and renders the markdown (.md) export of the form.
 //
@@ -119,8 +128,6 @@ const useStyles = makeStyles(theme => ({
 function PrintPreview(props) {
   const { open, resourcePath, resourceData, title, breadcrumb, date, subtitle, disablePreview, fullScreen, onClose, ...rest } = props;
 
-  const [ headerExtensions, setHeaderExtensions ] = useState();
-
   const [ content, setContent ] = useState();
   const [ error, setError ] = useState();
 
@@ -151,15 +158,6 @@ function PrintPreview(props) {
       // onClose && onClose();
     }
   }, [content]);
-
-  useEffect(() => {
-    getHeaderExtensions()
-      .then(extensions => setHeaderExtensions(extensions || []))
-      .catch(err => {
-        console.log("Something went wrong loading the print header extensions", err);
-        setHeaderExtensions([]);
-      })
-  }, [])
 
   let header = (
     headerExtensions?.length ? <>{ headerExtensions.map((extension, index) => {
@@ -210,8 +208,8 @@ function PrintPreview(props) {
       >
         { (title || subtitle) &&
         <DialogTitle>
-          { title && <Typography variant="h4">{title}</Typography> }
-          { subtitle && <Typography variant="overline" color="textSecondary">{subtitle}</Typography> }
+          { title && <Typography component="div" variant="h4">{title}</Typography> }
+          { subtitle && <Typography component="div" variant="overline" color="textSecondary">{subtitle}</Typography> }
         </DialogTitle>
         }
         <DialogContent dividers>

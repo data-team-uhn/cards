@@ -28,13 +28,12 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
-import { hasWarningFlags } from "./AnswerInstructions";
+import { hasWarningFlags } from "./FormUtilities";
 import Question from "./Question";
 import FormattedText from "../components/FormattedText.jsx";
 import QuestionnaireStyle from './QuestionnaireStyle';
@@ -252,7 +251,7 @@ let QuestionMatrix = (props) => {
   let renderQuestion = (question, hasWarningFlags) => {
     return (
       <TableCell component="th" >
-        <Typography color={ hasWarningFlags ? 'error' : 'inherit'}>{question.text}</Typography>
+        <FormattedText color={ hasWarningFlags ? 'error' : 'inherit'}>{question.text}</FormattedText>
         { question.description &&
           <FormattedText variant="caption" display="block" color="textSecondary">
             { question.description }

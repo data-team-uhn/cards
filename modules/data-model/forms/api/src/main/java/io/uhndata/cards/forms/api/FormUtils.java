@@ -80,9 +80,13 @@ public interface FormUtils
 
     enum SearchType
     {
+        /** Search only in this form. */
         FORM,
+        /** Search in all the forms belonging to the subject. */
         SUBJECT_FORMS,
+        /** Search in all the forms belonging to the subject and all ancestor subjects. */
         ANCESTORS_FORMS,
+        /** Search in all the forms belonging to the subject and all descendant subjects. */
         DESCENDANTS_FORMS
     }
 
@@ -111,6 +115,16 @@ public interface FormUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Form}, {@code false} otherwise
      */
     boolean isForm(NodeState node);
+
+    /**
+     * Look up the form that a node belongs to. The given node must be a descendant of a form node, i.e. an answer or
+     * answer section, or it may be the form node itself.
+     *
+     * @param node a node descendant of a form node
+     * @return the form node, an ancestor-or-self of the given node, or {@code null} if the given node doesn't have a
+     *         form ancestor or if the form node is inaccessible to the current user
+     */
+    Node getForm(Node node);
 
     /**
      * Retrieve the JCR node of the Questionnaire that a Form node answers.
@@ -167,6 +181,16 @@ public interface FormUtils
      * @return a Subject node, or {@code null} if the provided node is not a Form
      */
     Node getSubject(Node form);
+
+    /**
+     * Retrieve the JCR node of the Subject that a Form relates to.
+     *
+     * @param form a Form node, may be {@code null}
+     * @param subjectTypePath the path to a subject type, e.g. {@code /SubjectTypes/Patient}
+     * @return a Subject node, or {@code null} if the provided node is not a Form or no subject of the given type is
+     *         related to the form
+     */
+    Node getSubject(Node form, String subjectTypePath);
 
     /**
      * Retrieve the JCR node of the Subject that a Form belongs to.

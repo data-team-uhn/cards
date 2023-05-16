@@ -31,7 +31,7 @@ import ValueComponentManager from "../questionnaireEditor/ValueComponentManager"
 // Boolean Input field used by Edit dialog component
 
 let BooleanInput = (props) => {
-  let { objectKey, data, hint } = props;
+  let { objectKey, data, hint, onChange } = props;
   let [ checked, setChecked ] = useState(data?.[objectKey] == true);
 
   return (
@@ -40,7 +40,7 @@ let BooleanInput = (props) => {
         color="secondary"
         edge="start"
         id={objectKey}
-        onChange={(event) => {setChecked(event.target.checked);}}
+        onChange={(event) => {setChecked(event.target.checked); onChange?.(event.target.checked)}}
         checked={checked}
         />
       <input type="hidden" name={objectKey} value={String(checked)} />
@@ -71,7 +71,7 @@ let BooleanValue = (props) => {
 };
 
 ValueComponentManager.registerValueComponent((definition) => {
-  if (definition == "boolean") {
+  if (definition == "boolean" || typeof(definition) == "object" && Object.keys(definition || {}).length == 2 && definition?.["true"] && definition?.["false"]) {
     return [BooleanValue, 50];
   }
 });

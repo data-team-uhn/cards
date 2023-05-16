@@ -40,7 +40,7 @@
       "start-order":"15"
     },
     {
-      "id":"com.fasterxml.woodstox:woodstox-core:5.3.0",
+      "id":"com.fasterxml.woodstox:woodstox-core:5.4.0",
       "start-order":"15"
     },
     {

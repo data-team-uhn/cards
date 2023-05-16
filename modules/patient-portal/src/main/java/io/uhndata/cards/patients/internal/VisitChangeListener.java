@@ -18,9 +18,11 @@ package io.uhndata.cards.patients.internal;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -45,15 +47,15 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Change listener looking for new or modified forms related to a Visit subject. Initially, when a new Visit Information
- * form is created, it also creates any forms in the specified survey set that need to be created, based on the survey
- * set's specified frequency. Then, when all the forms required for a visit are completed, it also marks in the Visit
- * Information that the patient has completed the surveys.
+ * form is created, it also creates any forms in the specified questionnaire set that need to be created, based on the
+ * questionnaire set's specified frequency. When all the forms required for a visit are completed marks in the Visit
+ * Information form that the patient has completed the required forms.
  *
  * @version $Id$
  */
@@ -62,22 +64,17 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
     ResourceChangeListener.CHANGES + "=ADDED",
     ResourceChangeListener.CHANGES + "=CHANGED"
 })
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class VisitChangeListener implements ResourceChangeListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(VisitChangeListener.class);
 
     /**
-     * If a questionnaire needs to be completed every X days, start requiring it not only exactly X days, but also a few
-     * days earlier. This defines how many days that is.
+     * If a questionnaire needs to be completed every X weeks, start creating that survey a few days earlier.
+     * This defines how many days that is.
+     * This is to allow some margin in case visits are a few days off of their ideal schedule.
      */
     private static final int FREQUENCY_MARGIN_DAYS = 2;
-
-    /**
-     * If the new visit takes place close (in time) to another visit that requires the same questionnaire, let only the
-     * previous visit require said questionnaire. This defines how "close", in number of days, these visits need to be
-     * in order to influence one another.
-     */
-    private static final int VISIT_CREATION_MARGIN_DAYS = 3;
 
     /** Provides access to resources. */
     @Reference
@@ -105,17 +102,20 @@ public class VisitChangeListener implements ResourceChangeListener
     }
 
     /**
-     * For every form change, either creates the forms scheduled for a visit, if it's a new Visit Information, or
-     * updates the flag that indicates that all the forms have been completed by the patient, if it's a regular survey
-     * needed for a visit.
+     * For every form change, check if the changed form completes a visit or requires additional forms to be created.
+     * If the changed form is a Visit information form, check if new forms need to be created for said visit.
+     * If the changed form is for a visit, check if it completes the questionnaire set for said visit and flag if so.
      *
      * @param event a change that happened in the repository
      */
     private void handleEvent(final ResourceChange event)
     {
         // Acquire a service session with the right privileges for accessing visits and their forms
+        boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.resolverFactory
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
+            this.rrp.push(localResolver);
+            mustPopResolver = true;
             // Get the information needed from the triggering form
             final Session session = localResolver.adaptTo(Session.class);
             if (!session.nodeExists(event.getPath())) {
@@ -126,47 +126,51 @@ public class VisitChangeListener implements ResourceChangeListener
             if (!this.formUtils.isForm(form)) {
                 return;
             }
-            this.rrp.push(localResolver);
-            final Node subject = this.formUtils.getSubject(form);
-            final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
+            final Node subject = this.formUtils.getSubject(form);
 
             if (isVisitInformation(questionnaire)) {
-                // Create any forms that need to be created for this new visit
+                // Create any forms that need to be created for this visit
                 handleVisitInformationForm(form, subject, questionnaire, session);
-            } else if ("Visit".equals(subjectType)) {
-                // Not a new visit information form, but it is a form for a visit.
-                // Check if all forms for the current visit are complete.
-                handleVisitDataForm(subject, session);
+            } else {
+                final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
+                if ("Visit".equals(subjectType)) {
+                    // Not a new visit information form, but it is a form for a visit.
+                    // Check if all forms for the current visit are complete.
+                    handleVisitDataForm(subject, session);
+                }
             }
-            this.rrp.pop();
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } catch (final RepositoryException e) {
             LOGGER.error(e.getMessage(), e);
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
     }
 
     /**
      * Creates any forms that need to be completed per the visit's questionnaire set.
      *
-     * @param form the Visit Information form that triggered the current event
-     * @param visit the Visit that is the subject for the triggering form
-     * @param questionnaire the Visit Information questionnaire
+     * @param visitForm the Visit Information form that triggered the current event
+     * @param visitSubject the Visit that is the subject for the triggering form
+     * @param visitQuestionnaire the Visit Information questionnaire
      * @param session a service session providing access to the repository
      * @throws RepositoryException if any required data could not be checked
      */
-    private void handleVisitInformationForm(final Node form, final Node visit, final Node questionnaire,
-        final Session session) throws RepositoryException
+    private void handleVisitInformationForm(final Node visitForm, final Node visitSubject,
+        final Node visitQuestionnaire, final Session session) throws RepositoryException
     {
-        final VisitInformation visitInformation = new VisitInformation(questionnaire, form);
+        final VisitInformation visitInformation = new VisitInformation(visitQuestionnaire, visitForm);
 
         // Only continue with the surveys update if we have the requirements
         if (!visitInformation.hasRequiredInformation()) {
             return;
         }
 
-        final Map<String, QuestionnaireFrequency> questionnaireSetInfo =
+        final QuestionnaireSetInfo questionnaireSetInfo =
             getQuestionnaireSetInformation(visitInformation, session);
 
         if (questionnaireSetInfo == null) {
@@ -174,10 +178,10 @@ public class VisitChangeListener implements ResourceChangeListener
             return;
         }
 
-        final int baseQuestionnaireSetSize = questionnaireSetInfo.size();
+        final int baseQuestionnaireSetSize = questionnaireSetInfo.membersSize();
         // Remove the questionnaires already created for the current visit
-        pruneQuestionnaireSetByVisit(visit, visitInformation, questionnaireSetInfo);
-        final int prunedQuestionnaireSetSize = questionnaireSetInfo.size();
+        pruneQuestionnaireSetByVisit(visitSubject, visitInformation, questionnaireSetInfo);
+        final int prunedQuestionnaireSetSize = questionnaireSetInfo.membersSize();
 
         if (prunedQuestionnaireSetSize < 1) {
             // Visit already has all forms in the questionnaire set: end early
@@ -186,18 +190,18 @@ public class VisitChangeListener implements ResourceChangeListener
             // However, if the visit information form is edited via the browser editor and saved twice,
             // `has_surveys` can be incorrectly deleted and may need to be set back to true.
             if (baseQuestionnaireSetSize > 0) {
-                changeVisitInformation(form, "has_surveys", true, session);
+                changeVisitInformation(visitForm, "has_surveys", true, session);
             }
             return;
         }
 
-        // Prune the quesionnaires to be created based on frequency.
+        // Prune the questionnaires to be created based on frequency.
         // If all the frequencies are 0, skip this step.
-        if (!questionnaireSetInfo.values().stream().allMatch(value -> 0 == value.getFrequency())) {
-            pruneQuestionnaireSet(visit, visitInformation, questionnaireSetInfo);
+        if (!questionnaireSetInfo.getMembers().values().stream().allMatch(member -> 0 == member.getFrequency())) {
+            pruneQuestionnaireSet(visitSubject, visitInformation, questionnaireSetInfo);
         }
 
-        if (questionnaireSetInfo.size() < 1) {
+        if (questionnaireSetInfo.membersSize() < 1) {
             // No questionnaires were created as all missing questionnaires from the questionnaire set
             // have their frequencies met by other visits.
 
@@ -206,21 +210,21 @@ public class VisitChangeListener implements ResourceChangeListener
             // 2. A subset of the questionnaires from the questionnaire set which were previously created
             if (prunedQuestionnaireSetSize == baseQuestionnaireSetSize) {
                 // If case 1, record that this visit has no forms
-                changeVisitInformation(form, "has_surveys", false, session);
+                changeVisitInformation(visitForm, "has_surveys", false, session);
             } else {
                 // If case 2, record that this visit has forms
 
                 // Ideally, has_surveys would already be set to true so this should not be needed.
                 // However, if the visit information form is edited via the browser editor and saved twice,
                 // `has_surveys` can be incorrectly deleted and may need to be set back to true.
-                changeVisitInformation(form, "has_surveys", true, session);
+                changeVisitInformation(visitForm, "has_surveys", true, session);
             }
             return;
         } else {
-            // Record that this visit has forms
-            changeVisitInformation(form, "has_surveys", true, session);
+            // Visit needs additional forms. Record that and create the required forms
+            changeVisitInformation(visitForm, "has_surveys", true, session);
 
-            final List<String> createdForms = createForms(visit, questionnaireSetInfo, session);
+            final List<String> createdForms = createForms(visitSubject, questionnaireSetInfo.getMembers(), session);
             commitForms(createdForms, session);
         }
     }
@@ -237,6 +241,8 @@ public class VisitChangeListener implements ResourceChangeListener
         Node visitInformationForm = null;
         Node surveysCompleteQuestion = null;
 
+        // Get the visit information form for this subject and iterate through all other forms.
+        // If any other forms are incomplete, terminate early without updating visit completion.
         for (final PropertyIterator forms = visitSubject.getReferences("subject"); forms.hasNext();) {
             final Node form = forms.nextProperty().getParent();
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
@@ -254,33 +260,33 @@ public class VisitChangeListener implements ResourceChangeListener
                     }
                 }
             } else if (isFormIncomplete(form)) {
-                // Visit is not complete: stop checking
+                // Visit is not complete: stop checking without saving completion status
                 return;
             }
         }
 
-        // The actual number of forms does not matter, since all the needed forms have been pre-created, and any still
-        // incomplete form will cause the method to return early from the check above
+        // The actual number of forms does not matter since all the needed forms will have been pre-created.
+        // If this code runs then all created forms are completed so all needed forms are complete.
         if (visitInformationForm != null) {
             changeVisitInformation(visitInformationForm, "surveys_complete", true, session);
         }
     }
 
     /**
-     * Check if one date is within a few days from a base date.
+     * Check if two dates are within a given range of each other.
      *
      * @param testedDate the date to check
      * @param baseDate the base date to compare against
-     * @param days the maximum number of days before or after the base date to consider as within range
+     * @param dateRange the maximum number of days before or after the base date to consider as within range
      * @return {@code true} if the tested date is in range, {@code false} otherwise
      */
-    private static boolean isWithinDateRange(final Calendar testedDate, final Calendar baseDate, final int days)
+    private static boolean isWithinDateRange(final Calendar testedDate, final Calendar baseDate, final int dateRange)
     {
         if (testedDate == null || baseDate == null) {
             return false;
         }
-        final Calendar start = addDays(baseDate, -Math.abs(days));
-        final Calendar end = addDays(baseDate, Math.abs(days));
+        final Calendar start = addDays(baseDate, -Math.abs(dateRange));
+        final Calendar end = addDays(baseDate, Math.abs(dateRange));
         return testedDate.after(start) && testedDate.before(end);
     }
 
@@ -299,136 +305,159 @@ public class VisitChangeListener implements ResourceChangeListener
     }
 
     /**
-     * Get the questionnaire set specified by the Visit Information form, as a list of questionnaires and their desired
-     * frequency. Not all of these questionnaires will have to be filled in for the visit, pruning out the ones that
-     * don't need to be filled in again, according to their frequency and the date when they were last filled in, will
-     * be done later in {@link #pruneQuestionnaireSet(Node, VisitInformation, Map)}.
+     * Get the details about the questionnaire set for a Visit Information form.
      *
      * @param visitInformation the Visit Information form data for which the questionnaire set should be retrieved
      * @param session a service session providing access to the repository
-     * @return a map of all questionnaires with frequency in the questionnaire set, keyed by questionnaire uuid
+     * @return a QuestionnaireSetInfo containing all questionnaires and conflicts for this questionnaire set
      */
-    private Map<String, QuestionnaireFrequency> getQuestionnaireSetInformation(final VisitInformation visitInformation,
+    private QuestionnaireSetInfo getQuestionnaireSetInformation(final VisitInformation visitInformation,
         final Session session)
     {
-        final Map<String, QuestionnaireFrequency> result = new HashMap<>();
+        QuestionnaireSetInfo info = new QuestionnaireSetInfo();
         try {
-            for (final NodeIterator questionnaireSet = session.getNode("/Survey/"
-                + visitInformation.getQuestionnaireSet()).getNodes(); questionnaireSet.hasNext();) {
-                final Node questionnaireRef = questionnaireSet.nextNode();
-                if (!questionnaireRef.isNodeType("cards:QuestionnaireRef")
-                    || !questionnaireRef.hasProperty("questionnaire")) {
-                    continue;
+            Node questionnaireSet = session.getNode("/Survey/" + visitInformation.getQuestionnaireSet());
+
+            // Retrieve child node data from the questionnaire set, namely conflicts and member questionnaires
+            for (final NodeIterator childNodes = questionnaireSet.getNodes(); childNodes.hasNext();) {
+                final Node node = childNodes.nextNode();
+                if (node.isNodeType("cards:QuestionnaireRef")
+                    && node.hasProperty("questionnaire")) {
+                    final Node questionnaire = node.getProperty("questionnaire").getNode();
+                    final String uuid = questionnaire.getIdentifier();
+                    int frequency = 0;
+                    if (node.hasProperty("frequency")) {
+                        frequency = (int) node.getProperty("frequency").getLong();
+                    }
+                    info.putMember(uuid, new QuestionnaireRef(questionnaire, frequency));
+                } else if (node.isNodeType("cards:QuestionnaireConflict")) {
+                    if (node.hasProperty("questionnaire")) {
+                        final String uuid = node.getProperty("questionnaire").getString();
+                        final int frequency = (int) node.getProperty("frequency").getLong();
+                        info.putConflict(uuid, frequency);
+                    }
                 }
-                final Node questionnaire = questionnaireRef.getProperty("questionnaire").getNode();
-                final String uuid = questionnaire.getIdentifier();
-                int frequency = 0;
-                if (questionnaireRef.hasProperty("frequency")) {
-                    frequency = (int) questionnaireRef.getProperty("frequency").getLong();
-                }
-                result.put(uuid, new QuestionnaireFrequency(questionnaire, frequency));
+            }
+
+            // Retrieve property data
+            for (final PropertyIterator childProperties = questionnaireSet.getProperties(); childProperties.hasNext();)
+            {
+                info.addProperty(childProperties.nextProperty());
             }
         } catch (final RepositoryException e) {
             LOGGER.warn("Failed to retrieve questionnaire frequency: {}", e.getMessage(), e);
             return null;
         }
-        return result;
+        return info;
     }
 
     /**
      * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency.
-     * Iterates through all of the patient's visits and checks these visits for completed forms that satisfy that form's
-     * frequency requirements. If another visit has filled in a questionnaire recently enough, remove that questionnaire
-     * from the set.
      *
-     * @param visit the visit Subject which should be checked for forms
+     * Iterate through a patient's visits looking for completed forms within the current questionnaire set.
+     * If this completed form is recent enough to fall within the current frequency range, remove that
+     * questionnaire from the current questionnaire set members.
+     *
+     * @param visitNode the visit Subject which should be checked for forms
      * @param visitInformation the set of data about the visit that triggered this event
      * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
      * @throws RepositoryException if iterating the patient's visits fails
      */
-    private void pruneQuestionnaireSet(final Node visit, final VisitInformation visitInformation,
-        final Map<String, QuestionnaireFrequency> questionnaireSetInfo) throws RepositoryException
+    private void pruneQuestionnaireSet(final Node visitNode, final VisitInformation visitInformation,
+        final QuestionnaireSetInfo questionnaireSetInfo) throws RepositoryException
     {
-        final Node patientNode = visit.getParent();
+        final Node patientNode = visitNode.getParent();
         for (final NodeIterator visits = patientNode.getNodes(); visits.hasNext();) {
             final Node otherVisit = visits.nextNode();
-            // Check if visit is not the triggering visit, since the triggering visit has already been processed.
-            if (!visit.isSame(otherVisit) && this.subjectUtils.isSubject(otherVisit)
+            // If the visit is the triggering visit, ignore it as the triggering visit has already been checked.
+            if (!visitNode.isSame(otherVisit) && this.subjectUtils.isSubject(otherVisit)
                 && "Visit".equals(this.subjectTypeUtils.getLabel(this.subjectUtils.getType(otherVisit)))) {
                 pruneQuestionnaireSetByVisit(otherVisit, visitInformation, questionnaireSetInfo);
+            }
+            if (questionnaireSetInfo.membersSize() == 0) {
+                return;
             }
         }
     }
 
     /**
      * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency.
-     * Iterates through all of the provided visit's forms and checks if they meet the frequency requirements for the
-     * provided visitInformation. If they do, remove that form's questionnaire from the questionnaire set.
      *
-     * @param visit the visit Subject which should be checked for forms
+     * Iterates through all forms for the current visit and check if they meet the frequency requirements for the
+     * provided visitInformation. If they do, remove that form's questionnaire from the questionnaire set's members.
+     *
+     * @param visitNode the visit Subject which should be checked for forms
      * @param visitInformation the set of data about the visit that triggered this event
      * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
      * @throws RepositoryException if iterating the patient's visits fails
      */
-    private void pruneQuestionnaireSetByVisit(final Node visit, final VisitInformation visitInformation,
-        final Map<String, QuestionnaireFrequency> questionnaireSetInfo) throws RepositoryException
+    private void pruneQuestionnaireSetByVisit(final Node visitNode, final VisitInformation visitInformation,
+        final QuestionnaireSetInfo questionnaireSetInfo) throws RepositoryException
     {
         String visitClinic = null;
 
-        // Create a list of all complete forms that exist for this visit.
-        // Record the visit's date as well, if there is a Visit Information form with a date.
-        final Map<String, Boolean> questionnaires = new HashMap<>();
+        // Iterate through all forms for this visit.
+        // If there is a Visit Information form, record the visit date and clinic.
+        // Otherwise, record a list of all unique questionnaires and if any instances of that questionnaire is complete.
+        final Set<String> questionnaires = new HashSet<>();
         Calendar visitDate = null;
-        for (final PropertyIterator forms = visit.getReferences("subject"); forms.hasNext();) {
+        for (final PropertyIterator forms = visitNode.getReferences("subject"); forms.hasNext();) {
             final Node form = forms.nextProperty().getParent();
             if (this.formUtils.isForm(form)) {
                 final Node questionnaire = this.formUtils.getQuestionnaire(form);
                 if (questionnaire.isSame(visitInformation.getQuestionnaire())) {
+                    // Found the Visit Information form. Record the date.
                     visitDate = (Calendar) this.formUtils
                         .getValue(this.formUtils.getAnswer(form, visitInformation.getVisitDateQuestion()));
                     visitClinic = (String) this.formUtils
                         .getValue(this.formUtils.getAnswer(form, visitInformation.getClinicQuestion()));
                 } else {
-                    questionnaires.merge(questionnaire.getIdentifier(), !isFormIncomplete(form), Boolean::logicalOr);
+                    // Record the current questionnaire.
+                    questionnaires.add(questionnaire.getIdentifier());
                 }
             }
         }
 
-        // Ignore forms for different clinics, or forms without a clinic
-        if (StringUtils.isBlank(visitClinic) || !visitInformation.getClinicPath().equals(visitClinic)) {
-            return;
-        } else {
+        // Check if the clinics match between the triggering visit and the current visit.
+        // If the clinics match or if the questionnaire set does not care if clinics match,
+        // remove any found questionnaires that are within the frequency range.
+        if ((!StringUtils.isBlank(visitClinic) && visitInformation.getClinicPath().equals(visitClinic))
+            || questionnaireSetInfo.shouldIgnoreClinic()) {
             removeQuestionnairesFromVisit(visitInformation, visitDate, questionnaires, questionnaireSetInfo);
+        } else {
+            return;
         }
     }
 
     /**
-     * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency. Uses a
-     * provided list of questionnaires and the date that list occured on to compare with the questionnaire set
+     * Remove any questionnaires from the questionnaire set which are in the provided list of questionnaires if they are
+     * within the questionnaire set's frequency range.
      *
      * @param visitInformation the set of data about the visit that triggered this event
      * @param visitDate the data of the visit being checked
      * @param questionnaires the list of questionnaires for the visit being checked, along with their completion status
      * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
-     * @throws RepositoryException if iterating the patient's visits fails
      */
     private void removeQuestionnairesFromVisit(final VisitInformation visitInformation, final Calendar visitDate,
-        final Map<String, Boolean> questionnaires, final Map<String, QuestionnaireFrequency> questionnaireSetInfo)
+        final Set<String> questionnaires, final QuestionnaireSetInfo questionnaireSetInfo)
     {
         final Calendar triggeringDate = visitInformation.getVisitDate();
-        final boolean isWithinVisitMargin = isWithinDateRange(visitDate, triggeringDate, VISIT_CREATION_MARGIN_DAYS);
 
-        // Check if any of this visit's forms meet a frequency requirement for the current questionnaire set.
-        // If they do, remove those forms' questionnaires from the set.
-        for (final String questionnaireIdentifier : questionnaires.keySet()) {
-            if (questionnaireSetInfo.containsKey(questionnaireIdentifier)) {
-                final int frequencyPeriod = questionnaireSetInfo.get(questionnaireIdentifier).getFrequency()
-                    * 7 - FREQUENCY_MARGIN_DAYS;
-                final boolean complete = questionnaires.get(questionnaireIdentifier);
+        // Check if any of the provided questionnaires conflict with the desired Questionnaire Set
+        if (questionnaireSetInfo.containsConflict(questionnaires, triggeringDate, visitDate)) {
+            // If there is a conflict, do not create anything for this questionnaire set
+            questionnaireSetInfo.clearMembers();
+        } else {
+            // Otherwise, check if any of this visit's forms meet a frequency requirement for the questionnaire set.
+            // If they do, remove those forms' questionnaires from the set.
 
-                if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)) {
-                    if (complete || isWithinVisitMargin) {
-                        questionnaireSetInfo.remove(questionnaireIdentifier);
+            for (final String questionnaireIdentifier : questionnaires) {
+                if (questionnaireSetInfo.containsMember(questionnaireIdentifier)) {
+                    int frequencyPeriod = questionnaireSetInfo.getMember(questionnaireIdentifier).getFrequency();
+                    frequencyPeriod = frequencyPeriod * 7 - FREQUENCY_MARGIN_DAYS;
+
+                    if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)) {
+                        questionnaireSetInfo.removeMember(questionnaireIdentifier);
                     }
                 }
             }
@@ -438,86 +467,27 @@ public class VisitChangeListener implements ResourceChangeListener
     /**
      * Create a new form for each questionnaire in the questionnaireSet, with the visit as the parent subject.
      *
-     * @param visit the visit which should be the new form's subject
+     * @param visitSubject the visit which should be the new form's subject
      * @param questionnaireSetInfo the set of questionnaires which should be created
      * @param session a service session providing access to the repository
      * @return a list of paths for all created forms
      * @throws RepositoryException if the form data could not be accessed
      */
-    private List<String> createForms(final Node visit, final Map<String, QuestionnaireFrequency> questionnaireSetInfo,
+    private List<String> createForms(final Node visitSubject, final Map<String, QuestionnaireRef> questionnaireRefs,
         final Session session) throws RepositoryException
     {
         final List<String> results = new LinkedList<>();
 
-        for (final String questionnaireIdentifier : questionnaireSetInfo.keySet()) {
+        for (final String questionnaireIdentifier : questionnaireRefs.keySet()) {
             final String uuid = UUID.randomUUID().toString();
             final Node form = session.getNode("/Forms").addNode(uuid, FormUtils.FORM_NODETYPE);
-            final Node questionnaire = questionnaireSetInfo.get(questionnaireIdentifier).getQuestionnaire();
+            final Node questionnaire = questionnaireRefs.get(questionnaireIdentifier).getQuestionnaire();
             form.setProperty(FormUtils.QUESTIONNAIRE_PROPERTY, questionnaire);
-            form.setProperty(FormUtils.SUBJECT_PROPERTY, visit);
-            if ("AUDITC".equals(questionnaire.getName())) {
-                final String sex = getPatientSex(visit);
-                if (sex != null) {
-                    try {
-                        final Node sexAnswer = form.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
-                        final Node sexQuestion = session.getNode("/Questionnaires/AUDITC/audit_sex");
-                        sexAnswer.setProperty(FormUtils.QUESTION_PROPERTY, sexQuestion);
-                        sexAnswer.setProperty(FormUtils.VALUE_PROPERTY, sex);
-
-                        // Add in a second answer node with no value so that the form is not marked as complete
-                        final Node secondAnswerSection = form.addNode(UUID.randomUUID().toString(),
-                            "cards:AnswerSection");
-                        final Node secondSection = session.getNode("/Questionnaires/AUDITC/audit_survey");
-                        secondAnswerSection.setProperty(FormUtils.SECTION_PROPERTY, secondSection);
-
-                        final Node secondAnswer = secondAnswerSection.addNode(UUID.randomUUID().toString(),
-                            "cards:LongAnswer");
-                        final Node secondQuestion = session.getNode("/Questionnaires/AUDITC/audit_survey/audit_1");
-                        secondAnswer.setProperty(FormUtils.QUESTION_PROPERTY, secondQuestion);
-                    } catch (final RepositoryException e) {
-                        LOGGER.error("Failed to set sex: {}", e.getMessage(), e);
-                    }
-                }
-            }
+            form.setProperty(FormUtils.SUBJECT_PROPERTY, visitSubject);
             results.add(form.getPath());
         }
 
         return results;
-    }
-
-    /**
-     * Get the sex for a visit's parent patient, as specified by their patient information form.
-     *
-     * @param visit the visit which shoulkd have it's patient checked
-     * @return the patient sex as listed in the patient information form or null
-     */
-    private String getPatientSex(final Node visit)
-    {
-        try {
-            final Node patient = visit.getParent();
-            if (this.subjectUtils.isSubject(patient)) {
-                for (final PropertyIterator references = patient.getReferences(); references.hasNext();) {
-                    final Node form = references.nextProperty().getParent();
-                    final Node questionnaire = this.formUtils.getQuestionnaire(form);
-                    if (questionnaire != null && isPatientInformation(questionnaire)) {
-                        for (final NodeIterator answers = form.getNodes(); answers.hasNext();) {
-                            final Node answer = answers.nextNode();
-                            final Node question = this.formUtils.getQuestion(answer);
-                            if (question != null && "sex".equals(question.getName())) {
-                                return answer.hasProperty("value") ? answer.getProperty("value").getString() : null;
-                            }
-                        }
-                        // Found the patient information form, but it is missing the information we need.
-                        // Exit & return default
-                        break;
-                    }
-                }
-            }
-        } catch (final RepositoryException e) {
-            LOGGER.warn("Failed to find sex: {}", e.getMessage(), e);
-            // Could not retrieve required information: Return default
-        }
-        return null;
     }
 
     /**
@@ -588,6 +558,7 @@ public class VisitChangeListener implements ResourceChangeListener
     /**
      * Record a boolean value to the visit information form for the specified question/answer.
      * Will not update the visit information form if the question already has the desired answer.
+     * Value is saved as a long rather than boolean per standard procedure.
      *
      * @param visitInformationForm the Visit Information form to save the value to, if needed
      * @param questionPath the relative path from the visit information questionnaire to the question to be answered
@@ -602,7 +573,7 @@ public class VisitChangeListener implements ResourceChangeListener
             final Node questionnaire = this.formUtils.getQuestionnaire(visitInformationForm);
             final Node question = this.questionnaireUtils.getQuestion(questionnaire, questionPath);
             if (question == null) {
-                LOGGER.warn("Could update visit information form as requested question could not be found: "
+                LOGGER.warn("Could not update visit information form as requested question could not be found: "
                     + questionPath);
                 return;
             }
@@ -661,33 +632,10 @@ public class VisitChangeListener implements ResourceChangeListener
      */
     private static boolean isVisitInformation(final Node questionnaire)
     {
-        return isSpecificQuestionnaire(questionnaire, "/Questionnaires/Visit information");
-    }
-
-    /**
-     * Check if a questionnaire is the {@code Patient Information} questionnaire.
-     *
-     * @param questionnaire the questionnaire to check
-     * @return {@code true} if the questionnaire is indeed the {@code Patient Information}
-     */
-    private static boolean isPatientInformation(final Node questionnaire)
-    {
-        return isSpecificQuestionnaire(questionnaire, "/Questionnaires/Patient information");
-    }
-
-    /**
-     * Check if a questionnaire is the specified questionnaire.
-     *
-     * @param questionnaire the questionnaire to check
-     * @param questionnairePath the path to the desired questionnaire
-     * @return {@code true} if the questionnaire is indeed the questionnaire specified by path
-     */
-    private static boolean isSpecificQuestionnaire(final Node questionnaire, final String questionnairePath)
-    {
         try {
-            return questionnaire != null && questionnairePath.equals(questionnaire.getPath());
+            return questionnaire != null && "/Questionnaires/Visit information".equals(questionnaire.getPath());
         } catch (final RepositoryException e) {
-            LOGGER.warn("Failed check if form is of questionnaire type {}: {}", questionnairePath, e.getMessage(), e);
+            LOGGER.warn("Failed check if form is Visit Information Form: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -710,15 +658,19 @@ public class VisitChangeListener implements ResourceChangeListener
         {
             Session session = questionnaire.getSession();
             this.questionnaire = questionnaire;
+
             this.visitDateQuestion = questionnaire.getNode("time");
             this.visitDate = (Calendar) VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.visitDateQuestion));
+
             this.clinicQuestion =
                 VisitChangeListener.this.questionnaireUtils.getQuestion(questionnaire, "clinic");
             final String clinicName = (String) VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.clinicQuestion));
             final Node clinicNode = StringUtils.isNotBlank(clinicName) && session.nodeExists(clinicName)
                 ? session.getNode(clinicName) : null;
+
+            // Retrieve the questionnaire set for the specified clinic
             if (clinicNode != null) {
                 this.questionnaireSet = session.nodeExists("/Survey/" + clinicNode.getProperty("survey").getString())
                     ? clinicNode.getProperty("survey").getString() : null;
@@ -765,13 +717,124 @@ public class VisitChangeListener implements ResourceChangeListener
         }
     }
 
-    private static final class QuestionnaireFrequency
+    private static final class QuestionnaireSetInfo
+    {
+        // Conflict with any questionnaire
+        private static final String CONFLICT_ANY = "any";
+
+        // Only conflict with questionnaires included in the map of conflicts
+        private static final String CONFLICT_ANY_LISTED = "anyListed";
+
+        private final Map<String, Integer> conflicts;
+
+        private final Map<String, QuestionnaireRef> members;
+
+        private boolean ignoreClinic;
+
+        private String conflictMode;
+
+        QuestionnaireSetInfo()
+        {
+            this.conflicts = new HashMap<>();
+            this.ignoreClinic = false;
+            this.members = new HashMap<>();
+
+            // Default mode
+            this.conflictMode = CONFLICT_ANY_LISTED;
+        }
+
+        public void putConflict(String uuid, int frequency)
+        {
+            this.conflicts.put(uuid, frequency);
+        }
+
+        public boolean containsConflict(final Set<String> questionnaires, final Calendar triggeringDate,
+            final Calendar visitDate)
+        {
+            // Treat default as any listed case
+            for (final String questionnaireIdentifier : questionnaires) {
+                int frequencyPeriod = 0;
+                if (CONFLICT_ANY.equals(this.conflictMode)) {
+                    frequencyPeriod = this.members.values().stream()
+                        .map(QuestionnaireRef::getFrequency)
+                        .max(Integer::compare).get();
+                } else if (this.conflicts.containsKey(questionnaireIdentifier)) {
+                    frequencyPeriod = this.conflicts.get(questionnaireIdentifier);
+                } else {
+                    continue;
+                }
+
+                frequencyPeriod = frequencyPeriod * 7 - FREQUENCY_MARGIN_DAYS;
+
+                if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void putMember(String uuid, QuestionnaireRef member)
+        {
+            this.members.put(uuid, member);
+        }
+
+        public Map<String, QuestionnaireRef> getMembers()
+        {
+            return this.members;
+        }
+
+        public QuestionnaireRef getMember(String uuid)
+        {
+            return this.members.get(uuid);
+        }
+
+        public int membersSize()
+        {
+            return this.members.size();
+        }
+
+        public boolean containsMember(String uuid)
+        {
+            return this.members.containsKey(uuid);
+        }
+
+        public void removeMember(String uuid)
+        {
+            this.members.remove(uuid);
+        }
+
+        public void clearMembers()
+        {
+            this.members.clear();
+        }
+
+        public boolean shouldIgnoreClinic()
+        {
+            return this.ignoreClinic;
+        }
+
+        public void addProperty(Property property)
+        {
+            try {
+                if ("frequencyIgnoreClinic".equals(property.getName())) {
+                    this.ignoreClinic = property.getBoolean();
+                } else if ("conflictMode".equals(property.getName())) {
+                    this.conflictMode = property.getString();
+                }
+            } catch (RepositoryException e) {
+                // Could not retrieve property value: ignore
+                LOGGER.warn("Failed to retrieve property", e.getMessage());
+            }
+        }
+    }
+
+    private static final class QuestionnaireRef
     {
         private final Node questionnaire;
 
-        private final Integer frequency;
+        private final int frequency;
 
-        QuestionnaireFrequency(final Node questionnaire, final int frequency)
+        QuestionnaireRef(final Node questionnaire, final int frequency)
         {
             this.questionnaire = questionnaire;
             this.frequency = frequency;

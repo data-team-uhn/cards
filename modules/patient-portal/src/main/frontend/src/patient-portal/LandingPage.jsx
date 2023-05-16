@@ -31,6 +31,8 @@ import {
 
 import makeStyles from '@mui/styles/makeStyles';
 
+import Logo from '../components/Logo';
+
 const useStyles = makeStyles(theme => ({
   paper: {
     display: 'flex',
@@ -39,7 +41,6 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
   },
   logo : {
-    maxWidth: "200px",
     marginBottom: theme.spacing(5),
     marginTop: theme.spacing(9.5),
   },
@@ -64,7 +65,7 @@ function LandingPage(props) {
 
   const USER_TYPE_PARAM = "usertype";
   const USER_TYPE_HCP = "hcp";
-  const CONFIG = "/Survey/PatientIdentification.json";
+  const CONFIG = "/Survey/PatientAccess.json";
   const ENABLED_PROP = "tokenlessAuthEnabled";
 
   useEffect(() => {
@@ -85,9 +86,7 @@ function LandingPage(props) {
     >
           <DialogContent className={classes.paper}>
             <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
-              <Grid item>
-                <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo} />
-              </Grid>
+              <Logo component={Grid} item className={classes.logo} maxWidth="200px" />
               <Grid item>
                 <Typography variant="h6">I am a...</Typography>
               </Grid>

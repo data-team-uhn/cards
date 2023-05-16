@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.event.EventAdmin;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -33,9 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Designate(ocd = AppointmentEmailNotificationsFactory.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
@@ -52,6 +54,9 @@ public final class AppointmentEmailNotificationsFactory
     @Reference
     private ThreadResourceResolverProvider resolverProvider;
 
+    @Reference
+    private EventAdmin eventAdmin;
+
     /** The scheduler for rescheduling jobs. */
     @Reference
     private Scheduler scheduler;
@@ -59,6 +64,9 @@ public final class AppointmentEmailNotificationsFactory
     /** The MailService for sending notification emails to patients. */
     @Reference
     private MailService mailService;
+
+    @Reference
+    private FormUtils formUtils;
 
     /** The TokenManager for generating patient-access tokens. */
     @Reference
@@ -70,10 +78,14 @@ public final class AppointmentEmailNotificationsFactory
 
     @ObjectClassDefinition(name = "Appointment email notification",
         description = "Send emails for past and future appointments")
-    public static @interface Config
+    public @interface Config
     {
         @AttributeDefinition(name = "Name", description = "Name")
         String name();
+
+        @AttributeDefinition(name = "Notification Type",
+            description = "What type of email notification, e.g. Invitation")
+        String notificationType();
 
         @AttributeDefinition(name = "Metric Name", description = "Metric name description (eg. Reminder emails sent)")
         String metricName();
@@ -82,21 +94,14 @@ public final class AppointmentEmailNotificationsFactory
             description = "Clinic mapping path for this clinic (eg. /Survey/ClinicMapping/123456789)")
         String clinicId();
 
-        @AttributeDefinition(name = "Email Subject Line", description = "Email Subject Line")
-        String emailSubject();
-
-        @AttributeDefinition(name = "Plaintext Email Template JCR Path",
-            description = "Plaintext Email Template JCR Path")
-        String plainTextEmailTemplatePath();
-
-        @AttributeDefinition(name = "HTML Email Template JCR Path", description = "HTML Email Template JCR Path")
-        String htmlEmailTemplatePath();
+        @AttributeDefinition(name = "Email configuration node",
+            description = "JCR Node of type cards:emailTemplate where details about the email will be stored")
+        String emailConfiguration();
 
         @AttributeDefinition(
             name = "Days to the visit",
-            description =
-                "Days to the visit - positive if the visit is in the future, negative if the visit is in the past"
-        )
+            description = "Days to the visit - positive if the visit is in the future, "
+                + "negative if the visit is in the past")
         int daysToVisit();
     }
 
@@ -116,9 +121,8 @@ public final class AppointmentEmailNotificationsFactory
 
         // Instantiate the Runnable
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.resolverProvider,
-            this.tokenManager,
-            this.mailService, this.patientAccessConfiguration, config.name(), config.clinicId(), config.emailSubject(),
-            config.plainTextEmailTemplatePath(), config.htmlEmailTemplatePath(),
+            this.eventAdmin, this.tokenManager, this.mailService, this.formUtils, this.patientAccessConfiguration,
+            config.name(), config.notificationType(), config.clinicId(), config.emailConfiguration(),
             config.daysToVisit());
 
         try {
@@ -129,8 +133,7 @@ public final class AppointmentEmailNotificationsFactory
                 "Failed to schedule Appointment Email Notifications Task: {}. {}",
                 config.name(),
                 e.getMessage(),
-                e
-            );
+                e);
         }
     }
 

@@ -69,8 +69,22 @@ function Question (props) {
     cardClasses.push(classes.focusedQuestionnaireItem);
   }
 
+  let labels = existingAnswer?.[1].displayedValue;
+  if (typeof(labels) == "undefined") {
+    labels = existingAnswer?.[1].value;
+  }
+  // Always turn value into an array for convenience
+  if (!Array.isArray(labels)) {
+    if (typeof(labels) == "undefined" || labels === "") {
+      labels = [];
+    } else {
+      labels = [labels];
+    }
+  }
+
   return (
     <Card
+      id={questionDefinition["@path"]}
       variant="outlined"
       ref={doHighlight ? questionRef : undefined}
       className={cardClasses.join(" ")}
@@ -79,10 +93,9 @@ function Question (props) {
         // Note that we need to preserve the hierarchy in which we place children
         // so that pageActive changing does not cause children to lose state
         pageActive && <CardHeader
-          title={text}
-          titleTypographyProps={{ variant: 'h6' }}
-          subheader={<FormattedText variant="caption">{description}</FormattedText>}
-          subheaderTypographyProps={{ component: "div" }}
+          disableTypography
+          title={<FormattedText component="h6" variant="h6">{text}</FormattedText>}
+          subheader={<FormattedText component="div" variant="caption" color="textSecondary">{description}</FormattedText>}
           />
       }
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
@@ -98,9 +111,9 @@ function Question (props) {
             </>
           }
           { !isEdit && !preventDefaultView ?
-            ( existingAnswer?.[1]["displayedValue"] ?
+            ( labels ?
               <List>
-                { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
+                { labels.map( (item, idx) => {
                   return(
                     <ListItem key={existingAnswer[0] + idx}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
                   )})

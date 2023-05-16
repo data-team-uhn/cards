@@ -1,4 +1,6 @@
 {
-  "maxPerSubject" : "The maximum number of forms of this type allowed for a specific subject"
+  "maxPerSubject" : "The maximum number of forms of this type allowed for a specific subject",
+  "requireCompletion" : "If true, warn the user about missing mandatory answers when they save an incomplete form. In paginated forms, do not permit advancing to the next page until the current page is complete.",
+  "paginationMode": "How the user can navigate between the questionnaire pages:\n* **back_next** displays both a Back and a Next button, allowing navigation back and forth;\n* **only_next** displays only the Next button, permitting movement only forward."
 }
 

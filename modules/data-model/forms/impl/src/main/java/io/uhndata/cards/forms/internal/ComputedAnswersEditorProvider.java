@@ -16,12 +16,15 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import javax.jcr.Session;
+
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.FieldOption;
@@ -32,18 +35,22 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import io.uhndata.cards.forms.api.ExpressionUtils;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * A {@link EditorProvider} returning {@link ComputedAnswersEditor}.
  *
  * @version $Id$
  */
-@Component
+@Component(property = "service.ranking:Integer=60")
 public class ComputedAnswersEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Reference
     private QuestionnaireUtils questionnaireUtils;
@@ -59,10 +66,14 @@ public class ComputedAnswersEditorProvider implements EditorProvider
         throws CommitFailedException
     {
         String computedAnswersDisabled = System.getenv("COMPUTED_ANSWERS_DISABLED");
-        if (this.rrf != null && !("true".equals(computedAnswersDisabled))) {
+
+        final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
+        if (resolver != null && !("true".equals(computedAnswersDisabled))) {
             // Each ComputedEditor maintains a state, so a new instance must be returned each time
-            return new ComputedAnswersEditor(builder, this.rrf,
-                this.questionnaireUtils, this.formUtils, this.expressionUtils);
+            return new ComputedAnswersEditor(builder, resolver.adaptTo(Session.class), this.rrf,
+                this.questionnaireUtils,
+                this.formUtils,
+                this.expressionUtils);
         }
         return null;
     }

@@ -73,8 +73,7 @@ export const MAX_RESULTS = 10;
 function ResourceQuery(props) {
   const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
     value, questionDefinition, onChange, enableSelection, initialSelection, onRemoveOption, classes } = props;
-  const { maxAnswers, primaryType, labelProperty, propertiesToSearch } = questionDefinition;
-  const { enableUserEntry } = props;
+  const { maxAnswers, primaryType, labelProperty, propertiesToSearch, enableUserEntry } = questionDefinition;
   const { fetchSuggestions, formatSuggestionData, infoDisplayer } = props;
 
   const [suggestions, setSuggestions] = useState([]);
@@ -528,6 +527,7 @@ ResourceQuery.propTypes = {
       primaryType: PropTypes.string,
       labelProperty: PropTypes.string,
       propertiesToSearch: PropTypes.string,
+      enableUserEntry: PropTypes.bool,
     }).isRequired,
     onChange: PropTypes.func,
     enableSelection: PropTypes.bool,
@@ -541,7 +541,6 @@ ResourceQuery.propTypes = {
 ResourceQuery.defaultProps = {
   clearOnClick: true,
   focusAfterSelecting: true,
-  enableUserEntry: true,
   variant: 'default'
 };
 

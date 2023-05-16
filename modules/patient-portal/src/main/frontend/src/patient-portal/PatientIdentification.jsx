@@ -21,13 +21,10 @@ import React, { useState, useEffect }  from 'react';
 import {
   Button,
   CircularProgress,
-  Dialog,
   DialogContent,
-  DialogTitle,
   FormControl,
   FormHelperText,
   Grid,
-  IconButton,
   Input,
   InputLabel,
   List,
@@ -36,10 +33,11 @@ import {
   Typography,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import CloseIcon from '@mui/icons-material/Close';
 import AppointmentIcon from '@mui/icons-material/Event';
 
+import Logo from "../components/Logo.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import ToUDialog from "./ToUDialog.jsx";
 
 import DropdownsDatePicker from "../components/DropdownsDatePicker.jsx";
@@ -50,12 +48,6 @@ const useStyles = makeStyles(theme => ({
     maxWidth: "500px",
     margin: "auto",
     padding: theme.spacing(2),
-  },
-  logo : {
-    maxWidth: "240px",
-    "@media (max-height: 725px)" : {
-      maxHeight: "70px",
-    }
   },
   description : {
     "& > *" : {
@@ -92,9 +84,6 @@ const useStyles = makeStyles(theme => ({
   identifierContainer : {
     alignItems: "start",
   },
-  closeButton: {
-    float: 'right',
-  },
   mrnHelperImage: {
     maxWidth: '100%',
   },
@@ -115,6 +104,9 @@ function PatientIdentification(props) {
   // Callback for reporting successful authentication
   const { config, onSuccess, displayText } = props;
 
+  // The authentication token from the personalized link
+  const [ authToken, setAuthToken ] = useState();
+
   // The values entered by the user
   const [ dob, setDob ] = useState();
   const [ mrn, setMrn ] = useState();
@@ -123,6 +115,9 @@ function PatientIdentification(props) {
   // Internal state
   // Flag specifying that the required authentication token is missing, so the user cannot be identified
   const [ canAuthenticate, setCanAuthenticate ] = useState();
+  // Flag specifying if the identification form needs to be displayed
+  const [ showIdentificationForm, setShowIdentificationForm ] = useState();
+
   // Holds an error message for display
   const [ error, setError ] = useState();
   // Returned from the server after successful validation of the authentication,
@@ -172,6 +167,7 @@ function PatientIdentification(props) {
       return null;
     }
     let requestData = new FormData();
+    authToken && requestData.append("auth_token", authToken);
     dob && requestData.append("date_of_birth", dob);
     mrn && requestData.append("mrn", mrn);
     hc && requestData.append("health_card", hc);
@@ -194,18 +190,28 @@ function PatientIdentification(props) {
   }
 
   // ------------------------------------------------------------------------------------
-  // When the configuration that specifies if the auth token is required is loaded,
-  // process the auth_token accordingly
+  // After loading the patient access configuration that specifies if the auth token and/or
+  // PII identification are required, decide how we will proceed with the authentication
   useEffect(() => {
+    // If the configuration is still empty, don't make any decisions yet
+    if (Object.keys(config).length == 0) return;
+
     let auth_token = new URLSearchParams(window.location.search).get("auth_token");
+    setAuthToken(authToken);
     setCanAuthenticate(!!(config?.tokenlessAuthEnabled || auth_token));
-    // If an auth token is provided, use it to initiate the authentication process
-    if (auth_token) {
+
+    // If an auth token is provided and no further identification is required,
+    // initiate the authentication process
+    if (auth_token && !(config?.PIIAuthRequired)) {
       let requestData = new FormData();
       requestData.append("auth_token", auth_token);
-      validateCredentials(requestData, () => {});
+      validateCredentials(requestData, (error) => { window.location = "/Expired.html"; });
     }
-  }, [config?.tokenlessAuthEnabled]);
+
+    // The identification form should be made available whenever tokenless auth is enabled,
+    // as well as when specifically required according to the patient access config
+    setShowIdentificationForm(config?.tokenlessAuthEnabled || config?.PIIAuthRequired);
+  }, [config]);
 
   // Once a visit is selected, finalize the identification
   useEffect(() => {
@@ -272,13 +278,12 @@ function PatientIdentification(props) {
 
     {/* MRN hint dialog*/}
 
-    <Dialog onClose={() => {setMrnHelperOpen(false)}} open={mrnHelperOpen}>
-      <DialogTitle>
-        Where can I find my MRN?
-        <IconButton onClick={() => setMrnHelperOpen(false)} className={classes.closeButton} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
+    <ResponsiveDialog
+      title="Where can I find my MRN?"
+      withCloseButton
+      open={mrnHelperOpen}
+      onClose={() => {setMrnHelperOpen(false)}}
+    >
       <DialogContent>
         <Typography paragraph>
           1. Check the top right-hand corner of your Patient Itinerary.
@@ -289,20 +294,18 @@ function PatientIdentification(props) {
         </Typography>
         <img src="/libs/cards/resources/media/patient-portal/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
       </DialogContent>
-    </Dialog>
+    </ResponsiveDialog>
 
     {/* Patient identification form */}
 
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justifyContent="center">
-         <Grid item xs={12}>
-           <img src={document.querySelector('meta[name="logoLight"]').content} className={classes.logo} alt="logo" />
-         </Grid>
+         <Logo component={Grid} item xs={12} />
 
          { /* If we don't have the authentication token yet or we don't need the identification form,
              display the welcome message and a circular progress while we wait for the next step */ }
 
-         { (typeof(canAuthenticate) == "undefined" || !config?.PIIAuthRequired) ?
+         { (typeof(canAuthenticate) == "undefined" || !showIdentificationForm) ?
 
          <>
          { welcomeMessage &&

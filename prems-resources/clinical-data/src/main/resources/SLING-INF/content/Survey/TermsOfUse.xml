@@ -21,12 +21,12 @@
     <name>TermsOfUse</name>
     <property>
         <name>title</name>
-        <value>YOUR EXPERIENCE Terms of Use and Privacy Policy</value>
+        <value>Your Experience Terms of Use and Privacy Policy</value>
         <type>String</type>
     </property>
     <property>
         <name>version</name>
-        <value>2022-10-27</value>
+        <value>2023-02-03</value>
         <type>String</type>
     </property>
     <property>
@@ -39,41 +39,39 @@
         <value>
 ## Your Experience Application Terms of Use
 
-By using or accessing the _Your Experience Application_, you agree to these Terms of Use (“**Terms**”). These Terms are a legal agreement between you and the University Health Network (“**UHN**”). If you do not agree to all of these Terms, do not use the application and do not submit the survey through the application. Note that there are alternative methods to complete the survey if you do not want to use this application. Please contact yourexperience@uhn.ca to access alternate methods. If you do use the application, relying on any information you see in the application is solely at your own risk.
+By using or accessing the _Your Experience Application_, you agree to these Terms of Use (“**Terms**”). These Terms are a legal agreement between you and the University Health Network (“**UHN**”). If you do not agree to all of these Terms, do not use the application and do not submit the survey through the application. There are alternative methods to complete the survey if you do not want to use this application. Please contact yourexperience@uhn.ca to access alternate methods. If you do use the application, relying on any information you see in the application is solely at your own risk.
 
 
-**The information provided in _Your Experience Application_ will be anonymous and will not be shared with your care team. It will also not impact your care at UHN now or in the future. Always seek advice from your care provider for any questions you may have about your medical symptoms or condition. Never disregard professional medical advice or delay in seeking it because of something you have read in the application.  Never delay obtaining medical advice or disregard medical advice because of something you have or have not read on the _Your Experience App_.**
+**The information that you provide to UHN in _Your Experience Application_ will be anonymous and will not be shared with your care team. It will also not impact your care at UHN now or in the future. Always seek advice from your care provider for any questions you may have about your medical symptoms or condition. Never disregard professional medical advice or delay in seeking it because of something you have read in the application.  Never delay obtaining medical advice or disregard medical advice because of something you have or have not read on the _Your Experience App_.**
 
 **You should not report medical symptoms using _Your Experience App_ and responses are not reviewed in real-time. _Your Experience App_ is not a place to seek medical advice or treatment. If you think you have a medical or psychiatric emergency, call 911 or go to the nearest hospital.**
 
 ### What these Terms will tell you:
 1. The purpose of _Your Experience App_
-2. Limits of _Your Experience App_
+2. The limits of _Your Experience App_
 3. Your Responsibilities in using _Your Experience App_
 4. How we Protect your Privacy
 5. How to get your Questions Answered about _Your Experience App_
 
 ### 1. Purpose of the _Your Experience App_
 
-This section describes the reasons that the _Your Experience App_ was created.
-
-The main purpose of _Your Experience App_ is to act as an information collection tool for UHN to better understand the experience patients have while being cared for at the hospital. The Application is intended to facilitate patient experience reporting to the hospital, which can enable improvements to quality of care, as well as provide general patient education relative to their experience at UHN. The feedback you provide may be further used for research purposes, where such research is approved by a Research Ethics Board.
+_Your Experience App_ is an information collection tool for UHN to be able to better understand the experience patients have while being cared for at the hospital. The Application is meant to make it easier for patients to report to UHN how their experience was, in order to help us make improvements. The Application also provides general patient education relative to their experience at UHN. The feedback you provide may be further used for research purposes, where such research is approved by a Research Ethics Board. The data you provide is anonymous and only your anonymously submitted responses can be used for research purposes
 
 #### Collection, Use and Disclosure of Data
 
 **a) Transmission of non-Identifying data to UHN.** The Application collects data (user metrics), which are transmitted back to UHN through the Application. The information that is collected is aggregate and anonymous data relating to the use of the Application (e.g., number of users accessing the Application per day, the number of surveys submitted, etc.) in order for UHN to better understand use of the Application. If you do not consent to the transmission of this non-identifying user metrics data to UHN, then you must not use the _Your Experience App_.
 
-**b) Transmission and Storage of Identifying Data and PHI.** The Application will not collect the users' personal information and/or PHI including name (first name or pseudonym). The Application will collect anonymously submitted experience measures. This information is stored on the Application and also transferred to the DATA-PRO Server. The DATA-PRO server is hosted at University Health Network. Information stored on UHN Servers is accessible by UHN authorized staff at these sites. More information can be found in the Application Privacy Policy.
+**b) Transmission and Storage of Identifying Data and Personal Health Information (PHI).** The Application will not collect any identifying data about the user. The Application will collect anonymously submitted experience measures. This information is stored on the Application and also transferred to the DATA-PRO Server. The DATA-PRO server is hosted at University Health Network. Information stored on UHN Servers is accessible by UHN-authorized staff at these sites. More information can be found in the Application Privacy Policy.
 
 ### 2. Limits of the _Your Experience App_
 
-The _Your Experience App_ is not a medical device. Nothing contained in the _Your Experience App_ should be construed, directly or indirectly, as the practice of medicine or providing medical advice or medical services by UHN. The Application is not intended to diagnose, cure, mitigate, treat, or prevent disease or other conditions.
+The _Your Experience App_ is not a medical device. Nothing contained in the _Your Experience App_ should be construed, directly or indirectly, as the practice of medicine or provision of medical advice or medical services by UHN. The Application is not intended to diagnose, cure, mitigate, treat, or prevent disease or other conditions.
 
 The _Your Experience App_ and its content are provided on an “as is” basis. This means that:
 
 * While UHN will take all reasonable steps to make sure that your information is protected, accurate and available to you, UHN assumes no liability for a delay, failure, inaccuracy, interruption or corruption of any information transmitted via _Your Experience App_.
 * UHN reserves the right to change, suspend or deactivate _Your Experience App_ at any time.
-* UHN reserves the right to change these Terms at any time and will make these hanges available to you the next time you access _Your Experience App_. Using _Your Experience App_ after these changes have been made means that you agree to the changes.
+* UHN reserves the right to change these Terms at any time and will make these changes available to you the next time you access _Your Experience App_.  The updated Terms will be available for you to review on the Application. Using _Your Experience App_ after these changes have been made means that you agree to the changes.
 
 #### No Regulatory Approval
 
@@ -84,12 +82,12 @@ The _Your Experience App_ has not been evaluated by Health Canada, the United St
 
 You received the email containing your link to the _Your Experience App_ because you consented to the use of email by UHN to communicate with you about your care. If you change your mind and no longer want to receive emails about _Your Experience App_, or any emails from UHN, it is your responsibility to let us know.  To communicate this instruction, contact your care provider and/or the UHN Privacy Office at the contact information below.
 
-Answering this survey is voluntary. You may decline to complete the survey and you will still be able to receive care from UHN. Your clinician may ask you the same or similar questions to those in the survey at your scheduled appointment if you have not submitted the survey.
+Answering this survey is voluntary. You may decline to complete the survey and you will still be able to receive care from UHN.
 
 Once you have decided to use the _Your Experience App_ and start completing your survey information, it is your responsibility to protect it. UHN is not liable for breaches that result from your not taking the following steps to protect your information. By using the _Your Experience App_, you agree to take these steps:
 * Ensure that no one is “shoulder-surfing” or watching you when viewing or entering your information.
   * You agree to choose more private spaces (like your home) over public ones (like on public transportation).
-  * You agree to not use a public computer to access the _Your Experience App_ (like in a library).
+  * You agree to not use a public computer to access the _Your Experience App_ (for example, in a library).
   * You agree to not use free and/or untrusted Wi-Fi to access the _Your Experience App_ survey.
 * Only use the Patient Education material that may be provided to you via the _Your Experience App_ for your personal, non-commercial use
   * You agree that it is your responsibility to protect materials that you download, because someone who finds them could make conclusions about your health from the content of the materials.
@@ -105,9 +103,9 @@ You can learn more about your privacy rights at the UHN Privacy website (see bel
 
 ### 4. How we Protect your Privacy
 
-In collecting and using your personal health information in the _Your Experience App_, UHN must follow the rules set out in the _Personal Health Information Protection Act_.
+UHN’s interactions with you and other patients must comply with the rules set out in the _Personal Health Information Protection Act_ (PHIPA).
 
-UHN takes steps to make sure that your information is safeguarded by meeting best practice standards for security. UHN has individuals who review any potential changes to the App to make sure that the changes are lawful and protect your privacy to the best of our ability. A privacy review, security review and Vulnerability Test were completed by experts in their fields to ensure that legal requirements are met and best practices are followed. Key functions of the _Your Experience App_ are regularly reviewed and checked, and changes are made where necessary. UHN has taken steps to make sure that information is backed up, updated regularly and is available to you when you need it.
+UHN takes steps to make sure that your information is safeguarded by meeting best practice standards for security. UHN has individuals who review any potential changes to the Application to make sure that the changes are lawful and protect your privacy to the best of our ability. A privacy review, security review and Vulnerability Test were completed by experts in their fields to ensure that legal requirements are met and best practices are followed. Key functions of the _Your Experience App_ are regularly reviewed and checked, and changes are made where necessary.
 
 Your feedback collected in this survey will not be made available by UHN to anyone other than the designated individuals at UHN who have the responsibility to maintain this Application and are trained to manage this data.
 
@@ -144,18 +142,18 @@ UHN may also use your contact information (phone or email) to share important in
 
 ### Do third parties see and/or have access to information obtained by the Application?
 
-Only aggregated, anonymized data is periodically transmitted to external services to help us improve _Your Experience App_ and our service. We only share your information with third parties in ways that are described in this privacy statement. We may disclose User Provided and Automatically Collected Information:
+Only aggregated, anonymized data is periodically transmitted to external services to help us improve _Your Experience App_ and our service. We only share survey responses with third parties in ways that are described in this privacy statement. We may disclose User Provided and Automatically Collected Information:
 * As required by law, such as to comply with a subpoena, or similar legal process;
-* With our trusted services providers who work on our behalf, and who do not have an independent use of the information we disclose to them, and have agreed to adhere to the rules set forth in this privacy statement and the Personal Health Information Protection Act, 2004 and any subsequent amendments.
+* With the Canadian Institute for Health Information (CIHI) who will only receive reports consisting of aggregated responses from all patients within the specific reporting period.
 
-**Use of your Information by your Health Care Team.**  The feedback you provide about your care experience through the _Your Experience App_ will be provided to UHN and will not become part of your medical record.
+**Use of your Information by your Health Care Team.**  The feedback you provide to UHN about your care experience through the _Your Experience App_ will not become part of your medical record.
 
 ### What are my rights?
 
-You can stop all collection of information via the surveys by not using the _Your Experience App_. To prevent receipt of additional _Your Experience App_-related emails, you can use the unsubscribe button in the emails you have already received.  The unsubscribe feature will prevent you from receiving future emails from _Your Experience App_, but not all emails from UHN.
+You can stop all collection of information via the surveys by not using the _Your Experience App_. To prevent receipt of additional _Your Experience App_-related emails, you can use the unsubscribe button in the emails you have already received.  The unsubscribe feature will prevent you from receiving future emails from _Your Experience App_, but not all emails from UHN. To stop receiving all emails from UHN please contact the Privacy Office (contact information is below).
 
 ### Data Retention Policy, Managing Your Information
-_Your Experience App_ user provided data will not become part of your health record, nor will it be shared with your care team. It will be retained for a period of time consistent with the Records Retention and Destruction Policy at UHN.
+_Your Experience App_ user-provided data will not become part of your health record, nor will it be shared with your care team. It will be retained for a period of time consistent with the Records Retention and Destruction Policy at UHN.
 
 ### Security
 

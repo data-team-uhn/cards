@@ -19,15 +19,14 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { Input, MenuItem, Select } from "@mui/material";
-
-import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
-import LiveTableStyle from "../dataHomepage/tableStyle.jsx";
 import QuestionComponentManager from "./QuestionComponentManager";
+import VariableAutocomplete from "../dataHomepage/VariableAutocomplete";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import { useFieldsReaderContext, useFieldsWriterContext } from "./FieldsContext";
+import { stripCardsNamespace } from "../questionnaire/QuestionnaireUtilities";
+import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 // Use the filter code to get what sorts of variables can be used as references
 let FILTER_URL = "/Questionnaires.deep.json";
@@ -36,7 +35,7 @@ let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 
 // Reference Input field used by Edit dialog component
 let ReferenceInput = (props) => {
-  const { classes, objectKey, data, value, hint } = props;
+  const { objectKey, data, value, hint } = props;
   const fieldsReader = useFieldsReaderContext();
   const fieldsWriter = useFieldsWriterContext();
 
@@ -45,6 +44,7 @@ let ReferenceInput = (props) => {
   let [ pathMap, setPathMap ] = useState({});
   const [ options, setOptions ] = useState([]);
   const [ restrictions, setRestrictions ] = useState([]);
+  const [ autoselectOptions, setAutoselectOptions ] = useState([]);
 
   const isNumeric = value.filter == "numeric";
   const allowOnlyApplicableFor = value.restriction;
@@ -59,6 +59,12 @@ let ReferenceInput = (props) => {
     getRestrictions(allowOnlyApplicableFor);
   },
   [fieldsReader[allowOnlyApplicableFor]]);
+
+  useEffect(() => {
+    if (options.length > 0 && Object.keys(titleMap).length > 0 && autoselectOptions.length == 0) {
+      setAutoselectOptions(getFieldsLabelsList(options, ""));
+    }
+  }, [options, titleMap]);
 
   // Obtain information about the questions that can be used as a reference
   let grabData = (urlBase, parser) => {
@@ -76,11 +82,11 @@ let ReferenceInput = (props) => {
     // It is a list of either strings (for options) or recursive lists
     // Each recursive list must have a string for its 0th option, which
     // is taken to be its title
-    let newFilterableFields = [""];
+    let newFilterableFields = [];
     // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
-    let newFilterableTitles = {"": "None"};
+    let newFilterableTitles = {};
     // newFilterablePaths is a mapping from a string in newFilterableFields to a path in the JCR
-    let newFilterablePaths = {"": ""};
+    let newFilterablePaths = {};
 
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
@@ -113,7 +119,7 @@ let ReferenceInput = (props) => {
         continue;
       }
 
-      newFilterableFields.push([title, ...parseSectionOrQuestionnaire(thisQuestionnaire)]);
+      newFilterableFields.push([thisQuestionnaire?.title || title, ...parseSectionOrQuestionnaire(thisQuestionnaire)]);
     }
 
     // We also need a filter over the subject
@@ -124,9 +130,9 @@ let ReferenceInput = (props) => {
 
   let parseSubjectTypeData = (subjectTypeJson) => {
     // Parse through, but keep a custom field for the subject
-    let fields = [""];
-    let titles = {"": "None"};
-    let paths = {"": ""};
+    let fields = [];
+    let titles = {};
+    let paths = {};
 
     for (let subjectType of subjectTypeJson["rows"]) {
       // For each reference, store its UUID and title
@@ -139,23 +145,23 @@ let ReferenceInput = (props) => {
     setPathMap(paths);
   }
 
-  // From an array of fields, turn it into a react component
-  let getReactComponentFromFields = (fields, nested=false) => {
-    return fields.map((path) => {
-      if (typeof path == "string") {
+  let getFieldsLabelsList = (fields, category) => {
+    return fields.map((entry) => {
+      // If we have a restriction, we might return nothing
+      if (typeof entry == "string" && !(restrictions && restrictions.length > 0 && !restrictions.includes(entry))) {
         // Straight strings are MenuItems
-        // If we have a restriction, we might return nothing
-        if (restrictions && restrictions.length > 0 && !restrictions.includes(path)) {
-          return null;
-        }
-        return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{titleMap[path]}</MenuItem>
-      } else if (Array.isArray(path)) {
+        return ({
+          uuid: entry,
+          path: pathMap[entry],
+          label: titleMap[entry],
+          category: category,
+        });
+      } else if (Array.isArray(entry)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
-          getReactComponentFromFields(path.slice(1), true)];
+        return [getFieldsLabelsList(entry.slice(1), entry[0])].flat();
       }
-    })
+    }).flat();
   }
 
   let getRestrictions = (restrictingField) => {
@@ -262,20 +268,26 @@ let ReferenceInput = (props) => {
     hiddenInput = curValue.split(",").map((thisUUID) => <input type="hidden" name={objectKey} value={thisUUID} key={thisUUID}/>);
   }
 
+  let groupBy = (value["primaryType"] == "cards:SubjectType") ? undefined : (option) => option?.category;
+  let getOptionSecondaryLabel = option => option?.path;
+  let typeLabel = camelCaseToWords(stripCardsNamespace(value["primaryType"]));
+
   return (
     <EditorInput name={objectKey} hint={hint}>
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
       {hiddenInput}
-      <Select
-        variant="standard"
-        id={objectKey}
-        value={curValue || []}
-        onChange={(event) => {changeCurValue(event.target.value);}}
-        input={<Input id={objectKey} />}
-        renderValue={(value) => titleMap[value]}
-      >
-        {getReactComponentFromFields(options)}
-      </Select>
+      <VariableAutocomplete
+        selectedValue={curValue}
+        options={autoselectOptions}
+        getOptionSecondaryLabel={getOptionSecondaryLabel}
+        groupBy={groupBy}
+        onValueChanged={val => changeCurValue(val || '')}
+        getHelperText={getOptionSecondaryLabel}
+        textFieldProps={{
+          multiline: true,
+          placeholder: `${typeLabel} variable`
+        }}
+      />
     </EditorInput>
   )
 }
@@ -286,12 +298,10 @@ ReferenceInput.propTypes = {
   hint: PropTypes.string,
 };
 
-const StyledReferenceInput = withStyles(LiveTableStyle)(ReferenceInput);
-export default StyledReferenceInput;
+export default ReferenceInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
   if (definition.type && definition.type === "reference") {
-    return [StyledReferenceInput, 100];
+    return [ReferenceInput, 100];
   }
 });
-

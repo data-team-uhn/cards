@@ -610,17 +610,33 @@ public final class ConditionalSectionUtils
         final NodeBuilder answerSection, final NodeBuilder form) throws RepositoryException
     {
         final Node sectionNode = getSectionNode(resourceSession, answerSection);
-        if (sectionNode != null && sectionNode.hasNode("condition")) {
-            final Node conditionNode = sectionNode.getNode("condition");
+        if (sectionNode != null) {
+            final Node conditionNode = findCondition(sectionNode);
             /*
              * Recursively go through all children of the condition node and determine if this condition node evaluates
              * to True or False.
              */
-            if (!evaluateConditionNodeRecursive(conditionNode, sectionNode, form)) {
+            if (conditionNode != null && !evaluateConditionNodeRecursive(conditionNode, sectionNode, form)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private static Node findCondition(final Node section)
+    {
+        try {
+            final NodeIterator children = section.getNodes();
+            while (children.hasNext()) {
+                final Node child = children.nextNode();
+                if (child.isNodeType("cards:Conditional") || child.isNodeType("cards:ConditionalGroup")) {
+                    return child;
+                }
+            }
+        } catch (final RepositoryException e) {
+            // Not expected
+        }
+        return null;
     }
 
     private static long toLong(Object o)

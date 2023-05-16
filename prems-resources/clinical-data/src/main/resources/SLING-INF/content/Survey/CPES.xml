@@ -25,8 +25,34 @@
         <value></value>
         <type>String</type>
     </property>
+    <property>
+        <name>intro</name>
+        <value>
+Please answer some questions about your recent stay at:
+
+**@{visit.location}**
+
+Do not include any other hospital stays in your answers.
+        </value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>frequencyIgnoreClinic</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <property>
+        <name>conflictMode</name>
+        <value>any</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>enableReviewScreen</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
     <node>
-        <name>Step1</name>
+        <name>CPESIC</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>

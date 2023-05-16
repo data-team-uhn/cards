@@ -375,7 +375,7 @@ function MultipleChoice(props) {
               tabIndex: isRadio ? -1 : undefined
             }, additionalInputProps)
             }
-            value={ghostName}
+            value={ghostName || ''}
             multiline={textbox}
             InputProps={muiInputProps}
             inputRef={ref => {inputEl = ref}}
@@ -589,7 +589,7 @@ function ResponseChild(props) {
 
   return (
     <React.Fragment>
-      <ListItem key={name} className={classes.selectionChild}>
+      <ListItem key={name} className={classes.selectionChild} onClick={evt => {evt.preventDefault(); onClick(id, name, checked);}}>
           { /* This is either a Checkbox/Radiobox if this is a default suggestion, or a delete button otherwise */
           isDefaultOption ?
             (<>

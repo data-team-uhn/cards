@@ -63,7 +63,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>cards-utils</artifactId>
+      <artifactId>cards-resolver-provider</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

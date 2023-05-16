@@ -79,6 +79,10 @@ import org.slf4j.LoggerFactory;
     selectors = { "paginate" })
 public class PaginationServlet extends SlingSafeMethodsServlet
 {
+
+    protected static final String FIELDNAME = "fieldname";
+    protected static final String FIELDCOMPARATOR = "fieldcomparator";
+    protected static final String FIELDVALUE = "fieldvalue";
     private static final Logger LOGGER = LoggerFactory.getLogger(PaginationServlet.class);
 
     private static final long serialVersionUID = -6068156942302219324L;
@@ -99,7 +103,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Various supported filter types.
      */
-    private enum FilterType
+    protected enum FilterType
     {
         /** Regular filters on child node values. */
         CHILD("child", "filternames", null, false),
@@ -133,7 +137,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * A parsed filter, gathering together the field, comparator, value to compare against, type of the value, and
      * source name that the field belongs to.
      */
-    private static final class Filter
+    protected static final class Filter
     {
         /**
          * The field name, may be the jcr:uuid of a question being answered, or a special value like the subject,
@@ -171,6 +175,21 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             this.value = value;
             this.type = type;
             this.comparator = comparator;
+        }
+
+        String getName()
+        {
+            return this.name;
+        }
+
+        String getValue()
+        {
+            return this.value;
+        }
+
+        String getComparator()
+        {
+            return this.comparator;
         }
     }
 
@@ -219,7 +238,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @return {@code true} if any mandatory special property has an "is empty" filter, {@code false} otherwise
      * @throws RepositoryException if accessing the repository fails
      */
-    private boolean checkForSpecialEmptyFilter(final SlingHttpServletRequest request,
+    protected boolean checkForSpecialEmptyFilter(final SlingHttpServletRequest request,
         final Map<FilterType, List<Filter>> filters, final SlingHttpServletResponse response)
         throws RepositoryException
     {
@@ -314,7 +333,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @return a query that takes into account the requested filters
      * @throws RepositoryException if accessing the repository fails
      */
-    private String createQuery(final SlingHttpServletRequest request, Session session,
+    protected String createQuery(final SlingHttpServletRequest request, Session session,
         final Map<FilterType, List<Filter>> filters) throws RepositoryException
     {
         // If we want this query to be fast, we need to use the exact nodetype requested.
@@ -344,15 +363,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
 
         // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
-        final String fieldname = this.sanitizeValue(request.getParameter("fieldname"));
-        final String fieldvalue = this.sanitizeValue(request.getParameter("fieldvalue"));
-        final String fieldcomparator = this.sanitizeComparator(request.getParameter("fieldcomparator"));
-        if (StringUtils.isNotBlank(fieldname)) {
+        Map<String, String> fieldParameters = getSanitizedFieldParameters(request);
+        if (StringUtils.isNotBlank(fieldParameters.get(FIELDNAME))) {
             query.append(String.format(
                 " and n.'%s'%s'%s'",
-                fieldname,
-                fieldcomparator,
-                fieldvalue));
+                    fieldParameters.get(FIELDNAME),
+                    fieldParameters.get(FIELDCOMPARATOR),
+                    fieldParameters.get(FIELDVALUE)));
         }
 
         // TODO, if more request options are required: convert includeAllStatus into a request mode
@@ -360,7 +377,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final boolean includeAllStatus = Boolean.parseBoolean(request.getParameter("includeallstatus"));
         // Only display `INCOMPLETE` forms if we are explicitly checking the status of forms,
         // or if the user requested forms with all statuses
-        if (!("statusFlags".equals(fieldname) || includeAllStatus || nodeType.equals(SUBJECT_IDENTIFIER))) {
+        if (!("statusFlags".equals(fieldParameters.get(FIELDNAME)) || includeAllStatus
+                || nodeType.equals(SUBJECT_IDENTIFIER))) {
             query.append(" and not n.'statusFlags'='INCOMPLETE'");
         }
 
@@ -381,6 +399,22 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     }
 
     /**
+     * Get from the request field parameters, sanitize and parse them into a collection.
+     *
+     * @param request the current request
+     * @return a map from field parameter name to field parameter value
+     */
+    protected Map<String, String> getSanitizedFieldParameters(final SlingHttpServletRequest request)
+    {
+        Map<String, String> sanitizedFilterParameters = new HashMap<>();
+        sanitizedFilterParameters.put(FIELDNAME, this.sanitizeValue(request.getParameter(FIELDNAME)));
+        sanitizedFilterParameters.put(FIELDVALUE, this.sanitizeValue(request.getParameter(FIELDVALUE)));
+        sanitizedFilterParameters.put(FIELDCOMPARATOR, this.sanitizeComparator(request.getParameter(FIELDCOMPARATOR)));
+
+        return sanitizedFilterParameters;
+    }
+
+    /**
      * Parse the request parameters into a collection of proper filters.
      *
      * @param request the current request
@@ -388,7 +422,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *         only some types of filters, depending on which filters are specified in the request
      * @throws IllegalArgumentException when the number of request parameters are not equal
      */
-    private Map<FilterType, List<Filter>> parseFiltersFromRequest(final SlingHttpServletRequest request)
+    protected Map<FilterType, List<Filter>> parseFiltersFromRequest(final SlingHttpServletRequest request)
         throws IllegalArgumentException
     {
         final Map<FilterType, List<Filter>> result = new HashMap<>();
@@ -561,7 +595,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 final String answerSource = filter.source;
                 joins.append(
                     String.format(
-                        " inner join [%s] as %s on isdescendantnode(%s, n)",
+                        " inner join [%s] as %s on %s.form = n.[jcr:uuid]",
                         filter.nodeType,
                         answerSource,
                         answerSource));
@@ -601,11 +635,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 final String answerSource = filter.source;
                 joins.append(
                     String.format(
-                        " inner join [%s] as %s on isdescendantnode(%s, %s)",
+                        " inner join [%s] as %s on %s.[jcr:uuid] = %s.form",
                         filter.nodeType,
                         answerSource,
-                        answerSource,
-                        formSource));
+                        formSource,
+                        answerSource));
             }
         }
 

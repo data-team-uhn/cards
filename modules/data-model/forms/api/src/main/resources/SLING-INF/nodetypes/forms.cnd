@@ -263,6 +263,11 @@
   // The text provided as information. Optional, it is possible not to have any text.
   - text (string)
 
+  // The type dictates the text and background colors used when displaying the information.
+  // One of: plain (normal text and background), info (blue), warning (orange), error (red),
+  // success (green). Optional, defaults to plain styling when absent.
+  - type (string)
+
 //-----------------------------------------------------------------------------
 // A section is a collection of questions.
 [cards:Section] > sling:Folder, mix:referenceable
@@ -445,6 +450,16 @@
   // Should this section be displayed as a page
   - paginate (boolean) = false autocreated
 
+  // If true, warn the user about missing mandatory answers when they save an incomplete form.
+  // In paginated forms, do not permit advancing to the next page until the current page is complete.
+  - requireCompletion (BOOLEAN)
+
+  // If true, notes such as "This answer is required" or "Please provide at least 3 files"
+  // will not be shown under the text of the questions with such restrictions, unless
+  // requireCompletion is true and the question is highlighted for having a missing or
+  // invalid answer
+  - hideAnswerInstructions (BOOLEAN)
+
   // Children
 
   // The sections and standalone questions that make up this questionnaire.
@@ -511,6 +526,14 @@
 
   // Hardcode the resource supertype: each answer is a resource.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // A pseudo-link to the form this answer belongs to.
+  // Normally this wouldn't be necessary, since the hierarchy of the two nodes makes it redundant,
+  // but in queries ISDESCENDANTNODE(answer, form) is not yet efficiently implemented,
+  // so we add this property to be able to do joins on answer.form = form.jcr:uuid.
+  // This doesn't have to be a REFERENCE, since we don't want to overcrowd the references index,
+  // and we don't want to list all the answers when trying to delete a form.
+  - form (STRING) nofulltext
 
   // A reference to the question being answered.
   // Mandatory, every answer needs a question.

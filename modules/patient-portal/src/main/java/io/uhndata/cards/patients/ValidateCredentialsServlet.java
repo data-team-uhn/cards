@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -85,9 +86,6 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     private static final String VISIT = "visit";
 
     private static final String VALUE = "value";
-
-    /** The name of the request parameter that may hold a login token. */
-    private static final String TOKEN_REQUEST_PARAMETER = "auth_token";
 
     @Reference
     private ResourceResolverFactory resolverFactory;
@@ -210,7 +208,12 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         final SlingHttpServletResponse response, final Session session, String sessionSubjectIdentifier)
         throws IOException, RepositoryException
     {
-        final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
+        Node visitSubject = null;
+        try {
+            visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
+        } catch (ItemNotFoundException e) {
+            writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "Visit not found");
+        }
 
         if (this.patientAccessConfiguration.isPatientIdentificationRequired()) {
             // Look for the patient's information in the repository
@@ -247,13 +250,12 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         // Find patients matching the provided ID
         final Iterator<Resource> results = rr.findResources(
             "SELECT f.* FROM [cards:TextAnswer] AS t "
-                + "  INNER JOIN [cards:Form] AS f ON isdescendantnode(t, f) "
+                + "  INNER JOIN [cards:Form] AS f ON t.form = f.[jcr:uuid] "
                 + "WHERE t.'question'='" + identifierQuestion + "' "
                 + "  AND t.'value'='" + presentedID.replaceAll("'", "''") + "'",
             "JCR-SQL2");
         while (results.hasNext()) {
             Node patientInformationForm = results.next().adaptTo(Node.class);
-            String path = patientInformationForm.getPath();
 
             // Check if the DOB matches
             if (validatePatient(request, null, session,

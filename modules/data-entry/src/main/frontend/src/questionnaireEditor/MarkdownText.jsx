@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@mui/styles/withStyles';
 
@@ -45,6 +45,10 @@ let MarkdownText = (props) => {
   let cmd = commands.getExtraCommands();
   cmd.push(commands.divider);
   cmd.push(infoButton);
+
+  useEffect(() => {
+    setValue(props.value || '');
+  }, [props.value]);
 
   return (
     <MDEditor className={classes.markdown} value={value} height={height} preview={preview} onChange={value => {setValue(value); onChange && onChange(value);}} extraCommands={cmd}/>

@@ -25,8 +25,29 @@
         <value></value>
         <type>String</type>
     </property>
+    <property>
+        <name>intro</name>
+        <value>
+Please answer some questions about your recent emergency visit and hospital stay at:
+
+**@{visit.location}**
+
+Please do not include any other hospital stays in your answers.
+        </value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>frequencyIgnoreClinic</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <property>
+        <name>conflictMode</name>
+        <value>any</value>
+        <type>String</type>
+    </property>
     <node>
-        <name>Step1</name>
+        <name>ED Survey</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
@@ -74,7 +95,7 @@
         </property>
     </node>
     <node>
-        <name>Step2</name>
+        <name>Inpatient Survey</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>

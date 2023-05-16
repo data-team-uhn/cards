@@ -26,10 +26,7 @@ import withStyles from '@mui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
-// Check if an answer has been automatically flagged as incomplete or invalid
-export function hasWarningFlags (data) {
-  return !!(data?.[1]?.statusFlags?.includes('INCOMPLETE') || data?.[1]?.statusFlags?.includes('INVALID'))
-}
+import { hasWarningFlags } from "./FormUtilities";
 
 // Display instructions regarding how many answers must be provided to a question,
 // based on minAnswers and maxAnswers from the question definition
@@ -61,12 +58,12 @@ function AnswerInstructions (props) {
     <Typography
       component="p"
       color={ answerIsAcceptable ? 'textSecondary' : 'error'}
-      className={classes.answerInstructions}
+      className="cards-answerInstructions"
       variant="caption"
     >
       {
         (isMandatory) ?
-        "This question is mandatory"
+        "This answer is required"
         :
         "Please provide " + range + " " + answerLabel + "s"
       }

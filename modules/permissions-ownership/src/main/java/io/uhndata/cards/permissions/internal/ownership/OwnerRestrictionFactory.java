@@ -23,14 +23,11 @@ import javax.jcr.Session;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.permissions.spi.RestrictionFactory;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * Factory for {@link OwnerRestrictionPattern}.
@@ -44,25 +41,18 @@ public class OwnerRestrictionFactory implements RestrictionFactory
     public static final String NAME = "cards:owner";
 
     /**
-     * This is needed to get access to the current session, which knows the currently logged in user. The reference
-     * configuration is set to lazily resolve the service, since the RRF is only available after the repository is
-     * initialized, but the repository initialization scripts reference the owner restriction, which would lead to a
-     * circular dependency. By allowing the RRF to be null when this class is instantiated, the repoinit statements can
-     * be processed correctly, and the RRF is only needed when actually evaluating permissions, which only happens when
-     * the repository is ready.
+     * This is needed to get access to the current session, which knows the currently logged in user.
      */
-    @Reference(fieldOption = FieldOption.REPLACE,
-        cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public RestrictionPattern forValue(PropertyState value)
     {
         // The value is ignored, the owner is set in the Form node itself
         Session session = null;
-        if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
-            session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
+        if (this.rrp.getThreadResourceResolver() != null) {
+            session = this.rrp.getThreadResourceResolver().adaptTo(Session.class);
         }
         return new OwnerRestrictionPattern(session);
     }

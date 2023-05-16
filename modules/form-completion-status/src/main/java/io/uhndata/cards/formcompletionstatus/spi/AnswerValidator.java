@@ -34,7 +34,7 @@ import io.uhndata.cards.forms.api.FormUtils;
  *
  * @version $Id$
  */
-public interface AnswerValidator
+public interface AnswerValidator extends Comparable<AnswerValidator>
 {
     /**
      * JCR node property name for the answer value.
@@ -85,5 +85,11 @@ public interface AnswerValidator
         if (flags.getOrDefault(flag, Boolean.TRUE) == Boolean.FALSE) {
             flags.remove(flag);
         }
+    }
+
+    @Override
+    default int compareTo(AnswerValidator o)
+    {
+        return this.getPriority() - o.getPriority();
     }
 }

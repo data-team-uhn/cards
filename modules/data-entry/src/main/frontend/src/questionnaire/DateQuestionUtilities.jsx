@@ -185,7 +185,7 @@ export default class DateQuestionUtilities {
       let longDiff = [];
       for (const division of ["years", "months", "days"]) {
         let value = Math.round(endDate.diff(startDate, division).values[division]);
-        if (value > 1) {
+        if (value > 0) {
           diff.push(value);
           let timeSlot = {};
           timeSlot[division] = value;

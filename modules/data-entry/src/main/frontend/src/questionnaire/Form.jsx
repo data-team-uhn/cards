@@ -25,9 +25,6 @@ import {
   Button,
   Chip,
   CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   Grid,
   IconButton,
   List,
@@ -37,7 +34,6 @@ import {
   Typography,
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DoneIcon from "@mui/icons-material/Done";
@@ -46,11 +42,12 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { DateTime } from "luxon";
-import { getTextHierarchy, getHierarchyAsList } from "./Subject";
+import { getTextHierarchy, getHierarchyAsList } from "./SubjectIdentifier";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import ErrorDialog from "../components/ErrorDialog";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
 import MainActionButton from "../components/MainActionButton.jsx";
@@ -58,7 +55,8 @@ import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
-import { hasWarningFlags } from "./AnswerInstructions";
+import { getFirstIncompleteQuestionEl } from "./FormUtilities.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -74,7 +72,7 @@ import { hasWarningFlags } from "./AnswerInstructions";
  */
 function Form (props) {
   let { classes, id, contentOffset } = props;
-  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons } = props;
+  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -97,14 +95,23 @@ function Form (props) {
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
   let [ pages, setPages ] = useState(null);
   // Avoid rendering everything at once before we get all of the questionnaire details
-  let [ paginationEnabled, setPaginationEnabled ] = useState(true);
+  let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
+  let [ classNames, setClassNames ] = useState(className ? [className] : []);
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
+  // Check if the form is required to be complete before progressing
+  // The requirement can either be passed to the Form component as a prop,
+  // or come via Questionnaire properties. The custom prop should have
+  // priority over the questionnaire configuration.
+  let [ requireCompletion, setRequireCompletion ] = useState(props.requireCompletion);
+  // The first incomplete question, to be brought to the user's attention
+  let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
+  let [ disableProgress, setDisableProgress ] = useState();
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -115,8 +122,16 @@ function Form (props) {
 
   // When end was reached and save was successful, call `onDone` if applicable
   useEffect(() => {
-    lastSaveStatus && endReached && onDone && onDone();
-  }, [lastSaveStatus, endReached]);
+    // If there's at least a question that is incomplete while we require completion,
+    // focus on that element and do not call `onDone`
+    if (incompleteQuestionEl) {
+      // focus and hightlight the first unfinished mandatory question box
+      incompleteQuestionEl.classList.add(classes.questionnaireItemWithError);
+      incompleteQuestionEl.scrollIntoView({block: "center"});
+    } else {
+      lastSaveStatus && endReached && onDone && onDone();
+    }
+  }, [lastSaveStatus, endReached, incompleteQuestionEl]);
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
@@ -147,6 +162,12 @@ function Form (props) {
       });
     }
   }, [isEdit]);
+  
+  useEffect(() => {
+    // If `requireCompletion` is set, stop any advancing progress until check that all required 
+    // questions are completed
+    requireCompletion && paginationEnabled && setDisableProgress(true);
+  }, [requireCompletion, paginationEnabled]);
 
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
@@ -172,8 +193,16 @@ function Form (props) {
     }
     setData(json);
     setStatusFlags(json.statusFlags);
-    setPaginationEnabled(!!json?.['questionnaire']?.['paginate'] && isEdit);
+    
     if (isEdit) {
+      setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
+      // If the completion requirement has not already been set via Form prop,
+      // grab it from the questionnaire definition
+      typeof(requireCompletion == "undefined") && setRequireCompletion(json?.['questionnaire']?.['requireCompletion']);
+      setIncompleteQuestionEl(null);
+      // Take into account the option to hide answer instructions as specified in the questionnaire definition
+      let hideInstructions = json?.['questionnaire']?.['hideAnswerInstructions'];
+      !!hideInstructions && setClassNames(names => ([...names, classes.hideAnswerInstructions]));
       //Perform a JCR check-out of the Form
       let checkoutForm = new FormData();
       checkoutForm.set(":operation", "checkout");
@@ -188,6 +217,10 @@ function Form (props) {
   let handleFetchError = (response) => {
     setError(response);
     setData([]);  // Prevent an infinite loop if data was not set
+    if (isEdit) {
+      paginationEnabled && setDisableProgress(requireCompletion);
+      setIncompleteQuestionEl(null);
+    }
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
@@ -200,6 +233,7 @@ function Form (props) {
 
     let data = new FormData(formNode.current);
     setSaveInProgress(true);
+    setIncompleteQuestionEl(null);
     if (performCheckin) {
         data.append(":checkin", "true");
     }
@@ -216,8 +250,6 @@ function Form (props) {
         return;
       }
       if (response.ok) {
-        setLastSaveStatus(true);
-        setLastSaveTimestamp(new Date());
         if (!disableHeader) {
           fetchWithReLogin(globalLoginDisplay, `${formURL}/statusFlags.json`)
             .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -225,6 +257,29 @@ function Form (props) {
             .catch(err => console.log("The form status flags could not be updated after saving"));
         }
         onSuccess?.();
+        // If the form is required to be complete, re-fetch it after save to see if user can progress
+        if (requireCompletion) {
+            // Disable progress until we figure out if it's ok to proceed
+            setDisableProgress(true);
+            fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
+              .then((response) => response.ok ? response.json() : Promise.reject(response))
+              .then(json => {
+                  let incompleteEl = getFirstIncompleteQuestionEl(json);
+                  if (!!incompleteEl) {
+                    setIncompleteQuestionEl(incompleteEl);
+                  } else {
+                    setDisableProgress(false);
+                  }
+              })
+              .catch(handleFetchError)
+              .finally(() => {
+                setLastSaveStatus(true);
+                setLastSaveTimestamp(new Date());
+              });
+        } else {
+          setLastSaveStatus(true);
+          setLastSaveTimestamp(new Date());
+        }
       } else if (response.status === 500) {
         response.json().then((json) => {
             setErrorCode(json["status.code"]);
@@ -363,7 +418,7 @@ function Form (props) {
                     <ListItem className={classes.actionsMenuItem}>
                       <DeleteButton
                           entryPath={data ? data["@path"] : formURL}
-                          entryName={(data?.subject?.fullIdentifier ? (data.subject.fullIdentifier + ": ") : '') + (title)}
+                          entryName={getEntityIdentifier(data)}
                           entryType="Form"
                           onComplete={onDelete}
                           variant="text"
@@ -413,7 +468,20 @@ function Form (props) {
   )
 
   return (
-    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode} className={className || null}>
+    <form action={data?.["@path"]}
+          method="POST"
+          onSubmit={handleSubmit}
+          onChange={() => {
+                             incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
+                             setIncompleteQuestionEl(null);
+                             setDisableProgress(paginationEnabled && requireCompletion);
+                             setLastSaveStatus(undefined);
+                          }
+                   }
+          key={id}
+          ref={formNode}
+          className={classNames?.join(' ')}
+      >
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
@@ -465,16 +533,18 @@ function Form (props) {
           ['/AllowResave']: ()=>setLastSaveStatus(undefined)
           }}>
           <FormUpdateProvider>
-            <SelectorDialog
-              allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
-              error={selectorDialogError}
-              open={selectorDialogOpen}
-              onChange={changeSubject}
-              onClose={() => {setSelectorDialogOpen(false)}}
-              onError={setSelectorDialogError}
-              title="Set subject"
-              selectedQuestionnaire={data?.questionnaire}
+            {!disableHeader &&
+              <SelectorDialog
+                allowedTypes={parseToArray(data?.['questionnaire']?.['requiredSubjectTypes'])}
+                error={selectorDialogError}
+                open={selectorDialogOpen}
+                onChange={changeSubject}
+                onClose={() => {setSelectorDialogOpen(false)}}
+                onError={setSelectorDialogError}
+                title="Set subject"
+                selectedQuestionnaire={data?.questionnaire}
               />
+            }
             {changedSubject &&
               <React.Fragment>
                 <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
@@ -511,12 +581,17 @@ function Form (props) {
         <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
+              disableProgress={disableProgress}
               lastSaveStatus={lastSaveStatus}
               enabled={paginationEnabled}
+              variant={paginationProps?.variant || data?.questionnaire?.paginationVariant}
+              navMode = {paginationProps?.navMode || data?.questionnaire?.paginationMode}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
-              onDone={() => { setEndReached(true) }}
+              onDone={() => { setEndReached(true); }}
+              onPageChange={() => { setDisableProgress(requireCompletion); setIncompleteQuestionEl(null); }}
               doneLabel={doneLabel}
+              doneIcon={doneIcon}
           />
         </Grid>
         { !paginationEnabled && !disableButton &&
@@ -525,31 +600,24 @@ function Form (props) {
             { isEdit &&
               <MainActionButton
                 style={doneButtonStyle}
+                disabled={disableProgress}
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
-                label={saveInProgress ? "Saving..." : lastSaveStatus ? "Saved" : doneLabel || "Save"}
+                label={saveInProgress ? "Saving..." : doneLabel || (lastSaveStatus ? "Saved" : "Save")}
               />
             }
           </div>
         </Grid>
         }
       </Grid>
-      <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
-        <DialogTitle>
-          <Typography variant="h6" color="error" className={classes.dialogTitle}>Failed to save</Typography>
-          <IconButton onClick={closeErrorDialog} className={classes.closeButton} size="large">
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-            <Typography variant="h6">Your changes were not saved.</Typography>
-            <Typography variant="body1" paragraph>Server responded with response code {errorCode}: {errorMessage}</Typography>
-            {lastSaveTimestamp &&
-            <Typography variant="body1" paragraph>Time of the last successful save: {DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
-            }
-        </DialogContent>
-      </Dialog>
+      <ErrorDialog title="Failed to save" open={errorDialogDisplayed} onClose={closeErrorDialog}>
+        <Typography variant="h6">Your changes were not saved.</Typography>
+        <Typography variant="body1" paragraph>Server responded with response code {errorCode}: {errorMessage}</Typography>
+        {lastSaveTimestamp &&
+          <Typography variant="body1" paragraph>Time of the last successful save: {DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
+        }
+      </ErrorDialog>
     </form>
   );
 };

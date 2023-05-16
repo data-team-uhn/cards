@@ -72,6 +72,12 @@ public class LastModifiedEditor extends DefaultEditor
         propertyAdded(after);
     }
 
+    @Override
+    public void propertyDeleted(PropertyState before) throws CommitFailedException
+    {
+        propertyAdded(before);
+    }
+
     // Called when a new property is added
     @Override
     public void propertyAdded(final PropertyState after)
@@ -100,6 +106,13 @@ public class LastModifiedEditor extends DefaultEditor
         return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name),
             this.currentResourceResolver,
             this.versionableAncestor);
+    }
+
+    @Override
+    public Editor childNodeDeleted(String name, NodeState before) throws CommitFailedException
+    {
+        handleAnswerChange();
+        return null;
     }
 
     private boolean isMixLastModified(NodeBuilder nodeBuilder)

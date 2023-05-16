@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.httprequests.HttpRequests;
 import io.uhndata.cards.httprequests.HttpResponse;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 public class WebhookBackupTask implements Runnable
 {
@@ -51,22 +52,27 @@ public class WebhookBackupTask implements Runnable
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
+
+    private final ThreadResourceResolverProvider rrp;
+
     private final String exportRunMode;
+
     private final LocalDateTime exportLowerBound;
+
     private final LocalDateTime exportUpperBound;
 
-    WebhookBackupTask(final ResourceResolverFactory resolverFactory, final String exportRunMode)
+    WebhookBackupTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
+        final String exportRunMode)
     {
-        this.resolverFactory = resolverFactory;
-        this.exportRunMode = exportRunMode;
-        this.exportLowerBound = null;
-        this.exportUpperBound = null;
+        this(resolverFactory, rrp, exportRunMode, null, null);
     }
 
-    WebhookBackupTask(final ResourceResolverFactory resolverFactory, final String exportRunMode,
+    WebhookBackupTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
+        final String exportRunMode,
         final LocalDateTime exportLowerBound, final LocalDateTime exportUpperBound)
     {
         this.resolverFactory = resolverFactory;
+        this.rrp = rrp;
         this.exportRunMode = exportRunMode;
         this.exportLowerBound = exportLowerBound;
         this.exportUpperBound = exportUpperBound;
@@ -208,24 +214,38 @@ public class WebhookBackupTask implements Runnable
 
     private String getFormAsJson(String formPath) throws IOException
     {
+        boolean mustPopResolver = false;
         String formDataUrl = String.format("%s.deep", formPath);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            this.rrp.push(resolver);
+            mustPopResolver = true;
             Resource formData = resolver.resolve(formDataUrl);
             return formData.adaptTo(JsonObject.class).toString();
         } catch (LoginException e) {
             LOGGER.warn("LoginException in getFormAsJson: {}", e);
             throw new IOException("getFormAsJson LoginException");
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
     }
 
     private String getSubjectAsJson(String subjectPath) throws IOException
     {
+        boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            this.rrp.push(resolver);
+            mustPopResolver = true;
             Resource subjectData = resolver.resolve(subjectPath);
             return subjectData.adaptTo(JsonObject.class).toString();
         } catch (LoginException e) {
             LOGGER.warn("LoginException in getFormAsJson: {}", e);
             throw new IOException("getSubjectAsJson LoginException");
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
     }
 

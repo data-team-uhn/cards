@@ -19,12 +19,16 @@
       "Section" : "Section.json",
       "Information" : "Information.json"
     },
-    "label": "string",
+    "label": "markdown",
     "description": "markdown",
     "displayMode": {
       "default" : {
-        "recurrent": "boolean",
-        "initialNumberOfInstances" : "long"
+        "recurrent": {
+          "true" : {
+            "initialNumberOfInstances" : "long"
+          },
+          "false" : {}
+        }
       },
       "header" : {},
       "footer" : {},

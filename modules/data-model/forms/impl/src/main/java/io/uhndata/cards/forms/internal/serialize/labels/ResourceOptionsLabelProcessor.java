@@ -27,16 +27,15 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
@@ -49,7 +48,7 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
 {
     /** Provides access to resources. */
     @Reference
-    private ResourceResolverFactory resolverFactory;
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public boolean canProcess(Resource resource)
@@ -80,8 +79,8 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
      * Basic method to get the answer label associated with the resource answer option.
      *
      * @param node the AnswerOption node being serialized
-     * @return the label for that AmswerOption, obtained from the label property (indicated by the parent question)
-     *     of resource it refers to
+     * @return the label for that AmswerOption, obtained from the label property (indicated by the parent question) of
+     *         resource it refers to
      */
     private JsonValue getAnswerOptionLabel(final Node node, final String labelPropertyName)
     {
@@ -99,7 +98,7 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
                 valueLabelMap.put(valueProp.getString(), valueProp.getString());
             }
 
-            ResourceResolver resolver = this.resolverFactory.getThreadResourceResolver();
+            ResourceResolver resolver = this.rrp.getThreadResourceResolver();
             if (resolver != null) {
                 // Populate the labels in the map
                 for (String value : new LinkedHashSet<>(valueLabelMap.keySet())) {
@@ -109,11 +108,7 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
                 }
             }
 
-            if (valueLabelMap.size() == 1) {
-                return Json.createValue((String) valueLabelMap.values().toArray()[0]);
-            }
-
-            return createJsonArrayFromList(valueLabelMap.values());
+            return createJsonValue(valueLabelMap.values(), valueProp.isMultiple());
         } catch (final RepositoryException ex) {
             // Really shouldn't happen
         }

@@ -29,6 +29,7 @@ import {
 import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
+import BooleanInput from "./BooleanInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 
@@ -36,28 +37,44 @@ import QuestionComponentManager from "../questionnaireEditor/QuestionComponentMa
 
 let ObjectInput = (props) => {
   let { objectKey, value, data, hint, hints, onChange, ...rest } = props;
-  const defaultValue = data[objectKey] || (Object.keys(value || {})[0] || '');
+
+  let options = Object.keys(value || {});
+  let isBoolean = (options.length == 2 && options.includes("true") && options.includes("false"));
+
+  const defaultValue = data[objectKey] || (isBoolean ? 'false' : (options[0] || ''));
   let [ selectedValue, setSelectedValue ] = useState(defaultValue);
 
   return (
     <>
-    <EditorInput name={objectKey} hint={hint}>
-      <Select
-        variant="standard"
-        id={objectKey}
-        name={objectKey}
-        defaultValue={defaultValue}
-        onChange={(event) => {
-          setSelectedValue(event.target.value);
-          onChange && onChange(event.target.value);
-        }}>
-        { typeof(value) === 'object' && Object.keys(value).map((name, val) =>
-          <MenuItem key={val} name={name} id={name} value={name}>
-            <Typography>{name}</Typography>
-          </MenuItem>
-        )}
-      </Select>
-    </EditorInput>
+    { isBoolean ?
+      <BooleanInput
+        objectKey={objectKey}
+        data={data}
+        hint={hint}
+        onChange={(value) => {
+          setSelectedValue(`${value}`);
+          onChange?.(`${value}`);
+        }}
+      />
+      :
+      <EditorInput name={objectKey} hint={hint}>
+        <Select
+          variant="standard"
+          id={objectKey}
+          name={objectKey}
+          defaultValue={defaultValue}
+          onChange={(event) => {
+            setSelectedValue(event.target.value);
+            onChange?.(event.target.value);
+           }}>
+          { typeof(value) === 'object' && Object.keys(value).map((name, val) =>
+            <MenuItem key={val} name={name} id={name} value={name}>
+              <Typography>{name}</Typography>
+            </MenuItem>
+          )}
+        </Select>
+      </EditorInput>
+    }
     { typeof(value) === 'object' && selectedValue != '' && typeof (value[selectedValue]) === 'object' ?
         <Fields data={data} JSON={value[selectedValue]} edit={true} hints={hints} {...rest} />
       :

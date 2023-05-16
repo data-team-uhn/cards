@@ -32,6 +32,7 @@
 
   <modules>
     <module>startup-customization</module>
+    <module>resolver-provider</module>
     <module>form-completion-status</module>
     <module>commons</module>
     <module>ui-extension</module>
@@ -66,5 +67,8 @@
     <module>page-start-header</module>
     <module>webhook-backup</module>
     <module>saml</module>
+    <module>scheduled-csv-export</module>
+    <module>clarity-integration</module>
+    <module>torch-import</module>
   </modules>
 </project>

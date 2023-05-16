@@ -17,16 +17,16 @@
 //  under the License.
 //
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import PageNotFound from './PageNotFound';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('main-404-container'));
+root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <PageNotFound />
     </ThemeProvider>
-  </StyledEngineProvider>,
-  document.getElementById('main-404-container')
+  </StyledEngineProvider>
 );

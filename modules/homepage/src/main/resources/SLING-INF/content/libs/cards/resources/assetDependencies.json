@@ -1,0 +1,4 @@
+{
+  "cards-homepage.QuickSearchResults.js": ["asset:cards-dataentry.Forms.js"],
+  "cards-homepage.QuickSearchConfiguration.js": ["asset:cards-login.loginDialogue.js"]
+}

@@ -33,6 +33,8 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 
+import Logo from "../components/Logo";
+
 const useStyles = makeStyles(theme => ({
   appbar : {
     margin: theme.spacing(-1, -1, 4),
@@ -41,36 +43,65 @@ const useStyles = makeStyles(theme => ({
     },
     padding: theme.spacing(0, 1),
     boxSizing: "content-box",
-    background: "transparent",
+    background: theme.palette.background.paper,
     color: theme.palette.text.primary,
     boxShadow: "none",
   },
   toolbar : {
+    maxWidth: "780px",
+    margin: "auto",
     display: "flex",
     justifyContent: "space-between",
     background: theme.palette.background.paper,
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
+    "& > .cards-patientPortal-surveyTitle" : {
+      "@media (max-width: 500px)" : {
+        display: "none",
+      },
+    },
   },
-  titleLine : {
-    display: "flex",
-    alignItems: "center",
+  withAffiliation : {
+    display: "block",
+    "& > .cards-patientPortal-surveyTitle" : {
+      textAlign: "center",
+      margin: "-4rem 140px 0",
+    },
+    "& > .MuiBreadcrumbs-root" : {
+       width: "fit-content",
+       margin: "auto",
+    }
   },
   logo : {
-    maxHeight: theme.spacing(6),
-    marginRight: theme.spacing(2),
-    "@media (max-width: 400px)" : {
-      maxHeight: theme.spacing(4),
+    maxWidth: "780px !important",
+    "& > img" : {
+      "@media (max-width: 500px)" : {
+        maxHeight: theme.spacing(4),
+      }
+    }
+  },
+  sideMenu : {
+    float: "right",
+    textAlign: "right",
+    width: "160px",
+    "& .MuiBreadcrumbs-ol": {
+      display: "block",
+    },
+    "& .MuiBreadcrumbs-separator": {
+      display: "none",
+    },
+    "& .MuiBreadcrumbs-li:not(:last-child)": {
+      marginBottom: theme.spacing(1),
     }
   },
   greeting: {
-    "@media (max-width: 600px)" : {
+    "@media (max-width: 500px)" : {
       display: "none",
     },
   },
   fullSize : {
     paddingTop: theme.spacing(5),
-    maxWidth: "780px",
+    width: `calc(100% - ${theme.spacing(5)})`,
     margin: "auto",
     "&.MuiToolbar-root > .MuiTypography-root" : {
       zoom: 1.2,
@@ -82,14 +113,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Header (props) {
-  const { title, greeting, progress, subtitle, step } = props;
+  const { title, greeting, withSignout, progress, subtitle, step } = props;
 
   const classes = useStyles();
 
   const scrollTrigger = useScrollTrigger({
     target: window,
     disableHysteresis: true,
-    threshold: 250,
+    threshold: 200,
   });
 
   const theme = useTheme();
@@ -103,21 +134,26 @@ function Header (props) {
     </Toolbar>
     : <></>;
 
+  const withAffiliation = !!(document.querySelector('meta[name="affiliationLogoLight"]')?.content);
+
+  let toolbarClassNames = [classes.toolbar];
+  if (withAffiliation) toolbarClassNames.push(classes.withAffiliation);
+
   return (
     <>
     <AppBar position="sticky" className={classes.appbar} style={ { top: appbarExpanded ? contentOffset: 0 }}>
       <Collapse in={!subtitle || !(scrollTrigger)}>
-        <Toolbar variant="dense" className={classes.toolbar}>
-          <div className={classes.titleLine}>
-            <img src={document.querySelector('meta[name="logoLight"]').content} alt="logo" className={classes.logo} />
-            { title &&
-              <Typography variant="overline" color="textPrimary">{ title }</Typography>
+        <Toolbar variant="dense" className={toolbarClassNames.join(' ')}>
+          <Logo className={classes.logo} maxWidth="160px" />
+          { title && <Typography variant="overline" color="textPrimary" component="div" className="cards-patientPortal-surveyTitle">{ title }</Typography>}
+          { (greeting || withSignout) &&
+            <Breadcrumbs separator="·" className={!withAffiliation ? classes.sideMenu : undefined}>
+            { greeting && <span className={classes.greeting}>{ greeting }</span>}
+            { withSignout &&
+              <Link href="/system/sling/logout" underline="hover" onClick={(event) => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
             }
-          </div>
-          <Breadcrumbs separator = "·">
-            {greeting && <span className={classes.greeting}>{ greeting }</span>}
-            <Link href="/system/sling/logout" underline="hover" onClick={(event) => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
-          </Breadcrumbs>
+            </Breadcrumbs>
+          }
         </Toolbar>
       </Collapse>
       { subtitle && <Collapse in={scrollTrigger}>{subtitleBar}</Collapse> }

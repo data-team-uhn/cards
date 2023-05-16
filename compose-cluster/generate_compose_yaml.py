@@ -26,16 +26,27 @@ import json
 import psutil
 import shutil
 import hashlib
+import tzlocal
 import argparse
 from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
 from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
-from ServerMemorySplitConfig import MEMORY_SPLIT_CARDS_JAVA, MEMORY_SPLIT_MONGO_SHARDS_REPLICAS
+from ServerMemorySplitConfig import MEMORY_SPLIT_CARDS_JAVA, MEMORY_SPLIT_MONGO_DATA_STORAGE
 
 ADMINER_DOCKER_RELEASE_TAG = "4.8.1"
 MINIO_DOCKER_RELEASE_TAG = "RELEASE.2022-09-17T00-09-45Z"
 
 argparser = argparse.ArgumentParser()
+argparser.add_argument('--mongo_singular', help='Use a single MongoDB Docker container for data storage', action='store_true')
+argparser.add_argument('--mongo_cluster', help='Use a cluster of MongoDB shards and replicas for data storage', action='store_true')
+argparser.add_argument('--percona_singular', help='Use a single Docker container of Percona Server for MongoDB for data storage', action='store_true')
+argparser.add_argument('--percona_encryption_keyfile', help='Enable encryption-at-rest for the singular Percona Server for MongoDB instance using the provided keyfile')
+argparser.add_argument('--percona_encryption_vault_server')
+argparser.add_argument('--percona_encryption_vault_port', type=int, default=8200)
+argparser.add_argument('--percona_encryption_vault_token_file')
+argparser.add_argument('--percona_encryption_vault_secret')
+argparser.add_argument('--percona_encryption_vault_disable_tls_for_testing', action='store_true')
+argparser.add_argument('--data_db_mount', help='If using --mongo_singular or --percona_singular, mount /data/db to a given location instead of to a Docker volume')
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
@@ -45,6 +56,7 @@ argparser.add_argument('--demo', help='Enable the Demo Banner, Upgrade Marker Fl
 argparser.add_argument('--demo_banner', help='Enable only the Demo Banner', action='store_true')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
 argparser.add_argument('--composum', help='Enable Composum for the CARDS admin account', action='store_true')
+argparser.add_argument('--debug', help='Debug the CARDS instance on port 5005', action='store_true')
 argparser.add_argument('--adminer', help='Add an Adminer Docker container for database interaction via web browser', action='store_true')
 argparser.add_argument('--adminer_port', help='If --adminer is specified, bind it to this localhost port [default: 1435]', default=1435, type=int)
 argparser.add_argument('--enable_backup_server', help='Add a cards/backup_recorder service to the cluster', action='store_true')
@@ -54,6 +66,9 @@ argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of 
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 argparser.add_argument('--external_mongo_uri', help='URI of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
+argparser.add_argument('--clarity', help='Enable the clarity-integration CARDS module.', action='store_true')
+argparser.add_argument('--mssql', help='Start up a MS-SQL instance with test data', action='store_true')
+argparser.add_argument('--expose_mssql', help='If --mssql is specified, forward the SQL service to the specified port (defaults to 1433 if --expose_mssql is specified without a port parameter)', nargs='?', const=1433, type=int)
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
 argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
 argparser.add_argument('--saml_cloud_iam_demo', help='Enable SAML authentication with CARDS via the Cloud-IAM.com demo', action='store_true')
@@ -64,8 +79,15 @@ argparser.add_argument('--smtps_test_container', help='Enable the mock SMTPS (ca
 argparser.add_argument('--smtps_test_mail_path', help='Host OS path where the email mbox file from smtps_test_container is stored')
 argparser.add_argument('--s3_test_container', help='Add a MinIO S3 Bucket Docker container for testing S3 data exports', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
+argparser.add_argument('--self_signed_ssl_proxy', help='Generate a self-signed SSL certificate for the proxy to use (used mainly for testing purposes).', action='store_true')
+argparser.add_argument('--behind_ssl_termination', help='Listen only for non-encrypted HTTP connections but apply all HTTPS headers (as client connections are made through an upstream SSL-terminating reverse proxy)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
+argparser.add_argument('--vault_dev_server', help='Add a HashiCorp Vault (development mode) container to the set of services', action='store_true')
+argparser.add_argument('--web_port_admin', help='If specified, will listen for connections on this port (and not 8080/443) and forward them to the full-access reverse proxy (permitting logins)', type=int)
+argparser.add_argument('--web_port_user', help='If specified, will listen for connections on this port and forward them to the restricted-access reverse proxy (logins not permitted)', type=int)
+argparser.add_argument('--web_port_user_root_redirect', help='The client accessing / over --web_port_user will automatically be redirected to this page', default='/Survey.html')
+argparser.add_argument('--timezone', help='Specify a timezone (eg. America/Toronto) other than the one of the host system')
 args = argparser.parse_args()
 
 MONGO_SHARD_COUNT = args.shards
@@ -75,20 +97,74 @@ ENABLE_BACKUP_SERVER = args.enable_backup_server
 ENABLE_NCR = args.enable_ncr
 SSL_PROXY = args.ssl_proxy
 
+MISSING_ARG_PROMPTS = {}
+MISSING_ARG_PROMPTS['server_address'] = "Enter the public-facing server address for this deployment (eg. localhost:8080): "
+
 def sha256FileHash(filepath):
   hasher = hashlib.sha256()
   with open(filepath, 'rb') as f:
     hasher.update(f.read())
     return hasher.hexdigest()
 
+def getArgValueOrPrompt(arg_name):
+  # Initialize this method's static map of arg keys -> values
+  if not hasattr(getArgValueOrPrompt, "kv_map"):
+    getArgValueOrPrompt.kv_map = {}
+
+  # If this argument has been specified in the command-line, simply return it
+  if (arg_name in vars(args)) and (vars(args)[arg_name] is not None):
+    return vars(args)[arg_name]
+  else:
+    # ...otherwise prompt and store the key -> value pair for future use
+    if arg_name in getArgValueOrPrompt.kv_map:
+      return getArgValueOrPrompt.kv_map[arg_name]
+    else:
+      if arg_name in MISSING_ARG_PROMPTS:
+        val = input(MISSING_ARG_PROMPTS[arg_name])
+      else:
+        val = input("Please enter a value for the missing --{} argument: ".format(arg_name))
+      getArgValueOrPrompt.kv_map[arg_name] = val
+      return val
+
+def getTimezoneName():
+  if args.timezone:
+    return args.timezone
+  else:
+    return tzlocal.get_localzone().zone
+
 #Validate before doing anything else
-if (MONGO_REPLICA_COUNT % 2) != 1:
-  print("ERROR: Replica count must be *odd* to achieve distributed consensus")
+
+# Ensure that we have some type of data storage for CARDS
+mongo_storage_type_settings = [args.mongo_singular, args.mongo_cluster, args.oak_filesystem, args.external_mongo, args.percona_singular]
+if mongo_storage_type_settings.count(True) < 1:
+  print("ERROR: A data persistence backend of either --mongo_singular, --mongo_cluster, --oak_filesystem, --external_mongo, or --percona_singular must be specified")
   sys.exit(-1)
 
-if (CONFIGDB_REPLICA_COUNT % 2) != 1:
-  print("ERROR: Config replica count must be *odd* to achieve distributed consensus")
+if mongo_storage_type_settings.count(True) > 1:
+  print("ERROR: Only one data persistence backend can be specified")
   sys.exit(-1)
+
+VAULT_PROVIDED_PERCONA_ENCRYPTION = False
+percona_encryption_vault_required_settings = [(args.percona_encryption_vault_server is not None), (args.percona_encryption_vault_token_file is not None), (args.percona_encryption_vault_secret is not None)]
+if percona_encryption_vault_required_settings.count(True) == 3:
+  # Encryption using HashiCorp Vault is enabled
+  VAULT_PROVIDED_PERCONA_ENCRYPTION = True
+elif percona_encryption_vault_required_settings.count(True) == 0:
+  # Encryption using HashiCorp Vault will not be used
+  VAULT_PROVIDED_PERCONA_ENCRYPTION = False
+else:
+  # Bad configuration
+  print("ERROR: In order to use a Percona encryption key provided by Vault, --percona_encryption_vault_server, --percona_encryption_vault_token_file, and --percona_encryption_vault_secret must be specified")
+  sys.exit(-1)
+
+if args.mongo_cluster:
+  if (MONGO_REPLICA_COUNT % 2) != 1:
+    print("ERROR: Replica count must be *odd* to achieve distributed consensus")
+    sys.exit(-1)
+
+  if (CONFIGDB_REPLICA_COUNT % 2) != 1:
+    print("ERROR: Config replica count must be *odd* to achieve distributed consensus")
+    sys.exit(-1)
 
 if args.smtps_localhost_proxy:
   if not args.subnet:
@@ -118,6 +194,39 @@ if args.saml_cloud_iam_demo:
     print("SAML authentication with Cloud-IAM.com may not work.")
     print("======================================================================")
     print("")
+
+# Check that the encryption keyfile ownership and permissions are acceptable to Percona
+if args.percona_encryption_keyfile is not None:
+  if VAULT_PROVIDED_PERCONA_ENCRYPTION:
+    print("ERROR: Cannot specify both keyfile-based and Vault-based Percona encryption")
+    sys.exit(-1)
+
+  # Check that the file is owned by UID=1001 and has octal permissions of 600
+  keyfile_stat = os.stat(args.percona_encryption_keyfile)
+  if keyfile_stat.st_uid != 1001:
+    print("ERROR: The file specified by --percona_encryption_keyfile must have UID=1001")
+    sys.exit(-1)
+  if (keyfile_stat.st_mode & 0b111111111) != 0o600:
+    print("ERROR: The file specified by --percona_encryption_keyfile must have permissions of rw------- (600)")
+    sys.exit(-1)
+
+# Check that the Vault token file ownership and permissions are acceptable to Percona
+if args.percona_encryption_vault_token_file is not None:
+  # Check that the file is owned by UID=1001 and has octal permissions of 600
+  token_file_stat = os.stat(args.percona_encryption_vault_token_file)
+  if token_file_stat.st_uid != 1001:
+    print("ERROR: The file specified by --percona_encryption_vault_token_file must have UID=1001")
+    sys.exit(-1)
+  if (token_file_stat.st_mode & 0b111111111) != 0o600:
+    print("ERROR: The file specified by --percona_encryption_vault_token_file must have permissions of rw------- (600)")
+    sys.exit(-1)
+
+# Percona requires that /data/db have a UID=1001
+if (args.data_db_mount is not None) and args.percona_singular:
+  data_db_mount_stat = os.stat(args.data_db_mount)
+  if data_db_mount_stat.st_uid != 1001:
+    print("ERROR: The file specified by --percona_singular must have UID=1001")
+    sys.exit(-1)
 
 def getDockerHostIP(subnet):
   network_address = subnet.split('/')[0]
@@ -253,24 +362,24 @@ def getCardsApplicationName(project_name):
   # If all else fails, use the generic CARDS name
   return "CARDS"
 
-def getWiredTigerCacheSizeGB():
+def getWiredTigerCacheSizeGB(mongo_node_count=1):
   total_system_memory_bytes = psutil.virtual_memory().total
   total_system_memory_gb = total_system_memory_bytes / (1024 * 1024 * 1024)
 
-  # Total memory given to the complete set of MongoDB shards and replicas:
-  total_mongo_shard_replica_memory_gb = MEMORY_SPLIT_MONGO_SHARDS_REPLICAS * total_system_memory_gb
+  # Total memory allocated for MongoDB - be it a single MongoDB container of a cluster of shards and replicas:
+  total_mongo_memory_gb = MEMORY_SPLIT_MONGO_DATA_STORAGE * total_system_memory_gb
 
-  # Memory given to each MongoDB shard / replica
-  memory_per_shard_replica_gb = total_mongo_shard_replica_memory_gb / (MONGO_SHARD_COUNT * MONGO_REPLICA_COUNT)
+  # What should the WIRED_TIGER_CACHE_SIZE_GB value be for the MongoDB node in question?
+  wired_tiger_cache_size_gb = total_mongo_memory_gb / mongo_node_count
 
   # Floor to 2 decimal places
-  memory_per_shard_replica_gb = math.floor(100 * memory_per_shard_replica_gb) / 100.0
+  wired_tiger_cache_size_gb = math.floor(100 * wired_tiger_cache_size_gb) / 100.0
 
   # The value of WiredTigerCacheSizeGB must range between 0.25GB and 10000GB as per MongoDB documentation
-  if (memory_per_shard_replica_gb < 0.25) or (memory_per_shard_replica_gb > 10000):
+  if (wired_tiger_cache_size_gb < 0.25) or (wired_tiger_cache_size_gb > 10000):
     raise Exception("WiredTigerCacheSizeGB cannot be less than 0.25 or greater than 10000")
 
-  return memory_per_shard_replica_gb
+  return wired_tiger_cache_size_gb
 
 def getCardsJavaMemoryLimitMB():
   total_system_memory_bytes = psutil.virtual_memory().total
@@ -281,6 +390,18 @@ def getCardsJavaMemoryLimitMB():
   # Floor down to the nearest integer MB
   return math.floor(cards_java_memory_limit_mb)
 
+def newListIfEmpty(yaml_object, *keys):
+  # Descend down the yaml_object through the keys
+  list_parent_object = yaml_object
+  for key in keys[0:-1]:
+    list_parent_object = list_parent_object[key]
+  list_name = keys[-1]
+  if list_name in list_parent_object.keys():
+    if type(list_parent_object[list_name]) is list:
+      return list_parent_object[list_name]
+  list_parent_object[list_name] = []
+  return list_parent_object[list_name]
+
 OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
@@ -288,7 +409,8 @@ yaml_obj['version'] = '3'
 yaml_obj['volumes'] = {}
 yaml_obj['services'] = {}
 
-if not (args.oak_filesystem or args.external_mongo):
+# We're using a cluster of MongoDB shards and replicas for data storage
+if args.mongo_cluster:
   #Create configuration databases
   for i in range(CONFIGDB_REPLICA_COUNT):
     service_name = "config{}".format(i)
@@ -336,7 +458,7 @@ if not (args.oak_filesystem or args.external_mongo):
       yaml_obj['services'][service_name]['build'] = {}
       yaml_obj['services'][service_name]['build']['context'] = "shard{}".format(shard_index)
 
-      yaml_obj['services'][service_name]['environment'] = ["WIRED_TIGER_CACHE_SIZE_GB={}".format(getWiredTigerCacheSizeGB())]
+      yaml_obj['services'][service_name]['environment'] = ["WIRED_TIGER_CACHE_SIZE_GB={}".format(getWiredTigerCacheSizeGB(MONGO_SHARD_COUNT * MONGO_REPLICA_COUNT))]
 
       yaml_obj['services'][service_name]['expose'] = ['27017']
 
@@ -443,6 +565,55 @@ if not (args.oak_filesystem or args.external_mongo):
 
   yaml_obj['services']['initializer']['depends_on'] = ['router']
 
+if args.mongo_singular:
+  # Create the single-container MongoDB
+  print("Configuring service: mongo")
+  yaml_obj['services']['mongo'] = {}
+  yaml_obj['services']['mongo']['image'] = "mongo:4.2-bionic"
+  yaml_obj['services']['mongo']['networks'] = {}
+  yaml_obj['services']['mongo']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['mongo']['networks']['internalnetwork']['aliases'] = ['mongo']
+
+  yaml_obj['services']['mongo']['command'] = "--wiredTigerCacheSizeGB {}".format(getWiredTigerCacheSizeGB(1))
+
+  if args.data_db_mount is None:
+    yaml_obj['volumes']['cards-mongo'] = {}
+    yaml_obj['volumes']['cards-mongo']['driver'] = "local"
+
+    yaml_obj['services']['mongo']['volumes'] = ["cards-mongo:/data/db"]
+  else:
+    yaml_obj['services']['mongo']['volumes'] = ["{}:/data/db".format(args.data_db_mount)]
+
+if args.percona_singular:
+  # Create the single-container Percona Server for MongoDB
+  print("Configuring service: percona")
+  yaml_obj['services']['percona'] = {}
+  yaml_obj['services']['percona']['image'] = "percona/percona-server-mongodb:4.4"
+  yaml_obj['services']['percona']['networks'] = {}
+  yaml_obj['services']['percona']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['percona']['networks']['internalnetwork']['aliases'] = ['percona', 'mongo']
+
+  yaml_obj['services']['percona']['command'] = "--wiredTigerCacheSizeGB {}".format(getWiredTigerCacheSizeGB(1))
+  if args.percona_encryption_keyfile is not None:
+    yaml_obj['services']['percona']['command'] += " --enableEncryption --encryptionKeyFile /percona_keyfile"
+  elif VAULT_PROVIDED_PERCONA_ENCRYPTION:
+    yaml_obj['services']['percona']['command'] += " --enableEncryption --vaultServerName {} --vaultPort {} --vaultTokenFile /vault.token --vaultSecret {}".format(args.percona_encryption_vault_server, args.percona_encryption_vault_port, args.percona_encryption_vault_secret)
+    if args.percona_encryption_vault_disable_tls_for_testing:
+      yaml_obj['services']['percona']['command'] += "  --vaultDisableTLSForTesting"
+
+  if args.data_db_mount is None:
+    yaml_obj['volumes']['cards-percona'] = {}
+    yaml_obj['volumes']['cards-percona']['driver'] = "local"
+
+    yaml_obj['services']['percona']['volumes'] = ["cards-percona:/data/db"]
+  else:
+    yaml_obj['services']['percona']['volumes'] = ["{}:/data/db".format(args.data_db_mount)]
+
+  if args.percona_encryption_keyfile is not None:
+    yaml_obj['services']['percona']['volumes'].append("{}:/percona_keyfile:ro".format(args.percona_encryption_keyfile))
+  elif VAULT_PROVIDED_PERCONA_ENCRYPTION:
+    yaml_obj['services']['percona']['volumes'].append("{}:/vault.token:ro".format(args.percona_encryption_vault_token_file))
+
 #Configure the initial CARDS container
 print("Configuring service: cardsinitial")
 yaml_obj['services']['cardsinitial'] = {}
@@ -461,6 +632,8 @@ except FileExistsError:
 
 yaml_obj['services']['cardsinitial']['volumes'] = ["./SLING:/opt/cards/.cards-data"]
 yaml_obj['services']['cardsinitial']['volumes'].append("./SSL_CONFIG/cards_certs/:/load_certs:ro")
+if os.path.exists("/etc/localtime"):
+  yaml_obj['services']['cardsinitial']['volumes'].append("/etc/localtime:/etc/localtime:ro")
 if args.dev_docker_image:
   yaml_obj['services']['cardsinitial']['volumes'].append("{}:/root/.m2:ro".format(os.path.join(os.environ['HOME'], '.m2')))
 
@@ -469,20 +642,35 @@ if args.custom_env_file:
 
 yaml_obj['services']['cardsinitial']['environment'] = []
 yaml_obj['services']['cardsinitial']['environment'].append("INITIAL_SLING_NODE=true")
-if not (args.oak_filesystem or args.external_mongo):
+
+# If we're using a cluster of MongoDB shards and replicas for data storage,
+# ensure that CARDS does not start before the cluster is ready.
+if args.mongo_cluster:
   yaml_obj['services']['cardsinitial']['environment'].append("INSIDE_DOCKER_COMPOSE=true")
+
 yaml_obj['services']['cardsinitial']['environment'].append("CARDS_RELOAD=${CARDS_RELOAD:-}")
 if args.oak_filesystem:
   yaml_obj['services']['cardsinitial']['environment'].append("OAK_FILESYSTEM=true")
 
-if not (args.oak_filesystem or args.external_mongo):
+if args.mongo_cluster:
   yaml_obj['services']['cardsinitial']['depends_on'] = ['router']
+
+if args.mongo_singular:
+  yaml_obj['services']['cardsinitial']['depends_on'] = ['mongo']
+
+if args.percona_singular:
+  yaml_obj['services']['cardsinitial']['depends_on'] = ['percona']
+
+if args.mongo_cluster or args.mongo_singular or args.percona_singular:
   # We must also limit the memory given to the CARDS Java process as the
   # internal MongoDB setup will also use a significant amount of memory.
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_JAVA_MEMORY_LIMIT_MB={}".format(getCardsJavaMemoryLimitMB()))
 
 if args.sling_admin_port:
-  yaml_obj['services']['cardsinitial']['ports'] = ["127.0.0.1:{}:8080".format(args.sling_admin_port)]
+  newListIfEmpty(yaml_obj, 'services', 'cardsinitial', 'ports').append("127.0.0.1:{}:8080".format(args.sling_admin_port))
+
+if args.debug:
+  newListIfEmpty(yaml_obj, 'services', 'cardsinitial', 'ports').append("127.0.0.1:5005:5005")
 
 if args.cards_project:
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_PROJECT={}".format(args.cards_project))
@@ -490,11 +678,17 @@ if args.cards_project:
 if args.composum:
   yaml_obj['services']['cardsinitial']['environment'].append("DEV=true")
 
+if args.debug:
+  yaml_obj['services']['cardsinitial']['environment'].append("DEBUG=true")
+
 if args.demo:
   yaml_obj['services']['cardsinitial']['environment'].append("DEMO=true")
 
 if args.demo_banner:
   yaml_obj['services']['cardsinitial']['environment'].append("DEMO_BANNER=true")
+
+if args.clarity:
+  yaml_obj['services']['cardsinitial']['environment'].append("CLARITY_IMPORT_ENABLED=true")
 
 if args.saml:
   yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")
@@ -506,6 +700,8 @@ if args.saml_cloud_iam_demo:
 if args.smtps:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_ENABLED=true")
   yaml_obj['services']['cardsinitial']['environment'].append("SLING_COMMONS_CRYPTO_PASSWORD=password")
+
+  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_HOST_AND_PORT={}".format(getArgValueOrPrompt('server_address')))
 
 if args.smtps_localhost_proxy:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_HOST=smtps_localhost_proxy")
@@ -524,6 +720,9 @@ if args.s3_test_container:
   yaml_obj['services']['cardsinitial']['environment'].append("S3_BUCKET_NAME=uhn")
   yaml_obj['services']['cardsinitial']['environment'].append("AWS_KEY=minioadmin")
   yaml_obj['services']['cardsinitial']['environment'].append("AWS_SECRET=minioadmin")
+
+if SSL_PROXY or args.behind_ssl_termination:
+  yaml_obj['services']['cardsinitial']['environment'].append("BEHIND_SSL_PROXY=true")
 
 if ENABLE_BACKUP_SERVER:
   print("Configuring service: backup_recorder")
@@ -590,9 +789,19 @@ yaml_obj['services']['proxy']['build'] = {}
 yaml_obj['services']['proxy']['build']['context'] = "proxy"
 
 if SSL_PROXY:
-  yaml_obj['services']['proxy']['ports'] = ["443:443"]
+  if args.web_port_admin is not None:
+    yaml_obj['services']['proxy']['ports'] = ["{}:443".format(args.web_port_admin)]
+  else:
+    yaml_obj['services']['proxy']['ports'] = ["443:443"]
+  if args.web_port_user is not None:
+    yaml_obj['services']['proxy']['ports'].append("{}:444".format(args.web_port_user))
 else:
-  yaml_obj['services']['proxy']['ports'] = ["8080:80"]
+  if args.web_port_admin is not None:
+    yaml_obj['services']['proxy']['ports'] = ["{}:80".format(args.web_port_admin)]
+  else:
+    yaml_obj['services']['proxy']['ports'] = ["8080:80"]
+  if args.web_port_user is not None:
+    yaml_obj['services']['proxy']['ports'].append("{}:90".format(args.web_port_user))
 
 yaml_obj['services']['proxy']['networks'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork'] = {}
@@ -608,6 +817,7 @@ shutil.copyfile(getCardsProjectLogoPath(args.cards_project), "./proxy/proxyerror
 #Specify the Application Name of the CARDS project to the proxy
 yaml_obj['services']['proxy']['environment'] = []
 yaml_obj['services']['proxy']['environment'].append("CARDS_APP_NAME={}".format(getCardsApplicationName(args.cards_project)))
+yaml_obj['services']['proxy']['environment'].append("WEB_PORT_USER_ROOT_REDIRECT={}".format(args.web_port_user_root_redirect))
 
 if SSL_PROXY:
   if args.saml:
@@ -619,6 +829,11 @@ if SSL_PROXY:
   yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificate.crt:/etc/cert/certificate.crt:ro")
   yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatekey.key:/etc/cert/certificatekey.key:ro")
   yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatechain.crt:/etc/cert/certificatechain.crt:ro")
+elif args.behind_ssl_termination:
+  if args.saml:
+    shutil.copyfile("proxy/terminated-ssl_saml_000-default.conf", "proxy/000-default.conf")
+  else:
+    shutil.copyfile("proxy/terminated-ssl_000-default.conf", "proxy/000-default.conf")
 else:
   if args.saml:
     shutil.copyfile("proxy/http_saml_000-default.conf", "proxy/000-default.conf")
@@ -633,13 +848,19 @@ if args.saml:
   else:
     idp_url = input("Enter the SAML2 IdP destination: ")
 
-  if args.server_address:
-    cards_server_address = args.server_address
-  else:
-    cards_server_address = input("Enter the public-facing server address for this deployment (eg. localhost:8080): ")
-
   yaml_obj['services']['proxy']['environment'].append("SAML_IDP_DESTINATION={}".format(idp_url))
-  yaml_obj['services']['proxy']['environment'].append("CARDS_HOST_AND_PORT={}".format(cards_server_address))
+  yaml_obj['services']['proxy']['environment'].append("CARDS_HOST_AND_PORT={}".format(getArgValueOrPrompt('server_address')))
+
+# Generate a self-signed SSL certificate for the proxy, if instructed to do so
+if args.self_signed_ssl_proxy:
+  print("Generating a self-signed SSL certificate for the proxy")
+  proxy_ssl_key, proxy_ssl_cert = generateSelfSignedCert()
+  with open("./SSL_CONFIG/certificatekey.key", 'w') as f_proxy_ssl_key:
+    f_proxy_ssl_key.write(proxy_ssl_key)
+  with open("./SSL_CONFIG/certificate.crt", 'w') as f_proxy_ssl_cert:
+    f_proxy_ssl_cert.write(proxy_ssl_cert)
+  with open("./SSL_CONFIG/certificatechain.crt", 'w') as f_proxy_ssl_cert:
+    f_proxy_ssl_cert.write(proxy_ssl_cert)
 
 #Configure the SMTPS localhost proxy container (if enabled)
 if args.smtps_localhost_proxy:
@@ -699,6 +920,38 @@ if args.adminer:
   yaml_obj['services']['adminer']['networks']['internalnetwork']['aliases'] = ['adminer']
   yaml_obj['services']['adminer']['ports'] = ["127.0.0.1:{}:8080".format(args.adminer_port)]
 
+if args.mssql:
+  print("Configuring service: ms-sql")
+  yaml_obj['services']['mssql'] = {}
+  yaml_obj['services']['mssql']['image'] = 'mcr.microsoft.com/mssql/server:2022-latest'
+  yaml_obj['services']['mssql']['networks'] = {}
+  yaml_obj['services']['mssql']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['mssql']['networks']['internalnetwork']['aliases'] = ['mssql']
+  yaml_obj['services']['mssql']['environment'] = ['ACCEPT_EULA=Y', 'MSSQL_SA_PASSWORD=testPassword_']
+  yaml_obj['services']['cardsinitial']['environment'].append("CLARITY_SQL_SERVER=mssql:1433")
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_USERNAME=sa')
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_PASSWORD=testPassword_')
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_ENCRYPT=false')
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_SCHEMA=path')
+  if args.cards_project == 'cards4prems':
+    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS')
+    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=HOSP_DISCHARGE_DTTM')
+  elif args.cards_project == 'cards4proms':
+    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=PatientVisitActivity_for_DATA-PRO')
+    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=ENCOUNTER_DATE')
+  if args.expose_mssql:
+    yaml_obj['services']['mssql']['ports'] = ['127.0.0.1:{}:1433'.format(args.expose_mssql)]
+
+if args.vault_dev_server:
+  print("Configuring service: vault_dev")
+  yaml_obj['services']['vault_dev'] = {}
+  yaml_obj['services']['vault_dev']['image'] = 'vault:1.12.2'
+  yaml_obj['services']['vault_dev']['networks'] = {}
+  yaml_obj['services']['vault_dev']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['vault_dev']['networks']['internalnetwork']['aliases'] = ['vault_dev', 'vault']
+  yaml_obj['services']['vault_dev']['environment'] = ['VAULT_DEV_ROOT_TOKEN_ID=vault_dev_token']
+  yaml_obj['services']['vault_dev']['ports'] = ['127.0.0.1:8200:8200']
+
 #Setup the internal network
 print("Configuring the internal network")
 yaml_obj['networks'] = {}
@@ -707,6 +960,17 @@ if args.subnet:
   yaml_obj['networks']['internalnetwork']['ipam'] = {}
   yaml_obj['networks']['internalnetwork']['ipam']['driver'] = 'default'
   yaml_obj['networks']['internalnetwork']['ipam']['config'] = [{'subnet': args.subnet}]
+
+# Configuration items that should be added to *all* services
+for service_name in yaml_obj['services']:
+  # Timezone
+  if 'environment' in yaml_obj['services'][service_name]:
+    yaml_obj['services'][service_name]['environment'].append("TZ={}".format(getTimezoneName()))
+  else:
+    yaml_obj['services'][service_name]['environment'] = ["TZ={}".format(getTimezoneName())]
+
+  # Automatic restart policy
+  yaml_obj['services'][service_name]['restart'] = "unless-stopped"
 
 #Save it
 with open(OUTPUT_FILENAME, 'w') as f_out:

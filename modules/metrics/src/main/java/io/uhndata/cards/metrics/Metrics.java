@@ -97,6 +97,7 @@ public final class Metrics
 
     /**
      * Creates the performance metric node and its child nodes - total, prevTotal and name in the JCR.
+     * If the performance metric node already exists, no changes are made to the JCR.
      *
      * @param resolverFactory a ResourceResolverFactory that can be used for inserting nodes into the JCR under /Metrics
      * @param statName the name of this performace metric to be placed in the JCR as /Metrics/{statName}
@@ -112,6 +113,11 @@ public final class Metrics
             // Get the /Metrics sling:Folder JCR Resource
             Resource metricsFolderResource = resolver.getResource(METRICS_PATH);
             if (metricsFolderResource == null) {
+                return;
+            }
+
+            // If /Metrics/{statName} already exists, we don't need to try (and fail) to create it
+            if (metricsFolderResource.getChild(statName) != null) {
                 return;
             }
 

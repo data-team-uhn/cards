@@ -44,7 +44,7 @@
               SLING-INF/content/Survey/Cardio.xml;path:=/Survey/Cardio;overwrite:=true;checkin:=true,
               SLING-INF/content/Survey/Mood.xml;path:=/Survey/Mood;overwrite:=true;checkin:=true,
               SLING-INF/content/Survey/ClinicMapping.xml;path:=/Survey/ClinicMapping;overwrite:=true,
-              SLING-INF/content/Survey/PatientIdentification.xml;path:=/Survey/PatientIdentification;overwrite:=true,
+              SLING-INF/content/Survey/PatientAccess.xml;path:=/Survey/PatientAccess;overwrite:=true,
               SLING-INF/content/Survey/TermsOfUse.xml;path:=/Survey/TermsOfUse;overwrite:=true,
               SLING-INF/content/Survey/SurveyInstructions.xml;path:=/Survey/SurveyInstructions;overwrite:=true,
               SLING-INF/content/Survey/DashboardSettings.xml;path:=/Survey/DashboardSettings;overwrite:=true,
@@ -53,6 +53,7 @@
               SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,
               SLING-INF/content/libs/cards/conf/AppName.json;path:=/libs/cards/conf/AppName;overwrite:=true,
               SLING-INF/content/libs/cards/conf/ThemeColor.json;path:=/libs/cards/conf/ThemeColor;overwrite:=true,
+              SLING-INF/content/apps/cards/clarityMapping.xml;path:=/apps/cards/clarityImport;overwrite:=true,
               SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>

@@ -25,6 +25,9 @@ import {
   CircularProgress,
   Grid,
   IconButton,
+  List,
+  ListItem,
+  Popover,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -34,8 +37,10 @@ import withStyles from '@mui/styles/withStyles';
 import { DateTime } from "luxon";
 
 import EditIcon from '@mui/icons-material/Edit';
+import MoreIcon from '@mui/icons-material/MoreVert';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
+import ExportButton from "../dataHomepage/ExportButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
@@ -47,27 +52,16 @@ import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard"
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
 import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
+import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
 
-let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
-
-export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
-
-let findQuestions = (json, result = []) =>  {
-  Object.entries(json || {}).forEach(([k,e]) => {
-    if (e?.['jcr:primaryType'] == "cards:Question") {
-      result.push({id: e['jcr:uuid'], name: e['@name'], text: e['text']});
-    } else if (typeof(e) == 'object') {
-      findQuestions(e, result);
-    }
-  })
-  return result;
-}
+export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
   let { id, classes } = props;
   let [ data, setData ] = useState();
-  let [ questionnaireTitle, setQuestionnaireTitle ] = useState()
+  let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
+  let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ error, setError ] = useState();
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
@@ -126,6 +120,33 @@ let Questionnaire = (props) => {
     });
   }, []);
 
+  let dropdownList = (
+      <List>
+        <ListItem className={classes.actionsMenuItem}>
+          <ExportButton
+              entityData={data}
+              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+              entryName={questionnaireTitle || id}
+              entryType="Questionnaire"
+              size="medium"
+              variant="text"
+              onClose={() => { setActionsMenu(null); }}
+          />
+        </ListItem>
+        <ListItem className={classes.actionsMenuItem}>
+          <DeleteButton
+              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+              entryName={questionnaireTitle}
+              entryType="Questionnaire"
+              onComplete={() => history.replace(baseUrl)}
+              size="medium"
+              variant="text"
+              onClose={() => { setActionsMenu(null); }}
+          />
+        </ListItem>
+      </List>
+  )
+
   let questionnaireMenu = (
       <div className={classes.actionsMenu}>
         { isEdit ?
@@ -141,13 +162,26 @@ let Questionnaire = (props) => {
             </IconButton>
           </Tooltip>
         }
-        <DeleteButton
-          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-          entryName={questionnaireTitle}
-          entryType="Questionnaire"
-          variant="icon"
-          onComplete={() => history.replace(baseUrl)}
-        />
+        <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+          <IconButton size="large">
+            <MoreIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Popover
+            open={Boolean(actionsMenu)}
+            anchorEl={actionsMenu}
+            onClose={() => {setActionsMenu(null)}}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+            }}
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+        >
+          { dropdownList }
+        </Popover>
       </div>
   )
 
@@ -297,12 +331,12 @@ let QuestionnaireItemSet = (props) => {
         EntryType => <Grid item key={key}>
                        <EntryType
                          data={value}
-                         model={typeModels?.[_stripCardsNamespace(value['jcr:primaryType'])]}
+                         model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
                          onActionDone={onActionDone}
                          classes={classes}
                        />
                      </Grid>
-        )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
+        )(eval(stripCardsNamespace(value['jcr:primaryType'])))
       )
     }
     </>
@@ -343,7 +377,7 @@ let QuestionnaireContents = (props) => {
 
   useEffect(() => {
     // Load initial data
-    changeQuestionnaireContext(findQuestions(data));
+    changeQuestionnaireContext(findQuestionnaireEntries(data, ["cards:Question"]));
     // Clear context when unmounting component
     return (() => changeQuestionnaireContext([]));
   }, []);
@@ -523,7 +557,9 @@ let QuestionnaireEntry = (props) => {
     changeQuestionnaireContext((oldContext) => {
       let newContext = oldContext || [];
       const index = newContext.findIndex(x => x.id == id);
-      newContext.splice(index, 1);
+      if (index >= 0) {
+        newContext.splice(index, 1);
+      }
       return newContext;
     });
   }

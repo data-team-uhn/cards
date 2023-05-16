@@ -47,7 +47,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, enabled, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, questionnaireData } = props;
+  let { classes, enabled, variant, navMode, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, doneIcon, questionnaireData, disableProgress, onPageChange } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -142,10 +142,11 @@ function FormPagination (props) {
       window.scrollTo(0, 0);
     }
     setActivePage(nextPage);
+    onPageChange && onPageChange();
   }
 
   useEffect(() => {
-    if (saveInProgress && pendingSubmission) {
+    if (!saveInProgress && pendingSubmission && !(disableProgress && direction === DIRECTION_NEXT)) {
       setPendingSubmission(false);
       if (activePage === lastValidPage() && direction === DIRECTION_NEXT) {
         setSavedLastPage(true);
@@ -155,10 +156,11 @@ function FormPagination (props) {
         handlePageChange();
       }
     }
-  }, [saveInProgress, pendingSubmission]);
+  }, [saveInProgress, pendingSubmission, disableProgress]);
 
   let saveButton =
     <Button
+      startIcon={activePage === lastValidPage() ? doneIcon : undefined}
       type="submit"
       variant="contained"
       disabled={saveInProgress}
@@ -174,7 +176,7 @@ function FormPagination (props) {
       (doneLabel || 'Save')}
     </Button>
 
-  let backButton =
+  let backButton = navMode == "only_next" ? undefined : (
     <Button
       type="submit"
       variant="outlined"
@@ -187,6 +189,15 @@ function FormPagination (props) {
     >
       Back
     </Button>
+  );
+
+  let stepperClasses = [classes.formStepper];
+  if (classes[navMode]) {
+    stepperClasses.push(classes[navMode]);
+  }
+  stepperClasses = stepperClasses.join(' ');
+
+  let progressAdjustment = (condition) => (condition && variant == "progress" ? 1 : 0);
 
   return (
     enabled
@@ -194,10 +205,10 @@ function FormPagination (props) {
       lastValidPage() > 0
       ?
         <MobileStepper
-          variant="progress"
+          variant={variant}
           // Offset back bar 1 to create a "current page" region.
           // If the final page has been saved, progress the front bar to complete
-          activeStep={activePage + (lastSaveStatus && savedLastPage ? 1 : 0)}
+          activeStep={activePage + progressAdjustment(lastSaveStatus && savedLastPage)}
           // Change the color of the back bar
           LinearProgressProps={{ 
               classes: {
@@ -207,11 +218,9 @@ function FormPagination (props) {
               variant: "buffer",
               valueBuffer: (activePage + 1) / (lastValidPage() + 1) * 100
           }}
-          // Hide the backround of the front bar to segment of back bar
-          className={classes.formStepper}
-          classes={{progress: classes.formStepperBottomBackground}}
-          // base 0 to base 1, plus 1 for the "current page" region
-          steps={lastValidPage() + 2}
+          className={stepperClasses}
+          // base 0 to base 1, plus 1 for the "current page" region when variant is "progress"
+          steps={lastValidPage() + 1 + progressAdjustment(true)}
           nextButton={saveButton}
           backButton={backButton}
         />
@@ -224,6 +233,8 @@ function FormPagination (props) {
 FormPagination.propTypes = {
   enableSave: PropTypes.bool,
   enabled: PropTypes.bool,
+  variant: PropTypes.oneOf(['progress', 'dots', 'text']),
+  navMode: PropTypes.oneOf(['back_next', 'only_next']),
   questionnaireData: PropTypes.object.isRequired,
   setPagesCallback: PropTypes.func.isRequired,
   lastSaveStatus: PropTypes.bool,
@@ -233,6 +244,8 @@ FormPagination.propTypes = {
 FormPagination.defaultProps = {
   enableSave: true,
   enabled: true,
+  variant: "progress",
+  navMode: "back_next",
   saveInProgress: false,
   lastSaveStatus: true
 };

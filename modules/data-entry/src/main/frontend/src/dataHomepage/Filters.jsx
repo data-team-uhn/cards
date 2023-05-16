@@ -17,12 +17,14 @@
 //  under the License.
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
-import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@mui/material";
-import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField } from "@mui/material";
+import { Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { DialogActions, DialogContent, Grid, Select, MenuItem, TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
 
+import ResponsiveDialog from "../components/ResponsiveDialog";
+import VariableAutocomplete from "./VariableAutocomplete";
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -61,6 +63,7 @@ function Filters(props) {
   const [filterRequestSent, setFilterRequestSent] = useState(false);
   const [toFocus, setFocusRow] = useState(null);
   const notesComparator = "notes contain";
+  const [autoselectOptions, setAutoselectOptions] = useState([]);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -94,7 +97,7 @@ function Filters(props) {
       // Parse out the filters
       let newFilters = [];
       try {
-        newFilters = JSON.parse(window.atob(filtersJsonString));
+        newFilters = JSON.parse(decodeURIComponent(window.atob(filtersJsonString)));
       } catch (err) {
         // Ignore silently malformed filters sent in the URL
         return;
@@ -108,6 +111,12 @@ function Filters(props) {
       onChangeFilters && onChangeFilters(newFilters);
     }
   }, [filtersJsonString, questionDefinitions]);
+
+  useEffect(() => {
+    if (filterableFields.length > 0 && Object.keys(filterableTitles).length > 0 && autoselectOptions.length == 0) {
+      setAutoselectOptions(getFieldsLabelsList(filterableFields, ""));
+    }
+  }, [filterableFields, filterableTitles]);
 
   // Obtain information about the filters that can be applied
   let grabFilters = () => {
@@ -279,25 +288,25 @@ function Filters(props) {
   }
 
   // Handle the user changing one of the active filter categories
-  let handleChangeFilter = (index, event) => {
-    
+  let handleChangeFilter = (index, path) => {
+
     // Load up the comparators for this index, if not already loaded
-    let [loadedComparators, component] = getOutputChoices(event.target.value);
+    let [loadedComparators, component] = getOutputChoices(path);
 
     // Automatically add a new filter if they've edited the final filter
     if (index == editingFilters.length-1) {
       addFilter();
     }
 
-    getOutputChoices(event.target.value);
+    getOutputChoices(path);
     setEditingFilters(oldfilters => {
       var newfilters = oldfilters.slice();
       var newfilter = {
-        name: event.target.value,
-        uuid: filterableUUIDs[event.target.value],
+        name: path,
+        uuid: filterableUUIDs[path],
         comparator: loadedComparators[0],
-        title: filterableTitles[event.target.value],
-        type: questionDefinitions[event.target.value]?.dataType || "text"
+        title: filterableTitles[path],
+        type: questionDefinitions[path]?.dataType || "text"
       }
 
       // Keep any old data, if possible
@@ -409,19 +418,17 @@ function Filters(props) {
         />);
   }
 
-  // From an array of fields, turn it into a react component
-  let GetReactComponentFromFields = (fields, nested=false) => {
+  let getFieldsLabelsList = (fields, category) => {
     return fields.map((path) => {
       if (typeof path == "string") {
         // Straight strings are MenuItems
-        return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{filterableTitles[path]}</MenuItem>
+        return {path: path, label: filterableTitles[path], category: category}
       } else if (Array.isArray(path)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
-          GetReactComponentFromFields(path.slice(1), true)];
+        return [getFieldsLabelsList(path.slice(1), path[0])].flat();
       }
-    })
+    }).flat();
   }
 
   return(
@@ -476,17 +483,14 @@ function Filters(props) {
         <Add fontSize="small" />
       </Button>
       {/* Dialog for setting up filters */}
-      <Dialog
+      <ResponsiveDialog
         open={dialogOpen}
         onClose={closeDialog}
-        className={classes.dialog}
         BackdropProps={{invisible: true}}
-        fullWidth
+        width="md"
         disableEnforceFocus
+        title="Modify filters"
         >
-        <DialogTitle id="new-form-title">
-          Modify filters
-        </DialogTitle>
         <DialogContent dividers>
           {error &&
             <Typography color="error" className={classes.filterLabel}>
@@ -495,7 +499,7 @@ function Filters(props) {
           { /* If there is no error but also no data, show a progress circle */
           !error && !filterableFields &&
             <CircularProgress />}
-          <Grid container alignItems="flex-end" spacing={2} className={classes.filterTable}>
+          <Grid container alignItems="flex-start" spacing={2} className={classes.filterTable}>
             {editingFilters.map( (filterDatum, index) => {
               // We grab focus on the field if we were asked to
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);
@@ -504,26 +508,24 @@ function Filters(props) {
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
-                  <Grid item xs={5}>
-                    <Select
-                      variant="standard"
-                      value={(filterDatum.name || "")}
-                      onChange={(event) => {handleChangeFilter(index, event);}}
-                      MenuProps={{
-                        onExited: forceRegrabFocus
+                  <Grid item xs={12} sm={6}>
+                    <VariableAutocomplete
+                      disableClearable
+                      selectedValue={filterDatum.name}
+                      onValueChanged={(value) => {
+                        handleChangeFilter(index, value);
                       }}
-                      className={classes.answerField}
+                      onClose={forceRegrabFocus}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
-                      displayEmpty
-                      >
-                        <MenuItem value="" disabled>
-                          <span className={classes.selectPlaceholder}>Add new filter...</span>
-                        </MenuItem>
-                        {GetReactComponentFromFields(filterableFields)}
-                    </Select>
+                      options={autoselectOptions}
+                      groupBy={(option) => option?.category}
+                      getOptionValue={option => option?.path}
+                      getHelperText={option => option?.category}
+                      textFieldProps={{placeholder: "Add new filter..."}}
+                    />
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
-                  <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid item xs={isUnary ? 11 : isNotesContain || isContain ? 3 : 1} sm={isUnary ? 5 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       variant="standard"
                       value={filterDatum.comparator || ""}
@@ -538,14 +540,14 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                    <Grid item xs={isNotesContain || isContain ? 8 : 10} sm={isNotesContain ? 2 : (isContain ? 3 : 4)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField variant="standard" disabled className={classes.answerField}></TextField>
                       }
                     </Grid>}
                   {/* Deletion button */}
-                  <Grid item xs={1} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid item xs={1} className={index == editingFilters.length-1 ? classes.hidden : classes.tableActions}>
                     <IconButton
                       size="small"
                       onClick={()=>{
@@ -556,7 +558,6 @@ function Filters(props) {
                             return(newData);
                           });
                         }}
-                      className={classes.deleteButton}
                       >
                       <CloseIcon />
                     </IconButton>
@@ -581,7 +582,7 @@ function Filters(props) {
             {'Cancel'}
           </Button>
         </DialogActions>
-      </Dialog>
+      </ResponsiveDialog>
     </div>
   );
 }

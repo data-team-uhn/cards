@@ -16,23 +16,19 @@
  */
 package io.uhndata.cards.forms.internal;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
@@ -48,8 +44,6 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
- *
- *
  * @version $Id$
  */
 public abstract class AnswersEditor extends DefaultEditor
@@ -60,8 +54,8 @@ public abstract class AnswersEditor extends DefaultEditor
 
     protected final ResourceResolverFactory rrf;
 
-    /** The current user session. **/
-    protected Session currentSession;
+    /** The current user session. */
+    protected final Session currentSession;
 
     /**
      * A session that has access to all the questionnaire questions and can access restricted questions. This session
@@ -79,37 +73,35 @@ public abstract class AnswersEditor extends DefaultEditor
 
     protected AbstractAnswerChangeTracker answerChangeTracker;
 
-    private final String serviceName;
-
     /**
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
+     * @param currentSession the current user session
      * @param rrf the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
-     * @param serviceName the name of the service resource resolver that should be used to handle any changes
      */
-    public AnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final String serviceName)
+    public AnswersEditor(final NodeBuilder nodeBuilder, final Session currentSession, final ResourceResolverFactory rrf,
+        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils)
     {
-        this.serviceName = serviceName;
         this.currentNodeBuilder = nodeBuilder;
-        this.rrf = rrf;
         this.questionnaireUtils = questionnaireUtils;
         this.formUtils = formUtils;
         this.answerChangeTracker = getAnswerChangeTracker();
-        this.isFormNode = this.formUtils.isForm(this.currentNodeBuilder);
         this.shouldRunOnLeave = false;
+        this.currentSession = currentSession;
+        this.rrf = rrf;
+        this.isFormNode = this.formUtils.isForm(nodeBuilder);
     }
 
     protected abstract Logger getLogger();
 
+    protected abstract String getServiceName();
+
     protected abstract AbstractAnswerChangeTracker getAnswerChangeTracker();
 
     protected abstract AnswersEditor getNewEditor(String name);
-
-    protected abstract AnswerNodeTypes getNewAnswerNodeTypes(Node node) throws RepositoryException;
 
     protected abstract boolean isQuestionNodeMatchingType(Node node) throws RepositoryException;
 
@@ -137,17 +129,16 @@ public abstract class AnswersEditor extends DefaultEditor
             return;
         }
 
-        final Map<String, Object> parameters =
-            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, this.serviceName);
-        final ResourceResolver sessionResolver = this.rrf.getThreadResourceResolver();
-        try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
-            if (sessionResolver != null && serviceResolver != null) {
-                this.currentSession = sessionResolver.adaptTo(Session.class);
+        try (ResourceResolver serviceResolver =
+            this.rrf.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, getServiceName()))) {
+            if (serviceResolver != null) {
                 this.serviceSession = serviceResolver.adaptTo(Session.class);
                 handleLeave(after);
             }
         } catch (LoginException e) {
             // Should not happen
+        } finally {
+            this.serviceSession = null;
         }
     }
 
@@ -173,12 +164,12 @@ public abstract class AnswersEditor extends DefaultEditor
                 // Ignore questions that do not match the question type this editor is looking for
                 // Skip already answered questions
                 if (!this.answerChangeTracker.getModifiedAnswers().contains(currentNode.getIdentifier())) {
-                    currentTree = new QuestionTree(currentNode, true);
+                    currentTree = new QuestionTree(currentNode, true, this.formUtils);
                 }
             } else if (this.questionnaireUtils.isQuestionnaire(currentNode)
                 || this.questionnaireUtils.isSection(currentNode)) {
                 // Recursively check if any children have a matching question
-                QuestionTree newTree = new QuestionTree(currentNode, false);
+                QuestionTree newTree = new QuestionTree(currentNode, false, this.formUtils);
                 for (NodeIterator i = currentNode.getNodes(); i.hasNext();) {
                     Node child = i.nextNode();
                     QuestionTree childTree = getUnansweredMatchingQuestions(child);
@@ -200,114 +191,6 @@ public abstract class AnswersEditor extends DefaultEditor
 
         return currentTree;
     }
-
-    protected Map<QuestionTree, NodeBuilder> createMissingNodes(
-        final QuestionTree questionTree, final NodeBuilder currentNode)
-    {
-        try {
-            if (questionTree.isQuestion()) {
-                if (!currentNode.hasProperty("jcr:" + "primaryType")) {
-                    AnswerNodeTypes types = getNewAnswerNodeTypes(questionTree.getNode());
-                    // New node, insert all required properties
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-                    currentNode.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
-                    currentNode.setProperty("jcr:createdBy", this.currentSession.getUserID(), Type.NAME);
-                    String questionReference = questionTree.getNode().getIdentifier();
-                    currentNode.setProperty(FormUtils.QUESTION_PROPERTY, questionReference, Type.REFERENCE);
-                    currentNode.setProperty("jcr:primaryType", types.getPrimaryType(), Type.NAME);
-                    currentNode.setProperty("sling:resourceSuperType", FormUtils.ANSWER_RESOURCE, Type.STRING);
-                    currentNode.setProperty("sling:resourceType", types.getResourceType(), Type.STRING);
-                    currentNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
-                }
-                return Collections.singletonMap(questionTree, currentNode);
-            } else {
-                // Section
-                if (!currentNode.hasProperty("jcr:primaryType")) {
-                    // Section must be created before primary type
-                    currentNode.setProperty(FormUtils.SECTION_PROPERTY, questionTree.getNode().getIdentifier(),
-                        Type.REFERENCE);
-                    currentNode.setProperty("jcr:primaryType", FormUtils.ANSWER_SECTION_NODETYPE, Type.NAME);
-                    currentNode.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
-                    currentNode.setProperty("sling:resourceType", FormUtils.ANSWER_SECTION_RESOURCE, Type.STRING);
-                    currentNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
-                }
-                Map<String, List<NodeBuilder>> childNodesByReference = getChildNodesByReference(currentNode);
-                return createChildrenNodes(questionTree, childNodesByReference, currentNode);
-            }
-        } catch (RepositoryException e) {
-            getLogger().error("Error creating " + (questionTree.isQuestion() ? "question. " : "section. ")
-                + e.getMessage());
-            return Collections.emptyMap();
-        }
-    }
-
-    protected Map<QuestionTree, NodeBuilder> createChildrenNodes(
-        final QuestionTree questionTree,
-        final Map<String, List<NodeBuilder>> childNodesByReference, final NodeBuilder nodeBuilder)
-    {
-        Map<QuestionTree, NodeBuilder> result = new HashMap<>();
-        for (Map.Entry<String, QuestionTree> childQuestion
-            : questionTree.getChildren().entrySet()) {
-            QuestionTree childTree = childQuestion.getValue();
-            try {
-                Node childQuestionNode = childTree.getNode();
-                String referenceKey = childQuestionNode.getIdentifier();
-                int expectedNumberOfInstances = 1;
-                int numberOfInstances = 0;
-                if (childQuestionNode.hasProperty("recurrent")
-                    && childQuestionNode.getProperty("recurrent").getBoolean()
-                    && childQuestionNode.hasProperty("initialNumberOfInstances")) {
-                    expectedNumberOfInstances = (int) childQuestionNode.getProperty("initialNumberOfInstances")
-                        .getLong();
-                }
-
-                if (childNodesByReference.containsKey(referenceKey)) {
-                    List<NodeBuilder> matchingChildren = childNodesByReference.get(referenceKey);
-                    numberOfInstances += matchingChildren.size();
-
-                    for (NodeBuilder childNode : matchingChildren) {
-                        result.putAll(createMissingNodes(childTree, childNode));
-                    }
-                }
-                while (numberOfInstances < expectedNumberOfInstances) {
-                    NodeBuilder childNodeBuilder = nodeBuilder.setChildNode(UUID.randomUUID().toString());
-                    result.putAll(createMissingNodes(childTree, childNodeBuilder));
-                    numberOfInstances++;
-                }
-            } catch (RepositoryException e) {
-                // Node has no accessible identifier, skip
-            }
-        }
-        return result;
-    }
-
-    protected Map<String, List<NodeBuilder>> getChildNodesByReference(final NodeBuilder nodeBuilder)
-    {
-        Map<String, List<NodeBuilder>> result = new HashMap<>();
-        for (String childNodeName : nodeBuilder.getChildNodeNames()) {
-            NodeBuilder childNode = nodeBuilder.getChildNode(childNodeName);
-            String childIdentifier;
-            if (this.formUtils.isAnswerSection(childNode)) {
-                childIdentifier = this.formUtils.getSectionIdentifier(childNode);
-            } else if (this.formUtils.isAnswer(childNode)) {
-                childIdentifier = this.formUtils.getQuestionIdentifier(childNode);
-            } else {
-                continue;
-            }
-
-            List<NodeBuilder> childNodes = result.containsKey(childIdentifier)
-                ? result.get(childIdentifier)
-                : new ArrayList<>();
-            childNodes.add(childNode);
-            result.put(childIdentifier, childNodes);
-        }
-        return result;
-    }
-
-
-
-
-
 
     protected abstract static class AbstractAnswerChangeTracker extends DefaultEditor
     {
@@ -389,17 +272,20 @@ public abstract class AnswersEditor extends DefaultEditor
 
     protected static class QuestionTree
     {
+        protected final FormUtils formUtils;
+
         private Map<String, QuestionTree> children;
 
         private Node node;
 
         private boolean isQuestion;
 
-        QuestionTree(final Node node, final boolean isQuestion)
+        QuestionTree(final Node node, final boolean isQuestion, final FormUtils formUtils)
         {
             this.isQuestion = isQuestion;
             this.node = node;
             this.children = isQuestion ? null : new HashMap<>();
+            this.formUtils = formUtils;
         }
 
         public Map<String, QuestionTree> getChildren()
@@ -417,6 +303,54 @@ public abstract class AnswersEditor extends DefaultEditor
             return this.isQuestion;
         }
 
+        public Map<Node, NodeBuilder> getQuestionAndAnswers(NodeBuilder currentNode)
+        {
+            if (this.isQuestion) {
+                return Collections.singletonMap(this.node, currentNode);
+            } else {
+                Map<Node, NodeBuilder> result = new HashMap<>();
+                Map<String, List<NodeBuilder>> childNodesByReference = getChildNodesByReference(currentNode);
+
+                this.children.values().forEach(childTree -> {
+                    try {
+                        String referenceKey = childTree.getNode().getIdentifier();
+                        if (childNodesByReference.containsKey(referenceKey)) {
+                            List<NodeBuilder> matchingChildren = childNodesByReference.get(referenceKey);
+                            for (NodeBuilder childNode : matchingChildren) {
+                                result.putAll(childTree.getQuestionAndAnswers(childNode));
+                            }
+                        }
+                    } catch (RepositoryException e) {
+                        // Question identifier could not be found so could not search for answers
+                    }
+                });
+                return result;
+            }
+        }
+
+        private Map<String, List<NodeBuilder>> getChildNodesByReference(final NodeBuilder nodeBuilder)
+        {
+            Map<String, List<NodeBuilder>> result = new HashMap<>();
+            for (String childNodeName : nodeBuilder.getChildNodeNames()) {
+                NodeBuilder childNode = nodeBuilder.getChildNode(childNodeName);
+                String childIdentifier;
+                if (this.formUtils.isAnswerSection(childNode)) {
+                    childIdentifier = this.formUtils.getSectionIdentifier(childNode);
+                } else if (this.formUtils.isAnswer(childNode)) {
+                    childIdentifier = this.formUtils.getQuestionIdentifier(childNode);
+                } else {
+                    continue;
+                }
+
+                List<NodeBuilder> childNodes = result.containsKey(childIdentifier)
+                    ? result.get(childIdentifier)
+                    : new ArrayList<>();
+                childNodes.add(childNode);
+                result.put(childIdentifier, childNodes);
+            }
+            return result;
+        }
+
         @Override
         public String toString()
         {
@@ -426,68 +360,38 @@ public abstract class AnswersEditor extends DefaultEditor
         }
     }
 
-    protected static class AnswerNodeTypes
+    protected Type<?> getAnswerType(final Node questionNode)
     {
-        private String primaryType;
-
-        private String resourceType;
-
-        private Type<?> dataType;
-
-        @SuppressWarnings("checkstyle:CyclomaticComplexity")
-        AnswerNodeTypes(final Node questionNode, String defaultPrimaryType, String defaultResourceType)
-            throws RepositoryException
-        {
+        Type<?> result = Type.STRING;
+        try {
             final String dataTypeString = questionNode.getProperty("dataType").getString();
-            final String capitalizedType = StringUtils.capitalize(dataTypeString);
-            this.primaryType = "cards:" + capitalizedType + "Answer";
-            this.resourceType = "cards/" + capitalizedType + "Answer";
             switch (dataTypeString) {
                 case "long":
-                    this.dataType = Type.LONG;
+                    result = Type.LONG;
                     break;
                 case "double":
-                    this.dataType = Type.DOUBLE;
+                    result = Type.DOUBLE;
                     break;
                 case "decimal":
-                    this.dataType = Type.DECIMAL;
+                    result = Type.DECIMAL;
                     break;
                 case "boolean":
                     // Long, not boolean
-                    this.dataType = Type.LONG;
+                    result = Type.LONG;
                     break;
                 case "date":
-                    this.dataType = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
+                    result = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
                         questionNode.getProperty("dateFormat").getString().toLowerCase()))
                             ? Type.LONG
                             : Type.DATE;
                     break;
-                case "time":
-                case "vocabulary":
-                case "text":
-                    this.dataType = Type.STRING;
-                    break;
                 default:
-                    this.primaryType = defaultPrimaryType;
-                    this.resourceType = defaultResourceType;
-                    this.dataType = Type.STRING;
+                    result = Type.STRING;
             }
+        } catch (RepositoryException e) {
+            getLogger().warn("Error typing value for question. " + e.getMessage());
+            // It's OK to assume String by default
         }
-
-        public String getPrimaryType()
-        {
-            return this.primaryType;
-        }
-
-        public String getResourceType()
-        {
-            return this.resourceType;
-        }
-
-        public Type<?> getDataType()
-        {
-            return this.dataType;
-        }
+        return result;
     }
-
 }

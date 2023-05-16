@@ -19,14 +19,18 @@
 package io.uhndata.cards.subjects.internal;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.query.RowIterator;
 import javax.json.JsonObject;
 
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.spi.QuickSearchEngine;
 import io.uhndata.cards.spi.SearchParameters;
@@ -40,6 +44,8 @@ import io.uhndata.cards.spi.SearchUtils;
 @Component(immediate = true)
 public class SubjectQuickSearchEngine implements QuickSearchEngine
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuickSearchEngine.class);
+
     private static final List<String> SUPPORTED_TYPES = Collections.singletonList("cards:Subject");
 
     @Override
@@ -52,30 +58,36 @@ public class SubjectQuickSearchEngine implements QuickSearchEngine
     public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
         final List<JsonObject> output)
     {
-        if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
-            return;
-        }
-
-        final StringBuilder xpathQuery = new StringBuilder();
-        xpathQuery.append("/jcr:root/Subjects//*[jcr:like(fn:lower-case(@identifier),'%");
-        xpathQuery.append(SearchUtils.escapeLikeText(query.getQuery().toLowerCase()));
-        xpathQuery.append("%')]");
-
-        Iterator<Resource> foundResources = resourceResolver.findResources(xpathQuery.toString(), "xpath");
-
-        while (foundResources.hasNext()) {
-            // No need to go through results list if we do not want total number of matches
+        try {
             if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
-                break;
+                return;
             }
-            Resource thisResource = foundResources.next();
 
-            String resourceValue = thisResource.getValueMap().get("identifier", String.class);
+            final StringBuilder xpathQuery = new StringBuilder();
+            xpathQuery.append("/jcr:root/Subjects//*[jcr:like(fn:lower-case(@identifier),'%");
+            xpathQuery.append(SearchUtils.escapeLikeText(query.getQuery().toLowerCase()));
+            xpathQuery.append("%')]");
 
-            if (resourceValue != null) {
-                output.add(SearchUtils.addMatchMetadata(
-                    resourceValue, query.getQuery(), "identifier", thisResource.adaptTo(JsonObject.class), false, ""));
+            RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
+                .createQuery(xpathQuery.toString(), "xpath").execute().getRows();
+
+            while (queryResults.hasNext()) {
+                // No need to go through results list if we do not want total number of matches
+                if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
+                    break;
+                }
+                Node item = queryResults.nextRow().getNode();
+
+                String resourceValue = item.getProperty("identifier").getString();
+
+                if (resourceValue != null) {
+                    output.add(SearchUtils.addMatchMetadata(
+                        resourceValue, query.getQuery(), "identifier",
+                        resourceResolver.getResource(item.getPath()).adaptTo(JsonObject.class), false, ""));
+                }
             }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to search for subjects: {}", e.getMessage(), e);
         }
     }
 }

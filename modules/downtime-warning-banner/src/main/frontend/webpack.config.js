@@ -8,7 +8,7 @@ module.exports = {
   entry: {
     [module_name + 'downtimeBanner']: './src/downtimeBanner.jsx',
     [module_name + 'DowntimeWarningConfigurationIcon']: '@mui/icons-material/Announcement.js',
-    [module_name + 'DowntimeWarningConfiguration']: './src/DowntimeWarningConfiguration',
+    [module_name + 'DowntimeWarningConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/DowntimeWarningConfiguration' },
   },
   plugins: [
     new CleanWebpackPlugin(),

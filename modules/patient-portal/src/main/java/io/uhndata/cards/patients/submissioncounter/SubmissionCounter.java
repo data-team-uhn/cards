@@ -36,6 +36,8 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.forms.api.FormUtils;
+
 @Designate(ocd = SubmissionCounter.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 public final class SubmissionCounter
@@ -51,13 +53,16 @@ public final class SubmissionCounter
     @Reference
     private ResourceResolverFactory resolverFactory;
 
+    @Reference
+    private FormUtils formUtils;
+
     private ResourceResolver resolver;
 
     private Session session;
 
     @ObjectClassDefinition(name = "Submission Counter",
         description = "Configuration for a surveys submitted performance counter")
-    public static @interface Config
+    public @interface Config
     {
         @AttributeDefinition(name = "Name", description = "Name")
         String name() default "SurveysSubmitted";
@@ -69,6 +74,10 @@ public final class SubmissionCounter
         @AttributeDefinition(name = "Linking Subject Type", description = "Subject type that links the Form with the"
             + " \"submit\" button to the submitted Forms")
         String linkingSubjectType() default "/SubjectTypes/Patient/Visit";
+
+        @AttributeDefinition(name = "Excluded Questionnaires", description = "Do not count any Forms which are built"
+            + " from any of these types of Questionnaires")
+        String[] excludedQuestionnaires() default {};
     }
 
     @Activate
@@ -81,19 +90,12 @@ public final class SubmissionCounter
             params.put(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
             this.resolver = this.resolverFactory.getServiceResourceResolver(params);
 
-            // Get the UUID associated with config.submittedFlagPath()
-            final String submittedFlagUUID = this.resolver.getResource(
-                config.submittedFlagPath()).getValueMap().get("jcr:uuid", "");
-
-            if ("".equals(submittedFlagUUID)) {
-                return;
-            }
-
-            Map<String, String> listenerParams = new HashMap<>();
+            Map<String, Object> listenerParams = new HashMap<>();
             listenerParams.put("submissionCounterName", config.name());
-            listenerParams.put("submittedFlagUUID", submittedFlagUUID);
+            listenerParams.put("submittedFlagPath", config.submittedFlagPath());
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
-            EventListener myEventListener = new SubmissionEventListener(this.resolverFactory,
+            listenerParams.put("excludedQuestionnairePaths", config.excludedQuestionnaires());
+            EventListener myEventListener = new SubmissionEventListener(this.formUtils, this.resolverFactory,
                 this.resolver, listenerParams);
 
             this.session = this.resolver.adaptTo(Session.class);
@@ -104,8 +106,7 @@ public final class SubmissionCounter
                 true,
                 null,
                 MONITORED_JCR_NODE_TYPES,
-                false
-            );
+                false);
         } catch (Exception e) {
             LOGGER.warn("Failed to register SubmissionCounter event handler: {}", e.getMessage());
         }
@@ -116,6 +117,9 @@ public final class SubmissionCounter
     {
         if (this.session != null) {
             this.session.logout();
+        }
+        if (this.resolver != null) {
+            this.resolver.close();
         }
     }
 }

@@ -101,6 +101,7 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
             response.reset();
             final Cookie eraseCookie = new Cookie(TOKEN_COOKIE_NAME, "");
             eraseCookie.setMaxAge(0);
+            eraseCookie.setHttpOnly(true);
             final String ctxPath = request.getContextPath();
             final String cookiePath = (ctxPath == null || ctxPath.length() == 0) ? "/" : ctxPath;
             eraseCookie.setPath(cookiePath);

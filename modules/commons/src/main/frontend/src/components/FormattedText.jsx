@@ -25,10 +25,14 @@ import MDEditor from '@uiw/react-md-editor';
 
 const useStyles = makeStyles(theme => ({
   markdown: {
-    fontSize: "inherit",
-    fontFamily: "inherit",
-    "& .anchor" : {
-      display: "none",
+    "&.wmde-markdown" : {
+      background: "transparent",
+      color: "inherit",
+      fontSize: "inherit",
+      fontFamily: "inherit",
+      "& .anchor" : {
+        display: "none",
+      },
     },
   }
 }));

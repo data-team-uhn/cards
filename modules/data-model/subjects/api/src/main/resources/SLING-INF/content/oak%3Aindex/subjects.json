@@ -20,6 +20,22 @@
                     "ordered": true,
                     "propertyIndex": true
                 },
+                "type": {
+                    "type": "String",
+                    "propertyIndex": true
+                },
+                "uuid": {
+                    "name": "jcr:uuid",
+                    "propertyIndex": true,
+                    "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "primaryType": {
+                    "name": "jcr:primaryType",
+                    "propertyIndex": true,
+                    "notNullCheckEnabled": true,
+                    "type": "String"
+                },
                 "created": {
                     "name": "jcr:created",
                     "ordered": true,

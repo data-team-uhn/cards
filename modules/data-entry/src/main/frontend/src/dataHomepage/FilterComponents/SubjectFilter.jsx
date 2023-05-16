@@ -85,7 +85,7 @@ const SubjectFilter = forwardRef((props, ref) => {
       resultConstructor={QuickSearchIdentifier}
       disableDropdownItemLink={true}
       error={!!error /* Turn into a boolean to prevent PropTypes warnings */}
-      className={(hasSelectedValidSubject ? "" : classes.invalidSubjectText)}
+      className={classes.answerField + ' ' + (hasSelectedValidSubject ? classes.subjectFilter : classes.invalidSubjectText)}
       startAdornment={
         error && <InputAdornment position="end">
           <Tooltip title={error}>

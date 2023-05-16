@@ -53,7 +53,7 @@ Completing this survey is voluntary, and your name and contact information will 
     </property>
     <property>
         <name>enableStartScreen</name>
-        <value>False</value>
+        <value>True</value>
         <type>Boolean</type>
     </property>
     <property>
@@ -62,13 +62,28 @@ Completing this survey is voluntary, and your name and contact information will 
         <type>String</type>
     </property>
     <property>
+        <name>surveyDraftInfo</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>enableReviewScreen</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <property>
         <name>disclaimer</name>
         <value></value>
         <type>String</type>
     </property>
     <property>
         <name>summaryInstructions</name>
-        <value></value>
+        <value>
+Thank you for taking the time to complete this survey.
+
+At University Health Network (UHN) we want to provide safe, compassionate and high quality care.  Your opinions are valuable to us and will be used to help UHN continuously improve the quality of care patients receive.
+
+**Your responses have been received. You can now close this browser window.**</value>
         <type>String</type>
     </property>
     <property>

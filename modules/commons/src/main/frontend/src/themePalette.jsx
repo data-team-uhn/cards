@@ -19,13 +19,16 @@
 import React from 'react';
 import { createTheme } from '@mui/material/styles';
 
+let primaryColor = document.querySelector('meta[name="primaryColor"]')?.content || "#003366";
+let secondaryColor = document.querySelector('meta[name="secondaryColor"]')?.content || "#f94900";
+
 const appTheme = createTheme({
   palette: {
     primary: {
-      main: '#003366',
+      main: primaryColor,
     },
     secondary: {
-      main: '#f94900',
+      main: secondaryColor,
     },
   }
 });

@@ -41,6 +41,7 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/downtimeConfig.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
               SLING-INF/content/apps/cards/config/;path:=/apps/cards/config/;overwrite:=false,
+              SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
               SLING-INF/content/Extensions/PageStart/;path:=/Extensions/PageStart/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/LoginPageStart/;path:=/Extensions/LoginPageStart/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/SurveyPageStart/;path:=/Extensions/SurveyPageStart/;overwriteProperties:=true;uninstall:=true,

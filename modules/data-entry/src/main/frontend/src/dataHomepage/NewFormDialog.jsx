@@ -199,7 +199,7 @@ function NewFormDialog(props) {
   useEffect(() => {
     // only considers currentSubject, since setting this error would only be necessary on the 'Subject' page, which would set a currentSubject
     if (currentSubject && relatedForms && selectedQuestionnaire) {
-      let atMax = (relatedForms.length && (relatedForms.filter((i) => (i["@name"] == selectedQuestionnaire["@name"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)));
+      let atMax = (relatedForms.length && (relatedForms.filter((i) => (i["q.jcr:uuid"] == selectedQuestionnaire["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)));
       if (atMax) {
         setError(`${currentSubject?.["type"]["@name"]} ${currentSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
         setDisableProgress(true);
@@ -213,7 +213,7 @@ function NewFormDialog(props) {
 
   // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
-    fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct q.* FROM [cards:Questionnaire] AS q inner join [cards:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}'`)
+    fetchWithReLogin(globalLoginDisplay, `/query?rawResults=true&query=SELECT q.[jcr:uuid] FROM [cards:Questionnaire] AS q inner join [cards:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}'&limit=1000`)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((response) => {
       setRelatedForms(response.rows);
@@ -348,6 +348,7 @@ function NewFormDialog(props) {
                 }}
                 options={{
                   search: true,
+                  searchAutoFocus: true,
                   header: false,
                   actionsColumnIndex: -1,
                   addRowPosition: 'first',
@@ -356,7 +357,7 @@ function NewFormDialog(props) {
                     // /* It doesn't seem possible to alter the className from here */
                     backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
                     // // grey out subjects that have already reached maxPerSubject
-                    color: ((relatedForms?.length && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["@name"] == rowData["@name"])).length >= (+(rowData?.["maxPerSubject"]) || undefined)))
+                    color: ((relatedForms?.length && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["q.jcr:uuid"] == rowData["jcr:uuid"])).length >= (+(rowData?.["maxPerSubject"]) || undefined)))
                     ? theme.palette.grey["500"]
                     : theme.palette.grey["900"]
                     )

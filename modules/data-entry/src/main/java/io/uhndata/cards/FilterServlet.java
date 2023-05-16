@@ -116,7 +116,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
         final StringBuilder query =
             // We select all child nodes of the homepage, filtering out nodes that aren't ours, such as rep:policy
             new StringBuilder("select n from [cards:Questionnaire] as n where isdescendantnode(n, '"
-                + parentPath + "') and n.'sling:resourceSuperType' = 'cards/Resource'");
+                + parentPath + "')");
         final Iterator<Resource> results =
             resolver.findResources(query.toString(), Query.JCR_SQL2);
 

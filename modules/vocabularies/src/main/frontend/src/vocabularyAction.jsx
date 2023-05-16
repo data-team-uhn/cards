@@ -198,7 +198,7 @@ export default function VocabularyAction(props) {
     <Dialog onClose={handleClose} open={displayPopup}>
 
       <DialogTitle>
-        <Typography variant="h4" className={classes.dialogTitle}>{vocabulary.name} ({vocabulary.acronym})</Typography>
+        {vocabulary.name} ({vocabulary.acronym})
       </DialogTitle>
 
       <DialogContent dividers>

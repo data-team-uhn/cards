@@ -54,9 +54,9 @@ function ClinicVisits(props) {
 "select distinct visitInformation.* " +
   "from " +
     "[cards:Form] as visitInformation " +
-      "inner join [cards:ResourceAnswer] as visitClinic on isdescendantnode(visitClinic, visitInformation) " +
-      "inner join [cards:DateAnswer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
-      "inner join [cards:TextAnswer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
+      "inner join [cards:ResourceAnswer] as visitClinic on visitClinic.form = visitInformation.[jcr:uuid] " +
+      "inner join [cards:DateAnswer] as visitDate on visitDate.form = visitInformation.[jcr:uuid] " +
+      "inner join [cards:TextAnswer] as visitStatus on visitStatus.form = visitInformation.[jcr:uuid] " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
@@ -85,6 +85,15 @@ function ClinicVisits(props) {
       "key": "time",
       "label": dashboardConfig?.eventTimeLabel,
       "format": "date:yyyy-MM-dd HH:mm"
+    },
+    {
+      "key": "email_sent",
+      "label": "Email sent",
+      "format" : (row) => {
+         let email_date = row.reminder2_sent || row.reminder1_sent || row.invitation_sent;
+         let label = row.reminder2_sent || row.reminder1_sent ? "(reminder)" : row.invitation_sent ? "(initial)" : "";
+         return email_date ? `${email_date.substring(0, 10)} ${label}` : "N/A";
+      }
     },
     {
       "key" : "status",

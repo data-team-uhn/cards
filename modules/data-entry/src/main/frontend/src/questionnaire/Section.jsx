@@ -19,7 +19,7 @@
 
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Button, Collapse, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { Button, Collapse, Grid, IconButton, Tooltip } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
@@ -30,7 +30,7 @@ import DeleteButton from "../dataHomepage/DeleteButton";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { useFormReaderContext } from "./FormContext";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
-import { hasWarningFlags } from "./AnswerInstructions";
+import { hasWarningFlags } from "./FormUtilities";
 
 // FIXME In order for the conditionals to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
 import ConditionalGroup from "./ConditionalGroup";
@@ -69,9 +69,9 @@ function Section(props) {
   const headerVariant = "h5";
   const titleEl = sectionDefinition["label"] &&
     (idx =>
-      <Typography variant={headerVariant}>
+      <FormattedText component={headerVariant} variant={headerVariant}>
         {createTitle(sectionDefinition["label"], idx, isRecurrent)}
-      </Typography>
+      </FormattedText>
     );
   const descEl = sectionDefinition["description"] &&
     (() =>

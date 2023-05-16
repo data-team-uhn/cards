@@ -43,8 +43,8 @@ import io.uhndata.cards.vocabularies.spi.VocabularyParserUtils;
  * and {@code website}. The actual indexing is handled by implementations of the {@link VocabularyIndexer} service
  * interface.
  *
- * @version $Id$
  * @see VocabularyIndexer
+ * @version $Id$
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/VocabulariesHomepage" }, methods = { "POST" })

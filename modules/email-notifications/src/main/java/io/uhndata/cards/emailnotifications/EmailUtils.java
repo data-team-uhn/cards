@@ -16,22 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.uhndata.cards.emailnotifications;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.sling.commons.messaging.mail.MailService;
+import org.apache.sling.commons.messaging.mail.MessageBuilder;
 
+import jakarta.mail.Header;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 public final class EmailUtils
 {
-    private static final String FROM_ADDRESS = System.getenv("PATIENT_NOTIFICATION_FROM_ADDRESS");
-    private static final String FROM_NAME = System.getenv("PATIENT_NOTIFICATION_FROM_NAME");
-
     // Hide the utility class constructor
     private EmailUtils()
     {
@@ -53,21 +52,19 @@ public final class EmailUtils
     /**
      * Sends a simple plaintext email.
      *
+     * @param email the email to send
      * @param mailService the MailService object which sends the email
-     * @param toAddress the destination email address
-     * @param toName the name of the email recipient
-     * @param emailSubject the subject line of the email
-     * @param emailTextBody the plaintext body of the email
+     * @throws MessagingException if sending the email fails
      */
-    public static void sendNotificationEmail(MailService mailService, String toAddress,
-        String toName, String emailSubject, String emailTextBody) throws MessagingException
+    public static void sendTextEmail(final Email email, final MailService mailService)
+        throws MessagingException
     {
         MimeMessage message = mailService.getMessageBuilder()
-            .from(FROM_ADDRESS, FROM_NAME)
-            .to(toAddress, toName)
-            .replyTo(FROM_ADDRESS)
-            .subject(emailSubject)
-            .text(emailTextBody)
+            .from(email.getSenderAddress(), email.getSenderName())
+            .to(email.getRecipientAddress(), email.getRecipientName())
+            .replyTo(email.getSenderAddress())
+            .subject(email.getSubject())
+            .text(email.getTextBody())
             .build();
 
         mailService.sendMessage(message);
@@ -76,25 +73,25 @@ public final class EmailUtils
     /**
      * Sends a rich-text HTML email with fallback to plaintext for legacy mail clients.
      *
+     * @param email the email to send
      * @param mailService the MailService object which sends the email
-     * @param toAddress the destination email address
-     * @param toName the name of the email recipient
-     * @param emailSubject the subject line of the email
-     * @param emailTextBody the plaintext body of the email
-     * @param emailHtmlBody the rich-text HTML body of the email
+     * @throws MessagingException if sending the email fails
      */
-    public static void sendNotificationHtmlEmail(MailService mailService, String toAddress,
-        String toName, String emailSubject, String emailTextBody, String emailHtmlBody) throws MessagingException
+    public static void sendHtmlEmail(final Email email, final MailService mailService)
+        throws MessagingException
     {
-        MimeMessage message = mailService.getMessageBuilder()
-            .from(FROM_ADDRESS, FROM_NAME)
-            .to(toAddress, toName)
-            .replyTo(FROM_ADDRESS)
-            .subject(emailSubject)
-            .text(emailTextBody)
-            .html(emailHtmlBody)
-            .build();
+        final MessageBuilder message = mailService.getMessageBuilder()
+            .from(email.getSenderAddress(), email.getSenderName())
+            .to(email.getRecipientAddress(), email.getRecipientName())
+            .replyTo(email.getSenderAddress())
+            .subject(email.getSubject())
+            .text(email.getTextBody())
+            .html(email.getHtmlBody());
+        email.getInlineAttachments()
+            .forEach(attachment -> message.inline(attachment.getRight(), attachment.getMiddle(), attachment.getLeft(),
+                Collections.singleton(
+                    new Header("Content-Disposition", "inline; filename=\"" + attachment.getLeft() + "\""))));
 
-        mailService.sendMessage(message);
+        mailService.sendMessage(message.build());
     }
 }

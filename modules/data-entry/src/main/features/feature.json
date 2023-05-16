@@ -34,15 +34,15 @@
       "start-order":"26"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.api:2.25.4",
+      "id":"org.apache.sling:org.apache.sling.api:2.27.0",
       "start-order":"25"
     },
     {
-      "id":"org.apache.jena:jena-osgi:3.17.0",
+      "id":"org.apache.jena:jena-osgi:4.1.0",
       "start-order":"25"
     },
     {
-      "id":"org.apache.thrift:libthrift:0.13.0",
+      "id":"org.apache.thrift:libthrift:0.14.1",
       "start-order":"25"
     },
     {
@@ -70,12 +70,13 @@
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~forms":{
       "service.ranking:Integer":150,
       "scripts":[
-        "create path (cards:dataQuery) /query \n\n # Allow all users to query; the actual results will obey their access rights \n set ACL for everyone \n   allow  jcr:read  on /query \n end \n\n create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes ",
+        "create path (cards:dataQuery) /query \n\n # Allow all users to query; the actual results will obey their access rights \n set ACL for everyone \n   allow  jcr:read  on /query \n end \n\n create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:QueryCacheHomepage) /QueryCache \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes ",
         "create service user cards-answer-editor \n set ACL on /Questionnaires \n   allow jcr:read for cards-answer-editor \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-data-entry":{
       "user.mapping":[
+        "io.uhndata.cards.data-model-forms-impl:createMissingAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:computedAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:referenceAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:maxFormsOfTypePerSubjectValidator=[sling-readall]",

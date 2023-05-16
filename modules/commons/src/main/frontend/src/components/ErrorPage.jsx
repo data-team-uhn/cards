@@ -23,6 +23,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import NavigationIcon from '@mui/icons-material/Navigation';
 
+import Logo from "./Logo";
 import FormattedText from "./FormattedText";
 
 const useStyles = makeStyles(theme => ({
@@ -35,9 +36,6 @@ const useStyles = makeStyles(theme => ({
     "& .MuiGrid-item" : {
       textAlign: "center",
     },
-  },
-  logo: {
-    maxWidth: "240px",
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
@@ -57,9 +55,7 @@ export default function ErrorPage(props) {
           alignItems="center"
           alignContent="center"
         >
-          <Grid item>
-            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
-          </Grid>
+          <Logo maxWidth="360px" component={Grid} item/>
           <Grid item>
             {errorCode && <Typography variant="h1" color={errorCodeColor || "primary"}>
               {errorCode}

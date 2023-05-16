@@ -37,6 +37,8 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.forms.api.FormUtils;
+
 @Designate(ocd = EmailFormAlerts.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 public final class EmailFormAlerts
@@ -55,13 +57,16 @@ public final class EmailFormAlerts
     @Reference
     private ResourceResolverFactory resolverFactory;
 
+    @Reference
+    private FormUtils formUtils;
+
     private ResourceResolver resolver;
 
     private Session session;
 
     @ObjectClassDefinition(name = "Email Alerts",
         description = "Configuration for triggering an email alert based on the patient's responses")
-    public static @interface Config
+    public @interface Config
     {
         @AttributeDefinition(name = "Name", description = "Name")
         String name() default "PatientHealthAlert001";
@@ -77,18 +82,18 @@ public final class EmailFormAlerts
         @AttributeDefinition(name = "Alerting Question Path", description = "A question that can trigger the alert")
         String alertingQuestionPath() default "/Questionnaires/PHQ9/phq9_survey/phq9_more/phq9_9";
 
-        @AttributeDefinition(name = "Alerting Question Data Type")
-        String alertingQuestionDataType() default "cards:LongAnswer";
+        @AttributeDefinition(name = "Trigger Expression Operator", description = "Trigger Expression")
+        String triggerOperator() default ">";
 
-        @AttributeDefinition(name = "Trigger Expression", description = "Trigger Expression")
-        String triggerExpression() default ">0";
+        @AttributeDefinition(name = "Trigger Expression Operand", description = "Trigger Expression")
+        String triggerOperand() default "0";
 
         @AttributeDefinition(name = "Alert Description", description = "A message to be placed in the email body.")
         String alertDescription() default "";
 
         @AttributeDefinition(name = "Clinic ID Link", description = "Response associated with the"
             + " subject of Linking Subject Type that associates it with a clinic")
-        String clinicIdLink() default "/Questionnaires/Visit information/surveys";
+        String clinicIdLink() default "/Questionnaires/Visit information/clinic";
 
         @AttributeDefinition(name = "Clinics JCR Path")
         String clinicsJcrPath() default "/Survey";
@@ -96,6 +101,9 @@ public final class EmailFormAlerts
         @AttributeDefinition(name = "Clinic Email Property",
             description = "Property of the Clinic definition where the emergency contact is stored")
         String clinicEmailProperty() default "emergencyContact";
+
+        @AttributeDefinition(name = "From Email", description = "The email address which this email originates from")
+        String emailFromAddress() default "";
     }
 
     @Activate
@@ -116,27 +124,20 @@ public final class EmailFormAlerts
                 return;
             }
 
-            // Get the UUID associated with config.alertingQuestionPath()
-            final String alertingQuestionUUID = this.resolver.getResource(
-                config.alertingQuestionPath()).getValueMap().get("jcr:uuid", "");
-
-            if ("".equals(alertingQuestionUUID)) {
-                return;
-            }
-
             Map<String, String> listenerParams = new HashMap<>();
             listenerParams.put("alertName", config.name());
             listenerParams.put("submittedFlagUUID", submittedFlagUUID);
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
-            listenerParams.put("alertingQuestionUUID", alertingQuestionUUID);
-            listenerParams.put("alertingQuestionDataType", config.alertingQuestionDataType());
-            listenerParams.put("triggerExpression", config.triggerExpression());
+            listenerParams.put("alertingQuestionPath", config.alertingQuestionPath());
+            listenerParams.put("triggerOperator", config.triggerOperator());
+            listenerParams.put("triggerOperand", config.triggerOperand());
             listenerParams.put("alertDescription", config.alertDescription());
             listenerParams.put("clinicIdLink", config.clinicIdLink());
             listenerParams.put("clinicsJcrPath", config.clinicsJcrPath());
             listenerParams.put("clinicEmailProperty", config.clinicEmailProperty());
+            listenerParams.put("emailFromAddress", config.emailFromAddress());
             EventListener myEventListener = new EmailAlertEventListener(
-                this.resolver, this.mailService, listenerParams);
+                this.resolverFactory, this.formUtils, this.mailService, listenerParams);
 
             this.session = this.resolver.adaptTo(Session.class);
             this.session.getWorkspace().getObservationManager().addEventListener(
@@ -146,8 +147,7 @@ public final class EmailFormAlerts
                 true,
                 null,
                 MONITORED_JCR_NODE_TYPES,
-                false
-            );
+                false);
         } catch (Exception e) {
             LOGGER.warn("Failed to register EmailFormAlerts event handler: {}", e.getMessage());
         }

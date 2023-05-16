@@ -23,14 +23,11 @@ import javax.jcr.Session;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.permissions.spi.RestrictionFactory;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * Factory for {@link SubjectRestrictionPattern}.
@@ -43,17 +40,15 @@ public class SubjectRestrictionFactory implements RestrictionFactory
     /** @see #getName */
     public static final String NAME = "cards:subject";
 
-    @Reference(fieldOption = FieldOption.REPLACE,
-        cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public RestrictionPattern forValue(PropertyState value)
     {
         Session session = null;
-        if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
-            session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
+        if (this.rrp.getThreadResourceResolver() != null) {
+            session = this.rrp.getThreadResourceResolver().adaptTo(Session.class);
         }
         return new SubjectRestrictionPattern(value.getValue(Type.STRING), session);
     }

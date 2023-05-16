@@ -67,6 +67,11 @@ Then, verify that all the answers have been copied over successfully</value>
             <type>String</type>
         </property>
         <property>
+            <name>displayMode</name>
+            <value>plain</value>
+            <type>String</type>
+        </property>
+        <property>
             <name>question</name>
             <value>/Questionnaires/ReferenceTestUser/textQuestion</value>
             <type>String</type>
@@ -183,6 +188,11 @@ Then, verify that all the answers have been copied over successfully</value>
                 <type>String</type>
             </property>
             <property>
+                <name>displayMode</name>
+                <value>plain</value>
+                <type>String</type>
+            </property>
+            <property>
                 <name>question</name>
                 <value>/Questionnaires/ReferenceTestUser/section/sectionTextQuestion</value>
                 <type>String</type>
@@ -223,6 +233,11 @@ Then, verify that all the answers have been copied over successfully</value>
             <type>String</type>
         </property>
         <property>
+            <name>displayMode</name>
+            <value>plain</value>
+            <type>String</type>
+        </property>
+        <property>
             <name>question</name>
             <value>/Questionnaires/ReferenceTestUser/longQuestion</value>
             <type>String</type>
@@ -257,6 +272,11 @@ Then, verify that all the answers have been copied over successfully</value>
             <type>String</type>
         </property>
         <property>
+            <name>displayMode</name>
+            <value>plain</value>
+            <type>String</type>
+        </property>
+        <property>
             <name>question</name>
             <value>/Questionnaires/ReferenceTestUser/doubleQuestion</value>
             <type>String</type>
@@ -288,6 +308,11 @@ Then, verify that all the answers have been copied over successfully</value>
         <property>
             <name>entryMode</name>
             <value>reference</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayMode</name>
+            <value>plain</value>
             <type>String</type>
         </property>
         <property>

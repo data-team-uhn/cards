@@ -8,7 +8,7 @@
          "defaultOrder" : 1
       }
     },
-    "text": "string",
+    "text": "markdown",
     "description": "markdown",
     "dataType": {
       "text" : {
@@ -50,7 +50,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -61,8 +68,12 @@
         "minAnswers": {"0":{}, "1":{}},
         "yesLabel": "string",
         "noLabel": "string",
-        "enableUnknown": "boolean",
-        "unknownLabel": "string",
+        "enableUnknown": {
+           "true" : {
+             "unknownLabel": "string"
+           },
+           "false" : {}
+        },
         "compact" : "boolean",
         "entryMode": {
           "user": {
@@ -94,7 +105,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -149,7 +167,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -204,7 +229,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -245,7 +277,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -274,7 +313,10 @@
             "minAnswers": "long",
             "maxAnswers": "long",
             "displayMode": {
-              "input": {},
+              "input": {
+                "enableVocabularyBrowser" : "boolean",
+                "enableUserEntry" : "boolean"
+              },
               "list": {
                 "compact" : "boolean",
                 "answerOptions" : {
@@ -283,6 +325,8 @@
                 }
               },
               "list+input" : {
+                "enableVocabularyBrowser" : "boolean",
+                "enableUserEntry" : "boolean",
                 "compact" : "boolean",
                 "answerOptions" : {
                   "type": "textOptions",
@@ -303,7 +347,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -319,7 +370,8 @@
             "maxAnswers": "long",
             "displayMode": {
               "input": {
-                "propertiesToSearch" : "string"
+                "propertiesToSearch" : "string",
+                "enableUserEntry" : "boolean"
               },
               "select" : {},
               "list": {
@@ -327,6 +379,7 @@
               },
               "list+input" : {
                 "propertiesToSearch" : "string",
+                "enableUserEntry" : "boolean",
                 "compact" : "boolean",
                 "answerOptions" : "textOptions"
               }
@@ -344,7 +397,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
@@ -371,7 +431,14 @@
           "reference": {
             "question": "string",
             "displayMode" : {
-              "input" : {},
+              "plain" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "plain" : {},
               "formatted" : {},
               "hidden": {}
             }
