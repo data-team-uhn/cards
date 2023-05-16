@@ -22,7 +22,7 @@
     <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
     <property>
         <name>name</name>
-        <value>PMCC pre-appointment questionnaires</value>
+        <value>ACHD pre-appointment questionnaires</value>
         <type>String</type>
     </property>
     <node>
