@@ -398,14 +398,18 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     private boolean isVisitUpcoming(final Session session, Node visitInformationForm) throws RepositoryException
     {
         Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
+
         Map<String, Predicate<Property>> tests = Map.of(
             // Verify clinic set
             "clinic", p -> true,
 
-            // Verify visit is upcoming
+            // Verify visit is within the allowed survey completion timeframe
             "time", p -> {
                 try {
-                    return Calendar.getInstance().before(p.getDate());
+                    Calendar limit = (Calendar) p.getDate().clone();
+                    limit.add(Calendar.DATE, this.patientAccessConfiguration.getAllowedPostVisitCompletionTime());
+                    atMidnight(limit);
+                    return Calendar.getInstance().before(limit);
                 } catch (RepositoryException e) {
                     return false;
                 }
@@ -555,6 +559,15 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     {
         return DateTimeFormatter.ISO_LOCAL_DATE
             .format(OffsetDateTime.ofInstant(date.toInstant(), date.getTimeZone().toZoneId()));
+    }
+
+    private void atMidnight(final Calendar c)
+    {
+        c.add(Calendar.DATE, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
     }
 
     private static final class Credential
