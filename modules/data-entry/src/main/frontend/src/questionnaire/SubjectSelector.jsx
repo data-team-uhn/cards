@@ -21,9 +21,8 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Avatar, Button, CircularProgress, DialogActions, DialogContent, ListItem, ListItemAvatar, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import MaterialReactTable from "material-react-table";
 import Alert from '@mui/material/Alert';
 
@@ -873,26 +872,6 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
   } else {
     returnCall(selectedURL);
   }
-}
-
-// Helper function to simplify the many kinds of subject list items
-// This is outside of NewFormDialog to prevent rerenders from losing focus on the children
-export function SubjectListItem(props) {
-  let { avatarIcon, children, ...rest } = props;
-  let AvatarIcon = avatarIcon;  // Rename to let JSX know this is a prop
-  return (<ListItem
-    button
-    {...rest}
-    >
-    <ListItemAvatar>
-      <Avatar><AvatarIcon /></Avatar>
-    </ListItemAvatar>
-    {children}
-  </ListItem>);
-}
-
-SubjectListItem.defaultProps = {
-  avatarIcon: AssignmentIndIcon
 }
 
 /**
