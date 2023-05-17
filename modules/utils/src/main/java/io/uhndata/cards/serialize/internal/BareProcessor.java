@@ -90,8 +90,9 @@ public class BareProcessor implements ResourceJsonProcessor
         try {
             final String name = property.getName();
             JsonValue result = input;
-            result = removeSlingProperties(name, result);
-            result = removeJcrProperties(node, name, result);
+            result = removeTechnicalProperties(name, result, "sling:");
+            result = removeTechnicalProperties(name, result, "jcr:");
+            result = removeProperty(name, result, "form");
             return result;
         } catch (RepositoryException e) {
             // Really shouldn't happen
@@ -122,18 +123,21 @@ public class BareProcessor implements ResourceJsonProcessor
         addFileContent(node, json);
     }
 
-    private JsonValue removeSlingProperties(final String propertyName, final JsonValue input)
+    private JsonValue removeTechnicalProperties(final String propertyName, final JsonValue input,
+        final String prefix)
+        throws RepositoryException
     {
-        if (propertyName.startsWith("sling:")) {
+        if (propertyName.startsWith(prefix)) {
             return null;
         }
         return input;
     }
 
-    private JsonValue removeJcrProperties(final Node node, final String propertyName, final JsonValue input)
+    private JsonValue removeProperty(final String propertyName, final JsonValue input,
+        final String name)
         throws RepositoryException
     {
-        if (propertyName.startsWith("jcr:")) {
+        if (propertyName.equals(name)) {
             return null;
         }
         return input;
