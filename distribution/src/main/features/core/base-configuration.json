@@ -23,6 +23,13 @@
             "servlet.post.autoCheckout":true,
             "servlet.post.checkinNewVersionableNodes":true
         },
+        // Disable the default HTML/TXT output
+        "org.apache.sling.servlets.get.DefaultGetServlet":{
+            "enable.html": false,
+            "enable.txt": false,
+            "enable.xml": false,
+            "enable.json": true
+        },
         "org.apache.sling.engine.parameters":{
             "sling.default.parameter.encoding":"UTF-8",
             "request.max.file.count": 1000000
