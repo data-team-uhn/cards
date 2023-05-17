@@ -43,7 +43,6 @@ const useStyles = makeStyles(theme => ({
     "& > img" : {
       width: `calc(50% - ${theme.spacing(4)})`,
       minWidth: "100px",
-      height: "fit-content",
       margin: theme.spacing(1, 2),
     },
   },
