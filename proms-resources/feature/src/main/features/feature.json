@@ -102,7 +102,7 @@
 
     // Discard patients with invalid emails
     "io.uhndata.cards.clarity.importer.internal.EmailConsentFilter": {
-      "enable": true,
+      "enable": false,
       "emailColumn": "EMAIL",
       "emailConsentColumn": ""
     },
