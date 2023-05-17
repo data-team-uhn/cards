@@ -1,0 +1,38 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+mvn:io.uhndata.cards/cards4kids/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards4lfs/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards4proms/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards4prems/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards4heracles/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards/${PROJECT_VERSION}/slingosgifeature/composum
+mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-modules-upgrade-marker/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/forms_demo
+mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-modules-test-forms/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support-ssl/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-email-notifications/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-saml-support/${PROJECT_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL
+mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-scheduled-csv-export/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-clarity-integration/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_open
+mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_trusted
+mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_ownership
