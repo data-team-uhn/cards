@@ -408,6 +408,7 @@ export function NewSubjectDialog (props) {
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
   const [ newSubjectTypeParent, setNewSubjectTypeParent ] = useState(false);
+  const [ newSubjectTypeParentHistory, setNewSubjectTypeParentHistory ] = useState([]);
   const [ newSubjectParent, setNewSubjectParent ] = useState([]);
   const [ newSubjectIndex, setNewSubjectIndex ] = useState(0);
   const [ newSubjectAllowedTypes, setNewSubjectAllowedTypes ] = useState([]);
@@ -574,6 +575,11 @@ export function NewSubjectDialog (props) {
         newTypes.push(newAllowedTypes);
         return newTypes;
       });
+      setNewSubjectTypeParentHistory((old) => {
+        let newHistory = old.slice();
+        newHistory[newSubjectIndex] = newSubjectTypeParent;
+        return newHistory;
+      });
       setNewSubjectIndex((old) => old+1);
       setNewSubjectName((old) => {
         let newNames = old.slice();
@@ -599,6 +605,7 @@ export function NewSubjectDialog (props) {
     } else {
       // Go back a stage, and reopen the select parent dialog
       setError();
+      setNewSubjectTypeParent(newSubjectTypeParentHistory[newSubjectIndex-1]);
       setNewSubjectIndex((old) => old-1);
       setNewSubjectPopperOpen(false);
       setSelectParentPopperOpen(true);
@@ -613,6 +620,7 @@ export function NewSubjectDialog (props) {
     setNewSubjectName([""]);
     setNewSubjectType([""]);
     setNewSubjectTypeParent([""]);
+    setNewSubjectTypeParentHistory([]);
     setNewSubjectParent([]);
     setNewSubjectAllowedTypes([]);
     setNewSubjectPopperOpen(true);
