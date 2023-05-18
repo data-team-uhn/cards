@@ -59,9 +59,10 @@ let createQueryURL = (query, type, order) => {
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
  * @param {bool} requiresParents If true, the button to continue will read "Continue" instead of "Create"
  * @param {string} value The current name of the subject
+ * @param {string} subjectType The current type of the subject
  */
 function UnstyledNewSubjectDialog (props) {
-  const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
+  const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value, subjectType } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
 
   const [ data, setData ] = useState([]);
@@ -176,6 +177,7 @@ function UnstyledNewSubjectDialog (props) {
             }}
             muiTableBodyRowProps={({ row }) => ({
               onClick: () => { changeType(row.original); },
+              selected: !isLoading && row.original['label'] === (newSubjectType?.['label'] || subjectType?.['label']),
               sx: {
                 cursor: 'pointer',
               },
@@ -639,6 +641,7 @@ export function NewSubjectDialog (props) {
         requiresParents={curSubjectRequiresParents}
         open={open && newSubjectPopperOpen}
         value={newSubjectName[newSubjectIndex]}
+        subjectType={newSubjectType[newSubjectIndex]}
       />
       {open && selectParentPopperOpen && <SelectParentDialog
         childName={newSubjectName[newSubjectIndex]}
