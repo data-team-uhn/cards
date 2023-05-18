@@ -633,7 +633,7 @@ export function NewSubjectDialog (props) {
         error={error}
         onClose={goBack}
         onChangeSubject={(event) => {changeNewSubjectName(event.target.value)}}
-        onChangeType = {changeNewSubjectType}
+        onChangeType={changeNewSubjectType}
         onSubmit={createNewSubject}
         requiresParents={curSubjectRequiresParents}
         open={open && newSubjectPopperOpen}
