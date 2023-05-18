@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -225,11 +225,10 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
  * @param {object} parentType The object representing the cards:SubjectType of the parent that is being selected
- * @param {ref} tableRef Pass a reference to the MaterialReactTable object
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
+  const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType,  theme, value } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -300,7 +299,6 @@ function UnstyledSelectParentDialog (props) {
         {
           initialized &&
             <MaterialReactTable
-              tableInstanceRef={tableRef}
               enableColumnActions={false}
               enableColumnFilters={false}
               enableSorting={false}
@@ -420,7 +418,6 @@ export function NewSubjectDialog (props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const tableRef = useRef();
   const history = useHistory();
 
   let curSubjectRequiresParents = newSubjectTypeParent?.["jcr:primaryType"] == "cards:SubjectType";
@@ -662,7 +659,6 @@ export function NewSubjectDialog (props) {
         onSubmit={createNewSubject}
         open={open && selectParentPopperOpen}
         parentType={newSubjectTypeParent}
-        tableRef={tableRef}
         value={newSubjectParent[newSubjectIndex]}
         /> }
     </React.Fragment>)
