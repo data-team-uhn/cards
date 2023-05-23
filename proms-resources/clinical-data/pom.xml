@@ -42,7 +42,6 @@
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
               SLING-INF/content/Survey/Cardio.xml;path:=/Survey/Cardio;overwrite:=true;checkin:=true,
-              SLING-INF/content/Survey/Mood.xml;path:=/Survey/Mood;overwrite:=true;checkin:=true,
               SLING-INF/content/Survey/ClinicMapping.xml;path:=/Survey/ClinicMapping;overwrite:=true,
               SLING-INF/content/Survey/PatientAccess.xml;path:=/Survey/PatientAccess;overwrite:=true,
               SLING-INF/content/Survey/TermsOfUse.xml;path:=/Survey/TermsOfUse;overwrite:=true,
