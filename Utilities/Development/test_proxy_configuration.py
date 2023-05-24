@@ -21,6 +21,7 @@
 """
 
 import argparse
+import datetime
 
 import urllib3
 urllib3.disable_warnings()
@@ -229,6 +230,28 @@ def check_system_console_logout():
   assert r.headers['Set-Cookie'] == "sling.formauth=; Path=/; Expires=Thu, 01-Jan-1970 00:00:00 GMT; Max-Age=0; HttpOnly", "FAIL: Incorrect cookie set by /system/console/logout"
   print("PASS: /system/console/logout sets the appropriate cookies")
 
+
+def get_cookie_expiration_datetime(cookie_jar, cookie_name):
+  for cookie in cookie_jar:
+    if cookie.name == cookie_name:
+      return datetime.datetime.fromtimestamp(cookie.expires)
+  return None
+
+def is_cookie_invalidated(cookie_jar, cookie_name):
+  expiry = get_cookie_expiration_datetime(cookie_jar, cookie_name)
+  if expiry is None:
+    return False
+  if expiry < datetime.datetime.now():
+    return True
+  return False
+
+def check_clears_cards_auth_token_cookie(path):
+  r = testClient.adminGET(path, allow_redirects=False)
+  assert is_cookie_invalidated(r.cookies, "cards_auth_token"), "FAIL: Visiting {} on the admin port did not invalidate the cards_auth_token cookie".format(path)
+
+  r = testClient.userGET(path, allow_redirects=False)
+  assert is_cookie_invalidated(r.cookies, "cards_auth_token"), "FAIL: Visiting {} on the user port did not invalidate the cards_auth_token cookie".format(path)
+
 withSaml = args.saml
 withHttps = args.https
 
@@ -243,6 +266,8 @@ check_basic_http_auth()
 check_session_cookie_auth()
 check_ncr_routing()
 check_root_redirect(withSaml=withSaml)
+check_clears_cards_auth_token_cookie("/Survey")
+check_clears_cards_auth_token_cookie("/Survey.html")
 
 if withSaml:
   # Run the SAML-specific tests
