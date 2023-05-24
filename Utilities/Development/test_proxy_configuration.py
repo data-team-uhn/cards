@@ -27,6 +27,7 @@ import urllib3
 urllib3.disable_warnings()
 
 import requests
+from http.cookies import SimpleCookie
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--https', action='store_true')
@@ -231,14 +232,14 @@ def check_system_console_logout():
   print("PASS: /system/console/logout sets the appropriate cookies")
 
 
-def get_cookie_expiration_datetime(cookie_jar, cookie_name):
-  for cookie in cookie_jar:
-    if cookie.name == cookie_name:
-      return datetime.datetime.fromtimestamp(cookie.expires)
+def get_cookie_expiration_datetime(set_cookie_header, cookie_name):
+  for name, obj in SimpleCookie(set_cookie_header).items():
+    if name == cookie_name and 'expires' in obj:
+      return datetime.datetime.strptime(obj['expires'], "%a, %d-%b-%Y %H:%M:%S GMT")
   return None
 
-def is_cookie_invalidated(cookie_jar, cookie_name):
-  expiry = get_cookie_expiration_datetime(cookie_jar, cookie_name)
+def is_cookie_invalidated(set_cookie_header, cookie_name):
+  expiry = get_cookie_expiration_datetime(set_cookie_header, cookie_name)
   if expiry is None:
     return False
   if expiry < datetime.datetime.now():
@@ -247,10 +248,14 @@ def is_cookie_invalidated(cookie_jar, cookie_name):
 
 def check_clears_cards_auth_token_cookie(path):
   r = testClient.adminGET(path, allow_redirects=False)
-  assert is_cookie_invalidated(r.cookies, "cards_auth_token"), "FAIL: Visiting {} on the admin port did not invalidate the cards_auth_token cookie".format(path)
+  assert 'Set-Cookie' in r.headers, "FAIL: Set-Cookie not response headers"
+  assert is_cookie_invalidated(r.headers['Set-Cookie'], "cards_auth_token"), "FAIL: Visiting {} on the admin port did not invalidate the cards_auth_token cookie".format(path)
+  print("PASS: Request to {} on the admin port invalidated the cards_auth_token cookie".format(path))
 
   r = testClient.userGET(path, allow_redirects=False)
-  assert is_cookie_invalidated(r.cookies, "cards_auth_token"), "FAIL: Visiting {} on the user port did not invalidate the cards_auth_token cookie".format(path)
+  assert 'Set-Cookie' in r.headers, "FAIL: Set-Cookie not response headers"
+  assert is_cookie_invalidated(r.headers['Set-Cookie'], "cards_auth_token"), "FAIL: Visiting {} on the user port did not invalidate the cards_auth_token cookie".format(path)
+  print("PASS: Request to {} on the user port invalidated the cards_auth_token cookie".format(path))
 
 withSaml = args.saml
 withHttps = args.https
