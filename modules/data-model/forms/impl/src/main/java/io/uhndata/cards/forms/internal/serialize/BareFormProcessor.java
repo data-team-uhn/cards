@@ -26,6 +26,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -81,6 +82,7 @@ public class BareFormProcessor implements ResourceJsonProcessor
             JsonValue result = input;
             result = simplifyQuestionnaire(node, property, result);
             result = simplifySubject(node, property, result);
+            result = simplifyRelatedSubjects(node, property, result);
             result = simplifySection(node, property, result);
             result = simplifyQuestion(node, property, result);
             result = removeStatusFlags(node, property, result);
@@ -183,15 +185,40 @@ public class BareFormProcessor implements ResourceJsonProcessor
         // Replace the subject reference with the label of the actual subject (and its parents)
         if (node.isNodeType("cards:Form") && "subject".equals(property.getName())) {
             final Node subject = property.getNode();
-            if (subject.hasProperty("fullIdentifier")) {
-                return Json.createValue(subject.getProperty("fullIdentifier").getString());
-            } else if (subject.hasProperty("identifier")) {
-                return Json.createValue(subject.getProperty("identifier").getString());
-            } else {
-                return Json.createValue(subject.getName());
-            }
+            return processSubject(subject);
         }
         return input;
+    }
+
+    private JsonValue simplifyRelatedSubjects(final Node node, final Property property, final JsonValue input)
+        throws RepositoryException
+    {
+        // Replace the relatedSubjects reference with the array of label of the actual related subjects
+        if (node.isNodeType("cards:Form") && "relatedSubjects".equals(property.getName())) {
+            final JsonArrayBuilder builder = Json.createArrayBuilder();
+            Value[] values = property.getValues();
+            for (Value value : values) {
+                try {
+                    Node relatedSubject = node.getSession().getNodeByIdentifier(value.getString());
+                    builder.add(processSubject(relatedSubject));
+                } catch (Exception e) {
+                    // The current user may not have access to all the referenced related nodes
+                }
+            }
+            return builder.build();
+        }
+        return input;
+    }
+
+    private JsonValue processSubject(final Node subject) throws RepositoryException
+    {
+        if (subject.hasProperty("fullIdentifier")) {
+            return Json.createValue(subject.getProperty("fullIdentifier").getString());
+        } else if (subject.hasProperty("identifier")) {
+            return Json.createValue(subject.getProperty("identifier").getString());
+        } else {
+            return Json.createValue(subject.getName());
+        }
     }
 
     private JsonValue simplifySection(final Node node, final Property property, final JsonValue input)
