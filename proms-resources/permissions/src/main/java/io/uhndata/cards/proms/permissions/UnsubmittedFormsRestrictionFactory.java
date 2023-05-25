@@ -21,14 +21,9 @@ package io.uhndata.cards.proms.permissions;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.permissions.spi.RestrictionFactory;
 
@@ -43,24 +38,13 @@ public class UnsubmittedFormsRestrictionFactory implements RestrictionFactory
     /** @see #getName */
     public static final String NAME = "cards:unsubmittedForms";
 
-    /**
-     * This is needed to get access to the current session, which knows if there is a subject bound to it.
-     */
-    @Reference(fieldOption = FieldOption.REPLACE,
-        cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
-
-    @Reference
-    private FormUtils formUtils;
-
     @Reference
     private QuestionnaireUtils questionnaireUtils;
 
     @Override
     public RestrictionPattern forValue(final PropertyState value)
     {
-        return new UnsubmittedFormsRestrictionPattern(this.rrf, this.formUtils, this.questionnaireUtils);
+        return new UnsubmittedFormsRestrictionPattern(this.questionnaireUtils);
     }
 
     @Override
