@@ -18,7 +18,7 @@
   under the License.
 */
 
-let statusCode = request.getAttribute("javax.servlet.error.status_code");
+let statusCode = request.getAttribute("javax.servlet.error.status_code") || 500;
 response.setStatus(statusCode);
 let statusMessage = request.getAttribute("javax.servlet.error.message");
 if (statusMessage == null) {
