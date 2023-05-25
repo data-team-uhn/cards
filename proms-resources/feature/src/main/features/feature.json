@@ -74,14 +74,14 @@
     // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
     //   "name": "InitialNotificationsTask",
     //   "metricName": "Initial Emails Sent",
-    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
+    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS",
     //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/InitialNotification",
     //   "daysToVisit": 3
     // },
     // "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
     //   "name": "ReminderNotificationsTask",
     //   "metricName": "Reminder Emails Sent",
-    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS DIAGNOSTIC",
+    //   "clinicId": "/Proms/ClinicMapping/TG-PMCC CARDIAC CLINICS",
     //   "emailConfiguration": "/apps/cards/clinics/Cardio/mailTemplates/ReminderNotification",
     //   "daysToVisit": 1
     // },
@@ -124,13 +124,24 @@
       ]
     },
 
+    // Merge TG-PMCC CARDIAC CLINICS DIAGNOSTIC into TG-PMCC CARDIAC CLINICS
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredGenericMapper~MergeDiagnosticIntoCardiacClinic":{
+      "priority": 5,
+      "column": "ENCOUNTER_CLINIC",
+      "value": "TG-PMCC CARDIAC CLINICS",
+      "conditions": [
+        "ENCOUNTER_CLINIC = TG-PMCC CARDIAC CLINICS DIAGNOSTIC"
+      ]
+    },
+
     // Only look at events from the participating clinics, discard everything else
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingClinics":{
       "priority": 10,
       "conditions": [
-        "ENCOUNTER_CLINIC <> TG-PMCC CARDIAC CLINICS DIAGNOSTIC"
+        "ENCOUNTER_CLINIC <> TG-PMCC CARDIAC CLINICS"
       ]
     },
+
 
     // Discard duplicates if there's more than one event per visit
     "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
