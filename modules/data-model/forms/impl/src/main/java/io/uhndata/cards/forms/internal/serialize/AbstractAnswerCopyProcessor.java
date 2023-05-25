@@ -20,6 +20,7 @@ package io.uhndata.cards.forms.internal.serialize;
 
 import java.util.function.Function;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
@@ -129,6 +130,8 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
                         json.add(key, this.formUtils.serializeProperty(value));
                     }
                 }
+            } catch (final ItemNotFoundException e) {
+                // This is expected when we don't allow access to certain questions
             } catch (final RepositoryException e) {
                 // Should not happen
                 LOGGER.warn("Failed to access answer {}: {}", key, e.getMessage(), e);
