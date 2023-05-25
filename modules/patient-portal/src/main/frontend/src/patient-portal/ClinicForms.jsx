@@ -55,16 +55,15 @@ function ClinicForms(props) {
       "inner join [cards:DateAnswer] as visitDate on visitDate.form = visitInformation.[jcr:uuid] " +
       "inner join [cards:ResourceAnswer] as visitClinic on visitClinic.form = visitInformation.[jcr:uuid] " +
       "inner join [cards:TextAnswer] as visitStatus on visitStatus.form = visitInformation.[jcr:uuid] " +
-      "inner join [cards:BooleanAnswer] as patientSubmitted on patientSubmitted.form = visitInformation.[jcr:uuid] " +
     "inner join [cards:Form] as dataForm on visitSubject.[jcr:uuid] = dataForm.subject " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
       `and visitClinic.question = '${visitInfo?.clinic?.["jcr:uuid"]}' and visitClinic.value = '/Survey/ClinicMapping/${clinicId}' ` +
       `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' and visitStatus.value <> 'entered-in-error' ` +
-      `and patientSubmitted.question = '${visitInfo?.surveys_submitted?.["jcr:uuid"]}' and patientSubmitted.value = 1 ` +
     `and dataForm.questionnaire = '${questionnaireId}' ` +
-  "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
+      `and dataForm.statusFlags = 'SUBMITTED' ` +
+  "order by visitDate.value __SORT_ORDER_PLACEHOLDER__ option (index tag cards)"
   )
 
   return (
