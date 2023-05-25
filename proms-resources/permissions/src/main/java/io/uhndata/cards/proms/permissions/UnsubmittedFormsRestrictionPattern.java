@@ -18,26 +18,18 @@
  */
 package io.uhndata.cards.proms.permissions;
 
-import java.util.Map;
+import java.util.List;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.query.Query;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
@@ -50,26 +42,20 @@ public class UnsubmittedFormsRestrictionPattern implements RestrictionPattern
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(UnsubmittedFormsRestrictionPattern.class);
 
-    private static final String VISIT_INFORMATION_PATH = "/Questionnaires/Visit information";
-
-    private final ResourceResolverFactory rrf;
-
-    private final FormUtils formUtils;
+    private static final List<String> IGNORED_QUESTIONNAIRES = List.of(
+        "/Questionnaires/Visit information",
+        "/Questionnaires/Patient information",
+        "/Questionnaires/Survey events");
 
     private final QuestionnaireUtils questionnaireUtils;
 
     /**
      * Constructor passing all the needed information.
      *
-     * @param rrf a resource resolver factory that can be used to get a service session
-     * @param formUtils for working with forms
      * @param questionnaireUtils for working with questionnaires
      */
-    public UnsubmittedFormsRestrictionPattern(final ResourceResolverFactory rrf, final FormUtils formUtils,
-        final QuestionnaireUtils questionnaireUtils)
+    public UnsubmittedFormsRestrictionPattern(final QuestionnaireUtils questionnaireUtils)
     {
-        this.rrf = rrf;
-        this.formUtils = formUtils;
         this.questionnaireUtils = questionnaireUtils;
     }
 
@@ -90,60 +76,43 @@ public class UnsubmittedFormsRestrictionPattern implements RestrictionPattern
     @Override
     public boolean matches(final Tree tree, final PropertyState property)
     {
-        if (this.rrf == null || property != null) {
-            // This only applies to the form node itself, and only when we have a session
+        if (property != null) {
+            // This only applies to the form node itself
             return false;
         }
-        try (ResourceResolver rr = this.rrf.getServiceResourceResolver(
-            Map.of(ResourceResolverFactory.SUBSERVICE, "UnsubmittedFormsRestriction"))) {
-            Session session = rr.adaptTo(Session.class);
 
-            if (!isForm(tree)) {
-                // Not a form
-                return false;
-            }
+        if (!isForm(tree)) {
+            // Not a form
+            return false;
+        }
 
-            // This restriction does not apply to the Visit Information form itself
-            if (VISIT_INFORMATION_PATH.equals(this.questionnaireUtils
+        // This restriction only applies to data forms, not metadata forms
+        try {
+            if (IGNORED_QUESTIONNAIRES.contains(this.questionnaireUtils
                 .getQuestionnaire(tree.getProperty("questionnaire").getValue(Type.STRING)).getPath())) {
                 return false;
             }
-
-            return isUnsubmitted(tree, session);
-        } catch (final LoginException | RepositoryException e) {
-            LOGGER.warn("Failed to determine if form belongs to an unsubmitted visit: {}", e.getMessage(), e);
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to check form status: {}", e.getMessage());
         }
-        return false;
+
+        return isUnsubmitted(tree);
     }
 
-    private boolean isUnsubmitted(final Tree form, final Session session) throws RepositoryException
+    private boolean isUnsubmitted(final Tree form)
     {
-        final String subjectUUID = form.getProperty("subject").getValue(Type.STRING);
-
-        final Node visitInformation = findVisitInformationForm(subjectUUID, session);
-        final Node visitInformationQuestionnaire = this.formUtils.getQuestionnaire(visitInformation);
-        final Node submittedQuestion =
-            this.questionnaireUtils.getQuestion(visitInformationQuestionnaire, "surveys_submitted");
-        final Object submitted = this.formUtils.getValue(this.formUtils.getAnswer(visitInformation, submittedQuestion));
-        return submitted != null && !Long.valueOf(1).equals(submitted);
+        PropertyState flags = form.getProperty("statusFlags");
+        for (int i = 0; i < flags.count(); ++i) {
+            if ("SUBMITTED".equals(flags.getValue(Type.STRING, i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isForm(final Tree node)
     {
         return node.getProperty("jcr:primaryType") != null
             && StringUtils.equals(node.getProperty("jcr:primaryType").getValue(Type.STRING), "cards:Form");
-    }
-
-    private Node findVisitInformationForm(final String subjectUUID, final Session session) throws RepositoryException
-    {
-        final String visitInformationUUID = session.getNode(VISIT_INFORMATION_PATH).getIdentifier();
-        final NodeIterator results = session.getWorkspace().getQueryManager()
-            .createQuery("select vi.* from [cards:Form] as vi where vi.questionnaire = '" + visitInformationUUID
-                + "' and vi.subject = '" + subjectUUID + "'", Query.JCR_SQL2)
-            .execute().getNodes();
-        if (results.hasNext()) {
-            return results.nextNode();
-        }
-        return null;
     }
 }
