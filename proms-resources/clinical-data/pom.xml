@@ -41,12 +41,12 @@
           <instructions>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
-              SLING-INF/content/Survey/Cardio.xml;path:=/Survey/Cardio;overwriteProperties:=true;checkin:=true,
               SLING-INF/content/Survey/ClinicMapping.xml;path:=/Survey/ClinicMapping;overwrite:=true,
               SLING-INF/content/Survey/PatientAccess.xml;path:=/Survey/PatientAccess;overwrite:=true,
               SLING-INF/content/Survey/TermsOfUse.xml;path:=/Survey/TermsOfUse;overwrite:=true,
               SLING-INF/content/Survey/SurveyInstructions.xml;path:=/Survey/SurveyInstructions;overwrite:=true,
               SLING-INF/content/Survey/DashboardSettings.xml;path:=/Survey/DashboardSettings;overwrite:=true,
+              SLING-INF/content/SurveyNoOverwrite/;path:=/Survey/;overwriteProperties:=true;checkin:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
               SLING-INF/content/libs/cards/resources/media/proms/;path:=/libs/cards/resources/media/proms/;overwrite:=true;uninstall:=true,
               SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,
