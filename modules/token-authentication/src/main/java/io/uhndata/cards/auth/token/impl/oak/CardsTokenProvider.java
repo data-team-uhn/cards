@@ -108,7 +108,7 @@ public class CardsTokenProvider implements TokenProvider, TokenConstants
             return false;
         }
         // The expected path is /jcr:system/cards:tokens/<userId>/<tokenNode>
-        return CardsTokenImpl.TOKENS_NODE_PATH.equals(tokenTree.getParent().getParent().getPath())
+        return tokenTree.getPath().startsWith(CardsTokenImpl.TOKENS_NODE_PATH + "/")
             && "cards:Token".equals(TreeUtil.getPrimaryTypeName(tokenTree));
     }
 
@@ -120,6 +120,16 @@ public class CardsTokenProvider implements TokenProvider, TokenConstants
      */
     private String getUser(final Tree tokenTree)
     {
-        return tokenTree.getParent().getName();
+        Tree crt = tokenTree;
+        String name = null;
+        // Tokens are stored under /jcr:system/cards:tokens/<username>/<01>/<23>/<45>/<token node>
+        // They also used to be stored directly under /jcr:system/cards:tokens/<username>/<token node>
+        // To support both kinds of locations, we simply go up until we reach the cards:tokens node
+        // and return the name of the node right before that point
+        while (!CardsTokenImpl.TOKENS_NODE_PATH.equals(crt.getPath())) {
+            name = crt.getName();
+            crt = crt.getParent();
+        }
+        return name;
     }
 }

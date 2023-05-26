@@ -160,8 +160,10 @@ public class TokenManagerImpl implements TokenManager
         final Map<String, String> extraData)
     {
         try {
+            final String tokenName = UUID.randomUUID().toString();
             // Create the node holding the token information
-            final Node tokenNode = parent.addNode(UUID.randomUUID().toString(), CardsTokenImpl.TOKEN_NT_NAME);
+            final Node tokenNode = createParents(parent, tokenName)
+                .addNode(tokenName, CardsTokenImpl.TOKEN_NT_NAME);
 
             // Generate a random secret key that the token holder must present in order to be authenticated
             final String secretKey = generateKey();
@@ -195,6 +197,29 @@ public class TokenManagerImpl implements TokenManager
             LOGGER.error("Failed to create token for user {}: {}", userId, e.getMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * For improved performance, instead of storing all tokens under the same node, we use a prefix tree (Trie), with
+     * nodes for the first 3 groups of 2 hexdigits of the node's name. This method creates the 3 intermediary nodes
+     * under the specified user node, and returns the leaf parent. For example, a token for the {@code patient} user
+     * named {@code f1049f96-2871-4c14-a65b-90fd624f0df8} will be stored in
+     * {@code /jcr:system/cards:tokens/patient/f1/04/9f/f1049f96-2871-4c14-a65b-90fd624f0df8}. This method receives
+     * {@code /jcr:system/cards:tokens/patient} as the parent node, creates any of the missing intermediary nodes
+     * {@code  f1/04/9f}, and returns {@code 9f}, either as a newly created or an existing node.
+     *
+     * @param parent the parent node, must be {@code /jcr:system/cards:tokens/<username>}
+     * @param name the random UUID name of the token node
+     * @return the third intermediary node in the trie under which to store the actual token
+     * @throws RepositoryException if accessing or creating the intermediary nodes fails
+     */
+    private Node createParents(final Node parent, final String name) throws RepositoryException
+    {
+        Node crt = parent;
+        for (int i = 0; i <= 4; i += 2) {
+            crt = getOrCreateNode(crt, name.substring(i, i + 2), CardsTokenImpl.TOKENS_NT_NAME, parent.getSession());
+        }
+        return crt;
     }
 
     /**
@@ -234,8 +259,8 @@ public class TokenManagerImpl implements TokenManager
             return false;
         }
         try {
-            // The expected path is /jcr:system/cards:tokens/<userId>/<tokenNode>
-            return CardsTokenImpl.TOKENS_NODE_PATH.equals(tokenNode.getParent().getParent().getPath())
+            // The expected path is /jcr:system/cards:tokens/<userId>/01/23/45/<tokenNode>
+            return tokenNode.getPath().startsWith(CardsTokenImpl.TOKENS_NODE_PATH + "/")
                 && tokenNode.isNodeType(CardsTokenImpl.TOKEN_NT_NAME);
         } catch (RepositoryException e) {
             return false;
@@ -251,7 +276,17 @@ public class TokenManagerImpl implements TokenManager
     private String getUser(final Node tokenNode)
     {
         try {
-            return tokenNode.getParent().getName();
+            Node crt = tokenNode;
+            String name = null;
+            // Tokens are stored under /jcr:system/cards:tokens/<username>/<01>/<23>/<45>/<token node>
+            // They also used to be stored directly under /jcr:system/cards:tokens/<username>/<token node>
+            // To support both kinds of locations, we simply go up until we reach the cards:tokens node
+            // and return the name of the node right before that point
+            while (!CardsTokenImpl.TOKENS_NODE_PATH.equals(crt.getPath())) {
+                name = crt.getName();
+                crt = crt.getParent();
+            }
+            return name;
         } catch (RepositoryException e) {
             LOGGER.warn("Error while determining username for token {}: {}", tokenNode, e.getMessage(), e);
         }
