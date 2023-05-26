@@ -26,11 +26,11 @@
         <type>String</type>
     </property>
     <node>
-        <name>TG-PMCC CARDIAC CLINICS DIAGNOSTIC</name>
+        <name>TG-PMCC CARDIAC CLINICS</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
-            <value>TG-PMCC CARDIAC CLINICS DIAGNOSTIC</value>
+            <value>TG-PMCC CARDIAC CLINICS</value>
             <type>String</type>
         </property>
         <property>
