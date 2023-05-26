@@ -21,11 +21,13 @@
 """
 
 import argparse
+import datetime
 
 import urllib3
 urllib3.disable_warnings()
 
 import requests
+from http.cookies import SimpleCookie
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--https', action='store_true')
@@ -229,6 +231,41 @@ def check_system_console_logout():
   assert r.headers['Set-Cookie'] == "sling.formauth=; Path=/; Expires=Thu, 01-Jan-1970 00:00:00 GMT; Max-Age=0; HttpOnly", "FAIL: Incorrect cookie set by /system/console/logout"
   print("PASS: /system/console/logout sets the appropriate cookies")
 
+
+def get_cookie_expiration_datetime(set_cookie_header, cookie_name):
+  for name, obj in SimpleCookie(set_cookie_header).items():
+    if name == cookie_name and 'expires' in obj:
+      return datetime.datetime.strptime(obj['expires'], "%a, %d-%b-%Y %H:%M:%S GMT")
+  return None
+
+def is_cookie_invalidated(set_cookie_header, cookie_name):
+  expiry = get_cookie_expiration_datetime(set_cookie_header, cookie_name)
+  if expiry is None:
+    return False
+  if expiry < datetime.datetime.now():
+    return True
+  return False
+
+def check_clears_cards_auth_token_cookie(path):
+  r = testClient.adminGET(path, allow_redirects=False)
+  assert 'Set-Cookie' in r.headers, "FAIL: Set-Cookie not response headers"
+  assert is_cookie_invalidated(r.headers['Set-Cookie'], "cards_auth_token"), "FAIL: Visiting {} on the admin port did not invalidate the cards_auth_token cookie".format(path)
+  print("PASS: Request to {} on the admin port invalidated the cards_auth_token cookie".format(path))
+
+  r = testClient.userGET(path, allow_redirects=False)
+  assert 'Set-Cookie' in r.headers, "FAIL: Set-Cookie not response headers"
+  assert is_cookie_invalidated(r.headers['Set-Cookie'], "cards_auth_token"), "FAIL: Visiting {} on the user port did not invalidate the cards_auth_token cookie".format(path)
+  print("PASS: Request to {} on the user port invalidated the cards_auth_token cookie".format(path))
+
+def check_doesnt_set_cookies(path):
+  r = testClient.adminGET(path, allow_redirects=False)
+  assert 'Set-Cookie' not in r.headers, "FAIL: Set-Cookie was present in response header"
+  print("PASS: Response to GET {} on admin port did not set any cookies as expected.".format(path))
+
+  r = testClient.userGET(path, allow_redirects=False)
+  assert 'Set-Cookie' not in r.headers, "FAIL: Set-Cookie was present in response header"
+  print("PASS: Response to GET {} on user port did not set any cookies as expected.".format(path))
+
 withSaml = args.saml
 withHttps = args.https
 
@@ -243,6 +280,14 @@ check_basic_http_auth()
 check_session_cookie_auth()
 check_ncr_routing()
 check_root_redirect(withSaml=withSaml)
+check_clears_cards_auth_token_cookie("/Survey")
+check_clears_cards_auth_token_cookie("/Survey/")
+check_clears_cards_auth_token_cookie("/Survey.html")
+check_clears_cards_auth_token_cookie("/Survey.html/")
+check_doesnt_set_cookies("/Survey?foo=bar")
+check_doesnt_set_cookies("/Survey/?foo=bar")
+check_doesnt_set_cookies("/Survey.html?foo=bar")
+check_doesnt_set_cookies("/Survey.html/?foo=bar")
 
 if withSaml:
   # Run the SAML-specific tests
