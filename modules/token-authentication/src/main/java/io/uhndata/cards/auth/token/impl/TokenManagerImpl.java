@@ -148,7 +148,7 @@ public class TokenManagerImpl implements TokenManager
     /**
      * Create a new token node below the specified {@code parent}.
      *
-     * @param parent the parent node, must be {@code /path/to/someUserProfile/.tokens/}
+     * @param parent the parent node, must be {@code /jcr:system/cards:tokens/<username>}
      * @param expiration the expiration time of the new token
      * @param userId the username of the user that the token will authenticate
      * @param extraData additional attributes of the token to be created, which will also be stored in the session when
