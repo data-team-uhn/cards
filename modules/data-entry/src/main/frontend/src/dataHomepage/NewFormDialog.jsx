@@ -370,6 +370,7 @@ function NewFormDialog(props) {
                 onPaginationChange={setPagination}
                 rowCount={rowCount}
                 state={{
+                  rowSelection: { [selectedQuestionnaire?.["jcr:uuid"]]: true },
                   globalFilter,
                   isLoading,
                   pagination,
@@ -387,14 +388,15 @@ function NewFormDialog(props) {
                   },
                   { accessorKey: 'description' }
                 ]}
+                getRowId={ (row) => row["jcr:uuid"] }
                 data={data}
+                positionToolbarAlertBanner="none"
                 muiSearchTextFieldProps={{ autoFocus: true }}
                 muiTableBodyRowProps={({ row }) => ({
                   sx: {
                     cursor: isRowDisabled(row) ? 'default' : 'pointer',
                   },
                   onClick: () => { onClickRow(row); },
-                  selected: isRowSelected(row),
                 })}
                 muiTableBodyCellProps={({ cell }) => ({
                   sx: {

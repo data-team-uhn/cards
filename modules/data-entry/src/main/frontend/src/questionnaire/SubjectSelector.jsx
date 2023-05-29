@@ -146,8 +146,10 @@ function UnstyledNewSubjectDialog (props) {
             manualPagination
             onGlobalFilterChange={setGlobalFilter}
             onPaginationChange={setPagination}
+            getRowId={ (row) => row["label"] }
             rowCount={rowCount}
             state={{
+              rowSelection: { [newSubjectType?.["label"]]: true },
               globalFilter,
               isLoading,
               pagination,
@@ -161,6 +163,7 @@ function UnstyledNewSubjectDialog (props) {
             renderTopToolbarCustomActions={() => {
               return <Typography variant="h6" sx={{ paddingLeft: theme.spacing(2) }}>Select a type</Typography>;
             }}
+            positionToolbarAlertBanner="none"
             muiTableHeadCellProps={{
               sx: {
                 fontSize: 'large',
@@ -173,8 +176,7 @@ function UnstyledNewSubjectDialog (props) {
               },
             }}
             muiTableBodyRowProps={({ row }) => ({
-              onClick: () => { changeType(row.original); row.toggleSelected(); },
-              selected: !isLoading && row.original['label'] === newSubjectType?.['label'],
+              onClick: () => { changeType(row.original); },
               sx: {
                 cursor: 'pointer',
               },
@@ -307,6 +309,7 @@ function UnstyledSelectParentDialog (props) {
               onPaginationChange={setPagination}
               rowCount={rowCount}
               state={{
+                rowSelection: { [value?.["jcr:uuid"]]: true },
                 globalFilter,
                 isLoading,
                 pagination,
@@ -317,10 +320,11 @@ function UnstyledSelectParentDialog (props) {
                   { accessorKey: 'hierarchy' }
               ]}
               data={data}
+              getRowId={ (row) => row["jcr:uuid"] }
+              positionToolbarAlertBanner="none"
               muiSearchTextFieldProps={{ autoFocus: true }}
               muiTableBodyRowProps={({ row }) => ({
-                onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent && onChangeParent(row.original); row.toggleSelected(); },
-                selected: !isLoading && row.original["jcr:uuid"] === value?.["jcr:uuid"],
+                onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent && onChangeParent(row.original); },
                 sx: {
                   cursor: 'pointer',
                 },
@@ -1026,8 +1030,10 @@ function SubjectSelectorList(props) {
         manualPagination
         onGlobalFilterChange={setGlobalFilter}
         onPaginationChange={setPagination}
+        getRowId={ (row) => row["jcr:uuid"] }
         rowCount={rowCount}
         state={{
+          rowSelection: { [selectedSubject?.["jcr:uuid"]]: true },
           globalFilter,
           isLoading,
           pagination,
@@ -1038,10 +1044,10 @@ function SubjectSelectorList(props) {
           { accessorKey: 'hierarchy' }
         ]}
         data={data}
+        positionToolbarAlertBanner="none"
         muiSearchTextFieldProps={{ autoFocus: true }}
         muiTableBodyRowProps={({ row }) => ({
-          onClick: () => { onSelect(row.original); handleSelection(row.original); row.toggleSelected(); },
-          selected: !isLoading && row.original["jcr:uuid"] === selectedSubject?.["jcr:uuid"],
+          onClick: () => { onSelect(row.original); handleSelection(row.original); },
           sx: {
             cursor: 'pointer',
           },

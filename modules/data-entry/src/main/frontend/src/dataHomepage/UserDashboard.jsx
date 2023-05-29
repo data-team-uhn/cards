@@ -108,6 +108,8 @@ function UserDashboard(props) {
             enableTopToolbar={creationExtensions.length > 5}
             enableBottomToolbar={creationExtensions.length > 5}
             enablePagination={creationExtensions.length > 5}
+            getRowId={ (row) => row["jcr:uuid"] }
+            state={{ rowSelection: { [selectedRow?.["jcr:uuid"]]: true } }}
             initialState={{ showGlobalFilter: (creationExtensions.length > 5),
                             pagination: { pageSize: 10, pageIndex: 0 }
                          }}
@@ -124,8 +126,7 @@ function UserDashboard(props) {
               sx: {
                 cursor: 'pointer',
               },
-              onClick: () => { setSelectedRow(row.original); row.toggleSelected(); },
-              selected: row.original["jcr:uuid"] === selectedRow?.["jcr:uuid"],
+              onClick: () => { setSelectedRow(row?.original); },
             })}
             muiTableBodyCellProps={{
               sx: {
