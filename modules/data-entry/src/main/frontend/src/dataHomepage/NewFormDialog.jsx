@@ -333,7 +333,6 @@ function NewFormDialog(props) {
     if (isRowDisabled(row) && currentSubject) {
       // only considers currentSubject, since setting this error would only be necessary on the 'Subject' page, which would set a currentSubject
       setError(`${currentSubject?.["type"]["@name"]} ${currentSubject?.["identifier"]} already has ${row.original?.["maxPerSubject"]} ${row.original?.["title"]} form(s) filled out.`);
-      setDisableProgress(true);
     } else {
       setSelectedQuestionnaire(row.original);
       setError("");

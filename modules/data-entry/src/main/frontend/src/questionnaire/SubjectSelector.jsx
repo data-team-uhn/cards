@@ -942,10 +942,12 @@ function SubjectSelectorList(props) {
     if (atMax) {
       onError(`${rowData?.["type"]["@name"]} ${rowData?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
       disableProgress(true);
+      return false;
     }
     else {
       onError("");
       disableProgress(false);
+      return true;
     }
   }
 
@@ -1001,8 +1003,7 @@ function SubjectSelectorList(props) {
       // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
       let atMax = (latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["s.jcr:uuid"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
       if (filteredData.length === 1 && !atMax) {
-        onSelect(filteredData[0]);
-        handleSelection(filteredData[0]);
+        handleSelection(filteredData[0]) && onSelect(filteredData[0]);
       }
       setData(filteredData.map((row) => ({
         hierarchy: getHierarchy(row, React.Fragment, () => ({})),
@@ -1047,7 +1048,7 @@ function SubjectSelectorList(props) {
         positionToolbarAlertBanner="none"
         muiSearchTextFieldProps={{ autoFocus: true }}
         muiTableBodyRowProps={({ row }) => ({
-          onClick: () => { onSelect(row.original); handleSelection(row.original); },
+          onClick: () => { handleSelection(row.original) && onSelect(row.original); },
           sx: {
             cursor: 'pointer',
           },
