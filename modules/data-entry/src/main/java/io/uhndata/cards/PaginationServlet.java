@@ -102,12 +102,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     private static final String CREATED_BY_IDENTIFIER = "cards:CreatedBy";
 
-    private static final String MIDIFIED_BY_IDENTIFIER = "cards:LastModifiedBy";
+    private static final String MODIFIED_BY_IDENTIFIER = "cards:LastModifiedBy";
 
-    private static final String MIDIFIED_DATE_IDENTIFIER = "cards:LastModified";
+    private static final String MODIFIED_DATE_IDENTIFIER = "cards:LastModified";
 
     private static final List<String> NODE_FILTERS = Arrays.asList(CREATED_DATE_IDENTIFIER, CREATED_BY_IDENTIFIER,
-        MIDIFIED_BY_IDENTIFIER, MIDIFIED_DATE_IDENTIFIER);
+        MODIFIED_BY_IDENTIFIER, MODIFIED_DATE_IDENTIFIER);
 
     /**
      * Various supported filter types.
@@ -797,7 +797,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         this.sanitizeComparator(filter.comparator),
                         this.sanitizeValue(filter.value)));
                 break;
-            case MIDIFIED_DATE_IDENTIFIER:
+            case MODIFIED_DATE_IDENTIFIER:
                 filterdata.append(" and ");
                 filterdata.append(
                     generateDateCompareQuery(
@@ -805,7 +805,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         this.sanitizeComparator(filter.comparator),
                         this.sanitizeValue(filter.value)));
                 break;
-            case MIDIFIED_BY_IDENTIFIER:
+            case MODIFIED_BY_IDENTIFIER:
                 filterdata.append(
                     String.format(" and n.'jcr:lastModifiedBy'%s'%s'",
                         this.sanitizeComparator(filter.comparator),
