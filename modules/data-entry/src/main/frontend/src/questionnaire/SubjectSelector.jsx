@@ -333,7 +333,7 @@ function UnstyledSelectParentDialog (props) {
                 sx: {
                   fontSize: '1rem',
                   // grey out subjects that already have something by this name
-                  color: (hasChildWithId(cell.row.original, childName) ? theme.palette.grey["500"] : theme.palette.grey["900"])
+                  color: (hasChildWithId(cell.row.original, childName) ? theme.palette.text.disabled : theme.palette.text.primary)
                 },
               })}
             />
@@ -1058,8 +1058,8 @@ function SubjectSelectorList(props) {
             fontSize: '1rem',
             // grey out subjects that have already reached maxPerSubject
             color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
-            ? theme.palette.grey["500"]
-            : theme.palette.grey["900"]
+            ? theme.palette.text.disabled
+            : theme.palette.text.primary
             )
           },
         })}
