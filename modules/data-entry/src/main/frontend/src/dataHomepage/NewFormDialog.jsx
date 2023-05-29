@@ -315,6 +315,7 @@ function NewFormDialog(props) {
     };
     fetchData();
   }, [
+    currentSubject?.["jcr:uuid"],
     globalFilter,
     pagination.pageIndex,
     pagination.pageSize
