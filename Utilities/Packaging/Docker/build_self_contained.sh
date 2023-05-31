@@ -46,7 +46,7 @@ CARDS_VERSION=$(cat ${CARDS_DIRECTORY}/pom.xml | grep --max-count=1 '<version>' 
 # If building in production mode, we want to ensure that the Docker cache is
 # disabled so that we are using the latest Alpine Linux packages
 MAVEN_BUILD_ARGS=""
-(echo "$CARDS_VERSION" | grep -e '-SNAPSHOT$' -q) || MAVEN_BUILD_ARGS="-Prelease -Dgpg.skip -Dmaven.javadoc.skip -Ddocker.buildOptions.noCache=true -Ddocker.verbose=true"
+(echo "$CARDS_VERSION" | grep -e '-SNAPSHOT$' -q) || MAVEN_BUILD_ARGS="-Prelease -Dgpg.skip -Dmaven.javadoc.skip -Ddocker.noCache=true -Ddocker.verbose=true"
 
 # Build CARDS including a Docker image
 mvn clean install -Pdocker $MAVEN_BUILD_ARGS || { echo "Failed to build CARDS Docker image. Exiting."; exit -1; }
