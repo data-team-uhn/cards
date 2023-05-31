@@ -76,8 +76,8 @@ if ("application/json".equals(request.getHeader("Accept"))) {
     <meta name="statusCode" content="${statusCode}">
     <meta name="statusMessage" content="${statusMessage}">
     <meta name="themeColor" content="${colors['ThemeColor']}">
-    <meta name="primaryColor" content="${colors['PrimaryColor']}">
-    <meta name="secondaryColor" content="${colors['SecondaryColor']}">
+    <meta name="primaryColor" content="${colors['PrimaryColor'] || ''}">
+    <meta name="secondaryColor" content="${colors['SecondaryColor'] || ''}">
 <%
       let mediaProps = media.getProperties();
       for (let i in mediaProps) {
