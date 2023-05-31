@@ -44,8 +44,10 @@ RUN if [[ "$build_jars" == "true" ]] ; then cp /cards/aggregated-frontend/src/ma
 # Production Image: Start from a small Alpine Linux base image
 FROM alpine:3.17
 
-# Install utilities for patching the JAR file, if such is necessary
+# Install dependency Alpine Linux packages and apply any available package upgrades
 RUN apk update
+RUN apk add --upgrade apk-tools
+RUN apk upgrade --available
 RUN apk add \
   openjdk11-jre \
   tzdata
