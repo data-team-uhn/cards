@@ -20,7 +20,7 @@
 INPUT_DOCKER_IMAGE=$1
 OUTPUT_DOCKER_IMAGE=$2
 
-docker build -t $OUTPUT_DOCKER_IMAGE - << EOF
+docker build --no-cache -t $OUTPUT_DOCKER_IMAGE - << EOF
 FROM scratch
 COPY --from=$INPUT_DOCKER_IMAGE /etc/os-release /etc/os-release
 COPY --from=$INPUT_DOCKER_IMAGE /etc/apk /etc/apk
