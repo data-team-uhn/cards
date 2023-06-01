@@ -246,7 +246,7 @@ function PatientIdentification(props) {
   let appName = document.querySelector('meta[name="title"]')?.content;
   let welcomeMessage = displayText('welcomeMessage')?.replaceAll("APP_NAME", appName);
 
-  if (!canAuthenticate) {
+  if (canAuthenticate === false) {
     let message = `${welcomeMessage || ""}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
     return (
       <ErrorPage
@@ -303,20 +303,13 @@ function PatientIdentification(props) {
          <Logo component={Grid} item xs={12} />
 
          { /* If we don't have the authentication token yet or we don't need the identification form,
-             display the welcome message and a circular progress while we wait for the next step */ }
+             display a circular progress while we wait for the next step */ }
 
          { (typeof(canAuthenticate) == "undefined" || !showIdentificationForm) ?
 
-         <>
-         { welcomeMessage &&
-           <Grid item xs={12} className={classes.description}>
-             <FormattedText>{welcomeMessage}</FormattedText>
-           </Grid>
-         }
          <Grid item xs={12} className={classes.description}>
             <CircularProgress />
          </Grid>
-         </>
 
          : (!visitList || showTou || touCleared === false) ?
 
