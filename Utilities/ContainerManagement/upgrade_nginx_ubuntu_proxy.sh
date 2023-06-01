@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-UBUNTU_IMAGE="ubuntu:18.04"
+UBUNTU_IMAGE="ubuntu:22.04"
 TAG_BACKUP_PATH=~/.docker_tags_backup/nginx_ubuntu_proxy.txt
 
 PROJECT_ROOT=$(realpath ../../)
