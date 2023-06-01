@@ -271,6 +271,13 @@
         "DISCH_LOC_NAME <> Toronto Rehab - University Centre"
       ]
     },
+    // Only look at actual Emergency or Inpatient events
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-OtherVisitTypes":{
+      "priority": 10,
+      "conditions": [
+        "PATIENT_CLASS not in Emergency; Inpatient; Inpatient Rehab"
+      ]
+    },
     // Discard deceased patients
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DeathDate":{
       "priority": 20,
@@ -283,7 +290,7 @@
     // Discard patients discharged to another institution or not arrived at all
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DischargeToLocation":{
       "priority": 20,
-      "conditions": ["DISCH_DISPOSITION in Not Arrived; Jail; Diverted; Shelter; Jail or half; Res Care; Inpatient Ac; Inpt Ac Diff; Inpt Ac Same; Inpatient Ps; IP Trnsfr; OP Transfer; RehabPsych"]
+      "conditions": ["DISCH_DISPOSITION in Not Arrived; Jail; Diverted; Shelter; Jail or half; Res Care; Inpatient Ac; Inpt Ac Diff; Inpt Ac Same; Inpatient Ps; IP Trnsfr; OP Discharge; OP Transfer; RehabPsych"]
     },
     // Discard patients with special care
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-AlternativeLevelOfCare":{
