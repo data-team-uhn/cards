@@ -22,7 +22,7 @@
 
   <groupId>ca.sickkids.ccm.lfs</groupId>
   <artifactId>lfs-parent</artifactId>
-  <version>0.8-SNAPSHOT</version>
+  <version>0.8.7</version>
   <packaging>pom</packaging>
 
   <name>LFS - Parent POM</name>
@@ -42,7 +42,7 @@
     <connection>scm:git:git://github.com/ccmbioinfo/lfs.git</connection>
     <developerConnection>scm:git:git@github.com:phenotips/ccmbioinfo/lfs.git</developerConnection>
     <url>https://github.com/ccmbioinfo/lfs/tree/master/</url>
-    <tag>HEAD</tag>
+    <tag>cards-0.8.7</tag>
   </scm>
 
   <organization>

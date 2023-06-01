@@ -23,7 +23,7 @@
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
     <artifactId>lfs-modules</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.8.7</version>
   </parent>
 
   <artifactId>lfs-pedigree</artifactId>
@@ -54,7 +54,7 @@
             <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
               <licenseFamilyCategory>AGPL</licenseFamilyCategory>
               <licenseFamilyName>AGPL</licenseFamilyName>
-              <notes></notes>
+              <notes />
               <patterns>
                 <pattern>under the terms of the GNU Affero General Public License</pattern>
               </patterns>

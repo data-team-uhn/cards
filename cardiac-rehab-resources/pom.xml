@@ -23,7 +23,7 @@
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
     <artifactId>lfs-parent</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.8.7</version>
   </parent>
 
   <artifactId>cardiac-rehab-resources</artifactId>

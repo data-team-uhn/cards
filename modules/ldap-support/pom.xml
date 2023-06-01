@@ -23,7 +23,7 @@
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
     <artifactId>lfs-modules</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.8.7</version>
   </parent>
 
   <artifactId>lfs-ldap-support</artifactId>
@@ -31,12 +31,12 @@
   <name>LFS - Support for LDAP authentication</name>
 
   <properties>
-    <lfs.ldap.dn/>
-    <lfs.ldap.password/>
-    <lfs.ldap.host/>
-    <lfs.ldap.baseDn/>
-    <lfs.ldap.idAttribute/>
-    <lfs.ldap.userClass/>
+    <lfs.ldap.dn />
+    <lfs.ldap.password />
+    <lfs.ldap.host />
+    <lfs.ldap.baseDn />
+    <lfs.ldap.idAttribute />
+    <lfs.ldap.userClass />
   </properties>
 
   <build>
