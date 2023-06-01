@@ -271,6 +271,13 @@
         "DISCH_LOC_NAME <> Toronto Rehab - University Centre"
       ]
     },
+    // Only look at actual Emergency or Inpatient events
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-OtherVisitTypes":{
+      "priority": 10,
+      "conditions": [
+        "PATIENT_CLASS not in Emergency; Inpatient; Inpatient Rehab"
+      ]
+    },
     // Discard deceased patients
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DeathDate":{
       "priority": 20,
@@ -283,7 +290,7 @@
     // Discard patients discharged to another institution or not arrived at all
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DischargeToLocation":{
       "priority": 20,
-      "conditions": ["DISCH_DISPOSITION in Not Arrived; Jail; Diverted; Shelter; Jail or half; Inpatient Ps; IP Trnsfr; OP Transfer"]
+      "conditions": ["DISCH_DISPOSITION in Not Arrived; Jail; Diverted; Shelter; Jail or half; Res Care; Inpatient Ac; Inpt Ac Diff; Inpt Ac Same; Inpatient Ps; IP Trnsfr; OP Discharge; OP Transfer; RehabPsych"]
     },
     // Discard patients with special care
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-AlternativeLevelOfCare":{
@@ -317,6 +324,15 @@
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-ComplexContinuingMatch":{
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME matches .*CCC.*"]
+    },
+    // From the Rehab, exclude patients that are not rehab patients
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-NotRehabDepartments":{
+      "priority": 60,
+      "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME in BC-AAC CLINIC; BC-DENTISTRY; LC-ASSISTIVE TECHNOLOGY; LC-CHIROPODY CLINIC; LC-ITB CLINIC; LC-NEUROPHYSIOLOGY CLINIC; LC-NURSING CLINIC; LC-PHYSIATRY; LC-PSYCHIATRY CLINIC; LC-ROBSON CLINIC; LC-SEATING CLINIC; LC-SKIN AND WOUND; LC-SPINAL CORD REHAB-OP-ALLIED HEALTH; RN-CHRONIC PAIN LEAP SERVICE; UC-DENTISTRY; UC-EMG CLINIC; UC-GERIATRIC REHAB SERVICE; UC-PHYSIOTHERAPY-LOGIN; UC-SLEEP LAB"]
+    },
+    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-NotRehabPatients":{
+      "priority": 60,
+      "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "PATIENT_CLASS <> Inpatient Rehab"]
     },
     // Only non-rehab patients from now on.
     // Discard patients not from Rehab, and with psychiatric or substance abuse as primary diagnosis

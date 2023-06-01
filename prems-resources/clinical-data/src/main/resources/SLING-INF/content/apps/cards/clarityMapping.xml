@@ -117,6 +117,34 @@
       </node>
     </node>
     <node>
+      <name>00000006</name>
+      <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+      <property>
+        <name>column</name>
+        <value>MYCHART STATUS</value>
+        <type>String</type>
+      </property>
+      <property>
+        <name>question</name>
+        <value></value>
+        <type>String</type>
+      </property>
+    </node>
+    <node>
+      <name>00000007</name>
+      <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+      <property>
+        <name>column</name>
+        <value>DEATH_DATE</value>
+        <type>String</type>
+      </property>
+      <property>
+        <name>question</name>
+        <value></value>
+        <type>String</type>
+      </property>
+    </node>
+    <node>
       <name>childSubjects</name>
       <primaryNodeType>sling:Folder</primaryNodeType>
       <node>
@@ -229,20 +257,6 @@
               </property>
             </node>
             <node>
-              <name>00000006</name>
-              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-              <property>
-                <name>column</name>
-                <value>DEATH_DATE</value>
-                <type>String</type>
-              </property>
-              <property>
-                <name>question</name>
-                <value></value>
-                <type>String</type>
-              </property>
-            </node>
-            <node>
               <name>00000007</name>
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
@@ -299,20 +313,6 @@
               </property>
             </node>
             <node>
-              <name>00000011</name>
-              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-              <property>
-                <name>column</name>
-                <value>MYCHART STATUS</value>
-                <type>String</type>
-              </property>
-              <property>
-                <name>question</name>
-                <value></value>
-                <type>String</type>
-              </property>
-            </node>
-            <node>
               <name>00000012</name>
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
@@ -346,6 +346,20 @@
               <property>
                 <name>column</name>
                 <value>PAT_ENC_CSN_ID</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000015</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>PATIENT_CLASS</value>
                 <type>String</type>
               </property>
               <property>
