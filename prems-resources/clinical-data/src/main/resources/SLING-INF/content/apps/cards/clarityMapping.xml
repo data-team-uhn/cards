@@ -114,35 +114,35 @@
             <type>String</type>
           </property>
         </node>
+        <node>
+          <name>00000006</name>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>column</name>
+            <value>MYCHART STATUS</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value></value>
+            <type>String</type>
+          </property>
+        </node>
+        <node>
+          <name>00000007</name>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>column</name>
+            <value>DEATH_DATE</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value></value>
+            <type>String</type>
+          </property>
+        </node>
       </node>
-    </node>
-    <node>
-      <name>00000006</name>
-      <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-      <property>
-        <name>column</name>
-        <value>MYCHART STATUS</value>
-        <type>String</type>
-      </property>
-      <property>
-        <name>question</name>
-        <value></value>
-        <type>String</type>
-      </property>
-    </node>
-    <node>
-      <name>00000007</name>
-      <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-      <property>
-        <name>column</name>
-        <value>DEATH_DATE</value>
-        <type>String</type>
-      </property>
-      <property>
-        <name>question</name>
-        <value></value>
-        <type>String</type>
-      </property>
     </node>
     <node>
       <name>childSubjects</name>
