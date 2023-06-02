@@ -130,7 +130,7 @@ def getTimezoneName():
   if args.timezone:
     return args.timezone
   else:
-    return tzlocal.get_localzone().zone
+    return tzlocal.get_localzone_name()
 
 #Validate before doing anything else
 
