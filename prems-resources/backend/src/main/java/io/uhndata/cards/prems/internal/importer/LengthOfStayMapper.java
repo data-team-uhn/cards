@@ -25,7 +25,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Map;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,9 +43,27 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  * @version $Id$
  */
 @Component
+@Designate(ocd = LengthOfStayMapper.LengthOfStayMapperConfigDefinition.class)
 public class LengthOfStayMapper implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(LengthOfStayMapper.class);
+
+    @ObjectClassDefinition(name = "Clarity import mapper - Length of Stay Mapper Configuration",
+        description = "Configuration for the Clarity import mapper for calculating visit length of stay")
+    public @interface LengthOfStayMapperConfigDefinition
+    {
+        @AttributeDefinition(name = "Overwrite Length of Stay", description = "If False, keep the imported length of"
+            + " stay if present. If True, overwrite any existing length of stay with the calculated value if possible")
+        boolean overwrite() default true;
+    }
+
+    private final boolean overwrite;
+
+    @Activate
+    public LengthOfStayMapper(LengthOfStayMapperConfigDefinition configuration)
+    {
+        this.overwrite = configuration.overwrite();
+    }
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
@@ -55,13 +78,16 @@ public class LengthOfStayMapper implements ClarityDataProcessor
             }
         }
 
-        if (length == null) {
+        if (this.overwrite || length == null) {
             try {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Calendar admission = Calendar.getInstance();
                 Calendar discharge = Calendar.getInstance();
                 admission.setTime(dateFormat.parse(input.getOrDefault("HOSP_ADMISSION_DTTM", "")));
                 discharge.setTime(dateFormat.parse(input.getOrDefault("HOSP_DISCHARGE_DTTM", "")));
+
+                admission = DateUtils.truncate(admission, Calendar.DATE);
+                discharge = DateUtils.truncate(discharge, Calendar.DATE);
 
                 length = ChronoUnit.DAYS.between(admission.toInstant(), discharge.toInstant());
                 input.put("LENGTH_OF_STAY_DAYS", String.valueOf(length));
