@@ -55,14 +55,20 @@ public class LengthOfStayMapper implements ClarityDataProcessor
         @AttributeDefinition(name = "Overwrite Length of Stay", description = "If False, keep the imported length of"
             + " stay if present. If True, overwrite any existing length of stay with the calculated value if possible")
         boolean overwrite() default true;
+
+        @AttributeDefinition(name = "Use Calendar Days", description = "If False, consider days to be sets of 24 hours."
+            + "If True, count 1 day for every time the visit includes midnight")
+        boolean useCalendarDays() default true;
     }
 
     private final boolean overwrite;
+    private final boolean useCalendarDays;
 
     @Activate
     public LengthOfStayMapper(LengthOfStayMapperConfigDefinition configuration)
     {
         this.overwrite = configuration.overwrite();
+        this.useCalendarDays = configuration.useCalendarDays();
     }
 
     @Override
@@ -86,8 +92,10 @@ public class LengthOfStayMapper implements ClarityDataProcessor
                 admission.setTime(dateFormat.parse(input.getOrDefault("HOSP_ADMISSION_DTTM", "")));
                 discharge.setTime(dateFormat.parse(input.getOrDefault("HOSP_DISCHARGE_DTTM", "")));
 
-                admission = DateUtils.truncate(admission, Calendar.DATE);
-                discharge = DateUtils.truncate(discharge, Calendar.DATE);
+                if (this.useCalendarDays) {
+                    admission = DateUtils.truncate(admission, Calendar.DATE);
+                    discharge = DateUtils.truncate(discharge, Calendar.DATE);
+                }
 
                 length = ChronoUnit.DAYS.between(admission.toInstant(), discharge.toInstant());
                 input.put("LENGTH_OF_STAY_DAYS", String.valueOf(length));

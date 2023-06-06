@@ -311,6 +311,11 @@
       "clinic": "/Survey/ClinicMapping/78840662",
       "conditions": ["DISCH_LOC_NAME matches Toronto Rehab .*"]
     },
+    // Discard rehab patients that were only for a short time
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-ShortStay":{
+      "priority": 100,
+      "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "LENGTH_OF_STAY_DAYS < 1"]
+    },
     // From the Rehab, exclude patients from the Special Dementia Unit
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-Dementia":{
       "priority": 60,
@@ -366,7 +371,7 @@
     // Discard patients that were only in-patient for a short time
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-IP-ShortStay":{
       "priority": 100,
-      "conditions": ["CLINIC is empty", "LENGTH_OF_STAY_DAYS < 1"]
+      "conditions": ["CLINIC is not /Survey/ClinicMapping/-1792626799", "LENGTH_OF_STAY_DAYS < 1"]
     },
     // As a special filter, a small percentage of patients are assigned to the long-form CPESIC cohort
     "io.uhndata.cards.prems.internal.importer.SendCPESForDepartmentFrequency":{
