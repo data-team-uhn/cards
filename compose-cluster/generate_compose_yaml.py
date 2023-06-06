@@ -28,6 +28,7 @@ import shutil
 import hashlib
 import tzlocal
 import argparse
+import zoneinfo
 from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
 from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
@@ -130,7 +131,11 @@ def getTimezoneName():
   if args.timezone:
     return args.timezone
   else:
-    return tzlocal.get_localzone_name()
+    hosts_localzone = tzlocal.get_localzone()
+    if type(hosts_localzone) == zoneinfo.ZoneInfo:
+      return hosts_localzone.key
+    else:
+      return hosts_localzone.zone
 
 #Validate before doing anything else
 
