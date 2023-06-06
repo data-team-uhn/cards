@@ -18,7 +18,7 @@
 # under the License.
 
 MONGO_CONTAINER_INSTANCE=$1
-MONGO_IMAGE="mongo:4.2-bionic"
+MONGO_IMAGE="mongo:6.0-jammy"
 TAG_BACKUP_PATH=~/.docker_tags_backup/singular_mongo_slingstore.txt
 
 # Check if jq is installed. Exit if it is not.
