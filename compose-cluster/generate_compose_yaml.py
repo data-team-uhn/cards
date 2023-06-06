@@ -21,15 +21,27 @@
 import os
 import sys
 import math
-import yaml
+try:
+  import yaml
+except ImportError:
+  print("yaml not found, please install it with `pip install PyYAML`")
+  sys.exit(-1)
 import json
 import psutil
 import shutil
 import hashlib
-import tzlocal
+try:
+  import tzlocal
+except ImportError:
+  print("tzlocal not found, please install it with `pip install tzlocal`")
+  sys.exit(-1)
 import argparse
 import zoneinfo
-from OpenSSL import crypto, SSL
+try:
+  from OpenSSL import crypto, SSL
+except ImportError:
+  print("OpenSSL not found, please install it with `pip install pyOpenSSL`")
+  sys.exit(-1)
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
 from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
 from ServerMemorySplitConfig import MEMORY_SPLIT_CARDS_JAVA, MEMORY_SPLIT_MONGO_DATA_STORAGE
