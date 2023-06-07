@@ -22,11 +22,11 @@
 MONGOS_PID=$!
 
 #Wait for it to be ready...
-until /usr/bin/mongo --quiet --eval 'db.getMongo()'; do
+until /usr/bin/mongosh --quiet --eval 'db.getMongo()'; do
 	sleep 1
 done
 
-/usr/bin/mongo <<EOF
+/usr/bin/mongosh <<EOF
   use sling;
   
   db.createCollection("blobs");

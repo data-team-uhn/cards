@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM mongo:4.2-bionic
+FROM mongo:6.0-jammy
 
 COPY initialize_all.sh /initialize_all.sh
 RUN chmod +x /initialize_all.sh

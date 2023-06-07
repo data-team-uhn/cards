@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM mongo:4.2-bionic
+FROM mongo:6.0-jammy
 
 COPY mongo-configdb.conf /etc/mongo.conf
 ENTRYPOINT mongod --config /etc/mongo.conf

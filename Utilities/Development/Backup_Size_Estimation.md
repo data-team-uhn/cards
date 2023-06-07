@@ -1,7 +1,7 @@
 1. Start a simple Mongo DB Docker container
 
 ```bash
-docker run --rm -p 27017:27017 -it mongo:4.2-bionic
+docker run --rm -p 27017:27017 -it mongo:6.0-jammy
 ```
 
 2. Build a Docker Compose environment using the Mongo DB container as a storage backend

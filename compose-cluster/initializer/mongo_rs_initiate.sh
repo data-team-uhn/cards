@@ -20,4 +20,4 @@
 MONGO_HOST=$1
 INIT_DOCUMENT=$2
 
-/usr/bin/mongo --host $MONGO_HOST --port 27017 --eval "rs.initiate($INIT_DOCUMENT);"
+/usr/bin/mongosh --host $MONGO_HOST --port 27017 --eval "rs.initiate($INIT_DOCUMENT);"

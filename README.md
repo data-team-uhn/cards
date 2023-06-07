@@ -162,7 +162,7 @@ docker-compose up -d
 
 5.1. To inspect the data split between the MongoDB shards:
 ```bash
-docker-compose exec router mongo
+docker-compose exec router mongosh
 sh.status()
 exit
 ```

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM mongo:4.2-bionic
+FROM mongo:6.0-jammy
 
 #Need netcat to signal CARDS to start
 RUN apt-get update

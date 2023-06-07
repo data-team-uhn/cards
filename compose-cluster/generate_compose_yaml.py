@@ -574,7 +574,7 @@ if args.mongo_singular:
   # Create the single-container MongoDB
   print("Configuring service: mongo")
   yaml_obj['services']['mongo'] = {}
-  yaml_obj['services']['mongo']['image'] = "mongo:4.2-bionic"
+  yaml_obj['services']['mongo']['image'] = "mongo:6.0-jammy"
   yaml_obj['services']['mongo']['networks'] = {}
   yaml_obj['services']['mongo']['networks']['internalnetwork'] = {}
   yaml_obj['services']['mongo']['networks']['internalnetwork']['aliases'] = ['mongo']
