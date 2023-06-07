@@ -975,7 +975,8 @@ for service_name in yaml_obj['services']:
     yaml_obj['services'][service_name]['environment'] = ["TZ={}".format(getTimezoneName())]
 
   # Automatic restart policy
-  yaml_obj['services'][service_name]['restart'] = "unless-stopped"
+  if service_name not in ["initializer"]:
+    yaml_obj['services'][service_name]['restart'] = "unless-stopped"
 
 #Save it
 with open(OUTPUT_FILENAME, 'w') as f_out:
