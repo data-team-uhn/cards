@@ -311,7 +311,7 @@
       "clinic": "/Survey/ClinicMapping/78840662",
       "conditions": ["DISCH_LOC_NAME matches Toronto Rehab .*"]
     },
-    // Discard rehab patients that were only for a short time
+    // Discard rehab patients that were only in-patient for a short time
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-ShortStay":{
       "priority": 100,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "LENGTH_OF_STAY_DAYS < 1"]
