@@ -203,7 +203,7 @@
       ],
       "selectors": ".labels.dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
       "save.path": "/csv-export",
-      "file.name.format": "{questionnaire}_{period}_labels.csv",
+      "file.name.format": "{questionnaire}_labels.csv",
       "export.format": "csv"
     },
     "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Raw-Forms":{
@@ -218,7 +218,7 @@
       ],
       "selectors": ".dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
       "save.path": "/csv-export",
-      "file.name.format": "{questionnaire}_{period}.csv",
+      "file.name.format": "{questionnaire}.csv",
       "export.format": "csv"
     },
     "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Survey-Events":{
@@ -230,7 +230,7 @@
       ],
       "selectors": ".dataFilter:statusNot=INCOMPLETE.labels",
       "save.path": "/csv-export",
-      "file.name.format": "{questionnaire}_{period}.csv",
+      "file.name.format": "{questionnaire}.csv",
       "export.format": "csv"
     },
 
