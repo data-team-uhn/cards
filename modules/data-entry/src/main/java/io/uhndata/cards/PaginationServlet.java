@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +40,8 @@ import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.stream.JsonGenerator;
@@ -49,7 +50,6 @@ import javax.servlet.Servlet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
@@ -340,7 +340,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final String nodeType = getNodeType(request);
 
         // We select all nodes having the right type
-        final StringBuilder query = new StringBuilder("select distinct n.* from [").append(nodeType).append("] as n");
+        final StringBuilder query =
+            new StringBuilder("select distinct n.[jcr:uuid] from [").append(nodeType).append("] as n");
 
         // The map that stores questionnaires uuids with prefixes in array and maps it to the
         // corresponding group of questions uuids with their prefixes (stored in a map)
@@ -953,20 +954,20 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             // Execute the query
             try {
                 final QueryResult filterResult = query.execute();
-                final Iterator<Resource> results =
-                    new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
+                final RowIterator rows = filterResult.getRows();
 
                 itemsInBatch = 0;
-                while (results.hasNext()) {
+                while (rows.hasNext()) {
                     ++itemsInBatch;
-                    Resource n = results.next();
+                    final Row row = rows.nextRow();
+                    final String path = row.getPath();
                     // If this resource was already seen, ignore it
-                    if (!seenResources.contains(n.getPath())) {
-                        seenResources.add(n.getPath());
+                    if (!seenResources.contains(path)) {
+                        seenResources.add(path);
                         // If we've passed the "offset" mark, and we didn't output "limit" items yet, include the
                         // resource in the output
                         if (seenResources.size() > resultOffset && limitCounter > 0) {
-                            jsonGen.write(n.adaptTo(JsonObject.class));
+                            jsonGen.write(request.getResourceResolver().getResource(path).adaptTo(JsonObject.class));
                             --limitCounter;
                             ++counts[2];
                         }
