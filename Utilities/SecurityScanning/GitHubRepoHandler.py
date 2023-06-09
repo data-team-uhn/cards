@@ -115,6 +115,24 @@ class GitHubRepoHandler:
 			raise Exception("HTTP {} was returned when attempting to download {}.".format(resp.status_code, path))
 		return resp.text
 
+	def writeGitHubTextFile(self, path, text_content):
+		installation_headers = {}
+		installation_headers['Accept'] = 'application/vnd.github+json'
+		installation_headers['Authorization'] = 'token ' + self.installation_token
+
+		prev_version_resp = requests.get("https://api.github.com/repos/" + self.repository + "/contents/" + path, headers=installation_headers)
+		prev_version_sha = prev_version_resp.json()['sha']
+
+		commit = {}
+		commit['message'] = "Updating " + path
+		commit['committer'] = {'name': self.bot_username, 'email': self.bot_email}
+		commit['content'] = base64.b64encode(text_content.encode()).decode()
+		commit['sha'] = prev_version_sha
+
+		r = requests.put("https://api.github.com/repos/" + self.repository + "/contents/" + path, headers=installation_headers, json=commit)
+		if r.status_code not in range(200, 300):
+			raise Exception("Failed to update " + path)
+
 	def listGitHubDirectory(self, path):
 		installation_headers = {}
 		installation_headers['Accept'] = 'application/vnd.github+json'
