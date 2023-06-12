@@ -18,18 +18,46 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
-import sys
-import math
-import yaml
-import json
-import psutil
-import shutil
-import hashlib
-import tzlocal
-import argparse
-import zoneinfo
-from OpenSSL import crypto, SSL
+try:
+  import os
+  import sys
+  import math
+  import yaml
+  import json
+  import psutil
+  import shutil
+  import hashlib
+  import tzlocal
+  import argparse
+  import zoneinfo
+  from OpenSSL import crypto, SSL
+except ImportError:
+  print("Error: Missing dependencies!")
+  print()
+  print("On Debian/Ubuntu, these missing dependencies can be installed with:")
+  print()
+  print("\tapt install python3-yaml python3-psutil python3-tzlocal python3-openssl")
+  print()
+  print("On any other system, these missing dependencies can be installed with:")
+  print()
+  print("\tpip3 install -r requirements.txt")
+  print()
+  print("Although you may wish to do this in a Virtual Environment so as to not affect any of the globally installed Python packages;")
+  print()
+  print("\tpython3 -m venv venv")
+  print("\tsource venv/bin/activate")
+  print("\tpip3 install -r requirements.txt")
+  print("\tpython3 generate_compose_yaml.py ...")
+  print("\tdeactivate")
+  print()
+  print("Once the Virtual Environment is set up, subsequent uses of generate_compose_yaml.py can be done with:")
+  print()
+  print("\tsource venv/bin/activate")
+  print("\tpython3 generate_compose_yaml.py ...")
+  print("\tdeactivate")
+  print()
+  sys.exit(-1)
+
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
 from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
 from ServerMemorySplitConfig import MEMORY_SPLIT_CARDS_JAVA, MEMORY_SPLIT_MONGO_DATA_STORAGE
