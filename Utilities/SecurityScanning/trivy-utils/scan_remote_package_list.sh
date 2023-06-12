@@ -40,4 +40,4 @@ rm -rf $PACKAGE_CONF_DIR
 REMOTE_KERNEL_VERSION=$(python3 ../github_get_os_kernel_version.py --deployment_hostname ${DEPLOYMENT_HOSTNAME}) || REMOTE_KERNEL_VERSION=""
 
 # Scan with Trivy and format the results to a Slack message
-docker run --rm -v $(realpath ~/trivy-cache):/root/.cache -v $(realpath $TAR_UUID):/image.tar aquasec/trivy image --security-checks vuln --ignore-unfixed --input /image.tar --format json | python3 trivy_to_slack.py --running_kernel_version ${REMOTE_KERNEL_VERSION:+--running_kernel_version $REMOTE_KERNEL_VERSION} $TRIVY_TO_SLACK_ARGS > $SLACK_MESSAGES_FILE
+docker run --rm -v $(realpath ~/trivy-cache):/root/.cache -v $(realpath $TAR_UUID):/image.tar aquasec/trivy image --security-checks vuln --ignore-unfixed --input /image.tar --format json | python3 trivy_to_slack.py ${REMOTE_KERNEL_VERSION:+--running_kernel_version $REMOTE_KERNEL_VERSION} $TRIVY_TO_SLACK_ARGS > $SLACK_MESSAGES_FILE
