@@ -21,6 +21,7 @@ package io.uhndata.cards.clarity.importer.internal;
 
 import java.util.Map;
 
+import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
@@ -79,7 +80,7 @@ public class ConfiguredGenericMapper extends AbstractConditionalClarityDataProce
     private final String id;
 
     @Activate
-    public ConfiguredGenericMapper(Config configuration)
+    public ConfiguredGenericMapper(Config configuration) throws ConfigurationException
     {
         super(configuration.priority(), configuration.conditions());
         this.column = configuration.column();

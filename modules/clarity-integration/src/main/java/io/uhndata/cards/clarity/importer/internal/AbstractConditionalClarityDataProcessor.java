@@ -27,6 +27,7 @@ import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.osgi.service.cm.ConfigurationException;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
@@ -41,7 +42,7 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
 
     protected final List<ConditionDefinition> conditions;
 
-    AbstractConditionalClarityDataProcessor(int priority, String[] conditionStrings)
+    AbstractConditionalClarityDataProcessor(int priority, String[] conditionStrings) throws ConfigurationException
     {
         this.priority = priority;
         this.conditions = new ArrayList<>(conditionStrings.length);
@@ -49,6 +50,8 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
             ConditionDefinition def = new ConditionDefinition(conditionString);
             if (def.isValid()) {
                 this.conditions.add(def);
+            } else {
+                throw new ConfigurationException("condition", "Invalid condition " + conditionString);
             }
         }
     }
