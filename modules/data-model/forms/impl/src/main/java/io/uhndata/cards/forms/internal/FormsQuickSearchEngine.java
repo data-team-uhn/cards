@@ -24,6 +24,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.Query;
 import javax.jcr.query.RowIterator;
 import javax.json.JsonObject;
 
@@ -73,9 +74,9 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
                 return;
             }
 
-            final String xpathQuery = getXPathQuery(query.getQuery());
-            RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
-                .createQuery(xpathQuery.toString(), "xpath").execute().getRows();
+            final String sqlQuery = getQuery(query.getQuery());
+            final RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
+                .createQuery(sqlQuery.toString(), Query.JCR_SQL2).execute().getRows();
 
             while (queryResults.hasNext()) {
                 try {
@@ -109,17 +110,18 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
         }
     }
 
-    private String getXPathQuery(final String textQuery)
+    private String getQuery(final String textQuery)
     {
         final String escapedQuery = SearchUtils.escapeLikeText(textQuery.toLowerCase());
-        final StringBuilder xpathQuery = new StringBuilder();
-        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),'%");
-        xpathQuery.append(escapedQuery);
-        xpathQuery.append("%') or jcr:like(fn:lower-case(@note),'%");
-        xpathQuery.append(escapedQuery);
-        xpathQuery.append("%')]");
+        final StringBuilder sqlQuery = new StringBuilder()
+            .append("select [jcr:path] from [cards:TextAnswer] as a ")
+            .append("where lower([value]) like '%")
+            .append(escapedQuery)
+            .append("%' or lower([note]) like '%")
+            .append(escapedQuery)
+            .append("%' option(index tag cards)");
 
-        return xpathQuery.toString();
+        return sqlQuery.toString();
     }
 
     /**

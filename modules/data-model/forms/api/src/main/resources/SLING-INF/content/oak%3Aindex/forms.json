@@ -59,6 +59,15 @@
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
                     "jcr:primaryType": "nt:unstructured"
+                },
+                "lowervalue": {
+                    "function": "lower([value])",
+                    "ordered": true,
+                    "propertyIndex": true
+                },
+                "lowernote": {
+                    "function": "lower([note])",
+                    "propertyIndex": true
                 }
             }
         },

@@ -24,6 +24,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.Query;
 import javax.jcr.query.RowIterator;
 import javax.json.JsonObject;
 
@@ -63,13 +64,13 @@ public class SubjectQuickSearchEngine implements QuickSearchEngine
                 return;
             }
 
-            final StringBuilder xpathQuery = new StringBuilder();
-            xpathQuery.append("/jcr:root/Subjects//*[jcr:like(fn:lower-case(@identifier),'%");
-            xpathQuery.append(SearchUtils.escapeLikeText(query.getQuery().toLowerCase()));
-            xpathQuery.append("%')]");
+            final StringBuilder sqlQuery = new StringBuilder()
+                .append("select [jcr:path] from [cards:Subject] as a where lower([identifier]) like '%")
+                .append(SearchUtils.escapeLikeText(query.getQuery().toLowerCase()))
+                .append("%' order by [identifier] option(index tag cards)");
 
-            RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
-                .createQuery(xpathQuery.toString(), "xpath").execute().getRows();
+            final RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
+                .createQuery(sqlQuery.toString(), Query.JCR_SQL2).execute().getRows();
 
             while (queryResults.hasNext()) {
                 // No need to go through results list if we do not want total number of matches
