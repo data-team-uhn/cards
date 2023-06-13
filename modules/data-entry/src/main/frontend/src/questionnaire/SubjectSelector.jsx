@@ -493,7 +493,6 @@ export function NewSubjectDialog (props) {
         // Display the parent type to select
         setError();
         setNewSubjectPopperOpen(false);
-        tableRef.current && tableRef.current.onQueryChange(); // Force the table to re-query our server with the new subjectType
         setSelectParentPopperOpen(true);
       }
     } else {
