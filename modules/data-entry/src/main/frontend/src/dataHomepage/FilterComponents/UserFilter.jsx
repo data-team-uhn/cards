@@ -62,7 +62,7 @@ const UserFilter = forwardRef((props, ref) => {
 
   return (
     <Autocomplete
-        value={selection && users.find(item => item.name == selection) || null}
+        value={selection && users?.find(item => item.name == selection) || null}
         filterOptions={filterUserOptions}
         onChange={(event, value) => {
           setSelection(value?.name);
