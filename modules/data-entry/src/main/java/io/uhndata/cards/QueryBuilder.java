@@ -420,12 +420,13 @@ public class QueryBuilder implements Use
         final JsonArrayBuilder builder = Json.createArrayBuilder();
 
         while (searchResults.hasNext()) {
+            final JsonObject next = searchResults.next();
             // Skip results up to the offset provided
             if (offsetCounter > 0) {
                 --offsetCounter;
                 // Count up to our limit
             } else if (limitCounter > 0) {
-                builder.add(searchResults.next());
+                builder.add(next);
                 --limitCounter;
                 ++returnedRows;
             } else if (!this.showTotalRows) {
