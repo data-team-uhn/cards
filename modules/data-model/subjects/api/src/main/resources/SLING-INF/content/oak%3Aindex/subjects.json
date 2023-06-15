@@ -24,6 +24,11 @@
                     "type": "String",
                     "propertyIndex": true
                 },
+                "parents": {
+                    "propertyIndex": true,
+                    "notNullCheckEnabled": true,
+                    "type": "String"
+                },
                 "uuid": {
                     "name": "jcr:uuid",
                     "propertyIndex": true,
