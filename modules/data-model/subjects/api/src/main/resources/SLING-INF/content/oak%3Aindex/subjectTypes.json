@@ -4,15 +4,15 @@
     "compatVersion": 2,
     "async": "async",
     "evaluatePathRestrictions": true,
-    "includedPaths": ["/Subjects"],
+    "includedPaths": ["/SubjectTypes"],
     "tags": ["cards"],
     "indexRules" : {
         "jcr:primaryType": "nt:unstructured",
-        "cards:Subject" : {
+        "cards:SubjectType" : {
             "jcr:primaryType": "nt:unstructured",
             "properties": {
                 "jcr:primaryType": "nt:unstructured",
-                "identifier": {
+                "label": {
                     "analyzed": false,
                     "boost": 100,
                     "nodeScopeIndex": true,
@@ -20,8 +20,9 @@
                     "ordered": true,
                     "propertyIndex": true
                 },
-                "type": {
-                    "type": "String",
+                "order": {
+                    "name": "cards:defaultOrder",
+                    "type": "Long",
                     "propertyIndex": true
                 },
                 "uuid": {

@@ -83,7 +83,7 @@ function SubjectView(props) {
 
   let fetchSubjectTypes = () => {
     let url = new URL("/query", window.location.origin);
-    url.searchParams.set("query", `SELECT * FROM [cards:SubjectType] as n order by n.'cards:defaultOrder'`);
+    url.searchParams.set("query", `SELECT * FROM [cards:SubjectType] as n order by n.'cards:defaultOrder' option (index tag cards)`);
     return fetchWithReLogin(globalLoginDisplay, url)
       .then(response => response.json())
       .then(result => {
