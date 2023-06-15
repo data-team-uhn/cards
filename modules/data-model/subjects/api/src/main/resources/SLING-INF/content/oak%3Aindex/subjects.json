@@ -20,6 +20,17 @@
                     "ordered": true,
                     "propertyIndex": true
                 },
+                "fullIdentifier": {
+                    "analyzed": false,
+                    "boost": 20,
+                    "ordered": true,
+                    "propertyIndex": true
+                },
+                "lowerFullIdentifier": {
+                    "function": "lower([fullIdentifier])",
+                    "ordered": true,
+                    "propertyIndex": true
+                },
                 "type": {
                     "type": "String",
                     "propertyIndex": true
