@@ -947,7 +947,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // How many results were returned by the query
         long itemsInBatch = 0;
 
-        query.setLimit(batchSize + 1);
+        // For the first query, request offset + regular batch size
+        query.setLimit(resultOffset + batchSize + 1);
         do {
             query.setOffset(batchStart);
 
@@ -974,10 +975,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         ++counts[3];
                     }
                 }
-                batchStart += batchSize;
+                batchStart += itemsInBatch;
             } catch (RepositoryException e) {
                 //
             }
+            // Reset batch size to the regular window
+            query.setLimit(batchSize + 1);
         } while (counts[3] < totalLimit && itemsInBatch > batchSize);
 
         if (itemsInBatch > batchSize) {
