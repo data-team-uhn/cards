@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -52,94 +53,111 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
     }
 
     @Override
-    public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
-        final List<JsonObject> output)
+    public QuickSearchEngine.Results quickSearch(final SearchParameters query, final ResourceResolver resourceResolver)
     {
-        if (output.size() >= query.getMaxResults() && !query.showTotalResults()) {
-            return;
-        }
-
         final String xpathQuery = getXPathQuery(query.getQuery());
-        Iterator<Resource> foundResources = resourceResolver.findResources(xpathQuery.toString(), "xpath");
-
-        while (foundResources.hasNext()) {
-            // No need to go through all results list if we do not add total results number
-            if (output.size() >= query.getMaxResults() && !query.showTotalResults()) {
-                break;
-            }
-
-            Resource thisResource = foundResources.next();
-            addResult(thisResource, query, output);
-        }
-    }
-
-    private void addResult(final Resource res, final SearchParameters query, final List<JsonObject> output)
-    {
-        // Find the Questionnaire parent of this question
-        Resource questionnaire = getQuestionnaire(res);
-
-        String matchedValue = null;
-
-        String question = null;
-        String path = "";
-        if (res.isResourceType("cards/AnswerOption")) {
-            // Find the Question parent of this question
-            Resource questionParent = getQuestion(res);
-            if (questionParent != null) {
-                // Found resource is of type [cards:AnswerOption]
-                String[] resourceValues = res.getValueMap().get("value", String[].class);
-                matchedValue = SearchUtils.getMatchFromArray(resourceValues, query.getQuery());
-                question = "Possible answer for question " + questionParent.getValueMap().get("text", String.class);
-                path = questionParent.getPath();
-            }
-        } else if (res.isResourceType("cards/Question")) {
-            // Found resource is of type [cards:Question]
-            matchedValue = res.getValueMap().get("text", String.class);
-            question = "Question";
-            path = res.getPath();
-        } else if (res.isResourceType("cards/Questionnaire")) {
-            // Found resource is of type [cards:Questionnaire]
-            matchedValue = res.getValueMap().get("title", String.class);
-            question = "Questionnaire name";
-            path = res.getPath();
-        }
-
-        if (matchedValue != null) {
-            output.add(SearchUtils.addMatchMetadata(
-                matchedValue, query.getQuery(), question, questionnaire.adaptTo(JsonObject.class), false, path));
-        }
+        final Iterator<Resource> foundResources = resourceResolver.findResources(xpathQuery.toString(), "xpath");
+        return new QuestionnaireResults(query.getQuery(), foundResources);
     }
 
     private String getXPathQuery(final String textQuery)
     {
         final String escapedQuery = SearchUtils.escapeLikeText(textQuery.toLowerCase());
         final StringBuilder xpathQuery = new StringBuilder();
-        xpathQuery.append("/jcr:root/Questionnaires//*[jcr:like(fn:lower-case(@value),'%");
-        xpathQuery.append(escapedQuery);
-        xpathQuery.append("%') or jcr:like(fn:lower-case(@text),'%");
-        xpathQuery.append(escapedQuery);
-        xpathQuery.append("%') or jcr:like(fn:lower-case(@title),'%");
-        xpathQuery.append(escapedQuery);
-        xpathQuery.append("%')]");
+        xpathQuery.append("/jcr:root/Questionnaires//*[")
+            .append("(@jcr:primaryType = 'cards:Questionnaire' or @jcr:primaryType = 'cards:Question') and ")
+            .append("(jcr:like(fn:lower-case(@value),'%")
+            .append(escapedQuery)
+            .append("%') or jcr:like(fn:lower-case(@text),'%")
+            .append(escapedQuery)
+            .append("%') or jcr:like(fn:lower-case(@title),'%")
+            .append(escapedQuery)
+            .append("%'))]");
 
         return xpathQuery.toString();
     }
 
-    private Resource getQuestion(final Resource answerValue)
+    private final class QuestionnaireResults implements QuickSearchEngine.Results
     {
-        Resource result = answerValue;
-        while (result != null && !"cards/Question".equals(result.getResourceType())) {
-            result = result.getParent();
-        }
-        return result;
-    }
+        private final String query;
 
-    private Resource getQuestionnaire(final Resource matchedNode)
-    {
-        Resource result = matchedNode;
-        while (result != null && !"cards/Questionnaire".equals(result.getResourceType())) {
-            result = result.getParent();
+        private final Iterator<Resource> queryResults;
+
+        QuestionnaireResults(final String query, final Iterator<Resource> queryResults)
+        {
+            this.query = query;
+            this.queryResults = queryResults;
         }
-        return result;
+
+        @Override
+        public boolean hasNext()
+        {
+            return this.queryResults.hasNext();
+        }
+
+        @Override
+        public void skip()
+        {
+            this.queryResults.next();
+        }
+
+        @Override
+        public JsonObject next()
+        {
+            final Resource res = this.queryResults.next();
+            // Find the Questionnaire parent of this question
+            final Resource questionnaire = getQuestionnaire(res);
+
+            String matchedValue = null;
+
+            String question = null;
+            String path = "";
+            if (res.isResourceType("cards/AnswerOption")) {
+                // Find the Question parent of this question
+                final Resource questionParent = getQuestion(res);
+                if (questionParent != null) {
+                    // Found resource is of type [cards:AnswerOption]
+                    final String[] resourceValues = res.getValueMap().get("value", String[].class);
+                    matchedValue = SearchUtils.getMatchFromArray(resourceValues, this.query);
+                    question = "Possible answer for question " + questionParent.getValueMap().get("text", String.class);
+                    path = questionParent.getPath();
+                }
+            } else if (res.isResourceType("cards/Question")) {
+                // Found resource is of type [cards:Question]
+                matchedValue = res.getValueMap().get("text", String.class);
+                question = "Question";
+                path = res.getPath();
+            } else if (res.isResourceType("cards/Questionnaire")) {
+                // Found resource is of type [cards:Questionnaire]
+                matchedValue = res.getValueMap().get("title", String.class);
+                question = "Questionnaire name";
+                path = res.getPath();
+            }
+
+            if (matchedValue != null) {
+                return SearchUtils.addMatchMetadata(
+                    matchedValue, this.query, question, questionnaire.adaptTo(JsonObject.class), false,
+                    path);
+            }
+            return JsonValue.EMPTY_JSON_OBJECT;
+        }
+
+        private Resource getQuestion(final Resource answerValue)
+        {
+            Resource result = answerValue;
+            while (result != null && !"cards/Question".equals(result.getResourceType())) {
+                result = result.getParent();
+            }
+            return result;
+        }
+
+        private Resource getQuestionnaire(final Resource matchedNode)
+        {
+            Resource result = matchedNode;
+            while (result != null && !"cards/Questionnaire".equals(result.getResourceType())) {
+                result = result.getParent();
+            }
+            return result;
+        }
     }
 }
