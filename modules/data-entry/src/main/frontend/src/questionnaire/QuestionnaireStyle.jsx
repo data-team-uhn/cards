@@ -238,6 +238,7 @@ const questionnaireStyle = theme => ({
     subjectFormAvatar : {
         backgroundColor: theme.palette.primary.main,
         marginTop: theme.spacing(-.5),
+        marginRight: theme.spacing(1.5),
         zoom: .75,
     },
     childSubjectHeader: {
@@ -546,7 +547,7 @@ const questionnaireStyle = theme => ({
     DefaultChip: {
     },
     formPreview: {
-        padding: theme.spacing(1, 1, 1, 5.25),
+        padding: theme.spacing(1),
         background: theme.palette.action.hover,
     },
     formPreviewQuestion: {

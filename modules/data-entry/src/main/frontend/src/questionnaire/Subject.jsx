@@ -28,8 +28,9 @@ import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-import MaterialTable from 'material-table';
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy } from "./SubjectIdentifier";
+import MaterialReactTable from 'material-react-table';
+import { Box } from '@mui/material';
 
 import {
   Avatar,
@@ -462,57 +463,103 @@ function SubjectMemberInternal (props) {
         {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => (
             <Grid item key={questionnaireTitle}>
-              <MaterialTable
+              <MaterialReactTable
                 data={subjectGroups[questionnaireTitle]}
-                style={{ boxShadow : 'none' }}
-                options={{
-                  actionsColumnIndex: -1,
-                  emptyRowsWhenPaging: false,
-                  toolbar: false,
-                  paging: !!(subjectGroups[questionnaireTitle]?.length > pageSize),
-                  pageSize: pageSize,
-                  header: false,
-                  rowStyle: {
+                enableTopToolbar={false}
+                enableTableHead={false}
+                enableTableFooter={false}
+                enableBottomToolbar={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
+                enablePagination={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
+                initialState={{ pagination: { pageSize: pageSize, pageIndex: 0 } }}
+                muiTablePaperProps={{
+                  elevation: 0,
+                }}
+                muiTableBodyRowProps={{
+                  sx: {
                     verticalAlign: 'top',
+                  },
+                }}
+                layoutMode="grid"
+                muiTableBodyCellProps={{
+                  sx: {
+                    flex: '0 0 auto',
                   }
                 }}
-                detailPanel={[
-                  { tooltip: 'Excerpt',
-                    render: rowData => <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> },
-                ]}
+                muiTableDetailPanelProps={{
+                  sx: (theme) => ({
+                    marginLeft: theme.spacing(9),
+                    width: '100%'
+                  })
+                }}
+                renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
+                defaultColumn={{
+                  minSize: 20,
+                  maxSize: 9001
+                }}
+                displayColumnDefOptions={{
+                  'mrt-row-actions': {
+                    id: 'Actions',
+                    size: 80,
+                    muiTableBodyCellProps: {
+                      sx: (theme) => ({
+                        paddingRight: theme.spacing(2),
+                        flex: '0 0 auto',
+                      }),
+                    },
+                  },
+                  'mrt-row-expand': {
+                    size: 40,
+                    minSize: 40,
+                    maxSize: 40,
+                    muiTableBodyCellProps: {
+                      sx: {
+                        paddingRight: '2px',
+                        paddingLeft: '0',
+                        flex: '0 0 auto',
+                        alignItems: 'start'
+                      },
+                    },
+                  },
+                }}
                 columns={[
-                  { title: 'Avatar',
-                    cellStyle: {
-                      paddingLeft: 0,
-                      paddingTop: "10px",
+                  { id: 'Questionnaire',
+                    size: 400,
+                    muiTableBodyCellProps: {
+                      sx: {
+                        paddingLeft: 0,
+                        fontWeight: "bold",
+                        paddingTop: "10px",
+                        whiteSpace: 'nowrap',
+                      },
                     },
-                    render: rowData => <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar> },
-                  { title: 'Questionnaire',
-                    cellStyle: {
-                      paddingLeft: 0,
-                      fontWeight: "bold",
-                      paddingTop: "10px",
-                      whiteSpace: 'nowrap',
+                    Cell: ({ row }) => (
+                                   <Grid container direction="row" spacing={1} justifyContent="flex-start" wrap="nowrap">
+                                     <Grid item xs={false}>
+                                       <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
+                                     </Grid>
+                                     <Grid item xs={false}>
+                                       <Link to={"/content.html" + row.original["@path"]} underline="hover">
+                                         {questionnaireTitle}
+                                       </Link>
+                                       <Typography variant="caption" component="div" color="textSecondary">
+                                         Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                                       </Typography>
+                                       <Typography variant="caption" component="div" color="textSecondary">
+                                         Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                                       </Typography>
+                                     </Grid>
+                                   </Grid>
+                                 ) },
+                  { id: 'Status',
+                    muiTableBodyCellProps: {
+                      sx: (theme) => ({
+                        whiteSpace: 'nowrap',
+                        paddingTop: "10px",
+                        paddingBottom: theme.spacing(1),
+                      }),
                     },
-                    render: rowData => <><Link to={"/content.html" + rowData["@path"]} underline="hover">
-                                           {questionnaireTitle} {subjectGroups[questionnaireTitle].length > 1 ? `#${rowData.tableData.id + 1}` : ''}
-                                         </Link>
-                                         <Typography variant="caption" component="div" color="textSecondary">
-                                           Created {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
-                                         </Typography>
-                                         <Typography variant="caption" component="div" color="textSecondary">
-                                           Last modified {DateTime.fromISO(rowData['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
-                                         </Typography>
-                                       </> },
-                  { title: 'Status',
-                    cellStyle: {
-                      width: '99%',
-                      whiteSpace: 'nowrap',
-                      paddingTop: "10px",
-                      paddingBottom: "8px",
-                    },
-                    render: rowData => <React.Fragment>
-                                         {rowData["statusFlags"].map((status) => {
+                    Cell: ({ row }) => (<>
+                                         { row.original["statusFlags"].map((status) => {
                                            return <Chip
                                              key={status}
                                              label={wordToTitleCase(status)}
@@ -521,28 +568,26 @@ function SubjectMemberInternal (props) {
                                              size="small"
                                            />
                                          })}
-                                       </React.Fragment> },
-                  { title: 'Actions',
-                    cellStyle: {
-                      padding: '0',
-                      whiteSpace: 'nowrap',
-                      textAlign: 'end'
-                    },
-                    render: rowData => <React.Fragment>
-                                         <EditButton
-                                           entryPath={rowData["@path"]}
-                                           entryType="Form"
-                                         />
-                                         <DeleteButton
-                                           entryPath={rowData["@path"]}
-                                           entryName={getEntityIdentifier(rowData)}
-                                           entryType="Form"
-                                           warning={rowData ? rowData["@referenced"] : false}
-                                           onComplete={fetchTableData}
-                                         />
-                                       </React.Fragment> },
+                                       </>) },
                 ]}
-               />
+                enableRowActions
+                positionActionsColumn="last"
+                renderRowActions={({ row }) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
+                      <EditButton
+                        entryPath={row.original["@path"]}
+                        entryType="Form"
+                      />
+                      <DeleteButton
+                        entryPath={row.original["@path"]}
+                        entryName={getEntityIdentifier(row.original)}
+                        entryType="Form"
+                        warning={row.original ? row.original["@referenced"] : false}
+                        onComplete={fetchTableData}
+                      />
+                    </Box>
+                )}
+              />
             </Grid>
           ))
         }

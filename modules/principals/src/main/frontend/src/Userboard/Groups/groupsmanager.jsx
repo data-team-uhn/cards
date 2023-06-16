@@ -19,7 +19,7 @@ import React from "react";
 
 import withStyles from '@mui/styles/withStyles';
 
-import { Avatar, Button, Card, CardContent, Grid } from "@mui/material";
+import { Avatar, Button, Card, CardContent, Grid, IconButton, Tooltip } from "@mui/material";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
@@ -27,8 +27,9 @@ import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx"
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
-
-import MaterialTable from 'material-table';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+import MaterialReactTable from 'material-react-table';
 
 const GROUP_URL = "/system/userManager/group/";
 
@@ -36,11 +37,8 @@ class GroupsManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedUsers: [],
       currentGroupUsers: [],
-
       currentGroupName: "",
-      currentGroupIndex: -1,
 
       deployCreateGroup: false,
       deployDeleteGroup: false,
@@ -49,7 +47,6 @@ class GroupsManager extends React.Component {
     };
 
     this.tableRef = React.createRef();
-    this.openDetailsPanel = this.openDetailsPanel.bind(this);
   }
 
   getGroupUsers (groupName){
@@ -65,45 +62,25 @@ class GroupsManager extends React.Component {
     this.setState(
       {
         currentGroupName: "",
-        currentGroupIndex: -1,
-        selectedUsers: [],
       }
     );
   }
 
-  clearSelectedUsers () {
-    this.setState(
-      {
-        selectedUsers: [],
-      }
-    );
-  }
-
-  addName(name) {
-    return { name }
-  }
-
-  handleSelectRowClick(rows) {
-    let chosens = rows.map((row) => row.name);
-    this.setState({ selectedUsers: chosens });
-  }
-
-  handleRemoveUsers() {
+  handleRemoveUsers(currentGroupName, groupUsers) {
     let formData = new FormData();
 
-    var i;
-    for (i = 0; i < this.state.selectedUsers.length; ++i) {
-      formData.append(':member@Delete', this.state.selectedUsers[i]);
+    let selectedUsers = Object.keys(this.tableRef.current?.getState().rowSelection);
+    for (var i = 0; i < selectedUsers.length; ++i) {
+      formData.append(':member@Delete', groupUsers[selectedUsers[i]].name);
     }
 
-    fetch(GROUP_URL + this.state.currentGroupName + ".update.html",
+    fetch(GROUP_URL + currentGroupName + ".update.html",
       {
         method: 'POST',
         credentials: 'include',
         body: formData
       })
       .then(() => {
-        this.clearSelectedUsers();
         this.handleReload();
       })
       .catch((error) => {
@@ -111,33 +88,10 @@ class GroupsManager extends React.Component {
       });
   }
 
-  handleGroupRowClick(index, name) {
-    this.setState(
-      {
-        currentGroupName: name,
-        currentGroupIndex: index
-      }
-    );
-  }
-
-  handleGroupDeleteClick(index, name) {
-    this.handleGroupRowClick(index, name);
-    this.setState({deployDeleteGroup: true});
-  }
-
   handleReload (doClear) {
     doClear && this.clearSelectedGroup();
+    this.tableRef.current?.resetRowSelection();
     this.props.reload();
-  }
-
-  openDetailsPanel (event) {
-    event.preventDefault();
-    if (this.state.currentGroupIndex > -1 && this.props.groups[this.state.currentGroupIndex]) {
-      this.tableRef.current.onToggleDetailPanel(
-          [this.state.currentGroupIndex],
-          this.tableRef.current.props.detailPanel
-       );
-    }
   }
 
   componentDidMount () {
@@ -150,7 +104,7 @@ class GroupsManager extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const headerBackground = this.props.theme.palette.grey['200'];
+
     return (
       <AdminScreen
         title="Groups"
@@ -164,32 +118,51 @@ class GroupsManager extends React.Component {
         <DeletePrincipalDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload(true)} url={GROUP_URL} type={"group"} />
         <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} groupUsers={this.state.currentGroupUsers} allUsers={this.props.users}  reload={() => this.handleReload()} />
         <div className={classes.root}>
-          <MaterialTable
-            tableRef={this.tableRef}
-            title=""
-            style={{ boxShadow : 'none' }}
-            options={{
-              actionsColumnIndex: -1,
-              headerStyle: {backgroundColor: headerBackground},
-              emptyRowsWhenPaging: false
+          <MaterialReactTable
+            enableColumnActions={false}
+            enableColumnFilters={false}
+            enableSorting={false}
+            enableToolbarInternalActions={false}
+            initialState={{ showGlobalFilter: true }}
+            muiTableHeadCellProps={{
+              sx: (theme) => ({
+                background: theme.palette.grey['200'],
+              }),
+            }}
+            displayColumnDefOptions={{
+              'mrt-row-actions': {
+                size: 10,
+                muiTableHeadCellProps: {align: 'right'},
+                muiTableBodyCellProps: {
+                  sx: {
+                    textAlign: 'right'
+                  },
+                },
+              },
+              'mrt-row-expand': {
+                size: 8,
+              },
             }}
             columns={[
-              { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.name.charAt(0)}</Avatar> },
-              { title: 'Name', field: 'name', cellStyle: {textAlign: 'left'} },
-              { title: 'Members', field: 'members', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
-              { title: 'Declared Members', field: 'declaredMembers', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
+              { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
+                Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar>)
+              },
+              { header: 'Name', accessorKey: 'name', size: 300, },
+              { header: 'Members', accessorKey: 'members', size: 10, },
+              { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
             ]}
             data={this.props.groups}
-            actions={[
-              {
-                icon: 'delete',
-                tooltip: 'Delete Group',
-                onClick: (event, rowData) => this.handleGroupDeleteClick(rowData.tableData.id, rowData.name)
-              }
-             ]}
-            onRowClick={(event, rowData, togglePanel) => {this.handleGroupRowClick(rowData.tableData.id, rowData.name); togglePanel()}}
-            detailPanel={rowData => {
-                const group = rowData || this.props.groups[this.state.currentGroupIndex];
+            enableRowActions
+            positionActionsColumn="last"
+            renderRowActions={({ row }) => (
+              <Tooltip title="Delete Group">
+                <IconButton onClick={ () => this.setState({currentGroupName: row.original.name, deployDeleteGroup: true}) } >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+            renderDetailPanel={({ row }) => {
+                const group = row.original;
                 const groupUsers = group.members > 0 ? this.getGroupUsers(group.name) : [];
                 const tableTitle = "Group " + group.name + " users";
 
@@ -197,31 +170,50 @@ class GroupsManager extends React.Component {
                   <div>
                     <Card className={classes.cardRoot}>
                       <CardContent>
-                        { groupUsers.length > 0 && 
-                          <div>
-                            <MaterialTable
-                                title={tableTitle}
-                                style={{ boxShadow : 'none' }}
-                                options={{
-                                  emptyRowsWhenPaging: false,
-                                  selection: true,
-                                  showSelectAllCheckbox : false,
-                                  showTextRowsSelected: false,
-                                  headerStyle: {backgroundColor: headerBackground},
-                                  selectionProps: rowData => ({
-                                    color: 'primary'
-                                  })
-                                }}
-                              columns={[
-                                { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
-                                { title: 'User Name', field: 'name' },
-                                { title: 'Admin', field: 'isAdmin', type: 'boolean' },
-                                { title: 'Disabled', field: 'isDisabled', type: 'boolean' },
-                              ]}
+                        { groupUsers.length > 0 &&
+                            <MaterialReactTable
+                              tableInstanceRef={this.tableRef}
+                              enableColumnActions={false}
+                              enableColumnFilters={false}
+                              enableSorting={false}
+                              enableTopToolbar={false}
+                              muiTableHeadCellProps={{
+                                sx: (theme) => ({
+                                  color: theme.palette.text.primary,
+                                }),
+                              }}
+                              enableRowSelection
+                              enableSelectAll={false}
+                              muiSelectCheckboxProps={{ color: 'primary' }}
+                              displayColumnDefOptions={{
+                                'mrt-row-select': {
+                                  size: 7,
+                                },
+                              }}
+                              muiTableBodyRowProps={({ row }) => ({
+                                onClick: row.getToggleSelectedHandler(),
+                                sx: {
+                                  cursor: 'pointer',
+                                },
+                              })}
+                              columns={[{
+                                id: tableTitle,
+                                header: tableTitle,
+                                columns: [
+                                  { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
+                                    Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
+                                  },
+                                  { header: 'User Name', accessorKey: 'name', size: 300, },
+                                  { header: 'Admin', accessorKey: 'isAdmin', size: 10,
+                                    Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+                                  },
+                                  { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
+                                    Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+                                  },
+                                ]
+                              }]}
                               data={groupUsers}
-                                onSelectionChange={(rows) => {this.handleSelectRowClick(rows)}}
-                              />
-                          </div>
+                            />
                         }
                         <Grid container className={classes.cardActions}>
                           <Button
@@ -229,7 +221,11 @@ class GroupsManager extends React.Component {
                             color="primary"
                             size="small"
                             className={classes.containerButton}
-                            onClick={() => {this.setState({currentGroupName: group.principalName, currentGroupIndex: rowData.tableData.id, deployAddGroupUsers: true, currentGroupUsers: groupUsers});}}
+                            onClick={() => { this.setState({currentGroupName: group.principalName,
+                                                            deployAddGroupUsers: true,
+                                                            currentGroupUsers: groupUsers});
+                                           }
+                            }
                           >
                             Add User to Group
                           </Button>
@@ -237,8 +233,7 @@ class GroupsManager extends React.Component {
                             variant="contained"
                             color="secondary"
                             size="small"
-                            disabled={this.state.selectedUsers.length == 0}
-                            onClick={() => {this.setState({currentGroupName: group.principalName, currentGroupIndex: rowData.tableData.id}); this.handleRemoveUsers();}}
+                            onClick={() => { this.handleRemoveUsers(group.principalName, groupUsers) }}
                           >
                             Remove User from Group
                           </Button>

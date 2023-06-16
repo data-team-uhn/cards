@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { withRouter } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,7 +27,7 @@ import {
   Typography
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import MaterialTable from "material-table";
+import MaterialReactTable from "material-react-table";
 import Alert from '@mui/material/Alert';
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
@@ -48,7 +48,7 @@ export const MODE_DIALOG = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { children, classes, presetPath, currentSubject, theme, mode, open, onClose } = { mode:MODE_ACTION, open: false, ...props };
+  const { children, classes, presetPath, currentSubject, theme, mode, open, onClose } = { mode: MODE_ACTION, open: false, ...props };
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
@@ -59,8 +59,19 @@ function NewFormDialog(props) {
   const [ error, setError ] = useState("");
   const [ relatedForms, setRelatedForms ] = useState();
   const [ disableProgress, setDisableProgress ] = useState(false);
-  const [ pageSize, setPageSize ] = useState(5);
   const [ wasOpen, setWasOpen ] = useState(false);
+  const [ data, setData ] = useState([]);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ isRefetching, setIsRefetching ] = useState(false);
+  const [ rowCount, setRowCount ] = useState(0);
+
+  //table state
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 5,
+  });
+  const tableRef = useRef();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -174,7 +185,8 @@ function NewFormDialog(props) {
   }
 
   let goBack = () => {
-    setError(false);
+    resetDialogState();
+    tableRef.current.resetGlobalFilter();
     // Exit the dialog if we're at the first page or if there is a preset path
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
       setDialogOpen(false);
@@ -194,22 +206,6 @@ function NewFormDialog(props) {
       setSelectedSubject(null);
     }
   }
-
-  // if the number of related forms of a certain questionnaire type is at the maxPerSubject, an error is set
-  useEffect(() => {
-    // only considers currentSubject, since setting this error would only be necessary on the 'Subject' page, which would set a currentSubject
-    if (currentSubject && relatedForms && selectedQuestionnaire) {
-      let atMax = (relatedForms.length && (relatedForms.filter((i) => (i["q.jcr:uuid"] == selectedQuestionnaire["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)));
-      if (atMax) {
-        setError(`${currentSubject?.["type"]["@name"]} ${currentSubject?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
-        setDisableProgress(true);
-      }
-      else {
-        setError("");
-        setDisableProgress(false);
-      }
-    }
-  }, [selectedQuestionnaire]);
 
   // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
@@ -258,6 +254,95 @@ function NewFormDialog(props) {
     }
   }, [selectedQuestionnaire, dialogOpen]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!data.length) {
+        setIsLoading(true);
+      } else {
+        setIsRefetching(true);
+      }
+
+      let url = new URL("/query", window.location.origin);
+      let sql = `select * from [cards:Questionnaire] as n `;
+      let conditions = [];
+      if (globalFilter ) {
+        conditions.push(`(CONTAINS(n.'title', '*${globalFilter }*') or CONTAINS(n.'description', '*${globalFilter }*'))`);
+      }
+      // If we're on the patient chart, only allow the current subjects whose type is:
+      // a) the type of the current subject
+      // b) the type of any progeny of the current subject
+      if (currentSubject) {
+        // Join the UUIDs of the progeny types, and convert them into conditions
+        // These conditions will be n.'requiredSubjectTypes' (IS NULL or ='<uuid>')
+        let acceptableSubjectTypes = [" IS NULL", `='${currentSubject["type"]["jcr:uuid"]}'`];
+
+        let findProgeny = (subjectType) => {
+          // Recursively find child subject types
+          // Make sure to exclude the `parents` field, which will match ["jcr:primaryType"] == "cards:SubjectType"
+          // but should obviously not be counted as progeny
+          let progeny = Object.entries(subjectType || {})
+            .filter(([key, val]) => (val?.["jcr:primaryType"] == "cards:SubjectType" && key != 'parents'))
+            .map(([_, type]) => type);
+          let retVal = [...progeny, ...(progeny.map(findProgeny))].flat();
+          return retVal;
+        }
+
+        let progenyTypes = findProgeny(currentSubject["type"]);
+        acceptableSubjectTypes = acceptableSubjectTypes.concat(progenyTypes.map((type) => `='${type["jcr:uuid"]}'`));
+
+        // Join the conditions together with an OR, and wrap it in brackets
+        conditions.push(
+          "(" + acceptableSubjectTypes.map((condition) => `n.'requiredSubjectTypes'${condition}`).join(" OR ") + ")"
+        );
+      }
+
+      if (conditions.length > 0) {
+        sql += "WHERE " + conditions.join(" AND ");
+      }
+
+      sql += " order by n.'title'";
+
+      url.searchParams.set("query", sql);
+      url.searchParams.set("limit", pagination.pageSize);
+      url.searchParams.set("offset", pagination.pageIndex*pagination.pageSize);
+      const response = await fetchWithReLogin(globalLoginDisplay, url);
+      const json = await response.json();
+      setData(json["rows"]);
+      setRowCount(json.totalrows);
+
+      setIsLoading(false);
+      setIsRefetching(false);
+    };
+    fetchData();
+  }, [
+    currentSubject?.["jcr:uuid"],
+    globalFilter,
+    pagination.pageIndex,
+    pagination.pageSize
+  ]);
+
+  // If the number of related forms of a certain questionnaire type is at the maxPerSubject,
+  // the corresponding row should not be selectable
+  let isRowDisabled = (row) => (
+    relatedForms?.length
+      && (selectedSubject || currentSubject)
+      && (relatedForms.filter(f => f["q.jcr:uuid"] == row.original["jcr:uuid"]).length >= (+(row.original?.["maxPerSubject"]) || undefined))
+  );
+
+  // On click, select the questionnaire row if eligible
+  let onClickRow = (row) => {
+    if (isRowDisabled(row) && currentSubject) {
+      // only considers currentSubject, since setting this error would only be necessary on the 'Subject' page, which would set a currentSubject
+      setError(`${currentSubject?.["type"]["@name"]} ${currentSubject?.["identifier"]} already has ${row.original?.["maxPerSubject"]} ${row.original?.["title"]} form(s) filled out.`);
+    } else {
+      setSelectedQuestionnaire(row.original);
+      setError("");
+      setDisableProgress(false);
+    }
+  }
+
+  let isRowSelected = (row) => (row.original["jcr:uuid"] === selectedQuestionnaire?.["jcr:uuid"]);
+
   return (
     <React.Fragment>
       <ResponsiveDialog
@@ -276,99 +361,49 @@ function NewFormDialog(props) {
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
             {relatedForms &&
-              <MaterialTable
-                title=""
-                columns={[{
-                  field: 'title',
-                  render: q => (<>
-                                  <Typography component="div">{q.title}</Typography>
+              <MaterialReactTable
+                tableInstanceRef={tableRef}
+                enableToolbarInternalActions={false}
+                enableTableHead={false}
+                onGlobalFilterChange={setGlobalFilter}
+                manualPagination
+                onPaginationChange={setPagination}
+                rowCount={rowCount}
+                state={{
+                  rowSelection: { [selectedQuestionnaire?.["jcr:uuid"]]: true },
+                  globalFilter,
+                  isLoading,
+                  pagination,
+                  showProgressBars: isRefetching
+                }}
+                initialState={{ showGlobalFilter: true, columnVisibility: { description: false } }}
+                columns={[
+                  { accessorKey: 'title',
+                    Cell: ({ row }) => (<>
+                                  <Typography component="div">{row.original.title}</Typography>
                                   <FormattedText variant="caption" color="textSecondary">
-                                    {q.description}
+                                    {row.original.description}
                                   </FormattedText>
                                 </>)
-                }, {
-                  field: 'description',
-                  searchable: true,
-                  hidden: true
-                }]}
-                isLoading={isFetching}
-                data={query => {
-                  let url = new URL("/query", window.location.origin);
-                  let sql = `select * from [cards:Questionnaire] as n `;
-                  let conditions = [];
-                  if (query.search) {
-                    conditions.push(`(CONTAINS(n.'title', '*${query.search}*') or CONTAINS(n.'description', '*${query.search}*'))`);
-                  }
-                  // If we're on the patient chart, only allow the current subjects whose type is:
-                  // a) the type of the current subject
-                  // b) the type of any progeny of the current subject
-                  if (currentSubject) {
-                    // Join the UUIDs of the progeny types, and convert them into conditions
-                    // These conditions will be n.'requiredSubjectTypes' (IS NULL or ='<uuid>')
-                    let acceptableSubjectTypes = [" IS NULL", `='${currentSubject["type"]["jcr:uuid"]}'`];
-
-                    let findProgeny = (subjectType) => {
-                      // Recursively find child subject types
-                      // Make sure to exclude the `parents` field, which will match ["jcr:primaryType"] == "cards:SubjectType"
-                      // but should obviously not be counted as progeny
-                      let progeny = Object.entries(subjectType || {})
-                        .filter(([key, val]) => (val?.["jcr:primaryType"] == "cards:SubjectType" && key != 'parents'))
-                        .map(([_, type]) => type);
-                      let retVal = [...progeny, ...(progeny.map(findProgeny))].flat();
-                      return retVal;
-                    }
-
-                    let progenyTypes = findProgeny(currentSubject["type"]);
-                    acceptableSubjectTypes = acceptableSubjectTypes.concat(progenyTypes.map((type) => `='${type["jcr:uuid"]}'`));
-
-                    // Join the conditions together with an OR, and wrap it in brackets
-                    conditions.push(
-                      "(" + acceptableSubjectTypes.map((condition) => `n.'requiredSubjectTypes'${condition}`).join(" OR ") + ")"
-                    );
-                  }
-
-                  if (conditions.length > 0) {
-                    sql += "WHERE " + conditions.join(" AND ");
-                  }
-
-                  sql += " order by n.'title'";
-
-                  url.searchParams.set("query", sql);
-                  url.searchParams.set("limit", query.pageSize);
-                  url.searchParams.set("offset", query.page*query.pageSize);
-                  return fetchWithReLogin(globalLoginDisplay, url)
-                    .then(response => response.json())
-                    .then(result => {
-                      return {
-                        data: result["rows"],
-                        page: Math.trunc(result["offset"]/result["limit"]),
-                        totalCount: result["totalrows"],
-                      }}
-                    )
-                }}
-                options={{
-                  search: true,
-                  searchAutoFocus: true,
-                  header: false,
-                  actionsColumnIndex: -1,
-                  addRowPosition: 'first',
-                  pageSize: pageSize,
-                  rowStyle: rowData => ({
-                    // /* It doesn't seem possible to alter the className from here */
-                    backgroundColor: (selectedQuestionnaire?.["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default,
-                    // // grey out subjects that have already reached maxPerSubject
-                    color: ((relatedForms?.length && (selectedSubject || currentSubject) && (relatedForms.filter((i) => (i["q.jcr:uuid"] == rowData["jcr:uuid"])).length >= (+(rowData?.["maxPerSubject"]) || undefined)))
-                    ? theme.palette.grey["500"]
-                    : theme.palette.grey["900"]
-                    )
-                  })
-                }}
-                onRowClick={(event, rowData) => {
-                  if (!isFetching) {
-                    setSelectedQuestionnaire(rowData);
-                  }
-                }}
-                onChangeRowsPerPage={setPageSize}
+                  },
+                  { accessorKey: 'description' }
+                ]}
+                getRowId={ (row) => row["jcr:uuid"] }
+                data={data}
+                positionToolbarAlertBanner="none"
+                muiSearchTextFieldProps={{ autoFocus: true }}
+                muiTableBodyRowProps={({ row }) => ({
+                  sx: {
+                    cursor: isRowDisabled(row) ? 'default' : 'pointer',
+                  },
+                  onClick: () => { onClickRow(row); },
+                })}
+                muiTableBodyCellProps={({ cell }) => ({
+                  sx: {
+                    // grey out subjects that have already reached maxPerSubject
+                    color: isRowDisabled(cell.row) ? theme.palette.text.disabled : theme.palette.text.primary,
+                  },
+                })}
               />
             }
           </React.Fragment>
@@ -428,9 +463,7 @@ function NewFormDialog(props) {
         onClose={() => {
           resetDialogState();
           closeAllDialogs();
-          if (onClose) {
-            onClose();
-          }
+          onClose && onClose();
         }}
         onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         currentSubject={currentSubject}

@@ -19,7 +19,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import withStyles from '@mui/styles/withStyles';
 
-import { Avatar, Card, CardContent } from "@mui/material";
+import { Avatar, Box, Card, CardContent, IconButton, Tooltip } from "@mui/material";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
@@ -28,7 +28,12 @@ import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx";
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 
-import MaterialTable from 'material-table';
+import MaterialReactTable from 'material-react-table';
+import LockIcon from '@mui/icons-material/Lock';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+
+
 
 const USER_URL = "/system/userManager/user/";
 
@@ -36,11 +41,8 @@ class UsersManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userFilter: null,
-
       currentUserName: "",
       currentGroupName: "",
-      currentUserIndex: -1,
 
       deployCreateUser: false,
       deployDeleteUser: false,
@@ -57,45 +59,13 @@ class UsersManager extends React.Component {
     return groups;
   }
 
-  clearSelectedUser () {
-    this.setState(
-      {
-        currentUserName: "",
-        currentUserIndex: -1,
-      }
-    );
-  }
-
-  handleUserRowClick(index, name) {
-    this.setState(
-      {
-        currentUserName: name,
-        currentUserIndex: index
-      }
-    );
-  }
-
-  handleGroupNameClick(name) {
-    this.setState(
-      {
-        currentGroupName: name
-      }
-    );
-  }
-
-  handleUserDeleteClick(index, name) {
-    this.handleUserRowClick(index, name);
-    this.setState({deployDeleteUser: true});
-  }
-
   handleReload () {
-    this.clearSelectedUser();
+    this.setState({currentUserName: ""});
     this.props.reload();
   }
 
   render() {
     const { classes, history } = this.props;
-    const headerBackground = this.props.theme.palette.grey['200'];
 
     return (
       <AdminScreen
@@ -103,44 +73,83 @@ class UsersManager extends React.Component {
         action={
           <NewItemButton
             title="Create new user"
-            onClick={(event) => this.setState({deployCreateUser: true})}
+            onClick={() => this.setState({deployCreateUser: true})}
           />
         }>
-        <CreateUserDialogue isOpen={this.state.deployCreateUser} handleClose={() => {this.setState({deployCreateUser: false});}} reload={() => this.handleReload()}/>
-        <DeletePrincipalDialogue isOpen={this.state.deployDeleteUser} handleClose={() => {this.setState({deployDeleteUser: false});}} name={this.state.currentUserName} reload={() => this.handleReload()} url={USER_URL} type={"user"} />
-        <ChangeUserPasswordDialogue isOpen={this.state.deployChangeUserPassword} handleClose={() => {this.setState({deployChangeUserPassword: false});}} name={this.state.currentUserName}/>
+        <CreateUserDialogue
+          isOpen={this.state.deployCreateUser}
+          handleClose={() => {this.setState({deployCreateUser: false});}}
+          reload={() => this.handleReload()}
+        />
+        <DeletePrincipalDialogue
+          isOpen={this.state.deployDeleteUser}
+          handleClose={() => {this.setState({deployDeleteUser: false});}}
+          name={this.state.currentUserName}
+          reload={() => this.handleReload()}
+          url={USER_URL} type={"user"}
+        />
+        <ChangeUserPasswordDialogue 
+          isOpen={this.state.deployChangeUserPassword}
+          handleClose={() => {this.setState({deployChangeUserPassword: false});}}
+          name={this.state.currentUserName}
+        />
 
         <div className={classes.root}>
-            <MaterialTable
-              title=""
-              style={{ boxShadow : 'none' }}
-              options={{
-                actionsColumnIndex: -1,
-                headerStyle: {backgroundColor: headerBackground},
-                emptyRowsWhenPaging: false
+          <MaterialReactTable
+              enableColumnActions={false}
+              enableColumnFilters={false}
+              enableSorting={false}
+              enableToolbarInternalActions={false}
+              initialState={{ showGlobalFilter: true }}
+              muiTableHeadCellProps={{
+                sx: (theme) => ({
+                  background: theme.palette.grey['200'],
+                }),
               }}
               columns={[
-                { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.initials}</Avatar>},
-                { title: 'User Name', field: 'name' },
-                { title: 'Admin', field: 'isAdmin', type: 'boolean' },
-                { title: 'Disabled', field: 'isDisabled', type: 'boolean' },
-              ]}
-              data={this.props.users}
-              actions={[
-                {
-                  icon: 'lock',
-                  tooltip: 'Change Password',
-                  onClick: (event, rowData) => this.setState({currentUserName: rowData.name, deployChangeUserPassword: true})
+                { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
+                  Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
                 },
-                {
-                  icon: 'delete',
-                  tooltip: 'Delete User',
-                  onClick: (event, rowData) => this.handleUserDeleteClick(rowData.tableData.id, rowData.name)
-                }
+                { header: 'User Name', accessorKey: 'name' },
+                { header: 'Admin', accessorKey: 'isAdmin', size: 10,
+                  Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+                },
+                { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
+                  Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+                },
               ]}
-              onRowClick={(event, rowData, togglePanel) => {this.handleUserRowClick(rowData.tableData.id, rowData.name); togglePanel()}}
-              detailPanel={rowData => {
-                const user = rowData || this.props.users[this.state.currentUserIndex];
+              displayColumnDefOptions={{
+                'mrt-row-actions': {
+                  muiTableHeadCellProps: {align: 'right'},
+                  muiTableBodyCellProps: {
+                    sx: {
+                      padding: '0',
+                    },
+                  },
+                },
+                'mrt-row-expand': {
+                  size: 8,
+                },
+              }}
+              data={this.props.users}
+              enableRowActions
+              positionActionsColumn="last"
+              renderRowActions={({ row }) => (
+                <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
+                  <Tooltip title="Change Password">
+                    <IconButton onClick={ () => this.setState({currentUserName: row.original.name, deployChangeUserPassword: true}) } >
+                      <LockIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete User">
+                    <IconButton onClick={ () => this.setState({currentUserName: row.original.name, deployDeleteUser: true}) } >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+              renderDetailPanel={({ row }) => {
+                const user = row.original;
                 const currentUserGroups = user.memberOf.length > 0 ? this.getUserGroups(user.memberOf) : [];
                 const tableTitle = "User " + user.name + " Groups";
 
@@ -150,19 +159,27 @@ class UsersManager extends React.Component {
                       <CardContent>
                       {
                         <div>
-                          <MaterialTable
-                              title={tableTitle}
-                              style={{ boxShadow : 'none' }}
-                              options={{
-                                headerStyle: { backgroundColor: headerBackground },
-                                emptyRowsWhenPaging: false
-                              }}
-                              columns={[
-                                  { title: 'Avatar', field: 'imageUrl', render: rowData => <Avatar src={rowData.imageUrl} className={classes.info}>{rowData.name.charAt(0)}</Avatar> },
-                                  { title: 'Name', field: 'name', cellStyle: {textAlign: 'left'} },
-                                  { title: 'Members', field: 'members', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
-                                  { title: 'Declared Members', field: 'declaredMembers', type: 'numeric', cellStyle: {textAlign: 'left'}, headerStyle: {textAlign: 'left', flexDirection: 'initial'} },
-                              ]}
+                          <MaterialReactTable
+                              enableColumnActions={false}
+                              enableColumnFilters={false}
+                              enableSorting={false}
+                              enableTopToolbar={false}
+                              columns={[{
+                                id: tableTitle,
+                                header: tableTitle,
+                                columns: [
+                                  { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
+                                    Cell: ({ row }) => ( <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar> )
+                                  },
+                                  { header: 'Name', accessorKey: 'name', muiTableBodyCellProps: {align: 'left'} },
+                                  { header: 'Members', accessorKey: 'members', size: 10,
+                                    muiTableBodyCellProps: {align: 'left'}, muiTableHeadCellProps: {align: 'left'}
+                                  },
+                                  { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10,                                   
+                                    muiTableBodyCellProps: {align: 'left'}, muiTableHeadCellProps: {align: 'left'}
+                                  },
+                                ]
+                              }]}
                               data={currentUserGroups}
                           />
                         </div>
@@ -172,7 +189,7 @@ class UsersManager extends React.Component {
                 </div> 
                 ) || (<div>User is not in any group</div>)
               }}
-            />
+          />
         </div>
       </AdminScreen>
     );

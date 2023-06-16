@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 
-import MaterialTable from "material-table";
+import MaterialReactTable from "material-react-table";
 
 import { loadExtensions } from "../uiextension/extensionManager";
 import NewItemButton from "../components/NewItemButton.jsx";
@@ -53,7 +53,7 @@ async function getMenuItems() {
 // visible by the user. Each LiveTable contains all forms that use the given
 // questionnaire.
 function UserDashboard(props) {
-  const { classes, theme } = props;
+  const { classes } = props;
   let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
   let [ creationExtensions, setCreationExtensions ] = useState([]);
   let [ loading, setLoading ] = useState(true);
@@ -61,7 +61,6 @@ function UserDashboard(props) {
   let [ selectedCreation, setSelectedCreation ] = useState(-1);
   let [ selectedRow, setSelectedRow ] = useState(undefined);
   let [ open, setOpen ] = useState(false);
-  let [ pageSize, setPageSize ] = useState(10);
 
   let onClose = () => {
     setSelectedCreation(-1);
@@ -102,32 +101,45 @@ function UserDashboard(props) {
       </Grid>
       <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
-          <MaterialTable
+          <MaterialReactTable
+            enableToolbarInternalActions={false}
+            enableTableHead={false}
+            enableTableFooter={creationExtensions.length > 5}
+            enableTopToolbar={creationExtensions.length > 5}
+            enableBottomToolbar={creationExtensions.length > 5}
+            enablePagination={creationExtensions.length > 5}
+            getRowId={ (row) => row["jcr:uuid"] }
+            state={{ rowSelection: { [selectedRow?.["jcr:uuid"]]: true } }}
+            initialState={{ showGlobalFilter: (creationExtensions.length > 5),
+                            pagination: { pageSize: 10, pageIndex: 0 }
+                         }}
             columns={[
-              { field: 'cards:extensionName' },
+              { accessorKey: 'cards:extensionName' },
             ]}
             data={creationExtensions}
-            options={{
-              toolbar: false,
-              header: false,
-              pageSize: pageSize,
-              paging: creationExtensions.length > 5,
-              rowStyle: rowData => ({
-                // /* It doesn't seem possible to alter the className from here */
-                backgroundColor: (selectedRow && selectedRow["jcr:uuid"] === rowData["jcr:uuid"]) ? theme.palette.grey["200"] : theme.palette.background.default
-              })
+            muiTableHeadProps={{
+              sx: {
+                display: creationExtensions.length < 5 ? 'none' : 'contents',
+              },
             }}
-            onRowClick={(event, rowData) => {
-              setSelectedRow(rowData);
+            muiTableBodyRowProps={({ row }) => ({
+              sx: {
+                cursor: 'pointer',
+              },
+              onClick: () => { setSelectedRow(row?.original); },
+            })}
+            muiTableBodyCellProps={{
+              sx: {
+                fontSize: '1rem'
+              },
             }}
-            onChangeRowsPerPage={setPageSize}
-            />
+          />
         </DialogContent>
         <DialogActions>
           <Button
             variant="outlined"
             onClick={onClose}
-            >
+          >
             Cancel
           </Button>
           <Button
@@ -167,4 +179,4 @@ function UserDashboard(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle, {withTheme: true})(UserDashboard);
+export default withStyles(QuestionnaireStyle)(UserDashboard);
