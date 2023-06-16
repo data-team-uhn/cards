@@ -58,8 +58,8 @@ const SubjectFilter = forwardRef((props, ref) => {
 
   let constructQuery = (query, requestID) => {
     let url = new URL("/query", window.location.origin);
-    let formattedQuery = query.replace(/\s*\/\s*/g, " / ");
-    let sqlquery = "SELECT s.* FROM [cards:Subject] as s" + (query.search ? ` WHERE CONTAINS(s.'fullIdentifier', '*${formattedQuery}*')` : "");
+    let formattedQuery = query?.toLowerCase()?.replace(/\s*\/\s*/g, " / ");
+    let sqlquery = "SELECT s.* FROM [cards:Subject] as s" + (query.search ? ` WHERE lower(s.'fullIdentifier') LIKE '%25${formattedQuery}%25'` : "");
     sqlquery += " order by s.'fullIdentifier'";
     url.searchParams.set("query", sqlquery);
     url.searchParams.set("limit", query.pageSize);
