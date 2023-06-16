@@ -1,0 +1,180 @@
+<%--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+--%>
+<html>
+<head>
+<title>Update last modified date</title>
+</head>
+<body>
+<%
+response.setContentType('text/html');
+
+// This script updates specific forms to be modified today, so that they will be
+// picked up by the nightly export task and pushed to S3. The list of forms is
+// hardcoded here as an array of [patient identifier, extra identifiers*] items,
+// where "patient identifier" is the identifier for the patient whose form needs
+// to be pushed, and "extra identifiers" are optional answer values to help
+// distinguish between multiple forms for the same patient, e.g. a visit number,
+// or a participant status. The exact questions that these answers are for are
+// hardcoded in the `questions` map below. If there are no values other than the
+// subject identifier, then all forms (ideally only one) for the patient will be
+// updated.
+//
+// This script applies to a specific questionnaire, so identifying the
+// questionnaire of the forms to be updated is done simply by accessing it in
+// the browser, e.g. /Questionnaires/6MWT.updateSelectedForms.html
+
+// The forms that need to be updated, a list of values [patient identifier, extra identifiers...].
+// Status values:  enrolled  withdrawn_study  withdrawn_subject  paused  resumed  exited  Phase 2 enrolled  phase2paused  phase2resumed  phase2withdrawn  Phase 2 completed study
+const updateList = [];
+
+// This will hold the forms that have been checked out to be updated, and which need to be checked back in at the end.
+let formsToCheckin = new java.util.HashSet();
+
+// Remember the version manager for lower overhead.
+let versionManager = currentSession.getWorkspace().getVersionManager();
+
+// Without confirm=1 in the URL, we don't do any actual changes.
+let dryRun = request.getParameter("confirm") != "1";
+
+// The current questionnaire UUID to be used in the query.
+const questionnaireUuid = currentNode.getIdentifier();
+
+// Extra questions that can be used to filter forms.
+// The key is the questionnaire name, and the value is either one or a list of relative paths to questions inside the questionnaire.
+const questions = {
+  "6MWT": "6mwd-visit",
+  "CPET Interpretation": "Cardiac Stress Test/visit_number",
+  "Graded Walk Test": "Graded Walk Test Details/gw_number",
+  "Participant Status": "Status/enrollment_status",
+  "WHODAS": "WorldHealthOrganizationDisabilityAssessmentScale/survey-visit",
+  "Surveys": "Physical Activity Level/survey-visit",
+  "Recent Activities Survey": "RecentActivities/survey-visit",
+  "Changes in Health Survey": "ChangesinHealth/survey-visit",
+  "Baseline Cardiovascular Parameters": "Baseline Cardiovascular Parameters/cardiovascular-visit",
+  "Baseline Health Information": "Cardiac rehab indication/baseline-visit",
+  "Baseline Medications": "Baseline Medications/medication-visit",
+  "External file": ["file-visit", "source"]
+};
+
+// Compute a list of question UUIDs based on the `questions` map above and the selected questionnaire.
+let extraQuestionsUuid = [];
+if (typeof questions[currentNode.getName()] == "string") {
+  // A single question
+  extraQuestionsUuid.push(currentNode.getNode(questions[currentNode.getName()]).getIdentifier());
+} else if (typeof questions[currentNode.getName()] == "object") {
+  // A list of questions
+  for (let q of questions[currentNode.getName()]) {
+    extraQuestionsUuid.push(currentNode.getNode(q).getIdentifier());
+  }
+}
+
+// Current time, to be used as the new lastModified date in the updated forms.
+const NOW = java.util.Calendar.getInstance();
+
+/**
+ * Find all forms that need to be updated, and update them to have today as their last modified date.
+ */
+let fixAllForms = function() {
+  updateList.forEach(entry => updateFormsForSubjectAndVisit(entry[0], entry.slice(1)));
+}
+
+/**
+ * Find all forms for the given subject identifier and extra identifiers and update them to have today as their last modified date.
+ */
+let updateFormsForSubjectAndVisit = function(subject, identifiers) {
+  let query = 'select f.* from [lfs:Form] as f inner join [lfs:Subject] as s on s.[jcr:uuid] = f.subject';
+  for (let i = 0; i < extraQuestionsUuid.length; ++i) {
+    if (identifiers[i]) {
+      query += ' inner join [lfs:Answer] as va' + i +' on isdescendantnode(va' + i + ', f)';
+      // TODO: figure out the exact answer type for speedier queries
+      // TODO: change to `... on va.[form] = f.[jcr:uuid] for speedier queries
+    }
+  }
+  query += ' where f.questionnaire="' + questionnaireUuid + '"';
+  for (let i = 0; i < extraQuestionsUuid.length; ++i) {
+    if (identifiers[i]) {
+      query += ' and va' + i + '.question = "' + extraQuestionsUuid[i] + '" and va' + i + '.value = "' + identifiers[i] + '"';
+    }
+  }
+  query += ' and s.identifier = "' + subject + '"';
+  let forms = currentNode.getSession().getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
+  while (forms.hasNext()) {
+    updateForm(forms.next());
+  }
+}
+
+/**
+ * Update a form to have today as its last modified date.
+ * The node must be a form (lfs:Form).
+ *
+ * @param form a form node
+ */
+let updateForm = function(form) {
+  out.println("<li>Updating form <a href='/content.html" + form + "'><tt>" + getFormName(form) + "</tt></a> (modified " + form.getProperty("jcr:lastModified").getString() + ")</li>");
+  checkoutIfNeeded(form);
+  !dryRun && form.setProperty("jcr:lastModified", NOW);
+}
+
+/**
+ * Checkout a form if it isn't already checked out.
+ * 
+ * @param form a node, must be a Form node
+ */
+let checkoutIfNeeded = function(form) {
+  if (!dryRun && !versionManager.isCheckedOut(form.getPath())) {
+    versionManager.checkout(form.getPath());
+    formsToCheckin.add(form.getPath());
+  }
+}
+
+/**
+ * Compute the name of a form, in the format "Subject label / Questionnaire title".
+ *
+ * @param form a Form node
+ * @return the form name as a string
+ */
+let getFormName = function(form) {
+  return result = form.getProperty("subject").getNode().getProperty("identifier") + " / " + form.getProperty("questionnaire").getNode().getProperty("title");
+}
+
+// All definitions done, perform the actual work
+
+dryRun && out.println("<h2>Dry run, here is what will be done:</h2>");
+
+out.println("<ol>");
+fixAllForms()
+out.println("</ol>");
+if (request.getParameter("confirm") == "1") {
+    currentSession.save();
+    out.println("<p>Changes performed.<p>")
+    if (!formsToCheckin.isEmpty()) {
+      out.println("<p>Checking in forms:</p><ul>")
+      let it = formsToCheckin.iterator();
+      while (it.hasNext()) {
+        let form = it.next();
+        out.println("<li>Checkin <tt>" + form + "</tt></li>");
+        versionManager.checkin(form);
+      }
+      out.println("</ul>")
+    }
+} else {
+  out.println("<p><a href='" + request.getPathInfo() + "?confirm=1" + (request.getQueryString() ? "&" + request.getQueryString() : "") + "'>Confirm?</a></p>");
+}
+
+%>
+</body>
+</html>
