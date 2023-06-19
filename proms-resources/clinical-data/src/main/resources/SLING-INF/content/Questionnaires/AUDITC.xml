@@ -112,12 +112,20 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>expression</name>
-				<value>return (
-					+@{audit_score:-0} >= 3 ? "For **men**, a total score of **4 or greater** indicates elevated risk for hazardous drinking or active alcohol use disorder. " +
-					                          "For **women**, a total score of **3 or greater** indicates elevated risk for hazardous drinking or active alcohol use disorder.\n\n" +
-					                          "Greater scores indicate greater risk posed to the patient’s health and safety."
-					                        : "No alcohol use disorder detected."
-				)</value>
+				<value><![CDATA[
+					var score = @{audit_score:-0};
+					var maleText = "A total score of **4 or greater** indicates elevated risk for hazardous drinking or active alcohol use disorder. Greater scores indicate greater risk posed to the patient’s health and safety.";
+					var femaleText = "A total score of **3 or greater** indicates elevated risk for hazardous drinking or active alcohol use disorder. Greater scores indicate greater risk posed to the patient’s health and safety.";
+					var result = "No alcohol use disorder detected.";
+					if ("male" === @{audit_sex:-""}.toLowerCase()) {
+						if (score >= 4) result = maleText;
+					} else if ("female" === @{audit_sex:-""}.toLowerCase()) {
+						if (score >= 3) result = femaleText;
+					} else if (score >= 3) {
+						result = "For **men**:\n\n" + maleText + "\n\n For **women**:\n\n" + femaleText;
+					}
+					return result;
+				]]></value>
 				<type>String</type>
 			</property>
 			<property>
