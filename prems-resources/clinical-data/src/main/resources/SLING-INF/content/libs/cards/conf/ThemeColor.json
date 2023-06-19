@@ -1,6 +1,6 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "PrimaryColor": "#106DB5",
-  "SecondaryColor": "#c6934b",
-  "ThemeColor": "bronze"
+  "primaryColor": "#106DB5",
+  "secondaryColor": "#c6934b",
+  "themeColor": "bronze"
 }

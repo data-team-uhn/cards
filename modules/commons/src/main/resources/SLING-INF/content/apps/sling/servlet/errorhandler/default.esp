@@ -75,10 +75,13 @@ if ("application/json".equals(request.getHeader("Accept"))) {
     <title>${appName}</title>
     <meta name="statusCode" content="${statusCode}">
     <meta name="statusMessage" content="${statusMessage}">
-    <meta name="themeColor" content="${colors['ThemeColor']}">
-    <meta name="primaryColor" content="${colors['PrimaryColor'] || ''}">
-    <meta name="secondaryColor" content="${colors['SecondaryColor'] || ''}">
 <%
+      let colorProps = colors.getProperties();
+      for (let i in colorProps) {
+        if (!i.startsWith("jcr:")) {
+          out.println('    <meta name="' + i + '" content="' + colorProps[i] + '"/>');
+        }
+      }
       let mediaProps = media.getProperties();
       for (let i in mediaProps) {
         if (!i.startsWith("jcr:")) {

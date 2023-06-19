@@ -1,4 +1,4 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "ThemeColor": "red"
+  "themeColor": "red"
 }
