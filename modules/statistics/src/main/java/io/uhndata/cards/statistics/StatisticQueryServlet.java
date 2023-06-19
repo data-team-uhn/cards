@@ -27,9 +27,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -48,7 +50,6 @@ import javax.servlet.Servlet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
@@ -116,9 +117,9 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             Session session = request.getResourceResolver().adaptTo(Session.class);
             Node question = session.getNode(arguments.get("x-label"));
 
-            Iterator<Resource> answers = null;
-            Map<Resource, String> data = new LinkedHashMap<>();
-            Map<String, Map<Resource, String>> dataById = null;
+            Iterator<Node> answers = null;
+            Map<Node, String> data = new LinkedHashMap<>();
+            Map<String, Map<Node, String>> dataById = null;
 
             // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
             Node correctSubjectType = session.getNode(arguments.get("y-label"));
@@ -141,9 +142,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 final StringBuilder query =
                     // We select all answers that answer our question
                     new StringBuilder("select n from [" + getAnswerNodeType(question) + "] as n where n.'question'='"
-                        + question.getIdentifier() + "' order by n.'value' desc");
-                answers = request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
-                answers = filterAnswersToSubjectType(answers, correctSubjectType);
+                        + question.getIdentifier() + "' order by n.'value' desc option (index tag cards)");
+                answers = filterAnswersToSubjectType(
+                    request.getResourceResolver().adaptTo(Session.class).getWorkspace().getQueryManager()
+                        .createQuery(query.toString(), Query.JCR_SQL2).execute().getNodes(),
+                    correctSubjectType);
             }
 
             String xLabel = question.getProperty("text").getString();
@@ -209,17 +212,18 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param resolver Reference to the resource resolver
      * @return map containing all question nodes and their given type
      */
-    private Map<Resource, String> getAnswersWithType(Map<Resource, String> data, String type, Node question,
-        ResourceResolver resolver) throws RepositoryException
+    private Map<Node, String> getAnswersWithType(final Map<Node, String> data, final String type, final Node question,
+        final ResourceResolver resolver) throws RepositoryException
     {
         final StringBuilder query =
             // We select all answers that answer our question
             new StringBuilder("select n from [" + getAnswerNodeType(question) + "] as n where n.'question'='"
-                + question.getIdentifier() + "' order by n.'value' desc");
-        Iterator<Resource> answers = resolver.findResources(query.toString(), Query.JCR_SQL2);
+                + question.getIdentifier() + "' order by n.'value' desc option (index tag cards)");
+        final NodeIterator answers = resolver.adaptTo(Session.class).getWorkspace().getQueryManager()
+            .createQuery(query.toString(), Query.JCR_SQL2).execute().getNodes();
 
         while (answers.hasNext()) {
-            Resource answer = answers.next();
+            final Node answer = answers.nextNode();
             data.put(answer, type);
         }
 
@@ -253,20 +257,17 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param subjectType Subject type of the subject for the answer's form
      * @return The filtered iterator
      */
-    private Map<String, Map<Resource, String>> filterAnswersWithType(Map<Resource, String> data, Node subjectType)
+    private Map<String, Map<Node, String>> filterAnswersWithType(final Map<Node, String> data, final Node subjectType)
         throws RepositoryException
     {
-        Iterator<Map.Entry<Resource, String>> entries = data.entrySet().iterator();
-
-        Map<String, Map<Resource, String>> newData = new LinkedHashMap<>();
+        final Map<String, Map<Node, String>> newData = new LinkedHashMap<>();
 
         String correctType = subjectType.getIdentifier();
 
         // filter out answers without correct subject type
-        while (entries.hasNext()) {
-            Map.Entry<Resource, String> answer = entries.next();
+        for (final Entry<Node, String> answer : data.entrySet()) {
             // get form node
-            Node formNode = getFormNode(answer.getKey().adaptTo(Node.class));
+            final Node formNode = getFormNode(answer.getKey());
             // get parent subject
             Node formSubject = formNode.getProperty("subject").getNode();
 
@@ -283,7 +284,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                         newData.get(uuid).put(answer.getKey(), answer.getValue());
                     } else {
                         // if does not already include uuid
-                        Map<Resource, String> subjectData = new LinkedHashMap<>();
+                        final Map<Node, String> subjectData = new LinkedHashMap<>();
                         subjectData.put(answer.getKey(), answer.getValue());
                         newData.put(uuid, subjectData);
                     }
@@ -309,8 +310,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param counts Map of {SubjectID, {Split variable label, count}}
      * @return map of {x var, {split var, count}}
      */
-    private Map<String, Map<String, Integer>> aggregateSplitCounts(Resource xVar, Resource splitVar,
-        Map<String, Map<String, Integer>> counts) throws RepositoryException
+    private Map<String, Map<String, Integer>> aggregateSplitCounts(final Node xVar, final Node splitVar,
+        final Map<String, Map<String, Integer>> counts) throws RepositoryException
     {
         Map<String, Integer> innerCount = new LinkedHashMap<>();
 
@@ -319,17 +320,11 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             return counts;
         }
 
-        Node splitAnswer = splitVar.adaptTo(Node.class);
-        List<String> splitValues = getAnswerValues(splitAnswer, this.splitValueDictionary.get());
+        final List<String> splitValues = getAnswerValues(splitVar, this.splitValueDictionary.get());
 
-        Node xAnswer = xVar.adaptTo(Node.class);
-        List<String> values = getAnswerValues(xAnswer, this.xValueDictionary.get());
-        Iterator<String> it = values.iterator();
-        while (it.hasNext()) {
-            String xValue = it.next();
-            Iterator<String> split = splitValues.iterator();
-            while (split.hasNext()) {
-                String splitValue = split.next();
+        final List<String> values = getAnswerValues(xVar, this.xValueDictionary.get());
+        for (final String xValue : values) {
+            for (final String splitValue : splitValues) {
                 // if x value and split value already exist
                 if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitValue)) {
                     counts.get(xValue).put(splitValue, counts.get(xValue).get(splitValue) + 1);
@@ -353,17 +348,17 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param data Aggregated data
      * @param builder The object builder for output
      */
-    private void addDataSplit(Map<String, Map<Resource, String>> data, JsonObjectBuilder builder)
+    private void addDataSplit(final Map<String, Map<Node, String>> data, final JsonObjectBuilder builder)
         throws RepositoryException
     {
         Map<String, Map<String, Integer>> counts = new LinkedHashMap<>();
 
         try {
-            for (Map.Entry<String, Map<Resource, String>> entries : data.entrySet()) {
-                Resource splitVar = null;
+            for (final Map.Entry<String, Map<Node, String>> entries : data.entrySet()) {
+                Node splitVar = null;
 
                 // First, find the split variable
-                for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
+                for (final Map.Entry<Node, String> entry : entries.getValue().entrySet()) {
                     if ("split".equals(entry.getValue())) {
                         splitVar = entry.getKey();
                         break;
@@ -371,7 +366,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 }
 
                 // Then, call aggregate split counts once for each x variable
-                for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
+                for (final Map.Entry<Node, String> entry : entries.getValue().entrySet()) {
                     if ("x".equals(entry.getValue())) {
                         counts = aggregateSplitCounts(entry.getKey(), splitVar, counts);
                     }
@@ -409,14 +404,14 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param subjectType A subjectType to filter for
      * @return An iterator of Resources that are Nodes of answers for the given subjectType
      */
-    private Iterator<Resource> filterAnswersToSubjectType(Iterator<Resource> answers, Node subjectType)
+    private Iterator<Node> filterAnswersToSubjectType(final NodeIterator answers, final Node subjectType)
         throws RepositoryException
     {
-        Deque<Resource> newAnswers = new LinkedList<>();
-        String correctType = subjectType.getIdentifier();
+        final Deque<Node> newAnswers = new LinkedList<>();
+        final String correctType = subjectType.getIdentifier();
         while (answers.hasNext()) {
-            Resource answer = answers.next();
-            Node answerParent = getFormNode(answer.adaptTo(Node.class));
+            final Node answer = answers.nextNode();
+            final Node answerParent = getFormNode(answer);
             Node answerSubjectType = answerParent.getProperty("subject").getNode().getProperty("type").getNode();
 
             while (answerSubjectType.getDepth() > 0) {
@@ -438,15 +433,13 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param answers An iterator of cards:Answer objects
      * @return A map of values -> counts
      */
-    private Map<String, Integer> aggregateCounts(Iterator<Resource> answers) throws RepositoryException
+    private Map<String, Integer> aggregateCounts(final Iterator<Node> answers) throws RepositoryException
     {
-        Map<String, Integer> counts = new LinkedHashMap<>();
+        final Map<String, Integer> counts = new LinkedHashMap<>();
         while (answers.hasNext()) {
-            Node answer = answers.next().adaptTo(Node.class);
-            List<String> values = getAnswerValues(answer, this.xValueDictionary.get());
-            Iterator<String> it = values.iterator();
-            while (it.hasNext()) {
-                String value = it.next();
+            final Node answer = answers.next();
+            final List<String> values = getAnswerValues(answer, this.xValueDictionary.get());
+            for (final String value : values) {
                 // If this already exists in our counts dict, we add 1 to its value
                 // Otherwise, set it to 1 count
                 if (counts.containsKey(value)) {
@@ -540,7 +533,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param answers Counts object to add
      * @param builder Data object to add to
      */
-    private void addData(Iterator<Resource> answers, JsonObjectBuilder builder) throws RepositoryException
+    private void addData(final Iterator<Node> answers, final JsonObjectBuilder builder) throws RepositoryException
     {
         // Aggregate our counts
         Map<String, Integer> counts = aggregateCounts(answers);
