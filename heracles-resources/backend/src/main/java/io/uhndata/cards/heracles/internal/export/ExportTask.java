@@ -52,6 +52,7 @@ import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import io.uhndata.cards.errortracking.ErrorTracking;
+import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 public class ExportTask implements Runnable
@@ -102,11 +103,15 @@ public class ExportTask implements Runnable
             }
         } catch (Exception e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
+
             // Create an nt:file node under /LoggedEvents/ storing the stack trace of this failure
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
             ErrorTracking.logError(this.resolverFactory, sw.toString());
+
+            // Increment the count of S3ExportFailures
+            Metrics.increment(this.resolverFactory, "S3ExportFailures", 1);
         }
     }
 
