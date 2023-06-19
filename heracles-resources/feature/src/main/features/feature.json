@@ -80,6 +80,10 @@
     {
       "id":"${project.groupId}:heracles-resources-clinical-data:${project.version}",
       "start-order":"26"
+    },
+    {
+      "id":"${project.groupId}:cards-error-tracking:${project.version}",
+      "start-order":"25"
     }
   ],
   "configurations":{
@@ -106,7 +110,7 @@
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~heracles":{
       "user.mapping":[
-        "io.uhndata.cards.heracles-backend=[sling-readall]",
+        "io.uhndata.cards.heracles-backend=[cards-exporter]",
         "io.uhndata.cards.heracles-backend:PauseResumeEditor=[sling-readall]"
       ]
     }
