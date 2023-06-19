@@ -22,8 +22,13 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
-		<value>1</value>
+		<value>6</value>
 		<type>Long</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>Visits 0, 2, 4, 6, 8, 10</value>
+		<type>String</type>
 	</property>
 	<property>
 		<name>title</name>
