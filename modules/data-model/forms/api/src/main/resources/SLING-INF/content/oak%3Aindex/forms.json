@@ -378,6 +378,7 @@
                     "ordered": true,
                     "propertyIndex": true,
                     "nodeScopeIndex": false,
+                    "type": "Date",
                     "jcr:primaryType": "nt:unstructured"
                 },
                 "lastModified": {
@@ -385,6 +386,7 @@
                     "ordered": true,
                     "propertyIndex": true,
                     "nodeScopeIndex": false,
+                    "type": "Date",
                     "jcr:primaryType": "nt:unstructured"
                 },
                 "statusFlags": {
