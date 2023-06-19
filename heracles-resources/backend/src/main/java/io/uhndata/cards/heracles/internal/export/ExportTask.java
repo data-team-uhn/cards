@@ -340,6 +340,7 @@ public class ExportTask implements Runnable
             s3.putObject(s3BucketName, filename, input.getData());
             input.getSummary().forEach(form -> LOGGER.info("Exported {}", form));
             LOGGER.info("Exported {} to {}", input.getUrl(), filename);
+            Metrics.increment(this.resolverFactory, "S3ExportedSubjects", 1);
         } catch (Exception e) {
             throw e;
         }
