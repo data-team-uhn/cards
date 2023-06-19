@@ -30,6 +30,7 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -83,13 +84,13 @@ public class ResourceLabelProcessor extends AbstractResourceLabelProcessor imple
             if (valueProperty.isMultiple()) {
                 List<String> labels = new ArrayList<>();
                 for (Value item : valueProperty.getValues()) {
-                    String label = getLabelForResource(item.getString(), resolver, labelPropertyName);
-                    labels.add(label);
+                    if (StringUtils.isNotBlank(item.getString())) {
+                        labels.add(getLabelForResource(item.getString(), resolver, labelPropertyName));
+                    }
                 }
                 return createJsonArrayFromList(labels);
-            } else {
-                String label = getLabelForResource(valueProperty.getString(), resolver, labelPropertyName);
-                return Json.createValue(label);
+            } else if (StringUtils.isNotBlank(valueProperty.getString())) {
+                return Json.createValue(getLabelForResource(valueProperty.getString(), resolver, labelPropertyName));
             }
         } catch (final RepositoryException ex) {
             // Shouldn't be happening
