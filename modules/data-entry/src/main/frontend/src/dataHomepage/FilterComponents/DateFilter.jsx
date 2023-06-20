@@ -49,7 +49,7 @@ const DateFilter = forwardRef((props, ref) => {
 
   const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(defaultValue)));
 
-  // Dates should have a dateFormat or default to "yyyy/MM/dd hh:mm a"
+  // Dates should have a dateFormat, or default to "yyyy/MM/dd"
   const dateFormat = questionDefinition["dateFormat"] || DateQuestionUtilities.VIEW_DATE_FORMAT;
   const views = DateQuestionUtilities.getPickerViews(dateFormat);
   const isMeridiem = DateQuestionUtilities.formatIsMeridiem(dateFormat);
