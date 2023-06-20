@@ -835,7 +835,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             condition.append(
                 String.format(
                     " %s.'value'%s" + (("date".equals(filter.type))
-                        ? ("cast('%sT00:00:00.000"
+                        ? ((filter.value.contains("T") ? "cast('%s:00.000" : "cast('%sT00:00:00.000")
                             + DateUtils.getTimezoneForDateString(this.sanitizeValue(filter.value))
                             + "' as date)")
                         : ("boolean".equals(filter.type)) ? "%s"
