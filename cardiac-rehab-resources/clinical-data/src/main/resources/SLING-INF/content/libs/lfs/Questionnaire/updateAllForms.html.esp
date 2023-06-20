@@ -1,0 +1,117 @@
+<%--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+--%>
+<html>
+<head>
+<title>Update last modified date</title>
+</head>
+<body>
+<%
+
+// This script updates all forms of a specific questionnaire to be modified
+// today, so that they will be picked up by the nightly export task and pushed
+// to S3.
+//
+// This script applies to a specific questionnaire, so identifying the
+// questionnaire of the forms to be updated is done simply by accessing it in
+// the browser, e.g. /Questionnaires/6MWT.update3.html
+
+response.setContentType('text/html');
+
+// This will hold the forms that have been checked out to be updated, and which need to be checked back in at the end.
+let formsToCheckin = new java.util.HashSet();
+
+// Remember the version manager for lower overhead.
+let versionManager = currentSession.getWorkspace().getVersionManager();
+
+// Without confirm=1 in the URL, we don't do any actual changes.
+let dryRun = request.getParameter("confirm") != "1";
+
+// Current time, to be used as the new lastModified date in the updated forms.
+const NOW = java.util.Calendar.getInstance();
+
+/**
+ * Find all forms that need to be updated, and update them to have today as their last modified date.
+ */
+let fixAllForms = function() {
+  let query = "SELECT * FROM [lfs:Form] AS f WHERE f.'questionnaire' = '" + currentNode.getIdentifier() + "'";
+  let forms = currentNode.getSession().getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
+  while (forms.hasNext()) {
+    updateForm(forms.next());
+  }
+}
+
+/**
+ * Update a form to have today as its last modified date.
+ * The node must be a form (lfs:Form).
+ *
+ * @param form a form node
+ */
+let updateForm = function(form) {
+  out.println("<li>Updating form <a href='/content.html" + form + "'><tt>" + getFormName(form) + "</tt></a> (modified " + form.getProperty("jcr:lastModified").getString() + ")</li>");
+  checkoutIfNeeded(form);
+  !dryRun && form.setProperty("jcr:lastModified", NOW);
+}
+
+/**
+ * Checkout a form if it isn't already checked out.
+ * 
+ * @param form a node, must be a Form node
+ */
+let checkoutIfNeeded = function(form) {
+  if (!dryRun && !versionManager.isCheckedOut(form.getPath())) {
+    versionManager.checkout(form.getPath());
+    formsToCheckin.add(form.getPath());
+  }
+}
+
+/**
+ * Compute the name of a form, in the format "Subject label / Questionnaire title".
+ *
+ * @param form a Form node
+ * @return the form name as a string
+ */
+let getFormName = function(form) {
+  return result = form.getProperty("subject").getNode().getProperty("identifier") + " / " + form.getProperty("questionnaire").getNode().getProperty("title");
+}
+
+// All definitions done, perform the actual work
+
+dryRun && out.println("<h2>Dry run, here is what will be done:</h2>");
+
+out.println("<ol>");
+fixAllForms()
+out.println("</ol>");
+if (request.getParameter("confirm") == "1") {
+    currentSession.save();
+    out.println("<p>Changes performed.<p>")
+    if (!formsToCheckin.isEmpty()) {
+      out.println("<p>Checking in forms:</p><ul>")
+      let it = formsToCheckin.iterator();
+      while (it.hasNext()) {
+        let form = it.next();
+        out.println("<li>Checkin <tt>" + form + "</tt></li>");
+        versionManager.checkin(form);
+      }
+      out.println("</ul>")
+    }
+} else {
+  out.println("<p><a href='" + request.getPathInfo() + "?confirm=1" + (request.getQueryString() ? "&" + request.getQueryString() : "") + "'>Confirm?</a></p>");
+}
+
+%>
+</body>
+</html>
