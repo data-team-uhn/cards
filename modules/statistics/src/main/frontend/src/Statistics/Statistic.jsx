@@ -261,7 +261,7 @@ function Statistic(props) {
               isBar ?
                 <Bar
                   dataKey={field.label || field}
-                  stackId="a"
+                  stackId={groupNullAndFalseAnswersForXVar ? "a" : ""}
                   fill={chartColours[idx]}
                   key={idx}
                   onClick={(data, index) => handleClick(data, field)}
