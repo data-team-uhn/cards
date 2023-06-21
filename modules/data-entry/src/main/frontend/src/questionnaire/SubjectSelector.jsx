@@ -17,13 +17,12 @@
 //  under the License.
 //
 
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Avatar, Button, CircularProgress, DialogActions, DialogContent, ListItem, ListItemAvatar, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import MaterialReactTable from "material-react-table";
 import Alert from '@mui/material/Alert';
 
@@ -60,9 +59,10 @@ let createQueryURL = (query, type, order) => {
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
  * @param {bool} requiresParents If true, the button to continue will read "Continue" instead of "Create"
  * @param {string} value The current name of the subject
+ * @param {string} subjectType The current type of the subject
  */
 function UnstyledNewSubjectDialog (props) {
-  const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
+  const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value, subjectType } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
 
   const [ data, setData ] = useState([]);
@@ -84,13 +84,13 @@ function UnstyledNewSubjectDialog (props) {
     setNewSubjectType(type);
   }
 
-  // Auto-select if there's only one valid SubjectType given in allowedTypes
+  // Auto-select on each dialog open if there's only one valid SubjectType given in allowedTypes
   useEffect(() => {
-    if (allowedTypes?.length === 1) {
-      changeType(allowedTypes[0]);
+    if (open && allowedTypes?.length) {
+      allowedTypes.length === 1 && changeType(allowedTypes[0]);
+      setRowCount(allowedTypes?.length);
     }
-    allowedTypes?.length && setRowCount(allowedTypes?.length);
-  }, [allowedTypes]);
+  }, [allowedTypes, open]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -177,6 +177,7 @@ function UnstyledNewSubjectDialog (props) {
             }}
             muiTableBodyRowProps={({ row }) => ({
               onClick: () => { changeType(row.original); },
+              selected: !isLoading && row.original['label'] === (newSubjectType?.['label'] || subjectType?.['label']),
               sx: {
                 cursor: 'pointer',
               },
@@ -224,11 +225,10 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
  * @param {object} parentType The object representing the cards:SubjectType of the parent that is being selected
- * @param {ref} tableRef Pass a reference to the MaterialReactTable object
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
+  const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType,  theme, value } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -299,7 +299,6 @@ function UnstyledSelectParentDialog (props) {
         {
           initialized &&
             <MaterialReactTable
-              tableInstanceRef={tableRef}
               enableColumnActions={false}
               enableColumnFilters={false}
               enableSorting={false}
@@ -409,6 +408,7 @@ export function NewSubjectDialog (props) {
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
   const [ newSubjectTypeParent, setNewSubjectTypeParent ] = useState(false);
+  const [ newSubjectTypeParentHistory, setNewSubjectTypeParentHistory ] = useState([]);
   const [ newSubjectParent, setNewSubjectParent ] = useState([]);
   const [ newSubjectIndex, setNewSubjectIndex ] = useState(0);
   const [ newSubjectAllowedTypes, setNewSubjectAllowedTypes ] = useState([]);
@@ -419,7 +419,6 @@ export function NewSubjectDialog (props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const tableRef = useRef();
   const history = useHistory();
 
   let curSubjectRequiresParents = newSubjectTypeParent?.["jcr:primaryType"] == "cards:SubjectType";
@@ -576,6 +575,11 @@ export function NewSubjectDialog (props) {
         newTypes.push(newAllowedTypes);
         return newTypes;
       });
+      setNewSubjectTypeParentHistory((old) => {
+        let newHistory = old.slice();
+        newHistory[newSubjectIndex] = newSubjectTypeParent;
+        return newHistory;
+      });
       setNewSubjectIndex((old) => old+1);
       setNewSubjectName((old) => {
         let newNames = old.slice();
@@ -601,6 +605,7 @@ export function NewSubjectDialog (props) {
     } else {
       // Go back a stage, and reopen the select parent dialog
       setError();
+      setNewSubjectTypeParent(newSubjectTypeParentHistory[newSubjectIndex-1]);
       setNewSubjectIndex((old) => old-1);
       setNewSubjectPopperOpen(false);
       setSelectParentPopperOpen(true);
@@ -615,6 +620,7 @@ export function NewSubjectDialog (props) {
     setNewSubjectName([""]);
     setNewSubjectType([""]);
     setNewSubjectTypeParent([""]);
+    setNewSubjectTypeParentHistory([]);
     setNewSubjectParent([]);
     setNewSubjectAllowedTypes([]);
     setNewSubjectPopperOpen(true);
@@ -635,11 +641,12 @@ export function NewSubjectDialog (props) {
         error={error}
         onClose={goBack}
         onChangeSubject={(event) => {changeNewSubjectName(event.target.value)}}
-        onChangeType = {changeNewSubjectType}
+        onChangeType={changeNewSubjectType}
         onSubmit={createNewSubject}
         requiresParents={curSubjectRequiresParents}
         open={open && newSubjectPopperOpen}
         value={newSubjectName[newSubjectIndex]}
+        subjectType={newSubjectType[newSubjectIndex]}
       />
       {open && selectParentPopperOpen && <SelectParentDialog
         childName={newSubjectName[newSubjectIndex]}
@@ -660,7 +667,6 @@ export function NewSubjectDialog (props) {
         onSubmit={createNewSubject}
         open={open && selectParentPopperOpen}
         parentType={newSubjectTypeParent}
-        tableRef={tableRef}
         value={newSubjectParent[newSubjectIndex]}
         /> }
     </React.Fragment>)
@@ -873,26 +879,6 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
   } else {
     returnCall(selectedURL);
   }
-}
-
-// Helper function to simplify the many kinds of subject list items
-// This is outside of NewFormDialog to prevent rerenders from losing focus on the children
-export function SubjectListItem(props) {
-  let { avatarIcon, children, ...rest } = props;
-  let AvatarIcon = avatarIcon;  // Rename to let JSX know this is a prop
-  return (<ListItem
-    button
-    {...rest}
-    >
-    <ListItemAvatar>
-      <Avatar><AvatarIcon /></Avatar>
-    </ListItemAvatar>
-    {children}
-  </ListItem>);
-}
-
-SubjectListItem.defaultProps = {
-  avatarIcon: AssignmentIndIcon
 }
 
 /**
