@@ -219,7 +219,7 @@ public class QueryBuilderTest
                 SERIALIZE_CHILDREN, 0,
                 REQ, "",
                 DO_NOT_ESCAPE_QUERY, "true",
-                SHOW_TOTAL_ROWS, "false"
+                SHOW_TOTAL_ROWS, "true"
         ));
 
         Bindings bindings = createBindings(request);
@@ -274,7 +274,7 @@ public class QueryBuilderTest
         assertTrue(jsonObject.containsKey(RETURNED_ROWS));
         assertEquals(0, jsonObject.getInt(RETURNED_ROWS));
         assertTrue(jsonObject.containsKey(TOTAL_ROWS));
-        assertEquals(0, jsonObject.getInt(TOTAL_ROWS));
+        assertEquals(-1, jsonObject.getInt(TOTAL_ROWS));
         assertTrue(jsonObject.containsKey(ROWS));
     }
 
@@ -308,7 +308,7 @@ public class QueryBuilderTest
         assertTrue(jsonObject.containsKey(RETURNED_ROWS));
         assertEquals(0, jsonObject.getInt(RETURNED_ROWS));
         assertTrue(jsonObject.containsKey(TOTAL_ROWS));
-        assertEquals(0, jsonObject.getInt(TOTAL_ROWS));
+        assertEquals(-1, jsonObject.getInt(TOTAL_ROWS));
         assertTrue(jsonObject.containsKey(ROWS));
     }
 
