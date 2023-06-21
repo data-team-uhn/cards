@@ -20,6 +20,7 @@
 package io.uhndata.cards.auth.token.impl;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 
 import javax.jcr.query.Query;
@@ -48,7 +49,9 @@ public class ExpiredTokensCleanupTask implements Runnable
     {
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
             final Iterator<Resource> resources = resolver.findResources("SELECT * FROM [cards:Token] WHERE ["
-                + CardsTokenImpl.TOKEN_ATTRIBUTE_EXPIRY + "] < '" + ZonedDateTime.now() + "'", Query.JCR_SQL2);
+                + CardsTokenImpl.TOKEN_ATTRIBUTE_EXPIRY + "] < '"
+                + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSSxxx")) + "'",
+                Query.JCR_SQL2);
             resources.forEachRemaining(token -> {
                 try {
                     resolver.delete(token);
