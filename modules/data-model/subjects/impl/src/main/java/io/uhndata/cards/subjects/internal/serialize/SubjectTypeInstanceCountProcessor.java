@@ -110,7 +110,8 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     private String generateDataQuery(final Node node)
         throws RepositoryException
     {
-        String query = String.format("select n from [cards:Subject] as n where n.type = '%s'",
+        String query = String.format(
+            "select n from [cards:Subject] as n where n.type = '%s' OPTION (index tag property)",
             node.getProperty("jcr:uuid").getString());
         return query;
     }
