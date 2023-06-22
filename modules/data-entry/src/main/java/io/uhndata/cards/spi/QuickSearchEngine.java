@@ -31,6 +31,39 @@ import org.apache.sling.api.resource.ResourceResolver;
  */
 public interface QuickSearchEngine
 {
+    interface Results
+    {
+        boolean hasNext();
+
+        void skip();
+
+        JsonObject next();
+
+        static Results emptyResults()
+        {
+            return new Results()
+            {
+                @Override
+                public boolean hasNext()
+                {
+                    return false;
+                }
+
+                @Override
+                public void skip()
+                {
+                    // Nothing to skip
+                }
+
+                @Override
+                public JsonObject next()
+                {
+                    return null;
+                }
+            };
+        }
+    }
+
     /**
      * List the node types supported by this query engine.
      *
@@ -55,7 +88,7 @@ public interface QuickSearchEngine
      *
      * @param query the query configuration to use for searching
      * @param resourceResolver the resource resolver for this session
-     * @param output aggregator of search results
+     * @return a supplier of results
      */
-    void quickSearch(SearchParameters query, ResourceResolver resourceResolver, List<JsonObject> output);
+    Results quickSearch(SearchParameters query, ResourceResolver resourceResolver);
 }

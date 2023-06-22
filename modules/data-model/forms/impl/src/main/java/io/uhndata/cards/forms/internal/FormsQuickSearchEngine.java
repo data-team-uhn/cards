@@ -24,8 +24,10 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.Query;
 import javax.jcr.query.RowIterator;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -53,8 +55,6 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
 
     private static final List<String> SUPPORTED_TYPES = Collections.singletonList("cards:Form");
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Reference
     private FormUtils formUtils;
 
@@ -65,111 +65,135 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
     }
 
     @Override
-    public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
-        final List<JsonObject> output)
+    public QuickSearchEngine.Results quickSearch(final SearchParameters query,
+        final ResourceResolver resourceResolver)
     {
         try {
-            if (output.size() >= query.getMaxResults() && !query.showTotalResults()) {
-                return;
-            }
-
-            final String xpathQuery = getXPathQuery(query.getQuery());
-            RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
-                .createQuery(xpathQuery.toString(), "xpath").execute().getRows();
-
-            while (queryResults.hasNext()) {
-                try {
-                    // No need to go through results list if we do not want total number of matches
-                    if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
-                        break;
-                    }
-                    Node item = queryResults.nextRow().getNode();
-
-                    Pair<String, Boolean> match = getMatch(query.getQuery(), item);
-
-                    String questionText = null;
-                    String questionPath = "";
-                    final Node questionNode = getQuestion(item);
-                    questionText = questionNode.getProperty("text").getString();
-                    questionPath = questionNode.getPath();
-
-                    if (match != null && questionText != null) {
-                        final Resource parent = getForm(item, resourceResolver);
-
-                        output.add(SearchUtils.addMatchMetadata(
-                            match.getLeft(), query.getQuery(), questionText, parent.adaptTo(JsonObject.class),
-                            match.getRight(), questionPath));
-                    }
-                } catch (RepositoryException e) {
-                    this.logger.warn("Failed to process search results: {}", e.getMessage(), e);
-                }
-            }
-        } catch (RepositoryException e) {
+            final String sqlQuery = getQuery(query.getQuery());
+            final RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
+                .createQuery(sqlQuery.toString(), Query.JCR_SQL2).execute().getRows();
+            return new FormsResults(query.getQuery(), queryResults, resourceResolver);
+        } catch (final RepositoryException e) {
             LOGGER.warn("Failed to search for subjects: {}", e.getMessage(), e);
         }
+        return QuickSearchEngine.Results.emptyResults();
     }
 
-    private String getXPathQuery(final String textQuery)
+    private String getQuery(final String textQuery)
     {
         final String escapedQuery = SearchUtils.escapeLikeText(textQuery.toLowerCase());
-        final StringBuilder xpathQuery = new StringBuilder();
-        xpathQuery.append("/jcr:root/Forms//*[jcr:like(fn:lower-case(@value),'%");
-        xpathQuery.append(escapedQuery);
-        xpathQuery.append("%') or jcr:like(fn:lower-case(@note),'%");
-        xpathQuery.append(escapedQuery);
-        xpathQuery.append("%')]");
+        final StringBuilder sqlQuery = new StringBuilder()
+            .append("select [jcr:path] from [cards:TextAnswer] as a ")
+            .append("where lower([value]) like '%")
+            .append(escapedQuery)
+            .append("%' or lower([note]) like '%")
+            .append(escapedQuery)
+            .append("%' option(index tag cards)");
 
-        return xpathQuery.toString();
+        return sqlQuery.toString();
     }
 
-    /**
-     * Get the question node that a matched answer node answers.
-     *
-     * @param answer an answer node matched by the query
-     * @return the question node, non-null if the database is well formed
-     * @throws RepositoryException if accessing the question node fails (shouldn't happen in practice)
-     */
-    private Node getQuestion(Node answer) throws RepositoryException
+    private final class FormsResults implements QuickSearchEngine.Results
     {
-        return answer.getProperty("question").getNode();
-    }
+        private final RowIterator queryResults;
 
-    /**
-     * Get the ancestor {@code cards:Form} node that a matched answer node belongs to.
-     *
-     * @param answer an answer node matched by the query
-     * @return the form node, non-null if the database is well formed
-     * @throws RepositoryException if accessing the repository fails
-     */
-    private Resource getForm(final Node answer, final ResourceResolver resourceResolver) throws RepositoryException
-    {
-        return resourceResolver.getResource(this.formUtils.getForm(answer).getPath());
-    }
+        private final String query;
 
-    /**
-     * Find the value that was matched by the query. This is either one of the answe'r values, or its notes.
-     *
-     * @param query the user-entered query text to look for
-     * @param answer the matched answer node
-     * @return a pair, with the matched value (or notes field) in the left side, and a boolean indicating whether the
-     *         match was in an answer value ({@code false}) or in the notes ({@code true}), or {@code null} if the query
-     *         text couldn't be found in the answer
-     * @throws RepositoryException if accessing the repository fails
-     */
-    private Pair<String, Boolean> getMatch(final String query, final Node answer) throws RepositoryException
-    {
-        Object answerValues = this.formUtils.getValue(answer);
-        String matchedValue = SearchUtils.getMatch(answerValues, query);
+        private final ResourceResolver resolver;
 
-        // As a fallback for when the match isn't in the value field, attempt to use the note field
-        boolean matchedNotes = false;
-        if (matchedValue == null && answer.hasProperty("note")) {
-            String noteValue = answer.getProperty("note").getString();
-            if (StringUtils.containsIgnoreCase(noteValue, query)) {
-                matchedValue = noteValue;
-                matchedNotes = true;
-            }
+        FormsResults(final String query, final RowIterator queryResults, final ResourceResolver resolver)
+        {
+            this.query = query;
+            this.queryResults = queryResults;
+            this.resolver = resolver;
         }
-        return matchedValue == null ? null : Pair.of(matchedValue, matchedNotes);
+
+        @Override
+        public boolean hasNext()
+        {
+            return this.queryResults.hasNext();
+        }
+
+        @Override
+        public void skip()
+        {
+            this.queryResults.nextRow();
+        }
+
+        @Override
+        public JsonObject next()
+        {
+            try {
+                final Node item = this.queryResults.nextRow().getNode();
+                final Pair<String, Boolean> match = getMatch(this.query, item);
+                String questionText = null;
+                String questionPath = "";
+                final Node questionNode = getQuestion(item);
+                questionText = questionNode.getProperty("text").getString();
+                questionPath = questionNode.getPath();
+
+                if (match != null && questionText != null) {
+                    final Resource parent = getForm(item);
+
+                    return SearchUtils.addMatchMetadata(
+                        match.getLeft(), this.query, questionText, parent.adaptTo(JsonObject.class),
+                        match.getRight(), questionPath);
+                }
+            } catch (final RepositoryException e) {
+                LOGGER.warn("Failed to process search results: {}", e.getMessage(), e);
+            }
+            return JsonValue.EMPTY_JSON_OBJECT;
+        }
+
+        /**
+         * Get the ancestor {@code cards:Form} node that a matched answer node belongs to.
+         *
+         * @param answer an answer node matched by the query
+         * @return the form node, non-null if the database is well formed
+         * @throws RepositoryException if accessing the repository fails
+         */
+        private Resource getForm(final Node answer) throws RepositoryException
+        {
+            return this.resolver.getResource(FormsQuickSearchEngine.this.formUtils.getForm(answer).getPath());
+        }
+
+        /**
+         * Get the question node that a matched answer node answers.
+         *
+         * @param answer an answer node matched by the query
+         * @return the question node, non-null if the database is well formed
+         * @throws RepositoryException if accessing the question node fails (shouldn't happen in practice)
+         */
+        private Node getQuestion(final Node answer) throws RepositoryException
+        {
+            return answer.getProperty("question").getNode();
+        }
+
+        /**
+         * Find the value that was matched by the query. This is either one of the answe'r values, or its notes.
+         *
+         * @param query the user-entered query text to look for
+         * @param answer the matched answer node
+         * @return a pair, with the matched value (or notes field) in the left side, and a boolean indicating whether
+         *         the match was in an answer value ({@code false}) or in the notes ({@code true}), or {@code null} if
+         *         the query text couldn't be found in the answer
+         * @throws RepositoryException if accessing the repository fails
+         */
+        private Pair<String, Boolean> getMatch(final String query, final Node answer) throws RepositoryException
+        {
+            final Object answerValues = FormsQuickSearchEngine.this.formUtils.getValue(answer);
+            String matchedValue = SearchUtils.getMatch(answerValues, query);
+
+            // As a fallback for when the match isn't in the value field, attempt to use the note field
+            boolean matchedNotes = false;
+            if (matchedValue == null && answer.hasProperty("note")) {
+                final String noteValue = answer.getProperty("note").getString();
+                if (StringUtils.containsIgnoreCase(noteValue, query)) {
+                    matchedValue = noteValue;
+                    matchedNotes = true;
+                }
+            }
+            return matchedValue == null ? null : Pair.of(matchedValue, matchedNotes);
+        }
     }
 }

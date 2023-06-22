@@ -19,13 +19,13 @@ package io.uhndata.cards;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -210,9 +210,7 @@ public class QueryBuilder implements Use
             // A quick search is special, since the results are not simply serialized nodes, but search results
             // enriched with match information, and the quick search engines already take care of not returning more
             // results than needed
-            JsonObjectBuilder builder = Json.createObjectBuilder();
-            this.outputQuickSearchResults(builder, quickSearch(this.urlDecode(quickQuery)));
-            this.content = builder.build().toString();
+            quickSearch(this.urlDecode(quickQuery));
             return null;
         } else {
             results = EmptyResults.INSTANCE;
@@ -260,20 +258,17 @@ public class QueryBuilder implements Use
     }
 
     /**
-     * Finds [cards:Form]s, [cards:Subject]s, and [cards:Questionnaire]s using the given full text search. This performs
-     * the search in such a way that values in child nodes (e.g. cards:Answers of an cards:Form) are aggregated to their
-     * parent.
+     * Finds [cards:Form]s, [cards:Subject]s, and [cards:Questionnaire]s using the given full text search, and outputs
+     * the result as a JSON. This performs the search in such a way that values in child nodes (e.g. cards:Answers of an
+     * cards:Form) are aggregated to their parent.
      *
      * @param query text to search
-     * @return the content matching the query
      */
-    private Iterator<JsonObject> quickSearch(String query) throws RepositoryException, UnsupportedEncodingException
+    private void quickSearch(final String query) throws RepositoryException, UnsupportedEncodingException
     {
-        List<String> allowedResourceTypes = Collections.singletonList("cards:Form");
-        if (this.resourceTypes != null && this.resourceTypes.length > 0) {
-            allowedResourceTypes = Arrays.asList(this.resourceTypes);
-        }
-        List<JsonObject> resultsList = new ArrayList<>();
+        final List<String> allowedResourceTypes = (this.resourceTypes != null && this.resourceTypes.length > 0)
+            ? Arrays.asList(this.resourceTypes) : Collections.singletonList("cards:Form");
+        final JsonArrayBuilder builder = Json.createArrayBuilder();
 
         final SearchParameters searchParameters = SearchParametersFactory.newSearchParameters()
             .withType("quick")
@@ -282,12 +277,30 @@ public class QueryBuilder implements Use
             .withMaxResults(this.limit)
             .build();
 
-        for (String type : allowedResourceTypes) {
-            this.searchEngines.stream()
-                .filter(engine -> engine.isTypeSupported(type))
-                .forEach(engine -> engine.quickSearch(searchParameters, this.resourceResolver, resultsList));
+        long totalRows = 0L;
+        long outputRows = 0L;
+        final List<QuickSearchEngine> supportedEngines = this.searchEngines.stream()
+            .filter(e -> allowedResourceTypes.stream().anyMatch(type -> e.isTypeSupported(type)))
+            .collect(Collectors.toList());
+        for (final QuickSearchEngine engine : supportedEngines) {
+            final QuickSearchEngine.Results results = engine.quickSearch(searchParameters, this.resourceResolver);
+            while (results.hasNext()) {
+                if (outputRows >= this.limit && !this.showTotalRows) {
+                    break;
+                }
+                if (totalRows < this.offset || outputRows >= this.limit) {
+                    results.skip();
+                } else {
+                    builder.add(results.next());
+                    ++outputRows;
+                }
+                ++totalRows;
+            }
         }
-        return resultsList.listIterator();
+
+        final JsonObjectBuilder output = Json.createObjectBuilder();
+        buildResults(output, builder.build(), outputRows, totalRows);
+        this.content = output.build().toString();
     }
 
     /**
@@ -399,43 +412,6 @@ public class QueryBuilder implements Use
                 this.logger.warn("Failed to serialize search results: {}", e.getMessage(), e);
             }
         }
-        buildResults(output, builder.build(), returnedRows, totalRows);
-    }
-
-    /**
-     * Serialize quick search results. Write metadata about the request and response. This includes the number of
-     * returned and total matching nodes, and copying some request parameters.
-     *
-     * @param output the JSON object generator where the results should be serialized
-     * @param searchResults an iterator over quick search results, which will be consumed
-     */
-    private void outputQuickSearchResults(final JsonObjectBuilder output, final Iterator<JsonObject> searchResults)
-    {
-        long returnedRows = 0;
-        long totalRows = 0;
-
-        long offsetCounter = this.offset;
-        long limitCounter = this.limit;
-
-        final JsonArrayBuilder builder = Json.createArrayBuilder();
-
-        while (searchResults.hasNext()) {
-            final JsonObject next = searchResults.next();
-            // Skip results up to the offset provided
-            if (offsetCounter > 0) {
-                --offsetCounter;
-                // Count up to our limit
-            } else if (limitCounter > 0) {
-                builder.add(next);
-                --limitCounter;
-                ++returnedRows;
-            } else if (!this.showTotalRows) {
-                break;
-            }
-            // Count the total number of results
-            ++totalRows;
-        }
-
         buildResults(output, builder.build(), returnedRows, totalRows);
     }
 

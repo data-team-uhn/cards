@@ -24,8 +24,10 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.Query;
 import javax.jcr.query.RowIterator;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
@@ -55,39 +57,71 @@ public class SubjectQuickSearchEngine implements QuickSearchEngine
     }
 
     @Override
-    public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
-        final List<JsonObject> output)
+    public QuickSearchEngine.Results quickSearch(final SearchParameters query, final ResourceResolver resourceResolver)
     {
         try {
-            if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
-                return;
-            }
+            final StringBuilder sqlQuery = new StringBuilder()
+                .append("select [jcr:path] from [cards:Subject] as a where lower([identifier]) like '%")
+                .append(SearchUtils.escapeLikeText(query.getQuery().toLowerCase()))
+                .append("%' order by [identifier] option(index tag cards)");
 
-            final StringBuilder xpathQuery = new StringBuilder();
-            xpathQuery.append("/jcr:root/Subjects//*[jcr:like(fn:lower-case(@identifier),'%");
-            xpathQuery.append(SearchUtils.escapeLikeText(query.getQuery().toLowerCase()));
-            xpathQuery.append("%')]");
-
-            RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
-                .createQuery(xpathQuery.toString(), "xpath").execute().getRows();
-
-            while (queryResults.hasNext()) {
-                // No need to go through results list if we do not want total number of matches
-                if (output.size() == query.getMaxResults() && !query.showTotalResults()) {
-                    break;
-                }
-                Node item = queryResults.nextRow().getNode();
-
-                String resourceValue = item.getProperty("identifier").getString();
-
-                if (resourceValue != null) {
-                    output.add(SearchUtils.addMatchMetadata(
-                        resourceValue, query.getQuery(), "identifier",
-                        resourceResolver.getResource(item.getPath()).adaptTo(JsonObject.class), false, ""));
-                }
-            }
-        } catch (RepositoryException e) {
+            return new SubjectsResults(query.getQuery(),
+                resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
+                    .createQuery(sqlQuery.toString(), Query.JCR_SQL2).execute().getRows(),
+                resourceResolver);
+        } catch (final RepositoryException e) {
             LOGGER.warn("Failed to search for subjects: {}", e.getMessage(), e);
         }
+        return QuickSearchEngine.Results.emptyResults();
+    }
+
+    private final class SubjectsResults implements QuickSearchEngine.Results
+    {
+        private final String query;
+
+        private final RowIterator queryResults;
+
+        private final ResourceResolver resolver;
+
+        SubjectsResults(final String query, final RowIterator queryResults,
+            final ResourceResolver resolver)
+        {
+            this.query = query;
+            this.queryResults = queryResults;
+            this.resolver = resolver;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return this.queryResults.hasNext();
+        }
+
+        @Override
+        public void skip()
+        {
+            this.queryResults.next();
+        }
+
+        @Override
+        public JsonObject next()
+        {
+            try {
+                // No need to go through results list if we do not want total number of matches
+                final Node item = this.queryResults.nextRow().getNode();
+
+                final String resourceValue = item.getProperty("identifier").getString();
+
+                if (resourceValue != null) {
+                    return SearchUtils.addMatchMetadata(
+                        resourceValue, this.query, "identifier",
+                        this.resolver.getResource(item.getPath()).adaptTo(JsonObject.class), false, "");
+                }
+            } catch (final RepositoryException e) {
+                LOGGER.warn("Failed to process search results: {}", e.getMessage(), e);
+            }
+            return JsonValue.EMPTY_JSON_OBJECT;
+        }
+
     }
 }
