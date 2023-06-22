@@ -102,6 +102,7 @@ argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi 
 argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
 argparser.add_argument('--saml_cloud_iam_demo', help='Enable SAML authentication with CARDS via the Cloud-IAM.com demo', action='store_true')
 argparser.add_argument('--server_address', help='Domain name (or Domain name:port) that the public will use for accessing this CARDS deployment')
+argparser.add_argument('--slack_notifications', help='Enable the periodic sending of performance metrics to a Slack channel', action='store_true')
 argparser.add_argument('--smtps', help='Enable SMTPS emailing functionality', action='store_true')
 argparser.add_argument('--smtps_localhost_proxy', help='Run an SSL termination proxy so that the CARDS container may connect to the host\'s SMTP server at localhost:25', action='store_true')
 argparser.add_argument('--smtps_test_container', help='Enable the mock SMTPS (cards/postfix-docker) container for viewing CARDS-sent emails.', action='store_true')
@@ -756,6 +757,19 @@ if args.s3_test_container:
 
 if SSL_PROXY or args.behind_ssl_termination:
   yaml_obj['services']['cardsinitial']['environment'].append("BEHIND_SSL_PROXY=true")
+
+if args.slack_notifications:
+  yaml_obj['services']['cardsinitial']['environment'].append("SLACK_NOTIFICATIONS_ENABLED=true")
+
+  # Check if the SLACK_PERFORMANCE_URL environment variable is set and if so, use it. Otherwise, prompt for this value
+  if 'SLACK_PERFORMANCE_URL' in os.environ:
+    yaml_obj['services']['cardsinitial']['environment'].append("SLACK_PERFORMANCE_URL={}".format(os.environ['SLACK_PERFORMANCE_URL']))
+  else:
+    yaml_obj['services']['cardsinitial']['environment'].append("SLACK_PERFORMANCE_URL={}".format(input("Enter the webhook URL where Slack performance notifications should be sent to: ")))
+
+  # If a NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE environment variable is set, pass it. Otherwise, CARDS will use its default value
+  if 'NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE' in os.environ:
+    yaml_obj['services']['cardsinitial']['environment'].append("NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE={}".format(os.environ['NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE']))
 
 if ENABLE_BACKUP_SERVER:
   print("Configuring service: backup_recorder")
