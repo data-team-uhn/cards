@@ -107,8 +107,7 @@
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The text of the question.
-  // Mandatory, every question needs a text
-  - text (string) mandatory
+  - text (string)
 
   // An optional longer explanation/description for the question.
   // If present, it will be displayed right under the question text.
