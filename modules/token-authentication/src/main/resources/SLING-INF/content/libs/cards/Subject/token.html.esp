@@ -23,7 +23,7 @@ var get10MinExpiry = function() {
 }
 
 var visitTimeQuestionUuid = currentSession.getNode("/Questionnaires/Visit information/time").getIdentifier();
-var time = currentSession.getWorkspace().getQueryManager().createQuery("select t.* from [cards:Form] as f inner join [cards:DateAnswer] as t on ischildnode(t, f) where f.subject = '" + currentNode.getIdentifier() + "' and t.question = '" + visitTimeQuestionUuid + "' OPTION (index tag cards)", "JCR-SQL2").execute().getNodes();
+var time = currentSession.getWorkspace().getQueryManager().createQuery("select t.* from [cards:Form] as f inner join [cards:DateAnswer] as t on t.form = f.[jcr:uuid] where f.subject = '" + currentNode.getIdentifier() + "' and t.question = '" + visitTimeQuestionUuid + "' OPTION (index tag cards)", "JCR-SQL2").execute().getNodes();
 if (time.hasNext()) {
     time = time.next();
     if (time.hasProperty("value")) {
