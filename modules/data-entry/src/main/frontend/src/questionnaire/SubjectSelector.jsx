@@ -554,6 +554,14 @@ export function NewSubjectDialog (props) {
 
   // Handle the case where the user wants to create a new subject to act as the parent
   let addNewParentSubject = () => {
+	// Remove previously selected lement if any
+	setNewSubjectParent((old) => {
+      let newParents = old.slice();
+      if (old.length > newSubjectIndex) {
+        newParents.splice(newSubjectIndex, 1);
+      }
+      return newParents;
+    });
     // The parent is the node one above our current path
     let newAllowedTypeParent = newSubjectType[newSubjectIndex]["@path"].split("/").slice(0, -1).join("/");
     let promise;
