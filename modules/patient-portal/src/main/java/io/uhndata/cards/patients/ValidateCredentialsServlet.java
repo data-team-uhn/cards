@@ -252,7 +252,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             "SELECT f.* FROM [cards:TextAnswer] AS t "
                 + "  INNER JOIN [cards:Form] AS f ON t.form = f.[jcr:uuid] "
                 + "WHERE t.'question'='" + identifierQuestion + "' "
-                + "  AND t.'value'='" + presentedID.replaceAll("'", "''") + "'",
+                + "  AND t.'value'='" + presentedID.replaceAll("'", "''") + "' OPTION (index tag cards)",
             "JCR-SQL2");
         while (results.hasNext()) {
             Node patientInformationForm = results.next().adaptTo(Node.class);

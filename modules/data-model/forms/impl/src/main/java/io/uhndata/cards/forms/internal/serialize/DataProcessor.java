@@ -260,6 +260,7 @@ public class DataProcessor implements ResourceJsonProcessor
             }
         });
         result.append(" order by n.'jcr:created' ASC");
+        result.append(" OPTION (index tag cards)");
         return result.toString();
     }
 }

@@ -114,7 +114,9 @@ public class DraftsAnswersCleanupTask implements Runnable
                     + "  and submitted.question = '%3$s'"
                     + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
                     // exclude the Visit Information form itself
-                    + "  and dataForm.questionnaire <> '%1$s'",
+                    + "  and dataForm.questionnaire <> '%1$s'"
+                    // use the fast index for the query
+                    + " OPTION (index tag cards)",
                 visitInformationQuestionnaire, ZonedDateTime.now().minusDays(draftLifetime), submitted),
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
