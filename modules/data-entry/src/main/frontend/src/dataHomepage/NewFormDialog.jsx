@@ -209,7 +209,7 @@ function NewFormDialog(props) {
 
   // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
-    fetchWithReLogin(globalLoginDisplay, `/query?rawResults=true&query=SELECT q.[jcr:uuid] FROM [cards:Questionnaire] AS q inner join [cards:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}'&limit=1000`)
+    fetchWithReLogin(globalLoginDisplay, `/query?rawResults=true&query=SELECT f.questionnaire FROM [cards:Form] as f where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}' OPTION (index tag property)&limit=1000`)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((response) => {
       setRelatedForms(response.rows);
@@ -326,7 +326,7 @@ function NewFormDialog(props) {
   let isRowDisabled = (row) => (
     relatedForms?.length
       && (selectedSubject || currentSubject)
-      && (relatedForms.filter(f => f["q.jcr:uuid"] == row.original["jcr:uuid"]).length >= (+(row.original?.["maxPerSubject"]) || undefined))
+      && (relatedForms.filter(f => f["f.questionnaire"] == row.original["jcr:uuid"]).length >= (+(row.original?.["maxPerSubject"]) || undefined))
   );
 
   // On click, select the questionnaire row if eligible

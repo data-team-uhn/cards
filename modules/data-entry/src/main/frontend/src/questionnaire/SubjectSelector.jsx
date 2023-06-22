@@ -924,7 +924,7 @@ function SubjectSelectorList(props) {
 
   // if the number of related forms of a certain questionnaire/subject is at the maxPerSubject, an error is set
   let handleSelection = (rowData) => {
-    let atMax = (relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == rowData["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+    let atMax = (relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["f.subject"] == rowData["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
     if (atMax) {
       onError(`${rowData?.["type"]["@name"]} ${rowData?.["identifier"]} already has ${selectedQuestionnaire?.["maxPerSubject"]} ${selectedQuestionnaire?.["title"]} form(s) filled out.`);
       disableProgress(true);
@@ -969,17 +969,16 @@ function SubjectSelectorList(props) {
       let filteredData = json["rows"];
       let querySubjectSubset = "";
       for (let i = 0; i < filteredData.length; i++) {
-        querySubjectSubset += "s.'jcr:uuid'='" + filteredData[i]['jcr:uuid'] + "'";
+        querySubjectSubset += "f.'subject'='" + filteredData[i]['jcr:uuid'] + "'";
         if ((i+1) != filteredData.length) {
           querySubjectSubset += " or ";
         }
       }
       let querySubjectSubsetClause = (querySubjectSubset.length > 0) ? (" and (" + querySubjectSubset + ") ") : " ";
       // fetch the Subjects of each form of this questionnaire type for all listed subjects
-      url = `/query?rawResults=true&query=SELECT s.[jcr:uuid] FROM [cards:Subject] AS s `
-          + `inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' `
+      url = `/query?rawResults=true&query=SELECT f.[subject] FROM [cards:Form] as f `
           + `where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}`
-          + `order by s.'fullIdentifier'&limit=${selectedQuestionnaire?.["maxPerSubject"] * pagination.pageSize}`;
+          + `&limit=${selectedQuestionnaire?.["maxPerSubject"] * pagination.pageSize}`;
       const responseSubject = await fetchWithReLogin(globalLoginDisplay, url);
       const relatedSubjectsResp = await responseSubject.json();
 
@@ -987,7 +986,7 @@ function SubjectSelectorList(props) {
       let latestRelatedSubjects = relatedSubjectsResp.rows;
 
       // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
-      let atMax = (filteredData.length === 1 && latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["s.jcr:uuid"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+      let atMax = (filteredData.length === 1 && latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["f.subject"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
       if (filteredData.length === 1 && !atMax) {
         handleSelection(filteredData[0]) && onSelect(filteredData[0]);
       }
@@ -1043,7 +1042,7 @@ function SubjectSelectorList(props) {
           sx: {
             fontSize: '1rem',
             // grey out subjects that have already reached maxPerSubject
-            color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["s.jcr:uuid"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+            color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["f.subject"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
             ? theme.palette.text.disabled
             : theme.palette.text.primary
             )
