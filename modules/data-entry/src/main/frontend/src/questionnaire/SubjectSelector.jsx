@@ -950,7 +950,7 @@ function SubjectSelectorList(props) {
         conditions.push("(" + allowedTypes.map((type) => `n.'type' = '${type["jcr:uuid"]}'`).join(" OR ") + ")");
       }
       if (globalFilter) {
-        conditions.push(`CONTAINS(n.fullIdentifier, '*${escapeJQL(globalFilter)}*')`);
+        conditions.push(`lower(n.fullIdentifier) like '%25${escapeJQL(globalFilter.toLowerCase())}%25'`);
       }
       if (currentSubject) {
         let subjectID = currentSubject["jcr:uuid"];
