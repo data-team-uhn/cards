@@ -1,0 +1,12 @@
+{
+  "jcr:primaryType": "oak:QueryIndexDefinition",
+  "type": "property",
+  "tags": ["property"],
+  "jcr:name:propertyNames": [
+    "question",
+    "form"
+  ],
+  "jcr:name:declaringNodeTypes": [
+    "cards:Answer"
+  ]
+}
