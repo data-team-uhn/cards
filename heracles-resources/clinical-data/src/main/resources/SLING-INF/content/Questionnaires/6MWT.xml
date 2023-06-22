@@ -126,6 +126,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>plain</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>question</name>
 				<value>/Questionnaires/Study Stream/study_stream</value>
 				<type>String</type>
