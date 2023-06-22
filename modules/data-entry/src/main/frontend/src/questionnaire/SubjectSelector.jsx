@@ -615,6 +615,18 @@ export function NewSubjectDialog (props) {
       setError();
       setNewSubjectTypeParent(newSubjectTypeParentHistory[newSubjectIndex-1]);
       setNewSubjectIndex((old) => old-1);
+      setNewSubjectName((old) => {
+        let newNames = old.slice(0, -1);
+        return newNames;
+      });
+      setNewSubjectType((old) => {
+        let newTypes = old.slice(0, -1);
+        return newTypes;
+      });
+      setNewSubjectAllowedTypes((old) => {
+        let newTypes = old.slice(0, -1);
+        return newTypes;
+      });
       setNewSubjectPopperOpen(false);
       setSelectParentPopperOpen(true);
     }
