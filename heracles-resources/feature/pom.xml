@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>heracles-resources</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9.15</version>
   </parent>
 
   <artifactId>cards4heracles</artifactId>
