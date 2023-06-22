@@ -987,7 +987,7 @@ function SubjectSelectorList(props) {
       let latestRelatedSubjects = relatedSubjectsResp.rows;
 
       // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
-      let atMax = (latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["s.jcr:uuid"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+      let atMax = (filteredData.length === 1 && latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["s.jcr:uuid"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
       if (filteredData.length === 1 && !atMax) {
         handleSelection(filteredData[0]) && onSelect(filteredData[0]);
       }
