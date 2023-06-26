@@ -170,7 +170,6 @@ function Filters(props) {
     setDialogOpen(true);
     // Replace our defaults with a deep copy of what's actually active, plus an empty one
     let newFilters = deepCopyFilters(activeFilters);
-    newFilters = removeCreatedDateTimezone(newFilters);
     setEditingFilters(newFilters);
 
     // Bugfix: also reload every active outputChoice, in order to refresh its copy of the state variables
