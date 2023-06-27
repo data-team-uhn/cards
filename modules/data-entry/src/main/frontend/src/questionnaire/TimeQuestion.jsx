@@ -19,8 +19,6 @@
 
 import React, { useState } from "react";
 
-import { TextField } from "@mui/material";
-
 import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
@@ -34,6 +32,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { DateTime } from "luxon";
 import DateTimeUtilities from "./DateTimeUtilities";
 
@@ -83,35 +82,34 @@ function TimeQuestion(props) {
         pageActive && <>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <TimePicker
-              ampm={false}
               label={dateFormat}
-              views={views}
-              inputFormat={dateFormat}
+              format={dateFormat}
               mask={isHourMinuteSeconds ? "__:__:__" : "__:__"}
-              openTo={views.includes('hours') ? "hours" : "minutes"}
               maxTime={maxTime}
               minTime={minTime}
+              views={views}
+              viewRenderers={{
+			    hours: renderTimeViewClock,
+			    minutes: renderTimeViewClock,
+			    seconds: renderTimeViewClock,
+			  }}
               onChange={(newValue) => {
                 setError(false);
                 changeTime(newValue);
               }}
               value={selectedTime}
-              renderInput={(params) =>
-                <TextField
-                  variant="standard"
-                  className={classes.textField}
-                  {...params}
-                  helperText={error ? errorMessage : null}
-                  onBlur={(event) => { if (selectedTime?.invalid) {
+              componentsProps={{ textField: {
+                                     variant: 'standard',
+                                     className: classes.textField,
+                                     error: error,
+                                     helperText: error ? errorMessage : null,
+                                     onBlur: (event) => { if (selectedTime?.invalid) {
                                           setError(true);
                                           setErrorMessage("Invalid time: "  + selectedTime.invalid.explanation);
                                        }
-                         }}
-                  InputProps={{
-                    ...params.InputProps,
-                    error: error
-                  }}
-                />}
+                                     }
+                                 }
+              }}
             />
           </LocalizationProvider>
         </>

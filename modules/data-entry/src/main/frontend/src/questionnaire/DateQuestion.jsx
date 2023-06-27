@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { TextField, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -81,7 +81,6 @@ function DateQuestion(props) {
     DateTimeUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[1] : "")));
   const isRange = (type === DateTimeUtilities.INTERVAL_TYPE);
   const hasTime = DateTimeUtilities.formatHasTime(dateFormat);
-  const isMeridiem = DateTimeUtilities.formatIsMeridiem(dateFormat);
   const PickerComponent = hasTime ? DateTimePicker : DatePicker;
 
   const rangeErrorMessage = "Invalid date range: end date should be after the start date";
@@ -122,9 +121,8 @@ function DateQuestion(props) {
     return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <PickerComponent
-        ampm={isMeridiem}
         views={views}
-        inputFormat={dateFormat}
+        format={dateFormat}
         label={dateFormat.toLowerCase()}
         minDate={lowerLimitLuxon || undefined}
         maxDate={upperLimitLuxon || undefined}
@@ -133,23 +131,19 @@ function DateQuestion(props) {
           setError(false);
           setDate(value, isEnd);
         }}
-        renderInput={ (params) =>
-          <TextField
-            variant="standard"
-            className={classes.textField}
-            {...params}
-            error={!isRange && error && !!date?.invalid}
-            helperText={!isRange && error && !!date?.invalid ? errorMessage : null}
-            onBlur={(event) => { if (date?.invalid) {
+        componentsProps={{ textField: {
+                             variant: 'standard',
+                             error: !isRange && error && !!date?.invalid,
+                             className: classes.textField,
+                             helperText: !isRange && error && !!date?.invalid ? errorMessage : null,
+                             onBlur: (event) => {
+	                             if (date?.invalid) {
                                    setError(true);
                                    setErrorMessage("Invalid date: "  + date.invalid.explanation);
                                  }
-                    }}
-            InputProps={{
-              ...params.InputProps
-            }}
-          />
-        }
+                             }
+                           }
+        }}
       />
     </LocalizationProvider>);
   }

@@ -39,7 +39,7 @@
     "@mui/material": "5.11.3",
     "@mui/styles": "5.11.2",
     "@mui/lab": "5.0.0-alpha.114",
-    "@mui/x-date-pickers": "6.0.4",
+    "@mui/x-date-pickers": "6.9.0",
     "classnames": "2.3.2",
     "cornerstone-core": "2.6.1",
     "cornerstone-wado-image-loader": "4.6.0",

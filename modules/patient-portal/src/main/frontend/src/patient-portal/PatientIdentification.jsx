@@ -341,35 +341,32 @@ function PatientIdentification(props) {
             </div>
             <LocalizationProvider dateAdapter={AdapterLuxon}>
               <DatePicker
-                id="j_dob"
-                name="j_dob"
                 views={views}
                 openTo="year"
-                inputFormat={dateFormat}
+                format={dateFormat}
                 label="Date of birth"
                 value={dob}
                 onChange={(value) => {
                   setError(false);
                   setDob(value);
                 }}
-                renderInput={ (params) =>
-                  <TextField
-                    autoFocus
-                    fullWidth
-                    variant="standard"
-                    {...params}
-                    helperText={null}
-                    onBlur={(event) => { if (dob?.invalid) {
+                componentsProps={{ textField: {
+                                     variant: 'standard',
+                                     autoFocus: true,
+                                     fullWidth: true,
+                                     className: classes.textField,
+                                     helperText: null,
+                                     onBlur: (event) => { if (dob?.invalid) {
                                           setError(true);
                                           setErrorMessage("Invalid date: "  + dob.invalid.explanation);
-                                       }
-                         }}
-                    inputProps={{
-                      ...params.inputProps,
-                      placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`
-                    }}
-                  />
-                }
+                                        }
+                                     },
+                                     inputProps: {
+				                       ...params.inputProps,
+				                       placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`
+				                     }
+                                 }
+                }}
               />
             </LocalizationProvider>
             <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>

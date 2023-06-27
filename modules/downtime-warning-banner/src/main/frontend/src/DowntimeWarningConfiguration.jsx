@@ -19,7 +19,6 @@
 import React, { useState, useEffect } from 'react';
 import {
     Checkbox,
-    TextField,
     FormControlLabel,
     List,
     ListItem,
@@ -37,7 +36,6 @@ import DateTimeUtilities from "./questionnaire/DateTimeUtilities";
 const useStyles = makeStyles(theme => ({
   textField: {
     minWidth: "250px",
-    paddingBottom: theme.spacing(2),
   },
 }));
 
@@ -82,21 +80,19 @@ function DowntimeWarningConfiguration() {
     return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <DateTimePicker
-        inputFormat={dateFormat}
-        views={views}
+        format={dateFormat}
+        ampm={false}
         label={label}
         value={value}
         onChange={(newValue) => {onDateChange(newValue);  setHasChanges(true); }}
-        renderInput={ (params) =>
-          <TextField
-            variant="standard"
-            InputProps={{
-              className: classes.textField
-            }}
-            helperText={null}
-            {...params}
-          />
-        }
+        componentsProps={{ textField: {
+                             variant: 'standard',
+                             helperText: null,
+                             InputProps: {
+				               className: classes.textField
+				             }
+                         }
+        }}
       />
     </LocalizationProvider>);
   }

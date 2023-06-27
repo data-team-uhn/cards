@@ -237,7 +237,7 @@ export default class DateTimeUtilities {
   }
 
   static formatIsMeridiem(dateFormat) {
-    return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase().includes(this.hourMeridiemTag) && dateFormat.includes("a");
   }
 
   static formatIsMinuteSeconds(dateFormat) {

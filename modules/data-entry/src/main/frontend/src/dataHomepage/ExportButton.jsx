@@ -218,7 +218,6 @@ function ExportButton(props) {
     return (<LocalizationProvider dateAdapter={AdapterLuxon}>
               <DateTimePicker
                 label="Any date"
-                views={['year', 'month', 'day', 'hours', 'minutes']}
                 format={DATE_FORMAT}
                 value={value}
                 onChange={(value) => {
