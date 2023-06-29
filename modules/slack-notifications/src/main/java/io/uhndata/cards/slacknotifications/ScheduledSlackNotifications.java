@@ -31,10 +31,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
-public class NightlySlackNotifications
+public class ScheduledSlackNotifications
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(NightlySlackNotifications.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledSlackNotifications.class);
 
     /** Provides access to resources. */
     @Reference
@@ -47,7 +47,7 @@ public class NightlySlackNotifications
     @Activate
     protected void activate(ComponentContext componentContext) throws Exception
     {
-        LOGGER.info("NightlySlackNotifications activating");
+        LOGGER.info("ScheduledSlackNotifications activating");
         final String nightlyNotificationsSchedule =
             StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE"), "0 0 7 * * ? *");
 
