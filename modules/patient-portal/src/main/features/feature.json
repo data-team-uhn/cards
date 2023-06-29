@@ -101,8 +101,7 @@
         "io.uhndata.cards.patient-portal:unsubscribe=[patient-unsubscribe]",
         "io.uhndata.cards.patient-portal:EmailNotifications=[sling-readall]",
         "io.uhndata.cards.patient-portal:SurveyTracker=[survey-tracker]",
-        "io.uhndata.cards.patient-portal:MetricLogger=[cards-metrics]",
-        "io.uhndata.cards.patient-portal:SlackNotifications=[cards-metrics]"
+        "io.uhndata.cards.patient-portal:MetricLogger=[cards-metrics]"
       ]
     }
   }
