@@ -158,8 +158,7 @@ public class VocabularyLabelProcessorTest
 
         Assert.assertFalse(jsonObject.isEmpty());
         Assert.assertTrue(jsonObject.containsKey(DISPLAYED_VALUE_PROPERTY));
-        Assert.assertEquals(1, jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).size());
-        Assert.assertEquals("/Vocabularies/Option1", jsonObject.getJsonArray(DISPLAYED_VALUE_PROPERTY).getString(0));
+        Assert.assertEquals("/Vocabularies/Option1", jsonObject.getJsonString(DISPLAYED_VALUE_PROPERTY).getString());
     }
 
     @Test

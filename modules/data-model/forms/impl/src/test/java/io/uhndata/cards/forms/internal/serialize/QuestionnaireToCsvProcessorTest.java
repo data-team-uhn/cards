@@ -260,7 +260,6 @@ public class QuestionnaireToCsvProcessorTest
             JsonObjectBuilder jsonObject = null;
             try {
                 jsonObject = Json.createObjectBuilder(createPropertiesAndChildrenMap(resource));
-                jsonObject.add("@name", resource.getName());
                 if (resource.isResourceType("cards/Questionnaire")) {
                     ResourceResolver resourceResolver = this.context.resourceResolver();
                     JsonArray array = Json.createArrayBuilder()
@@ -285,6 +284,8 @@ public class QuestionnaireToCsvProcessorTest
         ValueMap valueMap = originalResource.getValueMap();
         final List<String> objectTypeProperties = List.of(QUESTIONNAIRE_PROPERTY, SUBJECT_PROPERTY, SECTION_PROPERTY,
                 QUESTION_PROPERTY, TYPE_PROPERTY, PARENT_PROPERTY);
+        propertiesAndChildrenMap.put("@name", originalResource.getName());
+        propertiesAndChildrenMap.put("@path", originalResource.getPath());
         for (Map.Entry<String, Object> property : valueMap.entrySet()) {
             String key = property.getKey();
             Object value = property.getValue();
@@ -325,9 +326,7 @@ public class QuestionnaireToCsvProcessorTest
 
         // process children of question/answer/section/answerSection/questionnaire/form resources to avoid collision
         for (Resource child : originalResource.getChildren()) {
-            JsonObject jsonObject = Json.createObjectBuilder(createPropertiesAndChildrenMap(child))
-                    .add("@name", child.getName())
-                    .build();
+            JsonObject jsonObject = Json.createObjectBuilder(createPropertiesAndChildrenMap(child)).build();
             propertiesAndChildrenMap.put(child.getName(), jsonObject);
         }
         return propertiesAndChildrenMap;

@@ -80,10 +80,14 @@ public class ReferenceAnswersEditorInSectionTest
     private static final String SECTION_PROPERTY = "section";
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
     private static final String QUESTION_PROPERTY = "question";
+    private static final String SERVICE_NAME = "referenceAnswers";
+
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
 
     private ReferenceAnswersEditor referenceAnswersEditor;
+
+    private Session currentSession;
 
     @Mock
     private ResourceResolverFactory rrf;
@@ -98,6 +102,12 @@ public class ReferenceAnswersEditorInSectionTest
 
     @Mock
     private QuestionnaireUtils questionnaireUtils;
+
+    @Test
+    public void getServiceNameTest()
+    {
+        Assert.assertEquals(SERVICE_NAME, this.referenceAnswersEditor.getServiceName());
+    }
 
     @Test
     public void constructorTest()
@@ -156,8 +166,8 @@ public class ReferenceAnswersEditorInSectionTest
 
         // for not form type current node builder
         this.nodeBuilder = getFormSection(this.nodeBuilder);
-        this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.rrf, this.questionnaireUtils,
-                this.formUtils, this.subjectUtils);
+        this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
+                this.questionnaireUtils, this.formUtils, this.subjectUtils);
         Assert.assertFalse(this.referenceAnswersEditor.shouldRunOnLeave);
         this.referenceAnswersEditor.propertyAdded(Mockito.mock(PropertyState.class));
         Assert.assertFalse(this.referenceAnswersEditor.shouldRunOnLeave);
@@ -176,8 +186,8 @@ public class ReferenceAnswersEditorInSectionTest
 
         // for not form type current node builder
         this.nodeBuilder = getFormSection(this.nodeBuilder);
-        this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.rrf, this.questionnaireUtils,
-                this.formUtils, this.subjectUtils);
+        this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
+                this.questionnaireUtils, this.formUtils, this.subjectUtils);
 
         editor = this.referenceAnswersEditor.childNodeAdded(referenceAnswerUuid, Mockito.mock(NodeState.class));
         Assert.assertTrue(editor instanceof ReferenceAnswersEditor);
@@ -188,7 +198,6 @@ public class ReferenceAnswersEditorInSectionTest
     public void handleLeaveChangesReferenceValue()
     {
         this.referenceAnswersEditor.serviceSession = this.context.resourceResolver().adaptTo(Session.class);
-        this.referenceAnswersEditor.currentSession = this.context.resourceResolver().adaptTo(Session.class);
         this.referenceAnswersEditor.handleLeave(this.nodeBuilder.getNodeState());
 
         Assert.assertTrue(getReferenceAnswer(this.nodeBuilder).hasProperty(VALUE_PROPERTY));
@@ -200,20 +209,10 @@ public class ReferenceAnswersEditorInSectionTest
     public void handleLeaveForUncompletedSourceAnswer()
     {
         this.referenceAnswersEditor.serviceSession = this.context.resourceResolver().adaptTo(Session.class);
-        this.referenceAnswersEditor.currentSession = this.context.resourceResolver().adaptTo(Session.class);
         when(this.formUtils.findAllSubjectRelatedAnswers(Mockito.any(Node.class), Mockito.any(), Mockito.any()))
                 .thenReturn(List.of());
         this.referenceAnswersEditor.handleLeave(this.nodeBuilder.getNodeState());
         Assert.assertFalse(getReferenceAnswer(this.nodeBuilder).hasProperty(VALUE_PROPERTY));
-    }
-
-    @Test
-    public void getNewAnswerNodeTypesEvaluatesTypeViaDataTypeProperty() throws RepositoryException
-    {
-        final Session session = this.context.resourceResolver().adaptTo(Session.class);
-        Node question = session.getNode(TEST_REFERENCE_QUESTION_PATH);
-        AnswersEditor.AnswerNodeTypes nodeTypes = this.referenceAnswersEditor.getNewAnswerNodeTypes(question);
-        Assert.assertTrue(nodeTypes.getDataType().equals(Type.LONG));
     }
 
     @Before
@@ -277,8 +276,9 @@ public class ReferenceAnswersEditorInSectionTest
         this.nodeBuilder = formBuilder;
 
         when(this.formUtils.isForm(this.nodeBuilder)).thenReturn(true);
-        this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.rrf, this.questionnaireUtils,
-                this.formUtils, this.subjectUtils);
+        this.currentSession = this.context.resourceResolver().adaptTo(Session.class);
+        this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
+                this.questionnaireUtils, this.formUtils, this.subjectUtils);
 
         // mock Node getQuestionnaire()
         PropertyState propertyState = Mockito.mock(PropertyState.class);

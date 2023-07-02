@@ -40,6 +40,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.uhndata.cards.forms.api.ExpressionUtils;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link ComputedAnswersEditorProvider}.
@@ -60,6 +63,9 @@ public class ComputedAnswersEditorProviderTest
     private ResourceResolverFactory rrf;
 
     @Mock
+    private ThreadResourceResolverProvider rrp;
+
+    @Mock
     private QuestionnaireUtils questionnaireUtils;
 
     @Mock
@@ -69,15 +75,27 @@ public class ComputedAnswersEditorProviderTest
     private ExpressionUtils expressionUtils;
 
     @Test
-    public void getRootEditorReturnsComputedAnswersEditor() throws CommitFailedException
+    public void getRootEditorReturnsComputedAnswersEditorForNotNullResourceResolver() throws CommitFailedException
+    {
+        final Session session = this.context.resourceResolver().adaptTo(Session.class);
+
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        Editor editor = this.computedAnswersEditorProvider.getRootEditor(Mockito.mock(NodeState.class),
+                Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
+                        session.getUserID()));
+        Assert.assertNotNull(editor);
+        Assert.assertTrue(editor instanceof ComputedAnswersEditor);
+    }
+
+    @Test
+    public void getRootEditorReturnsComputedAnswersEditorForNullResourceResolver() throws CommitFailedException
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         Editor editor = this.computedAnswersEditorProvider.getRootEditor(Mockito.mock(NodeState.class),
                 Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
                         session.getUserID()));
-        Assert.assertNotNull(editor);
-        Assert.assertTrue(editor instanceof ComputedAnswersEditor);
+        Assert.assertNull(editor);
     }
 
 }

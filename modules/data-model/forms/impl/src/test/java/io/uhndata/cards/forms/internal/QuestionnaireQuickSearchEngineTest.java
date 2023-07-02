@@ -18,7 +18,6 @@
  */
 package io.uhndata.cards.forms.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -38,6 +37,7 @@ import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import io.uhndata.cards.serialize.ResourceToJsonAdapterFactory;
+import io.uhndata.cards.spi.QuickSearchEngine;
 import io.uhndata.cards.spi.SearchParameters;
 import io.uhndata.cards.spi.SearchParametersFactory;
 
@@ -81,11 +81,13 @@ public class QuestionnaireQuickSearchEngineTest
                 .withType(QUICK_SEARCH_PARAMETER_TYPE)
                 .build();
 
-        List<JsonObject> output = new ArrayList<>();
-
-        this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        // find count of questions
-        Assert.assertEquals(3, output.size());
+        QuickSearchEngine.Results output =
+                this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver());
+        for (int numberOfFoundMatches = 0; numberOfFoundMatches < 4; numberOfFoundMatches++) {
+            Assert.assertTrue(output.hasNext());
+            Assert.assertNotNull(output.next());
+        }
+        Assert.assertFalse(output.hasNext());
     }
 
     @Test
@@ -96,11 +98,13 @@ public class QuestionnaireQuickSearchEngineTest
                 .withType(QUICK_SEARCH_PARAMETER_TYPE)
                 .build();
 
-        List<JsonObject> output = new ArrayList<>();
-
-        this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        // find count of questions
-        Assert.assertEquals(3, output.size());
+        QuickSearchEngine.Results output =
+                this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver());
+        for (int numberOfFoundMatches = 0; numberOfFoundMatches < 3; numberOfFoundMatches++) {
+            Assert.assertTrue(output.hasNext());
+            Assert.assertNotNull(output.next());
+        }
+        Assert.assertFalse(output.hasNext());
     }
 
     @Test
@@ -111,27 +115,13 @@ public class QuestionnaireQuickSearchEngineTest
                 .withType(QUICK_SEARCH_PARAMETER_TYPE)
                 .build();
 
-        List<JsonObject> output = new ArrayList<>();
-
-        this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        // find count of questionnaires
-        Assert.assertEquals(2, output.size());
-    }
-
-    @Test
-    public void quickSearchForMaxResultLessThanNumberOfMatches()
-    {
-        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
-                .withQuery("Long Question")
-                .withType(QUICK_SEARCH_PARAMETER_TYPE)
-                .withMaxResults(1)
-                .withShowTotalResults(false)
-                .build();
-
-        List<JsonObject> output = new ArrayList<>();
-
-        this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        Assert.assertEquals(1, output.size());
+        QuickSearchEngine.Results output =
+                this.questionnaireQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver());
+        for (int numberOfFoundMatches = 0; numberOfFoundMatches < 2; numberOfFoundMatches++) {
+            Assert.assertTrue(output.hasNext());
+            Assert.assertNotNull(output.next());
+        }
+        Assert.assertFalse(output.hasNext());
     }
 
     @Before

@@ -18,7 +18,6 @@
  */
 package io.uhndata.cards.forms.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -36,9 +35,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.spi.QuickSearchEngine;
 import io.uhndata.cards.spi.SearchParameters;
 import io.uhndata.cards.spi.SearchParametersFactory;
 
@@ -56,14 +58,15 @@ public class FormsQuickSearchEngineTest
     private static final String FORM_TYPE = "cards:Form";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
     private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String TEXT_ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
-    private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
+    private static final String TEST_TEXT_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestTextComputedQuestionnaire";
     private static final String TEST_SECTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section";
-    private static final String TEST_LONG_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/long_question";
-    private static final String TEST_LONG_COMPUTED_QUESTION_PATH =
-            "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
+            "/Questionnaires/TestTextComputedQuestionnaire/from_text_to_computed_section";
+    private static final String TEST_TEXT_QUESTION_PATH =
+            "/Questionnaires/TestTextComputedQuestionnaire/from_text_to_computed_section/text_question";
+    private static final String TEST_TEXT_COMPUTED_QUESTION_PATH =
+            "/Questionnaires/TestTextComputedQuestionnaire/from_text_to_computed_section/computed_question";
     private static final String TEST_REFERENCE_QUESTIONNAIRE_PATH = "/Questionnaires/TestReferenceQuestionnaire";
     private static final String TEST_REFERENCE_SECTION_PATH =
             "/Questionnaires/TestReferenceQuestionnaire/reference_section";
@@ -82,6 +85,9 @@ public class FormsQuickSearchEngineTest
     @InjectMocks
     private FormsQuickSearchEngine formsQuickSearchEngine;
 
+    @Mock
+    private FormUtils formUtils;
+
     @Test
     public void getSupportedTypesReturnsFormTypeList()
     {
@@ -91,67 +97,81 @@ public class FormsQuickSearchEngineTest
     }
 
     @Test
-    public void quickSearchAddsAllFoundFormsToOutput()
+    public void quickSearchAddsAllFoundFormsToOutput() throws RepositoryException
     {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Mockito.when(this.formUtils.getValue(Mockito.any(Node.class)))
+                .thenReturn("textAnswer1", "newValue", "textAnswer3");
+        Mockito.when(this.formUtils.getForm(Mockito.any(Node.class))).thenReturn(
+                session.getNode("/Forms/f1/s1/a1"),
+                session.getNode("/Forms/f2/s1/a1"),
+                session.getNode("/Forms/f3/s1/a1"));
+
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
-                .withQuery("200")
+                .withQuery("textAnswer")
                 .withType(QUICK_SEARCH_PARAMETER_TYPE)
                 .build();
 
-        List<JsonObject> output = new ArrayList<>();
-
-        this.formsQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        Assert.assertEquals(3, output.size());
-    }
-
-    @Test
-    public void quickSearchForMaxSizeOutputAndQueryWithShowTotalResultsFalse()
-    {
-        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
-                .withQuery("200")
-                .withType(QUICK_SEARCH_PARAMETER_TYPE)
-                .withShowTotalResults(false)
-                .build();
-
-        List<JsonObject> output = Mockito.mock(List.class);
-        Mockito.when(output.size()).thenReturn(10);
-
-        this.formsQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        Assert.assertEquals(10, output.size());
-    }
-
-    @Test
-    public void quickSearchForMaxResultLessThanNumberOfMatches()
-    {
-        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
-                .withQuery("200")
-                .withType(QUICK_SEARCH_PARAMETER_TYPE)
-                .withMaxResults(1)
-                .withShowTotalResults(false)
-                .build();
-
-        List<JsonObject> output = new ArrayList<>();
-
-        this.formsQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        Assert.assertEquals(1, output.size());
+        QuickSearchEngine.Results output = this.formsQuickSearchEngine.quickSearch(parameters,
+                this.context.resourceResolver());
+        for (int numberOfFoundMatches = 0; numberOfFoundMatches < 3; numberOfFoundMatches++) {
+            Assert.assertTrue(output.hasNext());
+            Assert.assertNotNull(output.next());
+        }
+        Assert.assertFalse(output.hasNext());
     }
 
     @Test
     public void quickSearchCatchesRepositoryExceptionForQuestionnairesWithoutTextProperty() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
-        session.getNode(TEST_LONG_COMPUTED_QUESTION_PATH).getProperty("text").remove();
-        session.getNode(TEST_LONG_QUESTION_PATH).getProperty("text").remove();
+
+        session.getNode(TEST_TEXT_COMPUTED_QUESTION_PATH).getProperty("text").remove();
+        session.getNode(TEST_TEXT_QUESTION_PATH).getProperty("text").remove();
         session.getNode(TEST_REFERENCE_QUESTION_PATH).getProperty("text").remove();
 
+        Mockito.when(this.formUtils.getValue(Mockito.any(Node.class)))
+                .thenReturn("textAnswer1", "newValue", "textAnswer3");
+        Mockito.when(this.formUtils.getForm(Mockito.any(Node.class))).thenReturn(
+                session.getNode("/Forms/f1/s1/a1"),
+                session.getNode("/Forms/f2/s1/a1"),
+                session.getNode("/Forms/f3/s1/a1"));
+
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
-                .withQuery("200")
+                .withQuery("textAnswer")
                 .withType(QUICK_SEARCH_PARAMETER_TYPE)
                 .build();
 
-        List<JsonObject> output = new ArrayList<>();
-        this.formsQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        Assert.assertEquals(0, output.size());
+        QuickSearchEngine.Results output = this.formsQuickSearchEngine.quickSearch(parameters,
+                this.context.resourceResolver());
+        for (int numberOfFoundMatches = 0; numberOfFoundMatches < 3; numberOfFoundMatches++) {
+            Assert.assertTrue(output.hasNext());
+            Assert.assertTrue(output.next().isEmpty());
+        }
+        Assert.assertFalse(output.hasNext());
+
+    }
+
+    @Test
+    public void quickSearchReturnsEmptyResults() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Mockito.when(this.formUtils.getValue(Mockito.any(Node.class)))
+                .thenReturn("textAnswer1", "newValue", "textAnswer3");
+        Mockito.when(this.formUtils.getForm(Mockito.any(Node.class))).thenReturn(
+                session.getNode("/Forms/f1/s1/a1"),
+                session.getNode("/Forms/f2/s1/a1"),
+                session.getNode("/Forms/f3/s1/a1"));
+
+        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
+                .withQuery("nonexistentValue")
+                .withType(QUICK_SEARCH_PARAMETER_TYPE)
+                .build();
+
+        QuickSearchEngine.Results output = this.formsQuickSearchEngine.quickSearch(parameters,
+                this.context.resourceResolver());
+        Assert.assertFalse(output.hasNext());
+
     }
 
     @Before
@@ -165,7 +185,7 @@ public class FormsQuickSearchEngineTest
                 .resource("/Subjects", NODE_TYPE, "cards:SubjectsHomepage")
                 .resource("/Forms", NODE_TYPE, "cards:FormsHomepage")
                 .commit();
-        this.context.load().json("/ComputedQuestionnairesPlain.json", TEST_COMPUTED_QUESTIONNAIRE_PATH);
+        this.context.load().json("/TextComputedQuestionnairesPlain.json", TEST_TEXT_COMPUTED_QUESTIONNAIRE_PATH);
         this.context.load().json("/ReferenceQuestionnaires.json", TEST_REFERENCE_QUESTIONNAIRE_PATH);
         this.context.load().json("/SubjectTypes.json", "/SubjectTypes/Root");
         this.context.build()
@@ -174,13 +194,13 @@ public class FormsQuickSearchEngineTest
                 .commit();
         this.context.registerAdapter(Resource.class, JsonObject.class, Json.createObjectBuilder().build());
 
-        Node computedQuestionnaire = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH);
+        Node computedQuestionnaire = session.getNode(TEST_TEXT_COMPUTED_QUESTIONNAIRE_PATH);
         Node referenceQuestionnaire = session.getNode(TEST_REFERENCE_QUESTIONNAIRE_PATH);
         Node subject = session.getNode(TEST_SUBJECT_PATH);
         Node section = session.getNode(TEST_SECTION_PATH);
         Node referenceSection = session.getNode(TEST_REFERENCE_SECTION_PATH);
-        Node longQuestionNode = session.getNode(TEST_LONG_QUESTION_PATH);
-        Node longComputedQuestionNode = session.getNode(TEST_LONG_COMPUTED_QUESTION_PATH);
+        Node textQuestionNode = session.getNode(TEST_TEXT_QUESTION_PATH);
+        Node textComputedQuestionNode = session.getNode(TEST_TEXT_COMPUTED_QUESTION_PATH);
         Node referenceQuestionNode = session.getNode(TEST_REFERENCE_QUESTION_PATH);
 
         this.context.build()
@@ -196,13 +216,13 @@ public class FormsQuickSearchEngineTest
                         NODE_TYPE, ANSWER_SECTION_TYPE,
                         SECTION_PROPERTY, section)
                 .resource("/Forms/f1/s1/a1",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, longQuestionNode,
-                        VALUE_PROPERTY, 200L)
+                        NODE_TYPE, TEXT_ANSWER_TYPE,
+                        QUESTION_PROPERTY, textQuestionNode,
+                        VALUE_PROPERTY, "textAnswer1")
                 .resource("/Forms/f1/s1/a2",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, longComputedQuestionNode,
-                        VALUE_PROPERTY, 100L)
+                        NODE_TYPE, TEXT_ANSWER_TYPE,
+                        QUESTION_PROPERTY, textComputedQuestionNode,
+                        VALUE_PROPERTY, "notValue")
 
                 // Computed Form with no matched answer
                 .resource("/Forms/f2",
@@ -214,10 +234,10 @@ public class FormsQuickSearchEngineTest
                         NODE_TYPE, ANSWER_SECTION_TYPE,
                         SECTION_PROPERTY, section)
                 .resource("/Forms/f2/s1/a1",
-                        NODE_TYPE, ANSWER_TYPE,
-                        QUESTION_PROPERTY, longQuestionNode,
-                        "note", 200L,
-                        VALUE_PROPERTY, 100L)
+                        NODE_TYPE, TEXT_ANSWER_TYPE,
+                        QUESTION_PROPERTY, textQuestionNode,
+                        "note", "textAnswer2",
+                        VALUE_PROPERTY, "notValue")
 
                 // Reference Form with 1 matched answer
                 .resource("/Forms/f3",
@@ -229,9 +249,9 @@ public class FormsQuickSearchEngineTest
                         NODE_TYPE, ANSWER_SECTION_TYPE,
                         SECTION_PROPERTY, referenceSection)
                 .resource("/Forms/f3/s1/a1",
-                        NODE_TYPE, ANSWER_TYPE,
+                        NODE_TYPE, TEXT_ANSWER_TYPE,
                         QUESTION_PROPERTY, referenceQuestionNode,
-                        VALUE_PROPERTY, 200L)
+                        VALUE_PROPERTY, "textAnswer3")
                 .commit();
     }
 }

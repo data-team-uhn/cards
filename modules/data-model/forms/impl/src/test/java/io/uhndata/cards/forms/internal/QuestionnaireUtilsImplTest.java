@@ -23,7 +23,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Assert;
@@ -35,6 +34,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * Unit tests for {@link QuestionnaireUtilsImpl}.
@@ -58,14 +59,14 @@ public class QuestionnaireUtilsImplTest
     private QuestionnaireUtilsImpl questionnaireUtils;
 
     @Mock
-    private ResourceResolverFactory rrf;
+    private ThreadResourceResolverProvider rrp;
 
     @Test
     public void getQuestionnaireWithActualIdentifierReturnsCorrectQuestionnaire() throws RepositoryException
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node questionnaire = session.getNode(TEST_QUESTIONNAIRE_PATH);
-        Mockito.when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
         Node questionnaireActual = this.questionnaireUtils.getQuestionnaire(questionnaire.getIdentifier());
         Assert.assertNotNull(questionnaireActual);
         Assert.assertEquals(questionnaire.getPath(), questionnaireActual.getPath());
@@ -76,7 +77,7 @@ public class QuestionnaireUtilsImplTest
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node subject = session.getNode(TEST_SUBJECT_PATH);
-        Mockito.when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
         Node questionnaireActual = this.questionnaireUtils.getQuestionnaire(subject.getIdentifier());
         Assert.assertNull(questionnaireActual);
     }
@@ -131,7 +132,7 @@ public class QuestionnaireUtilsImplTest
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node section = session.getNode("/Questionnaires/TestQuestionnaire/section_1");
-        Mockito.when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
         Node sectionActual = this.questionnaireUtils.getSection(section.getIdentifier());
         Assert.assertNotNull(sectionActual);
         Assert.assertEquals(section.getPath(), sectionActual.getPath());
@@ -142,7 +143,7 @@ public class QuestionnaireUtilsImplTest
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node subject = session.getNode(TEST_SUBJECT_PATH);
-        Mockito.when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
         Node sectionActual = this.questionnaireUtils.getSection(subject.getIdentifier());
         Assert.assertNull(sectionActual);
     }
@@ -222,7 +223,7 @@ public class QuestionnaireUtilsImplTest
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node question = session.getNode(TEST_QUESTION_PATH);
-        Mockito.when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
         Node questionActual = this.questionnaireUtils.getQuestion(question.getIdentifier());
         Assert.assertNotNull(questionActual);
         Assert.assertEquals(question.getPath(), questionActual.getPath());
@@ -233,7 +234,7 @@ public class QuestionnaireUtilsImplTest
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node subject = session.getNode(TEST_SUBJECT_PATH);
-        Mockito.when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        Mockito.when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
         Node questionActual = this.questionnaireUtils.getQuestion(subject.getIdentifier());
         Assert.assertNull(questionActual);
     }
