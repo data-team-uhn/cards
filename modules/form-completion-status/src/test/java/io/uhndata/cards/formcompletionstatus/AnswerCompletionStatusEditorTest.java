@@ -135,7 +135,7 @@ public class AnswerCompletionStatusEditorTest
     }
 
     @Test
-    public void enterForFormNodeAddsDifferentStatusFlags() throws CommitFailedException, RepositoryException
+    public void leaveForFormNodeAddsDifferentStatusFlags() throws CommitFailedException, RepositoryException
     {
         initAnswerCompletionStatusEditor(true);
         when(this.formUtils.isAnswer(any(NodeBuilder.class))).thenReturn(true, false, true, false);
@@ -144,7 +144,7 @@ public class AnswerCompletionStatusEditorTest
                         this.session.getNode(TEST_QUESTIONNAIRE_PATH + "/question_1"));
         when(this.formUtils.isAnswerSection(any(NodeBuilder.class))).thenReturn(true);
 
-        this.answerCompletionStatusEditor.enter(mock(NodeState.class), mock(NodeState.class));
+        this.answerCompletionStatusEditor.leave(mock(NodeState.class), mock(NodeState.class));
         assertTrue(this.currentNodeBuilder.hasProperty(STATUS_FLAGS));
         Iterator<String> statusFlagsIterator =
                 this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).iterator();
@@ -154,12 +154,12 @@ public class AnswerCompletionStatusEditorTest
     }
 
     @Test
-    public void enterForEmptyFormNode() throws CommitFailedException
+    public void leaveForEmptyFormNode() throws CommitFailedException
     {
         this.currentNodeBuilder = EmptyNodeState.EMPTY_NODE.builder();
         initAnswerCompletionStatusEditor(true);
 
-        this.answerCompletionStatusEditor.enter(mock(NodeState.class), mock(NodeState.class));
+        this.answerCompletionStatusEditor.leave(mock(NodeState.class), mock(NodeState.class));
         assertTrue(this.currentNodeBuilder.hasProperty(STATUS_FLAGS));
         Iterator<String> statusFlagsIterator =
                 this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).iterator();
