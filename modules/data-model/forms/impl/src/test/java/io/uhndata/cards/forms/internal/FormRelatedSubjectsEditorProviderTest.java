@@ -36,7 +36,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 import static org.mockito.Mockito.when;
 

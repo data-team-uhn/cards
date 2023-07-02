@@ -30,7 +30,6 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Assert;
@@ -41,6 +40,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -80,7 +81,7 @@ public class ResourceOptionsLabelProcessorTest
     private ResourceOptionsLabelProcessor resourceOptionsLabelProcessor;
 
     @Mock
-    private ResourceResolverFactory rrf;
+    private ThreadResourceResolverProvider rrp;
 
     @Test
     public void getNameTest()
@@ -129,7 +130,7 @@ public class ResourceOptionsLabelProcessorTest
         Node node = session.getNode(TEST_OPTION_1_PATH);
         Node subject = session.getNode(TEST_SUBJECT_PATH);
         subject.setProperty("level", "root");
-        when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
         this.resourceOptionsLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
@@ -145,7 +146,7 @@ public class ResourceOptionsLabelProcessorTest
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode(TEST_OPTION_2_PATH);
-        when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
         this.resourceOptionsLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();

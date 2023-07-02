@@ -92,6 +92,7 @@ public class ReferenceAnswersEditorForCalendarTest
 
     @Mock
     private QuestionnaireUtils questionnaireUtils;
+    private Session currentSession;
 
 
     @Test
@@ -148,8 +149,9 @@ public class ReferenceAnswersEditorForCalendarTest
         this.nodeBuilder = formBuilder;
 
         when(this.formUtils.isForm(this.nodeBuilder)).thenReturn(true);
-        this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.rrf, this.questionnaireUtils,
-                this.formUtils, this.subjectUtils);
+        this.currentSession = this.context.resourceResolver().adaptTo(Session.class);
+        this.referenceAnswersEditor = new ReferenceAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
+                this.questionnaireUtils, this.formUtils, this.subjectUtils);
 
         // mock Node getQuestionnaire()
         PropertyState propertyState = Mockito.mock(PropertyState.class);
@@ -171,7 +173,6 @@ public class ReferenceAnswersEditorForCalendarTest
         when(this.formUtils.getValue(Mockito.any(Node.class))).thenReturn(date);
 
         this.referenceAnswersEditor.serviceSession = this.context.resourceResolver().adaptTo(Session.class);
-        this.referenceAnswersEditor.currentSession = this.context.resourceResolver().adaptTo(Session.class);
         this.referenceAnswersEditor.handleLeave(this.nodeBuilder.getNodeState());
 
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
