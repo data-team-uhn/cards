@@ -38,6 +38,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.uhndata.cards.forms.api.ExpressionUtils;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link ReferenceAnswersEditorProvider}.
@@ -58,6 +61,9 @@ public class ReferenceAnswersEditorProviderTest
     private ResourceResolverFactory rrf;
 
     @Mock
+    private ThreadResourceResolverProvider rrp;
+
+    @Mock
     private QuestionnaireUtils questionnaireUtils;
 
     @Mock
@@ -67,14 +73,26 @@ public class ReferenceAnswersEditorProviderTest
     private ExpressionUtils expressionUtils;
 
     @Test
-    public void getRootEditorReturnsReferenceAnswersEditor() throws CommitFailedException
+    public void getRootEditorReturnsReferenceAnswersEditorForNotNullResourceResolver() throws CommitFailedException
+    {
+        final Session session = this.context.resourceResolver().adaptTo(Session.class);
+
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        Editor editor = this.referenceAnswersEditorProvider.getRootEditor(Mockito.mock(NodeState.class),
+                Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
+                        session.getUserID()));
+        Assert.assertNotNull(editor);
+        Assert.assertTrue(editor instanceof ReferenceAnswersEditor);
+    }
+
+    @Test
+    public void getRootEditorReturnsReferenceAnswersEditorForNullResourceResolver() throws CommitFailedException
     {
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
 
         Editor editor = this.referenceAnswersEditorProvider.getRootEditor(Mockito.mock(NodeState.class),
                 Mockito.mock(NodeState.class), Mockito.mock(NodeBuilder.class), new CommitInfo(session.toString(),
                         session.getUserID()));
-        Assert.assertNotNull(editor);
-        Assert.assertTrue(editor instanceof ReferenceAnswersEditor);
+        Assert.assertNull(editor);
     }
 }

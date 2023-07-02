@@ -1,0 +1,22 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Text Computed Questionnaire",
+  "description": "A test text computed questionnaire",
+  "maxPerSubject": 1,
+  "from_text_to_computed_section": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section From Text",
+    "text_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Text Question",
+      "dataType": "text"
+    },
+    "computed_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Computed Question",
+      "dataType": "text",
+      "entryMode": "computed",
+      "expression": "return @{text_question}"
+    }
+  }
+}

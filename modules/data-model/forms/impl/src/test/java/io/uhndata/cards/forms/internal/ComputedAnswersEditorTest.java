@@ -81,6 +81,8 @@ public class ComputedAnswersEditorTest
     private ComputedAnswersEditor computedAnswersEditor;
     private NodeState after;
 
+    private Session currentSession;
+
     @Mock
     private ResourceResolverFactory rrf;
 
@@ -140,8 +142,8 @@ public class ComputedAnswersEditorTest
 
         // for not form type current node builder
         when(this.formUtils.isForm(this.nodeBuilder)).thenReturn(false);
-        this.computedAnswersEditor = new ComputedAnswersEditor(this.nodeBuilder, this.rrf, this.questionnaireUtils,
-                this.formUtils, this.expressionUtils);
+        this.computedAnswersEditor = new ComputedAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
+                this.questionnaireUtils, this.formUtils, this.expressionUtils);
 
         PropertyState typeProperty = Mockito.mock(PropertyState.class);
         NodeState formNodeState = Mockito.mock(NodeState.class);
@@ -161,7 +163,6 @@ public class ComputedAnswersEditorTest
     public void handleLeaveTest()
     {
         this.computedAnswersEditor.serviceSession = this.context.resourceResolver().adaptTo(Session.class);
-        this.computedAnswersEditor.currentSession = this.context.resourceResolver().adaptTo(Session.class);
         this.computedAnswersEditor.handleLeave(this.after);
     }
 
@@ -263,8 +264,9 @@ public class ComputedAnswersEditorTest
     private void initializeEditorForFormNodeBuilder()
     {
         when(this.formUtils.isForm(this.nodeBuilder)).thenReturn(true);
-        this.computedAnswersEditor = new ComputedAnswersEditor(this.nodeBuilder, this.rrf, this.questionnaireUtils,
-                this.formUtils, this.expressionUtils);
+        this.currentSession = this.context.resourceResolver().adaptTo(Session.class);
+        this.computedAnswersEditor = new ComputedAnswersEditor(this.nodeBuilder, this.currentSession, this.rrf,
+                this.questionnaireUtils, this.formUtils, this.expressionUtils);
     }
 
     private NodeBuilder createTestForm(String uuid, String questionnaireUuid, String answerSectionUuid,

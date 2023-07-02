@@ -31,7 +31,6 @@ import javax.json.JsonObjectBuilder;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Assert;
@@ -43,6 +42,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -80,7 +81,7 @@ public class ResourceLabelProcessorTest
     private ResourceLabelProcessor resourceLabelProcessor;
 
     @Mock
-    private ResourceResolverFactory rrf;
+    private ThreadResourceResolverProvider rrp;
 
     @Test
     public void getNameTest()
@@ -123,7 +124,7 @@ public class ResourceLabelProcessorTest
         node.setProperty(VALUE_PROPERTY, TEST_SUBJECT_PATH);
         Node subject = session.getNode(TEST_SUBJECT_PATH);
         subject.setProperty("level", "root");
-        when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
         this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
@@ -142,7 +143,7 @@ public class ResourceLabelProcessorTest
         node.setProperty(VALUE_PROPERTY, new String[]{
             TEST_SUBJECT_PATH, TEST_BRANCH_SUBJECT_PATH
         });
-        when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
         this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
@@ -176,7 +177,7 @@ public class ResourceLabelProcessorTest
         JsonObjectBuilder json = Json.createObjectBuilder();
         Node node = session.getNode("/Forms/f1/a1");
         node.setProperty(VALUE_PROPERTY, "/Subjects/Non-existing");
-        when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
         this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
@@ -195,7 +196,7 @@ public class ResourceLabelProcessorTest
         ResourceResolver resolver = mock(ResourceResolver.class);
         Resource resource = mock(Resource.class);
         Node nodeFromResource = mock(Node.class);
-        when(this.rrf.getThreadResourceResolver()).thenReturn(resolver);
+        when(this.rrp.getThreadResourceResolver()).thenReturn(resolver);
         when(resolver.getResource(Mockito.anyString())).thenReturn(resource);
         when(resource.adaptTo(Node.class)).thenReturn(nodeFromResource);
         when(nodeFromResource.hasProperty(Mockito.anyString())).thenThrow(new RepositoryException());
@@ -215,7 +216,7 @@ public class ResourceLabelProcessorTest
         when(node.isNodeType(ANSWER_RESOURCE_TYPE)).thenReturn(true);
         when(node.hasProperty(VALUE_PROPERTY)).thenReturn(true);
         when(node.getProperty(VALUE_PROPERTY)).thenThrow(new RepositoryException());
-        when(this.rrf.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
+        when(this.rrp.getThreadResourceResolver()).thenReturn(this.context.resourceResolver());
 
         this.resourceLabelProcessor.leave(node, json, mock(Function.class));
         JsonObject jsonObject = json.build();
