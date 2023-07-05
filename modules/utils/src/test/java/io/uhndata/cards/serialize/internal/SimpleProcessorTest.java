@@ -125,4 +125,15 @@ public class SimpleProcessorTest
                 mock(Function.class));
         assertNull(jsonValue);
     }
+
+    @Test
+    public void processPropertyForFormPropertyReturnsNull() throws RepositoryException
+    {
+        Property property = mock(Property.class);
+        when(property.getName()).thenReturn("form");
+        JsonValue jsonValue = this.simpleProcessor.processProperty(mock(Node.class), property, mock(JsonValue.class),
+                mock(Function.class));
+        assertNull(jsonValue);
+    }
+
 }

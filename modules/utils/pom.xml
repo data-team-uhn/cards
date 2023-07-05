@@ -31,7 +31,7 @@
   <name>CARDS - Utilities</name>
 
   <properties>
-    <coverage.instructionRatio>0.94</coverage.instructionRatio>
+    <coverage.instructionRatio>0.97</coverage.instructionRatio>
   </properties>
 
   <build>

@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.serialize.internal;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +35,7 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
+import org.apache.jackrabbit.oak.api.Type;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
@@ -180,6 +182,18 @@ public class BareProcessorTest
     }
 
     @Test
+    public void processPropertyForFormPropertyReturnsNull() throws RepositoryException
+    {
+        Node node = this.context.resourceResolver().getResource(TEST_FORM_PATH).adaptTo(Node.class);
+        node.setProperty("form", node.getIdentifier(), Type.REFERENCE.tag());
+
+        Property property = node.getProperty("form");
+        JsonValue jsonValue = this.bareProcessor.processProperty(node, property, Json.createValue(property.getString()),
+                mock(Function.class));
+        assertNull(jsonValue);
+    }
+
+    @Test
     public void processChildForJcrChildReturnsNull() throws RepositoryException
     {
         Node node = this.context.resourceResolver().getResource(TEST_FORM_PATH).adaptTo(Node.class);
@@ -226,7 +240,7 @@ public class BareProcessorTest
         date.set(2023, Calendar.JANUARY, 1);
         date.getTimeZone().getRawOffset();
         mockCreatedAndLastModifiedDate(node, date);
-        mockFileContent(node);
+        mockFileContent(node, getMockedDataProperty());
 
         JsonObjectBuilder json = Json.createObjectBuilder();
         this.bareProcessor.leave(node, json, mock(Function.class));
@@ -246,7 +260,7 @@ public class BareProcessorTest
     }
 
     @Test
-    public void leaveWithNonRootNodeDoesNotAddMetadata() throws RepositoryException, ParseException
+    public void leaveWithNonRootNodeDoesNotAddMetadata() throws RepositoryException
     {
         Node node = mock(Node.class);
         when(this.depth.get()).thenReturn(2, 1);
@@ -255,7 +269,7 @@ public class BareProcessorTest
         date.set(2023, Calendar.JANUARY, 1);
         date.getTimeZone().getRawOffset();
         mockCreatedAndLastModifiedDate(node, date);
-        mockFileContent(node);
+        mockFileContent(node, getMockedDataProperty());
 
         JsonObjectBuilder json = Json.createObjectBuilder();
         this.bareProcessor.leave(node, json, mock(Function.class));
@@ -267,6 +281,40 @@ public class BareProcessorTest
         assertNotNull(jsonObject);
         assertFalse(jsonObject.containsKey("created"));
         assertFalse(jsonObject.containsKey("lastModified"));
+        assertTrue(jsonObject.containsKey("content"));
+    }
+
+    @Test
+    public void leaveCatchesIOException() throws RepositoryException, IOException
+    {
+        Node node = mock(Node.class);
+        when(this.depth.get()).thenReturn(1, 0);
+
+        Calendar date = Calendar.getInstance();
+        date.set(2023, Calendar.JANUARY, 1);
+        date.getTimeZone().getRawOffset();
+
+        // mocking data property with closed InputStream
+        Property dataProperty = mock(Property.class);
+        Binary dataBinary = mock(Binary.class);
+        InputStream stream = InputStream.nullInputStream();
+        stream.close();
+        when(dataProperty.getBinary()).thenReturn(dataBinary);
+        when(dataBinary.getStream()).thenReturn(stream);
+
+        mockCreatedAndLastModifiedDate(node, date);
+        mockFileContent(node, dataProperty);
+
+        JsonObjectBuilder json = Json.createObjectBuilder();
+        this.bareProcessor.leave(node, json, mock(Function.class));
+        JsonObject jsonObject = json.build();
+
+        verify(this.depth, times(3)).get();
+        verify(this.depth).set(0);
+
+        assertNotNull(jsonObject);
+        assertTrue(jsonObject.containsKey("created"));
+        assertTrue(jsonObject.containsKey("lastModified"));
         assertTrue(jsonObject.containsKey("content"));
     }
 
@@ -327,7 +375,7 @@ public class BareProcessorTest
                 .commit();
     }
 
-    private void mockFileContent(Node node) throws RepositoryException
+    private void mockFileContent(Node node, Property dataProperty) throws RepositoryException
     {
         NodeIterator iterator = mock(NodeIterator.class);
         Node child = mock(Node.class);
@@ -338,12 +386,17 @@ public class BareProcessorTest
         when(child.isNodeType("nt:resource")).thenReturn(true);
 
         // data property
-        Property dataProperty = mock(Property.class);
-        Binary dataBinary = mock(Binary.class);
         when(child.hasProperty("jcr:data")).thenReturn(true);
         when(child.getProperty("jcr:data")).thenReturn(dataProperty);
+    }
+
+    private Property getMockedDataProperty() throws RepositoryException
+    {
+        Property dataProperty = mock(Property.class);
+        Binary dataBinary = mock(Binary.class);
         when(dataProperty.getBinary()).thenReturn(dataBinary);
         when(dataBinary.getStream()).thenReturn(InputStream.nullInputStream());
+        return dataProperty;
     }
 
     private void mockCreatedAndLastModifiedDate(Node node, Calendar createdDate) throws RepositoryException

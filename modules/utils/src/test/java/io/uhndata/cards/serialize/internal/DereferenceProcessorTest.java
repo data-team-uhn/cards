@@ -146,6 +146,29 @@ public class DereferenceProcessorTest
     }
 
     @Test
+    public void processPropertyForMultiValueJcrProperty() throws RepositoryException
+    {
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        String nodeIdentifier = session.getNode(TEST_FORM_PATH).getIdentifier();
+        Property property = mock(Property.class);
+        Value value = mock(Value.class);
+
+        when(property.isMultiple()).thenReturn(true);
+        when(property.getName()).thenReturn("jcr:test");
+        when(property.getType()).thenReturn(PropertyType.REFERENCE);
+        when(property.getSession()).thenReturn(session);
+        when(property.getValues()).thenReturn(new Value[] {value});
+        when(value.getString()).thenReturn(nodeIdentifier);
+
+        JsonValue jsonValue = this.dereferenceProcessor.processProperty(mock(Node.class), property,
+                mock(JsonValue.class), this::serializeNode);
+        assertNotNull(jsonValue);
+        assertTrue(jsonValue instanceof JsonArray);
+        assertEquals(1, ((JsonArray) jsonValue).size());
+        assertEquals(TEST_FORM_PATH, ((JsonArray) jsonValue).getString(0));
+    }
+
+    @Test
     public void processPropertyForMultiValuePathPropertyCatchesRepositoryException() throws RepositoryException
     {
         Property property = mock(Property.class);

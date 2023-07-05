@@ -251,6 +251,36 @@ public class ResourceToJsonAdapterFactoryTest
         assertEquals(TEST_FORM_PATH, adapter.getString("form"));
     }
 
+    @Test
+    public void getAdapterWithProcessedAnswerChildNode()
+    {
+        Resource adaptable = this.context.resourceResolver().getResource(TEST_FORM_PATH);
+
+        ResourceJsonProcessor processor = new ChildNodeTestResourceJsonProcessor();
+        Whitebox.setInternalState(this.factory, "allProcessors", List.of(processor));
+        JsonObject adapter = this.factory.getAdapter(adaptable, JsonObject.class);
+
+        assertTrue(adapter.containsKey("a1"));
+    }
+
+    @Test
+    public void getAdapterWithBothInvokedAndNotInvokedDefaultProcessors()
+    {
+        Resource adaptable = mock(Resource.class);
+        mockAdaptableResource(adaptable, TEST_FORM_PATH, TEST_PROCESSOR_NAME);
+
+        ResourceJsonProcessor processor = mock(ResourceJsonProcessor.class);
+        mockWorkingProcessor(processor, adaptable, true, true, TEST_PROCESSOR_NAME);
+
+        ResourceJsonProcessor processorNotInvoked = mock(ResourceJsonProcessor.class);
+        mockWorkingProcessor(processorNotInvoked, adaptable, true, true, "test_not_invoked");
+        Whitebox.setInternalState(this.factory, "allProcessors", List.of(processor, processorNotInvoked));
+        this.factory.getAdapter(adaptable, JsonObject.class);
+
+        verifyProcessorMethodsInvocation(processor, 1, 1, 15, 1);
+        verifyProcessorMethodsInvocation(processorNotInvoked, 1, 1, 15, 1);
+    }
+
     @Before
     public void setUp() throws RepositoryException
     {
@@ -391,6 +421,49 @@ public class ResourceToJsonAdapterFactoryTest
                     Session session = property.getSession();
                     Node form = session.getNodeByIdentifier(property.getString());
                     return serializeNode.apply(form);
+                }
+            } catch (RepositoryException e) {
+                // Should not happen
+            }
+            return input;
+        }
+    }
+
+    private static class ChildNodeTestResourceJsonProcessor implements ResourceJsonProcessor
+    {
+        @Override
+        public String getName()
+        {
+            return "childNode";
+        }
+
+        @Override
+        public int getPriority()
+        {
+            return 1;
+        }
+
+        @Override
+        public boolean isEnabledByDefault(Resource resource)
+        {
+            return true;
+        }
+
+        @Override
+        public boolean canProcess(Resource resource)
+        {
+            return true;
+        }
+
+        @Override
+        public JsonValue processChild(final Node node, final Node child, final JsonValue input,
+                                      final Function<Node, JsonValue> serializeNode)
+        {
+            try {
+                if (child.getName().contains("a")) {
+                    Session session = child.getSession();
+                    Node answer = session.getNodeByIdentifier(child.getIdentifier());
+                    return serializeNode.apply(answer);
                 }
             } catch (RepositoryException e) {
                 // Should not happen
