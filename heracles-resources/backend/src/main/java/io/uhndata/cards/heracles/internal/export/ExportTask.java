@@ -20,6 +20,8 @@
 package io.uhndata.cards.heracles.internal.export;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,6 +54,10 @@ public class ExportTask implements Runnable
 {
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportTask.class);
+
+    private static final String DOT = "\\.";
+
+    private static final String DOT_ESCAPE = "\\\\.";
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
@@ -101,9 +107,12 @@ public class ExportTask implements Runnable
     {
         LOGGER.info("Executing ManualExport");
         String fileDateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String requestDateStringLower = lower.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String requestDateStringLower =
+            lower.atStartOfDay(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSSxxx"));
         String requestDateStringUpper = (upper != null)
-            ? upper.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            ? upper.atStartOfDay(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSSxxx"))
             : null;
 
         Set<SubjectIdentifier> changedSubjects =
@@ -125,9 +134,9 @@ public class ExportTask implements Runnable
     public void doNightlyExport() throws LoginException
     {
         LOGGER.info("Executing NightlyExport");
-        LocalDate today = LocalDate.now();
+        ZonedDateTime today = ZonedDateTime.now();
         String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSSxxx"));
 
         Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString, null);
 
@@ -268,11 +277,13 @@ public class ExportTask implements Runnable
         String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
             + ".dataFilter:statusNot=INCOMPLETE",
-            path, requestDateStringLower, requestDateStringUpper);
+            path, requestDateStringLower.replaceAll(DOT, DOT_ESCAPE),
+            requestDateStringUpper != null ? requestDateStringUpper.replaceAll(DOT, DOT_ESCAPE) : "");
         String identifiedSubjectDataUrl = String.format("%s.data.identify.-properties.-dereference"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
             + ".dataFilter:statusNot=INCOMPLETE",
-            path, requestDateStringLower, requestDateStringUpper);
+            path, requestDateStringLower.replaceAll(DOT, DOT_ESCAPE),
+            requestDateStringUpper != null ? requestDateStringUpper.replaceAll(DOT, DOT_ESCAPE) : "");
         boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             this.rrp.push(resolver);
