@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.json.JsonArray;
@@ -56,8 +57,6 @@ public class ExportTask implements Runnable
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportTask.class);
 
     private static final String DOT = "\\.";
-
-    private static final String DOT_ESCAPE = "\\\\.";
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
@@ -155,6 +154,11 @@ public class ExportTask implements Runnable
     private String cleanString(String input)
     {
         return input.replaceAll("[^A-Za-z0-9]", "");
+    }
+
+    private String escapeForDataUrl(String input)
+    {
+        return input.replaceAll(DOT, Matcher.quoteReplacement(DOT));
     }
 
     private static final class SubjectIdentifier
@@ -277,13 +281,14 @@ public class ExportTask implements Runnable
         String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
             + ".dataFilter:statusNot=INCOMPLETE",
-            path, requestDateStringLower.replaceAll(DOT, DOT_ESCAPE),
-            requestDateStringUpper != null ? requestDateStringUpper.replaceAll(DOT, DOT_ESCAPE) : "");
+            path, escapeForDataUrl(requestDateStringLower),
+            requestDateStringUpper != null ? escapeForDataUrl(requestDateStringUpper) : "");
+
         String identifiedSubjectDataUrl = String.format("%s.data.identify.-properties.-dereference"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
             + ".dataFilter:statusNot=INCOMPLETE",
-            path, requestDateStringLower.replaceAll(DOT, DOT_ESCAPE),
-            requestDateStringUpper != null ? requestDateStringUpper.replaceAll(DOT, DOT_ESCAPE) : "");
+            path, escapeForDataUrl(requestDateStringLower),
+            requestDateStringUpper != null ? escapeForDataUrl(requestDateStringUpper) : "");
         boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             this.rrp.push(resolver);
