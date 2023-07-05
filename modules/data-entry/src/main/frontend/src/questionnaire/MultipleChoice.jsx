@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Checkbox, Chip, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from "@mui/material";
+import { Checkbox, Chip, FormControl, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Close from "@mui/icons-material/Close";
 import PropTypes from 'prop-types';
@@ -421,7 +421,7 @@ function MultipleChoice(props) {
     return (
       <React.Fragment>
         {
-          pageActive && <>
+          pageActive && <FormControl sx={{width: 300}}>
             {instructions}
             <Select
               variant="standard"
@@ -452,7 +452,7 @@ function MultipleChoice(props) {
                 return <MenuItem value={key} key={key}>{name}</MenuItem>;
             })}
             </Select>
-          </>
+          </FormControl>
         }
         <Answer
           answers={answers}
