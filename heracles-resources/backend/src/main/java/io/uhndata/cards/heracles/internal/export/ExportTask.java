@@ -108,10 +108,10 @@ public class ExportTask implements Runnable
         String fileDateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String requestDateStringLower =
             lower.atStartOfDay(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSSxxx"));
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
         String requestDateStringUpper = (upper != null)
             ? upper.atStartOfDay(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSSxxx"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))
             : null;
 
         Set<SubjectIdentifier> changedSubjects =
@@ -135,7 +135,7 @@ public class ExportTask implements Runnable
         LOGGER.info("Executing NightlyExport");
         ZonedDateTime today = ZonedDateTime.now();
         String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSSxxx"));
+        String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
 
         Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString, null);
 
