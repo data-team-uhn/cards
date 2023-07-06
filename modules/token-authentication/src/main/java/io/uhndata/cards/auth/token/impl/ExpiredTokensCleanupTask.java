@@ -50,7 +50,7 @@ public class ExpiredTokensCleanupTask implements Runnable
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
             final Iterator<Resource> resources = resolver.findResources("SELECT * FROM [cards:Token] WHERE ["
                 + CardsTokenImpl.TOKEN_ATTRIBUTE_EXPIRY + "] < '"
-                + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSSxxx")) + "'",
+                + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx")) + "'",
                 Query.JCR_SQL2);
             resources.forEachRemaining(token -> {
                 try {
