@@ -135,6 +135,7 @@ public class ExportTask implements Runnable
         LOGGER.info("Executing NightlyExport");
         ZonedDateTime today = ZonedDateTime.now();
         String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        today = today.minusDays(1);
         String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
 
         Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString, null);
