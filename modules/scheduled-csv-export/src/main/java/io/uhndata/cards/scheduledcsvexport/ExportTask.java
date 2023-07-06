@@ -23,14 +23,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
@@ -46,6 +49,8 @@ public class ExportTask implements Runnable
 {
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportTask.class);
+
+    private static final String DOT = "\\.";
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
@@ -80,15 +85,14 @@ public class ExportTask implements Runnable
     @Override
     public void run()
     {
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        final String modifiedAfterDate = simpleDateFormat.format(getPastDate(this.frequencyInDays));
-        final String modifiedBeforeDate = simpleDateFormat.format(new Date());
+        final String modifiedAfterDate = getPastDayStartString(this.frequencyInDays);
+        final String modifiedBeforeDate = getPastDayStartString(0);
         final String timePeriod;
         if (this.frequencyInDays == 1) {
-            timePeriod = simpleDateFormat.format(getPastDate(1));
+            timePeriod = getPastDateString(1);
         } else {
-            final String endModificationDate = simpleDateFormat.format(getPastDate(1));
-            timePeriod = modifiedAfterDate + "_" + endModificationDate;
+            final String endModificationDate = getPastDateString(1);
+            timePeriod = getPastDateString(this.frequencyInDays) + "_" + endModificationDate;
         }
         boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
@@ -100,8 +104,8 @@ public class ExportTask implements Runnable
                 try (FileWriter writer = new FileWriter(csvFile)) {
                     final String csvPath = String.format(
                         questionnaire + "%s.data.dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.%s",
-                        StringUtils.defaultString(this.customSelectors), modifiedAfterDate, modifiedBeforeDate,
-                        this.exportFormat);
+                        StringUtils.defaultString(this.customSelectors), escapeForDataUrl(modifiedAfterDate),
+                        escapeForDataUrl(modifiedBeforeDate), this.exportFormat);
                     final CSVString csv = resolver.resolve(csvPath).adaptTo(CSVString.class);
                     writer.write(csv.toString());
                 } catch (IOException e) {
@@ -118,11 +122,24 @@ public class ExportTask implements Runnable
 
     }
 
-    private Date getPastDate(int numberOfDaysAgo)
+    private String getPastDateString(int numberOfDaysAgo)
     {
-        Calendar date = new GregorianCalendar();
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        final Calendar date = new GregorianCalendar();
         date.add(Calendar.DAY_OF_MONTH, -numberOfDaysAgo);
-        return date.getTime();
+        return simpleDateFormat.format(date.getTime());
+    }
+
+    private String getPastDayStartString(int numberOfDaysAgo)
+    {
+        ZonedDateTime date = LocalDate.now().atStartOfDay(ZoneId.systemDefault());
+        date = date.minusDays(numberOfDaysAgo);
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+    }
+
+    private String escapeForDataUrl(String input)
+    {
+        return input.replaceAll(DOT, Matcher.quoteReplacement(DOT));
     }
 
     private String getTargetFileName(final String questionnaire, final String timePeriod)
