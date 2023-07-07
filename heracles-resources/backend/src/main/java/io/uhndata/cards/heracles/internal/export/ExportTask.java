@@ -133,15 +133,16 @@ public class ExportTask implements Runnable
     public void doNightlyExport() throws LoginException
     {
         LOGGER.info("Executing NightlyExport");
-        ZonedDateTime today = ZonedDateTime.now();
-        String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        today = today.minusDays(1);
-        String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        ZonedDateTime yesterday = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).minusDays(1);
+        String fileDateString = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String startDateString = yesterday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        String endDateString =
+            yesterday.plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
 
-        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString, null);
+        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(startDateString, endDateString);
 
         for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), requestDateString, null);
+            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), startDateString, endDateString);
             if (subjectContents != null) {
                 String filename = String.format(
                     "%s_formData_%s.json",
