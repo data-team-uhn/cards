@@ -247,7 +247,7 @@ function LiveTable(props) {
         entryName={getEntityIdentifier(entry)}
         onComplete={refresh}
         entryType={entryType}
-        entryLabel={entry["jcr:primaryType"] == "cards:Subject" ? entry.type?.label : ''}
+        entryLabel={entry["jcr:primaryType"] == "cards:Subject" ? entry.type?.label : undefined}
         admin={admin} />
     });
     return <TableCell key={index} className={classes.tableActions}>{content}</TableCell>;
