@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.patients.slacknotifications;
+package io.uhndata.cards.slacknotifications;
 
 import java.io.IOException;
 import java.util.HashMap;

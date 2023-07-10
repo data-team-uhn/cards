@@ -70,5 +70,6 @@
     <module>scheduled-csv-export</module>
     <module>clarity-integration</module>
     <module>torch-import</module>
+    <module>slack-notifications</module>
   </modules>
 </project>
