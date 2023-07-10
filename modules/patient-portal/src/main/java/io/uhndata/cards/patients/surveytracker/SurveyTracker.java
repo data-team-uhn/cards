@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.patients.emailnotifications.AppointmentUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
@@ -182,15 +183,16 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             }
             final Node node = session.getNode(path);
             if (isAnswerForHasSurveys(node) && hasSurveys(node)) {
+                final Node form = this.formUtils.getForm(node);
                 // Also update the expiration date, since this cannot be copied from the visit
                 ensureSurveyStatusFormExists(session.getNode("/Questionnaires/Survey events"),
-                    this.formUtils.getSubject(this.formUtils.getForm(node)), session);
-                updateSurveyExpirationDate(this.formUtils.getAnswer(this.formUtils.getForm(node),
+                    this.formUtils.getSubject(form), session);
+                updateSurveyExpirationDate(form, this.formUtils.getAnswer(form,
                     session.getNode("/Questionnaires/Visit information/time")), session);
             } else if (isAnswerForSurveysSubmitted(node) && isSubmitted(node)) {
                 updateSurveySubmittedDate(node, session);
             } else if (isAnswerForVisitTime(node)) {
-                updateSurveyExpirationDate(node, session);
+                updateSurveyExpirationDate(node, node, session);
             }
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage());
@@ -219,7 +221,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
         }
     }
 
-    private void updateSurveyExpirationDate(final Node dischargedAnswer, final Session session)
+    private void updateSurveyExpirationDate(final Node form, final Node dischargedAnswer, final Session session)
         throws RepositoryException
     {
         if (!session.nodeExists("/Questionnaires/Survey events/survey_expiry")) {
@@ -234,7 +236,15 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
                 session.getNode("/Questionnaires/Survey events/survey_expiry"));
             if (expirationDateAnswer != null) {
                 Calendar expirationDate = (Calendar) eventDate.clone();
-                expirationDate.add(Calendar.DATE, this.accessConfiguration.getAllowedPostVisitCompletionTime() + 1);
+                final int postVisitCompletionTime = this.accessConfiguration.getAllowedPostVisitCompletionTime();
+                Node visitSubject = this.formUtils.getSubject(form, "/SubjectTypes/Patient/Visit");
+                final int tokenLifetime = AppointmentUtils.getTokenLifetime(
+                    this.formUtils,
+                    visitSubject,
+                    "/Questionnaires/Visit information/surveys",
+                    "tokenLifetime",
+                    postVisitCompletionTime);
+                expirationDate.add(Calendar.DATE, tokenLifetime + 1);
                 expirationDate.add(Calendar.DATE, 1);
                 expirationDate.set(Calendar.HOUR_OF_DAY, 0);
                 expirationDate.set(Calendar.MINUTE, 0);

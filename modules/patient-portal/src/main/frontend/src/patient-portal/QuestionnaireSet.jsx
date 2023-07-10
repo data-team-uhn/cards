@@ -114,6 +114,7 @@ function QuestionnaireSet(props) {
   // Questionnaire set title and intro text, to display to the patient user
   const [ title, setTitle ] = useState();
   const [ intro, setIntro ] = useState();
+  const [ tokenLifetime, setTokenLifetime ] = useState();
   // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
   const [ questionnaires, setQuestionnaires ] = useState();
   // The ids of the questionnaires in this set, in the order they must be filled in
@@ -320,6 +321,7 @@ function QuestionnaireSet(props) {
     // Extract the title and intro
     setTitle(json.name);
     setIntro(json.intro || "");
+    setTokenLifetime(json.tokenLifetime);
     // If the questionnaire set specifies a value for `enableReviewScreen`, overwrite the curently stored value
     typeof(json.enableReviewScreen) != "undefined" && setEnableReviewScreen(json.enableReviewScreen);
 
@@ -586,7 +588,7 @@ function QuestionnaireSet(props) {
     let date = getVisitDate();
     if (date?.isValid) {
       // Compute the moment the token expired: the configured number of days after the visit, at midnight
-      date = date.plus({days: config?.allowedPostVisitCompletionTime || 0}).endOf('day');
+      date = date.plus({days: tokenLifetime || config?.allowedPostVisitCompletionTime || 0}).endOf('day');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0

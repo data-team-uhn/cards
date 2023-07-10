@@ -166,38 +166,16 @@ public final class AppointmentUtils
     }
 
     /**
-     * Gets the clinic name associated with a Visit Subject Resource, or null if the clinic name cannot be found.
-     *
-     * @param formUtils form utilities service
-     * @param visitSubject the JCR Resource for the visit whose clinic name we wish to obtain
-     * @return the clinic name associated with the Visit or null
-     */
-    public static String getVisitClinic(FormUtils formUtils, Node visitSubject)
-    {
-        String clinicId = getQuestionAnswerForSubject(
-            formUtils,
-            visitSubject,
-            "/Questionnaires/Visit information/surveys",
-            TEXT_ANSWER,
-            EMPTY);
-        if (EMPTY.equals(clinicId)) {
-            return null;
-        }
-        return clinicId;
-    }
-
-    /**
      * Returns the cards:QuestionnaireSet JCR Resource associated with the formRelatedSubject or null if no such
      * associated Resource can be found.
      *
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
      * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
-     * @param clinicsJcrPath the JCR path for information on the clinics (eg. /Survey)
      * @return the associated cards:QuestionnaireSet JCR Resource or null
      */
     public static Node getValidClinicNode(FormUtils formUtils, Node formRelatedSubject,
-        String clinicIdLink, String clinicsJcrPath)
+        String clinicIdLink)
     {
         String clinicNodePath = getQuestionAnswerForSubject(
             formUtils,
@@ -225,14 +203,13 @@ public final class AppointmentUtils
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
      * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
-     * @param clinicsJcrPath clinicsJcrPath the JCR path for information on the clinics (eg. /Survey)
      * @param clinicEmailProperty the JCR node property holding the email address (eg. "emergencyContact")
      * @return the contact email address associated with a subject
      */
     public static String getValidClinicEmail(FormUtils formUtils, Node formRelatedSubject,
-        String clinicIdLink, String clinicsJcrPath, String clinicEmailProperty)
+        String clinicIdLink, String clinicEmailProperty)
     {
-        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject, clinicIdLink, clinicsJcrPath);
+        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject, clinicIdLink);
         if (clinicNode == null) {
             return null;
         }
@@ -245,6 +222,34 @@ public final class AppointmentUtils
             // TODO Auto-generated catch block
         }
         return null;
+    }
+
+    /**
+     * Returns the token lifetime associated (through the clinicEmailProperty String) with the clinic linked to the
+     * formRelatedSubject Resource or default if it cannot be found.
+     *
+     * @param formUtils form utilities service
+     * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
+     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
+     * @param tokenLifetimeProperty the JCR node property holding the token lifetime (eg. "tokenLifetime")
+     * @param defaultLifetime the default to return
+     * @return the token lifetime in days
+     */
+    public static int getTokenLifetime(FormUtils formUtils, Node formRelatedSubject,
+        String clinicIdLink, String tokenLifetimeProperty, int defaultLifetime)
+    {
+        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject, clinicIdLink);
+        if (clinicNode == null) {
+            return defaultLifetime;
+        }
+        try {
+            if (clinicNode.hasProperty(tokenLifetimeProperty)) {
+                return (int) clinicNode.getProperty(tokenLifetimeProperty).getLong();
+            }
+        } catch (RepositoryException e) {
+            // TODO Auto-generated catch block
+        }
+        return defaultLifetime;
     }
 
     /**

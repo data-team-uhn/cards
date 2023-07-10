@@ -64,8 +64,6 @@ public final class EmailAlertEventListener implements EventListener
 
     private String clinicIdLink;
 
-    private String clinicsJcrPath;
-
     private String clinicEmailProperty;
 
     private String emailFromAddress;
@@ -86,7 +84,6 @@ public final class EmailAlertEventListener implements EventListener
         this.triggerOperand = listenerParams.get("triggerOperand");
         this.alertDescription = listenerParams.get("alertDescription");
         this.clinicIdLink = listenerParams.get("clinicIdLink");
-        this.clinicsJcrPath = listenerParams.get("clinicsJcrPath");
         this.clinicEmailProperty = listenerParams.get("clinicEmailProperty");
         this.emailFromAddress = listenerParams.get("emailFromAddress");
 
@@ -150,7 +147,7 @@ public final class EmailAlertEventListener implements EventListener
                  * associated with this visit.
                  */
                 String clinicAlertEmail = AppointmentUtils.getValidClinicEmail(this.formUtils,
-                    formRelatedSubject, this.clinicIdLink, this.clinicsJcrPath, this.clinicEmailProperty);
+                    formRelatedSubject, this.clinicIdLink, this.clinicEmailProperty);
                 if (clinicAlertEmail == null) {
                     continue;
                 }
