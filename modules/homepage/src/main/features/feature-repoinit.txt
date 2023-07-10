@@ -21,9 +21,16 @@ create path (cards:Homepage) /content
 create path (sling:Folder) /Extensions
 create path (sling:Folder) /Extensions/AdminDashboard
 create path (sling:Folder) /Extensions/Sidebar/AdminEntries
+create path (nt:unstructured) /libs/cards/conf/Media
 
 set ACL for everyone
     allow   jcr:read    on /content
     deny    jcr:all     on /Extensions/AdminDashboard
     deny    jcr:all     on /Extensions/Sidebar/AdminEntries
+end
+
+set properties on /libs/cards/conf/Media
+  default logoDark to "/libs/cards/resources/media/default/logo.png"
+  default logoLight to "/libs/cards/resources/media/default/logo_light_bg.png"
+  default sidebarBackground to "/libs/cards/resources/media/default/background.jpg"
 end
