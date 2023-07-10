@@ -20,12 +20,15 @@
 package io.uhndata.cards.heracles.internal.export;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import javax.json.JsonArray;
@@ -52,6 +55,8 @@ public class ExportTask implements Runnable
 {
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportTask.class);
+
+    private static final String DOT = "\\.";
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
@@ -101,9 +106,12 @@ public class ExportTask implements Runnable
     {
         LOGGER.info("Executing ManualExport");
         String fileDateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String requestDateStringLower = lower.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String requestDateStringLower =
+            lower.atStartOfDay(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
         String requestDateStringUpper = (upper != null)
-            ? upper.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            ? upper.atStartOfDay(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))
             : null;
 
         Set<SubjectIdentifier> changedSubjects =
@@ -125,14 +133,16 @@ public class ExportTask implements Runnable
     public void doNightlyExport() throws LoginException
     {
         LOGGER.info("Executing NightlyExport");
-        LocalDate today = LocalDate.now();
-        String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        ZonedDateTime yesterday = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).minusDays(1);
+        String fileDateString = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String startDateString = yesterday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        String endDateString =
+            yesterday.plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
 
-        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString, null);
+        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(startDateString, endDateString);
 
         for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), requestDateString, null);
+            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), startDateString, endDateString);
             if (subjectContents != null) {
                 String filename = String.format(
                     "%s_formData_%s.json",
@@ -146,6 +156,11 @@ public class ExportTask implements Runnable
     private String cleanString(String input)
     {
         return input.replaceAll("[^A-Za-z0-9]", "");
+    }
+
+    private String escapeForDataUrl(String input)
+    {
+        return input.replaceAll(DOT, Matcher.quoteReplacement(DOT));
     }
 
     private static final class SubjectIdentifier
@@ -268,11 +283,14 @@ public class ExportTask implements Runnable
         String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
             + ".dataFilter:statusNot=INCOMPLETE",
-            path, requestDateStringLower, requestDateStringUpper);
+            path, escapeForDataUrl(requestDateStringLower),
+            requestDateStringUpper != null ? escapeForDataUrl(requestDateStringUpper) : "");
+
         String identifiedSubjectDataUrl = String.format("%s.data.identify.-properties.-dereference"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
             + ".dataFilter:statusNot=INCOMPLETE",
-            path, requestDateStringLower, requestDateStringUpper);
+            path, escapeForDataUrl(requestDateStringLower),
+            requestDateStringUpper != null ? escapeForDataUrl(requestDateStringUpper) : "");
         boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             this.rrp.push(resolver);
