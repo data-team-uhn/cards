@@ -33,6 +33,8 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `mvn install -PintegrationTests` to run integration tests
 
+`mvn clean install -Dselenium` to run selenium tests
+
 A docker image can optionally be built with `mvn install -Pdocker`, if docker is installed, running, and the current user has access to the docker agent.
 
 ## Run:

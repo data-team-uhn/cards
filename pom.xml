@@ -372,6 +372,16 @@
         <artifactId>jcip-annotations</artifactId>
         <version>1.0</version>
       </dependency>
+      <dependency>
+      <groupId>io.github.bonigarcia</groupId>
+      <artifactId>webdrivermanager</artifactId>
+      <version>5.4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-chrome-driver</artifactId>
+        <version>4.10.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -389,7 +399,6 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <compilerArgument>-Xlint:all</compilerArgument>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
           <failOnWarning>true</failOnWarning>
@@ -2038,6 +2047,20 @@
       </activation>
       <modules>
         <module>tests</module>
+      </modules>
+    </profile>
+
+    <!-- Selenium tests shouldn't be run for every build, they need to be explicitly triggered using this profile: `mvn install -Dselenium` -->
+    <profile>
+      <id>seleniumTests</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>selenium</name>
+        </property>
+      </activation>
+      <modules>
+        <module>selenium</module>
       </modules>
     </profile>
   </profiles>

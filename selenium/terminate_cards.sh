@@ -17,33 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-echo "Removing shard directories"
-rm -r shard*
+echo "Shutting down CARDS"
+docker-compose down && docker-compose rm && docker volume prune -f && ./cleanup.sh
 
-echo "Removing docker-compose.yml"
-rm docker-compose.yml
-
-echo "Removing initializer/initialize_all.sh"
-rm initializer/initialize_all.sh
-
-echo "Removing mongos/mongo-router.conf"
-rm mongos/mongo-router.conf
-
-echo "Removing proxy/000-default.conf"
-rm proxy/000-default.conf
-
-echo "Removing proxy/proxyerror/logo.png"
-rm proxy/proxyerror/logo.png
-
-echo "Removing smtps_localhost_proxy/nginx.conf"
-rm smtps_localhost_proxy/nginx.conf
-
-echo "Removing secrets"
-rm -r secrets
-
-# Due permissions issues, we have to first remove all contents of SLING with Docker
-echo "Removing SLING"
-docker run --rm -v $(realpath ./SLING):/sling -i alpine:3.17 sh -c 'cd /sling; find . -delete'
-rm -rf SLING
-
-echo "Done"
+echo "CARDS terminated"
