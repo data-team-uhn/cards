@@ -22,6 +22,7 @@
 
 import sys
 import json
+import time
 
 import fill_form
 import create_subject_for_type
@@ -38,5 +39,11 @@ VISIT_INFORMATION_ANSWERS['Surveys submitted'] = [1, "Long"]
 patient_subject_path = create_subject_for_type.create_subject_for_type("/Subjects", "P" + IDENTIFIER_ID, "/SubjectTypes/Patient")
 visit_subject_path = create_subject_for_type.create_subject_for_type(patient_subject_path, "V" + IDENTIFIER_ID, "/SubjectTypes/Patient/Visit")
 
+# Fill out the OED Form
 fill_form.fill_form(visit_subject_path, "/Questionnaires/OED", OED_ANSWERS)
+
+# A small delay to simulate the time between when the user fills out their surveys and when the submit button is clicked
+time.sleep(3)
+
+# Mark the surveys for this visit as completed and submitted
 fill_form.fill_form(visit_subject_path, "/Questionnaires/Visit information", VISIT_INFORMATION_ANSWERS)
