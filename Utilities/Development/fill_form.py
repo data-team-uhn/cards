@@ -86,5 +86,4 @@ def fill_form(subject_path, questionnaire_path, provided_answers):
     apath = question_to_answer_nodes[qtext]
     avalue = provided_answers[qtext][0]
     atype = provided_answers[qtext][1]
-    #print("Answering question: {} to {} as {} [{}]".format(qtext, apath, avalue, atype))
     post_answer(apath, avalue, atype)
