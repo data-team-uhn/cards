@@ -32,6 +32,7 @@ set principal ACL for cards-metrics
     allow    jcr:write   on /Metrics/
     allow    jcr:addChildNodes    on /Metrics/
     allow    jcr:nodeTypeManagement    on /Metrics/
+    allow    jcr:read    on /LoggedEvents/
 end
 
 # error-tracking
