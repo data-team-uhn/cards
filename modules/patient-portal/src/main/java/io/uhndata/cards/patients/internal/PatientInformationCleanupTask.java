@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.patients.api.DataRetentionConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
@@ -62,22 +63,29 @@ public class PatientInformationCleanupTask implements Runnable
 
     private final FormUtils formUtils;
 
+    private final DataRetentionConfiguration dataRetentionConfiguration;
+
     /**
      * @param resolverFactory a valid ResourceResolverFactory providing access to resources
      * @param rrp ThreadResourceResolverProvider sharing the resource resolver with other services
      * @param formUtils for working with form data
      */
     PatientInformationCleanupTask(final ResourceResolverFactory resolverFactory,
-        final ThreadResourceResolverProvider rrp, final FormUtils formUtils)
+        final ThreadResourceResolverProvider rrp, final FormUtils formUtils,
+        final DataRetentionConfiguration dataRetentionConfiguration)
     {
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
         this.formUtils = formUtils;
+        this.dataRetentionConfiguration = dataRetentionConfiguration;
     }
 
     @Override
     public void run()
     {
+        if (!this.dataRetentionConfiguration.deleteUnneededPatientDetails()) {
+            return;
+        }
         boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {

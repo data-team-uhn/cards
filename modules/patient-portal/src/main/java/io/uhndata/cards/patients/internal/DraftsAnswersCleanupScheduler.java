@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.patients.api.DataRetentionConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
@@ -56,7 +56,7 @@ public class DraftsAnswersCleanupScheduler
 
     /** Grab details on the number of days draft responses from patients are kept. */
     @Reference
-    private PatientAccessConfiguration patientAccessConfiguration;
+    private DataRetentionConfiguration dataRetentionConfiguration;
 
     /** The scheduler for rescheduling jobs. */
     @Reference
@@ -72,7 +72,7 @@ public class DraftsAnswersCleanupScheduler
             options.canRunConcurrently(false);
 
             final Runnable cleanupJob = new DraftsAnswersCleanupTask(this.resolverFactory, this.rrp,
-                this.patientAccessConfiguration);
+                this.dataRetentionConfiguration);
             this.scheduler.schedule(cleanupJob, options);
         } catch (final Exception e) {
             LOGGER.error("DraftsAnswersCleanup failed to schedule: {}", e.getMessage(), e);
