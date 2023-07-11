@@ -76,7 +76,6 @@ public class PatientInformationCleanupTask implements Runnable
     }
 
     @Override
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     public void run()
     {
         boolean mustPopResolver = false;
@@ -84,41 +83,9 @@ public class PatientInformationCleanupTask implements Runnable
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
             this.rrp.push(resolver);
             mustPopResolver = true;
-
-            // Gather the needed UUIDs to place in the query
             final String patientInformationQuestionnaire =
                 (String) resolver.getResource("/Questionnaires/Patient information").getValueMap().get(UUID_KEY);
-            final String firstName = (String)
-                resolver.getResource("/Questionnaires/Patient information/first_name").getValueMap().get(UUID_KEY);
-            final String lastName = (String)
-                resolver.getResource("/Questionnaires/Patient information/last_name").getValueMap().get(UUID_KEY);
-            final String email =
-                (String) resolver.getResource("/Questionnaires/Patient information/email").getValueMap().get(UUID_KEY);
-
-            // Query:
-            final Iterator<Resource> resources = resolver.findResources(String.format(
-                // select all of the Patient information forms with some of private information filled
-                "select distinct patientInfoForm.*"
-                    + "  from [cards:Form] as patientInforForm"
-                    + "    inner join [cards:TextAnswer] as firstName on isdescendantnode(firstName, patientInfoForm)"
-                    + "    inner join [cards:TextAnswer] as lastName on isdescendantnode(lastName, patientInfoForm)"
-                    + "    inner join [cards:TextAnswer] as email on isdescendantnode(email, patientInfoForm)"
-                    + " where"
-                    // for which at least one of first_name, last_name, email answers is filled in
-                    + " (firstName.value IS NOT NULL or lastName.value IS NOT NULL or email.value IS NOT NULL)"
-                    // link to the correct Patient Information questionnaire
-                    + "  and patientInformation.questionnaire = '%1$s'"
-                    // link to the first_name question
-                    + "  and firstName.question = '%2$s'"
-                    // link to the last_name question
-                    + "  and firstName.question = '%3$s'"
-                    // link to the email question
-                    + "  and email.question = '%4$s'"
-                    // use the fast index
-                    + " option (index tag cards)",
-                patientInformationQuestionnaire, firstName, lastName, email),
-                Query.JCR_SQL2);
-
+            final Iterator<Resource> resources = findPatientInformationForms(patientInformationQuestionnaire, resolver);
             resources.forEachRemaining(form -> {
                 try {
                     Node formNode = form.adaptTo(Node.class);
@@ -143,6 +110,42 @@ public class PatientInformationCleanupTask implements Runnable
                 this.rrp.pop();
             }
         }
+    }
+
+    private Iterator<Resource> findPatientInformationForms(final String patientInformationQuestionnaire,
+        final ResourceResolver resolver)
+    {
+        // Gather the needed UUIDs to place in the query
+        final String firstName = (String) resolver.getResource("/Questionnaires/Patient information/first_name")
+            .getValueMap().get(UUID_KEY);
+        final String lastName = (String) resolver.getResource("/Questionnaires/Patient information/last_name")
+            .getValueMap().get(UUID_KEY);
+        final String email =
+            (String) resolver.getResource("/Questionnaires/Patient information/email").getValueMap().get(UUID_KEY);
+
+        // Query:
+        return resolver.findResources(String.format(
+            // select all of the Patient information forms with some of private information filled
+            "select distinct patientInfoForm.*"
+                + "  from [cards:Form] as patientInforForm"
+                + "    inner join [cards:TextAnswer] as firstName on isdescendantnode(firstName, patientInfoForm)"
+                + "    inner join [cards:TextAnswer] as lastName on isdescendantnode(lastName, patientInfoForm)"
+                + "    inner join [cards:TextAnswer] as email on isdescendantnode(email, patientInfoForm)"
+                + " where"
+                // for which at least one of first_name, last_name, email answers is filled in
+                + " (firstName.value IS NOT NULL or lastName.value IS NOT NULL or email.value IS NOT NULL)"
+                // link to the correct Patient Information questionnaire
+                + "  and patientInformation.questionnaire = '%1$s'"
+                // link to the first_name question
+                + "  and firstName.question = '%2$s'"
+                // link to the last_name question
+                + "  and firstName.question = '%3$s'"
+                // link to the email question
+                + "  and email.question = '%4$s'"
+                // use the fast index
+                + " option (index tag cards)",
+            patientInformationQuestionnaire, firstName, lastName, email),
+            Query.JCR_SQL2);
     }
 
     private boolean canDeleteInformation(final Node form, final ResourceResolver resolver, final String patientQ)
