@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.patients.api.DataRetentionConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
@@ -58,6 +59,10 @@ public class PatientInformationCleanupScheduler
     @Reference
     private FormUtils formUtils;
 
+    /** The data retention configuration. */
+    @Reference
+    private DataRetentionConfiguration dataRetentionConfiguration;
+
     /** The scheduler for rescheduling jobs. */
     @Reference
     private Scheduler scheduler;
@@ -72,7 +77,7 @@ public class PatientInformationCleanupScheduler
             options.canRunConcurrently(false);
 
             final Runnable cleanupJob = new PatientInformationCleanupTask(this.resolverFactory, this.rrp,
-                this.formUtils);
+                this.formUtils, this.dataRetentionConfiguration);
             this.scheduler.schedule(cleanupJob, options);
         } catch (final Exception e) {
             LOGGER.error("PatientInformationCleanup failed to schedule: {}", e.getMessage(), e);
