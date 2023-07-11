@@ -98,11 +98,11 @@ public class PatientInformationCleanupTask implements Runnable
             // Query:
             final Iterator<Resource> resources = resolver.findResources(String.format(
                 // select all of the Patient information forms with some of private information filled
-                "select distinct patientInformation.*"
-                    + "  from [cards:Form] as patientInformation"
-                    + "    inner join [cards:Answer] as firstName on isdescendantnode(firstName, patientInformation)"
-                    + "    inner join [cards:Answer] as lastName on isdescendantnode(lastName, patientInformation)"
-                    + "    inner join [cards:Answer] as email on isdescendantnode(email, patientInformation)"
+                "select distinct patientInfoForm.*"
+                    + "  from [cards:Form] as patientInforForm"
+                    + "    inner join [cards:TextAnswer] as firstName on isdescendantnode(firstName, patientInfoForm)"
+                    + "    inner join [cards:TextAnswer] as lastName on isdescendantnode(lastName, patientInfoForm)"
+                    + "    inner join [cards:TextAnswer] as email on isdescendantnode(email, patientInfoForm)"
                     + " where"
                     // for which at least one of first_name, last_name, email answers is filled in
                     + " (firstName.value IS NOT NULL or lastName.value IS NOT NULL or email.value IS NOT NULL)"
@@ -113,8 +113,10 @@ public class PatientInformationCleanupTask implements Runnable
                     // link to the last_name question
                     + "  and firstName.question = '%3$s'"
                     // link to the email question
-                    + "  and email.question = '%4$s'",
-                    patientInformationQuestionnaire, firstName, lastName, email),
+                    + "  and email.question = '%4$s'"
+                    // use the fast index
+                    + " option (index tag cards)",
+                patientInformationQuestionnaire, firstName, lastName, email),
                 Query.JCR_SQL2);
 
             resources.forEachRemaining(form -> {
