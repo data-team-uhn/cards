@@ -466,7 +466,7 @@ export function NewSubjectDialog (props) {
     }
 
     // Since the error will always be during the creation of a subject, we'll revert back to the create subject page and remove all details
-    clearDialog(false);
+    goBack(false);
   }
 
   // Called when creating a new subject
@@ -605,16 +605,30 @@ export function NewSubjectDialog (props) {
     });
   }
 
-  let goBack = () => {
+  let goBack = (clearError=true) => {
     // if there are no new subjects...
     if (newSubjectIndex == 0) {
       // Close the entire dialog
       closeDialog();
     } else {
       // Go back a stage, and reopen the select parent dialog
-      setError();
+      if (clearError) {
+        setError();
+      }
       setNewSubjectTypeParent(newSubjectTypeParentHistory[newSubjectIndex-1]);
       setNewSubjectIndex((old) => old-1);
+      setNewSubjectName((old) => {
+        let newNames = old.slice(0, -1);
+        return newNames;
+      });
+      setNewSubjectType((old) => {
+        let newTypes = old.slice(0, -1);
+        return newTypes;
+      });
+      setNewSubjectAllowedTypes((old) => {
+        let newTypes = old.slice(0, -1);
+        return newTypes;
+      });
       setNewSubjectPopperOpen(false);
       setSelectParentPopperOpen(true);
     }
