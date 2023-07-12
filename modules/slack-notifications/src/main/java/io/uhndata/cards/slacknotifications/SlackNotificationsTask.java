@@ -167,12 +167,12 @@ public class SlackNotificationsTask implements Runnable
                 slackNotificationString += "\n" + "```" + "\n" + stackTracesIter.next() + "\n" + "```";
             }
 
-            if (slackNotificationString.length() == 0) {
-                slackNotificationString = "*ERROR*: Could not gather any performance statistics";
-            }
-
-            postToSlack(SLACK_PERFORMANCE_URL, slackNotificationString,
-                (slackNotificationString.length() == 0 || errorStackTraces.size() > 0) ? "#f3db0e" : "#2eb886");
+            postToSlack(SLACK_PERFORMANCE_URL,
+                (slackNotificationString.length() == 0)
+                    ? "*ERROR*: Could not gather any performance statistics" : slackNotificationString,
+                (slackNotificationString.length() == 0 || errorStackTraces.size() > 0)
+                    ? "#f3db0e" : "#2eb886"
+            );
 
         } catch (LoginException e) {
             LOGGER.warn("Failed to results.next().getPath()");
