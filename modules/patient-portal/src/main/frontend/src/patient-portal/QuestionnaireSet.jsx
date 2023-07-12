@@ -588,7 +588,7 @@ function QuestionnaireSet(props) {
     let date = getVisitDate();
     if (date?.isValid) {
       // Compute the moment the token expired: the configured number of days after the visit, at midnight
-      date = date.plus({days: tokenLifetime || config?.allowedPostVisitCompletionTime || 0}).endOf('day');
+      date = date.plus({days: tokenLifetime ?? config?.allowedPostVisitCompletionTime ?? 0}).endOf('day');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0
