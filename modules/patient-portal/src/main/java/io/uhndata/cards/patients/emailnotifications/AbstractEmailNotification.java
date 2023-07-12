@@ -168,7 +168,7 @@ abstract class AbstractEmailNotification
         final int tokenLifetime = AppointmentUtils.getTokenLifetime(
             this.formUtils,
             visitSubject,
-            "/Questionnaires/Visit information/surveys",
+            "/Questionnaires/Visit information/clinic",
             "tokenLifetime",
             postVisitCompletionTime);
         tokenExpiryDate.add(Calendar.DATE, tokenLifetime);

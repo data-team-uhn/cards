@@ -202,7 +202,7 @@ public final class AppointmentUtils
      *
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
-     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
+     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/clinic)
      * @param clinicEmailProperty the JCR node property holding the email address (eg. "emergencyContact")
      * @return the contact email address associated with a subject
      */
@@ -230,7 +230,7 @@ public final class AppointmentUtils
      *
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
-     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
+     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/clinic)
      * @param tokenLifetimeProperty the JCR node property holding the token lifetime (eg. "tokenLifetime")
      * @param defaultLifetime the default to return
      * @return the token lifetime in days

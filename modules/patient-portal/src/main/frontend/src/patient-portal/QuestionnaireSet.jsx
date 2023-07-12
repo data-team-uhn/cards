@@ -291,6 +291,7 @@ function QuestionnaireSet(props) {
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then((json) => {
               setId(json["survey"]);
+              setTokenLifetime(json.tokenLifetime);
             });
         }
         selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
@@ -321,7 +322,6 @@ function QuestionnaireSet(props) {
     // Extract the title and intro
     setTitle(json.name);
     setIntro(json.intro || "");
-    setTokenLifetime(json.tokenLifetime);
     // If the questionnaire set specifies a value for `enableReviewScreen`, overwrite the curently stored value
     typeof(json.enableReviewScreen) != "undefined" && setEnableReviewScreen(json.enableReviewScreen);
 

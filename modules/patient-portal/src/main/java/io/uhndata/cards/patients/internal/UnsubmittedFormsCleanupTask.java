@@ -88,17 +88,17 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                 (String) resolver.getResource("/Questionnaires/Visit information/time").getValueMap().get("jcr:uuid");
             final String submitted = (String) resolver
                 .getResource("/Questionnaires/Visit information/surveys_submitted").getValueMap().get("jcr:uuid");
-            final int patientToken = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
+            final int patientTokenLifetime = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
 
             // Find all clinics to iterate over
             final Iterator<Resource> results = resolver.findResources(
-                "select * from [cards:QuestionnaireSet] as clinic", Query.JCR_SQL2);
+                "select * from [cards:ClinicMapping] as clinic", Query.JCR_SQL2);
             while (results.hasNext()) {
                 Resource resource = results.next();
                 final Node clinicNode = resource.adaptTo(Node.class);
                 final String clinicPath = clinicNode.getPath();
                 // Get clinic token lifetime or default to the global patient token lifetime
-                int delay = patientToken;
+                int delay = patientTokenLifetime;
                 if (clinicNode.hasProperty("tokenLifetime")) {
                     delay = (int) clinicNode.getProperty("tokenLifetime").getLong();
                 }
