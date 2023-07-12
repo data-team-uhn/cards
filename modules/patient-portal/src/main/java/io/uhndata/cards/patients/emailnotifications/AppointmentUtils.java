@@ -46,6 +46,8 @@ public final class AppointmentUtils
 
     private static final String EMPTY = "";
 
+    private static final String TOKEN_LIFETIME = "tokenLifetime";
+
     // Hide the utility class constructor
     private AppointmentUtils()
     {
@@ -231,20 +233,19 @@ public final class AppointmentUtils
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
      * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/clinic)
-     * @param tokenLifetimeProperty the JCR node property holding the token lifetime (eg. "tokenLifetime")
      * @param defaultLifetime the default to return
      * @return the token lifetime in days
      */
     public static int getTokenLifetime(FormUtils formUtils, Node formRelatedSubject,
-        String clinicIdLink, String tokenLifetimeProperty, int defaultLifetime)
+        String clinicIdLink, int defaultLifetime)
     {
         Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject, clinicIdLink);
         if (clinicNode == null) {
             return defaultLifetime;
         }
         try {
-            if (clinicNode.hasProperty(tokenLifetimeProperty)) {
-                return (int) clinicNode.getProperty(tokenLifetimeProperty).getLong();
+            if (clinicNode.hasProperty(TOKEN_LIFETIME)) {
+                return (int) clinicNode.getProperty(TOKEN_LIFETIME).getLong();
             }
         } catch (RepositoryException e) {
             // TODO Auto-generated catch block

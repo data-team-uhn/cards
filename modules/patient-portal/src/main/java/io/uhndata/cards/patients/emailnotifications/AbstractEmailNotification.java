@@ -169,7 +169,6 @@ abstract class AbstractEmailNotification
             this.formUtils,
             visitSubject,
             "/Questionnaires/Visit information/clinic",
-            "tokenLifetime",
             postVisitCompletionTime);
         tokenExpiryDate.add(Calendar.DATE, tokenLifetime);
         atMidnight(tokenExpiryDate);

@@ -414,8 +414,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
                     final int tokenLifetime = AppointmentUtils.getTokenLifetime(
                         this.formUtils,
                         visitSubject,
-                        "/Questionnaires/Visit information/surveys",
-                        "tokenLifetime",
+                        "/Questionnaires/Visit information/clinic",
                         postVisitCompletionTime);
                     limit.add(Calendar.DATE, tokenLifetime);
                     atMidnight(limit);

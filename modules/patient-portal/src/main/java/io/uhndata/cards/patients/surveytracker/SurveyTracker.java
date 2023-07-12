@@ -241,8 +241,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
                 final int tokenLifetime = AppointmentUtils.getTokenLifetime(
                     this.formUtils,
                     visitSubject,
-                    "/Questionnaires/Visit information/surveys",
-                    "tokenLifetime",
+                    "/Questionnaires/Visit information/clinic",
                     postVisitCompletionTime);
                 expirationDate.add(Calendar.DATE, tokenLifetime + 1);
                 expirationDate.add(Calendar.DATE, 1);
