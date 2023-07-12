@@ -182,8 +182,8 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
                 return;
             }
             final Node node = session.getNode(path);
+            final Node form = this.formUtils.getForm(node);
             if (isAnswerForHasSurveys(node) && hasSurveys(node)) {
-                final Node form = this.formUtils.getForm(node);
                 // Also update the expiration date, since this cannot be copied from the visit
                 ensureSurveyStatusFormExists(session.getNode("/Questionnaires/Survey events"),
                     this.formUtils.getSubject(form), session);
@@ -192,7 +192,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             } else if (isAnswerForSurveysSubmitted(node) && isSubmitted(node)) {
                 updateSurveySubmittedDate(node, session);
             } else if (isAnswerForVisitTime(node)) {
-                updateSurveyExpirationDate(node, node, session);
+                updateSurveyExpirationDate(form, node, session);
             }
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage());
