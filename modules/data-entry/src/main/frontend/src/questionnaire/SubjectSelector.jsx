@@ -1016,7 +1016,7 @@ function SubjectSelectorList(props) {
       setData(filteredData.map((row) => ({
         hierarchy: getHierarchy(row, React.Fragment, () => ({})),
           ...row })));
-      setRowCount(filteredData.length);
+      setRowCount(json.totalrows);
 
       setIsLoading(false);
       setIsRefetching(false);
