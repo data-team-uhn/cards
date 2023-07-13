@@ -43,7 +43,8 @@ function Clinics(props) {
     "displayName": "Name",
     "sidebarLabel": "Sidebar Entry",
     "survey": "Surveys",
-    "emergencyContact": "Emergency Contact"
+    "emergencyContact": "Emergency Contact",
+    "tokenLifetime": "Token Lifetime"
   }
 
   let columns = Object.keys(clinicsSpecs).filter((stat) => !Array.isArray(clinicsSpecs[stat]))
