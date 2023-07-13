@@ -67,8 +67,24 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
-        final LocalDateTime dateLowerBound = this.strToDateTime(request.getParameter("dateLowerBound"));
-        final LocalDateTime dateUpperBound = this.strToDateTime(request.getParameter("dateUpperBound"));
+        try {
+            final LocalDateTime dateLowerBound = this.strToDateTime(request.getParameter("dateLowerBound"));
+        } catch (DateTimeParseException e) {
+            // Wasn't able to parse the passed DateTime
+            response.setStatus(400);
+            out.write("Error: Invalid date/time specified for dateLowerBound");
+            return;
+        }
+
+        try {
+            final LocalDateTime dateUpperBound = this.strToDateTime(request.getParameter("dateUpperBound"));
+        } catch (DateTimeParseException e) {
+            // Wasn't able to parse the passed DateTime
+            response.setStatus(400);
+            out.write("Error: Invalid date/time specified for dateUpperBound");
+            return;
+        }
+
         final String exportRunMode = (dateLowerBound != null && dateUpperBound != null)
             ? "manualBetween"
             : (dateLowerBound != null && dateUpperBound == null) ? "manualAfter" : "manualToday";
@@ -81,16 +97,10 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
         out.write("Webhook Backup export started");
     }
 
-    private LocalDateTime strToDateTime(final String date)
+    private LocalDateTime strToDateTime(final String date) throws DateTimeParseException
     {
         LOGGER.warn("strToDateTime attempting to parse: {}", date);
         if (date == null) {
-            return null;
-        }
-        try {
-            return LocalDateTime.parse(date);
-        } catch (DateTimeParseException e) {
-            LOGGER.warn("strToDateTime failed to parse {} due to {}", date, e);
             return null;
         }
     }
