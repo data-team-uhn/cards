@@ -38,7 +38,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * Automatically delete submitted survey responses older than max age.
  *
  * @version $Id$
- * @since 0.9.6
+ * @since 0.9.16
  */
 @Designate(ocd = SubmittedFormsCleanupScheduler.Config.class, factory = true)
 @Component(immediate = true)
