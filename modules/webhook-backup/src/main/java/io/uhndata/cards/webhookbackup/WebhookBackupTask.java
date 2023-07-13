@@ -314,7 +314,8 @@ public class WebhookBackupTask implements Runnable
     {
         String taskUpdateMessage = emojii + " Backup " + status + " for data modified ";
         if (upper == null) {
-            taskUpdateMessage += "after " + lower.format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
+            taskUpdateMessage += "after " + lower.atZone(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
         } else {
             taskUpdateMessage += "between ";
             taskUpdateMessage += lower.atZone(ZoneId.systemDefault())
