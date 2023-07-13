@@ -67,8 +67,9 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
+        final LocalDateTime dateLowerBound;
         try {
-            final LocalDateTime dateLowerBound = this.strToDateTime(request.getParameter("dateLowerBound"));
+            dateLowerBound = this.strToDateTime(request.getParameter("dateLowerBound"));
         } catch (DateTimeParseException e) {
             // Wasn't able to parse the passed DateTime
             response.setStatus(400);
@@ -76,8 +77,9 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
+        final LocalDateTime dateUpperBound;
         try {
-            final LocalDateTime dateUpperBound = this.strToDateTime(request.getParameter("dateUpperBound"));
+            dateUpperBound = this.strToDateTime(request.getParameter("dateUpperBound"));
         } catch (DateTimeParseException e) {
             // Wasn't able to parse the passed DateTime
             response.setStatus(400);
