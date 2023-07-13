@@ -39,7 +39,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * Periodically delete submitted survey responses older than max age.
  *
  * @version $Id$
- * @since 0.9.6
+ * @since 0.9.16
  */
 public class SubmittedFormsCleanupTask implements Runnable
 {
