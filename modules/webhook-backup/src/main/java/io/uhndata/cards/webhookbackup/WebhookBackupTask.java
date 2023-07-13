@@ -21,6 +21,7 @@ package io.uhndata.cards.webhookbackup;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -94,9 +95,11 @@ public class WebhookBackupTask implements Runnable
 
     public void doManualExport(LocalDateTime lower, LocalDateTime upper)
     {
-        String requestDateStringLower = lower.toString();
+        String requestDateStringLower = lower.atZone(ZoneId.systemDefault())
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+
         String requestDateStringUpper = (upper != null)
-            ? upper.toString()
+            ? upper.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))
             : null;
 
         // Notify that we are now beginning the backup
