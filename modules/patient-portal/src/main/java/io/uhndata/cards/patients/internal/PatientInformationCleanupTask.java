@@ -42,12 +42,10 @@ import io.uhndata.cards.patients.api.DataRetentionConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
- * Periodically clears last_name, first_name, email from any Patient information form of patient subjects
- * for whom Survey events form corresponding to the latest visit (i.e. for which the answer to discharged_date
- * is the latest) has at least one of responses_received or reminder2_sent answers filled in with a date value.
+ * Periodically clears last_name, first_name, email from any Patient information form because we no longer need it.
  *
  * @version $Id$
- * @since 0.9.6
+ * @since 0.9.16
  */
 public class PatientInformationCleanupTask implements Runnable
 {
@@ -185,7 +183,7 @@ public class PatientInformationCleanupTask implements Runnable
                 surveyEventsQuestionnaire, dischargedDate, visitSubjectUuid),
             Query.JCR_SQL2);
 
-        // If there are no visit information forms, delete the patient info since there's no visit to notify about
+        // If there are no visit information forms, delete the survey event since there's no visit to notify about
         if (!resources.hasNext()) {
             return true;
         }
