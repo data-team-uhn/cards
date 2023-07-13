@@ -105,5 +105,6 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
         if (date == null) {
             return null;
         }
+        return LocalDateTime.parse(date);
     }
 }
