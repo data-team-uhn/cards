@@ -46,7 +46,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 public class WebhookBackupTask implements Runnable
 {
-    private static final String DATE_TIME_JCR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final String DATE_TIME_JCR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSxxx";
 
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(WebhookBackupTask.class);
@@ -96,10 +96,10 @@ public class WebhookBackupTask implements Runnable
     public void doManualExport(LocalDateTime lower, LocalDateTime upper)
     {
         String requestDateStringLower = lower.atZone(ZoneId.systemDefault())
-            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+            .format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
 
         String requestDateStringUpper = (upper != null)
-            ? upper.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))
+            ? upper.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT))
             : null;
 
         // Notify that we are now beginning the backup
