@@ -32,7 +32,11 @@ import WarningIcon from '@mui/icons-material/Warning';
 
 const appbarStyle = theme => ({
   root: {
-    backgroundColor: theme.palette.warning.main
+    backgroundColor: theme.palette.warning.main,
+    boxShadow: "none",
+    [theme.breakpoints.down('md')]: {
+      position: 'absolute',
+    },
   }
 });
 

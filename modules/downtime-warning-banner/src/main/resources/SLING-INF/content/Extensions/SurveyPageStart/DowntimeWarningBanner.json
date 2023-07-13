@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "patient-portal/surveyPageStart",
+  "cards:extensionName": "Downtime Warning Banner",
+  "cards:extensionRenderURL": "asset:cards-downtime-warning-banner.downtimeBanner.js"
+}

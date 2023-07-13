@@ -34,6 +34,10 @@ import BuildIcon from '@mui/icons-material/Build';
 const appbarStyle = theme => ({
   root: {
     backgroundColor: theme.palette.info.main,
+    boxShadow: "none",
+    [theme.breakpoints.down('md')]: {
+      position: 'absolute',
+    },
     "& .MuiAvatar-root" : {
       backgroundColor: theme.palette.background.paper,
       color: theme.palette.info.main
@@ -68,11 +72,11 @@ export default function DowntimeWarning(props) {
         setEnabled(json.enabled == 'true');
         if (json.fromDate) {
           let date = new Date(json.fromDate);
-          setFromDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
+          (date != "Invalid Date") && setFromDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
         }
         if (json.toDate) {
           let date = new Date(json.toDate);
-          setToDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
+          (date != "Invalid Date") && setToDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
         }
       })
       .catch((error) => {
@@ -88,7 +92,7 @@ export default function DowntimeWarning(props) {
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       {error && <Typography color='error'>{errorText}</Typography>}
-      <Grid container spacing={1} direction="row" alignItems="center" wrap="nowrap">
+      <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" wrap="nowrap">
         <Grid item><Avatar><BuildIcon/></Avatar></Grid>
         <Grid item>
         <Typography variant="body2">
