@@ -20,18 +20,18 @@
 <node>
     <name>DataRetention</name>
     <property>
-        <name>tokenlessAuthEnabled</name>
+        <name>deleteUnneededPatientDetails</name>
         <value>False</value>
         <type>Boolean</type>
     </property>
     <property>
-        <name>PIIAuthRequired</name>
+        <name>deleteDraftAnswers</name>
         <value>False</value>
         <type>Boolean</type>
     </property>
     <property>
-        <name>daysRelativeToEventWhileSurveyIsValid</name>
-        <value>30</value>
+        <name>draftLifetime</name>
+        <value>-1</value>
         <type>Long</type>
     </property>
 </node>

@@ -35,7 +35,7 @@ export const DEFAULT_PATIENT_ACCESS_CONFIG = {
     tokenlessAuthEnabled: false,
     PIIAuthRequired: false,
     daysRelativeToEventWhileSurveyIsValid: "0",
-    draftLifetime: "-1"
+    allowedPostVisitCompletionTime: "0"
 };
 
 const useStyles = makeStyles()(theme => ({
@@ -55,10 +55,9 @@ function PatientAccessConfiguration() {
 
   const [ patientAccessConfig, setPatientAccessConfig ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);
-  const [ error, setError ] = useState({});
 
   // Boolean fields can have one label
-  // Text fields can have one label, one optional helper text, one optional error text
+  // Text fields can have one label, one optional helper text
   const LABELS = {
     tokenlessAuthEnabled: "Patients can answer surveys without a personalized link",
     PIIAuthRequired: "Patients must confirm their identity by providing their date of birth and either MRN or HCN",
@@ -69,17 +68,8 @@ function PatientAccessConfiguration() {
     daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted: [
       "Relatively to the associated event, patients can start submitting incomplete surveys within:",
       "An absent value means patients are never allowed to submit incomplete surveys. Use a negative number when incomplete surveys are permitted a number of days before the event and onward, 0 for the day of the event and onward, and a positive number if incomplete submission is permitted a number of days after the event and onward.",
-    ],
-    draftLifetime: [
-      "Patients can edit unsubmitted responses for:",
-      "-1 means that drafts are kept until the patient is no longer able to access their surveys, 0 means drafts are deleted daily at midnight, 1 means they are kept until the next day at midmight, etc.",
-      "Please use a value of at least 0, or -1 to disable periodic draft deletion."
     ]
   };
-
-  const LIMITS = {
-    draftLifetime: {min: -1}
-  }
 
   let buildConfigData = (formData) => {
     for (let key of Object.keys(patientAccessConfig)) {
@@ -107,7 +97,6 @@ function PatientAccessConfiguration() {
   let onInputValueChanged = (key, value) => {
     setPatientAccessConfig(config => ({...config, [key]: (value || "")}));
     setHasChanges(true);
-    setError(err => ({...err, [key]: (LIMITS[key]?.min > value || LIMITS[key]?.max < value)}));
   }
 
   let renderConfigInput = (key, unit) => (
@@ -121,8 +110,7 @@ function PatientAccessConfiguration() {
             onBlur={event => onInputValueChanged(key, event.target.value)}
             placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
             value={patientAccessConfig?.[key] || ""}
-            error={error[key]}
-            helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
+            helperText={LABELS[key][1]}
             slotProps={{
               input: {
                 endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
@@ -146,10 +134,10 @@ function PatientAccessConfiguration() {
           >
           <List>
             { renderConfigCheckbox("tokenlessAuthEnabled") }
-            { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
             { renderConfigInput("daysRelativeToEventWhileSurveyIsValid", "days") }
             { renderConfigInput("daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted", "days") }
-            { renderConfigInput("draftLifetime", "days") }
+            { renderConfigCheckbox("PIIAuthRequired", !!patientAccessConfig?.tokenlessAuthEnabled) }
+            { renderConfigInput("allowedPostVisitCompletionTime", "days") }
           </List>
       </AdminConfigScreen>
   );

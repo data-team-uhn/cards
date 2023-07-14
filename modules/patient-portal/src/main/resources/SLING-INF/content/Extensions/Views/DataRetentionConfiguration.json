@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Data Retention",
+  "cards:targetURL": "/content.html/admin/DataRetentionConfiguration",
+  "cards:extensionRenderURL": "asset:patient-portal.DataRetentionConfiguration.js"
+}
