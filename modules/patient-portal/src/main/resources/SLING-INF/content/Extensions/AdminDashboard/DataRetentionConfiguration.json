@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Data Retention",
+  "cards:targetURL": "/content.html/admin/DataRetentionConfiguration",
+  "cards:icon": "asset:patient-portal.DataRetentionConfigurationIcon.js",
+  "cards:hint": "Configure how patient data is managed",
+  "cards:defaultOrder": 460
+}

@@ -30,12 +30,11 @@ import {
 import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
-export const PATIENT_ACCESS_CONFIG_PATH = "/Survey/PatientAccess";
-export const DEFAULT_PATIENT_ACCESS_CONFIG = {
-    tokenlessAuthEnabled: false,
-    PIIAuthRequired: false,
-    daysRelativeToEventWhileSurveyIsValid: "0",
-    allowedPostVisitCompletionTime: "0"
+export const DATA_RETENTION_CONFIG_PATH = "/DataRetention/DataRetention";
+export const DEFAULT_DATA_RETENTION_CONFIG = {
+    deleteUnneededPatientDetails: false,
+    deleteDraftAnswers: false,
+    draftLifetime: "-1"
 };
 
 const useStyles = makeStyles(theme => ({
@@ -50,49 +49,55 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function PatientAccessConfiguration() {
+function DataRetentionConfiguration() {
   const classes = useStyles();
 
-  const [ patientAccessConfig, setPatientAccessConfig ] = useState();
+  const [ dataRetentionConfig, setDataRetentionConfig ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);
+  const [ error, setError ] = useState({});
 
   // Boolean fields can have one label
-  // Text fields can have one label, one optional helper text
+  // Text fields can have one label, one optional helper text, one optional error text
   const LABELS = {
-    tokenlessAuthEnabled: "Patients can answer surveys without a personalized link",
-    PIIAuthRequired: "Patients must confirm their identity by providing their date of birth and either MRN or HCN",
-    daysRelativeToEventWhileSurveyIsValid: [
-      "Relatively to the associated event, patients can fill out surveys within:",
-      "Use a negative number when patient responses are due a number of days before the event, 0 for the day of the event, and a positive number when their responses are expected after the event."
+    deleteUnneededPatientDetails: "Whether or not unneeded PII should be deleted",
+    deleteDraftAnswers: "Whether or not draft answers should be deleted",
+    draftLifetime: [
+      "Patients can edit unsubmitted responses for:",
+      "-1 means that drafts are kept until the patient is no longer able to access their surveys, 0 means drafts are deleted daily at midnight, 1 means they are kept until the next day at midmight, etc.",
+      "Please use a value of at least 0, or -1 to disable periodic draft deletion."
     ]
   };
 
+  const LIMITS = {
+    draftLifetime: {min: -1}
+  }
+
   let buildConfigData = (formData) => {
-    for (let key of Object.keys(patientAccessConfig)) {
-      !key.startsWith("jcr:") && formData.append(key, patientAccessConfig[key]);
+    for (let key of Object.keys(dataRetentionConfig)) {
+      !key.startsWith("jcr:") && formData.append(key, dataRetentionConfig[key]);
     }
   }
 
-  let renderConfigCheckbox = (key, valueOverride) => (
+  let renderConfigCheckbox = (key) => (
       <ListItem>
         <FormControlLabel control={
           <Checkbox
             name={key}
-            checked={valueOverride || patientAccessConfig?.[key] || DEFAULT_PATIENT_ACCESS_CONFIG[key]}
-            disabled={valueOverride}
+            checked={dataRetentionConfig?.[key] || DEFAULT_DATA_RETENTION_CONFIG[key]}
             onChange={event => {
-              setPatientAccessConfig({...patientAccessConfig, [key]: valueOverride || event.target.checked});
+              setDataRetentionConfig({...dataRetentionConfig, [key]: event.target.checked});
               setHasChanges(true);
             }}
           />}
           label={LABELS[key]}
         />
       </ListItem>
-    );
+  );
 
   let onInputValueChanged = (key, value) => {
-    setPatientAccessConfig(config => ({...config, [key]: (value || "")}));
+    setDataRetentionConfig(config => ({...config, [key]: (value || "")}));
     setHasChanges(true);
+    setError(err => ({...err, [key]: (LIMITS[key]?.min > value || LIMITS[key]?.max < value)}));
   }
 
   let renderConfigInput = (key, unit) => (
@@ -104,12 +109,14 @@ function PatientAccessConfiguration() {
             type="number"
             onChange={event => onInputValueChanged(key, event.target.value)}
             onBlur={event => onInputValueChanged(key, event.target.value)}
-            placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
-            value={patientAccessConfig?.[key]}
-            helperText={LABELS[key][1]}
+            placeholder={DEFAULT_DATA_RETENTION_CONFIG[key] || ""}
+            value={dataRetentionConfig?.[key]}
+            error={error[key]}
+            helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
             InputProps={{
               endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
             }}
+            inputProps={LIMITS[key]}
           />
         </FormGroup>
       </ListItem>
@@ -117,22 +124,21 @@ function PatientAccessConfiguration() {
 
   return (
       <AdminConfigScreen
-          title="Patient Access"
-          configPath={PATIENT_ACCESS_CONFIG_PATH}
-          configTemplate={Object.keys(DEFAULT_PATIENT_ACCESS_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
-          onConfigFetched={setPatientAccessConfig}
+          title="Data Retention"
+          configPath={DATA_RETENTION_CONFIG_PATH}
+          configTemplate={Object.keys(DEFAULT_DATA_RETENTION_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
+          onConfigFetched={setDataRetentionConfig}
           hasChanges={hasChanges}
           buildConfigData={buildConfigData}
           onConfigSaved={() => setHasChanges(false)}
           >
           <List>
-            { renderConfigCheckbox("tokenlessAuthEnabled") }
-            { renderConfigInput("daysRelativeToEventWhileSurveyIsValid", "days") }
-            { renderConfigCheckbox("PIIAuthRequired", !!patientAccessConfig?.tokenlessAuthEnabled) }
-            { renderConfigInput("allowedPostVisitCompletionTime", "days") }
+            { renderConfigCheckbox("deleteUnneededPatientDetails") }
+            { renderConfigCheckbox("deleteDraftAnswers") }
+            { renderConfigInput("draftLifetime", "days") }
           </List>
       </AdminConfigScreen>
   );
 }
 
-export default PatientAccessConfiguration;
+export default DataRetentionConfiguration;

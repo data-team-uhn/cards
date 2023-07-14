@@ -36,7 +36,7 @@ import io.uhndata.cards.spi.AbstractNodeUtils;
 
 /**
  * Implementation for the {@link DataRetentionConfiguration} service storing the configuration in a JCR node,
- * {@code /lib/cards/conf/DataRetention}.
+ * {@code /DataRetention/DataRetention}.
  *
  * @version $Id$
  */
@@ -44,7 +44,7 @@ import io.uhndata.cards.spi.AbstractNodeUtils;
 public class DataRetentionConfigurationImpl extends AbstractNodeUtils implements DataRetentionConfiguration
 {
     /** The location of the configuration node for patient auth. */
-    private static final String CONFIG_NODE = "/lib/cards/conf/DataRetention";
+    private static final String CONFIG_NODE = "/DataRetention/DataRetention";
 
     /** Property on config node for whether or not unneeded PII should be deleted. */
     private static final String DELETE_PII_PROP = "deleteUnneededPatientDetails";
