@@ -84,6 +84,8 @@ public class ClinicsServlet extends SlingAllMethodsServlet
 
     private final ThreadLocal<String> emergencyContact = new ThreadLocal<>();
 
+    private final ThreadLocal<Double> tokenLifetime = new ThreadLocal<>();
+
     private final ThreadLocal<String> description = new ThreadLocal<>();
 
     private final ThreadLocal<String> idHash = new ThreadLocal<>();
@@ -150,6 +152,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         this.sidebarLabel.set(request.getParameter("sidebarLabel"));
         this.surveyID.set(request.getParameter("survey"));
         this.emergencyContact.set(request.getParameter("emergencyContact"));
+        this.tokenLifetime.set(Double.parseDouble(request.getParameter("tokenLifetime")));
         this.description.set(request.getParameter("description"));
         this.idHash.set(Integer.toString(this.clinicName.get().hashCode()));
         return true;
@@ -240,6 +243,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             "sidebarLabel", this.sidebarLabel.get(),
             "survey", this.surveyID.get(),
             "emergencyContact", this.emergencyContact.get(),
+            "tokenLifetime", this.tokenLifetime.get(),
             ClinicsServlet.DESCRIPTION_FIELD, this.description.get(),
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping"));
     }
@@ -330,6 +334,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         this.description.remove();
         this.displayName.remove();
         this.emergencyContact.remove();
+        this.tokenLifetime.remove();
         this.idHash.remove();
         this.sidebarLabel.remove();
         this.surveyID.remove();
