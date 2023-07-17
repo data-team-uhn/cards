@@ -38,6 +38,7 @@ import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -152,7 +153,10 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         this.sidebarLabel.set(request.getParameter("sidebarLabel"));
         this.surveyID.set(request.getParameter("survey"));
         this.emergencyContact.set(request.getParameter("emergencyContact"));
-        this.tokenLifetime.set(Double.parseDouble(request.getParameter("tokenLifetime")));
+        String tokenLifetimeParam = StringUtils.defaultString(request.getParameter("tokenLifetime"), "");
+        if (StringUtils.isNotBlank(tokenLifetimeParam)) {
+            this.tokenLifetime.set(Double.valueOf(tokenLifetimeParam));
+        }
         this.description.set(request.getParameter("description"));
         this.idHash.set(Integer.toString(this.clinicName.get().hashCode()));
         return true;
@@ -237,15 +241,18 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     {
         final Resource parentResource = resolver.getResource("/Survey/ClinicMapping");
 
-        resolver.create(parentResource, this.idHash.get(), Map.of(
+        Map<String, Object> params = Map.of(
             "clinicName", this.clinicName.get(),
             "displayName", this.displayName.get(),
             "sidebarLabel", this.sidebarLabel.get(),
             "survey", this.surveyID.get(),
             "emergencyContact", this.emergencyContact.get(),
-            "tokenLifetime", this.tokenLifetime.get(),
             ClinicsServlet.DESCRIPTION_FIELD, this.description.get(),
-            ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping"));
+            ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping");
+        if (this.tokenLifetime.get() != null) {
+            params.put("tokenLifetime", this.tokenLifetime.get());
+        }
+        resolver.create(parentResource, this.idHash.get(), params);
     }
 
     /**
