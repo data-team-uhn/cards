@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -241,14 +242,14 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     {
         final Resource parentResource = resolver.getResource("/Survey/ClinicMapping");
 
-        Map<String, Object> params = Map.of(
-            "clinicName", this.clinicName.get(),
-            "displayName", this.displayName.get(),
-            "sidebarLabel", this.sidebarLabel.get(),
-            "survey", this.surveyID.get(),
-            "emergencyContact", this.emergencyContact.get(),
-            ClinicsServlet.DESCRIPTION_FIELD, this.description.get(),
-            ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("clinicName", this.clinicName.get());
+        params.put("displayName", this.displayName.get());
+        params.put("sidebarLabel", this.sidebarLabel.get());
+        params.put("survey", this.surveyID.get());
+        params.put("emergencyContact", this.emergencyContact.get());
+        params.put(ClinicsServlet.DESCRIPTION_FIELD, this.description.get());
+        params.put(ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping");
         if (this.tokenLifetime.get() != null) {
             params.put("tokenLifetime", this.tokenLifetime.get());
         }
