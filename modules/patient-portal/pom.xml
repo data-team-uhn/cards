@@ -48,7 +48,7 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/patient-portal.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
-              SLING-INF/content/DataRetention/DataRetention.xml;path:=/DataRetention/DataRetention;overwrite:=true,
+              SLING-INF/content/apps/cards/config/DataRetention.xml;path:=/apps/cards/config/DataRetention,
               SLING-INF/content/libs/cards/resources/media/patient-portal/;path:=/libs/cards/resources/media/patient-portal/;overwrite:=true;uninstall:=true,
               SLING-INF/content/Survey.json;path:=/Survey,
               SLING-INF/content/libs/cards/PatientHomepage/;path:=/libs/cards/PatientHomepage/;overwrite:=true,

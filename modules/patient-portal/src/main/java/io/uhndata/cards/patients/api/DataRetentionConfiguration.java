@@ -26,7 +26,7 @@ package io.uhndata.cards.patients.api;
 public interface DataRetentionConfiguration
 {
     /**
-     * Check if patient identifying information (name, email) should be deleted as soon as it is no longer needed by
+     * Check if patient identifying information (name, email) should be deleted as soon as it is no longer needed for
      * emails.
      *
      * @return {@code true} if PII should be deleted
@@ -47,7 +47,7 @@ public interface DataRetentionConfiguration
      * {@code -1}, the draft will remain in the database until the patient no longer has access to it. {@code 0} means
      * draft answers will be deleted at every midnight.
      *
-     * @return A number of days
+     * @return a number of days
      */
     int getDraftLifetime();
 }

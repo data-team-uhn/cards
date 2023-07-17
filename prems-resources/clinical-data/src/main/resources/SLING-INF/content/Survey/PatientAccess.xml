@@ -18,7 +18,7 @@
 -->
 
 <node>
-    <name>DataRetention</name>
+    <name>PatientAccess</name>
     <property>
         <name>tokenlessAuthEnabled</name>
         <value>False</value>

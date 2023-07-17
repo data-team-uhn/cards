@@ -4,6 +4,6 @@
   "cards:extensionName": "Data Retention",
   "cards:targetURL": "/content.html/admin/DataRetentionConfiguration",
   "cards:icon": "asset:patient-portal.DataRetentionConfigurationIcon.js",
-  "cards:hint": "Configure how patient data is managed",
+  "cards:hint": "Configure how long patient data is stored",
   "cards:defaultOrder": 460
 }
