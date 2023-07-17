@@ -1,0 +1,14 @@
+{
+	"What else would you like to say about this experience?": ["Test Value 1234", "String"],
+	"Overall... (please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience”)": [7, "Long"],
+	"How often did care providers treat you with courtesy and respect?": [2, "Long"],
+	"Did you feel that there was good communication about your care between doctors, nurses and other hospital staff?": [2, "Long"],
+	"Would you recommend this hospital to your friends and family?": [7, "Long"],
+	"Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?": [2, "Long"],
+	"Did care providers do everything they could do to ease your discomfort or symptoms?": [2, "Long"],
+	"How often did care providers explain things in a way you could understand?": [2, "Long"],
+	"Hospital": ["TGH", "String"],
+	"If you had a long wait, were you told why?": [2, "Long"],
+	"Did you get the emotional support you needed to help you with any anxieties, fears or worries you had during this hospital visit?": [2, "Long"],
+	"Do you feel that you were treated with kindness and compassion?": [2, "Long"]
+}
