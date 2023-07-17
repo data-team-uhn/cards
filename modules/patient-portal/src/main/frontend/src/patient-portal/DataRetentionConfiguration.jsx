@@ -30,7 +30,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
-export const DATA_RETENTION_CONFIG_PATH = "/DataRetention/DataRetention";
+export const DATA_RETENTION_CONFIG_PATH = "/apps/cards/config/DataRetention";
 export const DEFAULT_DATA_RETENTION_CONFIG = {
     deleteUnneededPatientDetails: false,
     deleteDraftAnswers: false,
