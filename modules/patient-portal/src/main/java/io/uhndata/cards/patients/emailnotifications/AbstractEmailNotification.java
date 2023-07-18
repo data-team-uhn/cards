@@ -118,7 +118,7 @@ abstract class AbstractEmailNotification
                 Node appointmentDate = appointmentResults.nextNode();
                 Node appointmentForm = this.formUtils.getForm(appointmentDate);
                 Node visitSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient/Visit");
-                if (appointmentForm == null || AppointmentUtils.getVisitSurveysComplete(this.formUtils, visitSubject)) {
+                if (appointmentForm == null || AppointmentUtils.isVisitSurveyComplete(this.formUtils, visitSubject)) {
                     continue;
                 }
 
@@ -164,12 +164,11 @@ abstract class AbstractEmailNotification
         String patientFullName = AppointmentUtils.getPatientFullName(this.formUtils, patientSubject);
         Calendar visitDate = (Calendar) this.formUtils.getValue(appointmentDate);
         Calendar tokenExpiryDate = (Calendar) visitDate.clone();
-        final int postVisitCompletionTime = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
+        final int defaultTokenLifetime = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
         final int tokenLifetime = AppointmentUtils.getTokenLifetime(
             this.formUtils,
             visitSubject,
-            "/Questionnaires/Visit information/clinic",
-            postVisitCompletionTime);
+            defaultTokenLifetime);
         tokenExpiryDate.add(Calendar.DATE, tokenLifetime);
         atMidnight(tokenExpiryDate);
         final String token = this.tokenManager.create(

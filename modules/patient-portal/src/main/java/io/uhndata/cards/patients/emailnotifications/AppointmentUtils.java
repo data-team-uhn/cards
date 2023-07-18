@@ -48,6 +48,8 @@ public final class AppointmentUtils
 
     private static final String TOKEN_LIFETIME = "tokenLifetime";
 
+    private static final String CLINIC_PATH = "/Questionnaires/Visit information/clinic";
+
     // Hide the utility class constructor
     private AppointmentUtils()
     {
@@ -109,7 +111,7 @@ public final class AppointmentUtils
                 "cards:BooleanAnswer",
                 0L);
             Node visitClinic = session.getNode(getQuestionAnswerForSubject(formUtils, visitSubject,
-                "/Questionnaires/Visit information/clinic", TEXT_ANSWER, EMPTY));
+                CLINIC_PATH, TEXT_ANSWER, EMPTY));
 
             if (visitClinic == null) {
                 return null;
@@ -232,14 +234,13 @@ public final class AppointmentUtils
      *
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
-     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/clinic)
      * @param defaultLifetime the default to return
      * @return the token lifetime in days
      */
     public static int getTokenLifetime(FormUtils formUtils, Node formRelatedSubject,
-        String clinicIdLink, int defaultLifetime)
+        int defaultLifetime)
     {
-        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject, clinicIdLink);
+        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject, CLINIC_PATH);
         if (clinicNode == null) {
             return defaultLifetime;
         }
@@ -260,7 +261,7 @@ public final class AppointmentUtils
      * @param visitSubject the JCR Resource for the visit whose survey completion status we wish to obtain
      * @return the boolean survey completion status for the visit
      */
-    public static boolean getVisitSurveysComplete(FormUtils formUtils, Node visitSubject)
+    public static boolean isVisitSurveyComplete(FormUtils formUtils, Node visitSubject)
     {
         long isComplete = getQuestionAnswerForSubject(
             formUtils,
@@ -305,7 +306,7 @@ public final class AppointmentUtils
             final String hasSurveysUUID =
                 session.getNode("/Questionnaires/Visit information/has_surveys").getIdentifier();
             final String clinicUUID =
-                session.getNode("/Questionnaires/Visit information/clinic").getIdentifier();
+                session.getNode(CLINIC_PATH).getIdentifier();
             final Calendar lowerBoundDate = (Calendar) dateToQuery.clone();
             lowerBoundDate.set(Calendar.HOUR_OF_DAY, 0);
             lowerBoundDate.set(Calendar.MINUTE, 0);
