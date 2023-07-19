@@ -784,7 +784,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         } catch (RepositoryException ex) {
             // No change to query
         }
-        query += " OPTION (index tag property)"
+        query += " OPTION (index tag property)";
 
         try {
             Query queryObj = this.queryManager.get().createQuery(query, "JCR-SQL2");
