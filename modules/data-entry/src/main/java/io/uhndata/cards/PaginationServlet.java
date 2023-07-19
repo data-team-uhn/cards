@@ -796,7 +796,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @return a query condition, for example {@code  and notemptyf1_4.'question'='b5a6163e-db5a-4deb-822e-5dbe57031627'
      *          and notemptyf1_4.'value' IS NOT NULL}
      */
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private String addSingleCondition(final Filter filter)
     {
         StringBuilder condition = new StringBuilder();
@@ -828,29 +827,32 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     filter.source,
                     this.sanitizeValue(filter.value)));
         } else {
-            condition.append(" and");
             if ("<>".equals(filter.comparator)) {
-                condition.append("(");
-            }
-            condition.append(
-                String.format(
-                    " %s.'value'%s" + (("date".equals(filter.type))
-                        ? ((filter.value.contains("T") ? "cast('%s:00.000" : "cast('%sT00:00:00.000")
-                            + DateUtils.getTimezoneForDateString(this.sanitizeValue(filter.value))
-                            + "' as date)")
-                        : ("boolean".equals(filter.type)) ? "%s"
-                            : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
-                    filter.source,
-                    this.sanitizeComparator(filter.comparator),
-                    this.sanitizeValue(filter.value)));
-            if ("<>".equals(filter.comparator)) {
-                condition.append(
-                    String.format(
-                        " or %s.'value' IS NULL)",
-                        filter.source));
+                condition.append("(")
+                    .append(getValueComparisonString(filter))
+                    .append(
+                        String.format(
+                            " or %s.'value' IS NULL)",
+                            filter.source));
+            } else {
+                condition.append(getValueComparisonString(filter));
             }
         }
         return condition.toString();
+    }
+
+    private String getValueComparisonString(Filter filter)
+    {
+        return String.format(
+            " and (%s.'value'%s" + (("date".equals(filter.type))
+                ? ((filter.value.contains("T") ? "cast('%s:00.000" : "cast('%sT00:00:00.000")
+                    + DateUtils.getTimezoneForDateString(this.sanitizeValue(filter.value))
+                    + "' as date)")
+                : ("boolean".equals(filter.type)) ? "%s"
+                    : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
+            filter.source,
+            this.sanitizeComparator(filter.comparator),
+            this.sanitizeValue(filter.value));
     }
 
     /**
