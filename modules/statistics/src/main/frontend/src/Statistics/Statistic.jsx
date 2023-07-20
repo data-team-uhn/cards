@@ -258,15 +258,24 @@ function Statistic(props) {
             <Tooltip content={<CustomTooltip />} />
             {isSplit && <Legend align="right" verticalAlign="top" height={legendHeight} />}
             {allFields.map((field, idx) =>
-              isBar ?
+              isBar ? (groupNullAndFalseAnswersForXVar ?
                 <Bar
                   dataKey={field.label || field}
-                  stackId={groupNullAndFalseAnswersForXVar ? "a" : ""}
+                  stackId="a"
                   fill={chartColours[idx]}
                   key={idx}
                   onClick={(data, index) => handleClick(data, field)}
                   style={customStyle}
                 />
+                :
+                <Bar
+                  dataKey={field.label || field}
+                  fill={chartColours[idx]}
+                  key={idx}
+                  onClick={(data, index) => handleClick(data, field)}
+                  style={customStyle}
+                />
+                )
               :
                 <Line dataKey={field.label || field} type="monotone" stroke={chartColours[idx]} key={idx} />
             )}
