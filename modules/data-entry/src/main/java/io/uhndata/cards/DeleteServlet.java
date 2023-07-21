@@ -363,8 +363,14 @@ public class DeleteServlet extends SlingAllMethodsServlet
         NodeConsumer consumer
     ) throws RepositoryException
     {
-        if (node.hasProperty("recursiveDeleteParent") && node.getProperty("recursiveDeleteParent").getBoolean()) {
-            iterateChildren(node.getParent(), consumer, true);
+        if ("cards:FormReference".equals(node.getPrimaryNodeType().getName())) {
+            if (node.getNode("referenceProperties").getProperty("recursiveDeleteParent").getBoolean()) {
+                // Delete the parent form if specified by the form reference properties
+                iterateChildren(node.getParent().getParent(), consumer, true);
+            } else if (node.getParent().getNodes().getSize() == 1) {
+                // Delete the set of form references if this is the only form reference
+                iterateChildren(node.getParent(), consumer, true);
+            }
         }
     }
 
@@ -403,7 +409,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
                     case "cards:Questionnaire":
                         questionnaires.add(n.getProperty("title").getString());
                         break;
+                    case "cards:FormReferences":
                     case "cards:FormReference":
+                    case "cards:ReferenceProperties":
                         // Do not add formReferences to the user's prompt:
                         // The user be prompted to delete the formReferences parent form if it is being deleted
                         // or the formReference should be deleted silently

@@ -241,13 +241,9 @@ public class PauseResumeFormEditor extends DefaultEditor
     {
         final String uuid = UUID.randomUUID().toString();
         NodeBuilder node = this.currentNodeBuilder.setChildNode(uuid);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        node.setProperty(CREATED_PROP, dateFormat.format(new Date()), Type.DATE);
-        node.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
+        setDefaultProperties(node);
         node.setProperty(FormUtils.QUESTION_PROPERTY, questionUUID, Type.REFERENCE);
-        node.setProperty("jcr:primaryType", "cards:TextAnswer", Type.NAME);
-        node.setProperty("sling:resourceSuperType", FormUtils.ANSWER_RESOURCE, Type.STRING);
-        node.setProperty("sling:resourceType", "cards/TextAnswer", Type.STRING);
+        setTypeProperties(node, "cards:TextAnswer", FormUtils.ANSWER_RESOURCE, "cards/TextAnswer");
         node.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
         // If no value is specified, set the value to be an ID
         node.setProperty("value", value == null ? uuid : value, Type.STRING);
@@ -256,20 +252,50 @@ public class PauseResumeFormEditor extends DefaultEditor
     private void addFormReference(Node latestForm, String id)
     {
         try {
-            NodeBuilder reference = this.currentNodeBuilder.setChildNode("formReference");
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            reference.setProperty(CREATED_PROP, dateFormat.format(new Date()), Type.DATE);
-            reference.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
+            NodeBuilder references;
+            if (this.currentNodeBuilder.hasChildNode("formReferences")) {
+                references = this.currentNodeBuilder.getChildNode("formReferences");
+            } else {
+                references = this.currentNodeBuilder.setChildNode("formReferences");
+                setDefaultProperties(references);
+                setTypeProperties(references, "cards:FormReferences", "cards/Resource", "cards/FormReferences");
+            }
+
+            NodeBuilder reference = references.setChildNode(UUID.randomUUID().toString());
+            setDefaultProperties(reference);
             reference.setProperty("reference", latestForm.getIdentifier(), Type.REFERENCE);
-            reference.setProperty("label", "Pause Form", Type.STRING);
-            // Delete a resume form when the related pause form is deleted
-            reference.setProperty("recursiveDeleteParent", true, Type.BOOLEAN);
-            reference.setProperty("jcr:primaryType", "cards:FormReference", Type.NAME);
-            reference.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
-            reference.setProperty("sling:resourceType", "cards/FormReference", Type.STRING);
+
+            NodeBuilder properties = reference.setChildNode("referenceProperties");
+            setDefaultProperties(properties);
+            setTypeProperties(properties, "cards:ReferenceProperties", "cards/Resource", "cards/ReferenceProperties");
+            properties.setProperty("label", "Pause Form", Type.STRING);
+            properties.setProperty("recursiveDeleteParent", true, Type.BOOLEAN);
+            properties.setProperty("linkback", true, Type.BOOLEAN);
+
+            NodeBuilder linkbackProperties = properties.setChildNode("linkbackProperties");
+            setDefaultProperties(linkbackProperties);
+            setTypeProperties(linkbackProperties, "cards:ReferenceProperties", "cards/Resource",
+                "cards/ReferenceProperties");
+            linkbackProperties.setProperty("label", "Resume Form", Type.STRING);
+
+            setTypeProperties(reference, "cards:FormReference", "cards/Resource", "cards/FormReference");
         } catch (RepositoryException e) {
             LOGGER.error("Failed to create form reference for {}: {}", id, e.getMessage());
         }
+    }
+
+    private void setDefaultProperties(NodeBuilder node)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        node.setProperty(CREATED_PROP, dateFormat.format(new Date()), Type.DATE);
+        node.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
+    }
+
+    private void setTypeProperties(NodeBuilder node, String primaryType, String superType, String type)
+    {
+        node.setProperty("jcr:primaryType", primaryType, Type.NAME);
+        node.setProperty("sling:resourceSuperType", superType, Type.STRING);
+        node.setProperty("sling:resourceType", type, Type.STRING);
     }
 
     /**
