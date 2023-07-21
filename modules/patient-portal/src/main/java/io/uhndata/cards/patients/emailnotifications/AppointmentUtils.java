@@ -173,16 +173,14 @@ public final class AppointmentUtils
      *
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
-     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
      * @return the associated cards:QuestionnaireSet JCR Resource or null
      */
-    public static Node getValidClinicNode(FormUtils formUtils, Node formRelatedSubject,
-        String clinicIdLink)
+    public static Node getValidClinicNode(FormUtils formUtils, Node formRelatedSubject)
     {
         String clinicNodePath = getQuestionAnswerForSubject(
             formUtils,
             formRelatedSubject,
-            clinicIdLink,
+            CLINIC_PATH,
             TEXT_ANSWER,
             EMPTY);
 
@@ -204,14 +202,13 @@ public final class AppointmentUtils
      *
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
-     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/clinic)
      * @param clinicEmailProperty the JCR node property holding the email address (eg. "emergencyContact")
      * @return the contact email address associated with a subject
      */
     public static String getValidClinicEmail(FormUtils formUtils, Node formRelatedSubject,
-        String clinicIdLink, String clinicEmailProperty)
+        String clinicEmailProperty)
     {
-        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject, clinicIdLink);
+        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject);
         if (clinicNode == null) {
             return null;
         }

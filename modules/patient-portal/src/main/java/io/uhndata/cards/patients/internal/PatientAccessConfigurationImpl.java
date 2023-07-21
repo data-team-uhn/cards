@@ -129,7 +129,7 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     }
 
     @Override
-    public int getDefaultAllowedPostVisitCompletionTime()
+    public int getAllowedPostVisitCompletionTime()
     {
         try
         {
@@ -143,12 +143,11 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     @Override
     public int getAllowedPostVisitCompletionTime(Node visitInformationNode)
     {
-        final int defaultTokenLifetime = getDefaultAllowedPostVisitCompletionTime();
+        final int defaultTokenLifetime = getAllowedPostVisitCompletionTime();
         try
         {
             Node visitSubject = this.formUtils.getSubject(visitInformationNode, "/SubjectTypes/Patient/Visit");
-            Node clinicNode = AppointmentUtils.getValidClinicNode(this.formUtils, visitSubject,
-                AppointmentUtils.CLINIC_PATH);
+            Node clinicNode = AppointmentUtils.getValidClinicNode(this.formUtils, visitSubject);
 
             if (clinicNode != null && clinicNode.hasProperty(TOKEN_LIFETIME_PROP)) {
                 return (int) clinicNode.getProperty(TOKEN_LIFETIME_PROP).getLong();

@@ -50,17 +50,17 @@ public interface PatientAccessConfiguration
      *
      * @return A number of days
      */
-    int getDefaultAllowedPostVisitCompletionTime();
+    int getAllowedPostVisitCompletionTime();
 
     /**
      * Returns the token lifetime associated with the clinic linked to the Subject
      * related to the visitInformationNode Resource or default if it cannot be found.
      *
-     * @param visitInformationNode the JCR visit Information Node
+     * @param visitInformationForm the JCR Visit Information Node
      *
      * @return A number of days
      */
-    int getAllowedPostVisitCompletionTime(Node visitInformationNode);
+    int getAllowedPostVisitCompletionTime(Node visitInformationForm);
 
     /**
      * Get the configured amount of time, in days, that patient's draft responses are kept in the database and the
