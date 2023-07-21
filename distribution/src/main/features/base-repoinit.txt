@@ -86,3 +86,8 @@ end
 # SLING-10597 - Simplify setup of resource resolution mappings
 create path (sling:Folder) /etc/map
 create path (sling:Folder) /etc/map/http
+
+# CARDS-2299: allow everyone to see all users
+set ACL on /home/users
+    allow jcr:read for everyone
+end
