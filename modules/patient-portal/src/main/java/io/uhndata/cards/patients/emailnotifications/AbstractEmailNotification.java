@@ -126,7 +126,8 @@ abstract class AbstractEmailNotification
                 Node patientSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient");
 
                 try {
-                    Email email = renderTemplate(template, appointmentDate, visitSubject, patientSubject, session);
+                    Email email = renderTemplate(template, appointmentDate, appointmentForm, visitSubject,
+                        patientSubject, session);
                     if (email == null) {
                         continue;
                     }
@@ -152,7 +153,7 @@ abstract class AbstractEmailNotification
 
     protected abstract String getNotificationType();
 
-    private Email renderTemplate(final EmailTemplate template, final Node appointmentDate,
+    private Email renderTemplate(final EmailTemplate template, final Node appointmentDate, final Node appointmentForm,
         final Node visitSubject, final Node patientSubject, final Session session) throws RepositoryException
     {
         String patientEmailAddress =
@@ -164,11 +165,7 @@ abstract class AbstractEmailNotification
         String patientFullName = AppointmentUtils.getPatientFullName(this.formUtils, patientSubject);
         Calendar visitDate = (Calendar) this.formUtils.getValue(appointmentDate);
         Calendar tokenExpiryDate = (Calendar) visitDate.clone();
-        final int defaultTokenLifetime = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
-        final int tokenLifetime = AppointmentUtils.getTokenLifetime(
-            this.formUtils,
-            visitSubject,
-            defaultTokenLifetime);
+        final int tokenLifetime = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime(appointmentForm);
         tokenExpiryDate.add(Calendar.DATE, tokenLifetime);
         atMidnight(tokenExpiryDate);
         final String token = this.tokenManager.create(

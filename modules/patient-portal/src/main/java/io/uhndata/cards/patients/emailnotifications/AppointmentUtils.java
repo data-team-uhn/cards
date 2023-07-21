@@ -35,9 +35,11 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 
-@SuppressWarnings("MultipleStringLiterals")
 public final class AppointmentUtils
 {
+    /** Clinic ID Link. */
+    public static final String CLINIC_PATH = "/Questionnaires/Visit information/clinic";
+
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(AppointmentUtils.class);
 
@@ -45,10 +47,6 @@ public final class AppointmentUtils
     private static final String TEXT_ANSWER = "cards:TextAnswer";
 
     private static final String EMPTY = "";
-
-    private static final String TOKEN_LIFETIME = "tokenLifetime";
-
-    private static final String CLINIC_PATH = "/Questionnaires/Visit information/clinic";
 
     // Hide the utility class constructor
     private AppointmentUtils()
@@ -226,32 +224,6 @@ public final class AppointmentUtils
             // TODO Auto-generated catch block
         }
         return null;
-    }
-
-    /**
-     * Returns the token lifetime associated (through the clinicEmailProperty String) with the clinic linked to the
-     * formRelatedSubject Resource or default if it cannot be found.
-     *
-     * @param formUtils form utilities service
-     * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
-     * @param defaultLifetime the default to return
-     * @return the token lifetime in days
-     */
-    public static int getTokenLifetime(FormUtils formUtils, Node formRelatedSubject,
-        int defaultLifetime)
-    {
-        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject, CLINIC_PATH);
-        if (clinicNode == null) {
-            return defaultLifetime;
-        }
-        try {
-            if (clinicNode.hasProperty(TOKEN_LIFETIME)) {
-                return (int) clinicNode.getProperty(TOKEN_LIFETIME).getLong();
-            }
-        } catch (RepositoryException e) {
-            // TODO Auto-generated catch block
-        }
-        return defaultLifetime;
     }
 
     /**

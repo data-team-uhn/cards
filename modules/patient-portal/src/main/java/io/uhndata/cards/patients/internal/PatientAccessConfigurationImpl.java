@@ -30,7 +30,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.patients.emailnotifications.AppointmentUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.spi.AbstractNodeUtils;
 
@@ -51,8 +53,11 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     /** Property on config node for whether or not patient identification is required. */
     private static final String PATIENT_IDENTIFICATION_REQUIRED_PROP = "PIIAuthRequired";
 
-    /** Property on config node for the number of days a token is valid for. */
-    private static final String TOKEN_LIFETIME_PROP = "allowedPostVisitCompletionTime";
+    /** Default property on config node for the number of days a token is valid for. */
+    private static final String DEFAULT_TOKEN_LIFETIME_PROP = "allowedPostVisitCompletionTime";
+
+    /** Clinic property for the number of days a token is valid for. */
+    private static final String TOKEN_LIFETIME_PROP = "tokenLifetime";
 
     /** Property on config node for the number of days draft responses from patients are kept. */
     private static final String DRAFT_LIFETIME_PROP = "draftLifetime";
@@ -68,6 +73,9 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
 
     /** The number of days a patient's draft response is kept for by default (used in case of errors). */
     private static final int DRAFT_LIFETIME_DEFAULT = -1;
+
+    @Reference
+    private FormUtils formUtils;
 
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
@@ -121,15 +129,34 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     }
 
     @Override
-    public int getAllowedPostVisitCompletionTime()
+    public int getDefaultAllowedPostVisitCompletionTime()
     {
         try
         {
-            Property lifetime = getConfig(TOKEN_LIFETIME_PROP);
+            Property lifetime = getConfig(DEFAULT_TOKEN_LIFETIME_PROP);
             return lifetime == null ? TOKEN_LIFETIME_DEFAULT : (int) lifetime.getLong();
         } catch (RepositoryException e) {
             return TOKEN_LIFETIME_DEFAULT;
         }
+    }
+
+    @Override
+    public int getAllowedPostVisitCompletionTime(Node visitInformationNode)
+    {
+        final int defaultTokenLifetime = getDefaultAllowedPostVisitCompletionTime();
+        try
+        {
+            Node visitSubject = this.formUtils.getSubject(visitInformationNode, "/SubjectTypes/Patient/Visit");
+            Node clinicNode = AppointmentUtils.getValidClinicNode(this.formUtils, visitSubject,
+                AppointmentUtils.CLINIC_PATH);
+
+            if (clinicNode != null && clinicNode.hasProperty(TOKEN_LIFETIME_PROP)) {
+                return (int) clinicNode.getProperty(TOKEN_LIFETIME_PROP).getLong();
+            }
+        } catch (RepositoryException e) {
+            // TODO Auto-generated catch block
+        }
+        return defaultTokenLifetime;
     }
 
     @Override

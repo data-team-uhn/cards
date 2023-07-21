@@ -62,7 +62,6 @@ import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
-import io.uhndata.cards.patients.emailnotifications.AppointmentUtils;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -408,13 +407,8 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             "time", p -> {
                 try {
                     Calendar limit = (Calendar) p.getDate().clone();
-                    final int defaultTokenLifetime =
-                        this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
-                    Node visitSubject = this.formUtils.getSubject(visitInformationForm, "/SubjectTypes/Patient/Visit");
-                    final int tokenLifetime = AppointmentUtils.getTokenLifetime(
-                        this.formUtils,
-                        visitSubject,
-                        defaultTokenLifetime);
+                    final int tokenLifetime =
+                        this.patientAccessConfiguration.getAllowedPostVisitCompletionTime(visitInformationForm);
                     limit.add(Calendar.DATE, tokenLifetime);
                     atMidnight(limit);
                     return Calendar.getInstance().before(limit);
