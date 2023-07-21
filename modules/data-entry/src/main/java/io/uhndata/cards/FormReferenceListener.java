@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.heracles.internal;
+package io.uhndata.cards;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.VersionException;
@@ -39,7 +41,8 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
- * Change listener that adds a reference from pause forms to resume forms when their paired resume form is created.
+ * Change listener that watches for new form references and creates the link back to the originating form if that is
+ * required.
  *
  * @version $Id$
  */
@@ -47,9 +50,11 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
     ResourceChangeListener.PATHS + "=/Forms",
     ResourceChangeListener.CHANGES + "=ADDED"
 })
-public class ResumeFormReferenceListener implements ResourceChangeListener
+public class FormReferenceListener implements ResourceChangeListener
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResumeFormReferenceListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormReferenceListener.class);
+
+    private static final String[] LINKBACK_PROPERTIES = {"label", "recursiveDeleteParent"};
 
     /** Provides access to resources. */
     @Reference
@@ -64,22 +69,26 @@ public class ResumeFormReferenceListener implements ResourceChangeListener
     @Reference
     private QuestionnaireUtils questionnaireUtils;
 
+
     @Override
     public void onChange(final List<ResourceChange> changes)
     {
         changes.forEach(this::handleEvent);
     }
 
+
     private void handleEvent(final ResourceChange event)
     {
         final String path = event.getPath();
-        if (!path.endsWith("formReference")) {
+        // Check if the newly added node is a child of formReferences (likely a FormReference)
+        if (!(path.contains("formReferences/")
+            && path.substring(0, path.lastIndexOf("/")).endsWith("formReferences"))) {
             return;
         }
         // Acquire a service session with the right privileges for accessing visits and their forms
         boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.resolverFactory
-            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "PauseResumeEditor"))) {
+            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "formReferenceEditor"))) {
             this.rrp.push(localResolver);
             mustPopResolver = true;
             // Get the information needed from the triggering form
@@ -87,9 +96,9 @@ public class ResumeFormReferenceListener implements ResourceChangeListener
             if (!session.nodeExists(path)) {
                 return;
             }
-            final Node node = session.getNode(path);
-            if (isForResumeForm(node)) {
-                addPauseFormReference(node);
+            final Node formReference = session.getNode(path);
+            if (formReference.getNode("referenceProperties").getProperty("linkback").getBoolean()) {
+                addLinkback(formReference);
             }
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
@@ -102,58 +111,74 @@ public class ResumeFormReferenceListener implements ResourceChangeListener
         }
     }
 
-    private boolean isForResumeForm(final Node formReference)
+    /**
+     * Create the reference back to originating form.
+     * @param existingFormReference The FormReference node that caused this event
+     * @throws RepositoryException If the form reference could not be created
+     */
+    private void addLinkback(final Node existingFormReference) throws RepositoryException
     {
+        Node formToModify = existingFormReference.getProperty("reference").getNode();
+        if (formToModify == null) {
+            // Could not access the form that needs to be modified
+            return;
+        }
+
+        Node formToReference = existingFormReference.getParent().getParent();
+
+        boolean checkinNeeded = checkoutIfNeeded(formToModify);
+
         try {
-            final Node form = formReference.getParent();
-            final Node questionnaire = this.formUtils.getQuestionnaire(form);
-            if (questionnaire == null) {
-                return false;
+            Node formReferences;
+            if (formToModify.hasNode("formReferencess")) {
+                formReferences = formToModify.getNode("formReferences");
+            } else {
+                formReferences = formToModify.addNode("formReferences");
+                formReferences.setPrimaryType("cards:FormReferences");
             }
-            try {
-                if (!"/Questionnaires/Pause-Resume Status".equals(questionnaire.getPath())) {
-                    return false;
-                }
-                final Node statusQuestion = this.questionnaireUtils.getQuestion(questionnaire, "enrollment_status");
-                String status = String.valueOf(this.formUtils.getValue(
-                    this.formUtils.getAnswer(form, statusQuestion)));
-                return "resumed".equals(status);
-            } catch (RepositoryException e) {
-                return false;
+            Node newFormReference = formReferences.addNode(UUID.randomUUID().toString());
+            newFormReference.setProperty("reference", formToReference);
+
+            Node existingProperties = existingFormReference.getNode("referenceProperties");
+            if (existingProperties.hasNode("linkbackProperties")) {
+                Node newProperties = newFormReference.getNode("referenceProperties");
+                addPropertiesFromProperties(newProperties, existingProperties.getNode("linkbackProperties"));
+                newProperties.setPrimaryType("cards:ReferenceProperties");
             }
-        } catch (final RepositoryException e) {
-            LOGGER.warn("Failed check if answer is for question surveys_submitted: {}", e.getMessage(), e);
-            return false;
+
+            newFormReference.setPrimaryType("cards:FormReference");
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to create form reference to {}", formToReference.getPath(), e);
+        }
+
+        try {
+            formToModify.getSession().save();
+        } catch (VersionException e) {
+            // Node was checked in in the background, try to checkout and save again
+            formToModify.getSession().refresh(true);
+            checkinNeeded = checkoutIfNeeded(formToModify);
+            formToModify.getSession().save();
+        }
+        if (checkinNeeded) {
+            checkin(formToModify);
         }
     }
 
-    private void addPauseFormReference(final Node resumeFormReference) throws RepositoryException
+    private void addPropertiesFromProperties(Node newProperties, Node existingProperties)
     {
-        Node pauseForm = resumeFormReference.getProperty("reference").getNode();
-        Node resumeForm = resumeFormReference.getParent();
-
-        boolean checkinNeeded = checkoutIfNeeded(pauseForm);
         try {
-            Node latestReference = pauseForm.addNode("formReference");
-            latestReference.setProperty("reference", resumeForm);
-            latestReference.setProperty("label", "Resume Form");
-            // Do not delete a pause form when the linked resume form is deleted
-            latestReference.setProperty("recursiveDeleteParent", false);
-            latestReference.setPrimaryType("cards:FormReference");
-        } catch (RepositoryException e) {
-            LOGGER.error("Failed to create form reference to {}: {}", resumeForm.getPath(), e.getMessage());
-        }
-
-        try {
-            pauseForm.getSession().save();
-        } catch (VersionException e) {
-            // Node was checked in in the background, try to checkout and save again
-            pauseForm.getSession().refresh(true);
-            checkinNeeded = checkoutIfNeeded(pauseForm);
-            pauseForm.getSession().save();
-        }
-        if (checkinNeeded) {
-            checkin(pauseForm);
+            for (final String propName : LINKBACK_PROPERTIES) {
+                if (existingProperties.hasProperty(propName)) {
+                    Property prop = existingProperties.getProperty(propName);
+                    if (prop.isMultiple()) {
+                        newProperties.setProperty(prop.getName(), prop.getValues());
+                    } else {
+                        newProperties.setProperty(prop.getName(), prop.getValue());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Unable to copy properties to new form reference", e);
         }
     }
 

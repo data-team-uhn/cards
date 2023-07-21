@@ -506,6 +506,33 @@ function Form (props) {
     return time.hasSame(DateTime.local(),"day") ? "at " + time.toFormat("hh:mma") : time.toRelativeCalendar();
   }
 
+  let formReferenceDisplay = (formReference) => {
+    return formReference['referenceProperties']['label'] ?
+      <Link to={"/content.html" + formReference.reference['@path']} underline="hover">{formReference.referenceProperties.label}</Link>
+      :
+      <Breadcrumbs separator="/" style={{display: "inline-flex"}}>
+        {getDistinctHierarchyAsList(formReference.reference.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}
+        <Typography variant="overline" key=''><Link to={"/content.html" + formReference.reference['@path']} underline="hover">{formReference.reference.questionnaire['@name']}</Link></Typography>
+      </Breadcrumbs>
+  }
+
+  let formReferences = data && data['formReferences'] ?
+      (
+        <Typography variant="overline">
+          {"Related: "}
+          
+          {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).length > 1 ?
+            <>
+              <br/>
+              {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).map(([key, value]) => formReferenceDisplay(value[1]))}
+            </>
+            :
+            formReferenceDisplay(Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType'])[0][1])
+          }
+        </Typography>
+      )
+      : <></>
+
   return (
     <form action={data?.["@path"]}
           method="POST"
@@ -561,22 +588,7 @@ function Form (props) {
             : ""
           }
           </Breadcrumbs>
-          {
-            data && data['formReference'] && data['formReference']['reference'] ?
-              <Typography variant="overline">
-                {"Related: "}
-                {
-                  data['formReference']['label'] ?
-                    <Link to={"/content.html" + data.formReference.reference['@path']} underline="hover">{data.formReference.label}</Link>
-                    :
-                    <Breadcrumbs separator="/" style={{display: "inline-flex"}}>
-                      {getDistinctHierarchyAsList(data.formReference.reference.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}
-                      <Typography variant="overline" key=''><Link to={"/content.html" + data.formReference.reference['@path']} underline="hover">{data.formReference.reference.questionnaire['@name']}</Link></Typography>
-                    </Breadcrumbs>
-                }
-              </Typography>
-            : <></>
-          }
+          {formReferences}
         </ResourceHeader>
         }
         { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere

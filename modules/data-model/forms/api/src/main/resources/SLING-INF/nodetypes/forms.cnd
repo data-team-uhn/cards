@@ -804,7 +804,7 @@
   // Children
 
   // A link to another form
-  + formReference (cards:FormReference)
+  + formReferences (cards:FormReferences)
 
   // The answers and answer sections recorded in this form.
   + * (cards:Answer, cards:AnswerSection) = cards:Answer
@@ -851,20 +851,36 @@
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
-// A link between two forms
+// A set of links to other forms
+[cards:FormReferences] > sling:Folder
+  // Properties:
+
+  // A list of referenced forms
+  + * (cards:FormReference) = cards:FormReference
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/FormReferences" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+// A link to another form
 [cards:FormReference] > sling:Folder
   // Properties:
 
-  // A pseudo-link to the form this answer belongs to.
-  // Normally this wouldn't be necessary, since the hierarchy of the two nodes makes it redundant,
-  // but in queries ISDESCENDANTNODE(answer, form) is not yet efficiently implemented,
-  // so we add this property to be able to do joins on answer.form = form.jcr:uuid.
-  // This doesn't have to be a REFERENCE, since we don't want to overcrowd the references index,
-  // and we don't want to list all the answers when trying to delete a form.
-  - form (STRING) nofulltext
-
   // The form being referenced.
   - reference (reference) mandatory nofulltext
+
+  + referenceProperties (cards:ReferenceProperties) = cards:ReferenceProperties mandatory autocreated
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/FormReference" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+[cards:ReferenceProperties] > sling:Folder
+  // Properties
 
   // An optional label to be displayed instead of the default reference display.
   - label (string)
@@ -874,8 +890,12 @@
   // If false, only delete the formReference
   - recursiveDeleteParent (BOOLEAN) = false mandatory autocreated
 
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/FormReference" mandatory autocreated protected
+  // TODO: should the node version the parent form when modified
+  // See OPV property here:
+  // https://developer.adobe.com/experience-manager/reference-materials/spec/jcr/2.0/25_Appendix.html
 
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  // If true, the referenced form should automatically reference back the current form
+  - linkback (BOOLEAN) = false mandatory autocreated
+
+  // The properties that the linkback should be created with if required
+  + linkbackProperties (cards:ReferenceProperties)

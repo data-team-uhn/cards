@@ -62,8 +62,9 @@ public class RelatedFormsProcessor implements ResourceJsonProcessor
         final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (child.isNodeType("cards:FormReference"))
+            if (child.isNodeType("cards:FormReferences"))
             {
+                // Do not export form reference links
                 return null;
             }
         } catch (RepositoryException e) {
