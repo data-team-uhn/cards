@@ -57,7 +57,6 @@
               SLING-INF/content/libs/cards/Homepage/;path:=/libs/cards/Homepage/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
               SLING-INF/content/libs/cards/resources/media/default/;path:=/libs/cards/resources/media/default/;overwrite:=true;uninstall:=true,
-              SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
