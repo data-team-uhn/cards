@@ -31,17 +31,17 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
  * Prevent all FormReferences from being exported. The name of this processor is
- * {@code relatedForms}.
+ * {@code excludeFormReferences}.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class RelatedFormsProcessor implements ResourceJsonProcessor
+public class ExcludeFormReferencesProcessor implements ResourceJsonProcessor
 {
     @Override
     public String getName()
     {
-        return "relatedForms";
+        return "excludeFormReferences";
     }
 
     @Override

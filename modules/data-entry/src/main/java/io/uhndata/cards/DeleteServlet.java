@@ -413,7 +413,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
                     case "cards:FormReference":
                     case "cards:ReferenceProperties":
                         // Do not add formReferences to the user's prompt:
-                        // The user be prompted to delete the formReferences parent form if it is being deleted
+                        // The user will be prompted to delete the formReferences parent form if it is being deleted
                         // or the formReference should be deleted silently
                         break;
                     default:
