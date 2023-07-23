@@ -59,8 +59,8 @@ function DataRetentionConfiguration() {
   // Boolean fields can have one label
   // Text fields can have one label, one optional helper text, one optional error text
   const LABELS = {
-    deleteUnneededPatientDetails: "Whether or not unneeded PII should be deleted",
-    deleteDraftAnswers: "Whether or not draft answers should be deleted",
+    deleteUnneededPatientDetails: "Delete patient's personal information when it is no longer needed",
+    deleteDraftAnswers: "Delete unsubmitted answers",
     draftLifetime: [
       "Patients can edit unsubmitted responses for:",
       "-1 means that drafts are kept until the patient is no longer able to access their surveys, 0 means drafts are deleted daily at midnight, 1 means they are kept until the next day at midmight, etc.",
