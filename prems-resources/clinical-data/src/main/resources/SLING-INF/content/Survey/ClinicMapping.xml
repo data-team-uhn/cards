@@ -145,4 +145,52 @@
             <type>String</type>
         </property>
     </node>
+    <node>
+        <name>-1792626676</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>UHN-IC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>IC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>UHN Integrated Care Program</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>UHN IC</value>
+            <type>String</type>
+        </property>
+    </node>
+    <node>
+        <name>-432335117</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>UHN-IPIC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>IPIC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>UHN Inpatient and Integrated Care Program</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>UHN IP-IC</value>
+            <type>String</type>
+        </property>
+    </node>
 </node>
