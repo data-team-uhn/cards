@@ -20,7 +20,7 @@ module.exports = {
     [module_name + 'PatientAccessConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/PatientAccessConfiguration.jsx' },
     [module_name + 'PatientAccessConfigurationIcon']: '@mui/icons-material/MedicalInformation.js',
     [module_name + 'DataRetentionConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/DataRetentionConfiguration.jsx' },
-    [module_name + 'DataRetentionConfigurationIcon']: '@mui/icons-material/MedicalInformation.js',
+    [module_name + 'DataRetentionConfigurationIcon']: '@mui/icons-material/Timelapse.js',
     [module_name + 'ToUConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/ToUConfiguration.jsx' },
     [module_name + 'ToUConfigurationIcon']: '@mui/icons-material/Handshake.js',
     [module_name + 'SurveyInstructionsConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/SurveyInstructionsConfiguration.jsx' },
