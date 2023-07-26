@@ -17,24 +17,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
-CARDS_PID=$(pgrep "start_cards.sh")
+readonly cards_readiness_check_limit = 10
 
 function check_cards_running() {
-  docker ps | grep compose-cluster-cardsinitial-1 > /dev/null
+  docker inspect $(docker-compose ps -q cardsinitial) --format "{{.State.Status}}" | grep "running" > /dev/null
 }
 
 function handle_cards_java_fail() {
-  echo -e "Cards has failed to start, cannot run selenium tests"
+  echo -e "CARDS has failed to start, cannot run selenium tests"
   exit -1
 }
 
-echo "Cleaning up old CARDS docker images"
+echo "Cleaning up old CARDS Docker Compose deployments"
 docker-compose down && docker-compose rm && docker volume prune -f && ./cleanup.sh
-echo "Generating docker configuration"
+echo "Generating CADS Docker Compose environment"
 python3 generate_compose_yaml.py --oak_filesystem --dev_docker_image
-echo "Launching CARDS docker image"
-docker-compose build > /dev/null && docker-compose up -d
+echo "Launching CARDS Docker Compose environment"
+docker-compose build > /dev/null && docker-compose up -d || exit -1
 
+cards_readiness_check=0
 while true
 do
   echo "Waiting for CARDS to start"
@@ -42,7 +43,7 @@ do
   check_cards_running || handle_cards_java_fail
   curl --fail http://localhost:8080/system/sling/info.sessionInfo.json > /dev/null 2> /dev/null && break
   # Fail if cards hasn't started after 10 cycles
-  ((c++)) && ((c==10)) && exit -1
+  ((cards_readiness_check++)) && ((cards_readiness_check>=cards_readiness_check_limit)) && exit -1
   sleep 5
 done
 echo "CARDS started"

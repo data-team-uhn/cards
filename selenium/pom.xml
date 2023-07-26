@@ -106,15 +106,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-     <groupId>io.github.bonigarcia</groupId>
-     <artifactId>webdrivermanager</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-chrome-driver</artifactId>
+      <groupId>io.github.bonigarcia</groupId>
+      <artifactId>webdrivermanager</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
