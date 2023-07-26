@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 import { deepPurple, orange } from '@mui/material/colors';
@@ -26,7 +26,6 @@ import {
   Avatar,
   Divider,
   FormControl,
-  FormControlLabel,
   Icon,
   IconButton,
   List,
@@ -35,7 +34,6 @@ import {
   ListItemButton,
   ListItemText,
   TextField,
-  Typography,
   Tooltip
 } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
