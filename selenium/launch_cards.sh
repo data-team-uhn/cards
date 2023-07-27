@@ -24,7 +24,7 @@ function check_cards_running() {
 }
 
 function handle_cards_java_fail() {
-  echo -e "CARDS has failed to start, cannot run selenium tests"
+  echo -e "CARDS has failed to start, cannot run Selenium tests"
   exit -1
 }
 
