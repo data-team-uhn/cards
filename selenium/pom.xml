@@ -102,6 +102,12 @@
       <artifactId>selenium-chrome-driver</artifactId>
       <version>${selenium.version}</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.auto.service</groupId>
+          <artifactId>auto-service</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
