@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-readonly cards_readiness_check_limit = 10
+readonly cards_readiness_check_limit=10
 
 function check_cards_running() {
   docker inspect $(docker-compose ps -q cardsinitial) --format "{{.State.Status}}" | grep "running" > /dev/null
