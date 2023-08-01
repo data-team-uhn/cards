@@ -529,6 +529,7 @@
             <exclude>compose-cluster/secrets/**</exclude>
             <exclude>compose-cluster/SSL_CONFIG/**</exclude>
             <exclude>compose-cluster/SLING/**</exclude>
+            <exclude>compose-cluster/CARDS_LOGS/**</exclude>
             <!-- Ignore data/template files used for generating UI Extensions / ExtensionPoints -->
             <exclude>**/Development/ExtensionPointResources/**</exclude>
             <!-- Ignore email template files since we do not send a license in notification emails -->
