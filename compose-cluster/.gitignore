@@ -6,6 +6,7 @@ NCR_MODEL
 secrets
 SSL_CONFIG
 SLING
+CARDS_LOGS
 __pycache__
 samlKeystore.p12
 proxy/000-default.conf
