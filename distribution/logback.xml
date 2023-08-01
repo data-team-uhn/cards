@@ -19,18 +19,57 @@
 -->
 <configuration>
 
-  <!-- Direct access logs to stderr. -->
+  <!-- Output to stderr. -->
   <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
     <Target>System.err</Target>
     <encoder>
-      <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} *%level* [%thread] %logger %msg%n</pattern>
+      <pattern>%d{ISO8601} %boldWhite(*%level*) [%thread] %boldYellow(%logger) %msg%n</pattern>
     </encoder>
   </appender>
+
+  <!-- Output to logs/error.log -->
+  <appender name="MSGLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/error.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>logs/error.%d.log</fileNamePattern>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{ISO8601} *%level* [%thread] %logger %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Output to logs/access.log -->
+  <appender name="ACCESSLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/access.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>logs/access.%d.log</fileNamePattern>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Output to logs/request.log -->
+  <appender name="REQUESTSLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/requests.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>logs/requests.%d.log</fileNamePattern>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%msg%n</pattern>
+    </encoder>
+  </appender>
+
   <logger name="log.access" level="info" additivity="false">
     <appender-ref ref="STDERR"/>
+    <appender-ref ref="ACCESSLOGFILE"/>
   </logger>
-
-  <!-- A default console logger is added by Sling. We just switch the log level to WARN. -->
-  <root level="warn"/>
+  <logger name="log.request" level="info" additivity="false">
+    <appender-ref ref="REQUESTSLOGFILE"/>
+  </logger>
+  <root level="warn">
+    <appender-ref ref="STDERR"/>
+    <appender-ref ref="MSGLOGFILE"/>
+  </root>
 
 </configuration>
