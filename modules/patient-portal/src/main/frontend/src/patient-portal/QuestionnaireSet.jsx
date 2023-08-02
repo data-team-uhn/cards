@@ -176,7 +176,7 @@ function QuestionnaireSet(props) {
   }
 
   const isFormSubmitted = (questionnaireId) => {
-    return subjectData?.[questionnaireId] && subjectData[questionnaireId].statusFlags?.includes("SUBMITTED");
+    return subjectData?.[questionnaireId]?.statusFlags?.includes("SUBMITTED");
   }
 
   // If the `enableReviewScreen` state is not already defined, initialize it with the value passed via config
