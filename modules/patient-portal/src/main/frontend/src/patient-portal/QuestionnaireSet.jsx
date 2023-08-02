@@ -399,7 +399,7 @@ function QuestionnaireSet(props) {
   let findNextStep = (step) => {
     let next = step + 1
     // Skip if the corresponding questionnaire has already been filled out:
-    while (next < questionnaireIds.length && (isFormComplete(questionnaireIds[next]) || isFormSubmitted(questionnaireIds[next]))) ++next;
+    while (next < questionnaireIds.length && isFormComplete(questionnaireIds[next])) ++next;
     return next;
   }
 
