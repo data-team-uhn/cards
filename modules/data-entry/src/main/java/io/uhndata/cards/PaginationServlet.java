@@ -827,19 +827,33 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     filter.source,
                     this.sanitizeValue(filter.value)));
         } else {
-            condition.append(
-                String.format(
-                    " and %s.'value'%s" + (("date".equals(filter.type))
-                        ? ("cast('%sT00:00:00.000"
-                            + DateUtils.getTimezoneForDateString(this.sanitizeValue(filter.value))
-                            + "' as date)")
-                        : ("boolean".equals(filter.type)) ? "%s"
-                            : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
-                    filter.source,
-                    this.sanitizeComparator(filter.comparator),
-                    this.sanitizeValue(filter.value)));
+            condition.append(" and");
+            if ("<>".equals(filter.comparator)) {
+                condition.append("(")
+                    .append(getValueComparisonString(filter))
+                    .append(
+                        String.format(
+                            " or %s.'value' IS NULL)",
+                            filter.source));
+            } else {
+                condition.append(getValueComparisonString(filter));
+            }
         }
         return condition.toString();
+    }
+
+    private String getValueComparisonString(Filter filter)
+    {
+        return String.format(
+            " %s.'value'%s" + (("date".equals(filter.type))
+                ? ((filter.value.contains("T") ? "cast('%s:00.000" : "cast('%sT00:00:00.000")
+                    + DateUtils.getTimezoneForDateString(this.sanitizeValue(filter.value))
+                    + "' as date)")
+                : ("boolean".equals(filter.type)) ? "%s"
+                    : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
+            filter.source,
+            this.sanitizeComparator(filter.comparator),
+            this.sanitizeValue(filter.value));
     }
 
     /**
