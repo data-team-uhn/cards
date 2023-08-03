@@ -62,7 +62,7 @@ public final class EmailUtils
         MimeMessage message = mailService.getMessageBuilder()
             .from(email.getSenderAddress(), email.getSenderName())
             .to(email.getRecipientAddress(), email.getRecipientName())
-            .replyTo(email.getSenderAddress())
+            .replyTo(email.getReplyToAddress(), email.getReplyToName())
             .subject(email.getSubject())
             .text(email.getTextBody())
             .build();
@@ -83,7 +83,7 @@ public final class EmailUtils
         final MessageBuilder message = mailService.getMessageBuilder()
             .from(email.getSenderAddress(), email.getSenderName())
             .to(email.getRecipientAddress(), email.getRecipientName())
-            .replyTo(email.getSenderAddress())
+            .replyTo(email.getReplyToAddress(), email.getReplyToName())
             .subject(email.getSubject())
             .text(email.getTextBody())
             .html(email.getHtmlBody());
