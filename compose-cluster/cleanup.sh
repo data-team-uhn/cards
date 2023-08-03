@@ -46,4 +46,7 @@ echo "Removing SLING"
 docker run --rm -v $(realpath ./SLING):/sling -it alpine:3.17 sh -c 'cd /sling; find . -delete'
 rm -rf SLING
 
+echo "Removing CARDS_LOGS"
+rm -rf CARDS_LOGS
+
 echo "Done"
