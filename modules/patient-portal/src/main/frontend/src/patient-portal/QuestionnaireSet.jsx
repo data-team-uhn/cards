@@ -175,6 +175,10 @@ function QuestionnaireSet(props) {
     return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
   }
 
+  const isFormSubmitted = (questionnaireId) => {
+    return subjectData?.[questionnaireId]?.statusFlags?.includes("SUBMITTED");
+  }
+
   // If the `enableReviewScreen` state is not already defined, initialize it with the value passed via config
   useEffect(() => {
     typeof(enableReviewScreen) == "undefined" && setEnableReviewScreen(config?.enableReviewScreen);
@@ -629,7 +633,8 @@ function QuestionnaireSet(props) {
         <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
-          secondary={!isFormComplete(q) && (displayEstimate(q)
+          secondary={isFormSubmitted(q) ? "Submitted" :
+            !isFormComplete(q) && (displayEstimate(q)
             + (["patient", "guest-patient"].includes(subjectData?.[q]?.["jcr:lastModifiedBy"]) ? " (in progress)" : ""))}
         />
       </ListItem>
@@ -665,7 +670,7 @@ function QuestionnaireSet(props) {
     <Typography variant="h4" key="review-title">Please review and submit your answers</Typography>,
     <FormattedText paragraph key="review-desc">You can update the response for each question in the survey by using the **Update this Survey** button below. After reviewing, please click on **Submit my answers** to send your responses.</FormattedText>,
     <Grid container direction="column" spacing={8} key="review-list">
-      {(questionnaireIds || []).map((q, i) => (
+      {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
       <Grid item key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
         <Grid container direction="column" spacing={4}>
@@ -739,7 +744,7 @@ function QuestionnaireSet(props) {
             <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
             <ListItemText
               primary={questionnaires[q]?.title}
-              secondary={!isFormComplete(q) && "Incomplete"}
+              secondary={!isFormComplete(q) && "Incomplete" || isFormSubmitted(q) && "Submitted"}
             />
           </ListItem>
         ))}
