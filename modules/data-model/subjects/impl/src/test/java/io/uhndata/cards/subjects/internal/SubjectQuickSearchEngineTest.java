@@ -22,10 +22,14 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Workspace;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
+import io.uhndata.cards.spi.QuickSearchEngine;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.junit.Before;
@@ -38,7 +42,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.uhndata.cards.spi.SearchParameters;
 import io.uhndata.cards.spi.SearchParametersFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -79,42 +83,51 @@ public class SubjectQuickSearchEngineTest
                 .withType(QUICK_SEARCH_PARAMETER_TYPE)
                 .build();
 
-        List<JsonObject> output = new ArrayList<>();
-
-        this.subjectQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        assertEquals(2, output.size());
+        QuickSearchEngine.Results output = this.subjectQuickSearchEngine.quickSearch(parameters,
+                this.context.resourceResolver());
+        for (int numberOfFoundMatches = 0; numberOfFoundMatches < 2; numberOfFoundMatches++) {
+            assertTrue(output.hasNext());
+            assertNotNull(output.next());
+        }
+        assertFalse(output.hasNext());
     }
 
     @Test
-    public void quickSearchForMaxSizeOutputAndQueryWithShowTotalResultsFalse()
+    public void quickSearchForFoundItemWithoutIdentifierPropertyCatchesRepositoryException() throws RepositoryException
+    {
+        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
+                .withQuery("leaf")
+                .withType(QUICK_SEARCH_PARAMETER_TYPE)
+                .build();
+
+        QuickSearchEngine.Results output = this.subjectQuickSearchEngine.quickSearch(parameters,
+                this.context.resourceResolver());
+        Session session = this.context.resourceResolver().adaptTo(Session.class);
+        Node foundItem = session.getNode("/Subjects/r1/b1/l1");
+        foundItem.getProperty("identifier").remove();
+        assertTrue(output.hasNext());
+        JsonValue emptyJsonValue = output.next();
+        assertNotNull(emptyJsonValue);
+        assertEquals(JsonValue.EMPTY_JSON_OBJECT, emptyJsonValue);
+        assertFalse(output.hasNext());
+    }
+
+    @Test
+    public void quickSearchCatchesRepositoryExceptionAndReturnsEmptyResults() throws RepositoryException
     {
         SearchParameters parameters = SearchParametersFactory.newSearchParameters()
                 .withQuery("branch")
                 .withType(QUICK_SEARCH_PARAMETER_TYPE)
-                .withShowTotalResults(false)
                 .build();
 
-        List<JsonObject> output = mock(List.class);
-        when(output.size()).thenReturn(10);
-
-        this.subjectQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        assertEquals(10, output.size());
-    }
-
-    @Test
-    public void quickSearchForMaxResultLessThanNumberOfMatches()
-    {
-        SearchParameters parameters = SearchParametersFactory.newSearchParameters()
-                .withQuery("root")
-                .withType(QUICK_SEARCH_PARAMETER_TYPE)
-                .withMaxResults(1)
-                .withShowTotalResults(false)
-                .build();
-
-        List<JsonObject> output = new ArrayList<>();
-
-        this.subjectQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        assertEquals(1, output.size());
+        Session session = mock(Session.class);
+        Workspace workspace = mock(Workspace.class);
+        ResourceResolver resourceResolver = mock(ResourceResolver.class);
+        when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+        when(session.getWorkspace()).thenReturn(workspace);
+        when(workspace.getQueryManager()).thenThrow(new RepositoryException());
+        QuickSearchEngine.Results output = this.subjectQuickSearchEngine.quickSearch(parameters, resourceResolver);
+        assertFalse(output.hasNext());
     }
 
     @Test
@@ -128,9 +141,9 @@ public class SubjectQuickSearchEngineTest
                 .withType(QUICK_SEARCH_PARAMETER_TYPE)
                 .build();
 
-        List<JsonObject> output = new ArrayList<>();
-        this.subjectQuickSearchEngine.quickSearch(parameters, this.context.resourceResolver(), output);
-        assertEquals(0, output.size());
+        QuickSearchEngine.Results output = this.subjectQuickSearchEngine.quickSearch(parameters,
+                this.context.resourceResolver());
+        assertFalse(output.hasNext());
     }
 
     @Before

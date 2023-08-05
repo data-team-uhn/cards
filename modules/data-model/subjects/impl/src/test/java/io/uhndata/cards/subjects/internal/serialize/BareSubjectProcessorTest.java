@@ -142,6 +142,36 @@ public class BareSubjectProcessorTest
     }
 
     @Test
+    public void processPropertyThrowsRepositoryExceptionAtSimplifyTypeStageReturnsInput() throws RepositoryException
+    {
+        Node node = mock(Node.class);
+        Property property = mock(Property.class);
+        when(node.isNodeType(SUBJECT_TYPE)).thenReturn(true);
+        when(property.getName()).thenReturn("type");
+        when(property.getNode()).thenThrow(new RepositoryException());
+        JsonValue input = Json.createValue("Root subject1");
+        JsonValue jsonValue = this.bareSubjectProcessor.processProperty(node, property, input,
+                mock(Function.class));
+        assertNotNull(jsonValue);
+        assertEquals(input, jsonValue);
+    }
+
+    @Test
+    public void processPropertyThrowsRepositoryExceptionAtSimplifyParentsStageReturnsInput() throws RepositoryException
+    {
+        Node node = mock(Node.class);
+        Property property = mock(Property.class);
+        when(node.isNodeType(SUBJECT_TYPE)).thenReturn(true);
+        when(property.getName()).thenReturn("parents");
+        when(property.getNode()).thenThrow(new RepositoryException());
+        JsonValue input = Json.createValue("Root subject1");
+        JsonValue jsonValue = this.bareSubjectProcessor.processProperty(node, property, input,
+                mock(Function.class));
+        assertNotNull(jsonValue);
+        assertEquals(input, jsonValue);
+    }
+
+    @Test
     public void leaveForSubjectNode() throws RepositoryException
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
