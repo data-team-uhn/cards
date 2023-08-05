@@ -1,0 +1,98 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.Bac0'>
+<cards = 'https://cards.uhndata.io/'>
+
+//-----------------------------------------------------------------------------
+// Nodetype for data query handling
+[cards:dataQuery] > sling:Folder
+  // Attributes:
+  query
+
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "cards/dataQuery" mandatory autocreated protected
+  // Hardcode the resource supertype: the dataQuery is a resource
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  // Set a default title
+  - title (String) = "CARDS query" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+// The configuration for the quick search widget.
+[cards:QuickSearchConfiguration] > sling:Folder
+  // Attributes:
+
+  // We can use this in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QuickSearchConfiguration" mandatory autocreated protected
+
+  // Hardcode the resource supertype: this is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // What types of resources will be queried.
+  // Default: all.
+  - allowedResourceTypes (STRING) multiple
+
+  // How many results should be displayed.
+  - limit (long) = '5'
+
+  // Whether to show the total number of results.
+  // Can be set to 'false' in case of performance issues.
+  - showTotalRows (BOOLEAN) = 'true'
+
+//-----------------------------------------------------------------------------
+[cards:QueryCache] > nt:unstructured
+  // Attributes
+
+  // We can query the cache for saved counts.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QueryCache" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each queryCache is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // Children
+
+//-----------------------------------------------------------------------------
+// The homepage for the QueryCache space.
+[cards:QueryCacheHomepage] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QueryCacheHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype: the QueryCacheHomepage is a resource homepage.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
+
+  // Children
+  + * (cards:QueryCache)

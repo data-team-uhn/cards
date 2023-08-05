@@ -538,7 +538,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
                 .writeEnd();
         }
         jsonGen.writeEnd().close();
-        response.setStatus(sc);
     }
 
     /**
