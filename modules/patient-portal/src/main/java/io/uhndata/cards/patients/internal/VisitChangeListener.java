@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -32,6 +33,7 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionManager;
 
 import org.apache.commons.lang3.StringUtils;
@@ -76,6 +78,10 @@ public class VisitChangeListener implements ResourceChangeListener
      */
     private static final int FREQUENCY_MARGIN_DAYS = 2;
 
+    private static final String CLINIC_PATH = "/Questionnaires/Visit information/clinic";
+
+    private static final String[] STRING_ARRAY = {};
+
     /** Provides access to resources. */
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
@@ -108,6 +114,7 @@ public class VisitChangeListener implements ResourceChangeListener
      *
      * @param event a change that happened in the repository
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private void handleEvent(final ResourceChange event)
     {
         // Acquire a service session with the right privileges for accessing visits and their forms
@@ -122,10 +129,22 @@ public class VisitChangeListener implements ResourceChangeListener
                 return;
             }
             final String path = event.getPath();
-            final Node form = session.getNode(path);
+            Node form = session.getNode(path);
+
+            if (!this.formUtils.isForm(form) && form.isNodeType("cards:ResourceAnswer")
+                && form.getProperty("question").getNode().getPath().equals(CLINIC_PATH)) {
+
+                // If a form belonging to the questionnaire set of the new clinic already exists,
+                // it should not be recreated or altered in any way
+                form = this.formUtils.getForm(form);
+
+                // If new forms have been added,
+                // the surveys_complete/surveys_submitted fields of the Visit information form should be set to false.
+            }
             if (!this.formUtils.isForm(form)) {
                 return;
             }
+
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
             final Node subject = this.formUtils.getSubject(form);
 
@@ -223,6 +242,9 @@ public class VisitChangeListener implements ResourceChangeListener
         } else {
             // Visit needs additional forms. Record that and create the required forms
             changeVisitInformation(visitForm, "has_surveys", true, session);
+            changeVisitInformation(visitForm, "surveys_complete", false, session);
+            changeVisitInformation(visitForm, "surveys_submitted", false, session);
+            updateVisitInformationFlags(visitForm, session);
 
             final List<String> createdForms = createForms(visitSubject, questionnaireSetInfo.getMembers(), session);
             commitForms(createdForms, session);
@@ -421,8 +443,9 @@ public class VisitChangeListener implements ResourceChangeListener
         // Check if the clinics match between the triggering visit and the current visit.
         // If the clinics match or if the questionnaire set does not care if clinics match,
         // remove any found questionnaires that are within the frequency range.
-        if ((!StringUtils.isBlank(visitClinic) && visitInformation.getClinicPath().equals(visitClinic))
-            || questionnaireSetInfo.shouldIgnoreClinic()) {
+        if (questionnaires.size() > 0 && (
+            (!StringUtils.isBlank(visitClinic) && visitInformation.getClinicPath().equals(visitClinic))
+            || questionnaireSetInfo.shouldIgnoreClinic())) {
             removeQuestionnairesFromVisit(visitInformation, visitDate, questionnaires, questionnaireSetInfo);
         } else {
             return;
@@ -555,6 +578,40 @@ public class VisitChangeListener implements ResourceChangeListener
         }
     }
 
+    private void updateVisitInformationFlags(final Node visitInformationForm, final Session session)
+    {
+        try {
+            boolean checkinNeeded = checkoutIfNeeded(visitInformationForm, session);
+            Set<String> flags = new TreeSet<>();
+            if (visitInformationForm.hasProperty("statusFlags")) {
+                Set.of(visitInformationForm.getProperty("statusFlags").getValues()).forEach(v -> {
+                    try {
+                        String flag = v.getString();
+                        if (!"SUBMITTED".equals(flag)) {
+                            flags.add(flag);
+                        }
+                    } catch (RepositoryException e) {
+                        LOGGER.warn("Failed to read flag: {}", e.getMessage());
+                    }
+                });
+            }
+            visitInformationForm.setProperty("statusFlags", flags.toArray(STRING_ARRAY));
+            try {
+                session.save();
+            } catch (VersionException e) {
+                // Node was checked in in the background, try to checkout and save again
+                session.refresh(true);
+                checkinNeeded = checkoutIfNeeded(visitInformationForm, session);
+                session.save();
+            }
+            if (checkinNeeded) {
+                checkin(visitInformationForm, session);
+            }
+        } catch (final RepositoryException e) {
+            LOGGER.error("Failed to obtain version manager or questionnaire data: {}", e.getMessage(), e);
+        }
+    }
+
     /**
      * Record a boolean value to the visit information form for the specified question/answer.
      * Will not update the visit information form if the question already has the desired answer.
@@ -592,13 +649,11 @@ public class VisitChangeListener implements ResourceChangeListener
             // Since this is in reaction to another thread saving and checking in the form, it is possible to enter a
             // race condition where the checkin from the other thread happens between our checkout and our save, so we
             // have to try this operation a few times.
-            final VersionManager versionManager = session.getWorkspace().getVersionManager();
             final String formPath = visitInformationForm.getPath();
-
             for (int i = 0; i < 3; ++i) {
                 try {
                     // Checkout
-                    versionManager.checkout(formPath);
+                    checkoutIfNeeded(visitInformationForm, session);
 
                     if (answer == null) {
                         // No answer node yet, create one
@@ -611,7 +666,7 @@ public class VisitChangeListener implements ResourceChangeListener
                     session.save();
 
                     // Checkin
-                    versionManager.checkin(formPath);
+                    checkin(visitInformationForm, session);
                     // All done, exit the try-loop
                     return;
                 } catch (final RepositoryException e) {
@@ -621,6 +676,22 @@ public class VisitChangeListener implements ResourceChangeListener
             LOGGER.error("Failed to checkin form {} after multiple attempts", formPath);
         } catch (final RepositoryException e) {
             LOGGER.error("Failed to obtain version manager or questionnaire data: {}", e.getMessage(), e);
+        }
+    }
+
+    private boolean checkoutIfNeeded(final Node form, final Session session) throws RepositoryException
+    {
+        if (!form.isCheckedOut()) {
+            session.getWorkspace().getVersionManager().checkout(form.getPath());
+            return true;
+        }
+        return false;
+    }
+
+    private void checkin(final Node form, final Session session) throws RepositoryException
+    {
+        if (form.isCheckedOut()) {
+            session.getWorkspace().getVersionManager().checkin(form.getPath());
         }
     }
 
