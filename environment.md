@@ -15,8 +15,6 @@ The following environment variables are read by CARDS and thus can be used in bo
 | `NIGHTLY_EXPORT_SCHEDULE` | Crontab-readable (Quartz Job Scheduler) schedule to perform nightly export to the configured S3 bucket | `0 0 6 * * ? *` |
 | `REFERENCE_DATE` | A reference date from which all dates are to be measured from (for more details, see `DateObfuscationProcessor.java`) | `2020-01-01` |
 | `COMPUTED_ANSWERS_DISABLED` | If set to `true`, computed answers are disabled | `true` |
-| `PATIENT_NOTIFICATION_FROM_ADDRESS` | The email address from which patient notifications are sent | `datapro@uhn.ca` |
-| `PATIENT_NOTIFICATION_FROM_NAME` | The name field used in patient notification emails | `UHN DATAPRO` |
 | `CARDS_HOST_AND_PORT` | The URL to CARDS, required when emails are enabled | `localhost:8080` |
 | `NIGHTLY_NOTIFICATIONS_SCHEDULE` | Crontab-readable (Quartz Job Scheduler) schedule to perform nightly notification emails | `0 0 6 * * ? *` |
 | `NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE` | Crontab-readable schedule (Quartz Job Scheduler) for performing Slack performance metric update notification messages | `0 0 6 * * ? *` |
