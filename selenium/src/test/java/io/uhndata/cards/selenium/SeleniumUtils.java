@@ -24,11 +24,28 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public final class SeleniumUtils
 {
+    public enum Browser
+    {
+        CHROME,
+        EDGE,
+        FIREFOX,
+        SAFARI
+    }
+
+    private static Browser defaultBrowser = Browser.CHROME;
+
     // Hide the constructor
     private SeleniumUtils()
     {
@@ -36,13 +53,66 @@ public final class SeleniumUtils
 
     public static WebDriver getDriver()
     {
+        String driverProp = System.getProperty("seleniumDriver");
+
+        final WebDriver driver;
+
+        if (driverProp == null) {
+            driver = getDriver(defaultBrowser);
+        } else {
+            switch (driverProp.toLowerCase()) {
+                case "safari":
+                    driver = getDriver(Browser.SAFARI);
+                    break;
+                case "edge":
+                    driver = getDriver(Browser.EDGE);
+                    break;
+                case "firefox":
+                    driver = getDriver(Browser.FIREFOX);
+                    break;
+                case "chrome":
+                    driver = getDriver(Browser.CHROME);
+                    break;
+                default:
+                    driver = null;
+                    break;
+            }
+        }
+
+        return driver;
+    }
+
+    public static WebDriver getDriver(Browser browser)
+    {
         WebDriver driver = null;
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("start-maximized");
-        options.addArguments("enable-automation");
-        driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        switch (browser) {
+            case SAFARI:
+                WebDriverManager.safaridriver().setup();
+                driver = new SafariDriver();
+                break;
+            case FIREFOX:
+                WebDriverManager.firefoxdriver().setup();
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                firefoxOptions.addArguments("-headless");
+                driver = new FirefoxDriver(firefoxOptions);
+                break;
+            case EDGE:
+                // TODO: Edge is instead launching Google Chrome and faling to correct as a result.
+                WebDriverManager.edgedriver().setup();
+                EdgeOptions edgeOptions = new EdgeOptions();
+                edgeOptions.addArguments("start-maximized", "enable-automation");
+                driver = new EdgeDriver(edgeOptions);
+                break;
+            case CHROME:
+            default:
+                WebDriverManager.chromedriver().setup();
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.addArguments("start-maximized", "enable-automation");
+                driver = new ChromeDriver(chromeOptions);
+                break;
+        }
+
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         return driver;
     }
 
@@ -58,5 +128,11 @@ public final class SeleniumUtils
         driver.findElement(By.name("j_username")).sendKeys(username);
         driver.findElement(By.name("j_password")).sendKeys(password);
         driver.findElement(By.name("j_password")).submit();
+
+        // TODO: Firefox is not waiting for the dashboard to load before checking for
+        // the avatar so is failing every time. This can be resolved by a sleep() but should be
+        // fixed properly
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("adminnavbaravatar")));
     }
 }
