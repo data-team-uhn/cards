@@ -55,6 +55,9 @@ public class FormReferenceListener implements ResourceChangeListener
     private static final Logger LOGGER = LoggerFactory.getLogger(FormReferenceListener.class);
 
     private static final String[] LINKBACK_PROPERTIES = {"label", "recursiveDeleteParent"};
+    private static final String FORM_REFERENCES_NAME = "formReferences";
+    private static final String FORM_REFERENCES_CARDS_TYPE = "cards:FormReferences";
+    private static final String REFERENCE_PROPERTIES_NAME = "referenceProperties";
 
     /** Provides access to resources. */
     @Reference
@@ -80,11 +83,6 @@ public class FormReferenceListener implements ResourceChangeListener
     private void handleEvent(final ResourceChange event)
     {
         final String path = event.getPath();
-        // Check if the newly added node is a child of formReferences (likely a FormReference)
-        if (!(path.contains("formReferences/")
-            && path.substring(0, path.lastIndexOf("/")).endsWith("formReferences"))) {
-            return;
-        }
         // Acquire a service session with the right privileges for accessing visits and their forms
         boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.resolverFactory
@@ -97,7 +95,10 @@ public class FormReferenceListener implements ResourceChangeListener
                 return;
             }
             final Node formReference = session.getNode(path);
-            if (formReference.getNode("referenceProperties").getProperty("linkback").getBoolean()) {
+            if (!"cards:FormReference".equals(formReference.getPrimaryNodeType().getName())) {
+                return;
+            }
+            if (formReference.getNode(REFERENCE_PROPERTIES_NAME).getProperty("linkback").getBoolean()) {
                 addLinkback(formReference);
             }
         } catch (final LoginException e) {
@@ -124,25 +125,25 @@ public class FormReferenceListener implements ResourceChangeListener
             return;
         }
 
-        Node formToReference = existingFormReference.getParent().getParent();
+        Node formToReference = this.formUtils.getForm(existingFormReference);
 
         boolean checkinNeeded = checkoutIfNeeded(formToModify);
 
         try {
             Node formReferences;
-            if (formToModify.hasNode("formReferencess")) {
-                formReferences = formToModify.getNode("formReferences");
+            if (formToModify.hasNode(FORM_REFERENCES_NAME)) {
+                formReferences = formToModify.getNode(FORM_REFERENCES_NAME);
             } else {
-                formReferences = formToModify.addNode("formReferences");
-                formReferences.setPrimaryType("cards:FormReferences");
+                formReferences = formToModify.addNode(FORM_REFERENCES_NAME);
+                formReferences.setPrimaryType(FORM_REFERENCES_CARDS_TYPE);
             }
             Node newFormReference = formReferences.addNode(UUID.randomUUID().toString());
             newFormReference.setProperty("reference", formToReference);
 
-            Node existingProperties = existingFormReference.getNode("referenceProperties");
+            Node existingProperties = existingFormReference.getNode(REFERENCE_PROPERTIES_NAME);
             if (existingProperties.hasNode("linkbackProperties")) {
-                Node newProperties = newFormReference.getNode("referenceProperties");
-                addPropertiesFromProperties(newProperties, existingProperties.getNode("linkbackProperties"));
+                Node newProperties = newFormReference.getNode(REFERENCE_PROPERTIES_NAME);
+                copyNodeLinkbackProperties(newProperties, existingProperties.getNode("linkbackProperties"));
                 newProperties.setPrimaryType("cards:ReferenceProperties");
             }
 
@@ -160,11 +161,11 @@ public class FormReferenceListener implements ResourceChangeListener
             formToModify.getSession().save();
         }
         if (checkinNeeded) {
-            checkin(formToModify);
+            checkinIfNeeded(formToModify);
         }
     }
 
-    private void addPropertiesFromProperties(Node newProperties, Node existingProperties)
+    private void copyNodeLinkbackProperties(Node newProperties, Node existingProperties)
     {
         try {
             for (final String propName : LINKBACK_PROPERTIES) {
@@ -191,7 +192,7 @@ public class FormReferenceListener implements ResourceChangeListener
         return false;
     }
 
-    private void checkin(final Node form) throws RepositoryException
+    private void checkinIfNeeded(final Node form) throws RepositoryException
     {
         if (form.isCheckedOut()) {
             form.getSession().getWorkspace().getVersionManager().checkin(form.getPath());
