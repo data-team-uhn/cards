@@ -82,6 +82,8 @@ public class VisitChangeListener implements ResourceChangeListener
 
     private static final String[] STRING_ARRAY = {};
 
+    private static final String STATUS_FLAGS = "statusFlags";
+
     /** Provides access to resources. */
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
@@ -554,10 +556,10 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         boolean incomplete = false;
         try {
-            if (this.formUtils.isForm(form) && form.hasProperty("statusFlags")) {
-                final Property statusProp = form.getProperty("statusFlags");
+            if (this.formUtils.isForm(form) && form.hasProperty(STATUS_FLAGS)) {
+                final Property statusProp = form.getProperty(STATUS_FLAGS);
                 if (statusProp.isMultiple()) {
-                    final Value[] statuses = form.getProperty("statusFlags").getValues();
+                    final Value[] statuses = form.getProperty(STATUS_FLAGS).getValues();
                     for (final Value status : statuses) {
                         final String str = status.getString();
                         if ("INCOMPLETE".equals(str)) {
@@ -583,8 +585,8 @@ public class VisitChangeListener implements ResourceChangeListener
         try {
             boolean checkinNeeded = checkoutIfNeeded(visitInformationForm, session);
             Set<String> flags = new TreeSet<>();
-            if (visitInformationForm.hasProperty("statusFlags")) {
-                Set.of(visitInformationForm.getProperty("statusFlags").getValues()).forEach(v -> {
+            if (visitInformationForm.hasProperty(STATUS_FLAGS)) {
+                Set.of(visitInformationForm.getProperty(STATUS_FLAGS).getValues()).forEach(v -> {
                     try {
                         String flag = v.getString();
                         if (!"SUBMITTED".equals(flag)) {
@@ -595,7 +597,7 @@ public class VisitChangeListener implements ResourceChangeListener
                     }
                 });
             }
-            visitInformationForm.setProperty("statusFlags", flags.toArray(STRING_ARRAY));
+            visitInformationForm.setProperty(STATUS_FLAGS, flags.toArray(STRING_ARRAY));
             try {
                 session.save();
             } catch (VersionException e) {
