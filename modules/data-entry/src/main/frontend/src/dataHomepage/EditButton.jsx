@@ -34,7 +34,7 @@ function EditButton(props) {
   const { entryPath, entryType, size, className, admin } = props;
   return(
     <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"} underline="hover">
-      <Tooltip title={entryType ? "Edit " + entryType : "Edit"}>
+      <Tooltip title={entryType ? "Edit " + entryType.toLowerCase() : "Edit"}>
         <IconButton className={className} size={size}>
           <EditIcon />
         </IconButton>
