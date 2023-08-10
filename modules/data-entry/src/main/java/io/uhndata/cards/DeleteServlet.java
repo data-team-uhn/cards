@@ -46,8 +46,11 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.forms.api.FormUtils;
 
 /**
  * A servlet that tries to delete a given node and returns an explanation if deletion is not possible.
@@ -88,6 +91,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
     /** A set of all nodes that are children of nodes in {@code nodesToDelete}. */
     private final ThreadLocal<Set<Node>> childNodesDeleted =
         ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
+
+    @Reference
+    private FormUtils formUtils;
 
     /**
      * A function that operates on a {@link Node}. As opposed to a simple {@code Consumer}, it can forward a
@@ -304,7 +310,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
                 continue;
             }
             iterateReferrers(referrer, consumer, true);
-            iterateParentIfRequired(referrer, consumer);
+            handleFormReferences(referrer, consumer);
         }
 
         if (includeRoot) {
@@ -352,23 +358,25 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Recursively call a function all children of the current node's parent if required.
+     * Process a form reference node and any relevant parent nodes based on the references deletion setting.
      *
-     * @param node the node to have its referrers and self operated on
-     * @param consumer the function to be called on each node
+     * @param node the form reference node
+     * @param consumer the function to be called on any nodes that should also be processed
      * @throws RepositoryException if any function call fails due to repository errors
      */
-    private void iterateParentIfRequired(
+    private void handleFormReferences(
         Node node,
         NodeConsumer consumer
     ) throws RepositoryException
     {
         if ("cards:FormReference".equals(node.getPrimaryNodeType().getName())) {
+            // When processing a form reference node for deletion or checking if deletion is possible,
+            // some form reference nodes specify that their parent form should be deleted or checked as well.
             if (node.getNode("referenceProperties").getProperty("recursiveDeleteParent").getBoolean()) {
-                // Delete the parent form if specified by the form reference properties
-                iterateChildren(node.getParent().getParent(), consumer, true);
+                // Iterate the parent form if desired
+                iterateChildren(this.formUtils.getForm(node), consumer, true);
             } else if (node.getParent().getNodes().getSize() == 1) {
-                // Delete the set of form references if this is the only form reference
+                // Iterate the set of form references if this is the only form reference to avoid leaving an empty set
                 iterateChildren(node.getParent(), consumer, true);
             }
         }
