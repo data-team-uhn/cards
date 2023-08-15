@@ -117,6 +117,7 @@ abstract class AbstractEmailNotification
             while (appointmentResults.hasNext()) {
                 Node appointmentDate = appointmentResults.nextNode();
                 Node appointmentForm = this.formUtils.getForm(appointmentDate);
+                // This will have to be changed later, since we will have different visit information forms for the same subject
                 Node visitSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient/Visit");
                 if (appointmentForm == null || AppointmentUtils.isVisitSurveyComplete(this.formUtils, visitSubject)) {
                     continue;

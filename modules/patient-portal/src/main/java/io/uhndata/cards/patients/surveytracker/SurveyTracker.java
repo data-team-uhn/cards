@@ -237,7 +237,6 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
                 Calendar expirationDate = (Calendar) eventDate.clone();
                 final int tokenLifetime = this.accessConfiguration.getAllowedPostVisitCompletionTime(form);
                 expirationDate.add(Calendar.DATE, tokenLifetime + 1);
-                expirationDate.add(Calendar.DATE, 1);
                 expirationDate.set(Calendar.HOUR_OF_DAY, 0);
                 expirationDate.set(Calendar.MINUTE, 0);
                 expirationDate.set(Calendar.SECOND, 0);

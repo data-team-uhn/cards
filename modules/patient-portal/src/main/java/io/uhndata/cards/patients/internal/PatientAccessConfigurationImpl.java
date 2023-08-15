@@ -57,7 +57,7 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     private static final String DEFAULT_TOKEN_LIFETIME_PROP = "allowedPostVisitCompletionTime";
 
     /** Clinic property for the number of days a token is valid for. */
-    private static final String TOKEN_LIFETIME_PROP = "tokenLifetime";
+    private static final String TOKEN_LIFETIME_PROP = "allowedPostVisitCompletionTime";
 
     /** Property on config node for the number of days draft responses from patients are kept. */
     private static final String DRAFT_LIFETIME_PROP = "draftLifetime";

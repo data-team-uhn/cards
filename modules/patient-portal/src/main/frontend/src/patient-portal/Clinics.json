@@ -5,6 +5,6 @@
   "survey": "string",
   "emergencyContact": "string",
   "description": "string",
-  "tokenLifetime": "double",
+  "allowedPostVisitCompletionTime": "double",
   "//REQUIRED": ["clinicName", "displayName", "sidebarLabel", "survey"]
 }

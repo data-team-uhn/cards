@@ -291,7 +291,7 @@ function QuestionnaireSet(props) {
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then((json) => {
               setId(json["survey"]);
-              setTokenLifetime(json.tokenLifetime);
+              setTokenLifetime(json.allowedPostVisitCompletionTime);
             });
         }
         selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
