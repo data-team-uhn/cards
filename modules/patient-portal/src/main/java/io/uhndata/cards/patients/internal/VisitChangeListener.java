@@ -440,7 +440,7 @@ public class VisitChangeListener implements ResourceChangeListener
         // Check if the clinics match between the triggering visit and the current visit.
         // If the clinics match or if the questionnaire set does not care if clinics match,
         // remove any found questionnaires that are within the frequency range.
-        if (questionnaires.isEmpty() && (
+        if (!questionnaires.isEmpty() && (
             (!StringUtils.isBlank(visitClinic) && visitInformation.getClinicPath().equals(visitClinic))
             || questionnaireSetInfo.shouldIgnoreClinic())) {
             removeQuestionnairesFromVisit(visitInformation, visitDate, questionnaires, questionnaireSetInfo);
