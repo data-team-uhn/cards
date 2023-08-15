@@ -113,6 +113,23 @@ public class SlackNotificationsTask implements Runnable
         return errorStackTraces;
     }
 
+    private String generateStackTraceMessagePart(List<String> errorStackTraces)
+    {
+        String slackNotificationString = "";
+        Iterator<String> stackTracesIter = errorStackTraces.iterator();
+
+        // Include a separator message if there are any stack traces to be printed
+        if (stackTracesIter.hasNext()) {
+            slackNotificationString += "\n\n" + "The following errors were logged:";
+        }
+
+        // Include the stack traces text
+        while (stackTracesIter.hasNext()) {
+            slackNotificationString += "\n" + "```" + "\n" + stackTracesIter.next() + "\n" + "```";
+        }
+        return slackNotificationString;
+    }
+
     @Override
     public void run()
     {
@@ -162,10 +179,7 @@ public class SlackNotificationsTask implements Runnable
             }
 
             // Include any relevant stack traces
-            Iterator<String> stackTracesIter = errorStackTraces.iterator();
-            while (stackTracesIter.hasNext()) {
-                slackNotificationString += "\n" + "```" + "\n" + stackTracesIter.next() + "\n" + "```";
-            }
+            slackNotificationString += generateStackTraceMessagePart(errorStackTraces);
 
             postToSlack(SLACK_PERFORMANCE_URL,
                 (slackNotificationString.length() == 0)
