@@ -35,4 +35,4 @@ args = argparser.parse_args()
 gh_client = GitHubRepoHandler(cli_args=args, bot_username="github_publish_os_kernel_version.py")
 
 github_path = os.path.join('hosts', args.deployment_hostname, 'vm', 'kernel_version')
-gh_client.writeGitHubTextFile(github_path, platform.release())
+gh_client.updateGitHubTextFile(github_path, platform.release())

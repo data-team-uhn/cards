@@ -115,7 +115,7 @@ class GitHubRepoHandler:
 			raise Exception("HTTP {} was returned when attempting to download {}.".format(resp.status_code, path))
 		return resp.text
 
-	def writeGitHubTextFile(self, path, text_content):
+	def updateGitHubTextFile(self, path, text_content):
 		installation_headers = {}
 		installation_headers['Accept'] = 'application/vnd.github+json'
 		installation_headers['Authorization'] = 'token ' + self.installation_token
