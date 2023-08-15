@@ -104,7 +104,7 @@ public class ExportTask implements Runnable
         } catch (Exception e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
 
-            // Create an nt:file node under /LoggedEvents/ storing the stack trace of this failure
+            // Store the stack trace of this failure
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
