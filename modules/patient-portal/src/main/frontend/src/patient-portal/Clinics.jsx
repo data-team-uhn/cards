@@ -44,7 +44,7 @@ function Clinics(props) {
     "sidebarLabel": "Sidebar Entry",
     "survey": "Surveys",
     "emergencyContact": "Emergency Contact",
-    "allowedPostVisitCompletionTime": "Allowed Post Visit Completion Time"
+    "allowedPostVisitCompletionTime": "Relatively to the associated event, patients can fill out surveys within"
   }
 
   let columns = Object.keys(clinicsSpecs).filter((stat) => !Array.isArray(clinicsSpecs[stat]))
