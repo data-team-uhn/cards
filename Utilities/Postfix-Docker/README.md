@@ -74,7 +74,7 @@ required.
 6. Start CARDS with emailing enabled (such as in the `cards4proms` project):
 
 ```bash
-PATIENT_NOTIFICATION_FROM_ADDRESS='datapro@uhn.ca' PATIENT_NOTIFICATION_FROM_NAME='UHN DATAPRO' NIGHTLY_NOTIFICATIONS_SCHEDULE='0 * * * * ? *' SLING_COMMONS_CRYPTO_PASSWORD=password CARDS_HOST_AND_PORT='localhost:8080' ./start_cards.sh --project cards4proms --dev -V emailnotifications.smtps.checkserveridentity=false
+NIGHTLY_NOTIFICATIONS_SCHEDULE='0 * * * * ? *' SLING_COMMONS_CRYPTO_PASSWORD=password CARDS_HOST_AND_PORT='localhost:8080' ./start_cards.sh --project cards4proms --dev -V emailnotifications.smtps.checkserveridentity=false
 ```
 
 7. Send a test email

@@ -38,6 +38,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.sling.api.resource.Resource;
@@ -77,6 +78,12 @@ public class EmailTemplate
 
     /** Property of template nodes holding the sender display name. */
     public static final String SENDER_NAME_PROPERTY = "senderName";
+
+    /** Property of template nodes holding the (optional) reply-to email address. */
+    public static final String REPLY_TO_ADDRESS_PROPERTY = "replyToAddress";
+
+    /** Property of template nodes holding the (optional) reply-to display name. */
+    public static final String REPLY_TO_NAME_PROPERTY = "replyToName";
 
     /** Property of template nodes holding the subject line. */
     public static final String SUBJECT_PROPERTY = "subject";
@@ -118,6 +125,10 @@ public class EmailTemplate
 
     private String senderName;
 
+    private String replyToAddress;
+
+    private String replyToName;
+
     private String subject;
 
     private String htmlTemplate;
@@ -137,6 +148,8 @@ public class EmailTemplate
     {
         this.senderAddress = other.senderAddress;
         this.senderName = other.senderName;
+        this.replyToAddress = other.replyToAddress;
+        this.replyToName = other.replyToName;
         this.subject = other.subject;
         this.htmlTemplate = other.htmlTemplate;
         this.textTemplate = other.textTemplate;
@@ -164,6 +177,28 @@ public class EmailTemplate
     public String getSenderName()
     {
         return this.senderName;
+    }
+
+    /**
+     * The email address to send replies to, part of the {@code Reply-To} email header together with
+     * {@link #getReplyToName()}.
+     *
+     * @return an email address
+     */
+    public String getReplyToAddress()
+    {
+        return StringUtils.defaultIfBlank(this.replyToAddress, getSenderAddress());
+    }
+
+    /**
+     * The name displayed as the reply-to destination, part of the {@code Reply-To} email header together with
+     * {@link #getReplyToAddress()}.
+     *
+     * @return a name
+     */
+    public String getReplyToName()
+    {
+        return StringUtils.defaultIfBlank(this.replyToName, getSenderName());
     }
 
     /**
@@ -253,7 +288,7 @@ public class EmailTemplate
      * {@link Email.Builder#withRecipient(String, String) must be set} before the email can be built.
      *
      * @param subject a subject node whose answers will be used in the body template
-     * @param extraProperties aditional properties to interpolate in the body template, a map from variable name to
+     * @param extraProperties additional properties to interpolate in the body template, a map from variable name to
      *            actual value
      * @param formUtils utilities for working with forms
      * @return an email builder based on this template, interpolated for the target subject
@@ -412,6 +447,44 @@ public class EmailTemplate
         }
 
         /**
+         * Set the email address to reply to. Optional, defaults to the sender address.
+         *
+         * @param address a valid email address
+         * @return same builder instance for method chaining
+         */
+        public Builder withReplyToAddress(final String address)
+        {
+            this.instance.replyToAddress = address;
+            return this;
+        }
+
+        /**
+         * Set the display name for the reply-to email. Optional, defaults to the sender name.
+         *
+         * @param name a display name
+         * @return same builder instance for method chaining
+         */
+        public Builder withReplyToName(final String name)
+        {
+            this.instance.replyToName = name;
+            return this;
+        }
+
+        /**
+         * Set the reply-to email address and display name.
+         *
+         * @param address a valid email address
+         * @param name a display name
+         * @return same builder instance for method chaining
+         */
+        public Builder withReplyTo(final String address, final String name)
+        {
+            this.instance.replyToAddress = address;
+            this.instance.replyToName = name;
+            return this;
+        }
+
+        /**
          * Set the email Subject.
          *
          * @param subject a short string
@@ -481,6 +554,12 @@ public class EmailTemplate
                         break;
                     case EmailTemplate.SENDER_NAME_PROPERTY:
                         withSenderName(value);
+                        break;
+                    case EmailTemplate.REPLY_TO_ADDRESS_PROPERTY:
+                        withReplyToAddress(value);
+                        break;
+                    case EmailTemplate.REPLY_TO_NAME_PROPERTY:
+                        withReplyToName(value);
                         break;
                     case EmailTemplate.SUBJECT_PROPERTY:
                         withSubject(value);
