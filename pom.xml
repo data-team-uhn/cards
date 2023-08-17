@@ -530,6 +530,7 @@
             <exclude>compose-cluster/SSL_CONFIG/**</exclude>
             <exclude>compose-cluster/SLING/**</exclude>
             <exclude>compose-cluster/CARDS_LOGS/**</exclude>
+            <exclude>compose-cluster/proxy/request_pause_rules/*/path.txt</exclude>
             <!-- Ignore data/template files used for generating UI Extensions / ExtensionPoints -->
             <exclude>**/Development/ExtensionPointResources/**</exclude>
             <!-- Ignore email template files since we do not send a license in notification emails -->
