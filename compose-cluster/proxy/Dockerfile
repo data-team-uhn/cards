@@ -22,7 +22,9 @@ RUN apt-get -y install \
 	apache2 \
 	nodejs \
 	node-fetch \
-	node-mustache
+	node-mustache \
+	node-uuid \
+	node-form-data
 
 RUN a2enmod proxy
 RUN a2enmod proxy_http
