@@ -213,7 +213,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         } else if ("cards:Question".equals(nodeType)) {
             String label = nodeJson.getString("@name");
             rawColumns.add(label);
-            if (nodeJson.containsKey("text")) {
+            if (nodeJson.containsKey("text") && !"".equals(nodeJson.getString("text"))) {
                 label = nodeJson.getString("text");
             }
             columns.add(label);
