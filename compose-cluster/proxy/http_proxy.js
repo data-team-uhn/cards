@@ -16,62 +16,85 @@
 // under the License.
 
 const SERVER_PORT = 8600;
-const CLIENT_PORT = 5000;
-const CLIENT_HOSTNAME = 'neuralcr';
-const AUTH_URL = 'http://cardsinitial:8080/system/sling/info.sessionInfo.json';
 
+const fs = require('fs');
 const http = require('http');
-const fetch = require('node-fetch');
 
-function checkAuthentication(opts, method_allow, method_deny) {
-	//Check if the cookies are valid
-	if ('cookie' in opts) {
-		fetch(AUTH_URL, {
-				method: 'GET',
-				headers: {
-					Cookie: opts['cookie']
-				}
-			})
-			.then(res => res.json())
-			.then((json) => {
-				if ('userID' in json) {
-					if (json['userID'].toUpperCase() === 'ADMIN') {
-						method_allow();
-						return;
-					}
-				}
-				method_deny();
-			});
-	}
-	else {
-		method_deny();
-	}
+// Register the pause request handlers
+const handler_names = fs.readdirSync('request_pause_rules');
+const REGISTERED_HANDLERS = {};
+for (let i = 0; i < handler_names.length; i++) {
+	let handler_path = fs.readFileSync('request_pause_rules' + '/' + handler_names[i] + '/' + 'path.txt', 'utf-8').trim();
+	let handler_method = require('./request_pause_rules' + '/' + handler_names[i] + '/' + 'handler').handleConnection;
+	REGISTERED_HANDLERS[handler_path] = handler_method;
 }
 
-var server = new http.Server();
-server.on('request', function(s_req, s_res) {
-	let { cookie, ...filtered_headers } = s_req.headers;
-	let client_opts = {
-		hostname: CLIENT_HOSTNAME,
-		port: CLIENT_PORT,
-		path: s_req.url,
-		method: s_req.method,
-		headers: filtered_headers
-	};
-	
-	//Check to see if we should allow the request or not
-	checkAuthentication(s_req.headers, function() {
-		var client_req = http.request(client_opts, function(c_res) {
-			s_res.writeHead(c_res.statusCode, c_res.headers);
-			c_res.pipe(s_res, {end: true});
-		});
-		s_req.pipe(client_req, {end: true});
-	},
-	function() {
-		s_res.writeHead(403, {'Content-Type': 'text/html'});
-		s_res.write("ACCESS DENIED");
-		s_res.end();
-	});
+const server = new http.Server();
+
+console.log("Handlers...");
+console.log(REGISTERED_HANDLERS);
+
+function removeLeftBlank(list) {
+	if (list.length == 0) {
+		return list;
+	}
+	if (list[0] === '') {
+		return list.slice(1);
+	}
+	return list;
+}
+
+function removeRightBlank(list) {
+	if (list.length == 0) {
+		return list;
+	}
+	if (list[list.length - 1] === '') {
+		return list.slice(1, list.length - 1);
+	}
+	return list;
+}
+
+function removeEdgeBlanks(list) {
+	return removeLeftBlank(removeRightBlank(list));
+}
+
+function getMatchLength(rule_string, test_string) {
+	let rule_parts = removeEdgeBlanks(rule_string.split('/'));
+	let test_parts = removeEdgeBlanks(test_string.split('/'));
+	if (test_parts.length < rule_parts.length) {
+		return 0;
+	}
+
+	for (let i = 0; i < rule_parts.length; i++) {
+		if (test_parts[i] !== rule_parts[i]) {
+			return 0;
+		}
+	}
+
+	return rule_parts.length;
+}
+
+function getMatchingRule(request_path) {
+	let best_match = undefined;
+	let best_match_score = 0;
+	for (let handler_path in REGISTERED_HANDLERS) {
+		let this_match_score = getMatchLength(handler_path, request_path);
+		if (this_match_score > best_match_score) {
+			best_match_score = this_match_score;
+			best_match = handler_path;
+		}
+	}
+	return best_match;
+}
+
+server.on('request', (request, response) => {
+	let selected_rule = getMatchingRule(request.url);
+	console.log("Received a request for: " + request.url);
+	console.log("Handling using the rule: " + selected_rule);
+
+	if (selected_rule !== undefined) {
+		REGISTERED_HANDLERS[selected_rule](request, response);
+	}
 });
 
 server.listen(SERVER_PORT, function(error) {

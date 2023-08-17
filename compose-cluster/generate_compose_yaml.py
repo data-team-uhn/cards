@@ -91,6 +91,7 @@ argparser.add_argument('--adminer_port', help='If --adminer is specified, bind i
 argparser.add_argument('--enable_backup_server', help='Add a cards/backup_recorder service to the cluster', action='store_true')
 argparser.add_argument('--backup_server_path', help='Host OS path where the backup_recorder container should store its backup files')
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
+argparser.add_argument('--enable_request_pause_rule', help='Enable the specified request pause rule at the reverse proxy level', action='append')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 argparser.add_argument('--external_mongo_uri', help='URI of the external MongoDB instance. Only valid if --external_mongo is specified.')
@@ -864,6 +865,11 @@ yaml_obj['services']['proxy']['networks']['internalnetwork']['aliases'] = ['prox
 yaml_obj['services']['proxy']['depends_on'] = ['cardsinitial']
 if ENABLE_NCR:
   yaml_obj['services']['proxy']['depends_on'].append('neuralcr')
+  newListIfEmpty(yaml_obj, 'services', 'proxy', 'volumes').append("./proxy/request_pause_rules/ncr:/request_pause_rules/ncr:ro")
+
+if args.enable_request_pause_rule != None:
+  for request_pause_rule in args.enable_request_pause_rule:
+    newListIfEmpty(yaml_obj, 'services', 'proxy', 'volumes').append("./proxy/request_pause_rules/{}:/request_pause_rules/{}:ro".format(request_pause_rule, request_pause_rule))
 
 #Add the appropriate CARDS logo (eg. DATAPRO, HERACLES, etc...) for the selected project
 shutil.copyfile(getCardsProjectLogoPath(args.cards_project), "./proxy/proxyerror/logo.png")
@@ -879,10 +885,9 @@ if SSL_PROXY:
   else:
     shutil.copyfile("proxy/https_000-default.conf", "proxy/000-default.conf")
   #Volume mount the SSL certificate and key
-  yaml_obj['services']['proxy']['volumes'] = []
-  yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificate.crt:/etc/cert/certificate.crt:ro")
-  yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatekey.key:/etc/cert/certificatekey.key:ro")
-  yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatechain.crt:/etc/cert/certificatechain.crt:ro")
+  newListIfEmpty(yaml_obj, 'services', 'proxy', 'volumes').append("./SSL_CONFIG/certificate.crt:/etc/cert/certificate.crt:ro")
+  newListIfEmpty(yaml_obj, 'services', 'proxy', 'volumes').append("./SSL_CONFIG/certificatekey.key:/etc/cert/certificatekey.key:ro")
+  newListIfEmpty(yaml_obj, 'services', 'proxy', 'volumes').append("./SSL_CONFIG/certificatechain.crt:/etc/cert/certificatechain.crt:ro")
 elif args.behind_ssl_termination:
   if args.saml:
     shutil.copyfile("proxy/terminated-ssl_saml_000-default.conf", "proxy/000-default.conf")

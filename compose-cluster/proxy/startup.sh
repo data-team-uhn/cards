@@ -17,6 +17,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# Generate the project-specific HTTP 503 custom error page
 nodejs /render_503_page.js
+
+# Generate the apache_non_cards_all_user_routes.conf Apache config file
+nodejs /generate_non_cards_routes.js /apache_common_conf/apache_non_cards_all_user_routes.conf
+
+# Start the nodeJS configurable proxy
 nodejs /http_proxy.js &
+
+# Start the Apache httpd proxy
 apachectl -D FOREGROUND
