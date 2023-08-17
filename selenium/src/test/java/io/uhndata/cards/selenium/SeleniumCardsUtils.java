@@ -34,7 +34,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-public final class SeleniumUtils
+public final class SeleniumCardsUtils
 {
     public enum Browser
     {
@@ -47,7 +47,7 @@ public final class SeleniumUtils
     private static Browser defaultBrowser = Browser.CHROME;
 
     // Hide the constructor
-    private SeleniumUtils()
+    private SeleniumCardsUtils()
     {
     }
 

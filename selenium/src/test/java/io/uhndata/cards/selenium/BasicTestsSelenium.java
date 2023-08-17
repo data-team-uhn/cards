@@ -18,28 +18,19 @@
  */
 package io.uhndata.cards.selenium;
 
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 
-public class LoginSelenium
+public class BasicTestsSelenium
 {
-    private WebDriver driver;
+    @ClassRule
+    public static final AdminLoginRule LOGIN_RULE = new AdminLoginRule();
 
     @Test
     public void loginTest()
     {
-        this.driver = SeleniumUtils.getDriver();
-        SeleniumUtils.login(this.driver);
-
-        Assert.assertEquals("A", this.driver.findElement(By.id("adminnavbaravatar")).getText());
-    }
-
-    @After
-    public void close()
-    {
-        this.driver.close();
+        Assert.assertEquals("A", LOGIN_RULE.getDriver().findElement(By.id("adminnavbaravatar")).getText());
     }
 }
