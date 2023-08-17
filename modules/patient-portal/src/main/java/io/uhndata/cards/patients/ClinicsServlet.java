@@ -154,7 +154,8 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         this.sidebarLabel.set(request.getParameter("sidebarLabel"));
         this.surveyID.set(request.getParameter("survey"));
         this.emergencyContact.set(request.getParameter("emergencyContact"));
-        String tokenLifetimeParam = StringUtils.defaultString(request.getParameter("allowedPostVisitCompletionTime"), "");
+        String tokenLifetimeParam =
+            StringUtils.defaultString(request.getParameter("allowedPostVisitCompletionTime"), "");
         if (StringUtils.isNotBlank(tokenLifetimeParam)) {
             this.tokenLifetime.set(Double.valueOf(tokenLifetimeParam));
         }
