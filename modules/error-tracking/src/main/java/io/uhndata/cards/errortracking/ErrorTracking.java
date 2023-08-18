@@ -28,18 +28,30 @@ import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, service = ErrorTracking.class)
 public final class ErrorTracking
 {
     private static final String LOGGED_EVENTS_PATH = "/LoggedEvents/";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ErrorTracking.class);
 
-    // Hide the utility class constructor
-    private ErrorTracking()
+    private static ResourceResolverFactory rrf;
+
+    @Reference
+    private ResourceResolverFactory originalRrf;
+
+    @Activate
+    protected void activate(ComponentContext componentContext) throws Exception
     {
+        LOGGER.warn("ErrorTracking IS ACTIVATING!");
+        rrf = this.originalRrf;
     }
 
     /*
@@ -52,7 +64,10 @@ public final class ErrorTracking
      */
     public static void logError(final ResourceResolverFactory resolverFactory, final String stackTrace)
     {
-        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(null)) {
+        try (ResourceResolver resolver = rrf.getServiceResourceResolver(null)) {
+            if (resolver == null) {
+                return;
+            }
             Resource eventsFolderResource = resolver.getResource(LOGGED_EVENTS_PATH);
             if (eventsFolderResource == null) {
                 return;
