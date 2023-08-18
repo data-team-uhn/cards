@@ -1,0 +1,24 @@
+{
+    "jcr:primaryType": "oak:QueryIndexDefinition",
+    "type": "lucene",
+    "compatVersion": 2,
+    "async": "async",
+    "includedPaths": ["/jcr:system/cards:tokens"],
+    "tags": ["cards"],
+    "indexRules" : {
+        "jcr:primaryType": "nt:unstructured",
+        "cards:Token" : {
+            "jcr:primaryType": "nt:unstructured",
+            "properties": {
+                "jcr:primaryType": "nt:unstructured",
+                "expiry": {
+                    "name": "cards:token.exp",
+                    "ordered": true,
+                    "propertyIndex": true,
+                    "type": "Date",
+                    "sync": true
+                }
+            }
+        }
+    }
+}

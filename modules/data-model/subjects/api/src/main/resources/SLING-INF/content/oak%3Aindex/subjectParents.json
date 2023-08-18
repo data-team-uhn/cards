@@ -1,11 +1,11 @@
 {
   "jcr:primaryType": "oak:QueryIndexDefinition",
   "type": "property",
-  "tags": ["property"],
+  "tags": ["cards", "property"],
   "jcr:name:propertyNames": [
-    "subject"
+    "parents"
   ],
   "jcr:name:declaringNodeTypes": [
-    "cards:Form"
+    "cards:Subject"
   ]
 }

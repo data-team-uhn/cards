@@ -48,6 +48,7 @@
             <Sling-Initial-Content>
               SLING-INF/content/libs/cards/TokenExpired/;path:=/libs/cards/TokenExpired/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/Subject/;path:=/libs/cards/Subject/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

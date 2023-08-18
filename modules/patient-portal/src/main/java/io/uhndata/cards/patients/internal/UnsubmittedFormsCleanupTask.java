@@ -108,10 +108,11 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                     + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
                     // exclude the Visit Information form itself
                     + "  and dataForm.questionnaire <> '%1$s'"
+                    // use the fast index for the query
                     + " option (index tag cards)",
                 visitInformationQuestionnaire, time, submitted,
                 ZonedDateTime.now().minusDays(delay)
-                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))),
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))),
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {

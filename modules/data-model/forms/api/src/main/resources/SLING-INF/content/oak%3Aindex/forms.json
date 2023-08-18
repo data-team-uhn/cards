@@ -17,6 +17,7 @@
                     "propertyIndex": true,
                     "type": "String",
                     "analyzed": false,
+                    "weight": 1,
                     "jcr:primaryType": "nt:unstructured"
                 },
                 "form": {
@@ -31,6 +32,7 @@
                     "analyzed": true,
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
+                    "weight": 1,
                     "jcr:primaryType": "nt:unstructured"
                 }
             }
@@ -80,6 +82,7 @@
                     "propertyIndex": true,
                     "type": "String",
                     "analyzed": false,
+                    "weight": 10,
                     "jcr:primaryType": "nt:unstructured"
                 },
                 "form": {
@@ -94,6 +97,7 @@
                     "analyzed": false,
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
+                    "weight": 10,
                     "jcr:primaryType": "nt:unstructured"
                 }
             }
@@ -188,6 +192,7 @@
                     "propertyIndex": true,
                     "type": "String",
                     "analyzed": false,
+                    "weight": 10000,
                     "jcr:primaryType": "nt:unstructured"
                 },
                 "form": {
@@ -202,6 +207,7 @@
                     "analyzed": true,
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
+                    "weight": 10000,
                     "jcr:primaryType": "nt:unstructured"
                 }
             }
@@ -215,6 +221,7 @@
                     "propertyIndex": true,
                     "type": "String",
                     "analyzed": false,
+                    "weight": 100,
                     "jcr:primaryType": "nt:unstructured"
                 },
                 "form": {
@@ -229,6 +236,7 @@
                     "analyzed": true,
                     "notNullCheckEnabled": true,
                     "nullCheckEnabled": true,
+                    "weight": 100,
                     "jcr:primaryType": "nt:unstructured"
                 }
             }

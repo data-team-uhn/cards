@@ -24,7 +24,7 @@ use(function(){
     }
     uixp = uixp.getString();
     var queryManager = currentSession.getWorkspace().getQueryManager();
-    var q = "select * from [cards:ExtensionPoint] as n WHERE n.'cards:extensionPointId' = $path and ISDESCENDANTNODE(n, '/apps/cards/ExtensionPoints/')";
+    var q = "select * from [cards:ExtensionPoint] as n WHERE n.'cards:extensionPointId' = $path and ISDESCENDANTNODE(n, '/apps/cards/ExtensionPoints/') OPTION (index tag property)";
     var query = queryManager.createQuery(q, "JCR-SQL2");
     query.bindValue("path", currentSession.getValueFactory().createValue(uixp));
     var queryResults = query.execute().getNodes();

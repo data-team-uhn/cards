@@ -100,6 +100,7 @@ public final class SubmissionEventListener implements EventListener
         for (String excludeQuestionnaireUUID : this.getExcludedQuestionnaireUUIDs()) {
             sqlQuery += " AND f.'questionnaire'<>'" + excludeQuestionnaireUUID + SINGLE_QUOTE;
         }
+        sqlQuery += " OPTION (index tag cards)";
 
         Iterator<Resource> results;
         results = this.resolver.findResources(sqlQuery, "JCR-SQL2");

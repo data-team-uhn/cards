@@ -91,7 +91,7 @@ public class ExtensionsManager implements Use
         LOGGER.debug("Looking for extensions for [{}]", extensionPointId);
         final Iterator<Resource> result = this.resourceResolver.findResources(
             "select n from [cards:Extension] as n where n.'cards:extensionPointId' = '" + extensionPointId
-            + "' order by n.'cards:defaultOrder'",
+            + "' order by n.'cards:defaultOrder' OPTION (index tag property)",
             "JCR-SQL2");
         result.forEachRemaining(extension -> this.matchingExtensions.add(extension));
         LOGGER.debug("Found [{}] extensions", this.matchingExtensions.size());

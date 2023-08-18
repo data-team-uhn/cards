@@ -3,9 +3,10 @@
   "type": "property",
   "tags": ["property"],
   "jcr:name:propertyNames": [
-    "subject"
+    "question",
+    "form"
   ],
   "jcr:name:declaringNodeTypes": [
-    "cards:Form"
+    "cards:Answer"
   ]
 }

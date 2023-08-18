@@ -62,15 +62,22 @@ const questions = {
   "Participant Status": "Status/enrollment_status"
 };
 
+let toTitleCase = function(str) {
+  return str.substring(0, 1).toUpperCase() + str.substring(1);
+}
+
 // Compute a list of question UUIDs based on the `questions` map above and the selected questionnaire.
 let extraQuestionsUuid = [];
+let extraQuestionsType = [];
 if (typeof questions[currentNode.getName()] == "string") {
   // A single question
   extraQuestionsUuid.push(currentNode.getNode(questions[currentNode.getName()]).getIdentifier());
+  extraQuestionsType.push(toTitleCase(currentNode.getNode(questions[currentNode.getName()]).getProperty('dataType').getString()));
 } else if (typeof questions[currentNode.getName()] == "object") {
   // A list of questions
   for (let q of questions[currentNode.getName()]) {
     extraQuestionsUuid.push(currentNode.getNode(q).getIdentifier());
+    extraQuestionsType.push(toTitleCase(currentNode.getNode(q).getProperty('dataType').getString()));
   }
 }
 
@@ -91,9 +98,7 @@ let updateFormsForSubjectAndVisit = function(subject, identifiers) {
   let query = 'select f.* from [cards:Form] as f inner join [cards:Subject] as s on s.[jcr:uuid] = f.subject';
   for (let i = 0; i < extraQuestionsUuid.length; ++i) {
     if (identifiers[i]) {
-      query += ' inner join [cards:Answer] as va' + i +' on isdescendantnode(va' + i + ', f)';
-      // TODO: figure out the exact answer type for speedier queries
-      // TODO: change to `... on va.[form] = f.[jcr:uuid] for speedier queries
+      query += ' inner join [cards:' + extraQuestionsType[i] + 'Answer] as va' + i +' on va' + i + '.[form] = f.[jcr:uuid]';
     }
   }
   query += ' where f.questionnaire="' + questionnaireUuid + '"';

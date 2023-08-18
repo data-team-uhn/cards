@@ -379,9 +379,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
             return this.cachedAnswers.get().get(question.getIdentifier());
         }
 
-        final String query =
-            String.format("select n from [cards:Answer] as n where n.question = '%s' and isdescendantnode(n,'%s')",
-                question.getIdentifier(), form.getPath());
+        final String query = String.format(
+            "select n from [cards:Answer] as n where n.question = '%s' and n.form = '%s' OPTION (index tag property)",
+            question.getIdentifier(), form.getValueMap().get("jcr:uuid"));
         Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
         if (results.hasNext()) {
             return results.next();
@@ -678,7 +678,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
     {
         try {
             final String query =
-                String.format("select n from [cards:Form] as n where n.subject = '%s' and n.questionnaire = '%s'",
+                String.format("select n from [cards:Form] as n where n.subject = '%s' and n.questionnaire = '%s'"
+                    + " OPTION (index tag property)",
                     subject.getIdentifier(), this.questionnaire.get().getIdentifier());
             final Iterator<Resource> results = this.resolver.get().findResources(query, "JCR-SQL2");
             if (results.hasNext()) {
@@ -770,8 +771,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
             return cache.get(subjectKey);
         }
 
-        String query = String.format("select n from [cards:Subject] as n where n.identifier = '%s'",
-            SearchUtils.escapeQueryArgument(subjectId));
+        String query =
+            String.format("select n from [cards:Subject] as n where n.identifier = '%s'",
+                SearchUtils.escapeQueryArgument(subjectId));
         try {
             if (typeNode != null) {
                 query += " and n.type = '" + typeNode.getProperty("jcr:uuid").getValue() + "'";
@@ -782,6 +784,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         } catch (RepositoryException ex) {
             // No change to query
         }
+        query += " OPTION (index tag property)";
 
         try {
             Query queryObj = this.queryManager.get().createQuery(query, "JCR-SQL2");

@@ -132,7 +132,9 @@ public class SubmissionListener implements ResourceChangeListener
                     + "  FROM [cards:Form] AS form"
                     + " WHERE"
                     // link to the correct Visit subject
-                    + "  form.subject = '%1$s'",
+                    + "  form.subject = '%1$s'"
+                    // use the synchronous index to not miss recently created forms
+                    + " OPTION (index tag property)",
                 subjectId), "JCR-SQL2").execute().getNodes();
             while (forms.hasNext()) {
                 updateFormFlags(forms.nextNode());

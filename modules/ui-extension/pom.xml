@@ -49,6 +49,7 @@
               SLING-INF/content/libs/cards/Extension/;path:=/libs/cards/Extension/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/ExtensionPoint/;path:=/libs/cards/ExtensionPoint/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/ExtensionPointFinder/;path:=/libs/cards/ExtensionPointFinder/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
             <Sling-Nodetypes>SLING-INF/nodetypes/extension.cnd</Sling-Nodetypes>
           </instructions>

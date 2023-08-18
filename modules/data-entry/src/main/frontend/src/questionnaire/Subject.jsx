@@ -182,7 +182,7 @@ function SubjectContainer(props) {
     setRelatedSubjects([]);
   };
 
-  let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "cards:Subject");
+  let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created' OPTION (index tag property)`, "cards:Subject");
   let fetchRelated = () => {
     fetchWithReLogin(globalLoginDisplay, check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))

@@ -340,7 +340,8 @@ public class PatientLocalStorage
         throws RepositoryException, PersistenceException
     {
         final Iterator<Resource> subjectResourceIter = this.resolver.findResources(String.format(
-            "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), PatientLocalStorage.JCR_SQL);
+            "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\" OPTION (index tag property)", identifier),
+            PatientLocalStorage.JCR_SQL);
         if (subjectResourceIter.hasNext()) {
             final Resource subjectResource = subjectResourceIter.next();
             this.versionManager.checkout(subjectResource.getPath());
@@ -374,7 +375,7 @@ public class PatientLocalStorage
         final Resource formType = this.resolver.getResource(questionnairePath);
         final Node subjectNode = subject.adaptTo(Node.class);
         final Iterator<Resource> formResourceIter = this.resolver.findResources(String.format(
-            "SELECT * FROM [cards:Form] WHERE subject = \"%s\" AND questionnaire=\"%s\"",
+            "SELECT * FROM [cards:Form] WHERE subject = \"%s\" AND questionnaire=\"%s\" OPTION (index tag property)",
             subjectNode.getIdentifier(),
             formType.adaptTo(Node.class).getIdentifier()), PatientLocalStorage.JCR_SQL);
         if (formResourceIter.hasNext()) {

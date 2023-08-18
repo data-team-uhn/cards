@@ -3,9 +3,9 @@
   "type": "property",
   "tags": ["property"],
   "jcr:name:propertyNames": [
-    "subject"
+    "cards:extensionPointId"
   ],
   "jcr:name:declaringNodeTypes": [
-    "cards:Form"
+    "cards:ExtensionPoint"
   ]
 }

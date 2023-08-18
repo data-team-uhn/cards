@@ -107,7 +107,7 @@ public class MaxFormsOfTypePerSubjectValidator extends DefaultValidator
         long count = 0;
         final Iterator<Resource> results = serviceResolver.findResources(
             "SELECT f.* FROM [cards:Form] AS f WHERE f.'subject'='" + subjectUUID + "'"
-                + " AND f.'questionnaire'='" + questionnaireUUID + "'",
+                + " AND f.'questionnaire'='" + questionnaireUUID + "' OPTION (index tag property)",
             "JCR-SQL2");
 
         while (results.hasNext()) {
