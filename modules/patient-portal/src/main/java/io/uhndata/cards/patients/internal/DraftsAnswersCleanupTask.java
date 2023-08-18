@@ -20,6 +20,7 @@
 package io.uhndata.cards.patients.internal;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -117,7 +118,9 @@ public class DraftsAnswersCleanupTask implements Runnable
                     + "  and dataForm.questionnaire <> '%1$s'"
                     // use the fast index for the query
                     + " OPTION (index tag cards)",
-                visitInformationQuestionnaire, ZonedDateTime.now().minusDays(draftLifetime), submitted),
+                visitInformationQuestionnaire, ZonedDateTime.now().minusDays(draftLifetime)
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx")),
+                submitted),
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {
