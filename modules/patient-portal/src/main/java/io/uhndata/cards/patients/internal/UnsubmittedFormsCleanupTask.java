@@ -112,7 +112,7 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                     + " option (index tag cards)",
                 visitInformationQuestionnaire, time, submitted,
                 ZonedDateTime.now().minusDays(delay)
-                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))),
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))),
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {
