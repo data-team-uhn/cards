@@ -550,7 +550,7 @@
   - note (string)
 
   // A potentially empty list of status flags for the answer
-  - statusFlags (STRING) autocreated multiple
+  - statusFlags (STRING) autocreated multiple IGNORE
 
   // We don't define any subchildren.
 
@@ -774,7 +774,7 @@
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A potentially empty list of status flags for the form
-  - statusFlags (STRING) = "INCOMPLETE" mandatory autocreated multiple
+  - statusFlags (STRING) = "INCOMPLETE" mandatory autocreated multiple IGNORE
 
   // A reference to the questionnaire being filled in.
   // Mandatory, every form has a questionnaire.

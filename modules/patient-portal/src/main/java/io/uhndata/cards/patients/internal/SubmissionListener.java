@@ -146,7 +146,6 @@ public class SubmissionListener implements ResourceChangeListener
 
     private void updateFormFlags(final Node form) throws RepositoryException
     {
-        boolean checkinNeeded = checkoutIfNeeded(form);
         Set<String> flags = new TreeSet<>();
         if (form.hasProperty(STATUS_FLAGS)) {
             Set.of(form.getProperty("statusFlags").getValues()).forEach(v -> {
@@ -164,27 +163,7 @@ public class SubmissionListener implements ResourceChangeListener
         } catch (VersionException e) {
             // Node was checked in in the background, try to checkout and save again
             form.getSession().refresh(true);
-            checkinNeeded = checkoutIfNeeded(form);
             form.getSession().save();
-        }
-        if (checkinNeeded) {
-            checkin(form);
-        }
-    }
-
-    private boolean checkoutIfNeeded(final Node form) throws RepositoryException
-    {
-        if (!form.isCheckedOut()) {
-            form.getSession().getWorkspace().getVersionManager().checkout(form.getPath());
-            return true;
-        }
-        return false;
-    }
-
-    private void checkin(final Node form) throws RepositoryException
-    {
-        if (form.isCheckedOut()) {
-            form.getSession().getWorkspace().getVersionManager().checkin(form.getPath());
         }
     }
 }
