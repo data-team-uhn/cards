@@ -252,36 +252,67 @@ public class PauseResumeFormEditor extends DefaultEditor
     private void addFormReference(Node latestForm, String id)
     {
         try {
-            NodeBuilder references;
-            if (this.currentNodeBuilder.hasChildNode("formReferences")) {
-                references = this.currentNodeBuilder.getChildNode("formReferences");
-            } else {
-                references = this.currentNodeBuilder.setChildNode("formReferences");
-                setDefaultProperties(references);
-                setTypeProperties(references, "cards:FormReferences", "cards/Resource", "cards/FormReferences");
-            }
+            NodeBuilder references = getOrCreateFormReferencesNode(this.currentNodeBuilder);
+            NodeBuilder reference = addFormReferenceNode(references, latestForm.getIdentifier());
 
-            NodeBuilder reference = references.setChildNode(UUID.randomUUID().toString());
-            setDefaultProperties(reference);
-            reference.setProperty("reference", latestForm.getIdentifier(), Type.REFERENCE);
-
-            NodeBuilder properties = reference.setChildNode("referenceProperties");
-            setDefaultProperties(properties);
-            setTypeProperties(properties, "cards:ReferenceProperties", "cards/Resource", "cards/ReferenceProperties");
+            NodeBuilder properties = addReferencePropertiesNode(reference);
             properties.setProperty("label", "Pause Form", Type.STRING);
             properties.setProperty("recursiveDeleteParent", true, Type.BOOLEAN);
             properties.setProperty("linkback", true, Type.BOOLEAN);
 
-            NodeBuilder linkbackProperties = properties.setChildNode("linkbackProperties");
-            setDefaultProperties(linkbackProperties);
-            setTypeProperties(linkbackProperties, "cards:ReferenceProperties", "cards/Resource",
-                "cards/ReferenceProperties");
+            NodeBuilder linkbackProperties = addLinkbackPropertiesNode(properties);
             linkbackProperties.setProperty("label", "Resume Form", Type.STRING);
-
-            setTypeProperties(reference, "cards:FormReference", "cards/Resource", "cards/FormReference");
         } catch (RepositoryException e) {
             LOGGER.error("Failed to create form reference for {}: {}", id, e.getMessage());
         }
+    }
+
+    private NodeBuilder getOrCreateFormReferencesNode(NodeBuilder node)
+    {
+        NodeBuilder result;
+        if (node.hasChildNode("formReferences")) {
+            result = this.currentNodeBuilder.getChildNode("formReferences");
+        } else {
+            result = addFormReferencesNode(this.currentNodeBuilder);
+        }
+        return result;
+    }
+
+    private NodeBuilder addFormReferencesNode(NodeBuilder node)
+    {
+        NodeBuilder result = node.setChildNode("formReferences");
+        setDefaultProperties(result);
+        setTypeProperties(result, "cards:FormReferences", "cards/Resource", "cards/FormReferences");
+        return result;
+    }
+
+    private NodeBuilder addFormReferenceNode(NodeBuilder node, String referenceToId)
+    {
+        NodeBuilder result = node.setChildNode(UUID.randomUUID().toString());
+        setDefaultProperties(result);
+        result.setProperty("reference", referenceToId, Type.REFERENCE);
+        setTypeProperties(result, "cards:FormReference", "cards/Resource", "cards/FormReference");
+        return result;
+    }
+
+    private NodeBuilder addReferencePropertiesNode(NodeBuilder node)
+    {
+        NodeBuilder result = node.setChildNode("referenceProperties");
+        setupReferencePropertiesNode(result);
+        return result;
+    }
+
+    private NodeBuilder addLinkbackPropertiesNode(NodeBuilder node)
+    {
+        NodeBuilder result = node.setChildNode("linkbackProperties");
+        setupReferencePropertiesNode(result);
+        return result;
+    }
+
+    private void setupReferencePropertiesNode(NodeBuilder node)
+    {
+        setDefaultProperties(node);
+        setTypeProperties(node, "cards:ReferenceProperties", "cards/Resource", "cards/ReferenceProperties");
     }
 
     private void setDefaultProperties(NodeBuilder node)

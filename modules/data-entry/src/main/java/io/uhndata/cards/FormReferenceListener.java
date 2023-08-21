@@ -130,13 +130,7 @@ public class FormReferenceListener implements ResourceChangeListener
         boolean checkinNeeded = checkoutIfNeeded(formToModify);
 
         try {
-            Node formReferences;
-            if (formToModify.hasNode(FORM_REFERENCES_NAME)) {
-                formReferences = formToModify.getNode(FORM_REFERENCES_NAME);
-            } else {
-                formReferences = formToModify.addNode(FORM_REFERENCES_NAME);
-                formReferences.setPrimaryType(FORM_REFERENCES_CARDS_TYPE);
-            }
+            Node formReferences = getOrCreateFormReferencesNode(formToModify);
             Node newFormReference = formReferences.addNode(UUID.randomUUID().toString());
             newFormReference.setProperty("reference", formToReference);
 
@@ -163,6 +157,18 @@ public class FormReferenceListener implements ResourceChangeListener
         if (checkinNeeded) {
             checkinIfNeeded(formToModify);
         }
+    }
+
+    private Node getOrCreateFormReferencesNode(Node node) throws RepositoryException
+    {
+        Node result;
+        if (node.hasNode(FORM_REFERENCES_NAME)) {
+            result = node.getNode(FORM_REFERENCES_NAME);
+        } else {
+            result = node.addNode(FORM_REFERENCES_NAME);
+            result.setPrimaryType(FORM_REFERENCES_CARDS_TYPE);
+        }
+        return result;
     }
 
     private void copyNodeLinkbackProperties(Node newProperties, Node existingProperties)
