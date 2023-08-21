@@ -21,6 +21,8 @@ import java.util.Calendar;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.version.OnParentVersionAction;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
@@ -83,7 +85,7 @@ public class LastModifiedEditor extends DefaultEditor
     public void propertyAdded(final PropertyState after)
         throws CommitFailedException
     {
-        if (!after.getName().startsWith("jcr:") && !after.getName().startsWith("sling:")) {
+        if (!isPropertyNonVersionable(after.getName())) {
             handleAnswerChange();
         }
     }
@@ -95,6 +97,9 @@ public class LastModifiedEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
+        if ("jcr:system".equals(name)) {
+            return null;
+        }
         return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name),
             this.currentResourceResolver,
             this.versionableAncestor);
@@ -103,6 +108,9 @@ public class LastModifiedEditor extends DefaultEditor
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
+        if ("jcr:system".equals(name)) {
+            return null;
+        }
         return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name),
             this.currentResourceResolver,
             this.versionableAncestor);
@@ -130,6 +138,41 @@ public class LastModifiedEditor extends DefaultEditor
             }
         }
         return false;
+    }
+
+    private boolean isPropertyNonVersionable(final String propertyName)
+    {
+        if (isSystemProperty(propertyName)) {
+            return true;
+        }
+        if (this.currentNodeBuilder instanceof MemoryNodeBuilder) {
+            final String nodePath = ((MemoryNodeBuilder) this.currentNodeBuilder).getPath();
+            final Session thisSession = this.currentResourceResolver.adaptTo(Session.class);
+            try {
+                final Node thisNode = thisSession.getNode(nodePath);
+                int opv = -1;
+                for (PropertyDefinition pd : thisNode.getPrimaryNodeType().getPropertyDefinitions()) {
+                    if (pd.getName().equals(propertyName)) {
+                        opv = pd.getOnParentVersion();
+                        break;
+                    } else if ("*".equals(pd.getName())) {
+                        opv = pd.getOnParentVersion();
+                    }
+                }
+                if (opv == -1 && thisNode.hasProperty(propertyName)) {
+                    opv = thisNode.getProperty(propertyName).getDefinition().getOnParentVersion();
+                }
+                return opv == OnParentVersionAction.IGNORE;
+            } catch (RepositoryException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private boolean isSystemProperty(final String propertyName)
+    {
+        return propertyName.startsWith("jcr:") || propertyName.startsWith("sling:") || propertyName.startsWith(":");
     }
 
     private void handleAnswerChange()
