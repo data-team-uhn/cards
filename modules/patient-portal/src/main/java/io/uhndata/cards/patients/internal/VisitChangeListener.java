@@ -578,23 +578,24 @@ public class VisitChangeListener implements ResourceChangeListener
     private boolean updateVisitInformationFlags(final Node visitInformationForm, final Session session)
     {
         try {
-            boolean checkedOut = checkoutIfNeeded(visitInformationForm, session);
             if (visitInformationForm.hasProperty(STATUS_FLAGS)) {
                 Set<String> flags = new TreeSet<>();
-                Set.of(visitInformationForm.getProperty(STATUS_FLAGS).getValues()).forEach(v -> {
-                    try {
-                        String flag = v.getString();
-                        if (!"SUBMITTED".equals(flag)) {
-                            flags.add(flag);
-                        }
-                    } catch (RepositoryException e) {
-                        LOGGER.warn("Failed to read flag: {}", e.getMessage());
+                boolean needsUpdate = false;
+                for (Value v : visitInformationForm.getProperty(STATUS_FLAGS).getValues()) {
+                    String flag = v.getString();
+                    if ("SUBMITTED".equals(flag)) {
+                        needsUpdate = true;
+                    } else {
+                        flags.add(flag);
                     }
-                });
-                visitInformationForm.setProperty(STATUS_FLAGS, flags.toArray(STRING_ARRAY));
+                }
+                if (needsUpdate) {
+                    boolean checkedOut = checkoutIfNeeded(visitInformationForm, session);
+                    visitInformationForm.setProperty(STATUS_FLAGS, flags.toArray(STRING_ARRAY));
+                    checkedOut |= save(visitInformationForm, session);
+                    return checkedOut;
+                }
             }
-            session.save();
-            return checkedOut;
         } catch (final RepositoryException e) {
             LOGGER.error("Failed to obtain form data: {}", e.getMessage(), e);
         }
@@ -644,7 +645,7 @@ public class VisitChangeListener implements ResourceChangeListener
 
             // Set the new value
             answer.setProperty("value", newValue);
-            session.save();
+            checkedOut |= save(visitInformationForm, session);
 
             // All done, exit the try-loop
             return checkedOut;
@@ -660,6 +661,7 @@ public class VisitChangeListener implements ResourceChangeListener
 
     private boolean checkoutIfNeeded(final Node form, final Session session) throws RepositoryException
     {
+        session.refresh(true);
         if (!form.isCheckedOut()) {
             session.getWorkspace().getVersionManager().checkout(form.getPath());
             return true;
@@ -673,6 +675,18 @@ public class VisitChangeListener implements ResourceChangeListener
             session.getWorkspace().getVersionManager().checkin(form.getPath());
         } catch (final RepositoryException e) {
             LOGGER.warn("Failed check in the form: {}", e.getMessage(), e);
+        }
+    }
+
+    private boolean save(final Node form, final Session session) throws RepositoryException
+    {
+        try {
+            session.save();
+            return false;
+        } catch (RepositoryException e) {
+            boolean checkedOut = checkoutIfNeeded(form, session);
+            session.save();
+            return checkedOut;
         }
     }
 
