@@ -204,7 +204,7 @@ public class VisitChangeListener implements ResourceChangeListener
             // However, if the visit information form is edited via the browser editor and saved twice,
             // `has_surveys` can be incorrectly deleted and may need to be set back to true.
             if (baseQuestionnaireSetSize > 0) {
-                changeVisitInformation(visitForm, "has_surveys", true, session);
+                changeVisitInformation(visitForm, "has_surveys", true, true, session);
             }
             return;
         }
@@ -224,21 +224,21 @@ public class VisitChangeListener implements ResourceChangeListener
             // 2. A subset of the questionnaires from the questionnaire set which were previously created
             if (prunedQuestionnaireSetSize == baseQuestionnaireSetSize) {
                 // If case 1, record that this visit has no forms
-                changeVisitInformation(visitForm, "has_surveys", false, session);
+                changeVisitInformation(visitForm, "has_surveys", false, true, session);
             } else {
                 // If case 2, record that this visit has forms
 
                 // Ideally, has_surveys would already be set to true so this should not be needed.
                 // However, if the visit information form is edited via the browser editor and saved twice,
                 // `has_surveys` can be incorrectly deleted and may need to be set back to true.
-                changeVisitInformation(visitForm, "has_surveys", true, session);
+                changeVisitInformation(visitForm, "has_surveys", true, true, session);
             }
             return;
         } else {
             // Visit needs additional forms. Record that and create the required forms
-            boolean checkinNeeded = changeVisitInformation(visitForm, "has_surveys", true, session);
-            checkinNeeded |= changeVisitInformation(visitForm, "surveys_complete", false, session);
-            checkinNeeded |= changeVisitInformation(visitForm, "surveys_submitted", false, session);
+            boolean checkinNeeded = changeVisitInformation(visitForm, "has_surveys", true, false, session);
+            checkinNeeded |= changeVisitInformation(visitForm, "surveys_complete", false, false, session);
+            checkinNeeded |= changeVisitInformation(visitForm, "surveys_submitted", false, false, session);
             checkinNeeded |= updateVisitInformationFlags(visitForm, session);
             if (checkinNeeded) {
                 checkin(visitForm, session);
@@ -287,7 +287,7 @@ public class VisitChangeListener implements ResourceChangeListener
         // The actual number of forms does not matter since all the needed forms will have been pre-created.
         // If this code runs then all created forms are completed so all needed forms are complete.
         if (visitInformationForm != null) {
-            changeVisitInformation(visitInformationForm, "surveys_complete", true, session);
+            changeVisitInformation(visitInformationForm, "surveys_complete", true, true, session);
         }
     }
 
@@ -613,8 +613,9 @@ public class VisitChangeListener implements ResourceChangeListener
      * @return true if the form was checked out
      */
     private boolean changeVisitInformation(final Node visitInformationForm, final String questionPath,
-        final boolean value, final Session session)
+        final boolean value, final boolean checkin, final Session session)
     {
+        boolean checkedOut = false;
         try {
             final Long newValue = value ? 1L : 0L;
             final Node questionnaire = this.formUtils.getQuestionnaire(visitInformationForm);
@@ -633,7 +634,7 @@ public class VisitChangeListener implements ResourceChangeListener
             }
 
             // Checkout
-            boolean checkedOut = checkoutIfNeeded(visitInformationForm, session);
+            checkedOut = checkoutIfNeeded(visitInformationForm, session);
 
             if (answer == null) {
                 // No answer node yet, create one
@@ -649,6 +650,10 @@ public class VisitChangeListener implements ResourceChangeListener
             return checkedOut;
         } catch (final RepositoryException e) {
             LOGGER.error("Failed to obtain form data: {}", e.getMessage(), e);
+        } finally {
+            if (checkin && checkedOut) {
+                checkin(visitInformationForm, session);
+            }
         }
         return false;
     }
