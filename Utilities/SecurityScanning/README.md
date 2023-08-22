@@ -11,6 +11,7 @@
   - `hosts/cardsdemo.uhndata.io/vm/os-release`
   - `hosts/cardsdemo.uhndata.io/vm/status`
   - `hosts/cardsdemo.uhndata/io/vm/debian_version`
+  - `hosts/cardsdemo.uhndata/io/vm/kernel_version`
   - `reports/cardsdemo.uhndata.io.md`
 
 3. In the following steps (4,5,6,7), replace `cardsdemo.uhndata.io` with
@@ -60,6 +61,7 @@ following steps (2,3,4,5,6,7,8).
     - `hosts/cardsdemo.uhndata.io/vm/os-release`
     - `hosts/cardsdemo.uhndata.io/vm/status`
     - `hosts/cardsdemo.uhndata/io/vm/debian_version`
+    - `hosts/cardsdemo.uhndata/io/vm/kernel_version`
   - **Where can this GitHub App be installed?**: `Only on this account`
 
 4. Click **Create GitHub App**
@@ -110,20 +112,23 @@ export GITHUB_API_INSTALLATION_ID=<Installation ID from GitHub API Setup step 8>
 export GITHUB_API_PRIVATE_KEY=$(cat /path/to/pem/file/downloaded/in/GitHub/API/Setup/step/5)
 export GITHUB_REPOSITORY=<github organization or username / cards-deployment-security-database (eg. IntegralProgrammer/cards-deployment-security-database)>
 python3 github_publish_os_package_list.py --deployment_hostname (hostname of this deployment, eg. cardsdemo.uhndata.io)
+python3 github_publish_os_kernel_version.py --deployment_hostname (hostname of this deployment, eg. cardsdemo.uhndata.io)
 ```
 
 For testing purposes, you may wish to copy the
-`Utilities/SecurityScanning` directory into an Ubuntu 18.04 Docker
+`Utilities/SecurityScanning` directory into an Ubuntu 22.04 Docker
 container, configure the `GITHUB_API_APP_ID`, `GITHUB_API_INSTALLATION_ID`,
 `GITHUB_API_PRIVATE_KEY`, `GITHUB_REPOSITORY` environment variables in
 the container,
 `apt install python3 python3-jwt python3-distro python3-requests` and
-run the `github_publish_os_package_list.py` from within the container.
+run the `github_publish_os_package_list.py` and
+`github_publish_os_kernel_version.py` scripts from within the container.
 
 If all has worked properly, the files,
 `hosts/cardsdemo.uhndata.io/vm/lsb-release`,
 `hosts/cardsdemo.uhndata.io/vm/os-release`,
-`hosts/cardsdemo.uhndata.io/vm/status` should be updated on the
+`hosts/cardsdemo.uhndata.io/vm/status`,
+`hosts/cardsdemo.uhndata.io/vm/kernel_version` should be updated on the
 `cards-deployment-security-database` repository.
 
 2. To perform a security scan, on your development / testing machine,

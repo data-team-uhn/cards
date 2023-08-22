@@ -18,6 +18,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import re
+
 # Empirically determined (approximate) maximum width of text that can be
 # placed in between the :package: (or alternative) and :warning: emojis
 # plus the padding spaces without wrapping to a new line
@@ -53,14 +55,50 @@ def getUniqueElements(input_list):
 	return output_list
 
 class TrivyToSlackConverter:
-	def __init__(self, software_package_emoji=':package:'):
+	def __init__(self, software_package_emoji=':package:', running_kernel=None):
 		self.software_package_emoji = software_package_emoji
+		self.running_kernel = running_kernel
 		self.vulnerability_lists = {}
 		self.vulnerability_lists['EOSL'] = []
 		self.vulnerability_lists['CRITICAL'] = []
 		self.vulnerability_lists['HIGH'] = []
 		self.vulnerability_lists['MEDIUM'] = []
 		self.vulnerability_lists['LOW'] = []
+
+	def shouldSkipPackage(self, pkgName):
+		if self.running_kernel is None:
+			return False
+
+		simplified_running_kernel_version = self.running_kernel
+		if simplified_running_kernel_version.endswith("-generic"):
+			simplified_running_kernel_version = simplified_running_kernel_version[:-1*len("-generic")]
+
+		KERNEL_RELATED_PACKAGES = []
+		KERNEL_RELATED_PACKAGES.append("linux-headers-(\d.+)")
+		KERNEL_RELATED_PACKAGES.append("linux-modules-(\d.+)")
+		KERNEL_RELATED_PACKAGES.append("linux-modules-extra-(\d.+)")
+		KERNEL_RELATED_PACKAGES.append("linux-image-(\d.+)")
+		KERNEL_RELATED_PACKAGES.append("linux-headers-(\d.+)-generic")
+		KERNEL_RELATED_PACKAGES.append("linux-modules-(\d.+)-generic")
+		KERNEL_RELATED_PACKAGES.append("linux-modules-extra-(\d.+)-generic")
+		KERNEL_RELATED_PACKAGES.append("linux-image-(\d.+)-generic")
+
+		isKernelPackage = False
+		for kernel_related_package_regex in KERNEL_RELATED_PACKAGES:
+			match = re.match(kernel_related_package_regex, pkgName)
+			if match is None:
+				continue
+			isKernelPackage = True
+			version_string = match.group(1)
+			# If this vulnerability is in the running kernel, don't skip it
+			if version_string == simplified_running_kernel_version:
+				return False
+
+		# If this package is a kernel package and it not running, skip it, otherwise don't
+		if isKernelPackage:
+			return True
+		else:
+			return False
 
 	def processVulnerabilities(self, detected_vulnerabilities, eosl=False):
 		if eosl:
@@ -71,6 +109,10 @@ class TrivyToSlackConverter:
 			installedVersion = detected_vulnerabilities[vulnerabilityIndex]['InstalledVersion']
 			vulnerabilityID = detected_vulnerabilities[vulnerabilityIndex]['VulnerabilityID']
 			severity = detected_vulnerabilities[vulnerabilityIndex]['Severity']
+
+			# Optionally ignore vulnerabilities in any kernels that are not the running one
+			if self.shouldSkipPackage(pkgName):
+				continue
 
 			if severity not in self.vulnerability_lists:
 				continue
@@ -124,6 +166,7 @@ if __name__ == '__main__':
 	argparser.add_argument('--package_emoji', help='Software package icon [default: :package:]', default=':package:')
 	argparser.add_argument('--truncate_results', help='Truncate the list of vulnerabilities to this length', type=int, default=-1)
 	argparser.add_argument('--markdown_report_file', help='Store the Markdown formatted list of all detected vulnerabilities (in order of decreasing severity) to this file')
+	argparser.add_argument('--running_kernel_version', help='The version of the currently running Linux kernel - ignore all kernel related vulnerabilities that are not for this kernel')
 	args = argparser.parse_args()
 
 	trivy_report = json.load(sys.stdin)
@@ -141,7 +184,7 @@ if __name__ == '__main__':
 			if 'EOSL' in trivy_report['Metadata']['OS']:
 				eosl = trivy_report['Metadata']['OS']['EOSL']
 
-	trivy_to_slack_converter = TrivyToSlackConverter(software_package_emoji=args.package_emoji)
+	trivy_to_slack_converter = TrivyToSlackConverter(software_package_emoji=args.package_emoji, running_kernel=args.running_kernel_version)
 	trivy_to_slack_converter.processVulnerabilities(detected_vulnerabilities, eosl=eosl)
 
 	if args.markdown_report_file:
