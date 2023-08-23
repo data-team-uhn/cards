@@ -79,7 +79,7 @@ public class VisitChangeListener implements ResourceChangeListener
 
     private static final String CLINIC_PATH = "/Questionnaires/Visit information/clinic";
 
-    private static final String[] STRING_ARRAY = {};
+    private static final String[] EMPTY_ARRAY_OF_STRINGS = {};
 
     private static final String STATUS_FLAGS = "statusFlags";
 
@@ -115,7 +115,6 @@ public class VisitChangeListener implements ResourceChangeListener
      *
      * @param event a change that happened in the repository
      */
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private void handleEvent(final ResourceChange event)
     {
         // Acquire a service session with the right privileges for accessing visits and their forms
@@ -140,20 +139,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 return;
             }
 
-            final Node questionnaire = this.formUtils.getQuestionnaire(node);
-            final Node subject = this.formUtils.getSubject(node);
-
-            if (isVisitInformation(questionnaire)) {
-                // Create any forms that need to be created for this visit
-                handleVisitInformationForm(node, subject, questionnaire, session);
-            } else {
-                final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
-                if ("Visit".equals(subjectType)) {
-                    // Not a new visit information form, but it is a form for a visit.
-                    // Check if all forms for the current visit are complete.
-                    handleVisitDataForm(subject, session);
-                }
-            }
+            handleFormChange(node, session);
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } catch (final RepositoryException e) {
@@ -161,6 +147,24 @@ public class VisitChangeListener implements ResourceChangeListener
         } finally {
             if (mustPopResolver) {
                 this.rrp.pop();
+            }
+        }
+    }
+
+    private void handleFormChange(final Node node, final Session session) throws RepositoryException
+    {
+        final Node questionnaire = this.formUtils.getQuestionnaire(node);
+        final Node subject = this.formUtils.getSubject(node);
+
+        if (isVisitInformation(questionnaire)) {
+            // Create any forms that need to be created for this visit
+            handleVisitInformationForm(node, subject, questionnaire, session);
+        } else {
+            final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
+            if ("Visit".equals(subjectType)) {
+                // Not a new visit information form, but it is a form for a visit.
+                // Check if all forms for the current visit are complete.
+                handleVisitDataForm(subject, session);
             }
         }
     }
@@ -591,7 +595,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 }
                 if (needsUpdate) {
                     boolean checkedOut = checkoutIfNeeded(visitInformationForm, session);
-                    visitInformationForm.setProperty(STATUS_FLAGS, flags.toArray(STRING_ARRAY));
+                    visitInformationForm.setProperty(STATUS_FLAGS, flags.toArray(EMPTY_ARRAY_OF_STRINGS));
                     checkedOut |= save(visitInformationForm, session);
                     return checkedOut;
                 }
