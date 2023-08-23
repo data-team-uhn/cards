@@ -70,6 +70,8 @@ public class FilterServlet extends SlingSafeMethodsServlet
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         // Is there a questionnaire specified?
         String questionnaire = request.getParameter("questionnaire");
         String include = request.getParameter("include");
