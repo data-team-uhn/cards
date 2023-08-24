@@ -550,7 +550,7 @@
   - note (string)
 
   // A potentially empty list of status flags for the answer
-  - statusFlags (STRING) autocreated multiple
+  - statusFlags (STRING) autocreated multiple IGNORE
 
   // We don't define any subchildren.
 
@@ -745,6 +745,9 @@
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
+  // A potentially empty list of status flags for the section
+  - statusFlags (STRING) = autocreated multiple IGNORE
+
   // A reference to the section being answered.
   // Mandatory, every answer section is answering a section.
   // No full text search, since it's just a non-textual reference.
@@ -774,7 +777,7 @@
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A potentially empty list of status flags for the form
-  - statusFlags (STRING) = "INCOMPLETE" mandatory autocreated multiple
+  - statusFlags (STRING) = "INCOMPLETE" mandatory autocreated multiple IGNORE
 
   // A reference to the questionnaire being filled in.
   // Mandatory, every form has a questionnaire.
