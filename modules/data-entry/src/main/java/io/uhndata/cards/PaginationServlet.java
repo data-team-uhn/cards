@@ -21,6 +21,7 @@ package io.uhndata.cards;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -684,7 +685,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         //
         final ZonedDateTime thisDay = ZonedDateTime.parse(valueToCompare);
         final ZonedDateTime nextDay = thisDay.plusDays(1);
-        final String nextDayStr = nextDay.toString();
+        final String nextDayStr = nextDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
         String compareQuery;
         switch (operator) {
             case "=":
