@@ -745,6 +745,9 @@
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
+  // A potentially empty list of status flags for the section
+  - statusFlags (STRING) = autocreated multiple IGNORE
+
   // A reference to the section being answered.
   // Mandatory, every answer section is answering a section.
   // No full text search, since it's just a non-textual reference.
