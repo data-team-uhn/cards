@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -76,6 +77,12 @@ public class VisitChangeListener implements ResourceChangeListener
      */
     private static final int FREQUENCY_MARGIN_DAYS = 2;
 
+    private static final String CLINIC_PATH = "/Questionnaires/Visit information/clinic";
+
+    private static final String[] EMPTY_ARRAY_OF_STRINGS = {};
+
+    private static final String STATUS_FLAGS = "statusFlags";
+
     /** Provides access to resources. */
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
@@ -122,24 +129,17 @@ public class VisitChangeListener implements ResourceChangeListener
                 return;
             }
             final String path = event.getPath();
-            final Node form = session.getNode(path);
-            if (!this.formUtils.isForm(form)) {
+            Node node = session.getNode(path);
+
+            if (node.isNodeType("cards:ResourceAnswer")
+                && this.formUtils.getQuestion(node).getPath().equals(CLINIC_PATH)) {
+                node = this.formUtils.getForm(node);
+            }
+            if (!this.formUtils.isForm(node)) {
                 return;
             }
-            final Node questionnaire = this.formUtils.getQuestionnaire(form);
-            final Node subject = this.formUtils.getSubject(form);
 
-            if (isVisitInformation(questionnaire)) {
-                // Create any forms that need to be created for this visit
-                handleVisitInformationForm(form, subject, questionnaire, session);
-            } else {
-                final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
-                if ("Visit".equals(subjectType)) {
-                    // Not a new visit information form, but it is a form for a visit.
-                    // Check if all forms for the current visit are complete.
-                    handleVisitDataForm(subject, session);
-                }
-            }
+            handleFormChange(node, session);
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } catch (final RepositoryException e) {
@@ -147,6 +147,24 @@ public class VisitChangeListener implements ResourceChangeListener
         } finally {
             if (mustPopResolver) {
                 this.rrp.pop();
+            }
+        }
+    }
+
+    private void handleFormChange(final Node node, final Session session) throws RepositoryException
+    {
+        final Node questionnaire = this.formUtils.getQuestionnaire(node);
+        final Node subject = this.formUtils.getSubject(node);
+
+        if (isVisitInformation(questionnaire)) {
+            // Create any forms that need to be created for this visit
+            handleVisitInformationForm(node, subject, questionnaire, session);
+        } else {
+            final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
+            if ("Visit".equals(subjectType)) {
+                // Not a new visit information form, but it is a form for a visit.
+                // Check if all forms for the current visit are complete.
+                handleVisitDataForm(subject, session);
             }
         }
     }
@@ -190,7 +208,7 @@ public class VisitChangeListener implements ResourceChangeListener
             // However, if the visit information form is edited via the browser editor and saved twice,
             // `has_surveys` can be incorrectly deleted and may need to be set back to true.
             if (baseQuestionnaireSetSize > 0) {
-                changeVisitInformation(visitForm, "has_surveys", true, session);
+                changeVisitInformation(visitForm, "has_surveys", true, true, session);
             }
             return;
         }
@@ -210,20 +228,25 @@ public class VisitChangeListener implements ResourceChangeListener
             // 2. A subset of the questionnaires from the questionnaire set which were previously created
             if (prunedQuestionnaireSetSize == baseQuestionnaireSetSize) {
                 // If case 1, record that this visit has no forms
-                changeVisitInformation(visitForm, "has_surveys", false, session);
+                changeVisitInformation(visitForm, "has_surveys", false, true, session);
             } else {
                 // If case 2, record that this visit has forms
 
                 // Ideally, has_surveys would already be set to true so this should not be needed.
                 // However, if the visit information form is edited via the browser editor and saved twice,
                 // `has_surveys` can be incorrectly deleted and may need to be set back to true.
-                changeVisitInformation(visitForm, "has_surveys", true, session);
+                changeVisitInformation(visitForm, "has_surveys", true, true, session);
             }
             return;
         } else {
             // Visit needs additional forms. Record that and create the required forms
-            changeVisitInformation(visitForm, "has_surveys", true, session);
-
+            boolean checkinNeeded = changeVisitInformation(visitForm, "has_surveys", true, false, session);
+            checkinNeeded |= changeVisitInformation(visitForm, "surveys_complete", false, false, session);
+            checkinNeeded |= changeVisitInformation(visitForm, "surveys_submitted", false, false, session);
+            checkinNeeded |= updateVisitInformationFlags(visitForm, session);
+            if (checkinNeeded) {
+                checkin(visitForm, session);
+            }
             final List<String> createdForms = createForms(visitSubject, questionnaireSetInfo.getMembers(), session);
             commitForms(createdForms, session);
         }
@@ -268,7 +291,7 @@ public class VisitChangeListener implements ResourceChangeListener
         // The actual number of forms does not matter since all the needed forms will have been pre-created.
         // If this code runs then all created forms are completed so all needed forms are complete.
         if (visitInformationForm != null) {
-            changeVisitInformation(visitInformationForm, "surveys_complete", true, session);
+            changeVisitInformation(visitInformationForm, "surveys_complete", true, true, session);
         }
     }
 
@@ -421,8 +444,9 @@ public class VisitChangeListener implements ResourceChangeListener
         // Check if the clinics match between the triggering visit and the current visit.
         // If the clinics match or if the questionnaire set does not care if clinics match,
         // remove any found questionnaires that are within the frequency range.
-        if ((!StringUtils.isBlank(visitClinic) && visitInformation.getClinicPath().equals(visitClinic))
-            || questionnaireSetInfo.shouldIgnoreClinic()) {
+        if (!questionnaires.isEmpty() && (
+            (!StringUtils.isBlank(visitClinic) && visitInformation.getClinicPath().equals(visitClinic))
+            || questionnaireSetInfo.shouldIgnoreClinic())) {
             removeQuestionnairesFromVisit(visitInformation, visitDate, questionnaires, questionnaireSetInfo);
         } else {
             return;
@@ -531,10 +555,10 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         boolean incomplete = false;
         try {
-            if (this.formUtils.isForm(form) && form.hasProperty("statusFlags")) {
-                final Property statusProp = form.getProperty("statusFlags");
+            if (this.formUtils.isForm(form) && form.hasProperty(STATUS_FLAGS)) {
+                final Property statusProp = form.getProperty(STATUS_FLAGS);
                 if (statusProp.isMultiple()) {
-                    final Value[] statuses = form.getProperty("statusFlags").getValues();
+                    final Value[] statuses = form.getProperty(STATUS_FLAGS).getValues();
                     for (final Value status : statuses) {
                         final String str = status.getString();
                         if ("INCOMPLETE".equals(str)) {
@@ -555,6 +579,33 @@ public class VisitChangeListener implements ResourceChangeListener
         }
     }
 
+    private boolean updateVisitInformationFlags(final Node visitInformationForm, final Session session)
+    {
+        try {
+            if (visitInformationForm.hasProperty(STATUS_FLAGS)) {
+                Set<String> flags = new TreeSet<>();
+                boolean needsUpdate = false;
+                for (Value v : visitInformationForm.getProperty(STATUS_FLAGS).getValues()) {
+                    String flag = v.getString();
+                    if ("SUBMITTED".equals(flag)) {
+                        needsUpdate = true;
+                    } else {
+                        flags.add(flag);
+                    }
+                }
+                if (needsUpdate) {
+                    boolean checkedOut = checkoutIfNeeded(visitInformationForm, session);
+                    visitInformationForm.setProperty(STATUS_FLAGS, flags.toArray(EMPTY_ARRAY_OF_STRINGS));
+                    checkedOut |= save(visitInformationForm, session);
+                    return checkedOut;
+                }
+            }
+        } catch (final RepositoryException e) {
+            LOGGER.error("Failed to obtain form data: {}", e.getMessage(), e);
+        }
+        return false;
+    }
+
     /**
      * Record a boolean value to the visit information form for the specified question/answer.
      * Will not update the visit information form if the question already has the desired answer.
@@ -564,10 +615,12 @@ public class VisitChangeListener implements ResourceChangeListener
      * @param questionPath the relative path from the visit information questionnaire to the question to be answered
      * @param value the value that answer should be set to
      * @param session a service session providing access to the repository
+     * @return true if the form was checked out
      */
-    private void changeVisitInformation(final Node visitInformationForm, final String questionPath,
-        final boolean value, final Session session)
+    private boolean changeVisitInformation(final Node visitInformationForm, final String questionPath,
+        final boolean value, final boolean checkin, final Session session)
     {
+        boolean checkedOut = false;
         try {
             final Long newValue = value ? 1L : 0L;
             final Node questionnaire = this.formUtils.getQuestionnaire(visitInformationForm);
@@ -575,52 +628,69 @@ public class VisitChangeListener implements ResourceChangeListener
             if (question == null) {
                 LOGGER.warn("Could not update visit information form as requested question could not be found: "
                     + questionPath);
-                return;
+                return false;
             }
 
-            Node answer =
-                this.formUtils.getAnswer(visitInformationForm, question);
+            Node answer = this.formUtils.getAnswer(visitInformationForm, question);
             // Check if the value is already the correct one
-            if (answer != null
-                && newValue.equals(this.formUtils.getValue(answer))) {
+            if (answer != null && newValue.equals(this.formUtils.getValue(answer))) {
                 // Form is already set to the right value, nothing else to do
-                return;
+                return false;
             }
 
-            // We must set the new value; this involves checking out the form, updating the value, saving, and finally
-            // checking in the form.
-            // Since this is in reaction to another thread saving and checking in the form, it is possible to enter a
-            // race condition where the checkin from the other thread happens between our checkout and our save, so we
-            // have to try this operation a few times.
-            final VersionManager versionManager = session.getWorkspace().getVersionManager();
-            final String formPath = visitInformationForm.getPath();
+            // Checkout
+            checkedOut = checkoutIfNeeded(visitInformationForm, session);
 
-            for (int i = 0; i < 3; ++i) {
-                try {
-                    // Checkout
-                    versionManager.checkout(formPath);
-
-                    if (answer == null) {
-                        // No answer node yet, create one
-                        answer =
-                            visitInformationForm.addNode(UUID.randomUUID().toString(), "cards:BooleanAnswer");
-                        answer.setProperty(FormUtils.QUESTION_PROPERTY, question);
-                    }
-                    // Set the new value
-                    answer.setProperty("value", newValue);
-                    session.save();
-
-                    // Checkin
-                    versionManager.checkin(formPath);
-                    // All done, exit the try-loop
-                    return;
-                } catch (final RepositoryException e) {
-                    LOGGER.info("Failed to checkin form {}, trying again", formPath);
-                }
+            if (answer == null) {
+                // No answer node yet, create one
+                answer = visitInformationForm.addNode(UUID.randomUUID().toString(), "cards:BooleanAnswer");
+                answer.setProperty(FormUtils.QUESTION_PROPERTY, question);
             }
-            LOGGER.error("Failed to checkin form {} after multiple attempts", formPath);
+
+            // Set the new value
+            answer.setProperty("value", newValue);
+            checkedOut |= save(visitInformationForm, session);
+
+            // All done, exit the try-loop
+            return checkedOut;
         } catch (final RepositoryException e) {
-            LOGGER.error("Failed to obtain version manager or questionnaire data: {}", e.getMessage(), e);
+            LOGGER.error("Failed to obtain form data: {}", e.getMessage(), e);
+        } finally {
+            if (checkin && checkedOut) {
+                checkin(visitInformationForm, session);
+            }
+        }
+        return false;
+    }
+
+    private boolean checkoutIfNeeded(final Node form, final Session session) throws RepositoryException
+    {
+        session.refresh(true);
+        if (!form.isCheckedOut()) {
+            session.getWorkspace().getVersionManager().checkout(form.getPath());
+            return true;
+        }
+        return false;
+    }
+
+    private void checkin(final Node form, final Session session)
+    {
+        try {
+            session.getWorkspace().getVersionManager().checkin(form.getPath());
+        } catch (final RepositoryException e) {
+            LOGGER.warn("Failed check in the form: {}", e.getMessage(), e);
+        }
+    }
+
+    private boolean save(final Node form, final Session session) throws RepositoryException
+    {
+        try {
+            session.save();
+            return false;
+        } catch (RepositoryException e) {
+            boolean checkedOut = checkoutIfNeeded(form, session);
+            session.save();
+            return checkedOut;
         }
     }
 
