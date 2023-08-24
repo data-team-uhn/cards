@@ -38,20 +38,11 @@ function Clinics(props) {
 
   let clinicsSpecs = require('./Clinics.json');
 
-  let formattedNames = {
-    "clinicName": "ID",
-    "displayName": "Name",
-    "sidebarLabel": "Sidebar Entry",
-    "survey": "Surveys",
-    "emergencyContact": "Emergency Contact",
-    "allowedPostVisitCompletionTime": "Relatively to the associated event, patients can fill out surveys within"
-  }
-
   let columns = Object.keys(clinicsSpecs).filter((stat) => !Array.isArray(clinicsSpecs[stat]))
     .map((stat) => {
       return {
         key: stat,
-        label: (stat in formattedNames) ? formattedNames[stat] : camelCaseToWords(stat),
+        label: camelCaseToWords(stat),
         format: clinicsSpecs[stat]
       };
     });

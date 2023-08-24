@@ -291,7 +291,7 @@ function QuestionnaireSet(props) {
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then((json) => {
               setId(json["survey"]);
-              setTokenLifetime(json.allowedPostVisitCompletionTime);
+              setTokenLifetime(json.nbOfDaysRelativeToEventToCompleteSurvey);
             });
         }
         selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
@@ -588,7 +588,7 @@ function QuestionnaireSet(props) {
     let date = getVisitDate();
     if (date?.isValid) {
       // Compute the moment the token expired: the configured number of days after the visit, at midnight
-      date = date.plus({days: tokenLifetime ?? config?.allowedPostVisitCompletionTime ?? 0}).endOf('day');
+      date = date.plus({days: tokenLifetime ?? config?.nbOfDaysRelativeToEventToCompleteSurvey ?? 0}).endOf('day');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0

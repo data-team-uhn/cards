@@ -155,7 +155,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         this.surveyID.set(request.getParameter("survey"));
         this.emergencyContact.set(request.getParameter("emergencyContact"));
         String tokenLifetimeParam =
-            StringUtils.defaultString(request.getParameter("allowedPostVisitCompletionTime"), "");
+            StringUtils.defaultString(request.getParameter("nbOfDaysRelativeToEventToCompleteSurvey"), "");
         if (StringUtils.isNotBlank(tokenLifetimeParam)) {
             this.tokenLifetime.set(Double.valueOf(tokenLifetimeParam));
         }
@@ -252,7 +252,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         params.put(ClinicsServlet.DESCRIPTION_FIELD, this.description.get());
         params.put(ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping");
         if (this.tokenLifetime.get() != null) {
-            params.put("allowedPostVisitCompletionTime", this.tokenLifetime.get());
+            params.put("nbOfDaysRelativeToEventToCompleteSurvey", this.tokenLifetime.get());
         }
         resolver.create(parentResource, this.idHash.get(), params);
     }

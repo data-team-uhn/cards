@@ -179,7 +179,7 @@
   - ignoreEmailConsent (boolean)
 
   // Specifies the token life time - number of days before expiration
-  - allowedPostVisitCompletionTime (double)
+  - nbOfDaysRelativeToEventToCompleteSurvey (double)
 
 //-----------------------------------------------------------------------------
 // The holder for all clinic mappings. This is mostly empty, but used so the

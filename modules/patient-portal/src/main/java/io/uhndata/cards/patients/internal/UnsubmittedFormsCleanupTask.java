@@ -99,8 +99,8 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                 final String clinicPath = clinicNode.getPath();
                 // Get clinic token lifetime or default to the global patient token lifetime
                 int delay = patientTokenLifetime;
-                if (clinicNode.hasProperty("allowedPostVisitCompletionTime")) {
-                    delay = (int) clinicNode.getProperty("allowedPostVisitCompletionTime").getLong();
+                if (clinicNode.hasProperty("nbOfDaysRelativeToEventToCompleteSurvey")) {
+                    delay = (int) clinicNode.getProperty("nbOfDaysRelativeToEventToCompleteSurvey").getLong();
                 }
 
                 // Get all data forms for the specific clinic

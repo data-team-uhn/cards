@@ -54,10 +54,10 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     private static final String PATIENT_IDENTIFICATION_REQUIRED_PROP = "PIIAuthRequired";
 
     /** Default property on config node for the number of days a token is valid for. */
-    private static final String DEFAULT_TOKEN_LIFETIME_PROP = "allowedPostVisitCompletionTime";
+    private static final String DEFAULT_TOKEN_LIFETIME_PROP = "nbOfDaysRelativeToEventToCompleteSurvey";
 
     /** Clinic property for the number of days a token is valid for. */
-    private static final String TOKEN_LIFETIME_PROP = "allowedPostVisitCompletionTime";
+    private static final String TOKEN_LIFETIME_PROP = "nbOfDaysRelativeToEventToCompleteSurvey";
 
     /** Property on config node for the number of days draft responses from patients are kept. */
     private static final String DRAFT_LIFETIME_PROP = "draftLifetime";
