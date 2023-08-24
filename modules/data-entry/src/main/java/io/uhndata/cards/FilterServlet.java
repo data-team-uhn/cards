@@ -73,7 +73,8 @@ public class FilterServlet extends SlingSafeMethodsServlet
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         // Is there a questionnaire specified?
-        String questionnaire = request.getParameter("questionnaire");
+        String questionnaire = request.getResource().isResourceType("cards/Questionnaire")
+            ? request.getResource().getPath() : request.getParameter("questionnaire");
         String include = request.getParameter("include");
         boolean includeMetadata = StringUtils.isBlank(include) || "metadata".equals(include);
         boolean includeQuestions = StringUtils.isBlank(include) || "questions".equals(include);
@@ -87,7 +88,6 @@ public class FilterServlet extends SlingSafeMethodsServlet
         }
 
         if (includeQuestions) {
-            String homepagePath = request.getResource().getPath();
             ResourceResolver resolver = request.getResourceResolver();
 
             // If a questionnaire is specified, return all fields by the given questionnaire
@@ -95,6 +95,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
             if (questionnaire != null) {
                 addQuestionsFromQuestionnaire(resolver, questionnaire, builder);
             } else {
+                String homepagePath = request.getResource().getPath();
                 addAllQuestions(resolver, homepagePath, builder);
             }
         }

@@ -113,9 +113,7 @@ function Filters(props) {
   // Obtain information about the filters that can be applied
   let grabFilters = () => {
     setFilterRequestSent(true);
-    // Setting the questionnaire prop will go through the fitler servlet (FilterServlet.java)
-    let url = new URL(FILTER_URL, window.location.origin);
-    questionnaire && url.searchParams.set("questionnaire", questionnaire);
+    let url = new URL(questionnaire ? questionnaire + ".filters" : FILTER_URL, window.location.origin);
 
     fetchWithReLogin(globalLoginDisplay, url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
