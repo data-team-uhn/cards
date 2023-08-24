@@ -52,16 +52,13 @@ function Filters(props) {
   const [activeFilters, setActiveFilters] = useState([]);
   // Information on the questionnaires
   const [filterableAnswers, setFilterableAnswers] = useState({});
-<<<<<<< HEAD
-=======
   // maps from path to question definition
->>>>>>> dbf153d66 (CARDS-1190: As a user, I can filter forms by Created by, Last modified by, Last modification date in the dashboard and on the Forms page)
   const [questionDefinitions, setQuestionDefinitions] = useState({});
   const [autoselectOptions, setAutoselectOptions] = useState([]);
 
   const [filterComparators, setFilterComparators] = useState({});
   const [textFilterComponent, setTextFilterComponent] = useState({});
-  
+
   // Other state variables
   const [error, setError] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
