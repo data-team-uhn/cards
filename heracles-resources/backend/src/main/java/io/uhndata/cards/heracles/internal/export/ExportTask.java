@@ -19,8 +19,6 @@
 
 package io.uhndata.cards.heracles.internal.export;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -105,10 +103,7 @@ public class ExportTask implements Runnable
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
 
             // Store the stack trace of this failure
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-            ErrorTracking.logError(sw.toString());
+            ErrorTracking.logError(e);
 
             // Increment the count of S3ExportFailures
             Metrics.increment(this.resolverFactory, "S3ExportFailures", 1);

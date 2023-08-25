@@ -19,6 +19,8 @@
 
 package io.uhndata.cards.errortracking;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -57,10 +59,10 @@ public final class ErrorTracking
     /*
      * Stores in the JCR, under /LoggedEvents, a nt:file node containing the passed stack trace.
      *
-     * @param stackTrace the String containing the stack trace of the error that was thrown resulting
+     * @param loggedError the Throwable containing the stack trace of the error that was thrown resulting
      * in the calling of this method
      */
-    public static void logError(final String stackTrace)
+    public static void logError(final Throwable loggedError)
     {
         try (ResourceResolver resolver = rrf.getServiceResourceResolver(null)) {
             if (resolver == null) {
@@ -80,10 +82,15 @@ public final class ErrorTracking
             if (thisEventResource == null) {
                 return;
             }
+
+            final StringWriter sw = new StringWriter();
+            final PrintWriter pw = new PrintWriter(sw);
+            loggedError.printStackTrace(pw);
+
             final Map<String, Object> jcrContentProperties = new HashMap<>();
             jcrContentProperties.put("jcr:primaryType", "nt:resource");
             jcrContentProperties.put("jcr:mimeType", "text/plain");
-            jcrContentProperties.put("jcr:data", stackTrace);
+            jcrContentProperties.put("jcr:data", sw.toString());
             resolver.create(thisEventResource, "jcr:content", jcrContentProperties);
 
             // Commit these changes to JCR
