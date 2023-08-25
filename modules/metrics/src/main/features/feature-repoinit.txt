@@ -20,7 +20,7 @@
 # cards-metrics
 create path (sling:Folder) /Metrics
 
-create service user cards-metrics with path system/sling
+create service user cards-metrics
 
 set principal ACL for cards-metrics
     allow    jcr:read    on /Metrics/

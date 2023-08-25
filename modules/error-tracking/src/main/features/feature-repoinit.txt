@@ -20,7 +20,7 @@
 # error-tracking
 create path (sling:Folder) /LoggedEvents
 
-create service user error-tracking with path system/sling
+create service user error-tracking
 
 set principal ACL for error-tracking
     allow   jcr:read,jcr:addChildNodes,jcr:modifyProperties,jcr:nodeTypeManagement   on /LoggedEvents/
