@@ -34,5 +34,6 @@
         "io.uhndata.cards.error-tracking=[error-tracking]"
       ]
     }
-  }
+  },
+  "repoinit:TEXT|true": "@file"
 }

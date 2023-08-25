@@ -35,15 +35,6 @@ set principal ACL for cards-metrics
     allow    jcr:read    on /LoggedEvents/
 end
 
-# error-tracking
-create path (sling:Folder) /LoggedEvents
-
-create service user error-tracking with path system/sling
-
-set principal ACL for error-tracking
-    allow   jcr:read,jcr:addChildNodes,jcr:modifyProperties,jcr:nodeTypeManagement   on /LoggedEvents/
-end
-
 create service user cards-exporter with path system/sling
 set principal ACL for cards-exporter
     allow   jcr:read    on /
