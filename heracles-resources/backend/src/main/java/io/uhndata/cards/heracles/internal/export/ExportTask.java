@@ -108,7 +108,7 @@ public class ExportTask implements Runnable
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
-            ErrorTracking.logError(this.resolverFactory, sw.toString());
+            ErrorTracking.logError(sw.toString());
 
             // Increment the count of S3ExportFailures
             Metrics.increment(this.resolverFactory, "S3ExportFailures", 1);

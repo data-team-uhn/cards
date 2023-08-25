@@ -57,12 +57,10 @@ public final class ErrorTracking
     /*
      * Stores in the JCR, under /LoggedEvents, a nt:file node containing the passed stack trace.
      *
-     * @param resolverFactory a ResourceResolverFactory the can be used for obtaining a ResourceResolver
-     * with permissions to add child nodes to /LoggedEvents.
      * @param stackTrace the String containing the stack trace of the error that was thrown resulting
      * in the calling of this method
      */
-    public static void logError(final ResourceResolverFactory resolverFactory, final String stackTrace)
+    public static void logError(final String stackTrace)
     {
         try (ResourceResolver resolver = rrf.getServiceResourceResolver(null)) {
             if (resolver == null) {
