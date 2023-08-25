@@ -80,10 +80,6 @@
     {
       "id":"${project.groupId}:heracles-resources-clinical-data:${project.version}",
       "start-order":"26"
-    },
-    {
-      "id":"${project.groupId}:cards-metrics:${project.version}",
-      "start-order":"25"
     }
   ],
   "configurations":{

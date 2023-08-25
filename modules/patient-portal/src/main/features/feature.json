@@ -38,10 +38,6 @@
       "start-order":"25"
     },
     {
-      "id":"${project.groupId}:cards-metrics:${project.version}",
-      "start-order":"25"
-    },
-    {
       "id":"${project.groupId}:cards-http-requests:${project.version}",
       "start-order":"25"
     }
