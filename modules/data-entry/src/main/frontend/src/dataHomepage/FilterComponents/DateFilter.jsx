@@ -17,8 +17,7 @@
 //  under the License.
 //
 
-import React, { forwardRef } from "react";
-import { TextField } from "@mui/material";
+import React, { useState, forwardRef } from "react";
 import withStyles from '@mui/styles/withStyles';
 import PropTypes from "prop-types";
 
@@ -26,6 +25,10 @@ import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
 import DateQuestionUtilities from "../../questionnaire/DateQuestionUtilities.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
+
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
 const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPARATORS);
@@ -44,32 +47,32 @@ const DateFilter = forwardRef((props, ref) => {
   // DefaultLabel intentionally unused, since it needs to not be passed to TextField
   const { classes, defaultLabel, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
 
-  // Dates should have a dateFormat, or default to "yyyy-MM-dd"
-  let dateFormat = questionDefinition["dateFormat"] || "yyyy-MM-dd";
-  let dateType = DateQuestionUtilities.getDateType(dateFormat);
-  let isMonth = (dateType === DateQuestionUtilities.MONTH_DATE_TYPE);
-  let isDate = (dateType === DateQuestionUtilities.FULL_DATE_TYPE);
-  let textFieldType = isMonth ? "month" :
-    isDate ? "date" :
-    "datetime-local";
+  const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(defaultValue)));
+
+  // Dates should have a dateFormat, or default to "yyyy/MM/dd"
+  const dateFormat = questionDefinition["dateFormat"] || DateQuestionUtilities.VIEW_DATE_FORMAT;
+  const views = DateQuestionUtilities.getPickerViews(dateFormat);
+  const isMeridiem = DateQuestionUtilities.formatIsMeridiem(dateFormat);
 
   return (
-    <TextField
-      variant="standard"
-      id="date"
-      type={textFieldType}
-      className={classes.answerField}
-      InputLabelProps={{
-        shrink: true,
-      }}
-      InputProps={{
-        className: classes.answerField
-      }}
-      defaultValue={defaultValue}
-      onChange={(event) => {onChangeInput(event.target.value)}}
-      inputRef={ref}
-      {...rest}
+    <LocalizationProvider dateAdapter={AdapterLuxon}>
+      <DateTimePicker
+        ampm={isMeridiem}
+        label="Any date"
+        views={views}
+        format={dateFormat}
+        value={displayedDate}
+        onChange={(value) => {
+          setDisplayedDate(value);
+          onChangeInput(value ? value.toISO() : null, value ? value.toFormat(dateFormat) : null);
+        }}
+        componentsProps={{ textField: {
+                             variant: 'standard',
+                             className: classes.answerDateField,
+                           }
+        }}
       />
+    </LocalizationProvider>
   )
 });
 
@@ -88,7 +91,7 @@ export default StyledDateFilter;
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date") {
     return [COMPARATORS, StyledDateFilter, 50];
-  } else if (questionDefinition.dataType === "createddate") {
+  } else if (questionDefinition.dataType === "datetime") {
     return [COMPARATORS_CREATED_DATE, StyledDateFilter, 50];
   }
 });

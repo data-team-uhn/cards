@@ -19,7 +19,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
-import { deepPurple, orange } from '@mui/material/colors';
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Grid, Radio, RadioGroup,
@@ -188,22 +187,22 @@ function ExportButton(props) {
       path += ".labels";
     }
     if (createdBy) {
-      path += ".dataFilter:createdBy=" + createdBy;
+      path += ".dataFilter:createdBy=" + createdBy.replace('.', '%5C.');
     }
     if (modifiedBy) {
-      path += ".dataFilter:modifiedBy=" + modifiedBy;
+      path += ".dataFilter:modifiedBy=" + modifiedBy.replace('.', '%5C.');
     }
     if (createdAfter) {
-      path += ".dataFilter:createdAfter=" + createdAfter.toISO();
+      path += ".dataFilter:createdAfter=" + createdAfter.toISO().replace('.', '%5C.');
     }
     if (createdBefore) {
-      path += ".dataFilter:createdBefore=" + createdBefore.toISO();
+      path += ".dataFilter:createdBefore=" + createdBefore.toISO().replace('.', '%5C.');
     }
     if (modifiedAfter) {
-      path += ".dataFilter:modifiedAfter=" + modifiedAfter.toISO();
+      path += ".dataFilter:modifiedAfter=" + modifiedAfter.toISO().replace('.', '%5C.');
     }
     if (modifiedBefore) {
-      path += ".dataFilter:modifiedBefore=" + modifiedBefore.toISO();
+      path += ".dataFilter:modifiedBefore=" + modifiedBefore.toISO().replace('.', '%5C.');
     }
     if (status) {
       let pref = `.dataFilter:${statusSelectionMode}=`;
@@ -213,29 +212,24 @@ function ExportButton(props) {
     window.open(path, '_blank');
   }
 
+  // TODO: Switch to Date Time Range Picker once it is out
+  // see https://mui.com/x/react-date-pickers/date-time-range-picker/
   let getDatePicker = (value, setter, rangeIsInvalid) => {
     return (<LocalizationProvider dateAdapter={AdapterLuxon}>
               <DateTimePicker
-                inputFormat={DATE_FORMAT}
+                label="Any date"
+                views={['year', 'month', 'day', 'hours', 'minutes']}
+                format={DATE_FORMAT}
                 value={value}
                 onChange={(value) => {
                   setter(value);
                 }}
-                renderInput={(params) =>
-                  <TextField
-                    variant="standard"
-                    {...params}
-                    error={rangeIsInvalid || params.error}
-                    helperText={rangeIsInvalid ? " " : DATE_FORMAT}
-                    InputProps={{
-                      ...params.InputProps
-                    }}
-                    inputProps={{
-                      ...params.inputProps,
-                      placeholder: "Any date"
-                    }}
-                  />
-                }
+                componentsProps={{ textField: {
+                                     variant: 'standard',
+                                     error: rangeIsInvalid,
+                                     helperText: rangeIsInvalid ? " " : DATE_FORMAT
+                                   }
+                }}
               />
             </LocalizationProvider>
           );

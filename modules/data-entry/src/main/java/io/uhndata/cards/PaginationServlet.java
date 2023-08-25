@@ -21,6 +21,7 @@ package io.uhndata.cards;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -98,7 +99,16 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     private static final String QUESTIONNAIRE_IDENTIFIER = "cards:Questionnaire";
 
-    private static final String CREATED_DATE_IDENTIFIER = "cards:CreatedDate";
+    private static final String CREATED_DATE_IDENTIFIER = "cards:Created";
+
+    private static final String CREATED_BY_IDENTIFIER = "cards:CreatedBy";
+
+    private static final String MODIFIED_BY_IDENTIFIER = "cards:LastModifiedBy";
+
+    private static final String MODIFIED_DATE_IDENTIFIER = "cards:LastModified";
+
+    private static final List<String> NODE_FILTERS = Arrays.asList(CREATED_DATE_IDENTIFIER, CREATED_BY_IDENTIFIER,
+        MODIFIED_BY_IDENTIFIER, MODIFIED_DATE_IDENTIFIER);
 
     /**
      * Various supported filter types.
@@ -172,7 +182,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         Filter(final String name, final String value, final String type, final String comparator)
         {
             this.name = name;
-            this.value = value;
+            this.value = "date".equals(type) ? formatDate(value) : value;
             this.type = type;
             this.comparator = comparator;
         }
@@ -190,6 +200,25 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         String getComparator()
         {
             return this.comparator;
+        }
+
+        private String formatDate(String original)
+        {
+            String result = original;
+            if (result.length() <= 10) {
+                // Just the date append the time and timezone
+                result += "T00:00:00.000" + DateUtils.getTimezoneForDateString(original);
+            } else if (result.length() == 16) {
+                // Date and time up to the minute, append seconds, millis and timezone
+                result += ":00.000" + DateUtils.getTimezoneForDateString(original);
+            } else if (result.length() == 19) {
+                // Date and time up to the second, append millis and timezone
+                result += ".000" + DateUtils.getTimezoneForDateString(original);
+            } else if (result.length() == 23) {
+                // Date and time, append the timezone
+                result += DateUtils.getTimezoneForDateString(original);
+            }
+            return result;
         }
     }
 
@@ -245,7 +274,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         for (Filter filter : filters.getOrDefault(FilterType.EMPTY, new ArrayList<Filter>())) {
             if (SUBJECT_IDENTIFIER.equals(filter.name)
                 || QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
-                || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+                || NODE_FILTERS.contains(filter.name)) {
                 return true;
             }
         }
@@ -514,7 +543,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
 
         for (Filter filter : filters) {
-            if (SUBJECT_IDENTIFIER.equals(filter.name) || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+            if (SUBJECT_IDENTIFIER.equals(filter.name) || NODE_FILTERS.contains(filter.name)) {
                 // For special node filters, all we need to do is record the source name in the filter
                 filter.source = "n";
                 continue;
@@ -675,7 +704,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         //
         final ZonedDateTime thisDay = ZonedDateTime.parse(valueToCompare);
         final ZonedDateTime nextDay = thisDay.plusDays(1);
-        final String nextDayStr = nextDay.toString();
+        final String nextDayStr = nextDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
         String compareQuery;
         switch (operator) {
             case "=":
@@ -782,6 +811,26 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         this.sanitizeComparator(filter.comparator),
                         this.sanitizeValue(filter.value)));
                 break;
+            case CREATED_BY_IDENTIFIER:
+                filterdata.append(
+                    String.format(" and n.'jcr:createdBy'%s'%s'",
+                        this.sanitizeComparator(filter.comparator),
+                        this.sanitizeValue(filter.value)));
+                break;
+            case MODIFIED_DATE_IDENTIFIER:
+                filterdata.append(" and ");
+                filterdata.append(
+                    generateDateCompareQuery(
+                        "n.'jcr:lastModified'",
+                        this.sanitizeComparator(filter.comparator),
+                        this.sanitizeValue(filter.value)));
+                break;
+            case MODIFIED_BY_IDENTIFIER:
+                filterdata.append(
+                    String.format(" and n.'jcr:lastModifiedBy'%s'%s'",
+                        this.sanitizeComparator(filter.comparator),
+                        this.sanitizeValue(filter.value)));
+                break;
             default:
                 break;
         }
@@ -802,7 +851,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
         if (SUBJECT_IDENTIFIER.equals(filter.name)
             || QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
-            || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+            || NODE_FILTERS.contains(filter.name)) {
             return "";
         }
 
@@ -845,12 +894,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     private String getValueComparisonString(Filter filter)
     {
         return String.format(
-            " %s.'value'%s" + (("date".equals(filter.type))
-                ? ((filter.value.contains("T") ? "cast('%s:00.000" : "cast('%sT00:00:00.000")
-                    + DateUtils.getTimezoneForDateString(this.sanitizeValue(filter.value))
-                    + "' as date)")
-                : ("boolean".equals(filter.type)) ? "%s"
-                    : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
+            " %s.'value'%s" + ("boolean".equals(filter.type) ? "%s"
+                : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
             filter.source,
             this.sanitizeComparator(filter.comparator),
             this.sanitizeValue(filter.value));

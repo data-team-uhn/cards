@@ -25,6 +25,7 @@ export default class DateQuestionUtilities {
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
   static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss";
+  static VIEW_DATE_FORMAT = "yyyy/MM/dd";
 
   static YEAR_DATE_TYPE = "year";
   static MONTH_DATE_TYPE = "month";
@@ -35,7 +36,7 @@ export default class DateQuestionUtilities {
   static yearTag = "yyyy";
   static monthTag = "MM";
   static dayTag = "dd";
-  static hourTag = "HH";
+  static hourTag = "hh";
   static minuteTag = "mm";
 
   static PROP_TYPES = {
@@ -54,7 +55,7 @@ export default class DateQuestionUtilities {
       const year = dateFormat.includes(this.yearTag);
       const month = dateFormat.includes(this.monthTag);
       const day = dateFormat.includes(this.dayTag);
-      const time = dateFormat.includes(this.hourTag) || dateFormat.includes(this.minuteTag);
+      const time = dateFormat.toLowerCase().includes(this.hourTag) || dateFormat.includes(this.minuteTag);
 
       if (time) return this.DATETIME_TYPE;
       if (day) return this.FULL_DATE_TYPE;
@@ -206,5 +207,22 @@ export default class DateQuestionUtilities {
       result.long = longDiff.join(" ");
     }
     return result;
+  }
+
+  static getPickerViews(dateFormat) {
+    let views = [];
+    if (typeof(dateFormat) === "string") {
+      dateFormat.toLowerCase().includes(this.yearTag) && views.push('year');
+      dateFormat.includes(this.monthTag) && views.push('month');
+      dateFormat.includes(this.dayTag) && views.push('day');
+      dateFormat.toLowerCase().includes(this.hourTag) && views.push('hours');
+      dateFormat.includes(this.minuteTag) && views.push('minutes');
+      dateFormat.includes(this.secondTag) && views.push('seconds');
+    }
+    return views;
+  }
+
+  static formatIsMeridiem(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
   }
 }
