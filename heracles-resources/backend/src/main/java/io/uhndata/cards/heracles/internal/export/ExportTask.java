@@ -49,7 +49,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import io.uhndata.cards.errortracking.ErrorTracking;
+import io.uhndata.cards.errortracking.StaticErrorLogger;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -103,7 +103,7 @@ public class ExportTask implements Runnable
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
 
             // Store the stack trace of this failure
-            ErrorTracking.logError(e);
+            StaticErrorLogger.logError(e);
 
             // Increment the count of S3ExportFailures
             Metrics.increment(this.resolverFactory, "S3ExportFailures", 1);

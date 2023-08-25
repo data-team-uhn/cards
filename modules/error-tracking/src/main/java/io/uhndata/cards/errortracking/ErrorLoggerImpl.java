@@ -37,23 +37,21 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, service = ErrorTracking.class)
-public final class ErrorTracking
+@Component(immediate = true, service = ErrorLoggerImpl.class)
+public final class ErrorLoggerImpl implements ErrorLogger
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorLoggerImpl.class);
+
     private static final String LOGGED_EVENTS_PATH = "/LoggedEvents/";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorTracking.class);
-
-    private static ResourceResolverFactory rrf;
-
     @Reference
-    private ResourceResolverFactory originalRrf;
+    private ResourceResolverFactory rrf;
 
     @Activate
     protected void activate(ComponentContext componentContext) throws Exception
     {
         LOGGER.warn("ErrorTracking IS ACTIVATING!");
-        rrf = this.originalRrf;
+        StaticErrorLogger.setService(this);
     }
 
     /*
@@ -62,9 +60,9 @@ public final class ErrorTracking
      * @param loggedError the Throwable containing the stack trace of the error that was thrown resulting
      * in the calling of this method
      */
-    public static void logError(final Throwable loggedError)
+    public void logError(final Throwable loggedError)
     {
-        try (ResourceResolver resolver = rrf.getServiceResourceResolver(null)) {
+        try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
             if (resolver == null) {
                 return;
             }
