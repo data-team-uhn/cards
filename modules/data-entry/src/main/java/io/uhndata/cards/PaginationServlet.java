@@ -182,7 +182,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         Filter(final String name, final String value, final String type, final String comparator)
         {
             this.name = name;
-            this.value = value;
+            this.value = "date".equals(type) ? formatDate(value) : value;
             this.type = type;
             this.comparator = comparator;
         }
@@ -200,6 +200,25 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         String getComparator()
         {
             return this.comparator;
+        }
+
+        private String formatDate(String original)
+        {
+            String result = original;
+            if (result.length() <= 10) {
+                // Just the date append the time and timezone
+                result += "T00:00:00.000" + DateUtils.getTimezoneForDateString(original);
+            } else if (result.length() == 16) {
+                // Date and time up to the minute, append seconds, millis and timezone
+                result += ":00.000" + DateUtils.getTimezoneForDateString(original);
+            } else if (result.length() == 19) {
+                // Date and time up to the second, append millis and timezone
+                result += ".000" + DateUtils.getTimezoneForDateString(original);
+            } else if (result.length() == 23) {
+                // Date and time, append the timezone
+                result += DateUtils.getTimezoneForDateString(original);
+            }
+            return result;
         }
     }
 
@@ -875,12 +894,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     private String getValueComparisonString(Filter filter)
     {
         return String.format(
-            " %s.'value'%s" + (("date".equals(filter.type))
-                ? ((filter.value.contains("T") ? "cast('%s:00.000" : "cast('%sT00:00:00.000")
-                    + DateUtils.getTimezoneForDateString(this.sanitizeValue(filter.value))
-                    + "' as date)")
-                : ("boolean".equals(filter.type)) ? "%s"
-                    : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
+            " %s.'value'%s" + ("boolean".equals(filter.type) ? "%s"
+                : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
             filter.source,
             this.sanitizeComparator(filter.comparator),
             this.sanitizeValue(filter.value));
