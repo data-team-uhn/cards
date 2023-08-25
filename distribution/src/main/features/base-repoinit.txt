@@ -24,11 +24,6 @@ set principal ACL for sling-readall
     allow   jcr:read    on /
 end
 
-create service user cards-exporter with path system/sling
-set principal ACL for cards-exporter
-    allow   jcr:read    on /
-end
-
 # sling-xss
 create service user sling-xss with path system/sling
 

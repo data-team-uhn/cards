@@ -101,7 +101,8 @@
         "set properties on /Metrics/S3ExportedSubjects/name \n   default value{String} to \"{002} Number Of Subjects Exported to S3 bucket\" \n end",
         "set properties on /Metrics/S3ExportedSubjects/prevTotal \n   default value{Long} to 0 \n end",
         "set properties on /Metrics/S3ExportFailures/name \n   default value{String} to \"{003} Number Of Failed S3 export jobs\" \n end",
-        "set properties on /Metrics/S3ExportFailures/prevTotal \n   default value{Long} to 0 \n end"
+        "set properties on /Metrics/S3ExportFailures/prevTotal \n   default value{Long} to 0 \n end",
+        "create service user cards-exporter \n set principal ACL for cards-exporter \n   allow jcr:read on / \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~heracles":{
