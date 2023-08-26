@@ -41,6 +41,8 @@ public final class ErrorLogger
      */
     public static void logError(final Throwable loggedError)
     {
-        errorLoggerService.logError(loggedError);
+        if (errorLoggerService != null) {
+            errorLoggerService.logError(loggedError);
+        }
     }
 }
