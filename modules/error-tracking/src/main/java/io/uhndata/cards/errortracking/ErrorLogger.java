@@ -28,7 +28,7 @@ public final class ErrorLogger
     {
     }
 
-    public static void setService(ErrorLoggerService service)
+    static void setService(ErrorLoggerService service)
     {
         errorLoggerService = service;
     }
