@@ -69,11 +69,7 @@ public final class ErrorLoggerImpl implements ErrorLoggerService
             final String newFileName = UUID.randomUUID().toString();
             final Map<String, Object> eventNodeProperties = new HashMap<>();
             eventNodeProperties.put("jcr:primaryType", "nt:file");
-            resolver.create(eventsFolderResource, newFileName, eventNodeProperties);
-            Resource thisEventResource = resolver.getResource(LOGGED_EVENTS_PATH + newFileName);
-            if (thisEventResource == null) {
-                return;
-            }
+            Resource thisEventResource = resolver.create(eventsFolderResource, newFileName, eventNodeProperties);
 
             final StringWriter sw = new StringWriter();
             final PrintWriter pw = new PrintWriter(sw);
