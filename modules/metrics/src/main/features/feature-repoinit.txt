@@ -23,9 +23,6 @@ create path (sling:Folder) /Metrics
 create service user cards-metrics
 
 set principal ACL for cards-metrics
-    allow    jcr:read    on /Metrics/
-    allow    jcr:write   on /Metrics/
-    allow    jcr:addChildNodes    on /Metrics/
-    allow    jcr:nodeTypeManagement    on /Metrics/
+    allow    jcr:read,jcr:write,jcr:addChildNodes,jcr:nodeTypeManagement    on /Metrics/
     allow    jcr:read    on /LoggedEvents/
 end
