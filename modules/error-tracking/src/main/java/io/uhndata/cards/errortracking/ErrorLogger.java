@@ -19,13 +19,8 @@
 
 package io.uhndata.cards.errortracking;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public final class ErrorLogger
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorLogger.class);
-
     private static ErrorLoggerService errorLoggerService;
 
     // Hide the constructor

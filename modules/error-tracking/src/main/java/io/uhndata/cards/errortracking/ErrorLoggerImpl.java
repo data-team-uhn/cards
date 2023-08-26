@@ -50,7 +50,6 @@ public final class ErrorLoggerImpl implements ErrorLoggerService
     @Activate
     protected void activate(ComponentContext componentContext) throws Exception
     {
-        LOGGER.warn("ErrorTracking IS ACTIVATING!");
         ErrorLogger.setService(this);
     }
 
