@@ -53,6 +53,7 @@ public class QuestionnaireRestrictionPatternTest
 {
     private static final String RESOURCE_TYPE = "sling:resourceType";
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
+    private static final String QUESTION_PROPERTY = "question";
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
 
     @Rule
@@ -74,7 +75,8 @@ public class QuestionnaireRestrictionPatternTest
         this.questionnaireRestrictionPattern = new QuestionnaireRestrictionPattern(this.targetQuestionnaires,
                 mockedSession);
         Node questionnaire = mock(Node.class);
-        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(), createNodeBuilder("cards/Form"));
+        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(),
+                createNodeBuilder("cards/Form", QUESTIONNAIRE_PROPERTY, UUID.randomUUID().toString()));
 
         when(mockedSession.getNodeByIdentifier(anyString())).thenReturn(questionnaire);
         when(questionnaire.getPath()).thenReturn(TEST_QUESTIONNAIRE_PATH);
@@ -83,12 +85,25 @@ public class QuestionnaireRestrictionPatternTest
     }
 
     @Test
+    public void matchesForNotFormTreeReturnsFalse()
+    {
+        Session mockedSession = mock(Session.class);
+        this.questionnaireRestrictionPattern = new QuestionnaireRestrictionPattern(this.targetQuestionnaires,
+                mockedSession);
+        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(),
+                createNodeBuilder("cards/Answer", QUESTION_PROPERTY, UUID.randomUUID().toString()));
+
+        assertFalse(this.questionnaireRestrictionPattern.matches(tree, mock(PropertyState.class)));
+    }
+
+    @Test
     public void matchesForTreeCatchesRepositoryExceptionReturnsFalse() throws RepositoryException
     {
         Session mockedSession = mock(Session.class);
         this.questionnaireRestrictionPattern = new QuestionnaireRestrictionPattern(this.targetQuestionnaires,
                 mockedSession);
-        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(), createNodeBuilder("cards/Form"));
+        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(),
+                createNodeBuilder("cards/Form", QUESTIONNAIRE_PROPERTY, UUID.randomUUID().toString()));
 
         when(mockedSession.getNodeByIdentifier(anyString())).thenThrow(new RepositoryException());
         assertFalse(this.questionnaireRestrictionPattern.matches(tree, mock(PropertyState.class)));
@@ -121,11 +136,11 @@ public class QuestionnaireRestrictionPatternTest
                 this.context.resourceResolver().adaptTo(Session.class));
     }
 
-    private NodeBuilder createNodeBuilder(String resourceType)
+    private NodeBuilder createNodeBuilder(String resourceType, String referenceProperty, String referencePropertyValue)
     {
         NodeBuilder builder = EmptyNodeState.EMPTY_NODE.builder();
         builder.setProperty(RESOURCE_TYPE, resourceType);
-        builder.setProperty(QUESTIONNAIRE_PROPERTY, UUID.randomUUID().toString(), Type.REFERENCE);
+        builder.setProperty(referenceProperty, referencePropertyValue, Type.REFERENCE);
         return builder;
     }
 }

@@ -140,7 +140,8 @@ public class SessionSubjectRestrictionPatternTest
 
 
     @Test
-    public void matchesForTreeNeitherFormForSubjectNorSubjectReturnsFalse() throws RepositoryException
+    public void matchesForTreeNeitherFormForSubjectNorSubjectWithSubjectPropertyAndWithoutMatchedPathReturnsFalse()
+            throws RepositoryException
     {
         Session mockedSession = mock(Session.class);
         String sessionSubject = "/Subjects/r1";
@@ -155,6 +156,62 @@ public class SessionSubjectRestrictionPatternTest
         NodeBuilder formBuilder =
                 createFormNodeBuilder(UUID.randomUUID().toString(), childName, childBuilder.getNodeState());
 
+        String formsHomepageName = "Forms";
+        NodeBuilder formsHomepageBuilder =
+                createNodeBuilder("cards:FormsHomepage", formName, formBuilder.getNodeState());
+
+        NodeBuilderTree rootTree = new NodeBuilderTree("",
+                createNodeBuilder("jcr:root", formsHomepageName, formsHomepageBuilder.getNodeState()));
+        Tree tree = rootTree.addChild(formsHomepageName).addChild(formName).addChild(childName);
+
+        when(mockedSession.getNodeByIdentifier(anyString())).thenThrow(new RepositoryException());
+        when(sessionSubjectNode.getPath()).thenReturn(sessionSubject);
+
+        assertFalse(this.sessionSubjectRestrictionPattern.matches(tree, mock(PropertyState.class)));
+    }
+
+    @Test
+    public void matchesForTreeNeitherFormForSubjectNorSubjectWithoutSubjectPropertyAndWithMatchedPathReturnsFalse()
+            throws RepositoryException {
+        Session mockedSession = mock(Session.class);
+        String sessionSubject = "/Subjects/r1";
+        Node sessionSubjectNode = mock(Node.class);
+        this.sessionSubjectRestrictionPattern = new SessionSubjectRestrictionPattern(mockedSession);
+        when(mockedSession.getAttribute(SESSION_SUBJECT_ATTRIBUTE)).thenReturn(sessionSubject);
+
+        String childName = "a1";
+        NodeBuilder childBuilder = EmptyNodeState.EMPTY_NODE.builder();
+
+        String formName = "f1";
+        NodeBuilder formBuilder = createNodeBuilder("cards:Form", childName, childBuilder.getNodeState());
+        String formsHomepageName = "Forms";
+        NodeBuilder formsHomepageBuilder =
+                createNodeBuilder("cards:FormsHomepage", formName, formBuilder.getNodeState());
+
+        NodeBuilderTree rootTree = new NodeBuilderTree("",
+                createNodeBuilder("jcr:root", formsHomepageName, formsHomepageBuilder.getNodeState()));
+        Tree tree = rootTree.addChild(formsHomepageName).addChild(formName).addChild(childName);
+
+        when(mockedSession.getNodeByIdentifier(anyString())).thenReturn(sessionSubjectNode);
+        when(sessionSubjectNode.getPath()).thenReturn(sessionSubject);
+
+        assertFalse(this.sessionSubjectRestrictionPattern.matches(tree, mock(PropertyState.class)));
+    }
+
+    @Test
+    public void matchesForTreeNeitherFormForSubjectNorSubjectWithoutSubjectPropertyAndWithoutMatchedPathReturnsFalse()
+            throws RepositoryException {
+        Session mockedSession = mock(Session.class);
+        String sessionSubject = "/Subjects/r1";
+        Node sessionSubjectNode = mock(Node.class);
+        this.sessionSubjectRestrictionPattern = new SessionSubjectRestrictionPattern(mockedSession);
+        when(mockedSession.getAttribute(SESSION_SUBJECT_ATTRIBUTE)).thenReturn(sessionSubject);
+
+        String childName = "a1";
+        NodeBuilder childBuilder = EmptyNodeState.EMPTY_NODE.builder();
+
+        String formName = "f1";
+        NodeBuilder formBuilder = createNodeBuilder("cards:Form", childName, childBuilder.getNodeState());
         String formsHomepageName = "Forms";
         NodeBuilder formsHomepageBuilder =
                 createNodeBuilder("cards:FormsHomepage", formName, formBuilder.getNodeState());

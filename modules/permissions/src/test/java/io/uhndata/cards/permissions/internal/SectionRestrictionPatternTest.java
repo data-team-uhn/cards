@@ -54,6 +54,7 @@ public class SectionRestrictionPatternTest
     private static final String RESOURCE_TYPE = "sling:resourceType";
     private static final String TEST_SECTION_PATH = "/Questionnaires/TestQuestionnaire/s1";
     private static final String SECTION_PROPERTY = "section";
+    private static final String QUESTION_PROPERTY = "question";
 
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
@@ -73,7 +74,7 @@ public class SectionRestrictionPatternTest
         Session mockedSession = mock(Session.class);
         this.sectionRestrictionPattern = new SectionRestrictionPattern(this.targetSections, mockedSession);
         NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(),
-                createNodeBuilder("cards/AnswerSection"));
+                createNodeBuilder("cards/AnswerSection", SECTION_PROPERTY, UUID.randomUUID().toString()));
         Node questionnaire = mock(Node.class);
 
         when(mockedSession.getNodeByIdentifier(anyString())).thenReturn(questionnaire);
@@ -83,12 +84,23 @@ public class SectionRestrictionPatternTest
     }
 
     @Test
+    public void matchesForNotAnswerSectionTreeReturnsFalse()
+    {
+        Session mockedSession = mock(Session.class);
+        this.sectionRestrictionPattern = new SectionRestrictionPattern(this.targetSections, mockedSession);
+        NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(),
+                createNodeBuilder("cards/Answer", QUESTION_PROPERTY, UUID.randomUUID().toString()));
+
+        assertFalse(this.sectionRestrictionPattern.matches(tree, mock(PropertyState.class)));
+    }
+
+    @Test
     public void matchesForTreeCatchesRepositoryExceptionReturnsFalse() throws RepositoryException
     {
         Session mockedSession = mock(Session.class);
         this.sectionRestrictionPattern = new SectionRestrictionPattern(this.targetSections, mockedSession);
         NodeBuilderTree tree = new NodeBuilderTree(UUID.randomUUID().toString(),
-                createNodeBuilder("cards/AnswerSection"));
+                createNodeBuilder("cards/AnswerSection", SECTION_PROPERTY, UUID.randomUUID().toString()));
 
         when(mockedSession.getNodeByIdentifier(anyString())).thenThrow(new RepositoryException());
         assertFalse(this.sectionRestrictionPattern.matches(tree, mock(PropertyState.class)));
@@ -121,11 +133,11 @@ public class SectionRestrictionPatternTest
                 this.context.resourceResolver().adaptTo(Session.class));
     }
 
-    private NodeBuilder createNodeBuilder(String resourceType)
+    private NodeBuilder createNodeBuilder(String resourceType, String referenceProperty, String referencePropertyValue)
     {
         NodeBuilder builder = EmptyNodeState.EMPTY_NODE.builder();
         builder.setProperty(RESOURCE_TYPE, resourceType);
-        builder.setProperty(SECTION_PROPERTY, UUID.randomUUID().toString(), Type.REFERENCE);
+        builder.setProperty(referenceProperty, referencePropertyValue, Type.REFERENCE);
         return builder;
     }
 }
