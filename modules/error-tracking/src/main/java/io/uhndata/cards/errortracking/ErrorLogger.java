@@ -19,13 +19,33 @@
 
 package io.uhndata.cards.errortracking;
 
-public interface ErrorLogger
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public final class ErrorLogger
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorLogger.class);
+
+    private static ErrorLoggerService errorLoggerService;
+
+    // Hide the constructor
+    private ErrorLogger()
+    {
+    }
+
+    public static void setService(ErrorLoggerService service)
+    {
+        errorLoggerService = service;
+    }
+
     /*
      * Stores in the JCR, under /LoggedEvents, a nt:file node containing the passed stack trace.
      *
      * @param loggedError the Throwable containing the stack trace of the error that was thrown resulting
      * in the calling of this method
      */
-    void logError(Throwable loggedError);
+    public static void logError(final Throwable loggedError)
+    {
+        errorLoggerService.logError(loggedError);
+    }
 }

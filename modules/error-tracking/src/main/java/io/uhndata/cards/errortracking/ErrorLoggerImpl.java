@@ -37,8 +37,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, service = ErrorLoggerImpl.class)
-public final class ErrorLoggerImpl implements ErrorLogger
+@Component(immediate = true, service = ErrorLoggerService.class)
+public final class ErrorLoggerImpl implements ErrorLoggerService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ErrorLoggerImpl.class);
 
@@ -51,7 +51,7 @@ public final class ErrorLoggerImpl implements ErrorLogger
     protected void activate(ComponentContext componentContext) throws Exception
     {
         LOGGER.warn("ErrorTracking IS ACTIVATING!");
-        StaticErrorLogger.setService(this);
+        ErrorLogger.setService(this);
     }
 
     /*
