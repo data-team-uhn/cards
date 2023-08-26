@@ -172,7 +172,8 @@ public class SessionSubjectRestrictionPatternTest
 
     @Test
     public void matchesForTreeNeitherFormForSubjectNorSubjectWithoutSubjectPropertyAndWithMatchedPathReturnsFalse()
-            throws RepositoryException {
+            throws RepositoryException
+    {
         Session mockedSession = mock(Session.class);
         String sessionSubject = "/Subjects/r1";
         Node sessionSubjectNode = mock(Node.class);
@@ -200,7 +201,8 @@ public class SessionSubjectRestrictionPatternTest
 
     @Test
     public void matchesForTreeNeitherFormForSubjectNorSubjectWithoutSubjectPropertyAndWithoutMatchedPathReturnsFalse()
-            throws RepositoryException {
+            throws RepositoryException
+    {
         Session mockedSession = mock(Session.class);
         String sessionSubject = "/Subjects/r1";
         Node sessionSubjectNode = mock(Node.class);
