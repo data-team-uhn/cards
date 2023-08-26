@@ -57,7 +57,7 @@ public class DateRangeMinMaxAnswersValidator extends MinMaxAnswersValidator impl
 
             // Ranges are stored as pairs of values, so the true number of values is half of the number of actual values
             final long valuesCount = getNumberOfValues(answer) / 2;
-            checkNumberOfValues(valuesCount, question, initialAnswer, flags);
+            checkNumberOfValues(valuesCount, question, flags);
         } catch (final RepositoryException ex) {
             // If something goes wrong then we cannot verify the answer, leave it as it was before
         }
