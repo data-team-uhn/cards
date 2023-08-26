@@ -53,12 +53,7 @@ public final class ErrorLoggerImpl implements ErrorLoggerService
         ErrorLogger.setService(this);
     }
 
-    /*
-     * Stores in the JCR, under /LoggedEvents, a nt:file node containing the passed stack trace.
-     *
-     * @param loggedError the Throwable containing the stack trace of the error that was thrown resulting
-     * in the calling of this method
-     */
+    @Override
     public void logError(final Throwable loggedError)
     {
         try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
