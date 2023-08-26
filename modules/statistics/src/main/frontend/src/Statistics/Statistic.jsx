@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React from "react";
 import {
   Avatar,
   Card,
@@ -32,14 +32,12 @@ import { deepPurple, indigo } from '@mui/material/colors';
 
 import { useHistory } from 'react-router-dom';
 
-import { DateTime } from "luxon";
 import palette from "google-palette";
 import {
    BarChart, Bar, CartesianGrid, Line, LineChart, Label, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from "recharts";
 
 import statisticsStyle from "./statisticsStyle.jsx";
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 
 // A single statistic, displayed as a chart
 function Statistic(props) {
@@ -54,6 +52,9 @@ function Statistic(props) {
     "#974efd",
     "#9e4973",
   ];
+
+  const groupNullAndFalseAnswersForXVar = definition.meta.groupNullAndFalseAnswersForXVar && definition.xVar?.dataType == "boolean";
+  const groupNullAndFalseAnswersForSplitVar = definition.meta.groupNullAndFalseAnswersForSplitVar && definition.splitVar?.dataType == "boolean";
 
   // Transform our input data from the statistics servlet into something recharts can understand
   // Note that keys is transformed in this process
@@ -100,7 +101,7 @@ function Statistic(props) {
         return -1;
       } else if (bIdx >= 0) {
         return 1;
-      } else if (["long", "double", "decimal"].includes(definition["xVar"]["dataType"])) {
+      } else if (["long", "double", "decimal"].includes(xVar["dataType"])) {
         // Numeric sort
         return a["x"] - b["x"];
       } else {
@@ -108,6 +109,15 @@ function Statistic(props) {
         return a["x"].localeCompare(b["x"]);
       }
     });
+  }
+
+  if (groupNullAndFalseAnswersForXVar) {
+    let falseLabel = Object.keys(definition?.xValueDictionary).find(key => definition?.xValueDictionary[key] == '0');
+    // group No and Not specified answers in one chart
+    let noIndex = rechartsData.findIndex( item => item.x == falseLabel);
+    let notSpecifiedIndex = rechartsData.findIndex( item => item.x == "Not specified");
+    rechartsData[noIndex]["Not specified"] = rechartsData[notSpecifiedIndex][definition["y-label"]];
+    rechartsData.splice(notSpecifiedIndex, 1);
   }
 
   let allFields = Object.keys(allFieldsDict);
@@ -129,6 +139,7 @@ function Statistic(props) {
         .map(field => ({value : field == "Not specified" ? undefined : field, label: field}))
       );
   }
+  groupNullAndFalseAnswersForXVar && allFields.push("Not specified");
 
   let isBar = definition["type"] == "bar";
 
@@ -150,7 +161,7 @@ function Statistic(props) {
   // When clicking on a bar or line, list the questionnaires that correspond to it
   let handleClick = (data, field) => {
     if (disableClick) return;
-    let xVal = data?.payload?.x;
+    let xVal = field == "Not specified" ? undefined : data?.payload?.x;
     let splitVal = field.value;
     navigateToDataset(xVal, splitVal);
   }
@@ -168,7 +179,7 @@ function Statistic(props) {
     let result = [];
     let xVarDef = definition?.meta?.xVar;
     let xValueDictionary = definition?.xValueDictionary;
-    let xVarFilter = generateFilter(xVarDef, xValueDictionary ? xValueDictionary[xVal] : xVal)
+    let xVarFilter = generateFilter(xVarDef, xVal && xValueDictionary ? xValueDictionary[xVal] : xVal)
     result.push(xVarFilter);
     if (isSplit) {
       let splitDef = definition?.meta?.splitVar;
@@ -191,6 +202,29 @@ function Statistic(props) {
   }
 
   let customStyle = disableClick ? {} : {cursor: "pointer"};
+
+  let CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (<>
+            <div className={classes.customTooltip}>
+              <ul className={classes.label}>
+                { payload.map(item =>
+                  <li style={{color: item.color}} key={item.name}>
+                    { item.name == "Not specified" ?
+                      `${item.name} - ${definition["y-label"]}: ${item.payload[item.name]}`
+                      :
+                      `${item.payload.x} - ${item.name}: ${item.payload[item.name]}`
+                    }
+                  </li>
+                )}
+              </ul>
+            </div>
+          </>
+      );
+    }
+
+    return null;
+  };
 
   return <Grid item xs={12} lg={6}>
     <Card className={classes.statsCard}>
@@ -221,16 +255,32 @@ function Statistic(props) {
               <Label value={definition["x-label"]} offset={-10} position="insideBottom" />
             </XAxis>
             <YAxis allowDecimals={false} label={{ value: definition["y-label"], angle: -90, position: 'insideLeft', offset: 10 }} />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             {isSplit && <Legend align="right" verticalAlign="top" height={legendHeight} />}
             {allFields.map((field, idx) =>
-              isBar ?
-                <Bar dataKey={field.label || field} fill={chartColours[idx]} key={idx} onClick={(data, index) => handleClick(data, field)} style={customStyle}/>
+              isBar ? (groupNullAndFalseAnswersForXVar ?
+                <Bar
+                  dataKey={field.label || field}
+                  stackId="a"
+                  fill={chartColours[idx]}
+                  key={idx}
+                  onClick={(data, index) => handleClick(data, field)}
+                  style={customStyle}
+                />
+                :
+                <Bar
+                  dataKey={field.label || field}
+                  fill={chartColours[idx]}
+                  key={idx}
+                  onClick={(data, index) => handleClick(data, field)}
+                  style={customStyle}
+                />
+                )
               :
                 <Line dataKey={field.label || field} type="monotone" stroke={chartColours[idx]} key={idx} />
             )}
-            </ChartType>
-          </ResponsiveContainer>
+          </ChartType>
+        </ResponsiveContainer>
       }
       </CardContent>
     </Card>
