@@ -30,7 +30,7 @@
         <type>Boolean</type>
     </property>
     <property>
-        <name>nbOfDaysRelativeToEventToCompleteSurvey</name>
+        <name>daysRelativeToEventWhileSurveyIsValid</name>
         <value>30</value>
         <type>Long</type>
     </property>

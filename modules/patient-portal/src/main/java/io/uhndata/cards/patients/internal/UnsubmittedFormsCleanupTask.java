@@ -88,7 +88,7 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                 (String) resolver.getResource("/Questionnaires/Visit information/time").getValueMap().get("jcr:uuid");
             final String submitted = (String) resolver
                 .getResource("/Questionnaires/Visit information/surveys_submitted").getValueMap().get("jcr:uuid");
-            final int patientTokenLifetime = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
+            final int patientTokenLifetime = this.patientAccessConfiguration.getDaysRelativeToEventWhileSurveyIsValid();
 
             // Find all clinics to iterate over
             final Iterator<Resource> results = resolver.findResources(
@@ -99,8 +99,8 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                 final String clinicPath = clinicNode.getPath();
                 // Get clinic token lifetime or default to the global patient token lifetime
                 int delay = patientTokenLifetime;
-                if (clinicNode.hasProperty("nbOfDaysRelativeToEventToCompleteSurvey")) {
-                    delay = (int) clinicNode.getProperty("nbOfDaysRelativeToEventToCompleteSurvey").getLong();
+                if (clinicNode.hasProperty("daysRelativeToEventWhileSurveyIsValid")) {
+                    delay = (int) clinicNode.getProperty("daysRelativeToEventWhileSurveyIsValid").getLong();
                 }
 
                 // Get all data forms for the specific clinic

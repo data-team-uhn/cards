@@ -235,7 +235,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
                 session.getNode("/Questionnaires/Survey events/survey_expiry"));
             if (expirationDateAnswer != null) {
                 Calendar expirationDate = (Calendar) eventDate.clone();
-                final int tokenLifetime = this.accessConfiguration.getAllowedPostVisitCompletionTime(form);
+                final int tokenLifetime = this.accessConfiguration.getDaysRelativeToEventWhileSurveyIsValid(form);
                 expirationDate.add(Calendar.DATE, tokenLifetime + 1);
                 expirationDate.set(Calendar.HOUR_OF_DAY, 0);
                 expirationDate.set(Calendar.MINUTE, 0);

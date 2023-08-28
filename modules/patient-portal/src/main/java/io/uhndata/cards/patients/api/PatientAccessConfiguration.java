@@ -50,7 +50,7 @@ public interface PatientAccessConfiguration
      *
      * @return A number of days
      */
-    int getAllowedPostVisitCompletionTime();
+    int getDaysRelativeToEventWhileSurveyIsValid();
 
     /**
      * Returns the token lifetime associated with the clinic linked to the Subject
@@ -60,7 +60,7 @@ public interface PatientAccessConfiguration
      *
      * @return A number of days
      */
-    int getAllowedPostVisitCompletionTime(Node visitInformationForm);
+    int getDaysRelativeToEventWhileSurveyIsValid(Node visitInformationForm);
 
     /**
      * Get the configured amount of time, in days, that patient's draft responses are kept in the database and the

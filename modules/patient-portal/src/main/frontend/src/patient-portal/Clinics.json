@@ -5,6 +5,6 @@
   "survey": "string",
   "emergencyContact": "string",
   "description": "string",
-  "nbOfDaysRelativeToEventToCompleteSurvey": "double",
+  "daysRelativeToEventWhileSurveyIsValid": "double",
   "//REQUIRED": ["clinicName", "displayName", "sidebarLabel", "survey"]
 }

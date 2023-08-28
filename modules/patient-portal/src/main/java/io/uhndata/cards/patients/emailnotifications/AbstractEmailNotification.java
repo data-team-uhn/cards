@@ -167,7 +167,8 @@ abstract class AbstractEmailNotification
         String patientFullName = AppointmentUtils.getPatientFullName(this.formUtils, patientSubject);
         Calendar visitDate = (Calendar) this.formUtils.getValue(appointmentDate);
         Calendar tokenExpiryDate = (Calendar) visitDate.clone();
-        final int tokenLifetime = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime(appointmentForm);
+        final int tokenLifetime =
+            this.patientAccessConfiguration.getDaysRelativeToEventWhileSurveyIsValid(appointmentForm);
         tokenExpiryDate.add(Calendar.DATE, tokenLifetime);
         atMidnight(tokenExpiryDate);
         final String token = this.tokenManager.create(

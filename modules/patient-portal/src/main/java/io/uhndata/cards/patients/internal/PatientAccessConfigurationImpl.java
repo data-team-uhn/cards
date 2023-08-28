@@ -54,10 +54,10 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     private static final String PATIENT_IDENTIFICATION_REQUIRED_PROP = "PIIAuthRequired";
 
     /** Default property on config node for the number of days a token is valid for. */
-    private static final String DEFAULT_TOKEN_LIFETIME_PROP = "nbOfDaysRelativeToEventToCompleteSurvey";
+    private static final String DEFAULT_TOKEN_LIFETIME_PROP = "daysRelativeToEventWhileSurveyIsValid";
 
     /** Clinic property for the number of days a token is valid for. */
-    private static final String TOKEN_LIFETIME_PROP = "nbOfDaysRelativeToEventToCompleteSurvey";
+    private static final String TOKEN_LIFETIME_PROP = "daysRelativeToEventWhileSurveyIsValid";
 
     /** Property on config node for the number of days draft responses from patients are kept. */
     private static final String DRAFT_LIFETIME_PROP = "draftLifetime";
@@ -129,7 +129,7 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     }
 
     @Override
-    public int getAllowedPostVisitCompletionTime()
+    public int getDaysRelativeToEventWhileSurveyIsValid()
     {
         try
         {
@@ -141,9 +141,9 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     }
 
     @Override
-    public int getAllowedPostVisitCompletionTime(Node visitInformationNode)
+    public int getDaysRelativeToEventWhileSurveyIsValid(Node visitInformationNode)
     {
-        final int defaultTokenLifetime = getAllowedPostVisitCompletionTime();
+        final int defaultTokenLifetime = getDaysRelativeToEventWhileSurveyIsValid();
         try
         {
             Node visitSubject = this.formUtils.getSubject(visitInformationNode, "/SubjectTypes/Patient/Visit");
