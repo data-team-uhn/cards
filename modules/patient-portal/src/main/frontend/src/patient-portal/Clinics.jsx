@@ -88,6 +88,13 @@ function OnboardNewClinicDialog(props) {
 
   let clinicsSpecs = require('./Clinics.json');
 
+  let hints = null;
+  try {
+    hints = require(`./Clinics-hints.json`);
+  } catch (e) {
+    // do nothing
+  }
+
   let reset = () => {
     // reset all fields
     setError();
@@ -149,7 +156,7 @@ function OnboardNewClinicDialog(props) {
             {
               // We don't want to load the Fields component until we are fully initialized
               // since otherwise the default values will be empty and cannot be assigned
-              initialized && <Fields data={{}} JSON={clinicsSpecs} edit />
+              initialized && <Fields data={{}} JSON={clinicsSpecs} hints={hints} edit />
             }
           </Grid>
         </DialogContent>

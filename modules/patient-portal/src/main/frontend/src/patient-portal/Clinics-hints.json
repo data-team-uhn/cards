@@ -1,0 +1,3 @@
+{
+  "nbOfDaysRelativeToEventToCompleteSurvey": "Use a negative number when patient responses are due a number of days before the event, 0 for the day of the event, and a positive number when their responses are expected after the event."
+}
