@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.security.Privilege;
 import javax.servlet.ServletException;
 
@@ -41,8 +42,8 @@ import io.uhndata.cards.permissions.spi.PermissionsManager;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -160,7 +161,8 @@ public class PermissionsManagerServletTest
         request.withParameter(PRINCIPAL_PARAMETER, "admin");
         request.withParameter(RESTRICTION_PARAMETER, "cards:answer=" + UUID.randomUUID());
         doThrow(new RepositoryException()).when(this.permissionsChangeServiceHandler).addAccessControlEntry(
-                anyString(), anyBoolean(), any(Principal.class), any(String[].class), anyMap(), any(Session.class));
+            anyString(), anyBoolean(), any(Principal.class), any(String[].class), anyMapOf(String.class, Value.class),
+            any(Session.class));
         this.permissionsManagerServlet.doPost(request.build(), mock(SlingHttpServletResponse.class));
     }
 
