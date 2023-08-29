@@ -27,9 +27,10 @@ var time = currentSession.getWorkspace().getQueryManager().createQuery("select t
 if (time.hasNext()) {
     time = time.next();
     if (time.hasProperty("value")) {
+        var visitInformationForm = time.getParent();
         time = time.getProperty("value").getDate();
         var config = sling.getService(Packages.io.uhndata.cards.patients.api.PatientAccessConfiguration);
-        var days = config.getDaysRelativeToEventWhileSurveyIsValid(time.getParent());
+        var days = config.getDaysRelativeToEventWhileSurveyIsValid(visitInformationForm);
         time.add(java.util.Calendar.DATE, days + 1);
         time.set(java.util.Calendar.HOUR_OF_DAY, 0);
         time.set(java.util.Calendar.MINUTE, 0);
