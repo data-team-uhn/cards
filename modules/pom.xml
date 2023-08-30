@@ -71,5 +71,6 @@
     <module>clarity-integration</module>
     <module>torch-import</module>
     <module>slack-notifications</module>
+    <module>embedded-homepage</module>
   </modules>
 </project>
