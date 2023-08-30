@@ -48,6 +48,7 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/embedded-homepage.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
               SLING-INF/content/Embedded.json;path:=/embedded,
+              SLING-INF/content/libs/cards/EmbeddedHomepage/;path:=/libs/cards/EmbeddedHomepage/;overwrite:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
