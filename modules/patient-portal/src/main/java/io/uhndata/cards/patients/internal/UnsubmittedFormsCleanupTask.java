@@ -110,14 +110,17 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                         + "  from [cards:Form] as dataForm"
                         // belonging to a visit
                         + "  inner join [cards:Form] as visitInformation on visitInformation.subject = dataForm.subject"
-                        + " inner join [cards:DateAnswer] as visitDate on visitDate.form = visitInformation.[jcr:uuid]"
+                        + "    inner join [cards:ResourceAnswer] as clinic"
+                        + "       on clinic.form = visitInformation.[jcr:uuid]"
+                        + "    inner join [cards:DateAnswer] as visitDate"
+                        + "       on visitDate.form=visitInformation.[jcr:uuid]"
                         + "    inner join [cards:BooleanAnswer] as submitted"
                         + "      on submitted.form = visitInformation.[jcr:uuid]"
                         + " where"
                         // link to the correct Visit Information questionnaire
                         + "  visitInformation.questionnaire = '%1$s'"
                         // link to the exact clinic in Visit Information form
-                        + "  and visitInformation.clinic = '%5$s'"
+                        + "  and clinic.value = '%5$s'"
                         // the visit date is in the past
                         + "  and visitDate.question = '%2$s'"
                         + "  and visitDate.value < '%4$s'"
