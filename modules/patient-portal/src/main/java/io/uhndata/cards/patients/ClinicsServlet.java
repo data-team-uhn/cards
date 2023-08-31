@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -83,6 +85,8 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     private final ThreadLocal<String> surveyID = new ThreadLocal<>();
 
     private final ThreadLocal<String> emergencyContact = new ThreadLocal<>();
+
+    private final ThreadLocal<Double> tokenLifetime = new ThreadLocal<>();
 
     private final ThreadLocal<String> description = new ThreadLocal<>();
 
@@ -150,6 +154,11 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         this.sidebarLabel.set(request.getParameter("sidebarLabel"));
         this.surveyID.set(request.getParameter("survey"));
         this.emergencyContact.set(request.getParameter("emergencyContact"));
+        String tokenLifetimeParam =
+            StringUtils.defaultString(request.getParameter("daysRelativeToEventWhileSurveyIsValid"), "");
+        if (StringUtils.isNotBlank(tokenLifetimeParam)) {
+            this.tokenLifetime.set(Double.valueOf(tokenLifetimeParam));
+        }
         this.description.set(request.getParameter("description"));
         this.idHash.set(Integer.toString(this.clinicName.get().hashCode()));
         return true;
@@ -234,14 +243,18 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     {
         final Resource parentResource = resolver.getResource("/Survey/ClinicMapping");
 
-        resolver.create(parentResource, this.idHash.get(), Map.of(
-            "clinicName", this.clinicName.get(),
-            "displayName", this.displayName.get(),
-            "sidebarLabel", this.sidebarLabel.get(),
-            "survey", this.surveyID.get(),
-            "emergencyContact", this.emergencyContact.get(),
-            ClinicsServlet.DESCRIPTION_FIELD, this.description.get(),
-            ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping"));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("clinicName", this.clinicName.get());
+        params.put("displayName", this.displayName.get());
+        params.put("sidebarLabel", this.sidebarLabel.get());
+        params.put("survey", this.surveyID.get());
+        params.put("emergencyContact", this.emergencyContact.get());
+        params.put(ClinicsServlet.DESCRIPTION_FIELD, this.description.get());
+        params.put(ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping");
+        if (this.tokenLifetime.get() != null) {
+            params.put("daysRelativeToEventWhileSurveyIsValid", this.tokenLifetime.get());
+        }
+        resolver.create(parentResource, this.idHash.get(), params);
     }
 
     /**
@@ -330,6 +343,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         this.description.remove();
         this.displayName.remove();
         this.emergencyContact.remove();
+        this.tokenLifetime.remove();
         this.idHash.remove();
         this.sidebarLabel.remove();
         this.surveyID.remove();

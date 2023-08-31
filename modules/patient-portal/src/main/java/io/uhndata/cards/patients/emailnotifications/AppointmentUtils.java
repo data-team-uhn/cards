@@ -35,9 +35,11 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 
-@SuppressWarnings("MultipleStringLiterals")
 public final class AppointmentUtils
 {
+    /** Clinic ID Link. */
+    public static final String CLINIC_PATH = "/Questionnaires/Visit information/clinic";
+
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(AppointmentUtils.class);
 
@@ -107,7 +109,7 @@ public final class AppointmentUtils
                 "cards:BooleanAnswer",
                 0L);
             Node visitClinic = session.getNode(getQuestionAnswerForSubject(formUtils, visitSubject,
-                "/Questionnaires/Visit information/clinic", TEXT_ANSWER, EMPTY));
+                CLINIC_PATH, TEXT_ANSWER, EMPTY));
 
             if (visitClinic == null) {
                 return null;
@@ -166,43 +168,19 @@ public final class AppointmentUtils
     }
 
     /**
-     * Gets the clinic name associated with a Visit Subject Resource, or null if the clinic name cannot be found.
-     *
-     * @param formUtils form utilities service
-     * @param visitSubject the JCR Resource for the visit whose clinic name we wish to obtain
-     * @return the clinic name associated with the Visit or null
-     */
-    public static String getVisitClinic(FormUtils formUtils, Node visitSubject)
-    {
-        String clinicId = getQuestionAnswerForSubject(
-            formUtils,
-            visitSubject,
-            "/Questionnaires/Visit information/surveys",
-            TEXT_ANSWER,
-            EMPTY);
-        if (EMPTY.equals(clinicId)) {
-            return null;
-        }
-        return clinicId;
-    }
-
-    /**
      * Returns the cards:QuestionnaireSet JCR Resource associated with the formRelatedSubject or null if no such
      * associated Resource can be found.
      *
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
-     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
-     * @param clinicsJcrPath the JCR path for information on the clinics (eg. /Survey)
      * @return the associated cards:QuestionnaireSet JCR Resource or null
      */
-    public static Node getValidClinicNode(FormUtils formUtils, Node formRelatedSubject,
-        String clinicIdLink, String clinicsJcrPath)
+    public static Node getValidClinicNode(FormUtils formUtils, Node formRelatedSubject)
     {
         String clinicNodePath = getQuestionAnswerForSubject(
             formUtils,
             formRelatedSubject,
-            clinicIdLink,
+            CLINIC_PATH,
             TEXT_ANSWER,
             EMPTY);
 
@@ -224,15 +202,13 @@ public final class AppointmentUtils
      *
      * @param formUtils form utilities service
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
-     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
-     * @param clinicsJcrPath clinicsJcrPath the JCR path for information on the clinics (eg. /Survey)
      * @param clinicEmailProperty the JCR node property holding the email address (eg. "emergencyContact")
      * @return the contact email address associated with a subject
      */
     public static String getValidClinicEmail(FormUtils formUtils, Node formRelatedSubject,
-        String clinicIdLink, String clinicsJcrPath, String clinicEmailProperty)
+        String clinicEmailProperty)
     {
-        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject, clinicIdLink, clinicsJcrPath);
+        Node clinicNode = getValidClinicNode(formUtils, formRelatedSubject);
         if (clinicNode == null) {
             return null;
         }
@@ -254,7 +230,7 @@ public final class AppointmentUtils
      * @param visitSubject the JCR Resource for the visit whose survey completion status we wish to obtain
      * @return the boolean survey completion status for the visit
      */
-    public static boolean getVisitSurveysComplete(FormUtils formUtils, Node visitSubject)
+    public static boolean isVisitSurveyComplete(FormUtils formUtils, Node visitSubject)
     {
         long isComplete = getQuestionAnswerForSubject(
             formUtils,
@@ -299,7 +275,7 @@ public final class AppointmentUtils
             final String hasSurveysUUID =
                 session.getNode("/Questionnaires/Visit information/has_surveys").getIdentifier();
             final String clinicUUID =
-                session.getNode("/Questionnaires/Visit information/clinic").getIdentifier();
+                session.getNode(CLINIC_PATH).getIdentifier();
             final Calendar lowerBoundDate = (Calendar) dateToQuery.clone();
             lowerBoundDate.set(Calendar.HOUR_OF_DAY, 0);
             lowerBoundDate.set(Calendar.MINUTE, 0);

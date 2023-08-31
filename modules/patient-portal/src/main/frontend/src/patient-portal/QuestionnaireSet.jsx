@@ -114,6 +114,7 @@ function QuestionnaireSet(props) {
   // Questionnaire set title and intro text, to display to the patient user
   const [ title, setTitle ] = useState();
   const [ intro, setIntro ] = useState();
+  const [ tokenLifetime, setTokenLifetime ] = useState();
   // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
   const [ questionnaires, setQuestionnaires ] = useState();
   // The ids of the questionnaires in this set, in the order they must be filled in
@@ -290,6 +291,7 @@ function QuestionnaireSet(props) {
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then((json) => {
               setId(json["survey"]);
+              setTokenLifetime(json.daysRelativeToEventWhileSurveyIsValid);
             });
         }
         selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
@@ -586,7 +588,7 @@ function QuestionnaireSet(props) {
     let date = getVisitDate();
     if (date?.isValid) {
       // Compute the moment the token expired: the configured number of days after the visit, at midnight
-      date = date.plus({days: config?.allowedPostVisitCompletionTime || 0}).endOf('day');
+      date = date.plus({days: tokenLifetime ?? config?.daysRelativeToEventWhileSurveyIsValid ?? 0}).endOf('day');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0

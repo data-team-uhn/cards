@@ -24,6 +24,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 
 import org.apache.sling.api.resource.LoginException;
@@ -86,42 +88,63 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                 (String) resolver.getResource("/Questionnaires/Visit information/time").getValueMap().get("jcr:uuid");
             final String submitted = (String) resolver
                 .getResource("/Questionnaires/Visit information/surveys_submitted").getValueMap().get("jcr:uuid");
-            final int delay = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
-            // Query:
-            final Iterator<Resource> resources = resolver.findResources(String.format(
-                // select the data forms
-                "select distinct dataForm.*"
-                    + "  from [cards:Form] as dataForm"
-                    // belonging to a visit
-                    + "  inner join [cards:Form] as visitInformation on visitInformation.subject = dataForm.subject"
-                    + "    inner join [cards:DateAnswer] as visitDate on visitDate.form = visitInformation.[jcr:uuid]"
-                    + "    inner join [cards:BooleanAnswer] as submitted"
-                    + "      on submitted.form = visitInformation.[jcr:uuid]"
-                    + " where"
-                    // link to the correct Visit Information questionnaire
-                    + "  visitInformation.questionnaire = '%1$s'"
-                    // the visit date is in the past
-                    + "  and visitDate.question = '%2$s'"
-                    + "  and visitDate.value < '%4$s'"
-                    // the visit is not submitted
-                    + "  and submitted.question = '%3$s'"
-                    + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
-                    // exclude the Visit Information form itself
-                    + "  and dataForm.questionnaire <> '%1$s'"
-                    // use the fast index for the query
-                    + " option (index tag cards)",
-                visitInformationQuestionnaire, time, submitted,
-                ZonedDateTime.now().minusDays(delay)
-                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))),
-                Query.JCR_SQL2);
-            resources.forEachRemaining(form -> {
-                try {
-                    resolver.delete(form);
-                } catch (final PersistenceException e) {
-                    LOGGER.warn("Failed to delete expired form {}: {}", form.getPath(), e.getMessage());
+            final int patientTokenLifetime = this.patientAccessConfiguration.getDaysRelativeToEventWhileSurveyIsValid();
+
+            // Find all clinics to iterate over
+            final Iterator<Resource> results = resolver.findResources(
+                "select * from [cards:ClinicMapping] as clinic", Query.JCR_SQL2);
+            while (results.hasNext()) {
+                Resource resource = results.next();
+                final Node clinicNode = resource.adaptTo(Node.class);
+                final String clinicPath = clinicNode.getPath();
+                // Get clinic token lifetime or default to the global patient token lifetime
+                int delay = patientTokenLifetime;
+                if (clinicNode.hasProperty("daysRelativeToEventWhileSurveyIsValid")) {
+                    delay = (int) clinicNode.getProperty("daysRelativeToEventWhileSurveyIsValid").getLong();
                 }
-            });
-            resolver.commit();
+
+                // Get all data forms for the specific clinic
+                final Iterator<Resource> resources = resolver.findResources(String.format(
+                    // select the data forms
+                    "select distinct dataForm.*"
+                        + "  from [cards:Form] as dataForm"
+                        // belonging to a visit
+                        + "  inner join [cards:Form] as visitInformation on visitInformation.subject = dataForm.subject"
+                        + "    inner join [cards:ResourceAnswer] as clinic"
+                        + "       on clinic.form = visitInformation.[jcr:uuid]"
+                        + "    inner join [cards:DateAnswer] as visitDate"
+                        + "       on visitDate.form=visitInformation.[jcr:uuid]"
+                        + "    inner join [cards:BooleanAnswer] as submitted"
+                        + "      on submitted.form = visitInformation.[jcr:uuid]"
+                        + " where"
+                        // link to the correct Visit Information questionnaire
+                        + "  visitInformation.questionnaire = '%1$s'"
+                        // link to the exact clinic in Visit Information form
+                        + "  and clinic.value = '%5$s'"
+                        // the visit date is in the past
+                        + "  and visitDate.question = '%2$s'"
+                        + "  and visitDate.value < '%4$s'"
+                        // the visit is not submitted
+                        + "  and submitted.question = '%3$s'"
+                        + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
+                        // exclude the Visit Information form itself
+                        + "  and dataForm.questionnaire <> '%1$s'"
+                        + " option (index tag cards)",
+                    visitInformationQuestionnaire, time, submitted,
+                    ZonedDateTime.now().minusDays(delay)
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx")), clinicPath),
+                    Query.JCR_SQL2);
+                resources.forEachRemaining(form -> {
+                    try {
+                        resolver.delete(form);
+                    } catch (final PersistenceException e) {
+                        LOGGER.warn("Failed to delete expired form {}: {}", form.getPath(), e.getMessage());
+                    }
+                });
+                resolver.commit();
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to fetch forms: {}", e.getMessage());
         } catch (final LoginException e) {
             LOGGER.warn("Invalid setup, service rights not set up for the expired forms cleanup task");
         } catch (final PersistenceException e) {

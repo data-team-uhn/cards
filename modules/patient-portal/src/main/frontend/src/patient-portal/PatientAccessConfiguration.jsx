@@ -34,7 +34,7 @@ export const PATIENT_ACCESS_CONFIG_PATH = "/Survey/PatientAccess";
 export const DEFAULT_PATIENT_ACCESS_CONFIG = {
     tokenlessAuthEnabled: false,
     PIIAuthRequired: false,
-    allowedPostVisitCompletionTime: "0",
+    daysRelativeToEventWhileSurveyIsValid: "0",
     draftLifetime: "-1"
 };
 
@@ -62,7 +62,7 @@ function PatientAccessConfiguration() {
   const LABELS = {
     tokenlessAuthEnabled: "Patients can answer surveys without a personalized link",
     PIIAuthRequired: "Patients must confirm their identity by providing their date of birth and either MRN or HCN",
-    allowedPostVisitCompletionTime: [
+    daysRelativeToEventWhileSurveyIsValid: [
       "Relatively to the associated event, patients can fill out surveys within:",
       "Use a negative number when patient responses are due a number of days before the event, 0 for the day of the event, and a positive number when their responses are expected after the event."
     ],
@@ -141,7 +141,7 @@ function PatientAccessConfiguration() {
           <List>
             { renderConfigCheckbox("tokenlessAuthEnabled") }
             { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
-            { renderConfigInput("allowedPostVisitCompletionTime", "days") }
+            { renderConfigInput("daysRelativeToEventWhileSurveyIsValid", "days") }
             { renderConfigInput("draftLifetime", "days") }
           </List>
       </AdminConfigScreen>

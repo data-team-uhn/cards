@@ -407,7 +407,9 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             "time", p -> {
                 try {
                     Calendar limit = (Calendar) p.getDate().clone();
-                    limit.add(Calendar.DATE, this.patientAccessConfiguration.getAllowedPostVisitCompletionTime());
+                    final int tokenLifetime =
+                        this.patientAccessConfiguration.getDaysRelativeToEventWhileSurveyIsValid(visitInformationForm);
+                    limit.add(Calendar.DATE, tokenLifetime);
                     atMidnight(limit);
                     return Calendar.getInstance().before(limit);
                 } catch (RepositoryException e) {

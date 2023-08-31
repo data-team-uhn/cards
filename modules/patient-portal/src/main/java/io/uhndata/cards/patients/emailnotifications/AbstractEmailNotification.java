@@ -22,7 +22,6 @@ package io.uhndata.cards.patients.emailnotifications;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,15 +117,19 @@ abstract class AbstractEmailNotification
             while (appointmentResults.hasNext()) {
                 Node appointmentDate = appointmentResults.nextNode();
                 Node appointmentForm = this.formUtils.getForm(appointmentDate);
-                if (appointmentForm == null || isSurveyCompleted(appointmentForm, session)) {
+                // This will have to be changed later,
+                // since we will have different visit information forms for the same subject
+                Node visitSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient/Visit");
+                if (appointmentForm == null || AppointmentUtils.isVisitSurveyComplete(this.formUtils, visitSubject)) {
                     continue;
                 }
-                Node visitSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient/Visit");
+
                 // Get the Patient Subject associated with this appointment Form
                 Node patientSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient");
 
                 try {
-                    Email email = renderTemplate(template, appointmentDate, visitSubject, patientSubject, session);
+                    Email email = renderTemplate(template, appointmentDate, appointmentForm, visitSubject,
+                        patientSubject, session);
                     if (email == null) {
                         continue;
                     }
@@ -152,7 +155,7 @@ abstract class AbstractEmailNotification
 
     protected abstract String getNotificationType();
 
-    private Email renderTemplate(final EmailTemplate template, final Node appointmentDate,
+    private Email renderTemplate(final EmailTemplate template, final Node appointmentDate, final Node appointmentForm,
         final Node visitSubject, final Node patientSubject, final Session session) throws RepositoryException
     {
         String patientEmailAddress =
@@ -160,12 +163,13 @@ abstract class AbstractEmailNotification
         if (StringUtils.isBlank(patientEmailAddress)) {
             return null;
         }
+
         String patientFullName = AppointmentUtils.getPatientFullName(this.formUtils, patientSubject);
         Calendar visitDate = (Calendar) this.formUtils.getValue(appointmentDate);
         Calendar tokenExpiryDate = (Calendar) visitDate.clone();
-        tokenExpiryDate.add(
-            Calendar.DATE,
-            this.patientAccessConfiguration.getAllowedPostVisitCompletionTime());
+        final int tokenLifetime =
+            this.patientAccessConfiguration.getDaysRelativeToEventWhileSurveyIsValid(appointmentForm);
+        tokenExpiryDate.add(Calendar.DATE, tokenLifetime);
         atMidnight(tokenExpiryDate);
         final String token = this.tokenManager.create(
             "patient",
@@ -185,18 +189,6 @@ abstract class AbstractEmailNotification
         return template.getEmailBuilderForSubject(visitSubject, valuesMap, this.formUtils)
             .withRecipient(patientEmailAddress, patientFullName)
             .build();
-    }
-
-    private boolean isSurveyCompleted(final Node appointmentForm, final Session session) throws RepositoryException
-    {
-        Node surveysCompleteQuestion = session.getNode("/Questionnaires/Visit information/surveys_complete");
-        // Skip the email if there are no incomplete surveys for the patient
-        return this.formUtils
-            .findAllFormRelatedAnswers(appointmentForm, surveysCompleteQuestion,
-                EnumSet.of(FormUtils.SearchType.FORM))
-            .stream()
-            .map(n -> this.formUtils.getValue(n))
-            .anyMatch(v -> Long.valueOf(1).equals(v));
     }
 
     private void atMidnight(final Calendar c)

@@ -18,6 +18,8 @@
  */
 package io.uhndata.cards.patients.api;
 
+import javax.jcr.Node;
+
 /**
  * Configuration for how the patient can access the patient-facing UI.
  *
@@ -48,7 +50,17 @@ public interface PatientAccessConfiguration
      *
      * @return A number of days
      */
-    int getAllowedPostVisitCompletionTime();
+    int getDaysRelativeToEventWhileSurveyIsValid();
+
+    /**
+     * Returns the token lifetime associated with the clinic linked to the Subject
+     * related to the visitInformationNode Resource or default if it cannot be found.
+     *
+     * @param visitInformationForm the JCR Visit Information Node
+     *
+     * @return A number of days
+     */
+    int getDaysRelativeToEventWhileSurveyIsValid(Node visitInformationForm);
 
     /**
      * Get the configured amount of time, in days, that patient's draft responses are kept in the database and the

@@ -178,6 +178,9 @@
   // If TRUE, the email_ok question in Patient Information is ignored
   - ignoreEmailConsent (boolean)
 
+  // Specifies the token life time - number of days before expiration
+  - daysRelativeToEventWhileSurveyIsValid (double)
+
 //-----------------------------------------------------------------------------
 // The holder for all clinic mappings. This is mostly empty, but used so the
 // pagination servlet can understand it

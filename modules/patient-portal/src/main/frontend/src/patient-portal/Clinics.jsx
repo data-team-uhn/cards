@@ -38,19 +38,11 @@ function Clinics(props) {
 
   let clinicsSpecs = require('./Clinics.json');
 
-  let formattedNames = {
-    "clinicName": "ID",
-    "displayName": "Name",
-    "sidebarLabel": "Sidebar Entry",
-    "survey": "Surveys",
-    "emergencyContact": "Emergency Contact"
-  }
-
   let columns = Object.keys(clinicsSpecs).filter((stat) => !Array.isArray(clinicsSpecs[stat]))
     .map((stat) => {
       return {
         key: stat,
-        label: (stat in formattedNames) ? formattedNames[stat] : camelCaseToWords(stat),
+        label: camelCaseToWords(stat),
         format: clinicsSpecs[stat]
       };
     });
@@ -95,6 +87,13 @@ function OnboardNewClinicDialog(props) {
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let clinicsSpecs = require('./Clinics.json');
+
+  let hints = null;
+  try {
+    hints = require(`./Clinics-hints.json`);
+  } catch (e) {
+    // do nothing
+  }
 
   let reset = () => {
     // reset all fields
@@ -157,7 +156,7 @@ function OnboardNewClinicDialog(props) {
             {
               // We don't want to load the Fields component until we are fully initialized
               // since otherwise the default values will be empty and cannot be assigned
-              initialized && <Fields data={{}} JSON={clinicsSpecs} edit />
+              initialized && <Fields data={{}} JSON={clinicsSpecs} hints={hints} edit />
             }
           </Grid>
         </DialogContent>
