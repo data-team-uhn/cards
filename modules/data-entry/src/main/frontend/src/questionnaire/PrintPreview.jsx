@@ -226,7 +226,7 @@ function PrintPreview(props) {
         }
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={onClose}>Close</Button>
+          { onClose && <Button variant="outlined" onClick={onClose}>Close</Button> }
           <Button variant="contained" color="primary" onClick={handlePrint} disabled={!!!content}>Print</Button>
         </DialogActions>
       </Dialog>

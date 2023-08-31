@@ -76,6 +76,10 @@
         {
             "id":"io.uhndata.cards:cards-modules-vocabularies-ignore:${project.version}",
             "start-order":"25"
+        },
+        {
+            "id":"${project.groupId}:cards-embedded-view:${project.version}",
+            "start-order":"26"
         }
     ]
 }
