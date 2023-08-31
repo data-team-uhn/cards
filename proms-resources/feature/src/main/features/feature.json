@@ -47,10 +47,6 @@
     {
       "id":"${project.groupId}:proms-backend:${project.version}",
       "start-order":"26"
-    },
-    {
-      "id":"${project.groupId}:cards-embedded-homepage:${project.version}",
-      "start-order":"26"
     }
   ],
   "configurations":{

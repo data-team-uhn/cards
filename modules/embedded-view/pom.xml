@@ -26,9 +26,9 @@
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-embedded-homepage</artifactId>
+  <artifactId>cards-embedded-view</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - embedded homepage</name>
+  <name>CARDS - Embedded display of resources</name>
 
   <build>
     <plugins>

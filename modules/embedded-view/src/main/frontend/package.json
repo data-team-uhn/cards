@@ -1,13 +1,13 @@
 {
-  "name": "cards-embedded-homepage",
-  "version": "0.1.0",
-  "description": "The homepage of the CARDS project",
+  "name": "cards-embedded-view",
+  "version": "0.9-SNAPSHOT",
+  "description": "CARDS - Embedded display of resources",
   "author": "UHN DATA",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/data-team-uhn/cards.git",
-    "directory": "modules/embedded-homepage/src/main/frontend"
+    "directory": "modules/embedded-view/src/main/frontend"
   },
   "babel": {
     "presets": [
@@ -35,13 +35,10 @@
     "webpack-assets-manifest": "5.1.0"
   },
   "dependencies": {
-    "@mui/icons-material": "5.11.0",
     "@mui/material": "5.11.3",
     "@mui/styles": "5.11.2",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-router-dom": "5.2.0",
-    "prop-types": "15.8.1"
+    "react-dom": "^18.0.0"
   },
   "resolutions": {
     "@babel/runtime": "^7.21.0"

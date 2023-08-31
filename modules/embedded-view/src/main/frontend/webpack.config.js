@@ -6,7 +6,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'themeindex']: './src/embeddedThemePage/index.jsx'
+    [module_name + 'index']: './src/embeddedView/index.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
