@@ -80,6 +80,11 @@ public class ResourceToJsonAdapterFactory
             return null;
         }
         final Resource resource = (Resource) adaptable;
+        final Node node = resource.adaptTo(Node.class);
+        if (node == null) {
+            return null;
+        }
+
         // The list of processors that are enabled for the current resource serialization.
         List<ResourceJsonProcessor> enabledProcessors = setupProcessors(resource);
 
@@ -88,7 +93,6 @@ public class ResourceToJsonAdapterFactory
         Stack<String> processedNodes = new Stack<>();
 
         start(resource, enabledProcessors);
-        final Node node = resource.adaptTo(Node.class);
         JsonValue result = serializeNode(node, enabledProcessors, processedNodes);
         end(resource, enabledProcessors);
         if (result != null) {
