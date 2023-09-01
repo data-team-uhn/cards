@@ -28,7 +28,7 @@ import VariableAutocomplete from "./VariableAutocomplete";
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities.jsx";
+import DateTimeUtilities from "../questionnaire/DateTimeUtilities.jsx";
 
 // We have to import each filter dependency here to load them properly into the FilterComponentManager
 import DateFilter from "./FilterComponents/DateFilter.jsx";
@@ -41,6 +41,7 @@ import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
 import ResourceFilter from "./FilterComponents/ResourceFilter.jsx";
 import UserFilter from "./FilterComponents/UserFilter.jsx";
+
 import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
 const FILTER_URL = "/Questionnaires.filters";

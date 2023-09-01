@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
-import DateQuestionUtilities from "../../questionnaire/DateQuestionUtilities.jsx";
+import DateTimeUtilities from "../../questionnaire/DateTimeUtilities.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -47,12 +47,12 @@ const DateFilter = forwardRef((props, ref) => {
   // DefaultLabel intentionally unused, since it needs to not be passed to TextField
   const { classes, defaultLabel, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
 
-  const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(defaultValue)));
+  const [ displayedDate, setDisplayedDate ] = useState(DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(defaultValue)));
 
   // Dates should have a dateFormat, or default to "yyyy/MM/dd"
-  const dateFormat = questionDefinition["dateFormat"] || DateQuestionUtilities.VIEW_DATE_FORMAT;
-  const views = DateQuestionUtilities.getPickerViews(dateFormat);
-  const isMeridiem = DateQuestionUtilities.formatIsMeridiem(dateFormat);
+  const dateFormat = questionDefinition["dateFormat"] || DateTimeUtilities.VIEW_DATE_FORMAT;
+  const views = DateTimeUtilities.getPickerViews(dateFormat);
+  const isMeridiem = DateTimeUtilities.formatIsMeridiem(dateFormat);
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>

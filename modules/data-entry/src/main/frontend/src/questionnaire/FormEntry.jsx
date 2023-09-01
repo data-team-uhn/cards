@@ -27,8 +27,7 @@ import Information from "./Information";
 // FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
 
 import BooleanQuestion from "./BooleanQuestion";
-import DateQuestionFull from "./DateQuestionFull";
-import DateQuestionMonth from "./DateQuestionMonth";
+import DateQuestion from "./DateQuestion";
 import DateQuestionYear from "./DateQuestionYear";
 import NumberQuestion from "./NumberQuestion";
 import ChromosomeQuestion from "./ChromosomeQuestion";

@@ -19,8 +19,6 @@
 import React, { useState, useEffect } from 'react';
 import {
     Checkbox,
-    TextField,
-    Tooltip,
     FormControlLabel,
     List,
     ListItem,
@@ -29,10 +27,15 @@ import { makeStyles } from '@mui/styles';
 
 import AdminConfigScreen from "./adminDashboard/AdminConfigScreen.jsx";
 
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTime } from "luxon";
+import DateTimeUtilities from "./questionnaire/DateTimeUtilities";
+
 const useStyles = makeStyles(theme => ({
   textField: {
     minWidth: "250px",
-    paddingBottom: theme.spacing(2),
   },
 }));
 
@@ -41,32 +44,58 @@ function DowntimeWarningConfiguration() {
 
   // The configuration values
   const [ enabled, setEnabled ] = useState(false);
-  const [ fromDate, setFromDate ] = useState();
-  const [ toDate, setToDate ] = useState();
+  const [ fromDate, setFromDate ] = useState(null);
+  const [ toDate, setToDate ] = useState(null);
   const [ dateRangeIsInvalid, setDateRangeIsInvalid ] = useState(false);
 
   // Tracking unsaved changes
   const [ hasChanges, setHasChanges ] = useState();
 
-  const dateFormat = "yyyy-MM-dd hh:mm";
+  const dateFormat = "yyyy-MM-dd HH:mm";
+  const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   // Read the settings from the saved configuration
   let readDowntimeWarningSettings = (json) => {
     setEnabled(json.enabled == 'true');
-    setFromDate(json.fromDate);
-    setToDate(json.toDate);
+    json.fromDate && setFromDate(DateTime.fromFormat(json.fromDate, dateFormat));
+    json.toDate && setToDate(DateTime.fromFormat(json.toDate, dateFormat));
   }
 
   let buildConfigData = (formData) => {
     formData.append('enabled', enabled);
-    formData.append('fromDate', fromDate);
-    formData.append('toDate', toDate);
+    formData.append('fromDate', fromDate.toFormat(dateFormat));
+    formData.append('toDate', toDate.toFormat(dateFormat));
   }
 
   useEffect(() => {
     // Determine if the end date is earlier than the start date
-    setDateRangeIsInvalid(!!fromDate && !!toDate && new Date(toDate).valueOf() < new Date(fromDate).valueOf());
+    setDateRangeIsInvalid(!!fromDate && !!toDate && toDate < fromDate);
   }, [fromDate, toDate]);
+
+  useEffect(() => {
+    setHasChanges(true);
+  }, [enabled, fromDate, toDate]);
+
+  let getDateField = (label, value, onDateChange) => {
+    return (
+    <LocalizationProvider dateAdapter={AdapterLuxon}>
+      <DateTimePicker
+        format={dateFormat}
+        ampm={false}
+        label={label}
+        value={value}
+        onChange={(newValue) => {onDateChange(newValue);  setHasChanges(true); }}
+        componentsProps={{ textField: {
+                             variant: 'standard',
+                             helperText: null,
+                             InputProps: {
+				               className: classes.textField
+				             }
+                         }
+        }}
+      />
+    </LocalizationProvider>);
+  }
 
   return (
     <AdminConfigScreen
@@ -93,32 +122,10 @@ function DowntimeWarningConfiguration() {
               />
             </ListItem>
             <ListItem key="fromDate">
-              <TextField
-                variant="standard"
-                label="Start of maintenance"
-                type="datetime-local"
-                InputLabelProps={{ shrink: true }}
-                className={classes.textField}
-                onChange={(event) => { setFromDate(event.target.value); setHasChanges(true); } }
-                onBlur={(event) => setFromDate(event.target.value) }
-                placeholder={dateFormat.toLowerCase()}
-                value={fromDate || ""}
-              />
+              {getDateField("Start of maintenance", fromDate, setFromDate)}
             </ListItem>
             <ListItem key="toDate">
-              <TextField
-                variant="standard"
-                label="End of maintenance"
-                type="datetime-local"
-                InputLabelProps={{ shrink: true }}
-                className={classes.textField}
-                onChange={(event) => { setToDate(event.target.value); setHasChanges(true); } }
-                onBlur={(event) => setToDate(event.target.value) }
-                placeholder={dateFormat.toLowerCase()}
-                value={toDate || ""}
-                error={dateRangeIsInvalid}
-                helperText={dateRangeIsInvalid ? "The end date should be after the start date." : ""}
-              />
+              {getDateField("End of maintenance", toDate, setToDate)}
             </ListItem>
           </List>
     </AdminConfigScreen>

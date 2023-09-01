@@ -25,7 +25,7 @@ import NumberQuestion from "./NumberQuestion";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateQuestionUtilities from "./DateQuestionUtilities";
+import DateTimeUtilities from "./DateTimeUtilities";
 
 // Component that renders a year only date question
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -49,14 +49,14 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  />
 function DateQuestionYear(props) {
   let {existingAnswer, classes, ...rest} = props;
-  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
+  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy", minAnswers: 0, type: DateTimeUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
   return (
     <NumberQuestion
       minAnswers={minAnswers}
       maxAnswers={1}
       dataType="long"
       errorText="Please insert a valid year."
-      isRange={(type === DateQuestionUtilities.INTERVAL_TYPE)}
+      isRange={(type === DateTimeUtilities.INTERVAL_TYPE)}
       answerNodeType="cards:DateAnswer"
       valueType="Long"
       existingAnswer={existingAnswer}
@@ -68,14 +68,14 @@ function DateQuestionYear(props) {
   );
 }
 
-DateQuestionYear.propTypes = DateQuestionUtilities.PROP_TYPES;
+DateQuestionYear.propTypes = DateTimeUtilities.PROP_TYPES;
 
 const StyledDateQuestionYear = withStyles(QuestionnaireStyle)(DateQuestionYear);
 export default StyledDateQuestionYear;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date"
-    && DateQuestionUtilities.getDateType(questionDefinition.dateFormat) === DateQuestionUtilities.YEAR_DATE_TYPE)
+    && DateTimeUtilities.getDateType(questionDefinition.dateFormat) === DateTimeUtilities.YEAR_DATE_TYPE)
   {
     return [StyledDateQuestionYear, 60];
   }
