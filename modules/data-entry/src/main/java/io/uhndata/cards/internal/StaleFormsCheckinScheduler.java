@@ -62,7 +62,7 @@ public class StaleFormsCheckinScheduler
     {
         try {
             // Every 5 minutes
-            final ScheduleOptions options = this.scheduler.EXPR("*/5 * * * *");
+            final ScheduleOptions options = this.scheduler.EXPR("0 0/5 * 1/1 * ? *");
             options.name(SCHEDULER_JOB_NAME);
             options.canRunConcurrently(false);
 
