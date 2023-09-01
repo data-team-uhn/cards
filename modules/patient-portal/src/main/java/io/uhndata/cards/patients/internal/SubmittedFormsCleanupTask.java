@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.patients.internal;
+package io.uhndata.cards.patients.internal;
 
 import java.time.ZonedDateTime;
 import java.util.Iterator;

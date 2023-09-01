@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.patients.internal;
+package io.uhndata.cards.patients.internal;
 
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
@@ -40,7 +40,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * @version $Id$
  * @since 0.9.16
  */
-@Designate(ocd = SubmittedFormsCleanupScheduler.Config.class, factory = true)
+@Designate(ocd = SubmittedFormsCleanupScheduler.Config.class)
 @Component(immediate = true)
 public class SubmittedFormsCleanupScheduler
 {
@@ -63,7 +63,7 @@ public class SubmittedFormsCleanupScheduler
 
     @ObjectClassDefinition(name = "Submitted survey responses cleanup",
         description = "Automatically delete submitted survey responses older than one max age")
-    public static @interface Config
+    public @interface Config
     {
         /** Default value of how long the submissions can be kept in the database in days. */
         int MAX_AGE = 365;
