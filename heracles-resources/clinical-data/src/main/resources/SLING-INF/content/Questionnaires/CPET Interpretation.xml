@@ -2142,16 +2142,44 @@
 				</property>
 			</node>
 			<node>
-				<name>Bike</name>
+				<name>Bike 50 rpm</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Bike</value>
+					<value>Bike 50 rpm</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Bike</value>
+					<value>Bike 50 rpm</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Bike 100 rpm</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Bike 100 rpm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Bike 100 rpm</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Bike 150 rpm</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Bike 150 rpm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Bike 150 rpm</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -2166,6 +2194,77 @@
 				<property>
 					<name>value</name>
 					<value>Low-Intensity</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Manual</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Manual</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Manual</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>cpet_test_type</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Cardiopulmonary Assessment Type</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list+input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Usual Care</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Usual Care</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Usual Care</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Apple protocol</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Apple protocol</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Apple protocol</value>
 					<type>String</type>
 				</property>
 			</node>
