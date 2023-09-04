@@ -88,6 +88,20 @@
 				</property>
 			</node>
 			<node>
+				<name>lost_followup</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Lost to follow-up</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>lost_followup</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
 				<name>withdrawn_study</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
@@ -112,6 +126,20 @@
 				<property>
 					<name>value</name>
 					<value>withdrawn_subject</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>death</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Death</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>death</value>
 					<type>String</type>
 				</property>
 			</node>
