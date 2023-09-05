@@ -168,6 +168,40 @@
             <value>UHN IC</value>
             <type>String</type>
         </property>
+        <property>
+            <name>daysRelativeToEventWhileSurveyIsValid</name>
+            <value>60</value>
+            <type>Double</type>
+        </property>
+    </node>
+    <node>
+        <name>-432465813</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>UHN-EDIC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>EDIC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>UHN Emergency and Integrated Care Program</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>UHN ED-IC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>daysRelativeToEventWhileSurveyIsValid</name>
+            <value>60</value>
+            <type>Double</type>
+        </property>
     </node>
     <node>
         <name>-432335117</name>
@@ -191,6 +225,40 @@
             <name>sidebarLabel</name>
             <value>UHN IP-IC</value>
             <type>String</type>
+        </property>
+        <property>
+            <name>daysRelativeToEventWhileSurveyIsValid</name>
+            <value>60</value>
+            <type>Double</type>
+        </property>
+    </node>
+    <node>
+        <name>1012196242</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>UHN-EDIPIC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>EDIPIC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>UHN Emergency, Inpatient and Integrated Care Program</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>UHN ED-IP-IC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>daysRelativeToEventWhileSurveyIsValid</name>
+            <value>60</value>
+            <type>Double</type>
         </property>
     </node>
 </node>

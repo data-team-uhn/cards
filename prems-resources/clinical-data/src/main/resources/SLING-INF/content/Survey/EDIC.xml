@@ -18,7 +18,7 @@
 -->
 
 <node>
-    <name>IC</name>
+    <name>EDIC</name>
     <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
     <property>
         <name>name</name>
@@ -40,6 +40,54 @@ We appreciate any insights you can provide and will look to make improvements ba
         <value>True</value>
         <type>Boolean</type>
     </property>
+    <node>
+        <name>ED Survey</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/OED</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>26</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "mrn",
+      "label": "MRN",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Discharge date",
+      "format": "date:yyyy-MM-dd HH:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "oed_9",
+      "label": "Overall experience",
+      "link" : "string"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
+    </node>
     <node>
         <name>IC Survey</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
