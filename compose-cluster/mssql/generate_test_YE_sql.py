@@ -81,6 +81,8 @@ CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
     DX_NAME varchar(1024) NULL,
     ID varchar(255) NULL,
     PAT_ENC_CSN_ID varchar(255) NULL,
+    UHN_ICC_STATUS varchar(255) NULL,
+    UHN_ICC_PATIENT_ELIGIBILITY varchar(255) NULL,
     PATIENT_CLASS varchar(255) NULL,
 );
 
@@ -193,13 +195,17 @@ for i in range(args.n):
     # LENGTH_OF_STAY_DAYS
     insertion_values['LENGTH_OF_STAY_DAYS'] = random.randint(1, 15)
 
+    # Integrated Care eligibility
+    insertion_values['UHN_ICC_STATUS'] = random.choices([None, 'New Patient'], [1, 2])[0]
+    insertion_values['UHN_ICC_PATIENT_ELIGIBILITY'] = random.choices([None, 'Enrolled'], [1, 2])[0]
+
     # Identifier columns
     insertion_values['ID'] = i
     insertion_values['PAT_ENC_CSN_ID'] = i
 
     args.file.write("INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]")
-    args.file.write("\t(ID, PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, [MYCHART STATUS], DEATH_DATE, DISCH_DISPOSITION, LEVEL_OF_CARE, ED_IP_TRANSFER_YN, LENGTH_OF_STAY_DAYS, PATIENT_CLASS)\n")
+    args.file.write("\t(ID, PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, [MYCHART STATUS], DEATH_DATE, DISCH_DISPOSITION, LEVEL_OF_CARE, ED_IP_TRANSFER_YN, LENGTH_OF_STAY_DAYS, UHN_ICC_STATUS, UHN_ICC_PATIENT_ELIGIBILITY, PATIENT_CLASS)\n")
     args.file.write("\tVALUES\n")
-    args.file.write("\t({ID:07d}, {PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART STATUS}, {DEATH_DATE}, {DISCH_DISPOSITION}, {LEVEL_OF_CARE}, {ED_IP_TRANSFER_YN}, {LENGTH_OF_STAY_DAYS}, 'Inpatient')\n".format(**convertToSqlType(insertion_values)))
+    args.file.write("\t({ID:07d}, {PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART STATUS}, {DEATH_DATE}, {DISCH_DISPOSITION}, {LEVEL_OF_CARE}, {ED_IP_TRANSFER_YN}, {LENGTH_OF_STAY_DAYS}, {UHN_ICC_STATUS}, {UHN_ICC_PATIENT_ELIGIBILITY}, 'Inpatient')\n".format(**convertToSqlType(insertion_values)))
 
 args.file.close()
