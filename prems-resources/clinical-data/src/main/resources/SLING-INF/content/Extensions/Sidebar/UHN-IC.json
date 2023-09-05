@@ -4,5 +4,5 @@
   "cards:extensionName": "UHN IC",
   "cards:targetURL": "/content.html/Dashboard/-1792626676",
   "cards:icon": "asset:patient-portal.clinicIcon.js",
-  "cards:defaultOrder": 25
+  "cards:defaultOrder": 15
 }

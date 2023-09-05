@@ -40,11 +40,6 @@ We appreciate any insights you can provide and will look to make improvements ba
         <value>True</value>
         <type>Boolean</type>
     </property>
-    <property>
-        <name>conflictMode</name>
-        <value>any</value>
-        <type>String</type>
-    </property>
     <node>
         <name>Inpatient Survey</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
