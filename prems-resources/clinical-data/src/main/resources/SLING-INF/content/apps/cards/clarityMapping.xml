@@ -368,6 +368,34 @@
                 <type>String</type>
               </property>
             </node>
+            <node>
+              <name>00000016</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>UHN_ICC_STATUS</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000017</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>UHN_ICC_PATIENT_ELIGIBILITY</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
           </node>
         </node>
       </node>
