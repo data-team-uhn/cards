@@ -94,32 +94,59 @@ public class EmailTemplate
     /** Name of the child node holding the fallback plain text template. */
     public static final String TEXT_TEMPLATE_NODE = "bodyTemplate.txt";
 
+    /** The node where elements common to all email templates can be placed. */
+    public static final String COMMON_TEMPLATE_NODE = "/apps/cards/mailTemplates/";
+
     /** The node where inline attachments common to all email templates can be placed. */
-    public static final String COMMON_ATTACHMENTS_NODE = "/apps/cards/mailTemplates/commonAttachments";
+    public static final String COMMON_ATTACHMENTS_NODE = COMMON_TEMPLATE_NODE + "commonAttachments";
+
+    /**
+     * An optional child node of the email template, holding a prefix for the HTML body template. If present, this will
+     * override the common HTML header and will be added before the HTML body template of each email template.
+     */
+    public static final String HTML_BODY_HEADER = "bodyTemplate.header.html";
 
     /**
      * An optional node holding a common prefix for the HTML body template. If present, this will be added before the
      * HTML body template of each email template.
      */
-    public static final String COMMON_HTML_BODY_HEADER = "/apps/cards/mailTemplates/bodyTemplate.header.html";
+    public static final String COMMON_HTML_BODY_HEADER = COMMON_TEMPLATE_NODE + HTML_BODY_HEADER;
+
+    /**
+     * An optional child node of the email template, holding a suffix for the HTML body template. If present, this will
+     * override the common HTML footer and will be added after the HTML body template of each email template.
+     */
+    public static final String HTML_BODY_FOOTER = "bodyTemplate.footer.html";
 
     /**
      * An optional node holding a common suffix for the HTML body template. If present, this will be added after the
      * HTML body template of each email template.
      */
-    public static final String COMMON_HTML_BODY_FOOTER = "/apps/cards/mailTemplates/bodyTemplate.footer.html";
+    public static final String COMMON_HTML_BODY_FOOTER = COMMON_TEMPLATE_NODE + HTML_BODY_FOOTER;
+
+    /**
+     * An optional child node of the email template, holding a prefix for the plain text body template. If present, this
+     * will override the common plain text header and will be added before the body template of each email template.
+     */
+    public static final String TEXT_BODY_HEADER = "bodyTemplate.header.txt";
 
     /**
      * An optional node holding a common prefix for the plain text body template. If present, this will be added before
      * the text body template of each email template.
      */
-    public static final String COMMON_TEXT_BODY_HEADER = "/apps/cards/mailTemplates/bodyTemplate.header.txt";
+    public static final String COMMON_TEXT_BODY_HEADER = COMMON_TEMPLATE_NODE + TEXT_BODY_HEADER;
+
+    /**
+     * An optional child node of the email template, holding a suffix for the plain text body template. If present, this
+     * will override the common plain text footer and will be added after the body template of each email template.
+     */
+    public static final String TEXT_BODY_FOOTER = "bodyTemplate.footer.txt";
 
     /**
      * An optional node holding a common suffix for the plain text body template. If present, this will be added after
      * the text body template of each email template.
      */
-    public static final String COMMON_TEXT_BODY_FOOTER = "/apps/cards/mailTemplates/bodyTemplate.footer.txt";
+    public static final String COMMON_TEXT_BODY_FOOTER = COMMON_TEMPLATE_NODE + TEXT_BODY_FOOTER;
 
     private String senderAddress;
 
@@ -586,42 +613,51 @@ public class EmailTemplate
             }
         }
 
+        @SuppressWarnings("CyclomaticComplexity")
         private void readTemplateAttachments(final Node template, final ResourceResolver resolver)
             throws RepositoryException, IOException
         {
             final Session session = template.getSession();
-            String htmlBodyHeader = "";
-            String htmlBodyFooter = "";
-            String textBodyHeader = "";
-            String textBodyFooter = "";
-            if (session.nodeExists(COMMON_HTML_BODY_HEADER)) {
-                htmlBodyHeader = readFileAsString(session.getNode(COMMON_HTML_BODY_HEADER));
-            }
-            if (session.nodeExists(COMMON_HTML_BODY_FOOTER)) {
-                htmlBodyFooter = readFileAsString(session.getNode(COMMON_HTML_BODY_FOOTER));
-            }
-            if (session.nodeExists(COMMON_TEXT_BODY_HEADER)) {
-                textBodyHeader = readFileAsString(session.getNode(COMMON_TEXT_BODY_HEADER));
-            }
-            if (session.nodeExists(COMMON_TEXT_BODY_FOOTER)) {
-                textBodyFooter = readFileAsString(session.getNode(COMMON_TEXT_BODY_FOOTER));
-            }
+            String htmlBodyHeader = session.nodeExists(COMMON_HTML_BODY_HEADER)
+                ? readFileAsString(session.getNode(COMMON_HTML_BODY_HEADER)) : "";
+            String htmlBody = "";
+            String htmlBodyFooter = session.nodeExists(COMMON_HTML_BODY_FOOTER)
+                ? readFileAsString(session.getNode(COMMON_HTML_BODY_FOOTER)) : "";
+            String textBodyHeader = session.nodeExists(COMMON_TEXT_BODY_HEADER)
+                ? readFileAsString(session.getNode(COMMON_TEXT_BODY_HEADER)) : "";
+            String textBody = "";
+            String textBodyFooter = session.nodeExists(COMMON_TEXT_BODY_FOOTER)
+                ? readFileAsString(session.getNode(COMMON_TEXT_BODY_FOOTER)) : "";
             NodeIterator children = template.getNodes();
             while (children.hasNext()) {
                 Node child = children.nextNode();
-                if (EmailTemplate.HTML_TEMPLATE_NODE.equals(child.getName())) {
-                    withHtmlTemplate(htmlBodyHeader + readFileAsString(child) + htmlBodyFooter);
+                if (EmailTemplate.HTML_BODY_HEADER.equals(child.getName())) {
+                    htmlBodyHeader = readFileAsString(child);
+                } else if (EmailTemplate.HTML_TEMPLATE_NODE.equals(child.getName())) {
+                    htmlBody = readFileAsString(child);
+                } else if (EmailTemplate.HTML_BODY_FOOTER.equals(child.getName())) {
+                    htmlBodyFooter = readFileAsString(child);
+                } else if (EmailTemplate.TEXT_BODY_HEADER.equals(child.getName())) {
+                    textBodyHeader = readFileAsString(child);
                 } else if (EmailTemplate.TEXT_TEMPLATE_NODE.equals(child.getName())) {
-                    withTextTemplate(textBodyHeader + readFileAsString(child) + textBodyFooter);
+                    textBody = readFileAsString(child);
+                } else if (EmailTemplate.TEXT_BODY_FOOTER.equals(child.getName())) {
+                    textBodyFooter = readFileAsString(child);
                 } else if (child.isNodeType("nt:file")) {
                     withInlineAttachment(child.getName(), getMimeType(child, resolver), readFileAsBytes(child));
                 }
             }
+            withHtmlTemplate(htmlBodyHeader + htmlBody + htmlBodyFooter);
+            withTextTemplate(textBodyHeader + textBody + textBodyFooter);
         }
 
         private String readFileAsString(final Node node) throws IOException, RepositoryException
         {
-            return IOUtils.toString(getFileStream(node), StandardCharsets.UTF_8);
+            try {
+                return IOUtils.toString(getFileStream(node), StandardCharsets.UTF_8);
+            } catch (RepositoryException e) {
+                return "";
+            }
         }
 
         private byte[] readFileAsBytes(final Node node) throws IOException, RepositoryException
