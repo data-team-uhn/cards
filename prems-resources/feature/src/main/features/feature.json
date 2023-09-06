@@ -305,6 +305,17 @@
       "priority": 20,
       "conditions": ["DISCH_DEPT_NAME in PM-PALLIATIVE CARE ONCOLOGY CLINIC; TW-PALLIATIVE CARE CLINIC; TG-PALLIATIVE CARE; PM-16P PALLIATIVE CARE"]
     },
+    // Patients eligible for Integrated Care surveys should have a different status
+    // The default status is set at priority 30 by DischargedFiller
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredGenericMapper~IntegratedCareStatusInProgress":{
+      "priority": 35,
+      "column": "STATUS",
+      "value": "in-progress",
+      "conditions": [
+        "UHN_ICC_STATUS = New Patient",
+        "UHN_ICC_PATIENT_ELIGIBILITY = Enrolled"
+      ]
+    },
     // Assign patients from Toronto Rehab to the Rehab cohort
     "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-Rehab":{
       "priority": 40,
