@@ -33,6 +33,16 @@
 		<type>Reference</type>
 	</property>
 	<property>
+		<name>requireCompletion</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>hideAnswerInstructions</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>paginate</name>
 		<value>True</value>
 		<type>Boolean</type>
