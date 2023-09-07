@@ -21,10 +21,13 @@ import React, { useEffect, useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 
 import {
+  Alert,
   Breadcrumbs,
   Button,
   Chip,
   CircularProgress,
+  DialogActions,
+  DialogContent,
   Grid,
   IconButton,
   List,
@@ -47,6 +50,7 @@ import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import ResponsiveDialog from "../components/ResponsiveDialog";
 import ErrorDialog from "../components/ErrorDialog";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
@@ -113,6 +117,11 @@ function Form (props) {
   let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
   let [ disableProgress, setDisableProgress ] = useState();
 
+  let [ showCountdownModal, setShowCountdownModal ] = useState(false);
+  let [ showSessionExpiredAlert, setShowSessionExpiredAlert ] = useState(false);
+  const TWENTYSEVEN_MINS_IN_MS = 27 * 60 * 1000;
+  let [ countDown, setCountDown ] = useState(TWENTYSEVEN_MINS_IN_MS + new Date().getTime());
+
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
   // will notify the `Form` component when the final page was displayed by setting `endReached` to `true`
@@ -162,7 +171,41 @@ function Form (props) {
       });
     }
   }, [isEdit]);
-  
+
+  useEffect(() => {
+    // when opening a form or when done saving
+    if (!isEdit || countDown < 1000 || lastSaveTimestamp && saveInProgress) return;
+
+    // start a countdown recalculated every second
+    const interval = setInterval(() => {
+      let timeLeft = countDown - new Date().getTime();
+      if (timeLeft >= 0) {
+        setCountDown(timeLeft);
+      } else {
+        clearInterval(interval);
+      }
+    }, 1000);
+    // When the form is closed, stop the timer completely
+    return () => clearInterval(interval);
+  }, [isEdit, lastSaveTimestamp, saveInProgress]);
+
+  // display a modal alert that the session will expire in 2 minutes
+  useEffect(() => {
+    if (!isEdit) return;
+    if (!showCountdownModal && countDown > 0 && countDown < 3 * 60 * 1000) {
+      setShowCountdownModal(true);
+    }
+    // After 2 minutes pass and the countdown reaches less than a second time interval
+    if (showCountdownModal && countDown < 1000) {
+      // Do a save & checkin for the current form
+      saveDataWithCheckin(undefined, () => {
+        // On success, display an alert modal
+        setShowCountdownModal(false);
+        setShowSessionExpiredAlert(true);
+      });
+    }
+  }, [countDown]);
+
   useEffect(() => {
     // If `requireCompletion` is set, stop any advancing progress until check that all required 
     // questions are completed
@@ -257,6 +300,8 @@ function Form (props) {
             .catch(err => console.log("The form status flags could not be updated after saving"));
         }
         onSuccess?.();
+        // Every time the user saves, restart the countdown timer for 27 minutes from now
+        !showCountdownModal && setCountDown(TWENTYSEVEN_MINS_IN_MS + new Date().getTime());
         // If the form is required to be complete, re-fetch it after save to see if user can progress
         if (requireCompletion) {
             // Disable progress until we figure out if it's ok to proceed
@@ -466,6 +511,15 @@ function Form (props) {
                 </Popover>
             </div>
   )
+  
+  let getExpiryMessage = () => {
+    let minutes = Math.floor((countDown % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((countDown % (1000 * 60)) / 1000);
+    let minutesMessage = minutes > 0 ? minutes == 1 ? '1 minute' : '2 minutes' : '';
+    let secondsMessage = minutes == 0 ? `${seconds} seconds` : ''; 
+    let message = `Your session will expire in ${minutesMessage}${secondsMessage}. You should save your answers now to keep your session active and prevent unsaved data loss.`;
+    return message;
+  }
 
   return (
     <form action={data?.["@path"]}
@@ -482,6 +536,7 @@ function Form (props) {
           ref={formNode}
           className={classNames?.join(' ')}
       >
+      {showSessionExpiredAlert && <Alert severity="error">Your session expired, please refresh to keep editing</Alert>}
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
@@ -618,6 +673,40 @@ function Form (props) {
           <Typography variant="body1" paragraph>Time of the last successful save: {DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
         }
       </ErrorDialog>
+      <ResponsiveDialog title="Session will expire soon" open={showCountdownModal} onClose={onClose}>
+        <DialogContent dividers>
+          <Typography variant="body1" paragraph>{getExpiryMessage()}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+                setShowCountdownModal(false);
+                // trigger a normal save
+                // ...make sure that on paginated forms this doesn’t go to the next page
+                const cashedRequireCompletion = requireCompletion;
+                cashedRequireCompletion && setRequireCompletion(false);
+                saveData(undefined, false, () => {
+                    cashedRequireCompletion && setRequireCompletion(cashedRequireCompletion);
+                });}}
+            variant="outlined"
+            >
+            Stay on this page
+          </Button>
+          <Button
+            onClick={() => {
+                // Redirect the user to the /
+                // ...but only after the Form has been saved and checked-in
+                saveDataWithCheckin(undefined, () => {
+                    removeWindowHandlers && removeWindowHandlers();
+                    props.history.push("/");
+                });}}
+            variant="contained"
+            color="primary"
+            >
+            Save and exit
+          </Button>
+        </DialogActions>
+      </ResponsiveDialog>
     </form>
   );
 };
