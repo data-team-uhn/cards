@@ -21,7 +21,6 @@ import React, { useEffect, useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 
 import {
-  Alert,
   Breadcrumbs,
   Button,
   Chip,
@@ -59,7 +58,6 @@ import ResourceHeader from "./ResourceHeader.jsx";
 import { getFirstIncompleteQuestionEl } from "./FormUtilities.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
-import SessionExpiredAlertModal from "./SessionExpiredAlertModal.jsx";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -116,12 +114,6 @@ function Form (props) {
   let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
   let [ disableProgress, setDisableProgress ] = useState();
 
-  let [ showCountdownModal, setShowCountdownModal ] = useState(false);
-  let [ showSessionExpiredAlert, setShowSessionExpiredAlert ] = useState(false);
-  let [ autoCheckinTimer, setAutoCheckinTimer ] = useState();
-  const SESSION_EXPIRATION_DELAY = 2 * 60 * 1000;
-  let [ countDown, setCountDown ] = useState(SESSION_EXPIRATION_DELAY);
-
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
   // will notify the `Form` component when the final page was displayed by setting `endReached` to `true`
@@ -171,42 +163,6 @@ function Form (props) {
       });
     }
   }, [isEdit]);
-
-  useEffect(() => {
-    // launch timer when opening a form or when done saving
-    if (!isEdit || showSessionExpiredAlert || lastSaveTimestamp && saveInProgress) return;
-    timer && clearTimeout(timer);
-    autoCheckinTimer && clearInterval(autoCheckinTimer);
-
-    // set the timer in 27 minutes to launch the checkin
-    const timer = setTimeout(() => {
-	  let countDownStartTime = new Date().getTime();
-	  // display a modal alert that the session will expire in 2 minutes
-	  setShowCountdownModal(true);
-
-      // start a countdown recalculated every second
-	  let interval = setInterval(() => {
-	      let timeLeft = countDownStartTime + countDown - new Date().getTime();
-	      if (timeLeft >= 0) {
-	        setCountDown(timeLeft);
-	        //  save & checkin at minute 29
-		    if (timeLeft < 1000) {
-			  setShowCountdownModal(false);
-			  clearTimeout(timer);
-			  clearInterval(interval);
-		      // Do a save & checkin for the current form
-		      saveDataWithCheckin(undefined, () => {
-		        // On success, display an alert modal
-		        setShowSessionExpiredAlert(true);
-		      });
-		    }
-	      }
-	    }, 1000);
-	    setAutoCheckinTimer(interval);
-    }, 27 * 60 * 1000);
-
-    return () => {clearTimeout(timer); clearInterval(autoCheckinTimer);}
-  }, [isEdit, lastSaveTimestamp, saveInProgress]);
 
   useEffect(() => {
     // If `requireCompletion` is set, stop any advancing progress until check that all required 
@@ -302,9 +258,6 @@ function Form (props) {
             .catch(err => console.log("The form status flags could not be updated after saving"));
         }
         onSuccess?.();
-        // Every time the user saves, restart the countdown timer
-        autoCheckinTimer && clearInterval(autoCheckinTimer);
-        setCountDown(SESSION_EXPIRATION_DELAY);
         // If the form is required to be complete, re-fetch it after save to see if user can progress
         if (requireCompletion) {
             // Disable progress until we figure out if it's ok to proceed
@@ -667,10 +620,11 @@ function Form (props) {
         }
       </ErrorDialog>
       <SessionExpiryWarningModal
-        open={showCountdownModal}
-        countDown={countDown}
+        isEdit={isEdit}
+        lastSaveTimestamp={lastSaveTimestamp}
+        saveInProgress={saveInProgress}
+        saveDataWithCheckin={saveDataWithCheckin}
         onStay={() => {
-                setShowCountdownModal(false);
                 // trigger a normal save
                 // ...make sure that on paginated forms this doesn’t go to the next page
                 const cashedRequireCompletion = requireCompletion;
@@ -686,7 +640,6 @@ function Form (props) {
                     props.history.push("/");
                 });}}
         />
-        <SessionExpiredAlertModal open={showSessionExpiredAlert} />
     </form>
   );
 };

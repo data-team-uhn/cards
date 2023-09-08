@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button, DialogActions, DialogContent, Typography } from "@mui/material";
 
@@ -24,13 +24,21 @@ import ResponsiveDialog from "../components/ResponsiveDialog";
 /**
  * Component that displays the session expiry info.
  *
- * @param {bool} open Whether or not this dialog is open
- * @param {func} onStay Callback for when the user decides to stay on the page
- * @param {func} onExit Callback for when the user decides to save and exit
- * @param {int} countDown Countdown time in milliseconds
+ * @param {bool} isEdit Whether or not form is in edit mode
+ * @param {time} lastSaveTimestamp last form save timestamp
+ * @param {bool} saveInProgress Whether or not form saving is in progress
+ * @param {func} onStay Callback for when the user decides to stay on the form edit page
+ * @param {func} onExit Callback for when the user decides to save and exit editting form
+ * @param {func} saveDataWithCheckin Callback for when to save and checkin form after countdown is timedout
  */
 function SessionExpiryWarningModal(props) {
-  const { open, countDown, onStay, onExit } = props;
+  const { isEdit, lastSaveTimestamp, saveInProgress, onStay, onExit, saveDataWithCheckin } = props;
+
+  let [ showCountdownModal, setShowCountdownModal ] = useState(false);
+  let [ showSessionExpiredAlert, setShowSessionExpiredAlert ] = useState(false);
+  let [ autoCheckinTimer, setAutoCheckinTimer ] = useState();
+  const SESSION_EXPIRATION_DELAY = 2 * 60 * 1000;
+  let [ countDown, setCountDown ] = useState(SESSION_EXPIRATION_DELAY);
 
   const diffString = (division, result, count) => {
     if (count > 0) {
@@ -39,6 +47,45 @@ function SessionExpiryWarningModal(props) {
         : division));
     }
   }
+
+  useEffect(() => {
+    // launch timer when opening a form or when done saving
+    if (showSessionExpiredAlert || !isEdit || lastSaveTimestamp && saveInProgress) return;
+    
+    // Restart the countdown timer
+    setCountDown(SESSION_EXPIRATION_DELAY);
+    timer && clearTimeout(timer);
+    autoCheckinTimer && clearInterval(autoCheckinTimer);
+
+    // set the timer in 27 minutes to launch the checkin
+    const timer = setTimeout(() => {
+	  let countDownStartTime = new Date().getTime();
+	  // display a modal alert that the session will expire in 2 minutes
+	  setShowCountdownModal(true);
+
+      // start a countdown recalculated every second
+	  let interval = setInterval(() => {
+	      let timeLeft = countDownStartTime + countDown - new Date().getTime();
+	      if (timeLeft >= 0) {
+	        setCountDown(timeLeft);
+	        //  save & checkin at minute 29
+		    if (timeLeft < 1000) {
+			  setShowCountdownModal(false);
+			  clearTimeout(timer);
+			  clearInterval(interval);
+		      // Do a save & checkin for the current form
+		      saveDataWithCheckin(undefined, () => {
+		        // On success, display an alert modal
+		        setShowSessionExpiredAlert(true);
+		      });
+		    }
+	      }
+	    }, 1000);
+	    setAutoCheckinTimer(interval);
+    }, 27 * 60 * 1000);
+
+    return () => {clearTimeout(timer); clearInterval(autoCheckinTimer);}
+  }, [isEdit, lastSaveTimestamp, saveInProgress]);
 
   const getExpiryMessage = () => {
     let result = "";
@@ -51,33 +98,49 @@ function SessionExpiryWarningModal(props) {
     diffString("seconds", diffStrings, seconds);
 
     if (diffStrings.length > 0) {
-      result = "Your session will expire in " + diffStrings[0] + ". You should save your answers now to keep your session active and prevent unsaved data loss.";
+      result = "Your session will expire in " + diffStrings[0] + ".";
     }
 
     return result;
   }
 
   return (
-      <ResponsiveDialog title="Session will expire soon" open={open}>
+    <>
+      <ResponsiveDialog title={getExpiryMessage()} open={showCountdownModal}>
         <DialogContent dividers>
-          <Typography variant="body1" paragraph>{getExpiryMessage()}</Typography>
+          <Typography variant="body1" paragraph>You should save your answers now to keep your session active and prevent data loss.</Typography>
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => onStay()}
-            variant="outlined"
-            >
-            Stay on this page
-          </Button>
-          <Button
             onClick={() => onExit()}
-            variant="contained"
+            variant="outlined"
             color="primary"
             >
             Save and exit
           </Button>
+          <Button
+            onClick={() => {setShowCountdownModal(false); onStay();}}
+            variant="contained"
+            >
+            Stay on this page
+          </Button>
         </DialogActions>
       </ResponsiveDialog>
+      <ResponsiveDialog title="Session expired" open={showSessionExpiredAlert}>
+        <DialogContent dividers>
+          <Typography variant="body1" paragraph>Your session has expired, please refresh to keep editing</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => location.reload()}
+            variant="contained"
+            color="primary"
+            >
+            Refresh
+          </Button>
+        </DialogActions>
+      </ResponsiveDialog>
+    </>
   );
 }
 
