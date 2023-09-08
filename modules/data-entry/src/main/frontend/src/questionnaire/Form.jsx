@@ -622,15 +622,8 @@ function Form (props) {
       { isEdit && <SessionExpiryWarningModal
                     lastSaveTimestamp={lastSaveTimestamp}
                     saveDataWithCheckin={saveDataWithCheckin}
-                    onStay={() => {
-                            // trigger a normal save
-                            // ...make sure that on paginated forms this doesn’t go to the next page
-                            const cashedRequireCompletion = requireCompletion;
-                            cashedRequireCompletion && setRequireCompletion(false);
-                            saveData(undefined, false, () => {
-                                cashedRequireCompletion && setRequireCompletion(cashedRequireCompletion);
-                            });}}
-                     onExit={() => {
+                    onStay={() => saveData(undefined, false)}
+                    onExit={() => {
                             // Redirect the user to the /
                             // ...but only after the Form has been saved and checked-in
                             saveDataWithCheckin(undefined, () => {
