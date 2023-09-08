@@ -97,7 +97,7 @@ function SessionExpiryWarningModal(props) {
     diffString("seconds", diffStrings, seconds);
 
     if (diffStrings.length > 0) {
-      result = "Your session will expire in " + diffStrings[0] + ".";
+      result = "Your session will expire in " + diffStrings.join(' ');
     }
 
     return result;
@@ -127,7 +127,7 @@ function SessionExpiryWarningModal(props) {
       </ResponsiveDialog>
       <ResponsiveDialog title="Session expired" open={showSessionExpiredAlert}>
         <DialogContent dividers>
-          <Typography variant="body1" paragraph>Your session has expired, please refresh to keep editing</Typography>
+          <Typography variant="body1" paragraph>Your session has expired. Please refresh this page to keep editing.</Typography>
         </DialogContent>
         <DialogActions>
           <Button
