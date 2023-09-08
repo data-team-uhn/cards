@@ -625,11 +625,9 @@ function Form (props) {
                     onStay={() => saveData(undefined, false)}
                     onExit={() => {
                             // Redirect the user to the /
-                            // ...but only after the Form has been saved and checked-in
-                            saveDataWithCheckin(undefined, () => {
-                                removeWindowHandlers && removeWindowHandlers();
-                                props.history.push("/");
-                            });}}
+                           // Navigating away will trigger a save with checkin
+                            props.history.push("/");
+                            }}
                     /> }
     </form>
   );
