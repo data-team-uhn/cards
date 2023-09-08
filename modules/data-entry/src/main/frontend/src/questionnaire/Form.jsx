@@ -619,27 +619,25 @@ function Form (props) {
           <Typography variant="body1" paragraph>Time of the last successful save: {DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
         }
       </ErrorDialog>
-      <SessionExpiryWarningModal
-        isEdit={isEdit}
-        lastSaveTimestamp={lastSaveTimestamp}
-        saveInProgress={saveInProgress}
-        saveDataWithCheckin={saveDataWithCheckin}
-        onStay={() => {
-                // trigger a normal save
-                // ...make sure that on paginated forms this doesn’t go to the next page
-                const cashedRequireCompletion = requireCompletion;
-                cashedRequireCompletion && setRequireCompletion(false);
-                saveData(undefined, false, () => {
-                    cashedRequireCompletion && setRequireCompletion(cashedRequireCompletion);
-                });}}
-         onExit={() => {
-                // Redirect the user to the /
-                // ...but only after the Form has been saved and checked-in
-                saveDataWithCheckin(undefined, () => {
-                    removeWindowHandlers && removeWindowHandlers();
-                    props.history.push("/");
-                });}}
-        />
+      { isEdit && <SessionExpiryWarningModal
+                    lastSaveTimestamp={lastSaveTimestamp}
+                    saveDataWithCheckin={saveDataWithCheckin}
+                    onStay={() => {
+                            // trigger a normal save
+                            // ...make sure that on paginated forms this doesn’t go to the next page
+                            const cashedRequireCompletion = requireCompletion;
+                            cashedRequireCompletion && setRequireCompletion(false);
+                            saveData(undefined, false, () => {
+                                cashedRequireCompletion && setRequireCompletion(cashedRequireCompletion);
+                            });}}
+                     onExit={() => {
+                            // Redirect the user to the /
+                            // ...but only after the Form has been saved and checked-in
+                            saveDataWithCheckin(undefined, () => {
+                                removeWindowHandlers && removeWindowHandlers();
+                                props.history.push("/");
+                            });}}
+                    /> }
     </form>
   );
 };

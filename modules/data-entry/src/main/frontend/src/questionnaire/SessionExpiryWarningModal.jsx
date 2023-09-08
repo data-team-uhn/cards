@@ -24,15 +24,13 @@ import ResponsiveDialog from "../components/ResponsiveDialog";
 /**
  * Component that displays the session expiry info.
  *
- * @param {bool} isEdit Whether or not form is in edit mode
  * @param {time} lastSaveTimestamp last form save timestamp
- * @param {bool} saveInProgress Whether or not form saving is in progress
  * @param {func} onStay Callback for when the user decides to stay on the form edit page
  * @param {func} onExit Callback for when the user decides to save and exit editting form
  * @param {func} saveDataWithCheckin Callback for when to save and checkin form after countdown is timedout
  */
 function SessionExpiryWarningModal(props) {
-  const { isEdit, lastSaveTimestamp, saveInProgress, onStay, onExit, saveDataWithCheckin } = props;
+  const { lastSaveTimestamp, onStay, onExit, saveDataWithCheckin } = props;
 
   let [ showCountdownModal, setShowCountdownModal ] = useState(false);
   let [ showSessionExpiredAlert, setShowSessionExpiredAlert ] = useState(false);
@@ -48,10 +46,11 @@ function SessionExpiryWarningModal(props) {
     }
   }
 
+  // launch timer when opening a form or when done saving
   useEffect(() => {
-    // launch timer when opening a form or when done saving
-    if (showSessionExpiredAlert || !isEdit || lastSaveTimestamp && saveInProgress) return;
-    
+    // do not set timer if session is already expired
+    if (showSessionExpiredAlert) return;
+
     // Restart the countdown timer
     setCountDown(SESSION_EXPIRATION_DELAY);
     timer && clearTimeout(timer);
@@ -59,33 +58,33 @@ function SessionExpiryWarningModal(props) {
 
     // set the timer in 27 minutes to launch the checkin
     const timer = setTimeout(() => {
-	  let countDownStartTime = new Date().getTime();
-	  // display a modal alert that the session will expire in 2 minutes
-	  setShowCountdownModal(true);
+      let countDownStartTime = new Date().getTime();
+      // display a modal alert that the session will expire in 2 minutes
+      setShowCountdownModal(true);
 
       // start a countdown recalculated every second
-	  let interval = setInterval(() => {
-	      let timeLeft = countDownStartTime + countDown - new Date().getTime();
-	      if (timeLeft >= 0) {
-	        setCountDown(timeLeft);
-	        //  save & checkin at minute 29
-		    if (timeLeft < 1000) {
-			  setShowCountdownModal(false);
-			  clearTimeout(timer);
-			  clearInterval(interval);
-		      // Do a save & checkin for the current form
-		      saveDataWithCheckin(undefined, () => {
-		        // On success, display an alert modal
-		        setShowSessionExpiredAlert(true);
-		      });
-		    }
-	      }
-	    }, 1000);
-	    setAutoCheckinTimer(interval);
+      let interval = setInterval(() => {
+          let timeLeft = countDownStartTime + countDown - new Date().getTime();
+          if (timeLeft >= 0) {
+            setCountDown(timeLeft);
+            //  save & checkin at minute 29
+            if (timeLeft < 1000) {
+              setShowCountdownModal(false);
+              clearTimeout(timer);
+              clearInterval(interval);
+              // Do a save & checkin for the current form
+              saveDataWithCheckin(undefined, () => {
+                // On success, display an alert modal
+                setShowSessionExpiredAlert(true);
+              });
+            }
+          }
+        }, 1000);
+        setAutoCheckinTimer(interval);
     }, 27 * 60 * 1000);
 
     return () => {clearTimeout(timer); clearInterval(autoCheckinTimer);}
-  }, [isEdit, lastSaveTimestamp, saveInProgress]);
+  }, [lastSaveTimestamp]);
 
   const getExpiryMessage = () => {
     let result = "";
