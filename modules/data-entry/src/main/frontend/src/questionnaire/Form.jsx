@@ -631,16 +631,14 @@ function Form (props) {
           <Typography variant="body1" paragraph>Time of the last successful save: {DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
         }
       </ErrorDialog>
-      { isEdit && <SessionExpiryWarningModal
-                    lastSaveTimestamp={lastSaveTimestamp}
-                    saveDataWithCheckin={saveDataWithCheckin}
-                    onStay={() => setAutosaveOn(true)}
-                    onExit={() => {
-                            // Redirect the user to the /
-                           // Navigating away will trigger a save with checkin
-                            props.history.push("/");
-                            }}
-                    /> }
+      { isEdit &&
+        <SessionExpiryWarningModal
+          lastSaveTimestamp={lastSaveTimestamp}
+          saveDataWithCheckin={saveDataWithCheckin}
+          onStay={() => setAutosaveOn(true)}
+          onExit={() => props.history.push("/")}
+        />
+      }
     </form>
   );
 };
