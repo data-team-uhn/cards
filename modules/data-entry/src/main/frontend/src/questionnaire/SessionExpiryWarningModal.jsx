@@ -24,19 +24,19 @@ import ResponsiveDialog from "../components/ResponsiveDialog";
 /**
  * Component that displays the session expiry info.
  *
- * @param {time} lastSaveTimestamp last form save timestamp
+ * @param {time} lastActivityTimestamp last activity timestamp
  * @param {func} onStay Callback for when the user decides to stay on the form edit page
  * @param {func} onExit Callback for when the user decides to save and exit editting form
- * @param {func} saveDataWithCheckin Callback for when to save and checkin form after countdown is timedout
+ * @param {func} onExpired Callback for when the countdown reaches 0 and the session expired
  */
 function SessionExpiryWarningModal(props) {
-  const { lastSaveTimestamp, onStay, onExit, saveDataWithCheckin } = props;
+  const { lastActivityTimestamp, onStay, onExit, onExpired } = props;
 
   let [ showCountdownModal, setShowCountdownModal ] = useState(false);
   let [ showSessionExpiredAlert, setShowSessionExpiredAlert ] = useState(false);
-  let [ autoCheckinTimer, setAutoCheckinTimer ] = useState();
-  const SESSION_EXPIRATION_DELAY = 2 * 60 * 1000;
-  let [ countDown, setCountDown ] = useState(SESSION_EXPIRATION_DELAY);
+  let [ countDownTimer, setCountDownTimer ] = useState();
+  const COUNTDOWN_LENGTH = 2 * 60 * 1000;
+  let [ countDown, setCountDown ] = useState(COUNTDOWN_LENGTH);
 
   const diffString = (division, result, count) => {
     if (count > 0) {
@@ -52,9 +52,9 @@ function SessionExpiryWarningModal(props) {
     if (showSessionExpiredAlert) return;
 
     // Restart the countdown timer
-    setCountDown(SESSION_EXPIRATION_DELAY);
+    setCountDown(COUNTDOWN_LENGTH);
     timer && clearTimeout(timer);
-    autoCheckinTimer && clearInterval(autoCheckinTimer);
+    countDownTimer && clearInterval(countDownTimer);
 
     // set the timer in 27 minutes to launch the checkin
     const timer = setTimeout(() => {
@@ -67,24 +67,21 @@ function SessionExpiryWarningModal(props) {
           let timeLeft = countDownStartTime + countDown - new Date().getTime();
           if (timeLeft >= 0) {
             setCountDown(timeLeft);
-            //  save & checkin at minute 29
             if (timeLeft < 1000) {
+              // Session expired
+              onExpired?.();
               setShowCountdownModal(false);
+              setShowSessionExpiredAlert(true);
               clearTimeout(timer);
               clearInterval(interval);
-              // Do a save & checkin for the current form
-              saveDataWithCheckin(undefined, () => {
-                // On success, display an alert modal
-                setShowSessionExpiredAlert(true);
-              });
             }
           }
         }, 1000);
-        setAutoCheckinTimer(interval);
+        setCountDownTimer(interval);
     }, 27 * 60 * 1000);
 
-    return () => {clearTimeout(timer); clearInterval(autoCheckinTimer);}
-  }, [lastSaveTimestamp]);
+    return () => {clearTimeout(timer); clearInterval(countDownTimer);}
+  }, [lastActivityTimestamp]);
 
   const getExpiryMessage = () => {
     let result = "";

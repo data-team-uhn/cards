@@ -88,7 +88,7 @@ function Form (props) {
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ lastSaveTimestamp, setLastSaveTimestamp ] = useState(null);
   let [ statusFlags, setStatusFlags ] = useState([]);
-  let [ autosaveOn, setAutosaveOn ] = useState();
+  let [ autosaveOptions, setAutosaveOptions ] = useState();
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
@@ -123,13 +123,16 @@ function Form (props) {
   }, [paginationEnabled]);
 
   // Handle autosave:
-  // When the flag is turned on, trigger a background save
+  // When autosave options are defined, trigger a background save
   useEffect(() => {
-    if (autosaveOn) saveData(undefined, false);
-  }, [autosaveOn]);
-  // When the save is completed (successfully or not), turn the autosave flag off
+    if (typeof(autosaveOptions) == "object") {
+      let { event, performCheckin, onSuccess } = autosaveOptions;
+      saveData(event, performCheckin, onSuccess);
+    }
+  }, [autosaveOptions]);
+  // When the save is completed (successfully or not), clear the autosave options
   useEffect(() => {
-    if (saveInProgress === false) setAutosaveOn(false);
+    if (saveInProgress === false) setAutosaveOptions(undefined);
   }, [saveInProgress]);
 
   // When end was reached and save was successful, call `onDone` if applicable
@@ -271,7 +274,7 @@ function Form (props) {
         onSuccess?.();
         // If the form is required to be complete, re-fetch it after save to see if user can progress
         // However, skip any completion checks if this is an autosave
-        if (requireCompletion && !autosaveOn) {
+        if (requireCompletion && !autosaveOptions) {
             // Disable progress until we figure out if it's ok to proceed
             setDisableProgress(true);
             fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
@@ -633,10 +636,10 @@ function Form (props) {
       </ErrorDialog>
       { isEdit &&
         <SessionExpiryWarningModal
-          lastSaveTimestamp={lastSaveTimestamp}
-          saveDataWithCheckin={saveDataWithCheckin}
-          onStay={() => setAutosaveOn(true)}
+          lastActivityTimestamp={lastSaveTimestamp}
+          onStay={() => setAutosaveOptions({})}
           onExit={() => props.history.push("/")}
+          onExpired={() => setAutosaveOptions({performCheckin: true})}
         />
       }
     </form>
