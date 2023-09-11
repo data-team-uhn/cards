@@ -33,6 +33,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.version.OnParentVersionAction;
 import javax.jcr.version.VersionManager;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -192,7 +193,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
             // Delete all of our pending nodes, checking out the parent to avoid version conflict issues
             for (final Node n : this.nodesToDelete.get()) {
                 final Node versionableAncestor = findVersionableAncestor(n);
-                if (versionableAncestor != null && !versionableAncestor.isCheckedOut()) {
+                if (!isNonVersionable(n) && versionableAncestor != null && !versionableAncestor.isCheckedOut()) {
                     nodesToCheckin.add(versionableAncestor);
                     versionManager.checkout(versionableAncestor.getPath());
                 }
@@ -616,6 +617,11 @@ public class DeleteServlet extends SlingAllMethodsServlet
             return ancestor;
         }
         return null;
+    }
+
+    private boolean isNonVersionable(final Node n) throws RepositoryException
+    {
+        return n.getDefinition().getOnParentVersion() == OnParentVersionAction.IGNORE;
     }
 
     /**
