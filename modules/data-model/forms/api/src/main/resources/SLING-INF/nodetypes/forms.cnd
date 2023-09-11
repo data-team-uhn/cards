@@ -804,7 +804,7 @@
   // Children
 
   // A link to another form
-  + formReferences (cards:FormReferences)
+  + formReferences (cards:FormReferences) IGNORE
 
   // The answers and answer sections recorded in this form.
   + * (cards:Answer, cards:AnswerSection) = cards:Answer
@@ -856,7 +856,7 @@
   // Properties:
 
   // A list of referenced forms
-  + * (cards:FormReference) = cards:FormReference
+  + * (cards:FormReference) = cards:FormReference IGNORE
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/FormReferences" mandatory autocreated protected
@@ -871,7 +871,7 @@
   // The form being referenced.
   - reference (reference) mandatory nofulltext
 
-  + referenceProperties (cards:ReferenceProperties) = cards:ReferenceProperties mandatory autocreated
+  + referenceProperties (cards:ReferenceProperties) = cards:ReferenceProperties mandatory autocreated IGNORE
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/FormReference" mandatory autocreated protected
@@ -898,4 +898,4 @@
   - linkback (BOOLEAN) = false mandatory autocreated
 
   // The properties that the linkback should be created with if required
-  + linkbackProperties (cards:ReferenceProperties)
+  + linkbackProperties (cards:ReferenceProperties) IGNORE

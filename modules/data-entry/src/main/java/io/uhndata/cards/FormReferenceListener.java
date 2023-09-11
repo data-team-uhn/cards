@@ -127,11 +127,9 @@ public class FormReferenceListener implements ResourceChangeListener
 
         Node formToReference = this.formUtils.getForm(existingFormReference);
 
-        boolean checkinNeeded = checkoutIfNeeded(formToModify);
-
         try {
             Node formReferences = getOrCreateFormReferencesNode(formToModify);
-            Node newFormReference = formReferences.addNode(UUID.randomUUID().toString());
+            Node newFormReference = formReferences.addNode(UUID.randomUUID().toString(), "cards:FormReference");
             newFormReference.setProperty("reference", formToReference);
 
             Node existingProperties = existingFormReference.getNode(REFERENCE_PROPERTIES_NAME);
@@ -140,8 +138,6 @@ public class FormReferenceListener implements ResourceChangeListener
                 copyNodeLinkbackProperties(newProperties, existingProperties.getNode("linkbackProperties"));
                 newProperties.setPrimaryType("cards:ReferenceProperties");
             }
-
-            newFormReference.setPrimaryType("cards:FormReference");
         } catch (RepositoryException e) {
             LOGGER.error("Failed to create form reference to {}", formToReference.getPath(), e);
         }
@@ -149,13 +145,8 @@ public class FormReferenceListener implements ResourceChangeListener
         try {
             formToModify.getSession().save();
         } catch (VersionException e) {
-            // Node was checked in in the background, try to checkout and save again
             formToModify.getSession().refresh(true);
-            checkinNeeded = checkoutIfNeeded(formToModify);
             formToModify.getSession().save();
-        }
-        if (checkinNeeded) {
-            checkinIfNeeded(formToModify);
         }
     }
 
@@ -165,8 +156,7 @@ public class FormReferenceListener implements ResourceChangeListener
         if (node.hasNode(FORM_REFERENCES_NAME)) {
             result = node.getNode(FORM_REFERENCES_NAME);
         } else {
-            result = node.addNode(FORM_REFERENCES_NAME);
-            result.setPrimaryType(FORM_REFERENCES_CARDS_TYPE);
+            result = node.addNode(FORM_REFERENCES_NAME, FORM_REFERENCES_CARDS_TYPE);
         }
         return result;
     }
@@ -186,22 +176,6 @@ public class FormReferenceListener implements ResourceChangeListener
             }
         } catch (Exception e) {
             LOGGER.error("Unable to copy properties to new form reference", e);
-        }
-    }
-
-    private boolean checkoutIfNeeded(final Node form) throws RepositoryException
-    {
-        if (!form.isCheckedOut()) {
-            form.getSession().getWorkspace().getVersionManager().checkout(form.getPath());
-            return true;
-        }
-        return false;
-    }
-
-    private void checkinIfNeeded(final Node form) throws RepositoryException
-    {
-        if (form.isCheckedOut()) {
-            form.getSession().getWorkspace().getVersionManager().checkin(form.getPath());
         }
     }
 }

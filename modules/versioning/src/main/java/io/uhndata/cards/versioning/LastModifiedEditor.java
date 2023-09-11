@@ -21,6 +21,7 @@ import java.util.Calendar;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.OnParentVersionAction;
 
@@ -102,7 +103,7 @@ public class LastModifiedEditor extends DefaultEditor
     @Override
     public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
-        if ("jcr:system".equals(name)) {
+        if ("jcr:system".equals(name) || this.isChildNodeNonVersionable(name)) {
             return null;
         }
         return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name),
@@ -113,7 +114,7 @@ public class LastModifiedEditor extends DefaultEditor
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        if ("jcr:system".equals(name)) {
+        if ("jcr:system".equals(name) || this.isChildNodeNonVersionable(name)) {
             return null;
         }
         return new LastModifiedEditor(this.currentNodeBuilder.getChildNode(name),
@@ -124,6 +125,9 @@ public class LastModifiedEditor extends DefaultEditor
     @Override
     public Editor childNodeDeleted(String name, NodeState before) throws CommitFailedException
     {
+        if (this.isDeletedChildNodeNonVersionable(name)) {
+            return null;
+        }
         handleAnswerChange();
         return null;
     }
@@ -150,11 +154,9 @@ public class LastModifiedEditor extends DefaultEditor
         if (isSystemProperty(propertyName)) {
             return true;
         }
-        if (this.currentNodeBuilder instanceof MemoryNodeBuilder) {
-            final String nodePath = ((MemoryNodeBuilder) this.currentNodeBuilder).getPath();
-            final Session thisSession = this.currentResourceResolver.adaptTo(Session.class);
-            try {
-                final Node thisNode = thisSession.getNode(nodePath);
+        try {
+            Node thisNode = getCurrentNode();
+            if (thisNode != null) {
                 int opv = -1;
                 for (PropertyDefinition pd : thisNode.getPrimaryNodeType().getPropertyDefinitions()) {
                     if (pd.getName().equals(propertyName)) {
@@ -168,11 +170,54 @@ public class LastModifiedEditor extends DefaultEditor
                     opv = thisNode.getProperty(propertyName).getDefinition().getOnParentVersion();
                 }
                 return opv == OnParentVersionAction.IGNORE;
-            } catch (RepositoryException e) {
-                return false;
             }
+        } catch (RepositoryException e) {
+            return false;
         }
         return false;
+    }
+
+    private boolean isChildNodeNonVersionable(String childName)
+    {
+        try {
+            Node childNode = getCurrentNode().getNode(childName);
+            if (childNode != null) {
+                boolean result = childNode.getDefinition().getOnParentVersion() == OnParentVersionAction.IGNORE;
+                return result;
+            }
+        } catch (RepositoryException e) {
+            return false;
+        }
+        return false;
+    }
+
+    private boolean isDeletedChildNodeNonVersionable(String childName)
+    {
+        // Attempt to determine if the deleted child node does not need versioning
+        try {
+            NodeDefinition[] childNodeDefinitions = getCurrentNode().getPrimaryNodeType().getChildNodeDefinitions();
+            for (NodeDefinition definition : childNodeDefinitions) {
+                if (childName.equals(definition.getName())
+                    && definition.getOnParentVersion() == OnParentVersionAction.IGNORE) {
+                    // Found a non versionable child node definition with a matching name to the deleted node.
+                    return true;
+                }
+            }
+        } catch (RepositoryException e) {
+            return false;
+        }
+        // Default to false if no matching child node type was found
+        return false;
+    }
+
+    private Node getCurrentNode() throws RepositoryException
+    {
+        if (this.currentNodeBuilder instanceof MemoryNodeBuilder) {
+            final String nodePath = ((MemoryNodeBuilder) this.currentNodeBuilder).getPath();
+            final Session thisSession = this.currentResourceResolver.adaptTo(Session.class);
+            return thisSession.getNode(nodePath);
+        }
+        return null;
     }
 
     private boolean isSystemProperty(final String propertyName)
