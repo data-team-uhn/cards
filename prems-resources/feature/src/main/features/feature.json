@@ -56,6 +56,12 @@
       ]
     },
 
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~prems":{
+      "user.mapping":[
+        "io.uhndata.cards.prems-backend:VisitFormsPreparation=[patient-visit-backend]"
+      ]
+    },
+
     // Enable the Survey Tracker
     "io.uhndata.cards.patients.surveytracker.SurveyTracker":{
       "trackSubmissions": true,
