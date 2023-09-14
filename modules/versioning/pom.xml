@@ -31,6 +31,11 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+      </plugin>
+
       <!-- This is an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -69,6 +74,10 @@
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.servlets.post</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.commons.scheduler</artifactId>
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>

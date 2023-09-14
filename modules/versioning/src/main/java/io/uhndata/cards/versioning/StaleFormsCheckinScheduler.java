@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.internal;
+package io.uhndata.cards.versioning;
 
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
