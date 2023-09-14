@@ -82,7 +82,7 @@
         "io.uhndata.cards.data-model-forms-impl:referenceAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:maxFormsOfTypePerSubjectValidator=[sling-readall]",
         "io.uhndata.cards.data-model-forms-impl:requiredSubjectTypesValidator=[sling-readall]",
-        "io.uhndata.cards.internal:staleFormsCheckin=[autocheckin]"
+        "io.uhndata.cards.dataentry:staleFormsCheckin=[autocheckin]"
       ]
     }
   }
