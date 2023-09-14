@@ -81,6 +81,7 @@ argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard 
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
 argparser.add_argument('--custom_env_file', help='Enable a custom file with environment variables')
 argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4proms, cards4lfs, etc...')
+argparser.add_argument('--external_cards_project', help='Run a CARDS project not defined in this repository by specifying the file system path to it')
 argparser.add_argument('--demo', help='Enable the Demo Banner, Upgrade Marker Flag, and Demo Forms', action='store_true')
 argparser.add_argument('--demo_banner', help='Enable only the Demo Banner', action='store_true')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
@@ -395,6 +396,14 @@ def getCardsApplicationName(project_name):
 
   # If all else fails, use the generic CARDS name
   return "CARDS"
+
+def getExternalProjectCodeName(external_project_path):
+  with open(os.path.join(external_project_path, 'project_code.txt'), 'r') as f:
+    return f.readline().rstrip()
+
+def getExternalProjectFullName(external_project_path):
+  with open(os.path.join(external_project_path, 'project_name.txt'), 'r') as f:
+    return f.readline().rstrip()
 
 def getWiredTigerCacheSizeGB(mongo_node_count=1):
   total_system_memory_bytes = psutil.virtual_memory().total
@@ -714,7 +723,14 @@ if args.debug:
   newListIfEmpty(yaml_obj, 'services', 'cardsinitial', 'ports').append("127.0.0.1:5005:5005")
 
 if args.cards_project:
-  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_PROJECT={}".format(args.cards_project))
+  if args.external_cards_project:
+    print("Ignoring --cards_project argument as --external_cards_project takes precedence")
+  else:
+    yaml_obj['services']['cardsinitial']['environment'].append("CARDS_PROJECT={}".format(args.cards_project))
+
+if args.external_cards_project:
+  yaml_obj['services']['cardsinitial']['volumes'].append("{}:/external_project:ro".format(args.external_cards_project))
+  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_PROJECT={}".format(getExternalProjectCodeName(args.external_cards_project)))
 
 if args.composum:
   yaml_obj['services']['cardsinitial']['environment'].append("DEV=true")
@@ -866,11 +882,18 @@ if ENABLE_NCR:
   yaml_obj['services']['proxy']['depends_on'].append('neuralcr')
 
 #Add the appropriate CARDS logo (eg. DATAPRO, HERACLES, etc...) for the selected project
-shutil.copyfile(getCardsProjectLogoPath(args.cards_project), "./proxy/proxyerror/logo.png")
+if args.external_cards_project:
+  shutil.copyfile(os.path.join(args.external_cards_project, "project_logo.png"), "./proxy/proxyerror/logo.png")
+else:
+  shutil.copyfile(getCardsProjectLogoPath(args.cards_project), "./proxy/proxyerror/logo.png")
 
 #Specify the Application Name of the CARDS project to the proxy
 yaml_obj['services']['proxy']['environment'] = []
-yaml_obj['services']['proxy']['environment'].append("CARDS_APP_NAME={}".format(getCardsApplicationName(args.cards_project)))
+if args.external_cards_project:
+  yaml_obj['services']['proxy']['environment'].append("CARDS_APP_NAME={}".format(getExternalProjectFullName(args.external_cards_project)))
+else:
+  yaml_obj['services']['proxy']['environment'].append("CARDS_APP_NAME={}".format(getCardsApplicationName(args.cards_project)))
+
 yaml_obj['services']['proxy']['environment'].append("WEB_PORT_USER_ROOT_REDIRECT={}".format(args.web_port_user_root_redirect))
 
 if SSL_PROXY:
@@ -987,12 +1010,13 @@ if args.mssql:
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_PASSWORD=testPassword_')
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_ENCRYPT=false')
   yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_SCHEMA=path')
-  if args.cards_project == 'cards4prems':
-    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS')
-    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=HOSP_DISCHARGE_DTTM')
-  elif args.cards_project == 'cards4proms':
-    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=PatientVisitActivity_for_DATA-PRO')
-    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=ENCOUNTER_DATE')
+  if not args.cards_external_project:
+    if args.cards_project == 'cards4prems':
+      yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS')
+      yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=HOSP_DISCHARGE_DTTM')
+    elif args.cards_project == 'cards4proms':
+      yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=PatientVisitActivity_for_DATA-PRO')
+      yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=ENCOUNTER_DATE')
   if args.expose_mssql:
     yaml_obj['services']['mssql']['ports'] = ['127.0.0.1:{}:1433'.format(args.expose_mssql)]
 

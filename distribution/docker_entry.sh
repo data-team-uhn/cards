@@ -43,6 +43,7 @@ PROJECT_ARTIFACTID=$1
 PROJECT_VERSION=$2
 
 VALID_CARDS_PROJECTS="||cards4kids|cards4lfs|cards4proms|cards4prems|cards4heracles|"
+VALID_CARDS_PROJECTS="${VALID_CARDS_PROJECTS}$(cat /external_project/project_code.txt | head -n 1 | tr -d '\n')|"
 echo "${VALID_CARDS_PROJECTS}" | grep -q "|${CARDS_PROJECT}|" || { echo "Invalid project specified - defaulting to generic CARDS."; unset CARDS_PROJECT; }
 
 featureFlagString=""
