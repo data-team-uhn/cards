@@ -28,7 +28,7 @@ import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy } from "./SubjectIdentifier";
+import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy, getHomepageLink } from "./SubjectIdentifier";
 import MaterialReactTable from 'material-react-table';
 import { Box } from '@mui/material';
 
@@ -313,7 +313,7 @@ function SubjectHeader(props) {
                />
             </div>
   );
-  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true));
+  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true) || [getHomepageLink(subject?.data)]);;
 
   return (
     subject?.data &&

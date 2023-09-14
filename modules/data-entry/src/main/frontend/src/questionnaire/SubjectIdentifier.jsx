@@ -26,7 +26,7 @@ function defaultCreator (node) {
 
 // Extract the subject id from the subject path
 // returns null if the parameter is not a valid subject path (expected format: Subjects/<id>)
-function getHomepageLink (subjectNode) {
+export function getHomepageLink (subjectNode) {
   let props = defaultCreator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`});
   return (<Link {...props} underline="hover">{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
 }
