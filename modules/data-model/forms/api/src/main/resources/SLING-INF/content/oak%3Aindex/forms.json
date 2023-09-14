@@ -406,6 +406,14 @@
                     "type": "Date",
                     "jcr:primaryType": "nt:unstructured"
                 },
+                "lastCheckedOut": {
+                    "name": "jcr:lastCheckedOut",
+                    "ordered": true,
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "type": "Date",
+                    "jcr:primaryType": "nt:unstructured"
+                },
                 "statusFlags": {
                     "name": "statusFlags",
                     "propertyIndex": true,

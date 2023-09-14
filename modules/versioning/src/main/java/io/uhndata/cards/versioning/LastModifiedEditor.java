@@ -26,6 +26,7 @@ import javax.jcr.version.OnParentVersionAction;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
+import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.plugins.memory.MemoryNodeBuilder;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -71,7 +72,11 @@ public class LastModifiedEditor extends DefaultEditor
     @Override
     public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
     {
-        propertyAdded(after);
+        if ("jcr:isCheckedOut".equals(after.getName()) && after.getValue(Type.BOOLEAN)) {
+            this.currentNodeBuilder.setProperty("jcr:lastCheckedOut", Calendar.getInstance());
+        } else {
+            propertyAdded(after);
+        }
     }
 
     @Override
