@@ -35,7 +35,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * Schedule the check in of the forms that haven't been modified in more than 30 minutes.
  *
  * @version $Id$
- * @since 0.9.16
+ * @since 0.9.17
  */
 @Component(immediate = true)
 public class StaleFormsCheckinScheduler

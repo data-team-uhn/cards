@@ -42,11 +42,10 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * Periodically check in forms that haven't been modified in more than 30 minutes.
  *
  * @version $Id$
- * @since 0.9.16
+ * @since 0.9.17
  */
 public class StaleFormsCheckinTask implements Runnable
 {
-
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(StaleFormsCheckinTask.class);
 
@@ -90,7 +89,7 @@ public class StaleFormsCheckinTask implements Runnable
                     final Node formNode = form.adaptTo(Node.class);
                     formNode.getSession().getWorkspace().getVersionManager().checkin(formNode.getPath());
                 } catch (RepositoryException e) {
-                    LOGGER.warn("Failed to check in a form that haven't been modified in more than 30 minutes {}: {}",
+                    LOGGER.warn("Failed to check in a form that hasn't been modified in more than 30 minutes {}: {}",
                         form.getPath(), e.getMessage());
                 }
             });
