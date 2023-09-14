@@ -22,7 +22,6 @@ package io.uhndata.cards.internal;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -58,7 +57,7 @@ public class StaleFormsCheckinScheduler
     private Scheduler scheduler;
 
     @Activate
-    protected void activate(final ComponentContext componentContext) throws Exception
+    protected void activate() throws Exception
     {
         try {
             // Every 5 minutes
