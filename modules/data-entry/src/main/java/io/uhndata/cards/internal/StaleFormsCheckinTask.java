@@ -73,7 +73,7 @@ public class StaleFormsCheckinTask implements Runnable
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "staleFormsCheckin"))) {
             this.rrp.push(resolver);
             mustPopResolver = true;
-            final VersionManager vm = resolver.adaptTo(Session.class).getWorkspace().getVersionManager();
+            final VersionManager versionManager = resolver.adaptTo(Session.class).getWorkspace().getVersionManager();
 
             // Query:
             final Iterator<Resource> resources = resolver.findResources(String.format(
@@ -89,7 +89,7 @@ public class StaleFormsCheckinTask implements Runnable
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {
-                    vm.checkin(form.getPath());
+                    versionManager.checkin(form.getPath());
                 } catch (RepositoryException e) {
                     LOGGER.warn("Failed to check in a form that hasn't been modified in more than 30 minutes {}: {}",
                         form.getPath(), e.getMessage());
