@@ -80,8 +80,10 @@ public class StaleFormsCheckinTask implements Runnable
                 // select the data forms
                 "select distinct dataForm.* from [cards:Form] as dataForm"
                     + " where"
-                    // form is checked out and stale for the last 30 minutes
-                    + " dataForm.[jcr:isCheckedOut] = true and dataForm.[jcr:lastModified] < '%s'",
+                    // form is checked out
+                    + " dataForm.[jcr:isCheckedOut] = true"
+                    // form is stale for the last 30 minutes
+                    + " and dataForm.[jcr:lastModified] < '%s'",
                 ZonedDateTime.now().minusMinutes(30)
                     .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))),
                 Query.JCR_SQL2);
