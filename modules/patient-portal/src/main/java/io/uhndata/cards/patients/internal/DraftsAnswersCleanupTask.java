@@ -103,8 +103,8 @@ public class DraftsAnswersCleanupTask implements Runnable
                     + "  from [cards:Form] as dataForm"
                     // belonging to a visit
                     + "  inner join [cards:Form] as visitInformation on visitInformation.subject = dataForm.subject"
-                    + "    inner join [cards:BooleanAnswer] as submitted on"
-                    + "      submitted.form = visitInformation.[jcr:uuid]"
+                    + "    inner join [cards:BooleanAnswer] as submitted"
+                    + "      on submitted.form = visitInformation.[jcr:uuid]"
                     + " where"
                     // link to the correct Visit Information questionnaire
                     + "  visitInformation.questionnaire = '%1$s'"
