@@ -24,12 +24,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.query.Query;
+import javax.jcr.version.VersionManager;
 
 import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -73,6 +73,7 @@ public class StaleFormsCheckinTask implements Runnable
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "staleFormsCheckin"))) {
             this.rrp.push(resolver);
             mustPopResolver = true;
+            final VersionManager vm = resolver.adaptTo(Session.class).getWorkspace().getVersionManager();
 
             // Query:
             final Iterator<Resource> resources = resolver.findResources(String.format(
@@ -86,18 +87,17 @@ public class StaleFormsCheckinTask implements Runnable
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {
-                    final Node formNode = form.adaptTo(Node.class);
-                    formNode.getSession().getWorkspace().getVersionManager().checkin(formNode.getPath());
+                    vm.checkin(form.getPath());
                 } catch (RepositoryException e) {
                     LOGGER.warn("Failed to check in a form that hasn't been modified in more than 30 minutes {}: {}",
                         form.getPath(), e.getMessage());
                 }
             });
-            resolver.commit();
         } catch (LoginException e) {
             LOGGER.warn("Invalid setup, service rights not set up for checkin stale forms task");
-        } catch (PersistenceException e) {
-            LOGGER.warn("Failed to checkin forms that haven't been modified in more than 30 minutes: {}", e.getMessage());
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to checkin forms that haven't been modified in more than 30 minutes: {}",
+                e.getMessage());
         } finally {
             if (mustPopResolver) {
                 this.rrp.pop();
