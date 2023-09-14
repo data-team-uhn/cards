@@ -115,6 +115,8 @@ function Form (props) {
   let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
   let [ disableProgress, setDisableProgress ] = useState();
 
+  const ENTRIES_VALUE = 1;
+
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
   // will notify the `Form` component when the final page was displayed by setting `endReached` to `true`
@@ -524,10 +526,11 @@ function Form (props) {
           {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).length > 1 ?
             <>
               <br/>
-              {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).map(([key, value]) => formReferenceDisplay(value[1]))}
+              {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).map(([key, value]) => formReferenceDisplay(value[ENTRIES_VALUE]))}
             </>
             :
-            formReferenceDisplay(Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType'])[0][1])
+            // Display the first (and only) formReference
+            formReferenceDisplay(Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType'])[0][ENTRIES_VALUE])
           }
         </Typography>
       )

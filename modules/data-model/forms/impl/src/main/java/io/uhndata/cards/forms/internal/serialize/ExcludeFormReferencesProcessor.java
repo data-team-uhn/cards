@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.heracles.internal.serialize;
+package io.uhndata.cards.forms.internal.serialize;
 
 import java.util.function.Function;
 
