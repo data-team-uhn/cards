@@ -89,6 +89,14 @@ function SessionExpiryWarningModal(props) {
     !open && countdownTimer && clearInterval(countdownTimer);
   }, [open, countdownTimer]);
 
+  // prevent the default window confirmation dialog on user leaving the page
+  useEffect(() => {
+	open && window.addEventListener("beforeunload", (event) => event.preventDefault());
+    return (() => {
+      window.removeEventListener("beforeunload", (event) => event.preventDefault());
+    });
+  }, [open]);
+
   const getExpiryMessage = () => {
     // Get the date difference in the format: X minutes or Y seconds
     // skipping any time division that has a value of 0
