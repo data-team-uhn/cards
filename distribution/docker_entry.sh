@@ -17,6 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# Execute the /external_project/project_init.sh script if it is present
+# and if so, load its exported environment variables
+[ -e /external_project/project_init.sh ] && source /external_project/project_init.sh
+
 #If we are simply restarting...
 [ -z $CARDS_RELOAD ] || WAIT_FOR_CARDSINIT=''
 
