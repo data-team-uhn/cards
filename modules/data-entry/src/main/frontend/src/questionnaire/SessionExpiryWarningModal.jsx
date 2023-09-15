@@ -19,7 +19,7 @@ import React, { useEffect, useState } from "react";
 
 import PropTypes from "prop-types";
 
-import { Button, DialogActions, DialogContent, Typography } from "@mui/material";
+import { Backdrop, Button, DialogActions, DialogContent, Typography } from "@mui/material";
 
 import ResponsiveDialog from "../components/ResponsiveDialog";
 
@@ -114,6 +114,11 @@ function SessionExpiryWarningModal(props) {
   }
 
   return (
+    <>
+    <Backdrop
+      sx={{ backgroundColor: (theme) => theme.palette.background.paper, zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={expired}
+    />
     <ResponsiveDialog
       open={open}
       title={ getExpiryMessage() }
@@ -153,6 +158,7 @@ function SessionExpiryWarningModal(props) {
         }
         </DialogActions>
     </ResponsiveDialog>
+    </>
   );
 }
 
