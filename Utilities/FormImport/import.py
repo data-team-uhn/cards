@@ -18,6 +18,7 @@
 #
 
 from optparse import Option
+import argparse
 import os
 import enum
 import json
@@ -57,15 +58,8 @@ class Logging:
     INFO = 3
 
 def log(log_level, object):
-    if log_level <= Options.LOGGING:
+    if log_level <= Options.logging:
         print(object)
-
-class DefaultOptions:
-    PAGINATE = True
-    LOGGING = Logging.WARNING
-    SUBJECT_TYPES = "/SubjectTypes/Patient/Visit"
-    MAX_ANSWERS = 1
-    MAX_PER_SUBJECT = 1
 
 SECTION_TYPES = [RowTypes.SECTION_START, RowTypes.SECTION_RECURRENT, RowTypes.SECTION_END]
 MATRIX_TYPES = [RowTypes.MATRIX_START, RowTypes.MATRIX_END]
@@ -127,7 +121,7 @@ def matrix_start_handler(self, questionnaire, row):
     # Set the new section to be a matrix section
     questionnaire.parent['displayMode'] = 'matrix'
 
-    if (Options.MAX_ANSWERS > 0):
+    if (Options.max_answers > 0):
         questionnaire.parent['maxAnswers'] = 1
 
     # Matrixes are defined with question type = "matrix start <matrix type>"
@@ -247,6 +241,7 @@ class QuestionnaireState:
     # Adds the current section as a child node of the object above it in the stack.
     def complete_section(self):
         if (is_section(self.parent)):
+            log(Logging.INFO, "Completing section")
             self.complete_question()
             section = self.parents.pop()
 
@@ -278,6 +273,8 @@ class QuestionnaireState:
             self.parent[name] = self.question
             self.question = self.parent
 
+
+
 #=====================
 # Column Data Handlers
 #=====================
@@ -308,7 +305,7 @@ def condition_handler(self, questionnaire, row):
 def section_handler(self, questionnaire, row):
     label = self.get_value(row)
 
-    if (get_row_type_map(row).row_type not in SECTION_TYPES):
+    if (get_row_type_map(row).row_type not in (SECTION_TYPES + MATRIX_TYPES)):
         # This section is defined in line with a question.
         # For this simpler section definition style, complete the previous section automatically
         questionnaire.complete_section()
@@ -326,7 +323,6 @@ def question_handler(self, questionnaire, row):
         create_question(questionnaire, self.get_value(row).strip().lower())
 
 def title_handler(self, questionnaire, row):
-    # If this row doesn't have an explicit backend question name, reuse the title
     if not Headers["QUESTION"].has_value(row):
         create_question(questionnaire, self.get_value(row).strip().lower())
 
@@ -379,6 +375,8 @@ def range_value_handler(self, questionnaire, row, datetime_limit):
         questionnaire.question[datetime_limit] = self.get_value(row)
     else:
         number_handler(self, questionnaire, row)
+
+
 
 # Create a dictionary containing all the columns expected in a form spreadsheet
 # This dictionary maps columns to expected json property names and a handler
@@ -470,21 +468,23 @@ def clean_title(title):
 # Clean a string for use in a node name
 # TODO: replace with white list
 def clean_name(name):
-    return re.sub(':|\(|\)|\[|\]| |,', '', name.replace("/", "-"))
+    result = re.sub(':|\(|\)|\[|\]| |,', '', name.replace("/", "-"))
+    return result[:40]
 
 # Create a questionnaire object containing a title and all the default quetionnaire properties
 def create_new_questionnaire(title):
     new_questionnaire = {}
     new_questionnaire['jcr:primaryType'] = 'cards:Questionnaire'
     new_questionnaire['title'] = clean_title(title)
-    new_questionnaire['jcr:reference:requiredSubjectTypes'] = [Options.SUBJECT_TYPES]
-    new_questionnaire['paginate'] = Options.PAGINATE
-    if Options.MAX_PER_SUBJECT >  0:
-        new_questionnaire['maxPerSubject'] = Options.MAX_PER_SUBJECT
+    new_questionnaire['jcr:reference:requiredSubjectTypes'] = [Options.subject_types]
+    new_questionnaire['paginate'] = Options.paginate
+    if Options.max_per_subject >  0:
+        new_questionnaire['maxPerSubject'] = Options.max_per_subject
     return new_questionnaire
 
-# Create a questionnaire object containing a title and all the default quetionnaire properties
+# Create a questionnaire object containing a title and all the default questionnaire properties
 def create_new_section(title, title_as_label=True):
+    log(Logging.INFO, "Creating section {}".format(title))
     new_section = {}
     new_section['jcr:primaryType'] = 'cards:Section'
     if(len(title) > 0):
@@ -498,7 +498,6 @@ def get_row_type_map(row):
         type_string = Headers["TYPE"].get_value(row)
         row_type = get_row_type_map_from_string(type_string)
     else:
-        # Uncomment to check if any data is being lost
         log(Logging.WARNING, "Skipped row {}".format(row))
         pass
     return row_type
@@ -692,10 +691,14 @@ def create_condition(questionnaire, condition_parent, index, operand_a, operator
 
 # Creates a JSON file that contains the tsv file as an cards:Questionnaire
 def csv_to_json(title):
+    log(Logging.RUN, "Importing {}".format(title))
     questionnaireState = QuestionnaireState()
     with open(title + '.csv', encoding="utf-8-sig") as csvfile:
         reader = csv.DictReader(csvfile, dialect='excel')
         for index, row in enumerate(reader):
+            # Add 2 to index to match up with spreadsheet view:
+            # +1 from index being 0 based, +1 from header row
+            log(Logging.INFO, "Row {}".format(index + 2))
             if index == 0 and not Headers["QUESTIONNAIRE"].has_value(row):
                 questionnaireState.add_questionnaire(create_new_questionnaire(title))
             for header in DefaultHeaders.values():
@@ -705,18 +708,38 @@ def csv_to_json(title):
     questionnaireState.complete_questionnaire()
 
     for q in questionnaireState.questionnaires:
-        name = clean_title(q['title'])
+        name = clean_name(q['title'])
         with open(name + '.json', 'w') as jsonFile:
             json.dump(q, jsonFile, indent='\t')
         os.system("python3 ../JSON-to-XML/json_to_xml.py '" + name + ".json' > '" + name + ".xml'")
 
 # Specify the titles of each csv file and which set of column titles and options should be used
+# TODO: Add parameterized titles
 titles = [
-    "prems questionnaires - CPESIC",
-    "prems questionnaires - OAIP",
-    "prems questionnaires - OED"
+    "BPI",
+    "CSI",
+    "GAD-7",
+    "IEQ",
+    "P-3",
+    "PHQ-9",
+    "PQ",
+    "ROM",
+    "RPS IQ",
+    "S-LPS",
+    "WPI"
 ]
-for title in titles:
+
+CLI = argparse.ArgumentParser()
+CLI.add_argument("--forms", nargs="*", type=str, required=True)
+CLI.add_argument("--paginate", nargs=1, type=bool, default=False)
+CLI.add_argument("--subject-types", nargs=1, type=str, default="/SubjectTypes/Patient/Visit")
+CLI.add_argument("--max-answers", nargs=1, type=int, default=1)
+CLI.add_argument("--max-per-subject", nargs=1, type=int, default=1)
+
+args = CLI.parse_args()
+
+for title in args.forms:
     Headers = DefaultHeaders
-    Options = DefaultOptions
+    Options = args
+    Options.logging = Logging.WARNING
     csv_to_json(title)
