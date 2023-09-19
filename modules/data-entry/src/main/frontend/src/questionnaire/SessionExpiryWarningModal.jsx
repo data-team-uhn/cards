@@ -91,9 +91,9 @@ function SessionExpiryWarningModal(props) {
 
   // prevent the default window confirmation dialog on user leaving the page
   useEffect(() => {
-	open && window.addEventListener("beforeunload", (event) => event.preventDefault());
+	open && window.addEventListener("beforeunload", (event) => onExpired?.());
     return (() => {
-      window.removeEventListener("beforeunload", (event) => event.preventDefault());
+      window.removeEventListener("beforeunload", (event) => onExpired?.());
     });
   }, [open]);
 
