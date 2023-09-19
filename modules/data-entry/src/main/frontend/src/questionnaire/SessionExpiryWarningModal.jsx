@@ -164,8 +164,8 @@ SessionExpiryWarningModal.propTypes = {
 }
 
 SessionExpiryWarningModal.defaultProps = {
-  activeLength: 2.5 * 60 * 1000,
-  countdownLength: 2 * 60 * 1000,
+  activeLength: 1 * 60 * 1000,
+  countdownLength: 0.5 * 60 * 1000,
 }
 
 export default SessionExpiryWarningModal;
