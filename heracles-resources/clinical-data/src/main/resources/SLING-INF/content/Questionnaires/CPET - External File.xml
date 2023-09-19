@@ -627,6 +627,35 @@
 		</property>
 	</node>
 	<node>
+		<name>externalfile_ecg</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>GE ECG File Upload</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>file</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
 		<name>externalfile_proctorid</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
