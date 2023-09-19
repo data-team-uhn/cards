@@ -166,7 +166,7 @@ function Form (props) {
   useEffect(() => {
     if (isEdit) {
       function removeBeforeUnloadHandlers() {
-        window.removeEventListener("beforeunload", saveDataWithCheckin);
+        window.removeEventListener("beforeunload", saveDataWithCheckin, true);
       }
       setRemoveWindowHandlers(() => removeBeforeUnloadHandlers);
       window.addEventListener("beforeunload", saveDataWithCheckin, true);
@@ -639,7 +639,7 @@ function Form (props) {
           lastActivityTimestamp={lastSaveTimestamp}
           onStay={() => setAutosaveOptions({})}
           onExit={() => props.history.push("/")}
-          onExpired={() => setAutosaveOptions({performCheckin: true})}
+          onExpired={() => { removeWindowHandlers(); setAutosaveOptions({performCheckin: true}); } }
         />
       }
     </form>
