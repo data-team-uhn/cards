@@ -49,6 +49,7 @@ class RowTypes(enum.Enum):
     MATRIX_START = 13
     MATRIX_END = 14
     VOCABULARY = 15
+    SECTION_REPEATED = 16
 
 # Basic logging support
 class Logging:
@@ -61,7 +62,7 @@ def log(log_level, object):
     if log_level <= Options.logging:
         print(object)
 
-SECTION_TYPES = [RowTypes.SECTION_START, RowTypes.SECTION_RECURRENT, RowTypes.SECTION_END]
+SECTION_TYPES = [RowTypes.SECTION_START, RowTypes.SECTION_RECURRENT, RowTypes.SECTION_END, RowTypes.SECTION_REPEATED]
 MATRIX_TYPES = [RowTypes.MATRIX_START, RowTypes.MATRIX_END]
 STRING_GROUPS = {
     "(": ")",
@@ -104,8 +105,52 @@ def section_start_handler(self, questionnaire, row):
 def recurrent_section_handler(self, questionnaire, row):
     section_start_handler(self, questionnaire, row)
     questionnaire.parent['recurrent'] = True
+    
+def repeated_section_handler(self, questionnaire, row):
+    section_start_handler(self, questionnaire, row)
+    questionnaire.parent['repeated'] = True
+    parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
+    referenced_question_key = Headers['ENTRY_MODE_QUESTION'].get_value(row)
+    referenced_question = questionnaire.parents[-2][referenced_question_key]
+    
+    for key in referenced_question.keys():
+        entry = referenced_question[key]
+        if type(entry) == dict and 'jcr:primaryType' in entry and entry['jcr:primaryType'] == 'cards:AnswerOption':
+            conditional_label = parent_label + "_" + clean_name(entry['value'])
+            new_section = create_new_section(conditional_label)
+            new_section['label'] = entry['label']
+            new_section['repeated_parent'] = parent_label
+            questionnaire.push_section(new_section)
+            condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
+            questionnaire.complete_section()
+            
+def end_repeated_section(self, questionnaire, row):
+    parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
+    
+    repeated_conditionals = []
+    non_repeated_children = []
+    
+    for key in questionnaire.parent.keys():
+        entry = questionnaire.parent[key]
+        if type(entry) == dict:
+            if 'repeated_parent' in entry and entry['repeated_parent'] == parent_label:
+                entry.pop('repeated_parent')
+                repeated_conditionals.append(key)
+            else:
+                non_repeated_children.append(key)
+                
+    for non_repeated_key in non_repeated_children:
+        non_repeated_child = questionnaire.parent.pop(non_repeated_key)
+        for repeated_key in repeated_conditionals:
+            questionnaire.parent[repeated_key][repeated_key + "_" + non_repeated_key] = non_repeated_child
+                
+    questionnaire.parent.pop('repeated')
 
 def section_end_handler(self, questionnaire, row):
+    if is_section(questionnaire.parent):
+        if 'repeated' in questionnaire.parent:
+            end_repeated_section(self, questionnaire, row)
+    
     if is_matrix(questionnaire.parent):
         # End any matrix sections first as matrixes cannot span section borders
         questionnaire.complete_section()
@@ -174,7 +219,8 @@ RowTypesMappings = [
     RowTypeMap(RowTypes.SECTION_START, "section start", True, "", section_start_handler),
     RowTypeMap(RowTypes.SECTION_END, "section end", True, "", section_end_handler),
     RowTypeMap(RowTypes.SECTION_RECURRENT, "recurrent section", True, "", recurrent_section_handler),
-    RowTypeMap(RowTypes.MATRIX_END, "matrix end", True, "", matrix_end_handler)
+    RowTypeMap(RowTypes.MATRIX_END, "matrix end", True, "", matrix_end_handler),
+    RowTypeMap(RowTypes.SECTION_REPEATED, "repeated section", True, "", repeated_section_handler)
 ]
 DefaultRowTypeMap = RowTypeMap(RowTypes.DEFAULT, "", True, "text")
 
@@ -545,7 +591,7 @@ def add_option(value, label, question, index = 0):
     option_details = {
         'jcr:primaryType': 'cards:AnswerOption',
         'label': label,
-        'value': clean_title(value)
+        'value': clean_title(value).lower()
     }
     if index:
         option_details.update({"defaultOrder": index})
@@ -704,6 +750,7 @@ def csv_to_json(title):
             for header in DefaultHeaders.values():
                 if header.has_value(row):
                     header.handler(header, questionnaireState, row)
+            questionnaireState.complete_question()
 
     questionnaireState.complete_questionnaire()
 
@@ -741,5 +788,5 @@ args = CLI.parse_args()
 for title in args.forms:
     Headers = DefaultHeaders
     Options = args
-    Options.logging = Logging.WARNING
+    Options.logging = Logging.INFO
     csv_to_json(title)
