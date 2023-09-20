@@ -447,6 +447,9 @@
       },
       "pedigree" : {
         "minAnswers": {"0":{}, "1":{}}
+      },
+      "phone" : {
+        "minAnswers": {"0":{}, "1":{}}
       }
     },
     "enableNotes": "boolean"

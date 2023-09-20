@@ -507,6 +507,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
             case "vocabulary":
                 result = "cards:VocabularyAnswer";
                 break;
+            case "phone":
+                result = "cards:PhoneAnswer";
+                break;
             case "text":
             default:
                 result = "cards:TextAnswer";

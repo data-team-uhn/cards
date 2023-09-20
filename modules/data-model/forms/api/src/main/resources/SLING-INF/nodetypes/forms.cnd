@@ -151,6 +151,8 @@
   // - vocabulary: a term from a vocabulary
   // - file: an uploaded file
   // - computed: a derived value automatically computed based on a formula applied on other values in the questionaire
+  // - pedigree:
+  // - phone: 
   // The answer type can be further refined with the following properties
   - dataType (string) = 'text' mandatory autocreated
 
@@ -722,6 +724,16 @@
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
+//-----------------------------------------------------------------------------
+// Telephone number answers, stored as strings
+[cards:PhoneAnswer] > cards:Answer
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/PhoneAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 
