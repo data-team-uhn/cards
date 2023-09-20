@@ -584,6 +584,9 @@ const questionnaireStyle = theme => ({
         outline: `2px solid ${theme.palette.primary.main}`,
       },
     },
+    phoneAnswer: {
+      overflow: "unset",
+    },
     questionnaireItemWithError: {
       "&.MuiCard-root, > .MuiCard-root" : {
         outline: `1px solid ${theme.palette.error.light}`,

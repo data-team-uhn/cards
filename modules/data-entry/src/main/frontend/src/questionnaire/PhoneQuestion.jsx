@@ -19,6 +19,7 @@
 
 import React, { useState } from "react";
 import withStyles from '@mui/styles/withStyles';
+
 import 'react-phone-input-2/lib/style.css';
 import PropTypes from "prop-types";
 
@@ -26,22 +27,24 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import PhoneInput from 'react-phone-input-2'
+import PhoneInput from 'react-phone-input-2';
 
 // Component that renders a vocabulary question.
 //
 // Sample usage:
 //
-// <TelephoneNumberQuestion
+// <PhoneQuestion
 //   questionDefinition={{
 //     text: "Please enter the phone number",
 //   }}
 //   />
-function TelephoneNumberQuestion(props) {
+function PhoneQuestion(props) {
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
 
   let currentStartValue = existingAnswer && existingAnswer[1].value || "";
   const [phone, changePhone] = useState(currentStartValue);
+  const countries = questionDefinition.onlyCountries?.indexOf(",") > 0 ? questionDefinition.onlyCountries.replaceAll(" ", "").split(",") : questionDefinition.onlyCountries;
+  const regions = questionDefinition.regions?.indexOf(",") > 0 ? questionDefinition.regions.replaceAll(" ", "").split(",") : questionDefinition.regions;
 
   let outputAnswers = [["value", phone]];
   return (
@@ -50,16 +53,16 @@ function TelephoneNumberQuestion(props) {
       {...props}
       >
       <PhoneInput
-        country='ca'
-        onlyCountries={['ca', 'us']}
-        regions={['north-america']}
+        country={questionDefinition.defaultCountry}
+        onlyCountries={countries}
+        regions={regions}
         placeholder=""
         value={phone}
         onChange={phone => changePhone(phone)}
       />
       <Answer
         answers={outputAnswers}
-        questionDefinition={props.questionDefinition}
+        questionDefinition={questionDefinition}
         answerNodeType="cards:PhoneAnswer"
         valueType="String"
         existingAnswer={existingAnswer}
@@ -69,7 +72,7 @@ function TelephoneNumberQuestion(props) {
     </Question>);
 }
 
-TelephoneNumberQuestion.propTypes = {
+PhoneQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
@@ -78,11 +81,11 @@ TelephoneNumberQuestion.propTypes = {
 };
 
 
-const StyledTelephoneNumberQuestion = withStyles(QuestionnaireStyle)(TelephoneNumberQuestion)
-export default StyledTelephoneNumberQuestion;
+const StyledPhoneQuestion = withStyles(QuestionnaireStyle)(PhoneQuestion)
+export default StyledPhoneQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "phone") {
-    return [StyledTelephoneNumberQuestion, 50];
+    return [StyledPhoneQuestion, 50];
   }
 });

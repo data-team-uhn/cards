@@ -449,7 +449,10 @@
         "minAnswers": {"0":{}, "1":{}}
       },
       "phone" : {
-        "minAnswers": {"0":{}, "1":{}}
+        "minAnswers": {"0":{}, "1":{}},
+        "defaultCountry": "string",
+        "onlyCountries": "string",
+        "regions": "string"
       }
     },
     "enableNotes": "boolean"

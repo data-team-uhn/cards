@@ -18,7 +18,7 @@
 -->
 
 <node>
-	<name>TelephoneNumbersTest</name>
+	<name>PhoneTest</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>

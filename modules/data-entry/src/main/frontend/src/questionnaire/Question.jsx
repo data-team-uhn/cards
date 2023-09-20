@@ -68,6 +68,9 @@ function Question (props) {
   if (doHighlight) {
     cardClasses.push(classes.focusedQuestionnaireItem);
   }
+  if (questionDefinition.dataType == "phone") {
+	cardClasses.push(classes.phoneAnswer);
+  }
 
   let labels = existingAnswer?.[1].displayedValue;
   if (typeof(labels) == "undefined") {

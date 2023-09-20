@@ -42,7 +42,7 @@ import QuestionMatrix from "./QuestionMatrix";
 import ResourceQuestion from "./ResourceQuestion";
 import DicomQuestion from "./DicomQuestion";
 import ReferenceQuestion from "./ReferenceQuestion";
-import TelephoneNumberQuestion from "./TelephoneNumberQuestion";
+import PhoneQuestion from "./PhoneQuestion";
 
 import { hasWarningFlags } from "./FormUtilities";
 
