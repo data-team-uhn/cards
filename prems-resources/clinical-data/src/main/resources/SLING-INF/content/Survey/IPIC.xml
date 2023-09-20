@@ -28,9 +28,8 @@
     <property>
         <name>intro</name>
         <value>
-As you look to fill out this survey, you were likely discharged from your stay at a UHN hospital site
-within the last 30 days. We would like you to reflect on your experience with the Integrated Care Program
-as you transitioned home and to provide us with some feedback on supports that you may have received.
+We’d like to hear about your experience while you were an inpatient at UHN.
+We would also like you to reflect on your experience with the Integrated Care Program as you transitioned home and to provide us with some feedback on supports that you may have received.
 We appreciate any insights you can provide and will look to make improvements based on your feedback.
         </value>
         <type>String</type>
