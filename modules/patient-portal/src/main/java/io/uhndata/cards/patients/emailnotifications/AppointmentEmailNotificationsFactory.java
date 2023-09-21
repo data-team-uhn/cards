@@ -110,7 +110,7 @@ public final class AppointmentEmailNotificationsFactory
     {
         LOGGER.info("Activating appointment email notifications: {}", config.name());
         final String nightlyNotificationsSchedule =
-            StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *");
+            StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0/10 * 1/1 * ? *");
 
         // Create the performance metrics measurement node
         Metrics.createStatistic(this.resolverFactory, config.name(), config.metricName());
