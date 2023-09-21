@@ -414,6 +414,13 @@
                     "type": "Date",
                     "jcr:primaryType": "nt:unstructured"
                 },
+                "isCheckedOut": {
+                    "name": "jcr:isCheckedOut",
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "type": "Boolean",
+                    "jcr:primaryType": "nt:unstructured"
+                },
                 "statusFlags": {
                     "name": "statusFlags",
                     "propertyIndex": true,
