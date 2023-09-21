@@ -29,7 +29,7 @@ import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import PhoneInput from 'react-phone-input-2';
 
-// Component that renders a vocabulary question.
+// Component that renders a phone number question.
 //
 // Sample usage:
 //
