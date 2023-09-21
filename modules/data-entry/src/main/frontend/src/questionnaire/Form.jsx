@@ -57,6 +57,7 @@ import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
 import { getFirstIncompleteQuestionEl } from "./FormUtilities.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -87,6 +88,7 @@ function Form (props) {
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ lastSaveTimestamp, setLastSaveTimestamp ] = useState(null);
   let [ statusFlags, setStatusFlags ] = useState([]);
+  let [ autosaveOptions, setAutosaveOptions ] = useState();
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
@@ -120,6 +122,19 @@ function Form (props) {
     setEndReached(!paginationEnabled);
   }, [paginationEnabled]);
 
+  // Handle autosave:
+  // When autosave options are defined, trigger a background save
+  useEffect(() => {
+    if (typeof(autosaveOptions) == "object") {
+      let { event, performCheckin, onSuccess } = autosaveOptions;
+      saveData(event, performCheckin, onSuccess);
+    }
+  }, [autosaveOptions]);
+  // When the save is completed (successfully or not), clear the autosave options
+  useEffect(() => {
+    if (saveInProgress === false) setAutosaveOptions(undefined);
+  }, [saveInProgress]);
+
   // When end was reached and save was successful, call `onDone` if applicable
   useEffect(() => {
     // If there's at least a question that is incomplete while we require completion,
@@ -151,7 +166,7 @@ function Form (props) {
   useEffect(() => {
     if (isEdit) {
       function removeBeforeUnloadHandlers() {
-        window.removeEventListener("beforeunload", saveDataWithCheckin);
+        window.removeEventListener("beforeunload", saveDataWithCheckin, true);
       }
       setRemoveWindowHandlers(() => removeBeforeUnloadHandlers);
       window.addEventListener("beforeunload", saveDataWithCheckin, true);
@@ -162,7 +177,7 @@ function Form (props) {
       });
     }
   }, [isEdit]);
-  
+
   useEffect(() => {
     // If `requireCompletion` is set, stop any advancing progress until check that all required 
     // questions are completed
@@ -258,7 +273,8 @@ function Form (props) {
         }
         onSuccess?.();
         // If the form is required to be complete, re-fetch it after save to see if user can progress
-        if (requireCompletion) {
+        // However, skip any completion checks if this is an autosave
+        if (requireCompletion && !autosaveOptions) {
             // Disable progress until we figure out if it's ok to proceed
             setDisableProgress(true);
             fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
@@ -618,6 +634,14 @@ function Form (props) {
           <Typography variant="body1" paragraph>Time of the last successful save: {DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
         }
       </ErrorDialog>
+      { isEdit &&
+        <SessionExpiryWarningModal
+          lastActivityTimestamp={lastSaveTimestamp}
+          onStay={() => setAutosaveOptions({})}
+          onExit={() => props.history.push("/")}
+          onExpired={() => { removeWindowHandlers(); setAutosaveOptions({performCheckin: true}); } }
+        />
+      }
     </form>
   );
 };

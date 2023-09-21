@@ -100,6 +100,7 @@ root.render(
         <Switch color="secondary">
           <Route path="/Survey.html/" component={PatientPortalHomepage} />
           <Redirect from="/Survey" to="/Survey.html/"/>
+          <Redirect from="/" to="/Survey.html/"/>
         </Switch>
       </Router>
     </ThemeProvider>
