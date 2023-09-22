@@ -32,7 +32,7 @@ import AdminScreen from "../adminDashboard/AdminScreen.jsx";
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
-const APIKEY_SERVLET_URL = "/Forms.googleApiKey";
+const APIKEY_SERVLET_URL = "/.googleApiKey";
 
 const useStyles = makeStyles(theme => ({
   noKeyInfo: {

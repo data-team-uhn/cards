@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-    resourceTypes = { "cards/ResourceHomepage" },
+    resourceTypes = { "cards/Homepage" },
     methods = { "GET" },
     selectors = { "googleApiKey" }
     )
