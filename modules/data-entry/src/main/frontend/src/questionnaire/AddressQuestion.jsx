@@ -149,11 +149,7 @@ const StyledAddressQuestion = withStyles(QuestionnaireStyle)(AddressQuestion)
 export default StyledAddressQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
-  if (questionDefinition.dataType === "address") {
-    if (googleApiKey) {
-      return [StyledAddressQuestion, 50];
-    } else {
-      return [StyledTextQuestion, 0];
-    }
+  if (questionDefinition.dataType === "address" && googleApiKey) {
+    return [StyledAddressQuestion, 50];
   }
 });
