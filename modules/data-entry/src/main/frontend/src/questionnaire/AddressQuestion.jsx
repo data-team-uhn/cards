@@ -96,7 +96,7 @@ function AddressQuestion(props) {
   let currentStartValue = existingAnswer && existingAnswer[1].value || "";
   const [address, setAddress] = useState(currentStartValue);
 
-  const countries = questionDefinition.onlyCountries?.indexOf(",") > 0 ? questionDefinition.onlyCountries.replaceAll(" ", "").split(",") : questionDefinition.onlyCountries;
+  const countries = questionDefinition.onlyCountries?.split(/\s*,\s*/) || undefined;
   let options = {
     types: ["address"],
     fields: ["formatted_address"]
