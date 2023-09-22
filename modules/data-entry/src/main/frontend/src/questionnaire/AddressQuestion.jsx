@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import withStyles from '@mui/styles/withStyles';
 
 import { TextField } from "@mui/material";
@@ -30,6 +30,23 @@ import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { usePlacesWidget } from "react-google-autocomplete";
 import GlobalStyles from '@mui/material/GlobalStyles';
+import StyledTextQuestion from "./TextQuestion";
+
+
+let key;
+const APIKEY_SERVLET_URL = "/Forms.googleApiKey";
+fetch(APIKEY_SERVLET_URL)
+  .then((response) => response.ok ? response.json() : Promise.reject(response))
+  .then((keyJson) => {
+    if (!keyJson.apikey) {
+      throw "no API key in APIKEY servlet response";
+    }
+    key = keyJson.apikey;
+  })
+  .catch((error) => {
+    console.error("Error fetching GoogleApiKey node: " + error);
+});
+
 
 // Easy way to overwrite global CSS styles using theme
 // Styling Google Map Autocomplete dropdown list
@@ -83,7 +100,7 @@ function AddressQuestion(props) {
   const countries = questionDefinition.onlyCountries?.indexOf(",") > 0 ? questionDefinition.onlyCountries.replaceAll(" ", "").split(",") : questionDefinition.onlyCountries;
 
   const { ref: materialRef } = usePlacesWidget({
-    apiKey: "XXX",
+    apiKey: key,
     onPlaceSelected: (place) => setAddress(place.formatted_address),
     options: {
       types: ["address"],
@@ -133,6 +150,10 @@ export default StyledAddressQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "address") {
-    return [StyledAddressQuestion, 50];
+    if (key) {
+      return [StyledAddressQuestion, 50];
+    } else {
+      return [StyledTextQuestion, 0];
+    }
   }
 });
