@@ -58,7 +58,7 @@ function PhoneQuestion(props) {
         regions={regions}
         placeholder=""
         value={phone}
-        onChange={phone => changePhone(phone)}
+        onChange={(value, country, e, formattedValue) => changePhone(formattedValue)}
       />
       <Answer
         answers={outputAnswers}
