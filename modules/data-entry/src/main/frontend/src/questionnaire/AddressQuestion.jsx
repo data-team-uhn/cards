@@ -97,15 +97,17 @@ function AddressQuestion(props) {
   const [address, setAddress] = useState(currentStartValue);
 
   const countries = questionDefinition.onlyCountries?.indexOf(",") > 0 ? questionDefinition.onlyCountries.replaceAll(" ", "").split(",") : questionDefinition.onlyCountries;
-
+  let options = {
+    types: ["address"],
+    fields: ["formatted_address"]
+  };
+  if (countries) {
+    options.componentRestrictions = { country: countries };
+  }
   const { ref: materialRef } = usePlacesWidget({
     apiKey: googleApiKey,
     onPlaceSelected: (place) => setAddress(place.formatted_address),
-    options: {
-      types: ["address"],
-      fields: ["formatted_address"],
-      componentRestrictions: { country: countries }
-    },
+    options: options,
   });
 
   return (
