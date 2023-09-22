@@ -38,7 +38,7 @@
 		<type>String</type>
 	</property>
 	<node>
-		<name>phone number</name>
+		<name>postal address</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
