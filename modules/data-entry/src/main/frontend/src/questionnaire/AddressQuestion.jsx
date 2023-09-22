@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import withStyles from '@mui/styles/withStyles';
 
 import { TextField } from "@mui/material";
@@ -33,7 +33,7 @@ import GlobalStyles from '@mui/material/GlobalStyles';
 import StyledTextQuestion from "./TextQuestion";
 
 
-let key;
+let googleApiKey;
 const APIKEY_SERVLET_URL = "/Forms.googleApiKey";
 fetch(APIKEY_SERVLET_URL)
   .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -41,7 +41,7 @@ fetch(APIKEY_SERVLET_URL)
     if (!keyJson.apikey) {
       throw "no API key in APIKEY servlet response";
     }
-    key = keyJson.apikey;
+    googleApiKey = keyJson.apikey;
   })
   .catch((error) => {
     console.error("Error fetching GoogleApiKey node: " + error);
@@ -50,11 +50,11 @@ fetch(APIKEY_SERVLET_URL)
 
 // Easy way to overwrite global CSS styles using theme
 // Styling Google Map Autocomplete dropdown list
-// seee details https://developers.google.com/maps/documentation/javascript/place-autocomplete#style-autocomplete
+// see details https://developers.google.com/maps/documentation/javascript/place-autocomplete#style-autocomplete
 const inputGlobalStyles = <GlobalStyles
     styles={(theme) => ({
       body: {
-        // to remove the "Powered by Google" logo in the Google Map Autocomplete dropdown list
+        // to remove the "Powered by Google" logo from the bottom of the Google Map Autocomplete dropdown list
         "& .pac-container:after": {
           backgroundImage: "none !important",
           height: 0,
@@ -74,7 +74,7 @@ const inputGlobalStyles = <GlobalStyles
           fontSize: theme.typography.htmlFontSize,
           lineHeight: `${theme.spacing(5)} !important`,
         },
-        // remove the place pin icon from the list
+        // remove the place pin icon from the dropdown list items
         "& .pac-icon": {
           display : "none",
         }
@@ -82,7 +82,7 @@ const inputGlobalStyles = <GlobalStyles
     })}
 />
 
-// Component that renders a postal address question.
+// Component that renders a postal address question with suggestions powered by the Goole API.
 //
 // Sample usage:
 //
@@ -150,7 +150,7 @@ export default StyledAddressQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "address") {
-    if (key) {
+    if (googleApiKey) {
       return [StyledAddressQuestion, 50];
     } else {
       return [StyledTextQuestion, 0];
