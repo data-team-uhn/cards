@@ -137,6 +137,7 @@ CARDS_TYPE_TO_SLING_TYPE_HINT['cards:FileAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:DicomAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:ResourceAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:PhoneAnswer'] = "string"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:AddressAnswer'] = "string"
 
 FILE_LIKE_ANSWER_TYPES = []
 FILE_LIKE_ANSWER_TYPES.append("cards:FileAnswer")

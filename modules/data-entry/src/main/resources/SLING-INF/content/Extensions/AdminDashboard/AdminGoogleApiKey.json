@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Google Api Key",
+  "cards:targetURL": "/content.html/admin/GoogleApiKey",
+  "cards:icon": "asset:cards-dataentry.googleIcon.js",
+  "cards:defaultOrder": 98,
+  "cards:hint": "Use Google API services"
+}

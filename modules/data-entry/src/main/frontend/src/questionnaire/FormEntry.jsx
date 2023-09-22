@@ -43,6 +43,7 @@ import ResourceQuestion from "./ResourceQuestion";
 import DicomQuestion from "./DicomQuestion";
 import ReferenceQuestion from "./ReferenceQuestion";
 import PhoneQuestion from "./PhoneQuestion";
+import AddressQuestion from "./AddressQuestion";
 
 import { hasWarningFlags } from "./FormUtilities";
 

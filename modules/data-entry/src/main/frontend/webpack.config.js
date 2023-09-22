@@ -20,6 +20,8 @@ module.exports = {
     [module_name + 'SubjectSelector']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/questionnaire/SubjectSelector.jsx' },
     [module_name + 'NewFormDialog']: { 'dependOn': ['cards-login.loginDialogue', 'cards-dataentry.SubjectSelector'], 'import': './src/dataHomepage/NewFormDialog.jsx' },
     [module_name + 'userDashboard']: { 'dependOn': ['cards-login.loginDialogue', 'cards-dataentry.NewFormDialog', 'cards-dataentry.SubjectSelector'], 'import': './src/dataHomepage/UserDashboard.jsx' },
+    [module_name + 'GoogleApiKey']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/questionnaireEditor/googleApiKeyAdminPage.jsx' },
+    [module_name + 'googleIcon']: '@mui/icons-material/Google',
   },
   plugins: [
     new CleanWebpackPlugin(),

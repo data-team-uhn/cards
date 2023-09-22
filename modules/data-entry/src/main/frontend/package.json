@@ -49,6 +49,7 @@
     "react-dom": "^18.0.0",
     "react-number-format": "5.1.2",
     "react-phone-input-2": "2.15.1",
+    "react-google-autocomplete": "2.7.3",
     "react-router-dom": "5.2.0",
     "react-to-print": "2.14.4",
     "material-react-table": "1.10.0",

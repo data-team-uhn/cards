@@ -8,5 +8,6 @@
   "cards-dataentry.SubjectView.js": ["asset:cards-dataentry.Subjects.js"],
   "cards-dataentry.SubjectSelector.js": ["asset:cards-login.loginDialogue.js"],
   "cards-dataentry.NewFormDialog.js": ["asset:cards-login.loginDialogue.js", "asset:cards-dataentry.SubjectSelector.js"],
-  "cards-dataentry.userDashboard.js": ["asset:cards-login.loginDialogue.js", "asset:cards-dataentry.SubjectSelector.js", "asset:cards-dataentry.NewFormDialog.js"]
+  "cards-dataentry.userDashboard.js": ["asset:cards-login.loginDialogue.js", "asset:cards-dataentry.SubjectSelector.js", "asset:cards-dataentry.NewFormDialog.js"],
+  "cards-dataentry.GoogleApiKey.js": ["asset:cards-login.loginDialogue.js"]
 }
