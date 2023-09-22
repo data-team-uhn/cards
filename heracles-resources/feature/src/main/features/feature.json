@@ -107,7 +107,7 @@
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~heracles":{
       "user.mapping":[
-        "io.uhndata.cards.heracles-backend=[cards-exporter]",
+        "io.uhndata.cards.heracles-backend:S3Export=[cards-exporter]",
         "io.uhndata.cards.heracles-backend:PauseResumeEditor=[sling-readall]",
         "io.uhndata.cards.heracles-backend:MetricLogger=[cards-metrics]"
       ]
