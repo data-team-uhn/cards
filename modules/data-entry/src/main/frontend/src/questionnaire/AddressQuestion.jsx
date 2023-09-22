@@ -30,7 +30,6 @@ import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { usePlacesWidget } from "react-google-autocomplete";
 import GlobalStyles from '@mui/material/GlobalStyles';
-import StyledTextQuestion from "./TextQuestion";
 
 
 let googleApiKey;
