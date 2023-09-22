@@ -44,7 +44,7 @@ function PhoneQuestion(props) {
   let currentStartValue = existingAnswer && existingAnswer[1].value || "";
   const [phone, changePhone] = useState(currentStartValue);
   const countries = questionDefinition.onlyCountries?.split(/\s*,\s*/) || undefined;
-  const regions = questionDefinition.regions?.indexOf(",") > 0 ? questionDefinition.regions.replaceAll(" ", "").split(",") : questionDefinition.regions;
+  const regions = questionDefinition.regions?.split(/\s*,\s*/) || undefined;
 
   let outputAnswers = [["value", phone]];
   return (
