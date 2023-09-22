@@ -49,7 +49,6 @@ function PhoneQuestion(props) {
   let outputAnswers = [["value", phone]];
   return (
     <Question
-      disableInstructions
       {...props}
       >
       <PhoneInput
