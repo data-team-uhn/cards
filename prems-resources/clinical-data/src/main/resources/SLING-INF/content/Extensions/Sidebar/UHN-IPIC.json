@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/sidebar/entry",
+  "cards:extensionName": "UHN IP-IC",
+  "cards:targetURL": "/content.html/Dashboard/-432335117",
+  "cards:icon": "asset:patient-portal.clinicIcon.js",
+  "cards:defaultOrder": 16
+}

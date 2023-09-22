@@ -87,6 +87,9 @@
 [cards:QuestionnaireSet] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes
 
+  // The list of questionnaires needs to be ordered
+  orderable
+
   // We can use questionnaire sets in a query.
   query
   // The main sub-item of a QuestionnaireSet is its name.

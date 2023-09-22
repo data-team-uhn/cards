@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:reference:ic_6": "/Questionnaires/IC/ic_6",
+  "jcr:reference:ic_department": "/Questionnaires/IC/ic_department",
+  "jcr:reference:time": "/Questionnaires/Visit information/time",
+  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
+}
