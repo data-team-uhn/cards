@@ -483,6 +483,11 @@ function Form (props) {
             </div>
   )
 
+  let getTimestampString  = (timestamp) => {
+    let time = DateTime.fromISO(timestamp);
+    return time.hasSame(DateTime.local(),"day") ? "at " + time.toFormat("hh:mma") : time.toRelativeCalendar();
+  }
+
   return (
     <form action={data?.["@path"]}
           method="POST"
@@ -532,10 +537,10 @@ function Form (props) {
           }
           {
             lastSaveTimestamp ?
-            <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
+            <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + getTimestampString(lastSaveTimestamp.toISOString())}</Typography>
             :
             data && data['jcr:lastModified'] ?
-            <Typography variant="overline">{"Last modified " + DateTime.fromISO(data['jcr:lastModified']).toRelativeCalendar()}</Typography>
+            <Typography variant="overline">{"Last modified " + getTimestampString(data['jcr:lastModified'])}</Typography>
             : ""
           }
           </Breadcrumbs>
@@ -631,7 +636,7 @@ function Form (props) {
         <Typography variant="h6">Your changes were not saved.</Typography>
         <Typography variant="body1" paragraph>Server responded with response code {errorCode}: {errorMessage}</Typography>
         {lastSaveTimestamp &&
-          <Typography variant="body1" paragraph>Time of the last successful save: {DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
+          <Typography variant="body1" paragraph>Time of the last successful save: {getTimestampString(lastSaveTimestamp.toISOString())}</Typography>
         }
       </ErrorDialog>
       { isEdit &&
