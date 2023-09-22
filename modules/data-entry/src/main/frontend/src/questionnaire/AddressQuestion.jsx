@@ -100,7 +100,7 @@ function AddressQuestion(props) {
   const countries = questionDefinition.onlyCountries?.indexOf(",") > 0 ? questionDefinition.onlyCountries.replaceAll(" ", "").split(",") : questionDefinition.onlyCountries;
 
   const { ref: materialRef } = usePlacesWidget({
-    apiKey: key,
+    apiKey: googleApiKey,
     onPlaceSelected: (place) => setAddress(place.formatted_address),
     options: {
       types: ["address"],
