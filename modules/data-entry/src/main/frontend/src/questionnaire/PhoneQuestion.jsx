@@ -45,6 +45,7 @@ function PhoneQuestion(props) {
   const [phone, changePhone] = useState(currentStartValue);
   const countries = questionDefinition.onlyCountries?.split(/\s*,\s*/) || undefined;
   const regions = questionDefinition.regions?.split(/\s*,\s*/) || undefined;
+  const defaultCountry = countries?.length == 1 ? countries[0] : questionDefinition.defaultCountry;
 
   let outputAnswers = [["value", phone]];
   return (
@@ -52,9 +53,10 @@ function PhoneQuestion(props) {
       {...props}
       >
       <PhoneInput
-        country={questionDefinition.defaultCountry}
+        country={defaultCountry}
         onlyCountries={countries}
         regions={regions}
+        disableDropdown={!!(countries?.length == 1)}
         placeholder=""
         value={phone}
         onChange={(value, country, e, formattedValue) => changePhone(formattedValue)}
