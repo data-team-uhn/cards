@@ -41,8 +41,8 @@ import PhoneInput from 'react-phone-input-2';
 function PhoneQuestion(props) {
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
 
-  let currentStartValue = existingAnswer && existingAnswer[1].value || "";
-  const [phone, changePhone] = useState(currentStartValue);
+  let initialValue = existingAnswer && existingAnswer[1].value || "";
+  const [phone, changePhone] = useState(initialValue);
   const countries = questionDefinition.onlyCountries?.split(/\s*,\s*/) || undefined;
   const regions = questionDefinition.regions?.split(/\s*,\s*/) || undefined;
   const defaultCountry = countries?.length == 1 ? countries[0] : questionDefinition.defaultCountry;
@@ -77,8 +77,10 @@ PhoneQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
+    defaultCountry: PropTypes.string,
+    onlyCountries: PropTypes.string,
+    regions: PropTypes.string
   }).isRequired,
-  text: PropTypes.string
 };
 
 
