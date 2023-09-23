@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>PhoneTest</name>
+	<name>PhoneNumberTest</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Telephone Numbers Test</value>
+		<value>Phone Number Test</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -38,11 +38,25 @@
 		<type>String</type>
 	</property>
 	<node>
-		<name>phone number</name>
+		<name>phone_number</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>phone number</value>
+			<value>Phone number</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>phone</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>phone_number_ca</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Canadian phone number</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -51,14 +65,33 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>defaultCountry</name>
+			<value>ca</value>
+			<type>String</type>
 		</property>
 		<property>
-            <name>displayMode</name>
-            <value>input</value>
-            <type>String</type>
-        </property>
+			<name>onlyCountries</name>
+			<value>ca</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>phone_number_eu</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>European phone number</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>phone</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>regions</name>
+			<value>europe</value>
+			<type>String</type>
+		</property>
 	</node>
 </node>
