@@ -124,7 +124,6 @@ function AddressQuestion(props) {
         defaultValue={currentStartValue}
         inputRef={materialRef}
       />
-      
       <Answer
         answers={[["value", address]]}
         questionDefinition={questionDefinition}
@@ -140,9 +139,9 @@ function AddressQuestion(props) {
 AddressQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
+    onlyCountries: PropTypes.string,
   }).isRequired,
-  text: PropTypes.string
 };
 
 
