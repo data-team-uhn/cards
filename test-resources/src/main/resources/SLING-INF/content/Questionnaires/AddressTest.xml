@@ -50,15 +50,5 @@
 			<value>address</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-            <name>displayMode</name>
-            <value>input</value>
-            <type>String</type>
-        </property>
 	</node>
 </node>
