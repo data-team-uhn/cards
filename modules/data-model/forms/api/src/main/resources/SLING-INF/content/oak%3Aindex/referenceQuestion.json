@@ -1,0 +1,11 @@
+{
+  "jcr:primaryType": "oak:QueryIndexDefinition",
+  "type": "property",
+  "tags": ["property", "cards"],
+  "jcr:name:propertyNames": [
+    "question"
+  ],
+  "jcr:name:declaringNodeTypes": [
+    "cards:Question"
+  ]
+}
