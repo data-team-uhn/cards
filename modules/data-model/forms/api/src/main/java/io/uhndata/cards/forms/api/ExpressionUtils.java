@@ -78,4 +78,11 @@ public interface ExpressionUtils
      *         expression has unmet dependencies or the actual evaluation result cannot be converted to the desired type
      */
     Object evaluate(Node question, Map<String, Object> values, Type<?> type);
+
+    /**
+     *
+     * @param question the question node
+     * @return list of all the questions names that is used to compute an answer
+     */
+    Set<String> getQuestionsNames(Node question);
 }

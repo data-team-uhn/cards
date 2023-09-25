@@ -71,7 +71,8 @@
       "service.ranking:Integer":150,
       "scripts":[
         "create path (cards:dataQuery) /query \n\n # Allow all users to query; the actual results will obey their access rights \n set ACL for everyone \n   allow  jcr:read  on /query \n end \n\n create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:QueryCacheHomepage) /QueryCache \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes ",
-        "create service user cards-answer-editor \n set ACL on /Questionnaires \n   allow jcr:read for cards-answer-editor \n end"
+        "create service user cards-answer-editor \n set ACL on /Questionnaires \n   allow jcr:read for cards-answer-editor \n end",
+        "create service user cards-reference-answer-editor \n set ACL for cards-reference-answer-editor \n   allow jcr:read,rep:write,jcr:versionManagement on /Questionnaires,/Forms \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-data-entry":{
@@ -80,7 +81,8 @@
         "io.uhndata.cards.data-model-forms-impl:computedAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:referenceAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:maxFormsOfTypePerSubjectValidator=[sling-readall]",
-        "io.uhndata.cards.data-model-forms-impl:requiredSubjectTypesValidator=[sling-readall]"
+        "io.uhndata.cards.data-model-forms-impl:requiredSubjectTypesValidator=[sling-readall]",
+        "io.uhndata.cards.data-model-forms-impl:referenceAnswersChangedListener=[cards-reference-answer-editor]"
       ]
     }
   }

@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,6 +89,43 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
                 e.getMessage(), e);
         }
         return null;
+    }
+
+    @Override
+    public Set<String> getQuestionsNames(Node question)
+    {
+        return expressionInputs(getExpressionFromQuestion(question));
+    }
+
+    private Set<String> expressionInputs(final String expression)
+    {
+        String expr = expression;
+
+        Set<String> questionNames = new HashSet<>();
+
+        int start = expr.indexOf(START_MARKER);
+        int end = expr.indexOf(END_MARKER, start);
+
+        while (start > -1 && end > -1) {
+            int defaultStart = expr.indexOf(DEFAULT_MARKER, start);
+            boolean hasDefault = defaultStart > -1 && defaultStart < end;
+
+            String questionName;
+            if (hasDefault) {
+                questionName = expr.substring(start + START_MARKER.length(), defaultStart);
+            } else {
+                questionName = expr.substring(start + START_MARKER.length(), end);
+            }
+
+            questionNames.add(questionName);
+
+            // Remove the start and end tags
+            expr = expr.substring(0, start) + questionName + expr.substring(end + END_MARKER.length());
+
+            start = expr.indexOf(START_MARKER);
+            end = expr.indexOf(END_MARKER, start);
+        }
+        return questionNames;
     }
 
     private ExpressionUtilsImpl.ParsedExpression parseExpressionInputs(final String expression,
