@@ -107,7 +107,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             try {
                 this.rrp.push(localResolver);
                 NodeIterator children = form.getNodes();
-                checkAndUpdateAnswersValues(children, localResolver, session);
+                checkAndUpdateAnswersValues(children, session);
             } catch (RepositoryException e) {
                 LOGGER.error(e.getMessage(), e);
             } finally {
@@ -130,19 +130,19 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
      * @param serviceResolver a ResourceResolver that can be used for querying the JCR
      * @param session a service session providing access to the repository
      */
-    private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final ResourceResolver serviceResolver,
-        final Session session) throws RepositoryException
+    private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final Session session)
+        throws RepositoryException
     {
         final VersionManager versionManager = session.getWorkspace().getVersionManager();
         Set<String> checkoutPaths = new HashSet<>();
         while (nodeIterator.hasNext()) {
             final Node node = nodeIterator.nextNode();
             if (node.isNodeType("cards:AnswerSection")) {
-                checkAndUpdateAnswersValues(node.getNodes(), serviceResolver, session);
+                checkAndUpdateAnswersValues(node.getNodes(), session);
             } else if (node.isNodeType("cards:Answer")) {
                 final String answerNodeType = node.getPrimaryNodeType().getName();
                 final String subject = this.formUtils.getSubject(this.formUtils.getForm(node)).getIdentifier();
-                final NodeIterator resourceIteratorReferencingAnswers = serviceResolver.adaptTo(Session.class)
+                final NodeIterator resourceIteratorReferencingAnswers = session
                     .getWorkspace().getQueryManager().createQuery(
                         // Answers that were explicitly copied from this answer
                         "SELECT a.* FROM [" + answerNodeType + "] AS a WHERE a.copiedFrom = '" + node.getPath() + "'"
