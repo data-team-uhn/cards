@@ -117,9 +117,9 @@ function AddressQuestion(props) {
       >
       {inputGlobalStyles}
       <TextField
-        fullWidth
+        multiline
+        maxRows={4}
         variant="standard"
-        placeholder="Enter the address"
         onChange={event => setAddress(event.target.value)}
         defaultValue={currentStartValue}
         inputRef={materialRef}
