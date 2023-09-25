@@ -18,7 +18,6 @@ package io.uhndata.cards.forms.internal;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,10 +27,10 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.version.VersionManager;
 
 import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.observation.ResourceChange;
@@ -54,13 +53,14 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * @version $Id$
  */
 @Component(immediate = true, property = {
-        ResourceChangeListener.PATHS + "=/Forms",
-        ResourceChangeListener.CHANGES + "=CHANGED"
+    ResourceChangeListener.PATHS + "=/Forms",
+    ResourceChangeListener.CHANGES + "=CHANGED"
 })
 public class ReferenceAnswersChangedListener implements ResourceChangeListener
 {
     /** Answer's property name. **/
     public static final String VALUE = "value";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceAnswersChangedListener.class);
 
     /** Provides access to resources. */
@@ -122,16 +122,16 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     }
 
     /**
-     * This method reads through a NodeIterator of changed Nodes. If a given changed Node is a cards/Answer node
-     * all other cards/Answer nodes that make reference to it are updated so that the value property of the
-     * referenced Node matches the value property of the changed node.
+     * This method reads through a NodeIterator of changed Nodes. If a given changed Node is a cards/Answer node all
+     * other cards/Answer nodes that make reference to it are updated so that the value property of the referenced Node
+     * matches the value property of the changed node.
      *
-     * @param nodeIterator  an iterator of nodes of which have changed due to an update made to a Form
+     * @param nodeIterator an iterator of nodes of which have changed due to an update made to a Form
      * @param serviceResolver a ResourceResolver that can be used for querying the JCR
      * @param session a service session providing access to the repository
      */
     private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final ResourceResolver serviceResolver,
-                                             final Session session) throws RepositoryException
+        final Session session) throws RepositoryException
     {
         final VersionManager versionManager = session.getWorkspace().getVersionManager();
         Set<String> checkoutPaths = new HashSet<>();
@@ -139,32 +139,46 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             final Node node = nodeIterator.nextNode();
             if (node.isNodeType("cards:AnswerSection")) {
                 checkAndUpdateAnswersValues(node.getNodes(), serviceResolver, session);
-            } else if (node.hasProperty("sling:resourceSuperType")
-                        && "cards/Answer".equals(node.getProperty("sling:resourceSuperType").getString())) {
-                final Iterator<Resource> resourceIteratorReferencingAnswers = serviceResolver.findResources(
-                        "SELECT a.* FROM [cards:Answer] AS a WHERE a.copiedFrom = '" + node.getPath() + "'",
-                        "JCR-SQL2");
+            } else if (node.isNodeType("cards:Answer")) {
+                final String answerNodeType = node.getPrimaryNodeType().getName();
+                final String subject = this.formUtils.getSubject(this.formUtils.getForm(node)).getIdentifier();
+                final NodeIterator resourceIteratorReferencingAnswers = serviceResolver.adaptTo(Session.class)
+                    .getWorkspace().getQueryManager().createQuery(
+                        // Answers that were explicitly copied from this answer
+                        "SELECT a.* FROM [" + answerNodeType + "] AS a WHERE a.copiedFrom = '" + node.getPath() + "'"
+                            + " UNION "
+                            // Answers that don't have a value yet
+                            + "SELECT a.* FROM [" + answerNodeType + "] AS a"
+                            + "  INNER JOIN [cards:Form] AS f ON a.form = f.[jcr:uuid]"
+                            + "  INNER JOIN [cards:Question] AS q ON a.question = q.[jcr:uuid]"
+                            + "  WHERE"
+                            // The answer doesn't have a value
+                            + "    a.value is null"
+                            // The answer's question references this question
+                            + "    AND q.question = '" + node.getProperty("question").getNode().getPath() + "'"
+                            // The answer belongs to the same subject or one of its descendants
+                            + "    AND f.relatedSubjects = '" + subject + "'"
+                            // Use the fast index for the query
+                            + " OPTION (index tag cards)",
+                        "JCR-SQL2")
+                    .execute().getNodes();
+                final Property sourceAnswerValue =
+                    !node.hasProperty(VALUE) ? null : node.getProperty(VALUE);
                 while (resourceIteratorReferencingAnswers.hasNext()) {
-                    final Resource referenceAnswer = resourceIteratorReferencingAnswers.next();
-
-                    if (!referenceAnswer.getValueMap().containsKey(VALUE)) {
-                        continue;
-                    }
-                    if (!node.hasProperty(VALUE)) {
-                        continue;
-                    }
-                    final Property sourceAnswerValue = node.getProperty(VALUE);
-                    final Object referenceAnswerValue = referenceAnswer.getValueMap().get(VALUE);
-                    if (!referenceAnswerValue.toString().equals(sourceAnswerValue.getString())) {
-                        final String referenceFormPath = this.formUtils.getForm(referenceAnswer.adaptTo(Node.class))
-                                .getPath();
+                    final Node referenceAnswer = resourceIteratorReferencingAnswers.nextNode();
+                    if (isNotSame(sourceAnswerValue, referenceAnswer)) {
+                        final Node formNode = this.formUtils.getForm(referenceAnswer);
+                        final String referenceFormPath = formNode.getPath();
                         versionManager.checkout(referenceFormPath);
                         checkoutPaths.add(referenceFormPath);
-                        final Node formNode = session.getNode(referenceFormPath);
-                        final Node question = this.questionnaireUtils.getQuestion(referenceAnswer.getValueMap()
-                                .get("question").toString());
-                        Node changingAnswer = this.formUtils.getAnswer(formNode, question);
-                        changingAnswer.setProperty(VALUE, sourceAnswerValue.getValue());
+                        if (sourceAnswerValue == null) {
+                            referenceAnswer.setProperty(VALUE, (Value) null);
+                        } else if (sourceAnswerValue.isMultiple()) {
+                            referenceAnswer.setProperty(VALUE, sourceAnswerValue.getValues());
+                        } else {
+                            referenceAnswer.setProperty(VALUE, sourceAnswerValue.getValue());
+                        }
+                        referenceAnswer.setProperty("copiedFrom", node.getPath());
                     }
                 }
             }
@@ -173,5 +187,32 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         for (String path : checkoutPaths) {
             versionManager.checkin(path);
         }
+    }
+
+    private boolean isNotSame(final Property source, final Node reference) throws RepositoryException
+    {
+        final Property referenceAnswerValue =
+            !reference.hasProperty(VALUE) ? null : reference.getProperty(VALUE);
+
+        if (source == null && referenceAnswerValue != null || source != null && referenceAnswerValue == null) {
+            return true;
+        }
+        Set<String> sourceValues = new HashSet<>();
+        if (source.isMultiple()) {
+            for (Value v : source.getValues()) {
+                sourceValues.add(v.getString());
+            }
+        } else {
+            sourceValues.add(source.getValue().getString());
+        }
+        Set<String> referenceValues = new HashSet<>();
+        if (referenceAnswerValue.isMultiple()) {
+            for (Value v : referenceAnswerValue.getValues()) {
+                referenceValues.add(v.getString());
+            }
+        } else {
+            referenceValues.add(referenceAnswerValue.getValue().getString());
+        }
+        return !sourceValues.equals(referenceValues);
     }
 }
