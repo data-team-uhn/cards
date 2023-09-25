@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Postal Address Test</value>
+		<value>Address Test</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -38,11 +38,11 @@
 		<type>String</type>
 	</property>
 	<node>
-		<name>postal address</name>
+		<name>postal_address</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>postal address</value>
+			<value>Postal address</value>
 			<type>String</type>
 		</property>
 		<property>
