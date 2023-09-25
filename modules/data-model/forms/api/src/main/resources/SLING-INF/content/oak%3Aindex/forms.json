@@ -25,6 +25,10 @@
                     "notNullCheckEnabled": true,
                     "type": "String"
                 },
+                "copiedFrom": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -51,6 +55,10 @@
                 "form": {
                     "propertyIndex": true,
                     "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "copiedFrom": {
+                    "propertyIndex": true,
                     "type": "String"
                 },
                 "value": {
@@ -90,6 +98,10 @@
                     "notNullCheckEnabled": true,
                     "type": "String"
                 },
+                "copiedFrom": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -116,6 +128,10 @@
                 "form": {
                     "propertyIndex": true,
                     "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "copiedFrom": {
+                    "propertyIndex": true,
                     "type": "String"
                 },
                 "value": {
@@ -145,6 +161,10 @@
                     "notNullCheckEnabled": true,
                     "type": "String"
                 },
+                "copiedFrom": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -170,6 +190,10 @@
                 "form": {
                     "propertyIndex": true,
                     "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "copiedFrom": {
+                    "propertyIndex": true,
                     "type": "String"
                 },
                 "value": {
@@ -198,6 +222,10 @@
                 "form": {
                     "propertyIndex": true,
                     "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "copiedFrom": {
+                    "propertyIndex": true,
                     "type": "String"
                 },
                 "value": {
@@ -229,6 +257,10 @@
                     "notNullCheckEnabled": true,
                     "type": "String"
                 },
+                "copiedFrom": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -255,6 +287,10 @@
                 "form": {
                     "propertyIndex": true,
                     "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "copiedFrom": {
+                    "propertyIndex": true,
                     "type": "String"
                 },
                 "value": {
@@ -284,6 +320,10 @@
                     "notNullCheckEnabled": true,
                     "type": "String"
                 },
+                "copiedFrom": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -311,6 +351,10 @@
                     "notNullCheckEnabled": true,
                     "type": "String"
                 },
+                "copiedFrom": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,
@@ -336,6 +380,10 @@
                 "form": {
                     "propertyIndex": true,
                     "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "copiedFrom": {
+                    "propertyIndex": true,
                     "type": "String"
                 },
                 "value": {
