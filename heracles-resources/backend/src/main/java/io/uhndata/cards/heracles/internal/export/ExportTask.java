@@ -123,18 +123,30 @@ public class ExportTask implements Runnable
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))
             : null;
 
-        Set<SubjectIdentifier> changedSubjects =
-            this.getChangedSubjects(requestDateStringLower, requestDateStringUpper);
+        boolean mustPopResolver = false;
+        try (ResourceResolver resolver =
+            this.resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "S3Export"))) {
+            this.rrp.push(resolver);
+            mustPopResolver = true;
+            Set<SubjectIdentifier> changedSubjects =
+                this.getChangedSubjects(requestDateStringLower, requestDateStringUpper, resolver);
 
-        for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents =
-                getSubjectContents(identifier.getPath(), requestDateStringLower, requestDateStringUpper);
-            if (subjectContents != null) {
-                String filename = String.format(
-                    "%s_formData_%s.json",
-                    cleanString(identifier.getParticipantId()),
-                    fileDateString);
-                this.output(subjectContents, filename);
+            for (SubjectIdentifier identifier : changedSubjects) {
+                SubjectContents subjectContents =
+                    getSubjectContents(identifier.getPath(), requestDateStringLower, requestDateStringUpper, resolver);
+                if (subjectContents != null) {
+                    String filename = String.format(
+                        "%s_formData_%s.json",
+                        cleanString(identifier.getParticipantId()),
+                        fileDateString);
+                    this.output(subjectContents, filename);
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
             }
         }
     }
@@ -147,17 +159,30 @@ public class ExportTask implements Runnable
         String startDateString = yesterday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
         String endDateString =
             yesterday.plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        boolean mustPopResolver = false;
+        try (ResourceResolver resolver =
+            this.resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "S3Export"))) {
+            this.rrp.push(resolver);
+            mustPopResolver = true;
 
-        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(startDateString, endDateString);
+            Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(startDateString, endDateString, resolver);
 
-        for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), startDateString, endDateString);
-            if (subjectContents != null) {
-                String filename = String.format(
-                    "%s_formData_%s.json",
-                    cleanString(identifier.getParticipantId()),
-                    fileDateString);
-                this.output(subjectContents, filename);
+            for (SubjectIdentifier identifier : changedSubjects) {
+                SubjectContents subjectContents =
+                    getSubjectContents(identifier.getPath(), startDateString, endDateString, resolver);
+                if (subjectContents != null) {
+                    String filename = String.format(
+                        "%s_formData_%s.json",
+                        cleanString(identifier.getParticipantId()),
+                        fileDateString);
+                    this.output(subjectContents, filename);
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
             }
         }
     }
@@ -261,34 +286,29 @@ public class ExportTask implements Runnable
     }
 
     private Set<SubjectIdentifier> getChangedSubjects(String requestDateStringLower,
-        String requestDateStringUpper) throws LoginException
+        String requestDateStringUpper, final ResourceResolver resolver) throws LoginException
     {
-        try (ResourceResolver resolver =
-            this.resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "S3Export"))) {
-            Set<SubjectIdentifier> subjects = new HashSet<>();
-            String query = String.format(
-                "SELECT subject.* FROM [cards:Form] AS form INNER JOIN [cards:Subject] AS subject"
-                    + " ON form.'subject'=subject.[jcr:uuid]"
-                    + " WHERE form.[jcr:lastModified] >= '%s'"
-                    + (requestDateStringUpper != null ? " AND form.[jcr:lastModified] < '%s'" : "")
-                    + " AND NOT form.[statusFlags] = 'INCOMPLETE'",
-                requestDateStringLower, requestDateStringUpper);
+        Set<SubjectIdentifier> subjects = new HashSet<>();
+        String query = String.format(
+            "SELECT subject.* FROM [cards:Form] AS form INNER JOIN [cards:Subject] AS subject"
+                + " ON form.'subject'=subject.[jcr:uuid]"
+                + " WHERE form.[jcr:lastModified] >= '%s'"
+                + (requestDateStringUpper != null ? " AND form.[jcr:lastModified] < '%s'" : "")
+                + " AND NOT form.[statusFlags] = 'INCOMPLETE'",
+            requestDateStringLower, requestDateStringUpper);
 
-            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
-            while (results.hasNext()) {
-                Resource subject = results.next();
-                String path = subject.getPath();
-                String participantId = subject.getValueMap().get("identifier", String.class);
-                subjects.add(new SubjectIdentifier(path, participantId));
-            }
-            return subjects;
-        } catch (Exception e) {
-            throw e;
+        Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
+        while (results.hasNext()) {
+            Resource subject = results.next();
+            String path = subject.getPath();
+            String participantId = subject.getValueMap().get("identifier", String.class);
+            subjects.add(new SubjectIdentifier(path, participantId));
         }
+        return subjects;
     }
 
     private SubjectContents getSubjectContents(String path, String requestDateStringLower,
-        String requestDateStringUpper) throws LoginException
+        String requestDateStringUpper, final ResourceResolver resolver) throws LoginException
     {
         String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
@@ -301,21 +321,10 @@ public class ExportTask implements Runnable
             + ".dataFilter:statusNot=INCOMPLETE",
             path, escapeForDataUrl(requestDateStringLower),
             requestDateStringUpper != null ? escapeForDataUrl(requestDateStringUpper) : "");
-        boolean mustPopResolver = false;
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            this.rrp.push(resolver);
-            mustPopResolver = true;
-            Resource subjectData = resolver.resolve(subjectDataUrl);
-            Resource identifiedSubjectData = resolver.resolve(identifiedSubjectDataUrl);
-            return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(),
-                identifiedSubjectData.adaptTo(JsonObject.class), subjectDataUrl);
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            if (mustPopResolver) {
-                this.rrp.pop();
-            }
-        }
+        Resource subjectData = resolver.resolve(subjectDataUrl);
+        Resource identifiedSubjectData = resolver.resolve(identifiedSubjectDataUrl);
+        return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(),
+            identifiedSubjectData.adaptTo(JsonObject.class), subjectDataUrl);
     }
 
     private void output(SubjectContents input, String filename)
