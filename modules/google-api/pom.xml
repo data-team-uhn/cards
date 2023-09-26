@@ -23,12 +23,12 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>cards-modules</artifactId>
-    <version>0.9.21-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-dataentry</artifactId>
+  <artifactId>cards-google-api</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Data entry module</name>
+  <name>CARDS - Google API module</name>
 
   <build>
     <plugins>
@@ -44,28 +44,13 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/apps/cards/config/;path:=/apps/cards/config/;overwrite:=false,
-              SLING-INF/content/libs/cards/dataQuery/;path:=/libs/cards/dataQuery/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
-              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
-        </configuration>
-      </plugin>
-
-      <!-- Reconfigure to ignore theme files from material-dashboard-react, as they're under their own license -->
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <excludes combine.children="append">
-            <exclude>**/vocabQuery/queryStyle.jsx</exclude>
-            <exclude>**/vocabQuery/themeStyle.jsx</exclude>
-          </excludes>
         </configuration>
       </plugin>
     </plugins>
@@ -77,24 +62,12 @@
       <artifactId>javax.json-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>jackrabbit-spi-commons</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-store-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.scripting.sightly.runtime</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
@@ -109,18 +82,6 @@
       <artifactId>jcr</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-collections4</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
@@ -128,12 +89,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>cards-resolver-provider</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-permissions</artifactId>
-      <version>${project.version}</version>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

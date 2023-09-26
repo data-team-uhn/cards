@@ -2,6 +2,6 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "GoogleApiKey",
-  "cards:extensionRenderURL": "asset:cards-dataentry.GoogleApiKey.js",
+  "cards:extensionRenderURL": "asset:cards-google-api.GoogleApiKey.js",
   "cards:targetURL": "/content.html/admin/GoogleApiKey"
 }

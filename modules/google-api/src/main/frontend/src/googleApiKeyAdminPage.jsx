@@ -27,11 +27,9 @@ import {
   Typography,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import AdminScreen from "./adminDashboard/AdminScreen.jsx";
 
-import AdminScreen from "../adminDashboard/AdminScreen.jsx";
-
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const APIKEY_SERVLET_URL = "/.googleApiKey";
 
