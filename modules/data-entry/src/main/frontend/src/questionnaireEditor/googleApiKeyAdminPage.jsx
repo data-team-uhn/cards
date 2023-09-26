@@ -59,7 +59,7 @@ export default function googleApiKeyAdminPage() {
   }, [])
 
   // function to create / edit node
-  function addNewKey() {
+  function updateKey() {
     const URL = `/libs/cards/conf/GoogleApiKey`;
     var request_data = new FormData();
     request_data.append('key', googleApiKey);
@@ -75,7 +75,7 @@ export default function googleApiKeyAdminPage() {
     )
   }
 
-  return(
+  return (
     <AdminScreen title="Google API key configuration">
       <Grid container direction="column" spacing={5} justifyContent="space-around">
         <Grid item>
@@ -97,15 +97,14 @@ export default function googleApiKeyAdminPage() {
                   onChange={(evt) => {setGoogleApiKey(evt.target.value); setHasChanges(true); setError("");}}
                   value={googleApiKey}
                   label="Google API key"
-                  fullWidth={true}
+                  fullWidth
                 />
             </Grid>
             <Grid item xs={2}>
               <Button
-                color="primary"
                 variant="contained"
                 disabled={!hasChanges}
-                onClick={() => {addNewKey()}}
+                onClick={updateKey}
               >
                 Submit
               </Button>
