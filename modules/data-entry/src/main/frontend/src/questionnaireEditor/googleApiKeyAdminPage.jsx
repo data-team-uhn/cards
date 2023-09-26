@@ -85,13 +85,14 @@ export default function googleApiKeyAdminPage() {
         <Grid item>
           <Grid container
             direction="row"
-            alignItems="center"
+            alignItems="flex-start"
             justifyContent="space-between"
             alignContent="space-between"
             spacing={2}
           >
             <Grid item xs={10}>
               <TextField
+                  size="small"
                   variant="outlined"
                   onChange={(evt) => {setGoogleApiKey(evt.target.value); setHasChanges(true); setError("");}}
                   value={googleApiKey}
