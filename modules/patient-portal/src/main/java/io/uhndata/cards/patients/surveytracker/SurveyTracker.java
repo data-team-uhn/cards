@@ -272,6 +272,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             // Not found, create a new form
             surveyStatusForm = createSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
         }
+        surveyStatusForm.getSession().getWorkspace().getVersionManager().checkout(surveyStatusForm.getPath());
         return surveyStatusForm;
     }
 
@@ -289,7 +290,9 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
         final NodeIterator queryResult =
             session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
         if (queryResult.hasNext()) {
-            return queryResult.nextNode();
+            final Node result = queryResult.nextNode();
+            result.getSession().getWorkspace().getVersionManager().checkout(result.getPath());
+            return result;
         }
         return null;
     }

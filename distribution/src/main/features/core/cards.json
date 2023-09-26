@@ -46,10 +46,6 @@
             "start-order":"25"
         },
         {
-            "id":"io.uhndata.cards:cards-versioning:${project.version}",
-            "start-order":"25"
-        },
-        {
             "id":"io.uhndata.cards:cards-permissions:${project.version}",
             "start-order":"15"
         },
