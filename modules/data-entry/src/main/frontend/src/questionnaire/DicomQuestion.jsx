@@ -332,7 +332,7 @@ function DicomQuestion(props) {
 DicomQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
   }).isRequired,
 };
 

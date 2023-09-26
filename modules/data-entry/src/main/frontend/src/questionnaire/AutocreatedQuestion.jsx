@@ -77,7 +77,7 @@ let AutocreatedQuestion = (props) => {
 AutocreatedQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
     description: PropTypes.string,
     displayMode: PropTypes.oneOf(['plain', 'formatted', 'hidden', 'summary']),
     unitOfMeasurement: PropTypes.string

@@ -84,7 +84,7 @@ function BooleanQuestion(props) {
 BooleanQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
   }).isRequired,
   text: PropTypes.string,
   enableUnknown: PropTypes.bool,

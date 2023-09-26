@@ -107,7 +107,7 @@ function ResourceQuestion(props) {
 ResourceQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
     maxAnswers: PropTypes.number,
     displayMode: PropTypes.string,
     primaryType: PropTypes.string,
