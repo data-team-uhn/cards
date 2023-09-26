@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -49,6 +50,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import io.uhndata.cards.errortracking.ErrorLogger;
+import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 public class ExportTask implements Runnable
@@ -99,6 +102,12 @@ public class ExportTask implements Runnable
             }
         } catch (Exception e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
+
+            // Store the stack trace of this failure
+            ErrorLogger.logError(e);
+
+            // Increment the count of S3ExportFailures
+            Metrics.increment(this.resolverFactory, "S3ExportFailures", 1);
         }
     }
 
@@ -114,18 +123,30 @@ public class ExportTask implements Runnable
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))
             : null;
 
-        Set<SubjectIdentifier> changedSubjects =
-            this.getChangedSubjects(requestDateStringLower, requestDateStringUpper);
+        boolean mustPopResolver = false;
+        try (ResourceResolver resolver =
+            this.resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "S3Export"))) {
+            this.rrp.push(resolver);
+            mustPopResolver = true;
+            Set<SubjectIdentifier> changedSubjects =
+                this.getChangedSubjects(requestDateStringLower, requestDateStringUpper, resolver);
 
-        for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents =
-                getSubjectContents(identifier.getPath(), requestDateStringLower, requestDateStringUpper);
-            if (subjectContents != null) {
-                String filename = String.format(
-                    "%s_formData_%s.json",
-                    cleanString(identifier.getParticipantId()),
-                    fileDateString);
-                this.output(subjectContents, filename);
+            for (SubjectIdentifier identifier : changedSubjects) {
+                SubjectContents subjectContents =
+                    getSubjectContents(identifier.getPath(), requestDateStringLower, requestDateStringUpper, resolver);
+                if (subjectContents != null) {
+                    String filename = String.format(
+                        "%s_formData_%s.json",
+                        cleanString(identifier.getParticipantId()),
+                        fileDateString);
+                    this.output(subjectContents, filename);
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
             }
         }
     }
@@ -138,17 +159,30 @@ public class ExportTask implements Runnable
         String startDateString = yesterday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
         String endDateString =
             yesterday.plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        boolean mustPopResolver = false;
+        try (ResourceResolver resolver =
+            this.resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "S3Export"))) {
+            this.rrp.push(resolver);
+            mustPopResolver = true;
 
-        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(startDateString, endDateString);
+            Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(startDateString, endDateString, resolver);
 
-        for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), startDateString, endDateString);
-            if (subjectContents != null) {
-                String filename = String.format(
-                    "%s_formData_%s.json",
-                    cleanString(identifier.getParticipantId()),
-                    fileDateString);
-                this.output(subjectContents, filename);
+            for (SubjectIdentifier identifier : changedSubjects) {
+                SubjectContents subjectContents =
+                    getSubjectContents(identifier.getPath(), startDateString, endDateString, resolver);
+                if (subjectContents != null) {
+                    String filename = String.format(
+                        "%s_formData_%s.json",
+                        cleanString(identifier.getParticipantId()),
+                        fileDateString);
+                    this.output(subjectContents, filename);
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
             }
         }
     }
@@ -252,33 +286,29 @@ public class ExportTask implements Runnable
     }
 
     private Set<SubjectIdentifier> getChangedSubjects(String requestDateStringLower,
-        String requestDateStringUpper) throws LoginException
+        String requestDateStringUpper, final ResourceResolver resolver) throws LoginException
     {
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Set<SubjectIdentifier> subjects = new HashSet<>();
-            String query = String.format(
-                "SELECT subject.* FROM [cards:Form] AS form INNER JOIN [cards:Subject] AS subject"
-                    + " ON form.'subject'=subject.[jcr:uuid]"
-                    + " WHERE form.[jcr:lastModified] >= '%s'"
-                    + (requestDateStringUpper != null ? " AND form.[jcr:lastModified] < '%s'" : "")
-                    + " AND NOT form.[statusFlags] = 'INCOMPLETE'",
-                requestDateStringLower, requestDateStringUpper);
+        Set<SubjectIdentifier> subjects = new HashSet<>();
+        String query = String.format(
+            "SELECT subject.* FROM [cards:Form] AS form INNER JOIN [cards:Subject] AS subject"
+                + " ON form.'subject'=subject.[jcr:uuid]"
+                + " WHERE form.[jcr:lastModified] >= '%s'"
+                + (requestDateStringUpper != null ? " AND form.[jcr:lastModified] < '%s'" : "")
+                + " AND NOT form.[statusFlags] = 'INCOMPLETE'",
+            requestDateStringLower, requestDateStringUpper);
 
-            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
-            while (results.hasNext()) {
-                Resource subject = results.next();
-                String path = subject.getPath();
-                String participantId = subject.getValueMap().get("identifier", String.class);
-                subjects.add(new SubjectIdentifier(path, participantId));
-            }
-            return subjects;
-        } catch (Exception e) {
-            throw e;
+        Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
+        while (results.hasNext()) {
+            Resource subject = results.next();
+            String path = subject.getPath();
+            String participantId = subject.getValueMap().get("identifier", String.class);
+            subjects.add(new SubjectIdentifier(path, participantId));
         }
+        return subjects;
     }
 
     private SubjectContents getSubjectContents(String path, String requestDateStringLower,
-        String requestDateStringUpper) throws LoginException
+        String requestDateStringUpper, final ResourceResolver resolver) throws LoginException
     {
         String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
@@ -291,21 +321,10 @@ public class ExportTask implements Runnable
             + ".dataFilter:statusNot=INCOMPLETE",
             path, escapeForDataUrl(requestDateStringLower),
             requestDateStringUpper != null ? escapeForDataUrl(requestDateStringUpper) : "");
-        boolean mustPopResolver = false;
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            this.rrp.push(resolver);
-            mustPopResolver = true;
-            Resource subjectData = resolver.resolve(subjectDataUrl);
-            Resource identifiedSubjectData = resolver.resolve(identifiedSubjectDataUrl);
-            return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(),
-                identifiedSubjectData.adaptTo(JsonObject.class), subjectDataUrl);
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            if (mustPopResolver) {
-                this.rrp.pop();
-            }
-        }
+        Resource subjectData = resolver.resolve(subjectDataUrl);
+        Resource identifiedSubjectData = resolver.resolve(identifiedSubjectDataUrl);
+        return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(),
+            identifiedSubjectData.adaptTo(JsonObject.class), subjectDataUrl);
     }
 
     private void output(SubjectContents input, String filename)
@@ -325,8 +344,12 @@ public class ExportTask implements Runnable
             .build();
         try {
             s3.putObject(s3BucketName, filename, input.getData());
-            input.getSummary().forEach(form -> LOGGER.info("Exported {}", form));
+            input.getSummary().forEach(form -> {
+                LOGGER.info("Exported {}", form);
+                Metrics.increment(this.resolverFactory, "S3ExportedForms", 1);
+            });
             LOGGER.info("Exported {} to {}", input.getUrl(), filename);
+            Metrics.increment(this.resolverFactory, "S3ExportedSubjects", 1);
         } catch (Exception e) {
             throw e;
         }

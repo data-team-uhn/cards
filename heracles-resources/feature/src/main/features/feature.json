@@ -83,10 +83,33 @@
     }
   ],
   "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~HERACLES":{
+      "service.ranking:Integer":300,
+      "scripts": [
+        // A /Metrics sling:Folder for storing performance info to be sent periodically via Slack
+        "create path (sling:Folder) /Metrics/S3ExportedForms/name(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/S3ExportedForms/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/S3ExportedForms/total(nt:unstructured mixin mix:atomicCounter)",
+        "create path (sling:Folder) /Metrics/S3ExportedSubjects/name(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/S3ExportedSubjects/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/S3ExportedSubjects/total(nt:unstructured mixin mix:atomicCounter)",
+        "create path (sling:Folder) /Metrics/S3ExportFailures/name(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/S3ExportFailures/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/S3ExportFailures/total(nt:unstructured mixin mix:atomicCounter)",
+        "set properties on /Metrics/S3ExportedForms/name \n   default value{String} to \"{001} Number Of Forms Exported to S3 bucket\" \n end",
+        "set properties on /Metrics/S3ExportedForms/prevTotal \n   default value{Long} to 0 \n end",
+        "set properties on /Metrics/S3ExportedSubjects/name \n   default value{String} to \"{002} Number Of Subjects Exported to S3 bucket\" \n end",
+        "set properties on /Metrics/S3ExportedSubjects/prevTotal \n   default value{Long} to 0 \n end",
+        "set properties on /Metrics/S3ExportFailures/name \n   default value{String} to \"{003} Number Of Failed S3 export jobs\" \n end",
+        "set properties on /Metrics/S3ExportFailures/prevTotal \n   default value{Long} to 0 \n end",
+        "create service user cards-exporter with path system/cards \n set principal ACL for cards-exporter \n   allow jcr:read on / \n end"
+      ]
+    },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~heracles":{
       "user.mapping":[
-        "io.uhndata.cards.heracles-backend=[sling-readall]",
-        "io.uhndata.cards.heracles-backend:PauseResumeEditor=[sling-readall]"
+        "io.uhndata.cards.heracles-backend:S3Export=[cards-exporter]",
+        "io.uhndata.cards.heracles-backend:PauseResumeEditor=[sling-readall]",
+        "io.uhndata.cards.heracles-backend:MetricLogger=[cards-metrics]"
       ]
     }
   }

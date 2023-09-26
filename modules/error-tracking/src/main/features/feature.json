@@ -16,17 +16,24 @@
 // under the License.
 
 {
-  "title": "CARDS - Metrics support",
-  "description": "Feature enabling support for performance metrics recording",
+  "title": "CARDS - Error Tracking",
+  "description": "Feature enabling support for keeping track of errors by storing their stack traces in the JCR",
   "bundles":[
     {
       "id":"org.apache.sling:org.apache.sling.api:2.27.0",
-      "start-order":"25"
+      "start-order":"26"
     },
     {
       "id":"${project.groupId}:${project.artifactId}:${project.version}",
-      "start-order":"25"
+      "start-order":"26"
     }
   ],
+  "configurations":{
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~error-tracking":{
+      "user.mapping":[
+        "io.uhndata.cards.error-tracking=[error-tracking]"
+      ]
+    }
+  },
   "repoinit:TEXT|true": "@file"
 }

@@ -20,8 +20,10 @@
 package io.uhndata.cards.slacknotifications;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -71,16 +73,61 @@ public class SlackNotificationsTask implements Runnable
         return notificationLine;
     }
 
-    private void postToSlack(String slackUrl, String msg)
+    private void postToSlack(String slackUrl, String msg, String color)
     {
         try {
             JsonObject slackApiReq = Json.createObjectBuilder()
-                .add("text", msg)
+                .add("attachments", Json.createArrayBuilder()
+                    .add(Json.createObjectBuilder()
+                        .add("text", msg)
+                        .add("fallback", "Failed to generate a report :(")
+                        .add("color", color)
+                    )
+                )
                 .build();
             HttpRequests.getPostResponse(slackUrl, slackApiReq.toString(), "application/json");
         } catch (IOException e) {
             LOGGER.warn("Failed to send performance update to Slack");
         }
+    }
+
+    private List<String> getLoggedEvents(ResourceResolver resolver)
+    {
+        // Get all the nt:file nodes under /LoggedEvents/
+        Iterator<Resource> loggedEventsIter;
+        loggedEventsIter = resolver.findResources(
+            "SELECT n.* FROM [nt:file] AS n WHERE isdescendantnode(n, '/LoggedEvents')",
+            "JCR-SQL2"
+        );
+
+        List<String> errorStackTraces = new ArrayList<>();
+        while (loggedEventsIter.hasNext()) {
+            Resource thisResource = loggedEventsIter.next();
+            Resource jcrContentResource = thisResource.getChild("jcr:content");
+            if (jcrContentResource == null) {
+                continue;
+            }
+            String thisStackTrace = jcrContentResource.getValueMap().get("jcr:data", "");
+            errorStackTraces.add(thisStackTrace);
+        }
+        return errorStackTraces;
+    }
+
+    private String generateStackTraceMessagePart(List<String> errorStackTraces)
+    {
+        String slackNotificationString = "";
+        Iterator<String> stackTracesIter = errorStackTraces.iterator();
+
+        // Include a separator message if there are any stack traces to be printed
+        if (stackTracesIter.hasNext()) {
+            slackNotificationString += "\n\n" + "The following errors were logged:";
+        }
+
+        // Include the stack traces text
+        while (stackTracesIter.hasNext()) {
+            slackNotificationString += "\n" + "```" + "\n" + stackTracesIter.next() + "\n" + "```";
+        }
+        return slackNotificationString;
     }
 
     @Override
@@ -115,6 +162,9 @@ public class SlackNotificationsTask implements Runnable
                 gatheredStatistics.put(thisHumanName, thisMetricValue);
             }
 
+            // Get all the error stack traces under /LoggedEvents/
+            List<String> errorStackTraces = getLoggedEvents(resolver);
+
             resolver.close();
 
             // Build the notification update string to be sent to Slack
@@ -128,10 +178,15 @@ public class SlackNotificationsTask implements Runnable
                 );
             }
 
-            if (slackNotificationString.length() == 0) {
-                slackNotificationString = "*ERROR*: Could not gather any performance statistics";
-            }
-            postToSlack(SLACK_PERFORMANCE_URL, slackNotificationString);
+            // Include any relevant stack traces
+            slackNotificationString += generateStackTraceMessagePart(errorStackTraces);
+
+            postToSlack(SLACK_PERFORMANCE_URL,
+                (slackNotificationString.length() == 0)
+                    ? "*ERROR*: Could not gather any performance statistics" : slackNotificationString,
+                (slackNotificationString.length() == 0 || errorStackTraces.size() > 0)
+                    ? "#f3db0e" : "#2eb886"
+            );
 
         } catch (LoginException e) {
             LOGGER.warn("Failed to results.next().getPath()");

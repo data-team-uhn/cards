@@ -24,16 +24,6 @@ set principal ACL for sling-readall
     allow   jcr:read    on /
 end
 
-# cards-metrics
-create service user cards-metrics with path system/sling
-
-set principal ACL for cards-metrics
-    allow    jcr:read    on /Metrics/
-    allow    jcr:write   on /Metrics/
-    allow    jcr:addChildNodes    on /Metrics/
-    allow    jcr:nodeTypeManagement    on /Metrics/
-end
-
 # sling-xss
 create service user sling-xss with path system/sling
 
