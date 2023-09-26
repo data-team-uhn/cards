@@ -24,10 +24,10 @@ import {
   Button,
   Grid,
   TextField,
-  Typography,
 } from "@mui/material";
 
 import AdminScreen from "./adminDashboard/AdminScreen.jsx";
+import FormattedText from "./components/FormattedText.jsx";
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
@@ -77,7 +77,7 @@ export default function googleApiKeyAdminPage() {
     <AdminScreen title="Google API key configuration">
       <Grid container direction="column" spacing={5} justifyContent="space-around">
         <Grid item>
-          <Typography>An API key enables access to Google services such as address autocomplete.</Typography>
+          <FormattedText>A Google API key enables access to Google services such as address autocomplete. You can obtain an API key at https://developers.google.com/maps/documentation/javascript/get-api-key.</FormattedText>
         </Grid>
         { error && <Grid item><Alert severity="error">{error}</Alert></Grid> }
         <Grid item>
