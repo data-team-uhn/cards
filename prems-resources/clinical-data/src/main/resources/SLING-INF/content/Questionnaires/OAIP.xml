@@ -1797,5 +1797,24 @@
 				</property>
 			</node>
 		</node>
+		<node>
+			<name>oaip_14</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>During this hospital stay, did you get information in writing about what symptoms or health problems to look out for after you left hospital?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
 	</node>
 </node>

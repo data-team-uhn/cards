@@ -727,4 +727,23 @@
 			<type>Long</type>
 		</property>
 	</node>
+	<node>
+		<name>ic_8</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Please specify below if you would prefer to provide in-person feedback. The interview would be 30 minutes and would be scheduled at a time that is convenient for you. In appreciation of your time we are offering a $25 gift card.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+	</node>
 </node>
