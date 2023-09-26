@@ -522,7 +522,7 @@ ResourceQuery.propTypes = {
     placeholder: PropTypes.string,
     value: PropTypes.string,
     questionDefinition: PropTypes.shape({
-      text: PropTypes.string.isRequired,
+      text: PropTypes.string,
       maxAnswers: PropTypes.number,
       primaryType: PropTypes.string,
       labelProperty: PropTypes.string,

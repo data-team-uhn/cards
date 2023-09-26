@@ -81,7 +81,7 @@ function VocabularyQuestion(props) {
 VocabularyQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
     sourceVocabularies: PropTypes.array.isRequired
   }).isRequired,
   text: PropTypes.string

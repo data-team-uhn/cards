@@ -89,7 +89,7 @@ function TextQuestion(props) {
 TextQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
     minAnswers: PropTypes.number,
     maxAnswers: PropTypes.number,
     displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input", "hidden"]),
