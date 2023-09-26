@@ -117,6 +117,7 @@ function AddressQuestion(props) {
       >
       {inputGlobalStyles}
       <TextField
+        className={classes.textField}
         multiline
         maxRows={4}
         variant="standard"
