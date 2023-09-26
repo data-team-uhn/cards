@@ -96,7 +96,7 @@ function AddressQuestion(props) {
   let currentStartValue = existingAnswer && existingAnswer[1].value || "";
   const [address, setAddress] = useState(currentStartValue);
 
-  const countries = questionDefinition.onlyCountries?.split(/\s*,\s*/) || undefined;
+  const countries = questionDefinition.countries?.split(/\s*,\s*/) || undefined;
   let options = {
     types: ["address"],
     fields: ["formatted_address"]
@@ -141,7 +141,7 @@ AddressQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
-    onlyCountries: PropTypes.string,
+    countries: PropTypes.string,
   }).isRequired,
 };
 

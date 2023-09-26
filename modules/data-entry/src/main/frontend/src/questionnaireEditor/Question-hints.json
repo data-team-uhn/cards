@@ -5,6 +5,7 @@
   "question": "Path to a question, either in this or a different questionnaire. Example: `/Questionnaires/Demographics/name`",
   "defaultCountry": "The default country code (ISO 3166), for example 'ca'.",
   "regions": "In the country dropdown, show only countries from certain regions or subregions, specified as a comma-separated list. For example:\n*  Regions - `america, europe, asia, oceania, africa`);\n* Subregions -`north-america, south-america, central-america, carribean, eu-union, ex-ussr, ex-yugos, baltic, middle-east, north-africa`.",
-  "onlyCountries": "Explicit list of comma-separated country codes to be made available in the dropdown, for example `es, fr, it`."
+  "onlyCountries": "Explicit list of comma-separated country codes to be made available in the dropdown, for example `es, fr, it`.",
+  "countries": "When address autocomplete is enabled by providing a Google API key, suggestions will be restricted to addresses from the countries listed here. Example value: `ca, us`.\n\nYou can obtain a Google API key at [https://developers.google.com/maps/documentation/javascript/get-api-key] and add it to **Administration** > **Google API key configuration**."
 }
 
