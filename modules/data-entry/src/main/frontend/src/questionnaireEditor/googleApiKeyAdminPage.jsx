@@ -35,12 +35,6 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 
 const APIKEY_SERVLET_URL = "/.googleApiKey";
 
-const useStyles = makeStyles(theme => ({
-  noKeyInfo: {
-    padding: theme.spacing(1, 0)
-  },
-}));
-
 export default function googleApiKeyAdminPage() {
   const [ googleSystemApiKey, setGoogleSystemApiKey ] = useState("");
   const [ googleApiKey, setGoogleApiKey ] = useState("");
@@ -48,7 +42,6 @@ export default function googleApiKeyAdminPage() {
   const [ error, setError ] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
-  const classes = useStyles();
 
   useEffect(() => {
     fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
@@ -84,13 +77,11 @@ export default function googleApiKeyAdminPage() {
 
   return(
     <AdminScreen title="Google API key configuration">
-      <Grid container direction="column" spacing={6} justifyContent="space-around">
-        { !googleSystemApiKey &&
-         <Grid item className={classes.noKeyInfo}>
-           <Typography>Your system does not have a Google API Key configured.</Typography>
-           <Typography>Without an API key, you cannot access Google services such as address autocomplete.</Typography>
-         </Grid> }
-        { error && <Alert severity="error">{error}</Alert> }
+      <Grid container direction="column" spacing={5} justifyContent="space-around">
+        <Grid item>
+          <Typography>An API key enables access to Google services such as address autocomplete.</Typography>
+        </Grid>
+        { error && <Grid item><Alert severity="error">{error}</Alert></Grid> }
         <Grid item>
           <Grid container
             direction="row"
