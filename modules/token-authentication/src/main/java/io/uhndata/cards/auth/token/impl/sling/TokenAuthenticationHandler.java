@@ -39,8 +39,8 @@ import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.auth.token.CardsToken;
 import io.uhndata.cards.auth.token.TokenManager;
-import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
 
 /**
  * Implements the Sling part of token authentication, reading authentication data from the request and passing the
@@ -66,10 +66,8 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
     @Override
     public AuthenticationInfo extractCredentials(HttpServletRequest request, HttpServletResponse response)
     {
-        AuthenticationInfo info = null;
-
         // 1. Try credentials from request parameters
-        info = this.extractRequestParameterAuthentication(request, response);
+        AuthenticationInfo info = this.extractRequestParameterAuthentication(request, response);
 
         // 2. Try credentials from a cookie
         if (info == null) {
@@ -143,10 +141,10 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
     private Calendar getTokenExpirationDate(final String loginToken)
     {
         final TokenInfo token = this.tokenManager.parse(loginToken);
-        if (token == null || !(token instanceof CardsTokenImpl)) {
+        if (token == null || !(token instanceof CardsToken)) {
             return null;
         }
-        final CardsTokenImpl cardsToken = (CardsTokenImpl) token;
+        final CardsToken cardsToken = (CardsToken) token;
         return cardsToken.getExpirationTime();
     }
 
@@ -218,7 +216,7 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
         final HttpServletRequest request, final HttpServletResponse response)
     {
         // Try to parse it
-        final TokenInfo token = this.tokenManager.parse(loginToken);
+        final CardsToken token = this.tokenManager.parse(loginToken);
         // If it is not a valid token, then trying to parse it would return null
         if (token == null) {
             if (loginToken != null) {

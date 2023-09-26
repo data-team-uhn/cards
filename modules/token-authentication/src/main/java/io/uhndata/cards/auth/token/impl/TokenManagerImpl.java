@@ -32,7 +32,6 @@ import javax.jcr.Session;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenConfiguration;
-import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
 import org.apache.jackrabbit.oak.spi.security.user.util.PasswordUtil;
 import org.apache.jackrabbit.util.Text;
 import org.apache.sling.api.resource.LoginException;
@@ -46,6 +45,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.auth.token.CardsToken;
 import io.uhndata.cards.auth.token.TokenManager;
 
 /**
@@ -70,7 +70,7 @@ public class TokenManagerImpl implements TokenManager
     private TokenConfiguration configuration;
 
     @Override
-    public TokenInfo create(final String userId, final Calendar expiration, final Map<String, String> extraData)
+    public CardsToken create(final String userId, final Calendar expiration, final Map<String, String> extraData)
     {
         // Get a service session, since this may be called in a background thread without a user-bound session
         // FIXME This means that every user can create tokens for another user if they manage to call this service;
@@ -91,7 +91,7 @@ public class TokenManagerImpl implements TokenManager
     }
 
     @Override
-    public TokenInfo parse(final String loginToken)
+    public CardsToken parse(final String loginToken)
     {
         if (loginToken == null) {
             return null;
@@ -100,7 +100,7 @@ public class TokenManagerImpl implements TokenManager
         // The login token has the format <nodeUUID> or <nodeUUID>-<secretKey>
         // Extract the node UUID
         // The secret key does not need to be used/validated now, so just ignore it
-        final String nodeId = StringUtils.substringBefore(loginToken, CardsTokenImpl.TOKEN_DELIMITER);
+        final String nodeId = StringUtils.substringBefore(loginToken, CardsToken.TOKEN_DELIMITER);
 
         try (ResourceResolver srr = this.rrf.getServiceResourceResolver(null)) {
             final Node tokenNode = srr.adaptTo(Session.class).getNodeByIdentifier(nodeId);
@@ -137,8 +137,7 @@ public class TokenManagerImpl implements TokenManager
         }
         try {
             final Node tokensNode = getOrCreateSystemTokensNode(session);
-            final Node userTokensNode = getOrCreateUserTokensNode(tokensNode, userId, session);
-            return userTokensNode;
+            return getOrCreateUserTokensNode(tokensNode, userId, session);
         } catch (RepositoryException e) {
             LOGGER.warn("Error while creating tokens node: {}", e.getMessage(), e);
         }
@@ -156,7 +155,7 @@ public class TokenManagerImpl implements TokenManager
      * @return the new token
      * @throws AccessDeniedException if the editing session cannot access the new token node
      */
-    private TokenInfo createTokenNode(final Node parent, final Calendar expiration, final String userId,
+    private CardsToken createTokenNode(final Node parent, final Calendar expiration, final String userId,
         final Map<String, String> extraData)
     {
         try {
@@ -170,21 +169,21 @@ public class TokenManagerImpl implements TokenManager
             // The identifier of the token node that can be used to retrieve it using session.getNodeByIdentifier
             final String nodeIdentifier = tokenNode.getIdentifier();
             // The actual token that will be passed to the user
-            final String loginToken = nodeIdentifier + CardsTokenImpl.TOKEN_DELIMITER + secretKey;
+            final String loginToken = nodeIdentifier + CardsToken.TOKEN_DELIMITER + secretKey;
             // The hash stored in the token itself used to validate the authenticity of the token
             try {
                 final String keyHash =
                     PasswordUtil.buildPasswordHash(getKeyValue(secretKey, userId), this.configuration.getParameters());
-                tokenNode.setProperty(CardsTokenImpl.TOKEN_ATTRIBUTE_KEY, keyHash);
+                tokenNode.setProperty(CardsToken.TOKEN_ATTRIBUTE_KEY, keyHash);
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 LOGGER.warn("Failed to hash token: {}", e.getMessage(), e);
             }
             // Store the expiration date
-            tokenNode.setProperty(CardsTokenImpl.TOKEN_ATTRIBUTE_EXPIRY, expiration);
+            tokenNode.setProperty(CardsToken.TOKEN_ATTRIBUTE_EXPIRY, expiration);
             // Store any other extra data
             if (extraData != null) {
                 for (Map.Entry<String, String> data : extraData.entrySet()) {
-                    if (!CardsTokenImpl.RESERVED_ATTRIBUTES.contains(data.getKey())) {
+                    if (!CardsToken.RESERVED_ATTRIBUTES.contains(data.getKey())) {
                         tokenNode.setProperty(data.getKey(), data.getValue());
                     }
                 }
@@ -260,7 +259,7 @@ public class TokenManagerImpl implements TokenManager
         }
         try {
             // The expected path is /jcr:system/cards:tokens/<userId>/01/23/45/<tokenNode>
-            return tokenNode.getPath().startsWith(CardsTokenImpl.TOKENS_NODE_PATH + "/")
+            return tokenNode.getPath().startsWith(CardsToken.TOKENS_NODE_PATH + "/")
                 && tokenNode.isNodeType(CardsTokenImpl.TOKEN_NT_NAME);
         } catch (RepositoryException e) {
             return false;
@@ -304,7 +303,7 @@ public class TokenManagerImpl implements TokenManager
     private Node getOrCreateSystemTokensNode(final Session session) throws PathNotFoundException, RepositoryException
     {
         final Node systemNode = session.getRootNode().getNode(CardsTokenImpl.SYSTEM_NODE_NAME);
-        return getOrCreateNode(systemNode, CardsTokenImpl.TOKENS_NODE_NAME, CardsTokenImpl.TOKENS_NT_NAME, session);
+        return getOrCreateNode(systemNode, CardsToken.TOKENS_NODE_NAME, CardsToken.TOKENS_NT_NAME, session);
     }
 
     /**
@@ -320,7 +319,7 @@ public class TokenManagerImpl implements TokenManager
     private Node getOrCreateUserTokensNode(final Node tokensNode, final String userId, final Session session)
         throws PathNotFoundException, RepositoryException
     {
-        return getOrCreateNode(tokensNode, userId, CardsTokenImpl.TOKENS_NT_NAME, session);
+        return getOrCreateNode(tokensNode, userId, CardsToken.TOKENS_NT_NAME, session);
     }
 
     /**

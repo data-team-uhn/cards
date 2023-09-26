@@ -29,6 +29,7 @@ import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenConstant
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenProvider;
 
+import io.uhndata.cards.auth.token.CardsToken;
 import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
 
 /**
@@ -82,7 +83,7 @@ public class CardsTokenProvider implements TokenProvider, TokenConstants
     public TokenInfo getTokenInfo(final String loginToken)
     {
         // The login token has the format <nodeUUID> or <nodeUUID>-<secretKey>, extract the node UUID from it
-        final String nodeId = StringUtils.substringBefore(loginToken, CardsTokenImpl.TOKEN_DELIMITER);
+        final String nodeId = StringUtils.substringBefore(loginToken, CardsToken.TOKEN_DELIMITER);
         // Retrieve the node from the repo
         final Tree tokenTree = this.identifierManager.getTree(nodeId);
         // Check that it is a good token node
@@ -108,7 +109,7 @@ public class CardsTokenProvider implements TokenProvider, TokenConstants
             return false;
         }
         // The expected path is /jcr:system/cards:tokens/<userId>/<tokenNode>
-        return tokenTree.getPath().startsWith(CardsTokenImpl.TOKENS_NODE_PATH + "/")
+        return tokenTree.getPath().startsWith(CardsToken.TOKENS_NODE_PATH + "/")
             && "cards:Token".equals(TreeUtil.getPrimaryTypeName(tokenTree));
     }
 
