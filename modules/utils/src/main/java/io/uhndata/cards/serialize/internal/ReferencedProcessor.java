@@ -25,24 +25,24 @@ import javax.jcr.RepositoryException;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Identify a node by including {@code @path} and {@code @name} properties. The name of this processor is
- * {@code identify}.
+ * Report if a node is referenced by adding a {@code @referenced=true|false} property. The name of this processor is
+ * {@code referenced}.
  *
  * @version $Id$
+ * @since 0.9.17
  */
 @Component(immediate = true)
-public class IdentificationProcessor implements ResourceJsonProcessor
+public class ReferencedProcessor implements ResourceJsonProcessor
 {
     @Override
     public String getName()
     {
-        return "identify";
+        return "referenced";
     }
 
     @Override
@@ -52,19 +52,11 @@ public class IdentificationProcessor implements ResourceJsonProcessor
     }
 
     @Override
-    public boolean isEnabledByDefault(Resource resource)
-    {
-        return true;
-    }
-
-    @Override
     public void leave(final Node node, final JsonObjectBuilder json,
         final Function<Node, JsonValue> serializeNode)
     {
-        // Add a few properties identifying the resource
         try {
-            json.add("@path", node.getPath());
-            json.add("@name", node.getName());
+            json.add("@referenced", node.getReferences().hasNext());
         } catch (RepositoryException e) {
             // Unlikely, and not critical, just make sure the serialization doesn't fail
         }
