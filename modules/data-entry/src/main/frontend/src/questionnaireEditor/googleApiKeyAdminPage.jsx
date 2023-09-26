@@ -17,9 +17,10 @@
 //  under the License.
 //
 
-import React, { useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import {
+  Alert,
   Button,
   Grid,
   TextField,
@@ -41,8 +42,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function googleApiKeyAdminPage() {
-  const [ googleSystemApiKey, setGoogleSystemApiKey ] = React.useState("");
-  const [ googleApiKey, setGoogleApiKey ] = React.useState("");
+  const [ googleSystemApiKey, setGoogleSystemApiKey ] = useState("");
+  const [ googleApiKey, setGoogleApiKey ] = useState("");
+  const [ hasChanges, setHasChanges ] = useState(false);
+  const [ error, setError ] = useState();
+
   const globalLoginDisplay = useContext(GlobalLoginContext);
   const classes = useStyles();
 
@@ -51,13 +55,13 @@ export default function googleApiKeyAdminPage() {
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((keyJson) => {
         if (!keyJson.apikey) {
-          throw "no API key in APIKEY servlet response";
+          console.log("No API key in APIKEY servlet response");
         }
         setGoogleSystemApiKey(keyJson.apikey);
         setGoogleApiKey(keyJson.apikey);
     })
     .catch((error) => {
-        console.error("Error fetching GoogleApiKey node: " + error);
+        setError("Error fetching GoogleApiKey node: " + error);
     });
   }, [])
 
@@ -70,9 +74,10 @@ export default function googleApiKeyAdminPage() {
       .then((response) => response.ok ? response : Promise.reject(response))
       .then((data) => {
           setGoogleSystemApiKey(googleApiKey);
+          setHasChanges(false);
       })
       .catch((error) => {
-          console.error("Error creating GoogleApiKey node: " + error)
+          setError("Error creating GoogleApiKey node: " + error);
       }
     )
   }
@@ -85,6 +90,7 @@ export default function googleApiKeyAdminPage() {
            <Typography>Your system does not have a Google API Key configured.</Typography>
            <Typography>Without an API key, you cannot access Google services such as address autocomplete.</Typography>
          </Grid> }
+        { error && <Alert severity="error">{error}</Alert> }
         <Grid item>
           <Grid container
             direction="row"
@@ -96,14 +102,21 @@ export default function googleApiKeyAdminPage() {
             <Grid item xs={10}>
               <TextField
                   variant="outlined"
-                  onChange={(evt) => {setGoogleApiKey(evt.target.value)}}
+                  onChange={(evt) => {setGoogleApiKey(evt.target.value); setHasChanges(true); setError("");}}
                   value={googleApiKey}
                   label="Google API key"
                   fullWidth={true}
                 />
             </Grid>
             <Grid item xs={2}>
-              <Button color="primary" variant="contained" onClick={() => {addNewKey()}}>Submit</Button>
+              <Button
+                color="primary"
+                variant="contained"
+                disabled={!hasChanges}
+                onClick={() => {addNewKey()}}
+              >
+                Submit
+              </Button>
             </Grid>
           </Grid>
         </Grid>
