@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>cards-data-model</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9.17.1</version>
   </parent>
 
   <artifactId>cards-data-model-forms</artifactId>
