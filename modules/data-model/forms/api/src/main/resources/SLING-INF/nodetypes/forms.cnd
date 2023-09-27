@@ -120,7 +120,7 @@
 
   // The maximum number of answers that can be selected.
   // 0 or negative values means no maximum.
-  - maxAnswers (long) = '0' autocreated
+  - maxAnswers (long) = '1' autocreated
 
   // Mimimum and maximum answers that must be selected define how a question can be answered.
   // The default is (-, -), no mimimum and no maximum, which means that any number of options can be selected -- optional checkboxes.
