@@ -135,6 +135,14 @@ function message_bioportal_apikey_missing() {
   echo -e "${TERMINAL_RED}********************************************************************${TERMINAL_NOCOLOR}"
 }
 
+function message_google_apikey_missing() {
+  echo -e "${TERMINAL_RED}*******************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                             *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}* GOOGLE_APIKEY not specified *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                             *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*******************************${TERMINAL_NOCOLOR}"
+}
+
 function message_hancestro_install_ok() {
   echo -e "${TERMINAL_GREEN}***********************${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_GREEN}*                     *${TERMINAL_NOCOLOR}"
@@ -518,6 +526,12 @@ then
   else
     message_bioportal_apikey_missing
   fi
+fi
+
+#Check if a GOOGLE_APIKEY is present
+if [ -z $BIOPORTAL_APIKEY ]
+then
+  message_google_apikey_missing
 fi
 
 #Check if we are using the Cloud-IAM.com demo

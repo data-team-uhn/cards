@@ -21,6 +21,7 @@ The following environment variables are read by CARDS and thus can be used in bo
 | `SLACK_PERFORMANCE_URL` | The Slack incoming webhook URL which the performance logger (`io.uhndata.cards.patients.slacknotifications`) can write its performance update messages to | `https://hooks.slack.com/services/ery8974/342rUYEiue/KJHkggI8973130DddE3r` |
 | `SLACK_BACKUP_NOTIFICATIONS_URL` | The Slack incoming webhook URL which the Webhook backup task (`io.uhndata.cards.webhookbackup`) uses to log its backup task status (_started_/_completed_/_failed_) messages | `https://hooks.slack.com/services/ery8974/342rUYEiue/KJHkggI8973130DddE3r` |
 | `BIOPORTAL_APIKEY` | API key [for Bioportal vocabularies](https://data.bioontology.org/documentation) | |
+| `GOOGLE_APIKEY` | API key [for Google Maps Place services](https://developers.google.com/maps/documentation/places/web-service/get-api-key) | |
 | `NIGHTLY_WEBHOOK_BACKUP_SCHEDULE` | Crontab-readable schedule (Quartz Job Scheduler) for performing Webhook backups of CARDS | `0 0 6 * * ? *` |
 | `BACKUP_WEBHOOK_URL` | Webhook URL to perform backups of CARDS to | `http://localhost:8012` |
 | `CLARITY_SQL_SERVER` | The MS-SQL server and port number to import clarity data from | `mssql:1433` |

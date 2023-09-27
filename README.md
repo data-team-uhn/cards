@@ -57,6 +57,8 @@ By default, the app will run with username `admin` and password `admin`.
 
 In order to use "Vocabularies" section and load vocabularies from BioPortal (bioontology.org) `BIOPORTAL_APIKEY` environment variable should be set to a valid BioPortal API key. You can [request a new account](https://bioportal.bioontology.org/accounts/new) if you don't already have one, and the API key can be found [in your profile](https://bioportal.bioontology.org/account).
 
+A Google API key enables access to Google services such as address autocomplete. `GOOGLE_APIKEY` environment variable should be set to a valid Google API key. You can [can obtain an API key at]( https://developers.google.com/maps/documentation/javascript/get-api-key) if you don't already have one. Follow [these steps](https://help.stockist.co/article/43-verifying-your-google-maps-api-key) to ensure the necessary services such as Places service are enabled for your key.
+
 ## Running with Docker
 
 If Docker is installed, then the build can also create a new image named `cards/cards:latest` if building with `mvn install -Pdocker`.
