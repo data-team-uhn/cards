@@ -20,4 +20,4 @@
   under the License.
 """
 
-CARDS_DOCKER_TAG = "latest"
+CARDS_DOCKER_TAG = "0.9.17"
