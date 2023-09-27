@@ -529,7 +529,7 @@ then
 fi
 
 #Check if a GOOGLE_APIKEY is present
-if [ -z $BIOPORTAL_APIKEY ]
+if [ -z $GOOGLE_APIKEY ]
 then
   message_google_apikey_missing
 fi
