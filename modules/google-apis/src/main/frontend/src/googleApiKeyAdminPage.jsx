@@ -34,7 +34,6 @@ import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 const APIKEY_SERVLET_URL = "/.googleApiKey";
 
 export default function googleApiKeyAdminPage() {
-  const [ googleSystemApiKey, setGoogleSystemApiKey ] = useState("");
   const [ googleApiKey, setGoogleApiKey ] = useState("");
   const [ hasChanges, setHasChanges ] = useState(false);
   const [ error, setError ] = useState();
@@ -48,7 +47,6 @@ export default function googleApiKeyAdminPage() {
         if (!keyJson.apikey) {
           console.log("No API key in APIKEY servlet response");
         }
-        setGoogleSystemApiKey(keyJson.apikey);
         setGoogleApiKey(keyJson.apikey);
     })
     .catch((error) => {
@@ -64,7 +62,6 @@ export default function googleApiKeyAdminPage() {
     fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
       .then((response) => response.ok ? response : Promise.reject(response))
       .then((data) => {
-          setGoogleSystemApiKey(googleApiKey);
           setHasChanges(false);
       })
       .catch((error) => {
