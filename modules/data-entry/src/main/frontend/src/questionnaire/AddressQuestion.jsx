@@ -28,6 +28,7 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
+import StyledTextQuestion from "./TextQuestion";
 import { usePlacesWidget } from "react-google-autocomplete";
 import GlobalStyles from '@mui/material/GlobalStyles';
 
@@ -45,6 +46,7 @@ fetch(APIKEY_SERVLET_URL)
   .catch((error) => {
     console.error("Error fetching GoogleApiKey node: " + error);
 });
+let isValidApiKey = true;
 
 
 // Easy way to overwrite global CSS styles using theme
@@ -95,6 +97,7 @@ function AddressQuestion(props) {
 
   let currentStartValue = existingAnswer && existingAnswer[1].value || "";
   const [address, setAddress] = useState(currentStartValue);
+  const [isValidApi, setIsValidApi] = useState(true);
 
   const countries = questionDefinition.countries?.split(/\s*,\s*/) || undefined;
   let options = {
@@ -110,6 +113,17 @@ function AddressQuestion(props) {
     options: options,
   });
 
+  // If google API authentication problem emerges due to to the invalid key or key with disabled Places service
+  window.gm_authFailure = () => {
+    console.error("Error in Google API authentication");
+    setIsValidApi(false);
+    isValidApiKey = false;
+  };
+
+  if (!isValidApiKey || !isValidApi) {
+    return <StyledTextQuestion {...props} />
+  }
+
   return (
     <Question
       disableInstructions
@@ -122,7 +136,7 @@ function AddressQuestion(props) {
         maxRows={4}
         variant="standard"
         onChange={event => setAddress(event.target.value)}
-        defaultValue={currentStartValue}
+        value={address}
         inputRef={materialRef}
       />
       <Answer
