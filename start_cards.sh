@@ -136,11 +136,11 @@ function message_bioportal_apikey_missing() {
 }
 
 function message_google_apikey_missing() {
-  echo -e "${TERMINAL_RED}*******************************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                             *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}* GOOGLE_APIKEY not specified *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                             *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*******************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*******************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                             *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* GOOGLE_APIKEY not specified *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                             *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*******************************${TERMINAL_NOCOLOR}"
 }
 
 function message_hancestro_install_ok() {
