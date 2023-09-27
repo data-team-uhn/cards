@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.google;
+package io.uhndata.cards.googleapis;
 
 import java.io.IOException;
 import java.io.Writer;

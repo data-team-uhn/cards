@@ -86,7 +86,7 @@
             "start-order":"26"
         },
         {
-            "id":"io.uhndata.cards:cards-google-api:${project.version}",
+            "id":"io.uhndata.cards:cards-google-apis:${project.version}",
             "start-order":"25"
         }
     ]

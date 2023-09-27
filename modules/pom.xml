@@ -74,6 +74,6 @@
     <module>slack-notifications</module>
     <module>embedded-view</module>
     <module>error-tracking</module>
-    <module>google-api</module>
+    <module>google-apis</module>
   </modules>
 </project>
