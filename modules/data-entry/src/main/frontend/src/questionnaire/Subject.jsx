@@ -582,7 +582,6 @@ function SubjectMemberInternal (props) {
                         entryPath={row.original["@path"]}
                         entryName={getEntityIdentifier(row.original)}
                         entryType="Form"
-                        warning={row.original ? row.original["@referenced"] : false}
                         onComplete={fetchTableData}
                       />
                     </Box>
