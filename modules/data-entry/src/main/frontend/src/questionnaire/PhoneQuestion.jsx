@@ -58,6 +58,7 @@ function PhoneQuestion(props) {
         country={defaultCountry}
         onlyCountries={countries}
         regions={regions}
+        masks={{'ca': '...-...-....'}}
         disableDropdown={!!(countries?.length == 1)}
         placeholder=""
         value={phone}
