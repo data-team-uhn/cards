@@ -315,7 +315,6 @@ let QuestionMatrix = (props) => {
                                                                    && value["question"]["jcr:uuid"] === question[1]["jcr:uuid"])}
             answerNodeType={DATA_TO_NODE_TYPE[sectionDefinition.dataType]}
             valueType={valueType}
-            isMultivalued={maxAnswers != 1}
             questionName={question[0]}
             {...rest}
           />

@@ -62,15 +62,14 @@ function ChromosomeQuestion(props) {
     'MT': false
   };
 
-  let { chromosomeNumber } = {...defaultValues, ...props.questionDefinition, ...props};
+  let { chromosomeNumber } = {...defaultValues, ...props.questionDefinition};
   let defaults = [];
   for (let i = 1; i <= chromosomeNumber; i++) {
     defaults.push([i.toString(), i.toString(), true]);
   }
 
-  // We override the defaults above with the questionnaire definition,
-  // and then we override with explicit properties
-  const enabledChromosomes = {...Object.entries(defaultValues).reduce((accumulator, [key, value]) => {accumulator[`enable${key}`] = value; return accumulator;}, {}), ...props.questionDefinition, ...props};
+  // We override the defaults above with the questionnaire definition
+  const enabledChromosomes = {...Object.entries(defaultValues).reduce((accumulator, [key, value]) => {accumulator[`enable${key}`] = value; return accumulator;}, {}), ...props.questionDefinition};
 
   // Whatever is left enabled, we display
   for (let chromosome of Object.keys(defaultValues)) {
@@ -85,7 +84,6 @@ function ChromosomeQuestion(props) {
       {...props}
       >
       <MultipleChoice
-        answerNodeType="cards:ChromosomeAnswer"
         defaults={defaults}
         {...props}
         />
@@ -100,10 +98,6 @@ ChromosomeQuestion.propTypes = {
     maxAnswers: PropTypes.number,
     chromosomeNumber: PropTypes.number
   }).isRequired,
-  text: PropTypes.string,
-  minAnswers: PropTypes.number,
-  maxAnswers: PropTypes.number,
-  chromosomeNumber: PropTypes.number
 };
 
 const StyledChromosomeQuestion = withStyles(QuestionnaireStyle)(ChromosomeQuestion)

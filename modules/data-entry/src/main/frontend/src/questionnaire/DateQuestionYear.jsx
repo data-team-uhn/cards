@@ -32,36 +32,31 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 // submission.
 //
 // Optional props:
-// text: the question to be displayed
 // type: "timestamp" for a single date or "interval" for two dates
-// dateFormat: yyyy
 // lowerLimit: lower date limit (inclusive) given as an object or string parsable by luxon
 // upperLimit: upper date limit (inclusive) given as an object or string parsable by luxon
 // Other options are passed to the <question> widget
 //
 // Sample usage:
 //<DateQuestionYear
-//  text="Please enter a date-time in 2019"
-//  dateFormat="yyyy-MM-dd HH:mm:ss"
 //  lowerLimit={new Date("01-01-2019")}
 //  upperLimit={new Date("12-31-2019")}
 //  type="timestamp"
 //  />
 function DateQuestionYear(props) {
-  let {existingAnswer, classes, ...rest} = props;
-  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
+  let {classes, questionDefinition, ...rest} = props;
+  let {minAnswers, type, lowerLimit, upperLimit} = {minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...questionDefinition, ...props};
   return (
     <NumberQuestion
-      minAnswers={minAnswers}
-      maxAnswers={1}
-      dataType="long"
+      questionDefinition={{...questionDefinition,
+        minAnswers: minAnswers,
+        maxAnswers: 1,
+        maxValue: upperLimit || 9999,
+        minValue: lowerLimit || 1000,
+        dataType: "long"
+      }}
       errorText="Please insert a valid year."
-      isRange={(type === DateQuestionUtilities.INTERVAL_TYPE)}
-      answerNodeType="cards:DateAnswer"
-      valueType="Long"
-      existingAnswer={existingAnswer}
-      maxValue={upperLimit || 9999}
-      minValue={lowerLimit || 1000}
+      isRange={type === DateQuestionUtilities.INTERVAL_TYPE}
       disableValueInstructions={typeof(upperLimit) == 'undefined' && typeof(lowerLimit) == 'undefined'}
       {...rest}
       />
