@@ -2,6 +2,9 @@
   "entryMode": "Specifies the source of the value for this question:  \n* manually entered by the **user**,\n* **computed** using a specified expression and answers to other questions, \n* copied over from another **reference** answer to a question specified by a path, or \n* **autocreated** by a backend script (the logic for populating autocreated answers cannot be configured from the user interface).",
   "expression": "Supports javascript syntax, with special placeholder variables being populated with answers to other questions in the form.\n\nExample:\n\n```return @{laps} * @{lapLength:-100}```\n\n where `laps` and `lapLength` are the names of questions in the same form, `:-` is an optional marker for a default value, and `100` is the optional default value.",
   "enableUserEntry": "If enabled, the user is not restricted to using one of the suggestions in the dropdown, and may save their own text as the free-form answer to the question.",
-  "question": "Path to a question, either in this or a different questionnaire. Example: `/Questionnaires/Demographics/name`"
+  "question": "Path to a question, either in this or a different questionnaire. Example: `/Questionnaires/Demographics/name`",
+  "defaultCountry": "The default country code (ISO 3166), for example 'ca'.",
+  "regions": "In the country dropdown, show only countries from certain regions or subregions, specified as a comma-separated list. For example:\n*  Regions - `america, europe, asia, oceania, africa`);\n* Subregions -`north-america, south-america, central-america, carribean, eu-union, ex-ussr, ex-yugos, baltic, middle-east, north-africa`.",
+  "onlyCountries": "Explicit list of comma-separated country codes to be made available in the dropdown, for example `es, fr, it`."
 }
 

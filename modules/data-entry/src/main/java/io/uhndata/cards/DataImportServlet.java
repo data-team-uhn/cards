@@ -484,34 +484,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private String getAnswerNodeType(final Node question) throws RepositoryException
     {
         final String dataType = question.getProperty("dataType").getString();
-        String result;
-        switch (dataType) {
-            case "long":
-                result = "cards:LongAnswer";
-                break;
-            case "double":
-                result = "cards:DoubleAnswer";
-                break;
-            case "decimal":
-                result = "cards:DecimalAnswer";
-                break;
-            case "boolean":
-                result = "cards:BooleanAnswer";
-                break;
-            case "date":
-                result = "cards:DateAnswer";
-                break;
-            case "time":
-                result = "cards:TimeAnswer";
-                break;
-            case "vocabulary":
-                result = "cards:VocabularyAnswer";
-                break;
-            case "text":
-            default:
-                result = "cards:TextAnswer";
-        }
-        return result;
+        final String capitalizedType = StringUtils.capitalize(dataType);
+        return "cards:" + capitalizedType + "Answer";
     }
 
     /**

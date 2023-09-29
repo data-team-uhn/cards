@@ -32,6 +32,7 @@ export const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing/2;
 
 const questionnaireStyle = theme => ({
     questionCard : {
+      overflow: "unset",
       "& .MuiCardHeader-root" : {
         padding: theme.spacing(1, 3, 0, 3),
         "& h6 ol" : {
