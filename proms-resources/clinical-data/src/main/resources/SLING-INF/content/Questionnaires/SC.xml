@@ -1509,11 +1509,6 @@ return @{smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months:-
 				<type>String</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
 				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
