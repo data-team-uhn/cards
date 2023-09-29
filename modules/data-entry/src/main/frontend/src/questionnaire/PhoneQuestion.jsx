@@ -43,6 +43,7 @@ function PhoneQuestion(props) {
 
   let initialValue = existingAnswer && existingAnswer[1].value || "";
   const [phone, changePhone] = useState(initialValue);
+
   const countries = questionDefinition.onlyCountries?.split(/\s*,\s*/) || undefined;
   const regions = questionDefinition.regions?.split(/\s*,\s*/) || undefined;
   const defaultCountry = countries?.length == 1 ? countries[0] : questionDefinition.defaultCountry;
@@ -53,13 +54,14 @@ function PhoneQuestion(props) {
       {...props}
       >
       <PhoneInput
+        enableSearch
         country={defaultCountry}
         onlyCountries={countries}
         regions={regions}
         disableDropdown={!!(countries?.length == 1)}
         placeholder=""
         value={phone}
-        onChange={(value, country, e, formattedValue) => changePhone(formattedValue)}
+        onChange={(value, country, e, formattedValue) => changePhone(formattedValue?.length > 1 ? formattedValue : '')}
       />
       <Answer
         answers={outputAnswers}
