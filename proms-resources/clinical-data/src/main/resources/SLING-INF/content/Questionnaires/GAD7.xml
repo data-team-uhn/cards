@@ -139,7 +139,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<value>Severity</value>
 				<type>String</type>
 			</property>
-				<property>
+			<property>
 				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
