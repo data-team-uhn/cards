@@ -33,11 +33,10 @@ import { useFormWriterContext } from "./FormContext";
 // Other options are passed to the <question> widget
 let AutocreatedQuestion = (props) => {
   const { isEdit, ...rest } = props;
-  const { existingAnswer, classes, pageActive, questionName} = rest;
-  const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...rest};
+  const { existingAnswer, questionName } = rest;
+  const { displayMode } = props.questionDefinition;
 
   const [isFormatted, changeIsFormatted] = useState(false);
-
 
   // If we are in edit mode, upon loading the pre-filled answers, place them
   // in the form context where they can be accessed by computed answers

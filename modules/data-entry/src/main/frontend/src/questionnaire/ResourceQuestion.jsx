@@ -94,7 +94,6 @@ function ResourceQuestion(props) {
             clearOnClick: !singleEntryInput,
             enableUserEntry: enableUserEntry,
           }}
-          answerNodeType="cards:ResourceAnswer"
           valueType="String"
           defaults={props.defaults || (options.length > 0 ? options : undefined)}
           {...rest}

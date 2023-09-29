@@ -46,9 +46,9 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Sample usage:
 // (TODO)
 function FileQuestion(props) {
-  const { classes, existingAnswer, pageActive, ...rest } = props;
-  const { maxAnswers, namePattern } = { ...props.questionDefinition, ...props }
-  const { onBeforeUpload, onAfterUpload, onDelete, previewRenderer, answerNodeType } = props;
+  const { classes, ...rest } = props;
+  const { maxAnswers, namePattern } = props.questionDefinition;
+  const { existingAnswer, onBeforeUpload, onAfterUpload, onDelete, pageActive, previewRenderer } = props;
   let initialValues =
     // Check whether or not we have an initial value
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
@@ -348,13 +348,8 @@ function FileQuestion(props) {
       }
       <Answer
         answers={answers}
-        questionDefinition={props.questionDefinition}
-        existingAnswer={existingAnswer}
-        answerNodeType={ answerNodeType || "cards:FileAnswer" }
         onDecidedOutputPath={setAnswerPath}
         valueType="path"
-        isMultivalued={maxAnswers != 1}
-        pageActive={pageActive}
         {...rest}
         />
     </Question>);

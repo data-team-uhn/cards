@@ -56,8 +56,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  const {classes, ...rest} = props;
-  const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
+  const {classes, questionDefinition, ...rest} = props;
+  const {yesLabel, noLabel, unknownLabel, enableUnknown} = questionDefinition;
 
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
   // override them, and the props to be able to override the questionDefinition
@@ -72,10 +72,9 @@ function BooleanQuestion(props) {
       {...props}
       >
       <MultipleChoice
-        answerNodeType="cards:BooleanAnswer"
         valueType="Long" /* Notably not "Boolean", since we need it to be stored as a long in the backend */
-        maxAnswers={1}
         defaults={options}
+        questionDefinition={{...questionDefinition, maxAnswers: 1}}
         {...rest}
         />
     </Question>);
@@ -85,12 +84,11 @@ BooleanQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
+    enableUnknown: PropTypes.bool,
+    yesLabel: PropTypes.string,
+    noLabel: PropTypes.string,
+    unknownLabel: PropTypes.string
   }).isRequired,
-  text: PropTypes.string,
-  enableUnknown: PropTypes.bool,
-  yesLabel: PropTypes.string,
-  noLabel: PropTypes.string,
-  unknownLabel: PropTypes.string
 };
 
 const StyledBooleanQuestion = withStyles(QuestionnaireStyle)(BooleanQuestion)

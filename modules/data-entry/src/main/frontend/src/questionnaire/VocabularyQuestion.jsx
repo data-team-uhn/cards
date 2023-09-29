@@ -68,7 +68,6 @@ function VocabularyQuestion(props) {
           clearOnClick: !singleInput,
           enableSelection: true
         }}
-        answerNodeType = "cards:VocabularyAnswer"
         noteComponent={NCRNote}
         noteProps={{
           vocabulary: questionDefinition.sourceVocabularies
@@ -84,7 +83,6 @@ VocabularyQuestion.propTypes = {
     text: PropTypes.string,
     sourceVocabularies: PropTypes.array.isRequired
   }).isRequired,
-  text: PropTypes.string
 };
 
 

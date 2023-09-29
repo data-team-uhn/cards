@@ -90,8 +90,8 @@ export class Time {
 //  upperLimit="23:59"
 //  />
 function TimeQuestion(props) {
-  let {existingAnswer, classes, pageActive, ...rest} = props;
-  let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
+  let {classes, ...rest} = props;
+  let {lowerLimit, upperLimit, errorText, minAnswers, dateFormat, existingAnswer, pageActive} = {...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)
     ? existingAnswer[1].value : "";
   const [selectedTime, changeTime] = useState(currentStartValue);
@@ -156,11 +156,7 @@ function TimeQuestion(props) {
       }
       <Answer
         answers={outputAnswers}
-        questionDefinition={props.questionDefinition}
-        existingAnswer={existingAnswer}
-        answerNodeType="cards:TimeAnswer"
         valueType="Time"
-        pageActive={pageActive}
         {...rest}
         />
     </Question>);
@@ -168,7 +164,6 @@ function TimeQuestion(props) {
 
 TimeQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
-  text: PropTypes.string,
   minAnswers: PropTypes.number,
   lowerLimit: PropTypes.string,
   upperLimit: PropTypes.string,

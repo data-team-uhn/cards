@@ -35,11 +35,14 @@ export const IS_DEFAULT_ANSWER_POS = 4;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerMetadata, answerNodeType, existingAnswer, pageActive, path, questionName, questionDefinition, valueType, isMultivalued, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
-  let { enableNotes } = { ...props, ...questionDefinition };
+  let { answers, answerMetadata, existingAnswer, pageActive, path, questionName, questionDefinition, valueType, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
+  let { dataType, enableNotes } = { ...props, ...questionDefinition };
   let { onAddSuggestion } = { ...props, ...noteProps };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
-  let answerPath = path + "/" + answerID;
+
+  const answerPath = path + "/" + answerID;
+  const answerNodeType = props.answerNodeType || "cards:" + dataType.charAt(0).toUpperCase() + dataType.slice(1) + "Answer";
+  const isMultivalued = questionDefinition.maxAnswers != 1;
 
   useEffect(() => {
     if (sectionAnswersState !== undefined) {
@@ -132,15 +135,12 @@ Answer.propTypes = {
   answers: PropTypes.array,
   answerNodeType: PropTypes.string,
   valueType: PropTypes.string,
-  isMultivalued: PropTypes.bool,
   noteComponent: PropTypes.elementType,
   pageActive: PropTypes.bool
 };
 
 Answer.defaultProps = {
-  answerNodeType: "cards:TextAnswer",
   valueType: 'String',
-  isMultivalued: false,
   noteComponent: Note,
   pageActive: true
 };
