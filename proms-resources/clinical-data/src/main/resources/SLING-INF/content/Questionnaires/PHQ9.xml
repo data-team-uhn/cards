@@ -112,6 +112,11 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
@@ -141,6 +146,11 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<name>text</name>
 				<value>Severity</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>entryMode</name>
@@ -275,6 +285,11 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<name>text</name>
 				<value>Interpretation</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>entryMode</name>

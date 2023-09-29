@@ -149,6 +149,11 @@
 				<value>Feeling nervous, anxious, or on edge</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>gad7_2</name>
@@ -157,6 +162,11 @@
 				<name>text</name>
 				<value>Not being able to stop or control worrying</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 		</node>
 		<node>
@@ -167,6 +177,11 @@
 				<value>Worrying too much about different things</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>gad7_4</name>
@@ -175,6 +190,11 @@
 				<name>text</name>
 				<value>Trouble relaxing</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 		</node>
 		<node>
@@ -185,6 +205,11 @@
 				<value>Being so restless that it's hard to sit still</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>gad7_6</name>
@@ -194,6 +219,11 @@
 				<value>Becoming easily annoyed or irritable</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>gad7_7</name>
@@ -202,6 +232,11 @@
 				<name>text</name>
 				<value>Feeling afraid as if something awful might happen</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 		</node>
 	</node>

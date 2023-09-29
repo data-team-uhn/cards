@@ -110,6 +110,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
@@ -138,6 +143,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<name>text</name>
 				<value>Severity</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>entryMode</name>
@@ -255,6 +265,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 		</node>
 	</node>
