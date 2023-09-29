@@ -628,7 +628,6 @@ const questionnaireStyle = theme => ({
       "& th, td" : {
         border: "none",
         padding: theme.spacing(1, 1, 1, 0),
-        verticalAlign: "baseline",
       },
       "& td" : {
         fontSize: "1rem",
