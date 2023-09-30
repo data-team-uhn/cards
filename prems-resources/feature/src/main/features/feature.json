@@ -84,7 +84,7 @@
       "metricName": "{005} CPES 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/2075099",
       "emailConfiguration": "/apps/cards/clinics/CPES/mailTemplates/ReminderNotification",
-      "daysToVisit": -9
+      "daysToVisit": -14
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~CPES-Reminder2NotificationsTask":{
       "name": "CPES-Reminder2NotificationsTask",
@@ -92,7 +92,7 @@
       "metricName": "{006} CPES 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/2075099",
       "emailConfiguration": "/apps/cards/clinics/CPES/mailTemplates/ReminderNotification",
-      "daysToVisit": -11
+      "daysToVisit": -21
     },
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IP-InitialInvitationTask":{
@@ -109,7 +109,7 @@
       "metricName": "{008} UHN-IP 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626663",
       "emailConfiguration": "/apps/cards/clinics/UHN-IP/mailTemplates/ReminderNotification",
-      "daysToVisit": -9
+      "daysToVisit": -14
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IP-Reminder2NotificationsTask":{
       "name": "UHN-IP-Reminder2NotificationsTask",
@@ -117,7 +117,7 @@
       "metricName": "{009} UHN-IP 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626663",
       "emailConfiguration": "/apps/cards/clinics/UHN-IP/mailTemplates/ReminderNotification",
-      "daysToVisit": -11
+      "daysToVisit": -21
     },
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-ED-InitialInvitationTask":{
@@ -134,7 +134,7 @@
       "metricName": "{011} UHN-ED 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626799",
       "emailConfiguration": "/apps/cards/clinics/UHN-ED/mailTemplates/ReminderNotification",
-      "daysToVisit": -9
+      "daysToVisit": -14
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-ED-Reminder2NotificationsTask":{
       "name": "UHN-ED-Reminder2NotificationsTask",
@@ -142,7 +142,7 @@
       "metricName": "{012} UHN-ED 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626799",
       "emailConfiguration": "/apps/cards/clinics/UHN-ED/mailTemplates/ReminderNotification",
-      "daysToVisit": -11
+      "daysToVisit": -21
     },
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIP-InitialInvitationTask":{
@@ -159,7 +159,7 @@
       "metricName": "{014} UHN-EDIP 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465800",
       "emailConfiguration": "/apps/cards/clinics/UHN-EDIP/mailTemplates/ReminderNotification",
-      "daysToVisit": -9
+      "daysToVisit": -14
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIP-Reminder2NotificationsTask":{
       "name": "UHN-EDIP-Reminder2NotificationsTask",
@@ -167,7 +167,7 @@
       "metricName": "{015} UHN-EDIP 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465800",
       "emailConfiguration": "/apps/cards/clinics/UHN-EDIP/mailTemplates/ReminderNotification",
-      "daysToVisit": -11
+      "daysToVisit": -21
     },
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IC-InitialInvitationTask":{
@@ -184,7 +184,7 @@
       "metricName": "{021} UHN-IC 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626676",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC/mailTemplates/ReminderNotification",
-      "daysToVisit": -32
+      "daysToVisit": -37
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IC-Reminder2NotificationsTask":{
       "name": "UHN-IC-Reminder2NotificationsTask",
@@ -192,7 +192,7 @@
       "metricName": "{022} UHN-IC 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626676",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC/mailTemplates/ReminderNotification",
-      "daysToVisit": -34
+      "daysToVisit": -44
     },
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIC-InitialInvitationTask":{
@@ -209,7 +209,7 @@
       "metricName": "{021} UHN-IC 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465813",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-ED/mailTemplates/ReminderNotification",
-      "daysToVisit": -32
+      "daysToVisit": -37
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIC-Reminder2NotificationsTask":{
       "name": "UHN-EDIC-Reminder2NotificationsTask",
@@ -217,7 +217,7 @@
       "metricName": "{022} UHN-IC 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465813",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-ED/mailTemplates/ReminderNotification",
-      "daysToVisit": -34
+      "daysToVisit": -44
     },
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IPIC-InitialInvitationTask":{
@@ -234,7 +234,7 @@
       "metricName": "{021} UHN-IC 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432335117",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-IP/mailTemplates/ReminderNotification",
-      "daysToVisit": -32
+      "daysToVisit": -37
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IPIC-Reminder2NotificationsTask":{
       "name": "UHN-IPIC-Reminder2NotificationsTask",
@@ -242,7 +242,7 @@
       "metricName": "{022} UHN-IC 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432335117",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-IP/mailTemplates/ReminderNotification",
-      "daysToVisit": -34
+      "daysToVisit": -44
     },
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIPIC-InitialInvitationTask":{
@@ -259,7 +259,7 @@
       "metricName": "{021} UHN-IC 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/1012196242",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-EDIP/mailTemplates/ReminderNotification",
-      "daysToVisit": -32
+      "daysToVisit": -37
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIPIC-Reminder2NotificationsTask":{
       "name": "UHN-EDIPIC-Reminder2NotificationsTask",
@@ -267,7 +267,7 @@
       "metricName": "{022} UHN-IC 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/1012196242",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-EDIP/mailTemplates/ReminderNotification",
-      "daysToVisit": -34
+      "daysToVisit": -44
     },
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-Rehab-InitialInvitationTask":{
@@ -284,7 +284,7 @@
       "metricName": "{017} UHN-Rehab 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/78840662",
       "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/ReminderNotification",
-      "daysToVisit": -9
+      "daysToVisit": -14
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-Rehab-Reminder2NotificationsTask":{
       "name": "UHN-Rehab-Reminder2NotificationsTask",
@@ -292,7 +292,7 @@
       "metricName": "{018} UHN-Rehab 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/78840662",
       "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/ReminderNotification",
-      "daysToVisit": -11
+      "daysToVisit": -21
     },
 
     // Periodic CSV exports of all new and updated data
