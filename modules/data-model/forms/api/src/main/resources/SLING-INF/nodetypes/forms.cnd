@@ -803,8 +803,8 @@
 
   // Children
 
-  // A link to another form
-  + formReferences (cards:FormReferences) IGNORE
+  // Container for links to other resources
+  + cards:links (cards:Links) = cards:Links AUTOCREATED IGNORE
 
   // The answers and answer sections recorded in this form.
   + * (cards:Answer, cards:AnswerSection) = cards:Answer

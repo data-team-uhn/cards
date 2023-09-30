@@ -1,0 +1,28 @@
+{
+    "jcr:primaryType": "oak:QueryIndexDefinition",
+    "type": "lucene",
+    "compatVersion": 2,
+    "async": ["async", "sync"],
+    "evaluatePathRestrictions": true,
+    "tags": ["cards"],
+    "indexRules" : {
+        "jcr:primaryType": "nt:unstructured",
+        "cards:Link": {
+            "jcr:primaryType": "nt:unstructured",
+            "properties": {
+                "jcr:primaryType": "nt:unstructured",
+                "type": {
+                    "propertyIndex": true,
+                    "type": "String",
+                    "notNullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "reference": {
+                    "propertyIndex": true,
+                    "notNullCheckEnabled": true,
+                    "type": "String"
+                }
+            }
+        }
+    }
+}

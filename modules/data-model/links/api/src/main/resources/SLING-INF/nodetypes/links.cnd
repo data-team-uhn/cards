@@ -1,0 +1,103 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<cards = 'https://cards.uhndata.io/'>
+
+//-----------------------------------------------------------------------------
+//
+// Links: a connection between two resources, either mono- or bidirectional.
+//
+//-----------------------------------------------------------------------------
+
+// The definition of a type of link.
+[cards:LinkDefinition] > sling:Folder, mix:referenceable, mix:lastModified
+  // Properties
+
+  // Whether the link should be a hard or a weak link
+  - weak (BOOLEAN) = false
+
+  // An optional label for the link type. If not defined, the node name is used.
+  - label (STRING)
+
+  // Required node types for the source or destination. Optional, no restrictions are imposed when missing.
+  - requiredSourceTypes (NAME) multiple
+  - requiredDestinationTypes (NAME) multiple
+
+  // An optional label format to be displayed instead of the default reference display.
+  // If a label format is not defined, then the resource's natural label is used
+  - resourceLabelFormat (STRING)
+
+  // An optional reverse link to be added from the linked resource back to the linking resource.
+  // If not defined, a single direct link is added from one resource to another.
+  // If linking to another link definition, then any added link will automatically cause a reverse link to be added.
+  // It is possible to use the same link definition for the back link, for a symmetrical double link between resources.
+  - backlink (PATH)
+
+  // Force adding a backlink on the referenced node, even if access rights would normally prevent write access to it for the current user.
+  - forceBacklink (BOOLEAN) = false
+
+  // Set on link definition that cannot be instantiated directly, but only as automatically created backlinks.
+  - backlinkOnly (BOOLEAN) = false
+
+  // How the current resource should behave when the referenced resource is deleted.
+  // Accepted values:
+  // - IGNORE -> keep the link as a broken reference; only valid for weak links
+  // - REMOVE_LINK -> only remove the link between resources (default)
+  // - RECURSIVE_DELETE -> also delete this resource, and any others it may impact
+  - onDelete (STRING) = REMOVE_LINK mandatory autocreated
+
+// A set of links to other resources
+[cards:Links] > sling:Folder
+  // Properties:
+
+  // A list of links
+  + * (cards:Link, cards:WeakLink) = cards:Link IGNORE
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/Links" mandatory autocreated protected
+
+// A strong link to another resource
+[cards:Link] > sling:Folder, mix:lastModified
+  // Properties:
+
+  // The type of link, a reference to a cards:LinkDefinition node
+  - type (REFERENCE) mandatory nofulltext
+
+  // The resource being referenced.
+  - reference (REFERENCE) mandatory nofulltext
+
+  // An optional extra label associated with the link
+  - label (STRING)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/Link" mandatory autocreated protected
+
+// A weak link to another resource
+[cards:WeakLink] > cards:Link
+  // Properties:
+
+  // The resource being referenced.
+  - reference (WEAKREFERENCE) mandatory nofulltext
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/WeakLink" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Link" mandatory autocreated protected
