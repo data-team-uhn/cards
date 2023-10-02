@@ -187,7 +187,7 @@
             "enableAggregationFilter":true
         },
         "org.apache.jackrabbit.oak.spi.security.authorization.principalbased.impl.FilterProviderImpl":{
-            "path":"/home/users/system"
+            "path":"/home/users/system/sling"
         },
         "org.apache.jackrabbit.oak.security.internal.SecurityProviderRegistration":{
             "requiredServicePids":[
