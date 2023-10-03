@@ -36,7 +36,6 @@
       "matrix" : {
         "//CHILDREN" : {"Question" : "QuestionMatrixEntry.json"},
         "minAnswers": "long",
-        "maxAnswers": "long",
         "dataType": {
           "text": {
             "answerOptions" : {
@@ -45,15 +44,42 @@
             }
           },
           "long": {
-            "answerOptions" : {
-              "type": "numberOptions",
-              "childrenType": "cards:AnswerOption"
+            "questionDisplayMode": {
+              "list": {
+                "maxAnswers": "long",
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
+              },
+              "slider": {
+                "isRange" : "boolean",
+                "minValueLabel" : "string",
+                "maxValueLabel" : "string",
+                "sliderStep": "double",
+                "sliderMarkStep": "double",
+                "sliderOrientation": {"horizontal" : {}, "vertical": {}}
+              }
             }
           },
           "decimal": {
-            "answerOptions" : {
-              "type": "numberOptions",
-              "childrenType": "cards:AnswerOption"
+            "questionDisplayMode": {
+              "list": {
+                "maxAnswers": "long",
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
+              },
+              "slider": {
+                "maxAnswers": {"1":{}},
+                "isRange" : "boolean",
+                "minValueLabel" : "string",
+                "maxValueLabel" : "string",
+                "sliderStep": "double",
+                "sliderMarkStep": "double",
+                "sliderOrientation": {"horizontal" : {}, "vertical": {}}
+              }
             }
           },
           "vocabulary": {

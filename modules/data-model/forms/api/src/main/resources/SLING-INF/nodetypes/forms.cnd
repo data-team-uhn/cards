@@ -303,6 +303,9 @@
   // Section display mode, one of default, header, footer, matrix
   - displayMode (string) = 'default' autocreated
 
+  // Question display mode, to be passed to Question
+  - questionDisplayMode (string)
+
   // Same as for cards:Question.
   - minAnswers (long) = '0' autocreated
 

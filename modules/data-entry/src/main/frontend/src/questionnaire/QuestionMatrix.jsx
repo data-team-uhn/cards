@@ -67,6 +67,7 @@ let QuestionMatrix = (props) => {
 
   // Use existing existingAnswer, Otherwise, create a new UUID
   const isRadio = maxAnswers === 1;
+  const isSlider = sectionDefinition.questionDisplayMode === "slider";
   const ControlElement = isRadio ? Radio : Checkbox;
   const valueType = sectionDefinition.dataType.charAt(0).toUpperCase() + sectionDefinition.dataType.slice(1);
   const [sectionAnswerPath, setSectionAnswerPath ] = useState(path + "/" + ( existingSectionAnswer ? existingSectionAnswer[0] : uuidv4()));
