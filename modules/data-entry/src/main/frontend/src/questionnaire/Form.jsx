@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, Fragment } from "react";
 import { Link, withRouter } from "react-router-dom";
 
 import {
@@ -365,19 +365,28 @@ function Form (props) {
     props.history.push(urlBase + (data?.subject?.['@path'] || ''));
   }
 
+  let getNodeHierarchy = (node) => {
+    if (node["parents"]) {
+      let ancestors = getNodeHierarchy(node["parents"]);
+      ancestors.push(node);
+      return ancestors;
+    } else {
+      return [node];
+    }
+  }
+
   let getDistinctHierarchyAsList = (reference) => {
-    let referencedHierarchy = getHierarchyAsList(reference);
-    let currentHierarchy = getHierarchyAsList(data.subject);
+    let referencedHierarchy = getNodeHierarchy(reference);
+    let currentHierarchy = getNodeHierarchy(data.subject);
 
     let distinctHierarchy = [];
     for (let i = 0; i < referencedHierarchy.length; i++) {
-      if (i < currentHierarchy.length && referencedHierarchy[i] == currentHierarchy[i]) {
-        // Skip all matching parents
+      let node = referencedHierarchy[i]
+      if (currentHierarchy.length > i && currentHierarchy[i]["@path"] == node["@path"]) {
+        // Shared ancestor: skip
         continue;
       } else {
-        // Non-matching parent found: return all future ancestors
-        distinctHierarchy.concat(referencedHierarchy.slice(i));
-        break;
+        distinctHierarchy.push(<>{node.type.label} <Link to={"/content.html" + node["@path"]} underline="hover">{node.identifier}</Link></>);
       }
     }
     return distinctHierarchy;
@@ -514,7 +523,7 @@ function Form (props) {
       :
       <Breadcrumbs separator="/" style={{display: "inline-flex"}}>
         {getDistinctHierarchyAsList(formReference.reference.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}
-        <Typography variant="overline" key=''><Link to={"/content.html" + formReference.reference['@path']} underline="hover">{formReference.reference.questionnaire['@name']}</Link></Typography>
+        <Typography variant="overline" key={formReference.reference['@name']}><Link to={"/content.html" + formReference.reference['@path']} underline="hover">{formReference.reference.questionnaire['@name']}</Link></Typography>
       </Breadcrumbs>
   }
 
@@ -525,8 +534,7 @@ function Form (props) {
           
           {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).length > 1 ?
             <>
-              <br/>
-              {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).map(([key, value]) => formReferenceDisplay(value[ENTRIES_VALUE]))}
+              {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).map(([key, value]) => <Fragment key={key}><br />{formReferenceDisplay(value)}</Fragment>)}
             </>
             :
             // Display the first (and only) formReference
