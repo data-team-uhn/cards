@@ -165,6 +165,11 @@
 			<value>Provider</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>location</name>
