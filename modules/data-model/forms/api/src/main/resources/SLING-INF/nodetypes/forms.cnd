@@ -356,8 +356,6 @@
   orderable
   // Conditionals are queryable
   query
-  // Our children are orderable, and may be executable in a specific order
-  orderable
 
   // Properties
 
