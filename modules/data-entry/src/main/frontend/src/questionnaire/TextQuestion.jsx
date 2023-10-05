@@ -41,8 +41,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //  text: String containing the question to ask
 //  defaults: Array of arrays, each with two values, a "label" which will be displayed to the user,
 //            and a "value" denoting what will actually be stored
-//  regexp: String of a regular expression tested against the input
-//  errorText: String to display when the regexp is not matched
+//  validationRegexp: String of a regular expression tested against the input
+//  validationErrorText: String to display when the regexp is not matched
 //  displayMode: Either "input", "textbox", or undefined denoting the type of
 //             user input. Currently, only "input" is supported
 //
@@ -55,33 +55,32 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //      ["Three", "3"]
 //    ]}
 //    displayMode={"input"}
-//    regexp={"[a-z]+"}
-//    errorText={"Please enter a lowercase input"}
+//    validationRegexp={"[a-z]+"}
+//    validationErrorText={"Please enter a lowercase input"}
 //    />
 function TextQuestion(props) {
-  let { errorText, ...rest } = props;
-  let { displayMode, regexp } = {...props.questionDefinition, ...props};
-  const [error, setError] = useState(false);
-  const regexTest = new RegExp(regexp);
+  let { displayMode, validationRegexp, validationErrorText } = {...props, ...props.questionDefinition};
+  const [errorMessage, setErrorMessage] = useState();
+  const regexpTest = new RegExp(validationRegexp);
 
   // Callback function if a regex is defined
-  let checkRegex = (text) => {
-    if (regexp) {
-      setError(!regexTest.test(text));
+  let validate = (text) => {
+    if (validationRegexp) {
+      setErrorMessage(!!!text || regexpTest.test(text) ? undefined : validationErrorText);
     }
   }
 
   return (
     <Question
       disableInstructions
-      {...rest}
+      {...props}
       >
-      {error && <Typography color='error'>{errorText}</Typography>}
       <MultipleChoice
         input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
-        onUpdate={checkRegex}
-        {...rest}
+        onUpdate={validate}
+        errorMessage={errorMessage}
+        {...props}
         />
     </Question>);
 }
@@ -93,17 +92,18 @@ TextQuestion.propTypes = {
     minAnswers: PropTypes.number,
     maxAnswers: PropTypes.number,
     displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input", "hidden"]),
-    regexp: PropTypes.string,
+    validationRegexp: PropTypes.string,
+    validationErrorText: PropTypes.string,
   }).isRequired,
   text: PropTypes.string,
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  errorText: PropTypes.string
+  validationErrorText: PropTypes.string
 };
 
 TextQuestion.defaultProps = {
-  errorText: "Invalid input"
+  validationErrorText: "Invalid input"
 };
 
 const StyledTextQuestion = withStyles(QuestionnaireStyle)(TextQuestion)

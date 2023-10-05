@@ -17,6 +17,7 @@
             "minAnswers": "long",
             "maxAnswers": "long",
             "validationRegexp": "string",
+            "validationErrorText": "string",
             "enableSeparatorDetection": "boolean",
             "displayMode": {
               "input": {},
