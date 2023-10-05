@@ -628,11 +628,15 @@ const questionnaireStyle = theme => ({
       "& th, td" : {
         border: "none",
         padding: theme.spacing(1, 1, 1, 0),
+        verticalAlign: "baseline",
       },
       "& td" : {
         fontSize: "1rem",
         fontWeight: "300 !important",
         padding: theme.spacing(1),
+      },
+      "& .wmde-markdown::before" : {
+        display: "none",
       },
     },
     questionMatrixControls: {
