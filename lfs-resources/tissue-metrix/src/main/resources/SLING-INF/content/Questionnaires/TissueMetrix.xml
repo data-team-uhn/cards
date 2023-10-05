@@ -616,6 +616,11 @@
 				<value>Tumor type</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>mutation_status</name>
@@ -624,6 +629,11 @@
 				<name>text</name>
 				<value>Mutation status</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 		</node>
 	</node>
@@ -730,6 +740,11 @@
 				<name>displayMode</name>
 				<value>textbox</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 		</node>
 	</node>

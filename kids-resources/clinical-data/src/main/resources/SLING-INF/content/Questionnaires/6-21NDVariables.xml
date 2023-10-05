@@ -34,6 +34,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -327,6 +332,11 @@
 			<name>text</name>
 			<value>any testing translated</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -644,6 +654,11 @@
 				<name>text</name>
 				<value>how were tests translated</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -1449,6 +1464,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -2235,6 +2255,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -2356,6 +2381,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -2418,6 +2448,11 @@
 				<name>text</name>
 				<value>ABAS-3 incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -2550,6 +2585,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -2622,6 +2662,11 @@
 				<name>text</name>
 				<value>Standard score of ABAS-3 general adaptive composite</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -2698,6 +2743,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -2770,6 +2820,11 @@
 				<name>text</name>
 				<value>Standard score of ABAS-3 conceptual</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -2846,6 +2901,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -2918,6 +2978,11 @@
 				<name>text</name>
 				<value>Standard score of ABAS-3 social</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -2994,6 +3059,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -3066,6 +3136,11 @@
 				<name>text</name>
 				<value>Standard score of ABAS-3 practical</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -3142,6 +3217,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -3214,6 +3294,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 communication</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -3290,6 +3375,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -3362,6 +3452,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 community use</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -3438,6 +3533,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -3510,6 +3610,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 functional pre-academics</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -3586,6 +3691,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -3658,6 +3768,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 home living</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -3734,6 +3849,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -3806,6 +3926,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 health and safety</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -3882,6 +4007,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -3954,6 +4084,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 leisure</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -4030,6 +4165,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -4102,6 +4242,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 self-care</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -4178,6 +4323,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -4250,6 +4400,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 self-direction</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -4326,6 +4481,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -4398,6 +4558,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 social</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -4474,6 +4639,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -4546,6 +4716,11 @@
 				<name>text</name>
 				<value>Scaled score of ABAS-3 motor</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -4622,6 +4797,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -4684,6 +4864,11 @@
 				<name>text</name>
 				<value>BASC-3 incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -4816,6 +5001,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -4925,6 +5115,11 @@
 				<name>text</name>
 				<value>BASC-3 Response Pattern</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -5038,6 +5233,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -5149,6 +5349,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -5211,6 +5416,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 externalizing problems</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -5287,6 +5497,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -5349,6 +5564,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 internalizing problems</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -5425,6 +5645,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -5487,6 +5712,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 behavioral symptoms index</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -5563,6 +5793,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -5625,6 +5860,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 adaptive skills</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -5701,6 +5941,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -5763,6 +6008,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 hyperactivity</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -5839,6 +6089,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -5901,6 +6156,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 aggression</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -5977,6 +6237,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -6039,6 +6304,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 anxiety</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -6115,6 +6385,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -6177,6 +6452,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 depression</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -6253,6 +6533,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -6315,6 +6600,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 somatization</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -6391,6 +6681,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -6453,6 +6748,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 atypicality</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -6529,6 +6829,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -6591,6 +6896,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 withdrawal</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -6667,6 +6977,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -6729,6 +7044,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 attention problems</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -6805,6 +7125,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -6867,6 +7192,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 adaptability</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -6943,6 +7273,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -7005,6 +7340,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 social skills</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -7081,6 +7421,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -7143,6 +7488,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 activities of daily living</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -7219,6 +7569,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -7281,6 +7636,11 @@
 				<name>text</name>
 				<value>T score of BASC-3 functional communication</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -7357,6 +7717,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -7419,6 +7784,11 @@
 				<name>text</name>
 				<value>BRIEF2 incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -7551,6 +7921,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -7660,6 +8035,11 @@
 				<name>text</name>
 				<value>BRIEF-2 inconsistently</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -7773,6 +8153,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -7870,6 +8255,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -7942,6 +8332,11 @@
 				<name>text</name>
 				<value>BRIEF-2 Inhibit T Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -8018,6 +8413,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -8090,6 +8490,11 @@
 				<name>text</name>
 				<value>T-Score Self-Monitor</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -8166,6 +8571,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -8238,6 +8648,11 @@
 				<name>text</name>
 				<value>T Score BRI</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -8314,6 +8729,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -8386,6 +8806,11 @@
 				<name>text</name>
 				<value>T Score  Shift</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -8462,6 +8887,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -8534,6 +8964,11 @@
 				<name>text</name>
 				<value>T Score Emotional Control</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -8610,6 +9045,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -8682,6 +9122,11 @@
 				<name>text</name>
 				<value>T Score ERI</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -8758,6 +9203,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -8830,6 +9280,11 @@
 				<name>text</name>
 				<value>T Score Initiate</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -8906,6 +9361,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -8978,6 +9438,11 @@
 				<name>text</name>
 				<value>T Score  Working Memory</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9054,6 +9519,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -9126,6 +9596,11 @@
 				<name>text</name>
 				<value>T Score Plan/Organize</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9202,6 +9677,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -9274,6 +9754,11 @@
 				<name>text</name>
 				<value>T Score Task Monitor</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9350,6 +9835,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -9422,6 +9912,11 @@
 				<name>text</name>
 				<value>T Score Organization of Materials</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9498,6 +9993,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -9570,6 +10070,11 @@
 				<name>text</name>
 				<value>T Score CRI</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9646,6 +10151,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -9720,6 +10230,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -9792,6 +10307,11 @@
 				<name>text</name>
 				<value>SRS-2 incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9924,6 +10444,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -9988,6 +10513,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -10050,6 +10580,11 @@
 				<name>text</name>
 				<value>Raw Score: Social Awareness</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -10126,6 +10661,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -10198,6 +10738,11 @@
 				<name>text</name>
 				<value>Raw Score: Social Cognition</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -10274,6 +10819,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -10346,6 +10896,11 @@
 				<name>text</name>
 				<value>Raw Score: Social Communication</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -10422,6 +10977,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -10494,6 +11054,11 @@
 				<name>text</name>
 				<value>Raw Score: SRS Social Motivation</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -10570,6 +11135,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -10642,6 +11212,11 @@
 				<name>text</name>
 				<value>Raw Score: SRS Restricted Interests and Repetitive Behavior</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -10718,6 +11293,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -10790,6 +11370,11 @@
 				<name>text</name>
 				<value>Raw Score: SCI</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -10866,6 +11451,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -10938,6 +11528,11 @@
 				<name>text</name>
 				<value>Raw Score: SRS RRB</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -11014,6 +11609,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -11086,6 +11686,11 @@
 				<name>text</name>
 				<value>Raw Score: SRS-2 Total</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -11162,6 +11767,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -11234,6 +11844,11 @@
 				<name>text</name>
 				<value>IQ incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -11513,6 +12128,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -11704,6 +12324,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -11776,6 +12401,11 @@
 				<name>text</name>
 				<value>WASI-2 Full Scale IQ Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -11852,6 +12482,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -11924,6 +12559,11 @@
 				<name>text</name>
 				<value>WASI-2 Verbal Comprehension Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12000,6 +12640,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -12072,6 +12717,11 @@
 				<name>text</name>
 				<value>WASI-2 Perceptual Reasoning Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12148,6 +12798,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -12220,6 +12875,11 @@
 				<name>text</name>
 				<value>WASI-2 Block Design Subtest T Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12296,6 +12956,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -12368,6 +13033,11 @@
 				<name>text</name>
 				<value>WASI-2 Vocabulary T Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12444,6 +13114,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -12516,6 +13191,11 @@
 				<name>text</name>
 				<value>WASI-2 Matrix Reasoning T Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12592,6 +13272,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -12664,6 +13349,11 @@
 				<name>text</name>
 				<value>WASI-2 Similiarities T Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12740,6 +13430,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -12812,6 +13507,11 @@
 				<name>text</name>
 				<value>WAIS-4 Full Scale IQ Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12888,6 +13588,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -12960,6 +13665,11 @@
 				<name>text</name>
 				<value>WAIS-4 Verbal Comprehnesion Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13036,6 +13746,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -13108,6 +13823,11 @@
 				<name>text</name>
 				<value>WAIS-4 Perceptual Reasoning Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13184,6 +13904,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -13256,6 +13981,11 @@
 				<name>text</name>
 				<value>WAIS-4 Working Memory Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13332,6 +14062,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -13404,6 +14139,11 @@
 				<name>text</name>
 				<value>WAIS-4 Processing Speed Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13480,6 +14220,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -13552,6 +14297,11 @@
 				<name>text</name>
 				<value>WAIS-4 Block Design Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13628,6 +14378,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -13700,6 +14455,11 @@
 				<name>text</name>
 				<value>WAIS-4 Similiarities Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13776,6 +14536,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -13848,6 +14613,11 @@
 				<name>text</name>
 				<value>WAIS-4 Digit Span Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13924,6 +14694,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -13996,6 +14771,11 @@
 				<name>text</name>
 				<value>WAIS-4 Matrix Reasoning Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14072,6 +14852,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -14144,6 +14929,11 @@
 				<name>text</name>
 				<value>WAIS-4 Vocabulary Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14220,6 +15010,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -14292,6 +15087,11 @@
 				<name>text</name>
 				<value>WAIS-4 Arithmetic Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14368,6 +15168,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -14440,6 +15245,11 @@
 				<name>text</name>
 				<value>WAIS-4 Symbol Search Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14516,6 +15326,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -14588,6 +15403,11 @@
 				<name>text</name>
 				<value>WAIS-4 Visual Puzzles Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14664,6 +15484,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -14736,6 +15561,11 @@
 				<name>text</name>
 				<value>WAIS-4 Information Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14812,6 +15642,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -14884,6 +15719,11 @@
 				<name>text</name>
 				<value>WAIS-4 Coding Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14960,6 +15800,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -15032,6 +15877,11 @@
 				<name>text</name>
 				<value>WISC-5 Full Scale IQ Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15108,6 +15958,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -15180,6 +16035,11 @@
 				<name>text</name>
 				<value>WISC-5 Verbal Comprehnesion Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15256,6 +16116,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -15328,6 +16193,11 @@
 				<name>text</name>
 				<value>WISC-5 Visual-Spatial Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15404,6 +16274,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -15476,6 +16351,11 @@
 				<name>text</name>
 				<value>WISC-5 Fluid Reasoning Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15552,6 +16432,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -15624,6 +16509,11 @@
 				<name>text</name>
 				<value>WISC-5 Working Memory Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15700,6 +16590,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -15772,6 +16667,11 @@
 				<name>text</name>
 				<value>WISC-5 Processing Speed Index Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15848,6 +16748,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -15920,6 +16825,11 @@
 				<name>text</name>
 				<value>WISC-5 Block Design Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15996,6 +16906,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -16068,6 +16983,11 @@
 				<name>text</name>
 				<value>WISC-5 Similiarities Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16144,6 +17064,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -16216,6 +17141,11 @@
 				<name>text</name>
 				<value>WISC-5 Matrix Reasoning Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16292,6 +17222,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -16364,6 +17299,11 @@
 				<name>text</name>
 				<value>WISC-5 Digit Span Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16440,6 +17380,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -16512,6 +17457,11 @@
 				<name>text</name>
 				<value>WISC-5 Coding Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16588,6 +17538,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -16660,6 +17615,11 @@
 				<name>text</name>
 				<value>WISC-5 Vocabulary Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16736,6 +17696,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -16808,6 +17773,11 @@
 				<name>text</name>
 				<value>WISC-5 Figure Weights Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16884,6 +17854,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -16956,6 +17931,11 @@
 				<name>text</name>
 				<value>WISC-5 Visual Puzzles Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17032,6 +18012,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -17104,6 +18089,11 @@
 				<name>text</name>
 				<value>WISC-5 Picture Span Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17180,6 +18170,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -17252,6 +18247,11 @@
 				<name>text</name>
 				<value>WISC-5 Symbol Search Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17328,6 +18328,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -17400,6 +18405,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Verbal Comprehension Index Standard</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17476,6 +18486,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -17548,6 +18563,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Visual Spatial Index Standard</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17624,6 +18644,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -17696,6 +18721,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Fluid Reasoning Index Standard</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17772,6 +18802,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -17844,6 +18879,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Working Memory Index Standard</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17920,6 +18960,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -17992,6 +19037,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Full Scale IQ Standard</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18068,6 +19118,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -18140,6 +19195,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Block Design Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18216,6 +19276,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -18288,6 +19353,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Information Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18364,6 +19434,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -18436,6 +19511,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Matrix Reasoning Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18512,6 +19592,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -18584,6 +19669,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Bug Search Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18660,6 +19750,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -18732,6 +19827,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Picture Memory Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18808,6 +19908,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -18880,6 +19985,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Similarities Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18956,6 +20066,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -19028,6 +20143,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Picture Concepts Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -19104,6 +20224,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -19176,6 +20301,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Cancellation Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -19252,6 +20382,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -19324,6 +20459,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Zoo Locations Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -19400,6 +20540,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -19472,6 +20617,11 @@
 				<name>text</name>
 				<value>WPPSI-4 Object Assembly Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -19548,6 +20698,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -19622,6 +20777,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -19694,6 +20854,11 @@
 				<name>text</name>
 				<value>Motor incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -19881,6 +21046,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -19993,6 +21163,11 @@
 				<name>text</name>
 				<value>WRAVMA hand dominance</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -20115,6 +21290,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -20187,6 +21367,11 @@
 				<name>text</name>
 				<value>Standard Score WRAVMA Peg nondominant</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -20263,6 +21448,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -20337,6 +21527,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -20409,6 +21604,11 @@
 				<name>text</name>
 				<value>Grooved Pegboard hand dominance</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -20531,6 +21731,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -20600,6 +21805,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -20667,6 +21877,11 @@
 				<name>text</name>
 				<value>Academic incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -20900,6 +22115,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -21055,6 +22275,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -21127,6 +22352,11 @@
 				<name>text</name>
 				<value>Scaled Score Bracken School Readiness Composite</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -21203,6 +22433,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -21275,6 +22510,11 @@
 				<name>text</name>
 				<value>WJ-4 Letter Word Identifciation Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -21351,6 +22591,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -21423,6 +22668,11 @@
 				<name>text</name>
 				<value>WJ-4 Calculation Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -21499,6 +22749,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -21571,6 +22826,11 @@
 				<name>text</name>
 				<value>WIAT3 Word Reading Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -21647,6 +22907,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -21721,6 +22986,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -21793,6 +23063,11 @@
 				<name>text</name>
 				<value>WRAML incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -21925,6 +23200,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -21987,6 +23267,11 @@
 				<name>text</name>
 				<value>WRAML Story Memory Immediate Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -22063,6 +23348,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -22135,6 +23425,11 @@
 				<name>text</name>
 				<value>WRAML Story Memory Delay Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -22211,6 +23506,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -22283,6 +23583,11 @@
 				<name>text</name>
 				<value>WRAML Story Memory Recognition Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -22359,6 +23664,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -22431,6 +23741,11 @@
 				<name>text</name>
 				<value>WRAML Design Memory Immediate Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -22507,6 +23822,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -22579,6 +23899,11 @@
 				<name>text</name>
 				<value>WRAML Design Memory Recognition Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -22655,6 +23980,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -22727,6 +24057,11 @@
 				<name>text</name>
 				<value>CVLT incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -22914,6 +24249,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -23021,6 +24361,11 @@
 				<name>text</name>
 				<value>Which version of CVLT administered</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -23169,6 +24514,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -23286,6 +24636,11 @@
 				<name>text</name>
 				<value>CVLT Total T Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -23407,6 +24762,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -23524,6 +24884,11 @@
 				<name>text</name>
 				<value>CVLT Trial 1 Z Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -23645,6 +25010,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -23762,6 +25132,11 @@
 				<name>text</name>
 				<value>CVLT Trial 5 Z Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -23883,6 +25258,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -24000,6 +25380,11 @@
 				<name>text</name>
 				<value>CVLT List B Z Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -24121,6 +25506,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -24238,6 +25628,11 @@
 				<name>text</name>
 				<value>CVLT Short Delay FR Z Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -24359,6 +25754,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -24476,6 +25876,11 @@
 				<name>text</name>
 				<value>CVLT Long Delay FR Z Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -24597,6 +26002,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -24714,6 +26124,11 @@
 				<name>text</name>
 				<value>CVLT Long Delay Z Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -24835,6 +26250,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -24952,6 +26372,11 @@
 				<name>text</name>
 				<value>CVLT Semantic Cluster Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -25073,6 +26498,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -25190,6 +26620,11 @@
 				<name>text</name>
 				<value>CVLT Serial Cluster Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -25311,6 +26746,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -25428,6 +26868,11 @@
 				<name>text</name>
 				<value>CVLT Slope Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -25549,6 +26994,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -25666,6 +27116,11 @@
 				<name>text</name>
 				<value>CVLT Consistency Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -25787,6 +27242,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -25904,6 +27364,11 @@
 				<name>text</name>
 				<value>CVLT Perseverations Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -26025,6 +27490,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -26142,6 +27612,11 @@
 				<name>text</name>
 				<value>CVLT FR and CR Total Intrusions Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -26263,6 +27738,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -26380,6 +27860,11 @@
 				<name>text</name>
 				<value>CVLT Discriminability Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -26501,6 +27986,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -26620,6 +28110,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -26692,6 +28187,11 @@
 				<name>text</name>
 				<value>CVLT3 Total Standard Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -26768,6 +28268,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -26840,6 +28345,11 @@
 				<name>text</name>
 				<value>CVLT3 Trial 1 Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -26916,6 +28426,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -26988,6 +28503,11 @@
 				<name>text</name>
 				<value>CVLT3 Trial 5 Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -27064,6 +28584,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -27136,6 +28661,11 @@
 				<name>text</name>
 				<value>CVLT3 List B Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -27212,6 +28742,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -27284,6 +28819,11 @@
 				<name>text</name>
 				<value>CVLT3 Short Delay FR Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -27360,6 +28900,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -27432,6 +28977,11 @@
 				<name>text</name>
 				<value>CVLT3 Long Delay FR Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -27508,6 +29058,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -27580,6 +29135,11 @@
 				<name>text</name>
 				<value>CVLT3 Long Delay Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -27656,6 +29216,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -27728,6 +29293,11 @@
 				<name>text</name>
 				<value>CVLT3 Semantic Cluster Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -27804,6 +29374,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -27876,6 +29451,11 @@
 				<name>text</name>
 				<value>CVLT3 Serial Cluster Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -27952,6 +29532,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -28024,6 +29609,11 @@
 				<name>text</name>
 				<value>CVLT3 Learning Slope Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -28100,6 +29690,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -28172,6 +29767,11 @@
 				<name>text</name>
 				<value>CVLT3 Across Trial Consistency Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -28248,6 +29848,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -28320,6 +29925,11 @@
 				<name>text</name>
 				<value>CVLT3 Repetitions Raw Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -28396,6 +30006,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -28468,6 +30083,11 @@
 				<name>text</name>
 				<value>CVLT3 Free Recall and Cued Recall Total Intrusions Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -28544,6 +30164,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -28616,6 +30241,11 @@
 				<name>text</name>
 				<value>CVLT3 Recognition Discriminability Raw</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -28692,6 +30322,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -28764,6 +30399,11 @@
 				<name>text</name>
 				<value>DKEFS incomplete reason</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -28896,6 +30536,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>date</value>
 				<type>String</type>
@@ -28958,6 +30603,11 @@
 				<name>text</name>
 				<value>DKEFS Trails 1 Raw Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -29034,6 +30684,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -29106,6 +30761,11 @@
 				<name>text</name>
 				<value>DKEFS Trails 1 Omissions Raw Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -29182,6 +30842,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -29254,6 +30919,11 @@
 				<name>text</name>
 				<value>DKEFS Trails 2 Raw Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -29330,6 +31000,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -29402,6 +31077,11 @@
 				<name>text</name>
 				<value>DKEFS Trails 3 Raw Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -29478,6 +31158,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -29550,6 +31235,11 @@
 				<name>text</name>
 				<value>DKEFS Trails 4 Raw Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -29626,6 +31316,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -29698,6 +31393,11 @@
 				<name>text</name>
 				<value>DKEFS Trails 4 All Errors Raw Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -29774,6 +31474,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -29846,6 +31551,11 @@
 				<name>text</name>
 				<value>DKEFS Trails 5 Raw Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -29922,6 +31632,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -29994,6 +31709,11 @@
 				<name>text</name>
 				<value>DKEFS Letter Fluency Raw Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -30070,6 +31790,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -30144,6 +31869,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
@@ -30216,6 +31946,11 @@
 				<name>text</name>
 				<value>DKEFS Category Fluency Scaled Score</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>

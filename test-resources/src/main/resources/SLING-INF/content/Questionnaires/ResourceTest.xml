@@ -100,6 +100,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>primaryType</name>
 			<value>cards:Questionnaire</value>
 			<type>String</type>
@@ -171,6 +176,11 @@
 			<name>dataType</name>
 			<value>resource</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>primaryType</name>
@@ -251,6 +261,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>primaryType</name>
 			<value>cards:Question</value>
 			<type>String</type>
@@ -293,6 +308,11 @@
 			<name>dataType</name>
 			<value>resource</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>primaryType</name>
@@ -368,6 +388,11 @@
 			<name>dataType</name>
 			<value>resource</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>primaryType</name>
@@ -756,6 +781,11 @@
 			<name>dataType</name>
 			<value>vocabulary</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>sourceVocabularies</name>

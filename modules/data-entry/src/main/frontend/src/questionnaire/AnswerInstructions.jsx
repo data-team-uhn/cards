@@ -82,7 +82,7 @@ AnswerInstructions.propTypes = {
 
 AnswerInstructions.defaultProps = {
     minAnswers: 0,
-    maxAnswers: 0,
+    maxAnswers: 1,
     currentAnswers: 0,
     answerLabel: "value",
 };

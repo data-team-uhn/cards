@@ -34,6 +34,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>long</value>
 			<type>String</type>
@@ -56,6 +61,11 @@
 			<name>text</name>
 			<value>DOB</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -82,6 +92,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -94,6 +109,11 @@
 			<name>text</name>
 			<value>Ethnicity</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -110,6 +130,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -122,6 +147,11 @@
 			<name>text</name>
 			<value>Fundamental Cardiac Diagnosis</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -138,6 +168,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -152,6 +187,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -164,6 +204,11 @@
 			<name>text</name>
 			<value>Date of Cardiac visit</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -188,6 +233,11 @@
 			<name>text</name>
 			<value>Type of  Cardiologist</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -317,6 +367,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -388,6 +443,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>boolean</value>
 			<type>String</type>
@@ -415,6 +475,11 @@
 			<name>text</name>
 			<value>Referal for ND assessment</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -488,6 +553,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -557,6 +627,11 @@
 			<name>text</name>
 			<value>Seen in ND clinic</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>

@@ -50,6 +50,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>stringref_eq_stringconst_details</name>
@@ -127,6 +132,11 @@
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 	</node>
 	<node>
@@ -216,6 +226,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>string_ref_two</name>
@@ -229,6 +244,11 @@
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 	</node>
 	<node>
@@ -313,6 +333,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>string_ref_four</name>
@@ -326,6 +351,11 @@
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 	</node>
 	<node>
@@ -420,6 +450,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>must_be_null_details</name>
@@ -511,6 +546,11 @@
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
 		</property>
 	</node>
 	<node>

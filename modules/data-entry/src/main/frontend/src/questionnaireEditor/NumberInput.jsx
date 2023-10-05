@@ -33,7 +33,8 @@ import ValueComponentManager from "./ValueComponentManager";
 let NumberInput = (props) => {
   let { objectKey, data, hint } = props;
   const type = props.value?.charAt(0).toUpperCase() + props.value?.slice(1).toLowerCase();
-  const defaultValue = type === "Long" ? 0 : '';
+  const defaultValue = type === "Long" ? (objectKey == "maxAnswers" ? 1 : 0) : '';
+  const minValue = type === "Long" ? 0 : '';
   const isMax = type === "Long" && objectKey.startsWith('max');
 
   let [ value, setValue ] = useState(typeof data[objectKey] != 'undefined' ? data[objectKey] : defaultValue);
@@ -53,7 +54,7 @@ let NumberInput = (props) => {
         helperText={isMax ? `0 means "Unlimited"` : ''}
         InputProps={{
           inputProps: { 
-            min: defaultValue 
+            min: minValue
           }
         }}
       />
