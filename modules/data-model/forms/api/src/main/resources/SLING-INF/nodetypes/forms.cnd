@@ -113,6 +113,14 @@
   // If present, it will be displayed right under the question text.
   - description (string)
 
+  // Mimimum and maximum answers that must be selected define how a question can be answered.
+  // The default is (-, 1), which means that at most one option can be selected, making the question an optional list to chose from -- a single input, or optional radio boxes.
+  // (-, -) means no mimimum and no maximum, any number of options can be selected -- an input for entering as many answer as needed, or optional checkboxes.
+  // (1, -) makes the question mandatory, at least one answer must be selected -- an input that must have at least one value, or mandatory checkboxes.
+  // (1, 1) makes the question mandatory, exactly one option must be selected -- an input that must have exactly one value, or mandatory radio boxes.
+  // (N, -), where N > 1, makes this a list of checkboxes, and at least N must be checked.
+  // (N, M), where 1 < N <= M, makes this a list of checkboxes, and between N and M must be checked.
+
   // The minimum number of answers that must be selected.
   // 0 or negative values means no minimum.
   // If a strictly positive number is set, then the question becomes mandatory.
@@ -121,14 +129,6 @@
   // The maximum number of answers that can be selected.
   // 0 or negative values means no maximum.
   - maxAnswers (long) = '1' autocreated
-
-  // Mimimum and maximum answers that must be selected define how a question can be answered.
-  // The default is (-, -), no mimimum and no maximum, which means that any number of options can be selected -- optional checkboxes.
-  // (-, 1) means that at most one option can be selected, making the question an optional list to chose from -- optional radio boxes.
-  // (1, -) makes the question mandatory, at least one answer must be selected -- mandatory checkboxes.
-  // (1, 1) makes the question mandatory, exactly one option must be selected -- mandatory radio boxes.
-  // (N, -), where N > 1, makes this a list of checkboxes, and at least N must be checked.
-  // (N, M), where 1 < N <= M, makes this a list of checkboxes, and between N and M must be checked.
 
   // How are the answer options displayed?
   // The possible values are not limited, since support for new display modes can be added by other modules,
