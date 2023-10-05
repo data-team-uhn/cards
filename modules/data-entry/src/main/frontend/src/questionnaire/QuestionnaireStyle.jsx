@@ -635,6 +635,9 @@ const questionnaireStyle = theme => ({
         fontWeight: "300 !important",
         padding: theme.spacing(1),
       },
+      "& .wmde-markdown::before" : {
+        display: "none",
+      },
     },
     questionMatrixControls: {
       "& .MuiTableHead-root th": {
