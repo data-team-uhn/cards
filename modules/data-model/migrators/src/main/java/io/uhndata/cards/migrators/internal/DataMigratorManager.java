@@ -31,11 +31,11 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,16 +46,21 @@ public class DataMigratorManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataMigratorManager.class);
 
+    private String previousVersion;
+    private String version;
+    private boolean activated;
+
     @Reference
     private ResourceResolverFactory resolverFactory;
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.UPDATE)
+    @Reference(policyOption = ReferencePolicyOption.GREEDY, bind = "migratorAdded", unbind = "migratorRemoved")
     private volatile List<DataMigrator> migrators = new ArrayList<>();
 
     @Activate
-    protected void activate()
+    protected void activate(ComponentContext context)
     {
         LOGGER.info("Starting Data Migrator");
+        this.version = context.getBundleContext().getBundle().getVersion().toString();
 
         // Get the session to run any migrators
         final Map<String, Object> parameters =
@@ -64,7 +69,9 @@ public class DataMigratorManager
             final Session session = resolver.adaptTo(Session.class);
 
             // Get the previously run CARDS version
-            String previousVersion = DataMigratorUtils.getPreviousVersion(session);
+            this.previousVersion = DataMigratorUtils.getPreviousVersion(session);
+
+            this.activated = true;
 
             // Sort the migrators
             List<DataMigrator> sortedMigrators = new ArrayList<>(this.migrators);
@@ -72,9 +79,7 @@ public class DataMigratorManager
 
             // Run any required migrators
             for (DataMigrator migrator: sortedMigrators) {
-                if (migrator.shouldRun(previousVersion, session)) {
-                    migrator.run(session);
-                }
+                runMigrator(migrator, session);
             }
 
             resolver.commit();
@@ -83,5 +88,41 @@ public class DataMigratorManager
         } catch (LoginException | RepositoryException | PersistenceException e) {
             LOGGER.error("Could not migrate data", e);
         }
+    }
+
+    protected void migratorAdded(final DataMigrator migrator)
+    {
+        if (!this.activated) {
+            // Not yet activated: all current migrators will be run when that happens so no need to run this one now
+            return;
+        }
+
+        LOGGER.info("Running newly added {}", migrator.getName());
+        // Get the session to run any migrators
+        final Map<String, Object> parameters =
+            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "dataMigratorManager");
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters);) {
+            final Session session = resolver.adaptTo(Session.class);
+
+            runMigrator(migrator, session);
+
+            resolver.commit();
+        } catch (LoginException | PersistenceException e) {
+            LOGGER.error("Could not run newly added migrator", e);
+        }
+
+    }
+
+    protected void runMigrator(final DataMigrator migrator, final Session session)
+    {
+        if (migrator.shouldRun(this.previousVersion, this.version, session)) {
+            LOGGER.info("Running {}", migrator.getName());
+            migrator.run(this.previousVersion, this.version, session);
+        }
+    }
+
+    protected void migratorRemoved(final DataMigrator migrator)
+    {
+        // Do nothing: We are running migrators on creation
     }
 }

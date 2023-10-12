@@ -24,26 +24,36 @@ import javax.jcr.Session;
 public interface DataMigrator extends Comparable<DataMigrator>
 {
     /**
+     * The name of this migrator.
+     *
+     * @return the user readable name of this migrator
+     */
+    String getName();
+
+    /**
      * The priority of this migrator. Migrators with higher numbers are invoked after those with lower numbers.
      *
-     * @return the priority of this processor, can be any number
+     * @return the priority of this migrator, can be any number
      */
     int getPriority();
 
     /**
      * If this migrator should run based on what version of CARDS was previously run.
      * @param previousVersion The version of CARDs that was run previously
+     * @param currentVersion The version of CARDs that is currently running
      * @param session The session that should be used to pull any other data if required
      *
      * @return {@code true} if the migrator should be run
      */
-    boolean shouldRun(String previousVersion, Session session);
+    boolean shouldRun(String previousVersion, String currentVersion, Session session);
 
     /**
      * Change anything that needs to be changed to upgrade to from the previous version of CARDS.
+     * @param previousVersion The version of CARDs that was run previously
+     * @param currentVersion The version of CARDs that is currently running
      * @param session The session that should be used to enact any required changes
      */
-    void run(Session session);
+    void run(String previousVersion, String currentVersion, Session session);
 
     @Override
     default int compareTo(DataMigrator other)

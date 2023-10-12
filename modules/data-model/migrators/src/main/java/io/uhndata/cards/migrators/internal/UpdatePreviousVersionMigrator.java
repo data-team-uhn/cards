@@ -35,6 +35,12 @@ public class UpdatePreviousVersionMigrator implements DataMigrator
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdatePreviousVersionMigrator.class);
 
     @Override
+    public String getName()
+    {
+        return "UpdatePreviousVersionMigrator";
+    }
+
+    @Override
     public int getPriority()
     {
         // Always run last
@@ -42,19 +48,15 @@ public class UpdatePreviousVersionMigrator implements DataMigrator
     }
 
     @Override
-    public boolean shouldRun(String previousVersion, Session session)
+    public boolean shouldRun(String previousVersion, String currentVersion, Session session)
     {
-        return true;
+        return !currentVersion.equals(previousVersion);
     }
 
     @Override
-    public void run(Session session)
+    public void run(String previousVersion, String currentVersion, Session session)
     {
-        LOGGER.info("Running UpdatePreviousVersionMigrator");
         try {
-            // Get the current CARDS version
-            String currentVersion = DataMigratorUtils.getVersion(session);
-
             // Update the previous CARDS version to the current version
             Node node = session.getNode("/libs/cards/conf");
             if (node.hasNode(DataMigratorUtils.PREV_VERSION_NAME)) {
