@@ -28,6 +28,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -44,8 +45,10 @@ public class DataMigratorManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataMigratorManager.class);
 
-    private String previousVersion;
-    private String version;
+    private Version previousVersion;
+
+    private Version version;
+
     private boolean activated;
 
     @Reference
@@ -61,7 +64,7 @@ public class DataMigratorManager
     protected void activate(ComponentContext context)
     {
         LOGGER.info("Starting Data Migrator");
-        this.version = context.getBundleContext().getBundle().getVersion().toString();
+        this.version = context.getBundleContext().getBundle().getVersion();
 
         // Get the session to run any migrators
         final Map<String, Object> parameters =

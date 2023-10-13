@@ -20,6 +20,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,13 +46,13 @@ public class UpdatePreviousVersionMigrator implements DataMigrator
     }
 
     @Override
-    public boolean shouldRun(String previousVersion, String currentVersion, Session session)
+    public boolean shouldRun(Version previousVersion, Version currentVersion, Session session)
     {
         return !currentVersion.equals(previousVersion);
     }
 
     @Override
-    public void run(String previousVersion, String currentVersion, Session session)
+    public void run(Version previousVersion, Version currentVersion, Session session)
     {
         try {
             // Update the previous CARDS version to the current version
@@ -62,7 +63,7 @@ public class UpdatePreviousVersionMigrator implements DataMigrator
                 node = node.addNode(DataMigratorUtils.PREV_VERSION_NAME);
             }
 
-            node.setProperty(DataMigratorUtils.VERSION_PROPERTY, currentVersion);
+            node.setProperty(DataMigratorUtils.VERSION_PROPERTY, currentVersion.toString());
         } catch (RepositoryException e) {
             // Should not happen
             LOGGER.error("Failed to update previous version", e);

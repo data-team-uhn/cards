@@ -16,9 +16,10 @@
  */
 package io.uhndata.cards.migrators.internal;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.osgi.framework.Version;
 
 public final class DataMigratorUtils
 {
@@ -37,22 +38,17 @@ public final class DataMigratorUtils
     {
     }
 
-    public static String getVersion(Session session) throws RepositoryException
+    public static Version getPreviousVersion(Session session) throws RepositoryException
     {
-        return session.getNode(VERSION_PATH).getProperty(VERSION_PROPERTY).getString();
-    }
-
-    public static String getPreviousVersion(Session session) throws RepositoryException
-    {
-        String previousVersion = "";
-        try {
+        String previousVersion = null;
+        if (session.itemExists(PREV_VERSION_PATH + "/" + VERSION_PROPERTY)) {
             previousVersion = session.getNode(DataMigratorUtils.PREV_VERSION_PATH)
                 .getProperty(DataMigratorUtils.VERSION_PROPERTY).getString();
-        } catch (PathNotFoundException e) {
-            // No previous version
-            previousVersion = null;
+        } else if (session.getNode("/Forms").hasNodes()) {
+            // Forms exist, this must be an upgrade from a pre-0.9.18 version
+            previousVersion = "0.1.0";
         }
 
-        return previousVersion;
+        return previousVersion == null ? null : new Version(previousVersion);
     }
 }

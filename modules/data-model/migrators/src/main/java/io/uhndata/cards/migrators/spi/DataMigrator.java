@@ -18,6 +18,8 @@ package io.uhndata.cards.migrators.spi;
 
 import javax.jcr.Session;
 
+import org.osgi.framework.Version;
+
 public interface DataMigrator extends Comparable<DataMigrator>
 {
     /**
@@ -42,7 +44,7 @@ public interface DataMigrator extends Comparable<DataMigrator>
      * @param session The session that should be used to pull any other data if required
      * @return {@code true} if the migrator should be run
      */
-    boolean shouldRun(String previousVersion, String currentVersion, Session session);
+    boolean shouldRun(Version previousVersion, Version currentVersion, Session session);
 
     /**
      * Change anything that needs to be changed to upgrade to from the previous version of CARDS.
@@ -51,7 +53,7 @@ public interface DataMigrator extends Comparable<DataMigrator>
      * @param currentVersion The version of CARDs that is currently running
      * @param session The session that should be used to enact any required changes
      */
-    void run(String previousVersion, String currentVersion, Session session);
+    void run(Version previousVersion, Version currentVersion, Session session);
 
     @Override
     default int compareTo(DataMigrator other)
