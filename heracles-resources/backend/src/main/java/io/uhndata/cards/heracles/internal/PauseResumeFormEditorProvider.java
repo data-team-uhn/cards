@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.links.api.Links;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -58,6 +59,9 @@ public class PauseResumeFormEditorProvider implements EditorProvider
     @Reference
     private SubjectUtils subjectUtils;
 
+    @Reference
+    private Links linkUtils;
+
     @Override
     public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)
         throws CommitFailedException
@@ -65,7 +69,7 @@ public class PauseResumeFormEditorProvider implements EditorProvider
         if (this.rrf != null) {
             // Each ComputedEditor maintains a state, so a new instance must be returned each time
             return new PauseResumeFormEditor(builder, this.rrf, this.rrp,
-                this.questionnaireUtils, this.formUtils, this.subjectUtils, false);
+                this.questionnaireUtils, this.formUtils, this.subjectUtils, this.linkUtils, false);
         }
         return null;
     }

@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.links.api.Links;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -68,6 +69,8 @@ public class PauseResumeFormEditor extends DefaultEditor
 
     private final SubjectUtils subjectUtils;
 
+    private final Links linkUtils;
+
     private boolean isFormNode;
 
     private boolean isNew;
@@ -81,11 +84,13 @@ public class PauseResumeFormEditor extends DefaultEditor
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param subjectUtils for working with subject data
+     * @param linkUtils for working with links
      * @param isNew if this node is a newly created node or a changed node
      */
+    @SuppressWarnings("checkstyle:ParameterNumber")
     public PauseResumeFormEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
         final ThreadResourceResolverProvider rrp, final QuestionnaireUtils questionnaireUtils,
-        final FormUtils formUtils, SubjectUtils subjectUtils, boolean isNew)
+        final FormUtils formUtils, SubjectUtils subjectUtils, Links linkUtils, boolean isNew)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.rrf = rrf;
@@ -93,6 +98,7 @@ public class PauseResumeFormEditor extends DefaultEditor
         this.questionnaireUtils = questionnaireUtils;
         this.formUtils = formUtils;
         this.subjectUtils = subjectUtils;
+        this.linkUtils = linkUtils;
         this.isFormNode = this.formUtils.isForm(this.currentNodeBuilder);
         this.isNew = isNew;
     }
@@ -103,10 +109,9 @@ public class PauseResumeFormEditor extends DefaultEditor
         if (this.isFormNode) {
             // No need to descend further down, we already know that this is a form that has changes
             return null;
-        } else {
-            return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
-                this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, true);
         }
+        return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
+            this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, this.linkUtils, true);
     }
 
     @Override
@@ -115,10 +120,9 @@ public class PauseResumeFormEditor extends DefaultEditor
         if (this.isFormNode) {
             // No need to descend further down, we already know that this is a form that has changes
             return null;
-        } else {
-            return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
-                this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, false);
         }
+        return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
+            this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, this.linkUtils, false);
     }
 
     @Override
@@ -220,8 +224,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             for (String answerName : this.currentNodeBuilder.getChildNodeNames()) {
                 NodeBuilder answer = this.currentNodeBuilder.getChildNode(answerName);
                 PropertyState question = answer.getNodeState().getProperty("question");
-                if (question != null && questionUUID != null && questionUUID.equals(question.getValue(Type.STRING)))
-                {
+                if (question != null && questionUUID != null && questionUUID.equals(question.getValue(Type.STRING))) {
                     this.editAnswer(answer, answerName, value);
                     return;
                 }
@@ -252,67 +255,11 @@ public class PauseResumeFormEditor extends DefaultEditor
     private void addFormReference(Node latestForm, String id)
     {
         try {
-            NodeBuilder references = getOrCreateFormReferencesNode(this.currentNodeBuilder);
-            NodeBuilder reference = addFormReferenceNode(references, latestForm.getIdentifier());
-
-            NodeBuilder properties = addReferencePropertiesNode(reference);
-            properties.setProperty("label", "Pause Form", Type.STRING);
-            properties.setProperty("recursiveDeleteParent", true, Type.BOOLEAN);
-            properties.setProperty("linkback", true, Type.BOOLEAN);
-
-            NodeBuilder linkbackProperties = addLinkbackPropertiesNode(properties);
-            linkbackProperties.setProperty("label", "Resume Form", Type.STRING);
+            this.linkUtils.addLink(this.currentNodeBuilder, latestForm,
+                latestForm.getSession().getNode("/apps/cards/LinkDefinitions/pausedIn"), null);
         } catch (RepositoryException e) {
-            LOGGER.error("Failed to create form reference for {}: {}", id, e.getMessage());
+            LOGGER.warn("Failed to add links for form pairs {}: {}", id, e.getMessage(), e);
         }
-    }
-
-    private NodeBuilder getOrCreateFormReferencesNode(NodeBuilder node)
-    {
-        NodeBuilder result;
-        if (node.hasChildNode("formReferences")) {
-            result = this.currentNodeBuilder.getChildNode("formReferences");
-        } else {
-            result = addFormReferencesNode(this.currentNodeBuilder);
-        }
-        return result;
-    }
-
-    private NodeBuilder addFormReferencesNode(NodeBuilder node)
-    {
-        NodeBuilder result = node.setChildNode("formReferences");
-        setDefaultProperties(result);
-        setTypeProperties(result, "cards:FormReferences", "cards/Resource", "cards/FormReferences");
-        return result;
-    }
-
-    private NodeBuilder addFormReferenceNode(NodeBuilder node, String referenceToId)
-    {
-        NodeBuilder result = node.setChildNode(UUID.randomUUID().toString());
-        setDefaultProperties(result);
-        result.setProperty("reference", referenceToId, Type.REFERENCE);
-        setTypeProperties(result, "cards:FormReference", "cards/Resource", "cards/FormReference");
-        return result;
-    }
-
-    private NodeBuilder addReferencePropertiesNode(NodeBuilder node)
-    {
-        NodeBuilder result = node.setChildNode("referenceProperties");
-        setupReferencePropertiesNode(result);
-        return result;
-    }
-
-    private NodeBuilder addLinkbackPropertiesNode(NodeBuilder node)
-    {
-        NodeBuilder result = node.setChildNode("linkbackProperties");
-        setupReferencePropertiesNode(result);
-        return result;
-    }
-
-    private void setupReferencePropertiesNode(NodeBuilder node)
-    {
-        setDefaultProperties(node);
-        setTypeProperties(node, "cards:ReferenceProperties", "cards/Resource", "cards/ReferenceProperties");
     }
 
     private void setDefaultProperties(NodeBuilder node)

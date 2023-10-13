@@ -46,6 +46,7 @@
               SLING-INF/content/libs/cards/resources/media/heracles/;path:=/libs/cards/resources/media/heracles/;overwrite:=true;uninstall:=true,
               SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,
               SLING-INF/content/libs/cards/Questionnaire/;path:=/libs/cards/Questionnaire/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/apps/cards/LinkDefinitions/;path:=/apps/cards/LinkDefinitions/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true
             </Sling-Initial-Content>
           </instructions>
