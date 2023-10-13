@@ -764,20 +764,6 @@ We would like you to reflect on your experience with the Integrated Care Program
 			<type>String</type>
 		</property>
 		<node>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<name>ic_contact_name</name>
-			<property>
-				<name>text</name>
-				<value>Name</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
 			<name>ic_contact_mode</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
@@ -852,6 +838,25 @@ We would like you to reflect on your experience with the Integrated Care Program
 					<type>Long</type>
 				</property>
 			</node>
+			<node>
+				<name>No</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I do not want to be contacted</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
 		</node>
 		<node>
 			<name>ic_contact_phone_section</name>
@@ -915,6 +920,11 @@ We would like you to reflect on your experience with the Integrated Care Program
 					<name>onlyCountries</name>
 					<value>ca</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
@@ -984,6 +994,77 @@ We would like you to reflect on your experience with the Integrated Care Program
 					<name>validationErrorText</name>
 					<value>Please enter a valid email address</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>ic_contact_name_section</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition1</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>ic_contact_mode</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Phone</value>
+							<value>Text</value>
+							<value>Email</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>ic_contact_name</name>
+				<property>
+					<name>text</name>
+					<value>Name</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
