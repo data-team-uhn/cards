@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React from "react";
 
 import { Typography } from "@mui/material";
 
@@ -60,26 +60,40 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    />
 function TextQuestion(props) {
   let { displayMode, validationRegexp, validationErrorText } = {...props, ...props.questionDefinition};
-  const [errorMessage, setErrorMessage] = useState();
-  const regexpTest = new RegExp(validationRegexp);
+  const regexp = new RegExp(validationRegexp);
 
-  // Callback function if a regex is defined
-  let validate = (text) => {
-    if (validationRegexp) {
-      setErrorMessage(!!!text || regexpTest.test(text) ? undefined : validationErrorText);
-    }
-  }
+  // Validation against the regular expression if one is provided
+  // Empty inputs are considered valid
+  // If no regexp is provided, all inputs are valid
+  let validate = validationRegexp ? text => (!text || regexp.test(text)) : undefined;
+
+  // If a validation regexp is provided, deplace the view mode formatter
+  // with one that highlights the saved values which are invalid
+  let displayFormatter = (
+    validationRegexp ?
+      (label, idx) => (
+        <div>
+          <Typography component="div" color={validate(label) ? "" : "error"}>{label}</Typography>
+          { !validate(label) &&
+            <Typography component="div" color="error" variant="caption">
+              { validationErrorText }
+            </Typography>
+          }
+        </div>
+      )
+    : undefined
+  );
 
   return (
     <Question
       disableInstructions
+      defaultDisplayFormatter={displayFormatter}
       {...props}
       >
       <MultipleChoice
         input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
-        onUpdate={validate}
-        errorMessage={errorMessage}
+        validate={validate}
         {...props}
         />
     </Question>);
