@@ -20,6 +20,14 @@ import javax.jcr.Session;
 
 import org.osgi.framework.Version;
 
+/**
+ * Service interface for data migrators. A data migrator runs when the framework is started, and performs any changes
+ * needed to port existing data from the old version to the new version, or to set up any missing details on a new
+ * instance.
+ *
+ * @version $Id$
+ * @since 0.9.18
+ */
 public interface DataMigrator extends Comparable<DataMigrator>
 {
     /**
@@ -39,7 +47,7 @@ public interface DataMigrator extends Comparable<DataMigrator>
     /**
      * If this migrator should run based on what version of CARDS was previously run.
      *
-     * @param previousVersion The version of CARDs that was run previously
+     * @param previousVersion The version of CARDs that was run previously, {@code null} if this is the first run
      * @param currentVersion The version of CARDs that is currently running
      * @param session The session that should be used to pull any other data if required
      * @return {@code true} if the migrator should be run
@@ -47,9 +55,9 @@ public interface DataMigrator extends Comparable<DataMigrator>
     boolean shouldRun(Version previousVersion, Version currentVersion, Session session);
 
     /**
-     * Change anything that needs to be changed to upgrade to from the previous version of CARDS.
+     * Change anything that needs to be changed to upgrade from the previous version of CARDS.
      *
-     * @param previousVersion The version of CARDs that was run previously
+     * @param previousVersion The version of CARDs that was run previously, may be {@code null}
      * @param currentVersion The version of CARDs that is currently running
      * @param session The session that should be used to enact any required changes
      */
