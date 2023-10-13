@@ -18,7 +18,6 @@ package io.uhndata.cards.formcompletionstatus.internal;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.jcr.Node;
@@ -57,20 +56,17 @@ public class RegExpValueValidator implements AnswerValidator
                 // This only works on text, nothing to do otherwise
                 return;
             }
-            if (answer.hasProperty(PROP_VALUE)) {
-                final String regexp = question.hasProperty("validationRegexp")
-                    ? question.getProperty("validationRegexp").getString() : "";
+            if (question.hasProperty("validationRegexp") && answer.hasProperty(PROP_VALUE)) {
+                final String regexp = question.getProperty("validationRegexp").getString();
+                Pattern pattern = Pattern.compile(regexp);
 
                 final PropertyState answerProp = answer.getProperty(PROP_VALUE);
                 // if any value does not match the pattern, set FLAG_INVALID to true
                 for (int i = 0; i < answerProp.count(); i++) {
                     final String value = answerProp.getValue(Type.STRING, i);
-                    Pattern pattern = Pattern.compile(regexp);
-                    Matcher matcher = pattern.matcher(value);
-                    boolean matchFound = matcher.find();
-                    if (!matchFound) {
+                    if (!pattern.matcher(value).find()) {
                         flags.put(FLAG_INVALID, true);
-                        break;
+                        return;
                     }
                 }
             }
