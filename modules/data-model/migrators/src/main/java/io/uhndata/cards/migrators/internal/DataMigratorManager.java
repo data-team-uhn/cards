@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.migrators.spi.DataMigrator;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Component
 public class DataMigratorManager
@@ -53,6 +54,9 @@ public class DataMigratorManager
     @Reference
     private ResourceResolverFactory resolverFactory;
 
+    @Reference
+    private ThreadResourceResolverProvider rrp;
+
     @Reference(policyOption = ReferencePolicyOption.GREEDY, bind = "migratorAdded", unbind = "migratorRemoved")
     private volatile List<DataMigrator> migrators = new ArrayList<>();
 
@@ -65,8 +69,11 @@ public class DataMigratorManager
         // Get the session to run any migrators
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "dataMigratorManager");
+        boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters);) {
             final Session session = resolver.adaptTo(Session.class);
+            this.rrp.push(resolver);
+            mustPopResolver = true;
 
             // Get the previously run CARDS version
             this.previousVersion = DataMigratorUtils.getPreviousVersion(session);
@@ -87,6 +94,10 @@ public class DataMigratorManager
             LOGGER.info("Completed Data Migrator");
         } catch (LoginException | RepositoryException | PersistenceException e) {
             LOGGER.error("Could not migrate data", e);
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
     }
 
@@ -97,26 +108,32 @@ public class DataMigratorManager
             return;
         }
 
-        LOGGER.info("Running newly added {}", migrator.getName());
+        LOGGER.info("Running newly added migrator {}", migrator.getName());
         // Get the session to run any migrators
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "dataMigratorManager");
+        boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters);) {
             final Session session = resolver.adaptTo(Session.class);
+            this.rrp.push(resolver);
+            mustPopResolver = true;
 
             runMigrator(migrator, session);
 
             resolver.commit();
         } catch (LoginException | PersistenceException e) {
             LOGGER.error("Could not run newly added migrator", e);
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
-
     }
 
     protected void runMigrator(final DataMigrator migrator, final Session session)
     {
         if (migrator.shouldRun(this.previousVersion, this.version, session)) {
-            LOGGER.info("Running {}", migrator.getName());
+            LOGGER.info("Running migrator {}", migrator.getName());
             migrator.run(this.previousVersion, this.version, session);
         }
     }
