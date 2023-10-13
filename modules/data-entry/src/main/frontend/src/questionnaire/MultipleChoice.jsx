@@ -609,7 +609,7 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
         isDefaultOption={childData[IS_DEFAULT_OPTION_POS]}
         isRadio={isRadio}
         isInvalid={isInvalid}
-        description={childData[DESC_POS] || isInvalid && validationErrorText}
+        description={childData[DESC_POS] || isInvalid ? validationErrorText : ""}
       ></StyledResponseChild>
     );
   });
