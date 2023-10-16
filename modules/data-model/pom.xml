@@ -33,5 +33,6 @@
   <modules>
     <module>forms</module>
     <module>subjects</module>
+    <module>migrators</module>
   </modules>
 </project>

@@ -51,6 +51,10 @@
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.framework</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
       <artifactId>org.osgi.service.component.annotations</artifactId>
     </dependency>
     <dependency>
@@ -97,6 +101,11 @@
     <dependency>
       <groupId>io.uhndata.cards</groupId>
       <artifactId>cards-metrics</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-data-model-migrators</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
