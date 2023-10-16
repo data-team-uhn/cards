@@ -16,6 +16,8 @@
  */
 package io.uhndata.cards.migrators.internal;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -38,15 +40,28 @@ public final class DataMigratorUtils
     {
     }
 
-    public static Version getPreviousVersion(Session session) throws RepositoryException
+    public static Version getPreviousVersion(Session session)
     {
         String previousVersion = null;
-        if (session.itemExists(PREV_VERSION_PATH + "/" + VERSION_PROPERTY)) {
-            previousVersion = session.getNode(DataMigratorUtils.PREV_VERSION_PATH)
-                .getProperty(DataMigratorUtils.VERSION_PROPERTY).getString();
-        } else if (session.getNode("/Forms").hasNodes()) {
-            // Forms exist, this must be an upgrade from a pre-0.9.18 version
-            previousVersion = "0.1.0";
+        try {
+            if (session.itemExists(PREV_VERSION_PATH + "/" + VERSION_PROPERTY)) {
+                previousVersion = session.getNode(DataMigratorUtils.PREV_VERSION_PATH)
+                    .getProperty(DataMigratorUtils.VERSION_PROPERTY).getString();
+            } else if (session.nodeExists("/Forms")) {
+                final Node forms = session.getNode("/Forms");
+                final NodeIterator children = forms.getNodes();
+                while (children.hasNext()) {
+                    final Node child = children.nextNode();
+                    if ("rep:policy".equals(child.getName())) {
+                        continue;
+                    }
+                    // Forms exist, this must be an upgrade from a pre-0.9.18 version
+                    previousVersion = "0.1.0";
+                    break;
+                }
+            }
+        } catch (RepositoryException e) {
+            // Repository is new
         }
 
         return previousVersion == null ? null : new Version(previousVersion);

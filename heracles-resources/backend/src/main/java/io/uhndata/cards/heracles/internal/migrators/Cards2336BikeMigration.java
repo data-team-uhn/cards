@@ -54,7 +54,7 @@ public class Cards2336BikeMigration implements DataMigrator
     @Override
     public boolean shouldRun(Version previousVersion, Version currentVersion, Session session)
     {
-        return previousVersion.compareTo(Version.valueOf("0.9.18")) < 0;
+        return previousVersion != null && previousVersion.compareTo(Version.valueOf("0.9.18")) < 0;
     }
 
     @Override

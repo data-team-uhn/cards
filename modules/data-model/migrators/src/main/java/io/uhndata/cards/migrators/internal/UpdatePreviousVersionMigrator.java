@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.migrators.spi.DataMigrator;
 
-@Component
+@Component(immediate = true)
 public class UpdatePreviousVersionMigrator implements DataMigrator
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdatePreviousVersionMigrator.class);

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.sling.api.resource.LoginException;
@@ -39,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.migrators.spi.DataMigrator;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
-@Component
+@Component(immediate = true)
 public class DataMigratorManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataMigratorManager.class);
@@ -89,7 +88,7 @@ public class DataMigratorManager
             resolver.commit();
 
             LOGGER.info("Completed Data Migrator");
-        } catch (LoginException | RepositoryException | PersistenceException e) {
+        } catch (LoginException | PersistenceException e) {
             LOGGER.error("Could not migrate data", e);
         } finally {
             if (mustPopResolver) {
