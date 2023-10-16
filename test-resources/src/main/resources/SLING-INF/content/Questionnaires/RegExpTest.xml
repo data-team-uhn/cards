@@ -72,7 +72,7 @@
 		</property>
 		<property>
 			<name>validationErrorText</name>
-			<value>Please enter a valid email address</value>
+			<value>This is not a valid email address</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -86,7 +86,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Single value, live validation</value>
+			<value>Single value, live validation, default error message</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -102,11 +102,6 @@
 		<property>
 			<name>validationRegexp</name>
 			<value>^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>validationErrorText</name>
-			<value>Please enter a valid email address</value>
 			<type>String</type>
 		</property>
 		<property>
