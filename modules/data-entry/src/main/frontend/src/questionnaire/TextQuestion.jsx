@@ -59,7 +59,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    validationErrorText={"Please enter a lowercase input"}
 //    />
 function TextQuestion(props) {
-  let { displayMode, validationRegexp, validationErrorText } = {...props, ...props.questionDefinition};
+  let { displayMode, validationRegexp, validationErrorText } = {validationErrorText: "Invalid input", ...props.questionDefinition};
   const regexp = new RegExp(validationRegexp);
 
   // Validation against the regular expression if one is provided
@@ -94,6 +94,7 @@ function TextQuestion(props) {
         input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
         validate={validate}
+        validationErrorText={validationErrorText}
         {...props}
         />
     </Question>);
@@ -108,16 +109,12 @@ TextQuestion.propTypes = {
     displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input", "hidden"]),
     validationRegexp: PropTypes.string,
     validationErrorText: PropTypes.string,
+    liveValidation: PropTypes.bool,
   }).isRequired,
   text: PropTypes.string,
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  validationErrorText: PropTypes.string
-};
-
-TextQuestion.defaultProps = {
-  validationErrorText: "Invalid input"
 };
 
 const StyledTextQuestion = withStyles(QuestionnaireStyle)(TextQuestion)
