@@ -52,12 +52,6 @@ public class Cards2336BikeMigration implements DataMigrator
     }
 
     @Override
-    public int getPriority()
-    {
-        return 0;
-    }
-
-    @Override
     public boolean shouldRun(Version previousVersion, Version currentVersion, Session session)
     {
         return previousVersion.compareTo(Version.valueOf("0.9.18")) < 0;

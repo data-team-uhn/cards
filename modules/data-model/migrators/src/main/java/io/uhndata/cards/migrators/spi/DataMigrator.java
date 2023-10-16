@@ -38,11 +38,16 @@ public interface DataMigrator extends Comparable<DataMigrator>
     String getName();
 
     /**
-     * The priority of this migrator. Migrators with higher numbers are invoked after those with lower numbers.
+     * The priority of this migrator. Migrators with higher numbers are invoked after those with lower numbers. If a
+     * migrator doesn't really need a specific order, the default of {@code 0} is enough. Migrators of equal priority
+     * are sorted by their name.
      *
      * @return the priority of this migrator, can be any number
      */
-    int getPriority();
+    default int getPriority()
+    {
+        return 0;
+    }
 
     /**
      * If this migrator should run based on what version of CARDS was previously run.
@@ -66,6 +71,7 @@ public interface DataMigrator extends Comparable<DataMigrator>
     @Override
     default int compareTo(DataMigrator other)
     {
-        return this.getPriority() - other.getPriority();
+        return this.getPriority() == other.getPriority() ? this.getName().compareTo(other.getName())
+            : this.getPriority() - other.getPriority();
     }
 }
