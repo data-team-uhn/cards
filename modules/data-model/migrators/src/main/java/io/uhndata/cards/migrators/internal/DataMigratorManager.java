@@ -19,7 +19,6 @@ package io.uhndata.cards.migrators.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -67,10 +66,8 @@ public class DataMigratorManager
         this.version = context.getBundleContext().getBundle().getVersion();
 
         // Get the session to run any migrators
-        final Map<String, Object> parameters =
-            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "dataMigratorManager");
         boolean mustPopResolver = false;
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters);) {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             final Session session = resolver.adaptTo(Session.class);
             this.rrp.push(resolver);
             mustPopResolver = true;
@@ -109,11 +106,9 @@ public class DataMigratorManager
         }
 
         LOGGER.info("Running newly added migrator {}", migrator.getName());
-        // Get the session to run any migrators
-        final Map<String, Object> parameters =
-            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "dataMigratorManager");
+        // Get the session to run this migrator
         boolean mustPopResolver = false;
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters);) {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             final Session session = resolver.adaptTo(Session.class);
             this.rrp.push(resolver);
             mustPopResolver = true;

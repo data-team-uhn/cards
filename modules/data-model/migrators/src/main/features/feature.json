@@ -31,7 +31,7 @@
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-migrators":{
       "user.mapping":[
-        "io.uhndata.cards.data-model-migrators:dataMigratorManager=[cards-data-migration]"
+        "io.uhndata.cards.data-model-migrators=[cards-data-migration]"
       ]
     }
   }
