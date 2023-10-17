@@ -21,7 +21,7 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>cards-data-model-subjects-types</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9.18</version>
   </parent>
 
   <artifactId>cards-tumor-subject-type</artifactId>
