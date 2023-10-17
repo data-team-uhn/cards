@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -30,7 +31,7 @@ import java.util.TreeSet;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PropertyIterator;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.OnParentVersionAction;
@@ -40,6 +41,7 @@ import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -301,17 +303,21 @@ public class DeleteServlet extends SlingAllMethodsServlet
         boolean includeRoot
     ) throws RepositoryException
     {
-        final PropertyIterator references = node.getReferences();
+        @SuppressWarnings("unchecked")
+        final Iterator<Property> references =
+            IteratorUtils.chainedIterator(node.getReferences(), node.getWeakReferences());
         final String rootPath = this.nodeToDelete.get().getPath();
         while (references.hasNext()) {
-            final Node referrer = references.nextProperty().getParent();
+            final Node referrer = references.next().getParent();
             final String path = referrer.getPath();
             if (path.equals(rootPath) || path.startsWith(rootPath + "/")) {
                 // This a reference within the subtree to delete, ignore it
                 continue;
             }
-            iterateReferrers(referrer, consumer, true);
-            handleFormReferences(referrer, consumer);
+
+            if (handleLinks(referrer, consumer)) {
+                iterateReferrers(referrer, consumer, true);
+            }
         }
 
         if (includeRoot) {
@@ -359,28 +365,33 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Process a form reference node and any relevant parent nodes based on the references deletion setting.
+     * Process a link node and any relevant parent nodes based on the link deletion setting.
      *
      * @param node the form reference node
      * @param consumer the function to be called on any nodes that should also be processed
+     * @return {@code true} if processing the node should continue as expected, since this is not a link node, or
+     *         {@code false} if this was a link and was already processed by this method
      * @throws RepositoryException if any function call fails due to repository errors
      */
-    private void handleFormReferences(
-        Node node,
-        NodeConsumer consumer
-    ) throws RepositoryException
+    private boolean handleLinks(Node node, NodeConsumer consumer) throws RepositoryException
     {
-        if ("cards:FormReference".equals(node.getPrimaryNodeType().getName())) {
-            // When processing a form reference node for deletion or checking if deletion is possible,
-            // some form reference nodes specify that their parent form should be deleted or checked as well.
-            if (node.getNode("referenceProperties").getProperty("recursiveDeleteParent").getBoolean()) {
-                // Iterate the parent form if desired
-                iterateChildren(this.formUtils.getForm(node), consumer, true);
-            } else if (node.getParent().getNodes().getSize() == 1) {
-                // Iterate the set of form references if this is the only form reference to avoid leaving an empty set
-                iterateChildren(node.getParent(), consumer, true);
-            }
+        if (!node.isNodeType("cards:Link")) {
+            return true;
         }
+        // When processing a link for deletion or checking if deletion is possible,
+        // some link nodes specify that their parent resource should be deleted or checked as well.
+        String onDelete = node.getProperty("type").getNode().getProperty("onDelete").getString();
+        if ("RECURSIVE_DELETE".equals(onDelete)) {
+            // This setting requires that the linking resource also be deleted
+            // Go two levels above to find the actual resource, since link are stored under
+            // {@code <resource>/cards:links/<link>}
+            iterateChildren(node.getParent().getParent(), consumer, true);
+        }
+        if ("REMOVE_LINK".equals(onDelete)) {
+            // Just delete the link itself, keeping the linking resource intact
+            consumer.accept(node);
+        }
+        return false;
     }
 
     /**
@@ -418,12 +429,12 @@ public class DeleteServlet extends SlingAllMethodsServlet
                     case "cards:Questionnaire":
                         questionnaires.add(n.getProperty("title").getString());
                         break;
-                    case "cards:FormReferences":
-                    case "cards:FormReference":
-                    case "cards:ReferenceProperties":
-                        // Do not add formReferences to the user's prompt:
-                        // The user will be prompted to delete the formReferences parent form if it is being deleted
-                        // or the formReference should be deleted silently
+                    case "cards:Links":
+                    case "cards:Link":
+                    case "cards:WeakLink":
+                        // Do not add links to the user's prompt:
+                        // The user will be prompted to delete the parent resource if it is being deleted
+                        // or the link should be deleted silently
                         break;
                     default:
                         if ("cards/Answer".equals(n.getProperty("sling:resourceSuperType").getString())) {
