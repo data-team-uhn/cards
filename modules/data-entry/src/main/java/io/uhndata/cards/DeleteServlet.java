@@ -379,7 +379,8 @@ public class DeleteServlet extends SlingAllMethodsServlet
             // This setting requires that the linking resource also be deleted
             // Go two levels above to find the actual resource, since link are stored under
             // {@code <resource>/cards:links/<link>}
-            iterateChildren(node.getParent().getParent(), consumer, true);
+            iterateChildren(node.getParent().getParent(), consumer, false);
+            iterateReferrers(node.getParent().getParent(), consumer, true);
         } else if ("REMOVE_LINK".equals(onDelete)) {
             // Just delete the link itself, keeping the linking resource intact
             consumer.accept(node);
