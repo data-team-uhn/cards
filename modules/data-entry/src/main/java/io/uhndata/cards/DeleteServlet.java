@@ -189,7 +189,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
             // Delete all of our pending nodes, checking out the parent to avoid version conflict issues
             for (final Node n : this.nodesToDelete.get()) {
                 final Node versionableAncestor = findVersionableAncestor(n);
-                if (!isNonVersionable(n) && versionableAncestor != null && !versionableAncestor.isCheckedOut()) {
+                if (versionableAncestor != null && !versionableAncestor.isCheckedOut()) {
                     nodesToCheckin.add(versionableAncestor);
                     versionManager.checkout(versionableAncestor.getPath());
                 }
@@ -380,8 +380,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
             // Go two levels above to find the actual resource, since link are stored under
             // {@code <resource>/cards:links/<link>}
             iterateChildren(node.getParent().getParent(), consumer, true);
-        }
-        if ("REMOVE_LINK".equals(onDelete)) {
+        } else if ("REMOVE_LINK".equals(onDelete)) {
             // Just delete the link itself, keeping the linking resource intact
             consumer.accept(node);
         }
@@ -604,7 +603,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private Node findVersionableAncestor(final Node n) throws RepositoryException
     {
         // Abort early if no ancestor is accessible
-        if (n == null || n.getDepth() == 0) {
+        if (n == null || n.getDepth() == 0 || isNonVersionable(n)) {
             return null;
         }
 

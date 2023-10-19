@@ -63,9 +63,9 @@ import io.uhndata.cards.spi.AbstractNodeUtils;
  * @version $Id$
  */
 @Component
-public final class LinksImpl extends AbstractNodeUtils implements LinkUtils
+public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LinksImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinkUtilsImpl.class);
 
     @Reference
     private ResourceResolverFactory rrf;
@@ -576,7 +576,7 @@ public final class LinksImpl extends AbstractNodeUtils implements LinkUtils
             if (this.destination == null) {
                 return null;
             }
-            return LinksImpl.this.getLinks(this.destination).stream()
+            return LinkUtilsImpl.this.getLinks(this.destination).stream()
                 .filter(this::isReverse)
                 .findFirst().orElse(null);
         }
@@ -610,7 +610,7 @@ public final class LinksImpl extends AbstractNodeUtils implements LinkUtils
                     return this.getLinkedResource().getName();
                 }
                 final String format = this.getDefinition().getResourceLabelFormat();
-                final ScriptEngine engine = LinksImpl.this.scriptManager.getEngineByName("JavaScript");
+                final ScriptEngine engine = LinkUtilsImpl.this.scriptManager.getEngineByName("JavaScript");
                 final Bindings env = engine.createBindings();
                 env.put("label", this.getLabel());
                 env.put("typeNode", this.getDefinition());
