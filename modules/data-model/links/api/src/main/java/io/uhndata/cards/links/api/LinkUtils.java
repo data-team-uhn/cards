@@ -26,9 +26,9 @@ import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
  * Basic utilities for working with Links between resources.
  *
  * @version $Id$
- * @since 0.9.18
+ * @since 0.9.19
  */
-public interface Links
+public interface LinkUtils
 {
     /** The repository location where link definitions are stored. */
     String LINK_DEFINITIONS_PATH = "/apps/cards/LinkDefinitions/";

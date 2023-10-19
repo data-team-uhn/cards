@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
-import io.uhndata.cards.links.api.Links;
+import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -69,7 +69,7 @@ public class PauseResumeFormEditor extends DefaultEditor
 
     private final SubjectUtils subjectUtils;
 
-    private final Links linkUtils;
+    private final LinkUtils linkUtils;
 
     private boolean isFormNode;
 
@@ -90,7 +90,7 @@ public class PauseResumeFormEditor extends DefaultEditor
     @SuppressWarnings("checkstyle:ParameterNumber")
     public PauseResumeFormEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
         final ThreadResourceResolverProvider rrp, final QuestionnaireUtils questionnaireUtils,
-        final FormUtils formUtils, SubjectUtils subjectUtils, Links linkUtils, boolean isNew)
+        final FormUtils formUtils, SubjectUtils subjectUtils, LinkUtils linkUtils, boolean isNew)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.rrf = rrf;

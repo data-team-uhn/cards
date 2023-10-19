@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.links.api.Link;
 import io.uhndata.cards.links.api.LinkDefinition;
-import io.uhndata.cards.links.api.Links;
+import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.spi.AbstractNodeUtils;
 
 /**
@@ -63,7 +63,7 @@ import io.uhndata.cards.spi.AbstractNodeUtils;
  * @version $Id$
  */
 @Component
-public final class LinksImpl extends AbstractNodeUtils implements Links
+public final class LinksImpl extends AbstractNodeUtils implements LinkUtils
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(LinksImpl.class);
 

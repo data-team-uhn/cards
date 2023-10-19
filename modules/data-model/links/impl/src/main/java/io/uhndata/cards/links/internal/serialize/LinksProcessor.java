@@ -30,7 +30,7 @@ import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import io.uhndata.cards.links.api.Links;
+import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
@@ -43,7 +43,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 public class LinksProcessor implements ResourceJsonProcessor
 {
     @Reference
-    private Links links;
+    private LinkUtils links;
 
     @Override
     public String getName()

@@ -37,7 +37,7 @@ import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import io.uhndata.cards.links.api.Links;
+import io.uhndata.cards.links.api.LinkUtils;
 
 /**
  * Servlet that outputs all the Form data for a Questionnaire to a CSV.
@@ -54,7 +54,7 @@ public class LinksServlet extends SlingAllMethodsServlet
     private static final long serialVersionUID = 1337L;
 
     @Reference
-    private Links links;
+    private LinkUtils links;
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)

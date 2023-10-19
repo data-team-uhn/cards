@@ -361,7 +361,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
     /**
      * Process a link node and any relevant parent nodes based on the link deletion setting.
      *
-     * @param node the form reference node
+     * @param node a JCR node, may be a {@code cards:Link} node
      * @param consumer the function to be called on any nodes that should also be processed
      * @return {@code true} if processing the node should continue as expected, since this is not a link node, or
      *         {@code false} if this was a link and was already processed by this method

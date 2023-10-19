@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.links.api.Link;
-import io.uhndata.cards.links.api.Links;
+import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
@@ -57,7 +57,7 @@ public class AutocreateBacklinksListener implements ResourceChangeListener
     private ThreadResourceResolverProvider rrp;
 
     @Reference
-    private Links linkUtils;
+    private LinkUtils linkUtils;
 
     @Override
     public void onChange(final List<ResourceChange> changes)

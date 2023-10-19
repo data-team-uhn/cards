@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
-import io.uhndata.cards.links.api.Links;
+import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -60,7 +60,7 @@ public class PauseResumeFormEditorProvider implements EditorProvider
     private SubjectUtils subjectUtils;
 
     @Reference
-    private Links linkUtils;
+    private LinkUtils linkUtils;
 
     @Override
     public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)

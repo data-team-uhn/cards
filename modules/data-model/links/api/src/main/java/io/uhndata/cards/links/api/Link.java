@@ -23,7 +23,7 @@ import javax.json.JsonObject;
  * A Link, a connection from one resource to another.
  *
  * @version $Id$
- * @since 0.9.18
+ * @since 0.9.19
  */
 public interface Link
 {

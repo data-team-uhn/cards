@@ -24,7 +24,7 @@ import javax.jcr.Node;
  * A Link Definition, settings for connections from one resource to another.
  *
  * @version $Id$
- * @since 0.9.18
+ * @since 0.9.19
  */
 public interface LinkDefinition
 {
