@@ -671,7 +671,7 @@ except FileExistsError:
   print("Warning: CARDS_LOGS directory exists")
 
 yaml_obj['services']['cardsinitial']['volumes'] = ["./SLING:/opt/cards/.cards-data"]
-yaml_obj['services']['cardsinitial']['volumes'] = ["./CARDS_LOGS:/opt/cards/logs"]
+yaml_obj['services']['cardsinitial']['volumes'].append("./CARDS_LOGS:/opt/cards/logs")
 yaml_obj['services']['cardsinitial']['volumes'].append("./SSL_CONFIG/cards_certs/:/load_certs:ro")
 if os.path.exists("/etc/localtime"):
   yaml_obj['services']['cardsinitial']['volumes'].append("/etc/localtime:/etc/localtime:ro")
