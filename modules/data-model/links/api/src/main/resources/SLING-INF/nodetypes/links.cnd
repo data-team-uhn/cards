@@ -67,11 +67,14 @@
 [cards:Links] > sling:Folder
   // Properties:
 
-  // A list of links
-  + * (cards:Link, cards:WeakLink) = cards:Link IGNORE
-
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/Links" mandatory autocreated protected
+
+  // Children:
+
+  // A list of links
+  + * (cards:Link) = cards:Link IGNORE
+  + * (cards:WeakLink) = cards:WeakLink IGNORE
 
 // A strong link to another resource
 [cards:Link] > sling:Folder, mix:lastModified
