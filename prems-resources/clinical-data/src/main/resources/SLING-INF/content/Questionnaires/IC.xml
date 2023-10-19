@@ -70,7 +70,7 @@
 			<value>
 ### As you look to fill out this survey, you were likely discharged from your stay at a UHN hospital site within the last 30 days.
 
-We would like you to reflect on your experience with the Integrated Care Program in the last month when you were discharged from the hospital and transitioned home and to provide us with some feedback on supports that you may have received. We appreciate any insights you can provide and will look to make improvements based on your feedback.
+We would like you to reflect on your experience with the Integrated Care Program in the last month when you were discharged from the hospital and transitioned home, and to provide us with some feedback on supports that you may have received. We appreciate any insights you can provide and will look to make improvements based on your feedback.
 			</value>
 			<type>String</type>
 		</property>
@@ -758,11 +758,19 @@ We would like you to reflect on your experience with the Integrated Care Program
 	<node>
 		<name>ic_feedback</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>##### If you would like to provide further input into your experience, please provide your name or that of your family caregiver, and a way to reach you (phone or email). A member of the quality improvement team will reach out to you for interview. Interviews would be maximum 30 minutes and in appreciation of your time, you would receive compensation.</value>
-			<type>String</type>
-		</property>
+		<node>
+			<name>ic_feedback_intro</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>
+### If you would like to provide further input into your experience, please provide your name or that of your family caregiver, and a way to reach you (phone or email).
+
+A member of the quality improvement team will reach out to you for an interview. Interviews would be maximum 30 minutes and in appreciation of your time, you would receive compensation.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
 		<node>
 			<name>ic_contact_mode</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
