@@ -221,22 +221,10 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
             return false;
         }
         if (original.getDefinition().isBacklinkForced()) {
-            try (ResourceResolver resolver = this.rrf.getServiceResourceResolver(null)) {
-                final Session session = resolver.adaptTo(Session.class);
-                addLink(session.getNode(original.getLinkedResource().getPath()),
-                    session.getNode(original.getLinkingResource().getPath()),
-                    session.getNode(original.getDefinition().getBacklink().getNode().getPath()), original.getLabel());
-            } catch (LoginException e) {
-                LOGGER.error("Missing service user registration: {}", e.getMessage());
-                return false;
-            } catch (RepositoryException e) {
-                LOGGER.warn("Failed to create backlink: {}", e.getMessage());
-            }
-        } else {
             try {
-                if ("cards-links-manager".equals(original.getLinkingResource().getSession().getUserID())) {
-                    // This is not a forced link, and the original user is no longer in the session.
-                    // TODO: try to impersonate the original user who created the link
+                if (!"cards-links-manager".equals(original.getLinkingResource().getSession().getUserID())) {
+                    // We'll let the automatic backlink creator do it
+                    return false;
                 }
             } catch (RepositoryException e) {
                 // Not expected
