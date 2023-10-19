@@ -102,17 +102,14 @@
         "set properties on /Metrics/S3ExportedSubjects/prevTotal \n   default value{Long} to 0 \n end",
         "set properties on /Metrics/S3ExportFailures/name \n   default value{String} to \"{003} Number Of Failed S3 export jobs\" \n end",
         "set properties on /Metrics/S3ExportFailures/prevTotal \n   default value{Long} to 0 \n end",
-        "create service user cards-exporter with path system/cards \n set ACL for cards-exporter \n   allow jcr:read on / \n end",
-        "create path (sling:Folder) /apps/cards/LinkDefinitions",
-        "create service user pause-resume-editor \n set ACL for pause-resume-editor \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects,/apps/cards/LinkDefinitions \n end"
+        "create service user cards-exporter with path system/cards \n set ACL for cards-exporter \n   allow jcr:read on / \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~heracles":{
       "user.mapping":[
         "io.uhndata.cards.heracles-backend:S3Export=[cards-exporter]",
-        "io.uhndata.cards.heracles-backend:MetricLogger=[cards-metrics]",
-        "io.uhndata.cards.heracles-backend=[sling-readall]",
-        "io.uhndata.cards.heracles-backend:PauseResumeEditor=[pause-resume-editor]"
+        "io.uhndata.cards.heracles-backend:PauseResumeEditor=[sling-readall]",
+        "io.uhndata.cards.heracles-backend:MetricLogger=[cards-metrics]"
       ]
     }
   }

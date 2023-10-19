@@ -49,11 +49,8 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.uhndata.cards.forms.api.FormUtils;
 
 /**
  * A servlet that tries to delete a given node and returns an explanation if deletion is not possible.
@@ -94,9 +91,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
     /** A set of all nodes that are children of nodes in {@code nodesToDelete}. */
     private final ThreadLocal<Set<Node>> childNodesDeleted =
         ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
-
-    @Reference
-    private FormUtils formUtils;
 
     /**
      * A function that operates on a {@link Node}. As opposed to a simple {@code Consumer}, it can forward a
