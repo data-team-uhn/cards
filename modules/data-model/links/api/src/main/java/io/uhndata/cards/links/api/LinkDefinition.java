@@ -28,10 +28,10 @@ import javax.jcr.Node;
  */
 public interface LinkDefinition
 {
-    /** The primary node type for a strong Link. */
+    /** The primary node type for a Link Definition. */
     String LINK_DEFINITION_NODETYPE = "cards:LinkDefinition";
 
-    /** The Sling resource type of a Link. */
+    /** The Sling resource type of a Link Definition. */
     String LINK_DEFINITION_RESOURCE = "cards/LinkDefinition";
 
     /** The name of the property of a LinkDefinition node that specifies if the link is weak or strong. */
@@ -114,7 +114,7 @@ public interface LinkDefinition
      * An optional list of node types that are allowed as valid nodes on which the link can be set. If not set, any type
      * of node can be used.
      *
-     * @return a set of node types, e.g. {@code cards:Form, cards:Subject}, may be empty
+     * @return a set of node types, e.g. {@code {cards:Form, cards:Subject}}, may be empty
      */
     Set<String> getRequiredSourceTypes();
 
@@ -122,7 +122,7 @@ public interface LinkDefinition
      * An optional list of node types that are allowed as valid nodes to link to. If not set, any type of node can be
      * used.
      *
-     * @return a set of node types, e.g. {@code cards:Form, cards:Subject}, may be empty
+     * @return a set of node types, e.g. {@code {cards:Form, cards:Subject}}, may be empty
      */
     Set<String> getRequiredDestinationTypes();
 

@@ -74,7 +74,7 @@ public interface Link
      * Reports if this is a weak or a strong link.
      *
      * @return {@code true} if this is a weak link that may be broken if the linked resource is deleted, {@code false}
-     *         if the link forces the resources to be deleted together
+     *         if the link forces the resource and the link to be deleted together
      */
     boolean isWeak();
 
@@ -109,7 +109,7 @@ public interface Link
     /**
      * Retrieve the (optional) label set for this link.
      *
-     * @return a string, may be {@code null}
+     * @return a string, empty if no label is set
      */
     String getLabel();
 
