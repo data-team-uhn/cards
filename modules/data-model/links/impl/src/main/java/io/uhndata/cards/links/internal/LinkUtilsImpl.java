@@ -260,7 +260,8 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     public boolean removeLinks(Node source, Node destination, String type, String label)
     {
         try {
-            return removeLinks(source, destination, source.getSession().getNode(LINK_DEFINITIONS_PATH + type), label);
+            return removeLinks(source, destination,
+                source.getSession().getNode(type.startsWith("/") ? type : LINK_DEFINITIONS_PATH + type), label);
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to delete link of type {} from {} to {}: {}", type, source, destination,
                 e.getMessage(), e);
@@ -552,7 +553,7 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
         public boolean isSymmetric()
         {
             try {
-                return this.type.hasProperty("backLink");
+                return this.type.hasProperty("backLink") && getBacklink() != null;
             } catch (RepositoryException e) {
                 return false;
             }
