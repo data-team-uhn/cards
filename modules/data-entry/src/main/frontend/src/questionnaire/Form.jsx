@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState, useContext, Fragment } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, withRouter } from "react-router-dom";
 
 import {
@@ -114,8 +114,6 @@ function Form (props) {
   // The first incomplete question, to be brought to the user's attention
   let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
   let [ disableProgress, setDisableProgress ] = useState();
-
-  const ENTRIES_VALUE = 1;
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -363,33 +361,6 @@ function Form (props) {
   let onDelete = () => {
     removeWindowHandlers && removeWindowHandlers();
     props.history.push(urlBase + (data?.subject?.['@path'] || ''));
-  }
-
-  let getNodeHierarchy = (node) => {
-    if (node["parents"]) {
-      let ancestors = getNodeHierarchy(node["parents"]);
-      ancestors.push(node);
-      return ancestors;
-    } else {
-      return [node];
-    }
-  }
-
-  let getDistinctHierarchyAsList = (reference) => {
-    let referencedHierarchy = getNodeHierarchy(reference);
-    let currentHierarchy = getNodeHierarchy(data.subject);
-
-    let distinctHierarchy = [];
-    for (let i = 0; i < referencedHierarchy.length; i++) {
-      let node = referencedHierarchy[i]
-      if (currentHierarchy.length > i && currentHierarchy[i]["@path"] == node["@path"]) {
-        // Shared ancestor: skip
-        continue;
-      } else {
-        distinctHierarchy.push(<>{node.type.label} <Link to={"/content.html" + node["@path"]} underline="hover">{node.identifier}</Link></>);
-      }
-    }
-    return distinctHierarchy;
   }
 
   let title = data?.questionnaire?.title || id || "";
