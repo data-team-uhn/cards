@@ -691,8 +691,19 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
         @Override
         public JsonObject toJson()
         {
-            JsonObjectBuilder result = Json.createObjectBuilder()
-                .add("type", this.getDefinition().getLabel());
+            JsonObjectBuilder result = Json.createObjectBuilder();
+            try {
+                result.add("@path", this.getNode().getPath());
+                result.add("@name", this.getNode().getName());
+            } catch (RepositoryException e) {
+                // This really shouldn't happen, and there is no other way to compute them
+            }
+            try {
+                result.add("type", this.getDefinition().getNode().getPath());
+            } catch (RepositoryException e) {
+                result.add("type", String.valueOf(this.getDefinition().getNode()));
+            }
+            result.add("typeLabel", this.getDefinition().getLabel());
             try {
                 result.add("to",
                     this.getLinkedResource() != null ? this.getLinkedResource().getPath() : "inaccessible resource");
