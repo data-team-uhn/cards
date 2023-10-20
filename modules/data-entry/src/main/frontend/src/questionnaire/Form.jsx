@@ -517,28 +517,17 @@ function Form (props) {
     return time.hasSame(DateTime.local(),"day") ? "at " + time.toFormat("hh:mma") : time.toRelativeCalendar();
   }
 
-  let formReferenceDisplay = (formReference) => {
-    return formReference['referenceProperties']['label'] ?
-      <Link to={"/content.html" + formReference.reference['@path']} underline="hover">{formReference.referenceProperties.label}</Link>
-      :
-      <Breadcrumbs separator="/" style={{display: "inline-flex"}}>
-        {getDistinctHierarchyAsList(formReference.reference.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}
-        <Typography variant="overline" key={formReference.reference['@name']}><Link to={"/content.html" + formReference.reference['@path']} underline="hover">{formReference.reference.questionnaire['@name']}</Link></Typography>
-      </Breadcrumbs>
-  }
-
-  let formReferences = data && data['formReferences'] ?
+  let validLinks = data?.["cards:links"]?.filter(link => link["to"]?.startsWith("/"));
+  let links = validLinks.length > 0 ?
       (
         <Typography variant="overline">
           {"Related: "}
-          
-          {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).length > 1 ?
-            <>
-              {Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType']).map(([key, value]) => <Fragment key={key}><br />{formReferenceDisplay(value)}</Fragment>)}
-            </>
-            :
-            // Display the first (and only) formReference
-            formReferenceDisplay(Object.entries(data['formReferences']).filter(([key, value]) => "cards:FormReference" == value['jcr:primaryType'])[0][ENTRIES_VALUE])
+          {validLinks.length == 1 ?
+              validLinks.map(link => <Link key={link["@name"]} to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
+              :
+              <List>
+              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
+              </List>
           }
         </Typography>
       )
@@ -599,7 +588,7 @@ function Form (props) {
             : ""
           }
           </Breadcrumbs>
-          {formReferences}
+          {links}
         </ResourceHeader>
         }
         { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere
