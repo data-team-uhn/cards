@@ -148,7 +148,7 @@
     <app.name>Clinical ARchive for Data Science</app.name>
     <platform.name>CARDS</platform.name>
     <slf4j.version>1.7.36</slf4j.version>
-    <jackrabbit.version>2.21.10</jackrabbit.version>
+    <jackrabbit.version>2.21.20</jackrabbit.version>
     <oak.version>1.44.0</oak.version>
     <sling.saml.version>0.2.6.cards.1</sling.saml.version>
 
