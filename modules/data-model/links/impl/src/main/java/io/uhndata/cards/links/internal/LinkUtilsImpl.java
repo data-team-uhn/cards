@@ -497,6 +497,12 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
                 return super.hashCode();
             }
         }
+
+        @Override
+        public String toString()
+        {
+            return this.getLabel();
+        }
     }
 
     private final class LinkImpl implements Link
@@ -667,6 +673,18 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
                     this.getLabel());
             } catch (RepositoryException e) {
                 return super.hashCode();
+            }
+        }
+
+        @Override
+        public String toString()
+        {
+            try {
+                return this.getDefinition().getLabel() + " (" + this.getLinkingResource().getPath() + " -> "
+                    + (this.getLinkedResource() == null ? "inaccessible resource" : this.getLinkedResource().getPath())
+                    + (StringUtils.isEmpty(this.getLabel()) ? "" : " \"" + this.getLabel() + "\"") + ")";
+            } catch (RepositoryException e) {
+                return super.toString();
             }
         }
 
