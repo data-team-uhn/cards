@@ -496,7 +496,7 @@ function Form (props) {
           {validLinks.length == 1 ?
               validLinks.map(link => <Link key={link["@name"]} to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
               :
-              <List>
+              <List dense disablePadding>
               {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
               </List>
           }
