@@ -2047,7 +2047,6 @@
     <module>modules</module>
     <module>aggregated-frontend</module>
     <module>lfs-resources</module>
-    <module>kids-resources</module>
     <module>test-resources</module>
     <module>distribution</module>
     <module>Utilities</module>
