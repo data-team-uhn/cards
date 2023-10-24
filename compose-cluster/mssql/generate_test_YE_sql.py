@@ -151,7 +151,7 @@ def convertToSqlType(insertion_values):
 
 # Insert test data
 args.file.write("INSERT INTO [path].[PatientActivity_data_for_PtExpSurveyApp]")
-args.file.write("\t(PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, [MYCHART_STATUS], DEATH_DATE, DISCH_DISPOSITION, ED_VISIT_YN, LEVEL_OF_CARE, ED_IP_TRANSFER_YN, OP_IP_TRANSFER_YN, LENGTH_OF_STAY_DAYS, UHN_ICC_STATUS, UHN_ICC_PATIENT_ELIGIBILITY, PATIENT_CLASS)\n")
+args.file.write("\t(PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, [MYCHART_STATUS], DEATH_DATE, PRIMARY_DX_NAME, DISCH_DISPOSITION, ED_VISIT_YN, LEVEL_OF_CARE, ED_IP_TRANSFER_YN, OP_IP_TRANSFER_YN, LENGTH_OF_STAY_DAYS, UHN_ICC_STATUS, UHN_ICC_PATIENT_ELIGIBILITY, PATIENT_CLASS)\n")
 args.file.write("\tVALUES\n")
 for i in range(args.n):
     insertion_values = {}
@@ -200,6 +200,9 @@ for i in range(args.n):
     # DEATH_DATE
     insertion_values['DEATH_DATE'] = random.choices([None, potential_death_time_str], [20, 1])[0]
 
+    # DX
+    insertion_values['PRIMARY_DX_NAME'] = random.choices([None, "Agitation", "Alcohol withdrawal", "Pain", "Injury"], [1, 1, 1, 1, 1])[0]
+
     # LEVEL_OF_CARE
     insertion_values['LEVEL_OF_CARE'] = random.choices(['regular', 'ALC-AB', 'ALC 123'], [10, 1, 1])[0]
 
@@ -219,7 +222,7 @@ for i in range(args.n):
     # Identifier columns
     insertion_values['PAT_ENC_CSN_ID'] = i
 
-    args.file.write("\t({PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART_STATUS}, {DEATH_DATE}, {DISCH_DISPOSITION}, {ED_VISIT_YN}, {LEVEL_OF_CARE}, {ED_IP_TRANSFER_YN}, {OP_IP_TRANSFER_YN}, {LENGTH_OF_STAY_DAYS}, {UHN_ICC_STATUS}, {UHN_ICC_PATIENT_ELIGIBILITY}, 'Inpatient')".format(**convertToSqlType(insertion_values)))
+    args.file.write("\t({PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART_STATUS}, {DEATH_DATE}, {PRIMARY_DX_NAME}, {DISCH_DISPOSITION}, {ED_VISIT_YN}, {LEVEL_OF_CARE}, {ED_IP_TRANSFER_YN}, {OP_IP_TRANSFER_YN}, {LENGTH_OF_STAY_DAYS}, {UHN_ICC_STATUS}, {UHN_ICC_PATIENT_ELIGIBILITY}, 'Inpatient')".format(**convertToSqlType(insertion_values)))
     if i < args.n - 1:
         args.file.write(",")
     args.file.write("\n")
