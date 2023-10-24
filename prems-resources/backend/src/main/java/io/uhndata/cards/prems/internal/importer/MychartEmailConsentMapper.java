@@ -40,9 +40,9 @@ public class MychartEmailConsentMapper implements ClarityDataProcessor
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        if ("Activated".equalsIgnoreCase(input.get("MYCHART STATUS"))) {
+        if ("Activated".equalsIgnoreCase(input.get("MYCHART_STATUS"))) {
             input.put("EMAIL_CONSENT_YN", "Yes");
-            LOGGER.warn("Set visit {} EMAIL_CONSENT_YN to 'Yes' due to MYCHART STATUS 'Activated'",
+            LOGGER.warn("Set visit {} EMAIL_CONSENT_YN to 'Yes' due to MYCHART_STATUS 'Activated'",
                 input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
         }
         return input;
