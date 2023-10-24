@@ -158,6 +158,12 @@
 
   // For text answers, a regular expression that can restrict/validate the allowed answers.
   - validationRegexp (string)
+  // If validationRegexp is defined, then this property controls how often to check the user's answer agains the pattern
+  // If true, validate at every change (typed letter)
+  // If false or undefined, validate only when trying to accept the answer
+  - liveValidation (boolean)
+  // If validationRegexp is defined, and an answer doesn't match it, then this text will be shown as an error to the user
+  - validationErrorText (string)
 
   // For text answers that are multivalued and display an input, enable detecting separators
   // (,;) and notifying the user that each option should be entered separately by
