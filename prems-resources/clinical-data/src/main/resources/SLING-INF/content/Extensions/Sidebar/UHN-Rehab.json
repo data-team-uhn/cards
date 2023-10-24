@@ -1,8 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/sidebar/entry",
-  "cards:extensionName": "UHN Rehab",
-  "cards:targetURL": "/content.html/Dashboard/78840662",
-  "cards:icon": "asset:patient-portal.clinicIcon.js",
-  "cards:defaultOrder": 14
-}
