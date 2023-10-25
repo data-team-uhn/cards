@@ -54,6 +54,7 @@ const GHOST_SENTINEL = "custom-input";
 function MultipleChoice(props) {
   let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
+  let { validate, validationErrorText, liveValidation } = {...props.questionDefinition, ...props};
   // pageActive should be passed to the Answer component, so we make sure to include it in the `rest` variable above
   let { instanceId, pageActive } = props;
 
@@ -115,6 +116,17 @@ function MultipleChoice(props) {
   const [separatorDetected, setSeparatorDetected] = useState(false);
   const [assistantAnchor, setAssistantAnchor] = useState(null);
   const [tmpGhostSelection, setTmpGhostSelection] = useState(null);
+  const [inputError, setInputError] = useState();
+
+  useEffect(() => {
+    // If liveValidation is on, run validation on every change of the input
+    // Otherwise, validate once when inputError is undefined and
+    // revalidate at every text update only if inputError is true
+    // (meaning that a validation error was detected when attempting to accept the input)
+    if (validate) {
+      (liveValidation || inputError !== false) && setInputError(!validate(ghostName));
+    }
+  }, [ghostName, inputError]);
 
   let selectOption = (id, name, checked = false) => {
     if (!(isRadio || isBare) && !checked && naOption == id) {
@@ -231,9 +243,28 @@ function MultipleChoice(props) {
     setSelection((old) => unselect(old, id));
   }
 
-  let acceptEnteredOption = (overrideValue, overrideName) => {
-    let labelToAccept = overrideName || ghostName || overrideValue || (ghostValue == GHOST_SENTINEL ? "" : ghostValue);
-    let valToAccept = overrideValue || (ghostValue == GHOST_SENTINEL ? labelToAccept : ghostValue);
+  let acceptEnteredOption = (enforceValidation) => {
+    // If a validation method is provided and liveValidation is off, validate before proceeding
+    if (!liveValidation) {
+      if (typeof(validate) == 'function') {
+        let validationError = !validate(ghostName);
+        if (validationError) {
+          setInputError(true);
+          // If validation is enforced and the input is invalid, do not accept it
+          if (enforceValidation) return;
+        }
+      }
+    } else {
+      // If validation is enforced and the input is invalid, do not accept it
+      if (inputError && enforceValidation) return;
+    }
+
+    let labelToAccept = ghostName || (ghostValue == GHOST_SENTINEL ? "" : ghostValue);
+    let valToAccept = (ghostValue == GHOST_SENTINEL ? labelToAccept : ghostValue);
+    acceptOption(valToAccept, labelToAccept);
+  }
+
+  let acceptOption = (valToAccept, labelToAccept) => {
     if (isRadio || isBare) {
       selectOption(valToAccept, labelToAccept) && setGhostName("");
       inputEl && inputEl.blur();
@@ -336,7 +367,7 @@ function MultipleChoice(props) {
       setGhostValue(GHOST_SENTINEL);
     }
     updateGhost(value, label);
-    acceptEnteredOption(value, label);
+    acceptOption(value, label);
     onUpdate && onUpdate(value);
   }
 
@@ -357,7 +388,8 @@ function MultipleChoice(props) {
         :
           <TextField
             variant="standard"
-            helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
+            error={inputError}
+            helperText={inputError ? validationErrorText : maxAnswers !== 1 && "Press ENTER to add a new option"}
             className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
             onChange={ghostUpdateEvent}
             disabled={disabled}
@@ -369,7 +401,7 @@ function MultipleChoice(props) {
                   // We need to stop the event so that it doesn't trigger a form submission
                   event.preventDefault();
                   event.stopPropagation();
-                  acceptEnteredOption();
+                  acceptEnteredOption(true);
                 }
               },
               tabIndex: isRadio ? -1 : undefined
@@ -494,7 +526,7 @@ function MultipleChoice(props) {
               value={selection.length > 0 && String(selection[0][VALUE_POS])}
             >
               <List className={classes.optionsList}>
-              {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
+              {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption, validate, validationErrorText)}
               {/* Ghost radio for the text input */}
               {
               ghostInput && <ListItem className={classes.ghostListItem}>
@@ -543,7 +575,7 @@ function MultipleChoice(props) {
           pageActive && <>
             {instructions}
             <List className={classes.optionsList}>
-              {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
+              {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption, validate, validationErrorText)}
               {ghostInput && <ListItem>{ghostInput}</ListItem>}
             </List>
           </>
@@ -562,8 +594,9 @@ function MultipleChoice(props) {
 }
 
 // Generate a list of options that are part of the default suggestions
-function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick, onDelete) {
+function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick, onDelete, validate, validationErrorText) {
   return defaults.map( (childData) => {
+    let isInvalid = !childData[IS_DEFAULT_OPTION_POS] && !(validate?.(childData[LABEL_POS]) ?? true);
     return (
       <StyledResponseChild
         id={childData[VALUE_POS]}
@@ -575,7 +608,8 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
         onDelete={onDelete}
         isDefaultOption={childData[IS_DEFAULT_OPTION_POS]}
         isRadio={isRadio}
-        description={childData[DESC_POS]}
+        isInvalid={isInvalid}
+        description={childData[DESC_POS] || isInvalid ? validationErrorText : ""}
       ></StyledResponseChild>
     );
   });
@@ -585,7 +619,7 @@ var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
-  const {classes, checked, name, id, isDefaultOption, onClick, disabled, isRadio, onDelete, description} = props;
+  const {classes, checked, name, id, isDefaultOption, onClick, disabled, isRadio, isInvalid, onDelete, description} = props;
 
   return (
     <React.Fragment>
@@ -637,10 +671,15 @@ function ResponseChild(props) {
                 <Close color="action" className={classes.deleteIcon}/>
               </IconButton>
               <div className={classes.inputLabel}>
-                <Typography>
+                <Typography color={isInvalid ? "error" : ""}>
                   {name}
                 </Typography>
               </div>
+              { description &&
+                <FormattedText className={classes.selectionDescription} variant="caption" color={isInvalid ? "error" : "textSecondary"}>
+                  {description}
+                </FormattedText>
+              }
             </React.Fragment>
           ))
           }

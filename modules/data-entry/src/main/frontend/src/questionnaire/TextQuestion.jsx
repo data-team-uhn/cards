@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React from "react";
 
 import { Typography } from "@mui/material";
 
@@ -41,8 +41,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //  text: String containing the question to ask
 //  defaults: Array of arrays, each with two values, a "label" which will be displayed to the user,
 //            and a "value" denoting what will actually be stored
-//  regexp: String of a regular expression tested against the input
-//  errorText: String to display when the regexp is not matched
+//  validationRegexp: String of a regular expression tested against the input
+//  validationErrorText: String to display when the regexp is not matched
 //  displayMode: Either "input", "textbox", or undefined denoting the type of
 //             user input. Currently, only "input" is supported
 //
@@ -55,33 +55,47 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //      ["Three", "3"]
 //    ]}
 //    displayMode={"input"}
-//    regexp={"[a-z]+"}
-//    errorText={"Please enter a lowercase input"}
+//    validationRegexp={"^[a-z]+$"}
+//    validationErrorText={"Please enter a lowercase input"}
 //    />
 function TextQuestion(props) {
-  let { errorText, ...rest } = props;
-  let { displayMode, regexp } = {...props.questionDefinition, ...props};
-  const [error, setError] = useState(false);
-  const regexTest = new RegExp(regexp);
+  let { displayMode, validationRegexp, validationErrorText } = {validationErrorText: "Invalid input", ...props.questionDefinition, ...props};
+  const regexp = new RegExp(validationRegexp);
 
-  // Callback function if a regex is defined
-  let checkRegex = (text) => {
-    if (regexp) {
-      setError(!regexTest.test(text));
-    }
-  }
+  // Validation against the regular expression if one is provided
+  // Empty inputs are considered valid
+  // If no regexp is provided, all inputs are valid
+  let validate = validationRegexp ? text => (!text || regexp.test(text)) : undefined;
+
+  // If a validation regexp is provided, deplace the view mode formatter
+  // with one that highlights the saved values which are invalid
+  let displayFormatter = (
+    validationRegexp ?
+      (label, idx) => (
+        <div>
+          <Typography component="div" color={validate(label) ? "" : "error"}>{label}</Typography>
+          { !validate(label) &&
+            <Typography component="div" color="error" variant="caption">
+              { validationErrorText }
+            </Typography>
+          }
+        </div>
+      )
+    : undefined
+  );
 
   return (
     <Question
       disableInstructions
-      {...rest}
+      defaultDisplayFormatter={displayFormatter}
+      {...props}
       >
-      {error && <Typography color='error'>{errorText}</Typography>}
       <MultipleChoice
         input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
-        onUpdate={checkRegex}
-        {...rest}
+        validate={validate}
+        validationErrorText={validationErrorText}
+        {...props}
         />
     </Question>);
 }
@@ -93,17 +107,14 @@ TextQuestion.propTypes = {
     minAnswers: PropTypes.number,
     maxAnswers: PropTypes.number,
     displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input", "hidden"]),
-    regexp: PropTypes.string,
+    validationRegexp: PropTypes.string,
+    validationErrorText: PropTypes.string,
+    liveValidation: PropTypes.bool,
   }).isRequired,
   text: PropTypes.string,
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  errorText: PropTypes.string
-};
-
-TextQuestion.defaultProps = {
-  errorText: "Invalid input"
 };
 
 const StyledTextQuestion = withStyles(QuestionnaireStyle)(TextQuestion)
