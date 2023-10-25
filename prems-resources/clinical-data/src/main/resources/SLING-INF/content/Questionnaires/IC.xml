@@ -1000,7 +1000,7 @@ A member of the quality improvement team will reach out to you for an interview.
 				</property>
 				<property>
 					<name>validationRegexp</name>
-					<value>^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$</value>
+					<value>^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$</value>
 					<type>String</type>
 				</property>
 				<property>
