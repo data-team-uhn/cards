@@ -59,31 +59,42 @@ BEGIN
 END
 
 -- Remove the table if it already exists
-IF OBJECT_ID('path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS', 'U') IS NOT NULL
-    DROP TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS];
+IF OBJECT_ID('path.PatientActivity_data_for_PtExpSurveyApp', 'U') IS NOT NULL
+    DROP TABLE [path].[PatientActivity_data_for_PtExpSurveyApp];
 
-CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
-    PAT_MRN varchar(102) NULL,
-    PAT_FIRST_NAME varchar(255) NULL,
-    PAT_LAST_NAME varchar(255) NULL,
-    EMAIL_ADDRESS varchar(255) NULL,
-    HOSP_DISCHARGE_DTTM datetime2 NULL,
-    DISCH_DEPT_NAME varchar(254) NULL,
-    DISCH_LOC_NAME varchar(254) NULL,
-    EMAIL_CONSENT_YN varchar(3),
+CREATE TABLE [path].[PatientActivity_data_for_PtExpSurveyApp] (
+    ADT_PAT_CLASS_C varchar(66) NULL,
+    CITY varchar(50) NULL,
     DEATH_DATE datetime2 NULL,
-    DISCH_DISPOSITION varchar(255) NULL,
-    LEVEL_OF_CARE varchar(255) NULL,
-    ED_IP_TRANSFER_YN varchar(3) NULL,
-    LENGTH_OF_STAY_DAYS varchar(102) NULL,
+    DEPARTMENT_ID decimal(18,0) NULL,
+    DISCH_DEPT_NAME varchar(254) NULL,
+    DISCH_DISPOSITION varchar(254) NULL,
+    DISCH_LOC_NAME varchar(200) NULL,
+    ED_IP_TRANSFER_YN varchar(3),
+    ED_VISIT_YN varchar(3),
+    EMAIL_ADDRESS varchar(255) NULL,
+    EMAIL_CONSENT_YN varchar(3),
+    ENTRY_TIME datetime2 NULL,
     HOSP_ADMISSION_DTTM datetime2 NULL,
-    [MYCHART STATUS] varchar(255) NULL,
-    DX_NAME varchar(1024) NULL,
-    ID varchar(255) NULL,
-    PAT_ENC_CSN_ID varchar(255) NULL,
-    UHN_ICC_STATUS varchar(255) NULL,
-    UHN_ICC_PATIENT_ELIGIBILITY varchar(255) NULL,
-    PATIENT_CLASS varchar(255) NULL,
+    HOSP_DISCHARGE_DTTM datetime2 NULL,
+    HSP_DIS_EVENT_ID decimal(18,0) NULL,
+    LENGTH_OF_STAY_DAYS int NULL,
+    LEVEL_OF_CARE varchar(254) NULL,
+    MYCHART_STATUS varchar(254) NULL,
+    OP_IP_TRANSFER_YN varchar(3),
+    PATIENT_CLASS varchar(254) NULL,
+    PAT_ENC_CSN_ID decimal(18,0),
+    PAT_FIRST_NAME varchar(200) NULL,
+    PAT_LAST_NAME varchar(200) NULL,
+    PAT_MRN varchar(102) NULL,
+    PRIMARY_DX_ID decimal(18,0) NULL,
+    PRIMARY_DX_NAME varchar(200) NULL,
+    PRIMARY_ER_COMPLAINT varchar(500) NULL,
+    PRINCIPAL_HOSP_PROB_NAME varchar(200) NULL,
+    PROVINCE varchar(254) NULL,
+    UHN_ICC_PATIENT_ELIGIBILITY varchar(2500) NULL,
+    UHN_ICC_STATUS varchar(2500) NULL,
+    ZIP varchar(60) NULL
 );
 
 -- Insert test data
@@ -139,6 +150,9 @@ def convertToSqlType(insertion_values):
     return converted_values
 
 # Insert test data
+args.file.write("INSERT INTO [path].[PatientActivity_data_for_PtExpSurveyApp]")
+args.file.write("\t(PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, [MYCHART_STATUS], DEATH_DATE, PRIMARY_DX_NAME, DISCH_DISPOSITION, ED_VISIT_YN, LEVEL_OF_CARE, ED_IP_TRANSFER_YN, OP_IP_TRANSFER_YN, LENGTH_OF_STAY_DAYS, UHN_ICC_STATUS, UHN_ICC_PATIENT_ELIGIBILITY, PATIENT_CLASS)\n")
+args.file.write("\tVALUES\n")
 for i in range(args.n):
     insertion_values = {}
 
@@ -178,7 +192,7 @@ for i in range(args.n):
     insertion_values['EMAIL_CONSENT_YN'] = email_consent_yn
 
     # MYCHART STATUS
-    insertion_values['MYCHART STATUS'] = random.choices([None, 'Activating', 'Activated'], [2, 1, 3])[0]
+    insertion_values['MYCHART_STATUS'] = random.choices([None, 'Activating', 'Activated'], [2, 1, 3])[0]
 
     # DISCH_DISPOSITION
     insertion_values['DISCH_DISPOSITION'] = random.choices(['Home', 'Deceased'], [20, 1])[0]
@@ -186,11 +200,17 @@ for i in range(args.n):
     # DEATH_DATE
     insertion_values['DEATH_DATE'] = random.choices([None, potential_death_time_str], [20, 1])[0]
 
+    # DX
+    insertion_values['PRIMARY_DX_NAME'] = random.choices([None, "Agitation", "Alcohol withdrawal", "Pain", "Injury"], [1, 1, 1, 1, 1])[0]
+
     # LEVEL_OF_CARE
     insertion_values['LEVEL_OF_CARE'] = random.choices(['regular', 'ALC-AB', 'ALC 123'], [10, 1, 1])[0]
 
-    # ED_IP_TRANSFER_YN
+    # Transfers
+    insertion_values['ED_VISIT_YN'] = "Yes" if disch_dept_name in ["TW-EMERGENCY", "TG-EMERGENCY"] else "No"
     insertion_values['ED_IP_TRANSFER_YN'] = random.choices(['Yes', 'No'], [1, 5])[0]
+    insertion_values['OP_IP_TRANSFER_YN'] = random.choices(['Yes', 'No'], [1, 5])[0]
+
 
     # LENGTH_OF_STAY_DAYS
     insertion_values['LENGTH_OF_STAY_DAYS'] = random.randint(1, 15)
@@ -200,12 +220,11 @@ for i in range(args.n):
     insertion_values['UHN_ICC_PATIENT_ELIGIBILITY'] = random.choices([None, 'Enrolled'], [1, 2])[0]
 
     # Identifier columns
-    insertion_values['ID'] = i
     insertion_values['PAT_ENC_CSN_ID'] = i
 
-    args.file.write("INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]")
-    args.file.write("\t(ID, PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, [MYCHART STATUS], DEATH_DATE, DISCH_DISPOSITION, LEVEL_OF_CARE, ED_IP_TRANSFER_YN, LENGTH_OF_STAY_DAYS, UHN_ICC_STATUS, UHN_ICC_PATIENT_ELIGIBILITY, PATIENT_CLASS)\n")
-    args.file.write("\tVALUES\n")
-    args.file.write("\t({ID:07d}, {PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART STATUS}, {DEATH_DATE}, {DISCH_DISPOSITION}, {LEVEL_OF_CARE}, {ED_IP_TRANSFER_YN}, {LENGTH_OF_STAY_DAYS}, {UHN_ICC_STATUS}, {UHN_ICC_PATIENT_ELIGIBILITY}, 'Inpatient')\n".format(**convertToSqlType(insertion_values)))
+    args.file.write("\t({PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART_STATUS}, {DEATH_DATE}, {PRIMARY_DX_NAME}, {DISCH_DISPOSITION}, {ED_VISIT_YN}, {LEVEL_OF_CARE}, {ED_IP_TRANSFER_YN}, {OP_IP_TRANSFER_YN}, {LENGTH_OF_STAY_DAYS}, {UHN_ICC_STATUS}, {UHN_ICC_PATIENT_ELIGIBILITY}, 'Inpatient')".format(**convertToSqlType(insertion_values)))
+    if i < args.n - 1:
+        args.file.write(",")
+    args.file.write("\n")
 
 args.file.close()

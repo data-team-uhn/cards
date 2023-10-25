@@ -119,7 +119,7 @@
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
-            <value>MYCHART STATUS</value>
+            <value>MYCHART_STATUS</value>
             <type>String</type>
           </property>
           <property>
@@ -331,7 +331,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>DX_NAME</value>
+                <value>PRIMARY_DX_NAME</value>
                 <type>String</type>
               </property>
               <property>
