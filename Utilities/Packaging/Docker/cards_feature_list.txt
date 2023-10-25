@@ -15,11 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-mvn:io.uhndata.cards/cards4kids/${PROJECT_VERSION}/slingosgifeature
-mvn:io.uhndata.cards/cards4lfs/${PROJECT_VERSION}/slingosgifeature
-mvn:io.uhndata.cards/cards4proms/${PROJECT_VERSION}/slingosgifeature
-mvn:io.uhndata.cards/cards4prems/${PROJECT_VERSION}/slingosgifeature
-mvn:io.uhndata.cards/cards4heracles/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards/${PROJECT_VERSION}/slingosgifeature/composum
 mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-modules-upgrade-marker/${PROJECT_VERSION}/slingosgifeature
