@@ -55,11 +55,11 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //      ["Three", "3"]
 //    ]}
 //    displayMode={"input"}
-//    validationRegexp={"[a-z]+"}
+//    validationRegexp={"^[a-z]+$"}
 //    validationErrorText={"Please enter a lowercase input"}
 //    />
 function TextQuestion(props) {
-  let { displayMode, validationRegexp, validationErrorText } = {validationErrorText: "Invalid input", ...props.questionDefinition};
+  let { displayMode, validationRegexp, validationErrorText } = {validationErrorText: "Invalid input", ...props.questionDefinition, ...props};
   const regexp = new RegExp(validationRegexp);
 
   // Validation against the regular expression if one is provided
