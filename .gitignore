@@ -53,7 +53,6 @@ node_modules
 **/aggregated-frontend/src/main/frontend/src/
 **/aggregated-frontend/src/main/frontend/webpack.config.js
 **/aggregated-frontend/src/main/frontend/package.json
-yarn.lock
 
 # Running instance
 /sling/
