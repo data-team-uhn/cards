@@ -18,7 +18,7 @@
 -->
 
 <node>
-  <name>resumedIn</name>
+  <name>resumeForm</name>
   <primaryNodeType>cards:LinkDefinition</primaryNodeType>
   <property>
     <name>label</name>
@@ -82,7 +82,7 @@ return resumedDate ? 'Resumed on ' + resumedDate.toZonedDateTime().toLocalDate()
   </property>
   <property>
     <name>backlink</name>
-    <value>/apps/cards/LinkDefinitions/pausedIn</value>
+    <value>/apps/cards/LinkDefinitions/pauseForm</value>
     <type>Path</type>
   </property>
   <property>

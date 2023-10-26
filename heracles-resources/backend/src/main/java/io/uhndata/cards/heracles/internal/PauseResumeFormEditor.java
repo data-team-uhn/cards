@@ -256,7 +256,7 @@ public class PauseResumeFormEditor extends DefaultEditor
     {
         try {
             this.linkUtils.addLink(this.currentNodeBuilder, latestForm,
-                latestForm.getSession().getNode("/apps/cards/LinkDefinitions/pausedIn"), null);
+                latestForm.getSession().getNode("/apps/cards/LinkDefinitions/pauseForm"), null);
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to add links for form pairs {}: {}", id, e.getMessage(), e);
         }
