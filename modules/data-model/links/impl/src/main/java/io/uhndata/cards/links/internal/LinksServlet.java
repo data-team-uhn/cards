@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 import io.uhndata.cards.links.api.LinkUtils;
 
 /**
- * Servlet that outputs all the Form data for a Questionnaire to a CSV.
+ * Servlet that handles resource links.
  *
  * @version $Id$
  */
