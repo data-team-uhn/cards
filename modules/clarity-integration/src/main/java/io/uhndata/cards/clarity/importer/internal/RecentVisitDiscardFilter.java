@@ -28,6 +28,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Activate;
@@ -138,7 +139,7 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
             // Iterate through all of the patients visits
             for (final NodeIterator visits = subjectNode.getNodes(); visits.hasNext();) {
                 Node visit = visits.nextNode();
-                if (isVisitSubject(visit)) {
+                if (isVisitSubject(visit) && !isSameVisit(visit, id)) {
                     // Iterate through all forms for that visit
                     for (final PropertyIterator forms = visit.getReferences("subject"); forms.hasNext();) {
                         final Node form = forms.nextProperty().getParent();
@@ -165,6 +166,11 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
     {
         final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
         return "Visit".equals(subjectType);
+    }
+
+    private boolean isSameVisit(final Node visit, final String id)
+    {
+        return StringUtils.equals(this.subjectUtils.getLabel(visit), id);
     }
 
     private boolean isSurveyEventsForm(final Node questionnaire)
