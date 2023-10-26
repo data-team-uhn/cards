@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -54,6 +55,8 @@ public class PauseResumeFormEditor extends DefaultEditor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(PauseResumeFormEditor.class);
 
+    private static final String CREATED_PROP = "jcr:created";
+
     private final NodeBuilder currentNodeBuilder;
 
     private final ResourceResolverFactory rrf;
@@ -65,6 +68,8 @@ public class PauseResumeFormEditor extends DefaultEditor
     private final FormUtils formUtils;
 
     private final SubjectUtils subjectUtils;
+
+    private final LinkUtils linkUtils;
 
     private boolean isFormNode;
 
@@ -79,11 +84,13 @@ public class PauseResumeFormEditor extends DefaultEditor
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param subjectUtils for working with subject data
+     * @param linkUtils for working with links
      * @param isNew if this node is a newly created node or a changed node
      */
+    @SuppressWarnings("checkstyle:ParameterNumber")
     public PauseResumeFormEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
         final ThreadResourceResolverProvider rrp, final QuestionnaireUtils questionnaireUtils,
-        final FormUtils formUtils, SubjectUtils subjectUtils, boolean isNew)
+        final FormUtils formUtils, SubjectUtils subjectUtils, LinkUtils linkUtils, boolean isNew)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.rrf = rrf;
@@ -91,6 +98,7 @@ public class PauseResumeFormEditor extends DefaultEditor
         this.questionnaireUtils = questionnaireUtils;
         this.formUtils = formUtils;
         this.subjectUtils = subjectUtils;
+        this.linkUtils = linkUtils;
         this.isFormNode = this.formUtils.isForm(this.currentNodeBuilder);
         this.isNew = isNew;
     }
@@ -101,10 +109,9 @@ public class PauseResumeFormEditor extends DefaultEditor
         if (this.isFormNode) {
             // No need to descend further down, we already know that this is a form that has changes
             return null;
-        } else {
-            return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
-                this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, true);
         }
+        return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
+            this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, this.linkUtils, true);
     }
 
     @Override
@@ -113,10 +120,9 @@ public class PauseResumeFormEditor extends DefaultEditor
         if (this.isFormNode) {
             // No need to descend further down, we already know that this is a form that has changes
             return null;
-        } else {
-            return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
-                this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, false);
         }
+        return new PauseResumeFormEditor(this.currentNodeBuilder.getChildNode(name), this.rrf,
+            this.rrp, this.questionnaireUtils, this.formUtils, this.subjectUtils, this.linkUtils, false);
     }
 
     @Override
@@ -159,7 +165,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             for (final PropertyIterator forms = subject.getReferences("subject"); forms.hasNext();) {
                 final Node referencedForm = forms.nextProperty().getParent();
                 if (isPauseResumeForm(referencedForm)) {
-                    Calendar referencedDate = referencedForm.getProperty("jcr:created").getDate();
+                    Calendar referencedDate = referencedForm.getProperty(CREATED_PROP).getDate();
                     if (!referencedDate.equals(newDate)
                         && (latestFormDate == null || referencedDate.after(latestFormDate))) {
                         latestFormDate = referencedDate;
@@ -176,7 +182,7 @@ public class PauseResumeFormEditor extends DefaultEditor
 
     private Calendar getFormDate(NodeState after)
     {
-        final String newDateString = after.getProperty("jcr:created").getValue(Type.DATE);
+        final String newDateString = after.getProperty(CREATED_PROP).getValue(Type.DATE);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         final Calendar newDate = Calendar.getInstance();
         try {
@@ -201,6 +207,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             String id = String.valueOf(this.formUtils.getValue(this.formUtils.getAnswer(latestForm, idQuestion)));
             this.createOrEditAnswer(questionnaire, "pause_resume_index", id);
             this.createOrEditAnswer(questionnaire, "enrollment_status", "resumed");
+            this.addFormReference(latestForm, id);
         } else {
             // Default, New form must be a pause form
             this.createOrEditAnswer(questionnaire, "pause_resume_index", null);
@@ -217,8 +224,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             for (String answerName : this.currentNodeBuilder.getChildNodeNames()) {
                 NodeBuilder answer = this.currentNodeBuilder.getChildNode(answerName);
                 PropertyState question = answer.getNodeState().getProperty("question");
-                if (question != null && questionUUID != null && questionUUID.equals(question.getValue(Type.STRING)))
-                {
+                if (question != null && questionUUID != null && questionUUID.equals(question.getValue(Type.STRING))) {
                     this.editAnswer(answer, answerName, value);
                     return;
                 }
@@ -238,16 +244,36 @@ public class PauseResumeFormEditor extends DefaultEditor
     {
         final String uuid = UUID.randomUUID().toString();
         NodeBuilder node = this.currentNodeBuilder.setChildNode(uuid);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        node.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
-        node.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
+        setDefaultProperties(node);
         node.setProperty(FormUtils.QUESTION_PROPERTY, questionUUID, Type.REFERENCE);
-        node.setProperty("jcr:primaryType", "cards:TextAnswer", Type.NAME);
-        node.setProperty("sling:resourceSuperType", FormUtils.ANSWER_RESOURCE, Type.STRING);
-        node.setProperty("sling:resourceType", "cards/TextAnswer", Type.STRING);
+        setTypeProperties(node, "cards:TextAnswer", FormUtils.ANSWER_RESOURCE, "cards/TextAnswer");
         node.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
         // If no value is specified, set the value to be an ID
         node.setProperty("value", value == null ? uuid : value, Type.STRING);
+    }
+
+    private void addFormReference(Node latestForm, String id)
+    {
+        try {
+            this.linkUtils.addLink(this.currentNodeBuilder, latestForm,
+                latestForm.getSession().getNode("/apps/cards/LinkDefinitions/pauseForm"), null);
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to add links for form pairs {}: {}", id, e.getMessage(), e);
+        }
+    }
+
+    private void setDefaultProperties(NodeBuilder node)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        node.setProperty(CREATED_PROP, dateFormat.format(new Date()), Type.DATE);
+        node.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
+    }
+
+    private void setTypeProperties(NodeBuilder node, String primaryType, String superType, String type)
+    {
+        node.setProperty("jcr:primaryType", primaryType, Type.NAME);
+        node.setProperty("sling:resourceSuperType", superType, Type.STRING);
+        node.setProperty("sling:resourceType", type, Type.STRING);
     }
 
     /**

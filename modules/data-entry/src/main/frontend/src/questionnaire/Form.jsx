@@ -18,7 +18,7 @@
 //
 
 import React, { useEffect, useState, useContext } from "react";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import {
   Breadcrumbs,
@@ -179,7 +179,7 @@ function Form (props) {
   }, [isEdit]);
 
   useEffect(() => {
-    // If `requireCompletion` is set, stop any advancing progress until check that all required 
+    // If `requireCompletion` is set, stop any advancing progress until check that all required
     // questions are completed
     requireCompletion && paginationEnabled && setDisableProgress(true);
   }, [requireCompletion, paginationEnabled]);
@@ -208,7 +208,7 @@ function Form (props) {
     }
     setData(json);
     setStatusFlags(json.statusFlags);
-    
+
     if (isEdit) {
       setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
       // If the completion requirement has not already been set via Form prop,
@@ -488,6 +488,22 @@ function Form (props) {
     return time.hasSame(DateTime.local(),"day") ? "at " + time.toFormat("hh:mma") : time.toRelativeCalendar();
   }
 
+  let validLinks = data?.["cards:links"]?.filter(link => link["to"]?.startsWith("/"));
+  let links = validLinks.length > 0 ?
+      (
+        <Typography variant="overline">
+          {"Related: "}
+          {validLinks.length == 1 ?
+              validLinks.map(link => <Link key={link["@name"]} to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
+              :
+              <List dense disablePadding>
+              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
+              </List>
+          }
+        </Typography>
+      )
+      : <></>
+
   return (
     <form action={data?.["@path"]}
           method="POST"
@@ -519,7 +535,6 @@ function Form (props) {
           separator=":"
           action={formMenu}
           contentOffset={contentOffset}
-
         >
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
@@ -544,6 +559,7 @@ function Form (props) {
             : ""
           }
           </Breadcrumbs>
+          {links}
         </ResourceHeader>
         }
         { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere

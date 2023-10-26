@@ -22,13 +22,13 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>heracles-resources</artifactId>
+    <artifactId>cards-data-model-links</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>heracles-backend</artifactId>
+  <artifactId>cards-data-model-links-impl</artifactId>
   <packaging>bundle</packaging>
-  <name>HERACLES Resources - Backend code</name>
+  <name>CARDS - Data model - Links - Implementations</name>
 
   <build>
     <plugins>
@@ -42,6 +42,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-data-model-links-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>javax.json</groupId>
       <artifactId>javax.json-api</artifactId>
     </dependency>
@@ -51,11 +56,11 @@
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.framework</artifactId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.component.annotations</artifactId>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.servlets.annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.jcr</groupId>
@@ -74,9 +79,8 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-resolver-provider</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -84,55 +88,18 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-data-model-links-api</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-dataentry</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-data-model-subjects-api</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-resolver-provider</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-data-model-forms-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-error-tracking</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-metrics</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-data-model-migrators</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.servlets.annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.commons.scheduler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.component</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk-osgi</artifactId>
-      <version>1.12.158</version>
     </dependency>
   </dependencies>
 </project>

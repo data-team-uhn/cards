@@ -26,6 +26,14 @@
             "start-order":"15"
         },
         {
+            "id":"${project.groupId}:cards-data-model-links-api:${project.version}",
+            "start-order":"25"
+        },
+        {
+            "id":"${project.groupId}:cards-data-model-links-impl:${project.version}",
+            "start-order":"25"
+        },
+        {
             "id":"${project.groupId}:cards-data-model-subjects-api:${project.version}",
             "start-order":"25"
         },

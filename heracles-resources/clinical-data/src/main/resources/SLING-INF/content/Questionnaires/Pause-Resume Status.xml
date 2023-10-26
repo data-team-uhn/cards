@@ -50,11 +50,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-                <property>
-                        <name>displayMode</name>
-                        <value>formatted</value>
-                        <type>String</type>
-                </property>
+		<property>
+			<name>displayMode</name>
+			<value>hidden</value>
+			<type>String</type>
+		</property>
 		<property>
 			<name>entryMode</name>
 			<value>autocreated</value>
