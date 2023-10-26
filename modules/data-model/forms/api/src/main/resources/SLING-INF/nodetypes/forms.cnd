@@ -326,7 +326,13 @@
 
   // The questions and sub-sections that make up this section.
   // The conditions to display this section may also be listed as children
-  + * (cards:Question, cards:Section, cards:Information, cards:Conditional, cards:ConditionalGroup, cards:AnswerOption, cards:ExternalLink) = cards:Question
+  + * (cards:Question) = cards:Question
+  + * (cards:Section) = cards:Section
+  + * (cards:Information) = cards:Information
+  + * (cards:Conditional) = cards:Conditional
+  + * (cards:ConditionalGroup) = cards:ConditionalGroup
+  + * (cards:AnswerOption) = cards:AnswerOption
+  + * (cards:ExternalLink) = cards:ExternalLink
 
 //-----------------------------------------------------------------------------
 // A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
@@ -351,7 +357,8 @@
   - requireAll (BOOLEAN) = false mandatory autocreated
 
   // This conditional may contain any number of conditionals or conditional groups
-  + * (cards:Conditional, cards:ConditionalGroup) = cards:Conditional
+  + * (cards:Conditional) = cards:Conditional
+  + * (cards:ConditionalGroup) = cards:ConditionalGroup
 
 //-----------------------------------------------------------------------------
 // A conditional is a condition that can be imposed on e.g. the display of a section.
@@ -468,7 +475,10 @@
   // Children
 
   // The sections and standalone questions that make up this questionnaire.
-  + * (cards:Section, cards:Question, cards:Information, cards:ExternalLink) = cards:Section
+  + * (cards:Section) = cards:Section
+  + * (cards:Question) = cards:Question
+  + * (cards:Information) = cards:Information
+  + * (cards:ExternalLink) = cards:ExternalLink
 
 //-----------------------------------------------------------------------------
 // The homepage for the questionnaires space.
@@ -772,7 +782,8 @@
   // Children
 
   // The answers and other answersections recorded in this section.
-  + * (cards:Answer, cards:AnswerSection) = cards:Answer
+  + * (cards:Answer) = cards:Answer
+  + * (cards:AnswerSection) = cards:AnswerSection
 
 //-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
@@ -813,7 +824,8 @@
   + cards:links (cards:Links) = cards:Links AUTOCREATED IGNORE
 
   // The answers and answer sections recorded in this form.
-  + * (cards:Answer, cards:AnswerSection) = cards:Answer
+  + * (cards:Answer) = cards:Answer
+  + * (cards:AnswerSection) = cards:AnswerSection
 
 //-----------------------------------------------------------------------------
 // The homepage for the Forms space.
