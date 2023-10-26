@@ -303,11 +303,12 @@
       "export.schedule": "0 0 2 ? * SAT *",
       "questionnaires.to.be.exported": [
         "/Questionnaires/CPESIC",
+        "/Questionnaires/IC",
         "/Questionnaires/OAIP",
         "/Questionnaires/OED",
         "/Questionnaires/Rehab"
       ],
-      "selectors": ".labels.dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
+      "selectors": ".labels.dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/IC/ic_feedback",
       "save.path": "/csv-export",
       "file.name.format": "{questionnaire}_labels.csv",
       "export.format": "csv"
@@ -318,11 +319,12 @@
       "export.schedule": "0 0 2 ? * SAT *",
       "questionnaires.to.be.exported": [
         "/Questionnaires/CPESIC",
+        "/Questionnaires/IC",
         "/Questionnaires/OAIP",
         "/Questionnaires/OED",
         "/Questionnaires/Rehab"
       ],
-      "selectors": ".dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
+      "selectors": ".dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/IC/ic_feedback",
       "save.path": "/csv-export",
       "file.name.format": "{questionnaire}.csv",
       "export.format": "csv"
@@ -337,6 +339,18 @@
       "selectors": ".dataFilter:statusNot=INCOMPLETE.labels",
       "save.path": "/csv-export",
       "file.name.format": "{questionnaire}.csv",
+      "export.format": "csv"
+    },
+    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-IC-Survey-Contact":{
+      "name": "UHN-IC-Survey-Contact",
+      "frequency.in.days": 7,
+      "export.schedule": "0 0 2 ? * SAT *",
+      "questionnaires.to.be.exported": [
+        "/Questionnaires/IC"
+      ],
+      "selectors": ".labels.dataFilter:status=SUBMITTED.questionnaireFilter.questionnaireFilter:include=/Questionnaires/IC/ic_feedback",
+      "save.path": "/ic-export",
+      "file.name.format": "{questionnaire}_{period}_survey_contact.csv",
       "export.format": "csv"
     },
 

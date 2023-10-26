@@ -1,12 +1,15 @@
 Dear ${first_name} ${last_name},
 
-You are receiving this email because of your recent visit at a University
-Health Network (UHN) hospital within the last 30 days. We’d like to
-hear about your experience while you were an inpatient at UHN.
-We would also like you to reflect on your experience with
-the Integrated Care Program as you transitioned home and to provide us
-with some feedback on supports that you may have received, but we have
-not heard back from you.
+You are receiving this email because you have recently visited a University
+Health Network (UHN) hospital within your last 30 days and our records
+indicate that we sent you a survey asking about your experience. However
+we have not heard back from you.
+
+We’d like to hear about your experience while you were an inpatient at UHN.
+We would also like you to reflect on your experience with the Integrated
+Care Program in the last month when you were discharged from the hospital
+and transitioned home, and to provide us with some feedback on supports
+that you may have received.
 
 Your opinions are valuable to us. Your responses will be anonymous and will
 be used to help UHN continuously improve the quality of care patients receive.
@@ -14,7 +17,7 @@ be used to help UHN continuously improve the quality of care patients receive.
 Completing this survey is voluntary. Your responses will not be shared with
 the care team and answering will not impact future care you receive at UHN.
 
-The survey consists of two questionnaires containing 20 questions and will
+The survey consists of two questionnaires containing 22 questions and will
 take about 10-15 minutes to complete.
 
 To begin the survey, click the following link:
