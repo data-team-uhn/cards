@@ -354,9 +354,10 @@
       "export.format": "csv"
     },
 
-    // Clarity import
-    "io.uhndata.cards.clarity.importer.NightlyClarityImport": {
-      "nightly.import.schedule": "0 0 3 * * ? *",
+    // Clarity import scheduling
+    "io.uhndata.cards.clarity.importer.ClarityImportConfig~prems-discharge-events": {
+      "name": "Your Experience - Discharge events",
+      "importSchedule": "0 0 3 * * ? *",
       "dayToImport": -7
     },
 

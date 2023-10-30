@@ -26,15 +26,43 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
     description = "Configuration for the Clarity importer")
 public @interface ClarityImportConfigDefinition
 {
-    /** Cron-readable import schedule. */
-    String NIGHTLY_IMPORT_SCHEDULE = "0 0 0 * * ? *";
+    /** Cron-readable schedule. */
+    String NIGHTLY = "0 0 0 * * ? *";
 
-    @AttributeDefinition(name = "Import schedule", description = "Cron-readable import schedule")
-    String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
+    @AttributeDefinition(name = "Name", description = "Configuration name")
+    String name();
+
+    @AttributeDefinition(name = "Import schedule", description = "Quartz-readable import schedule")
+    String importSchedule() default NIGHTLY;
 
     @AttributeDefinition(name = "Day to import",
         description = "Difference from today. 0 means today, 1 means tomorrow, -1 means yesterday. "
             + "As a special value, 2147483647 (Integer.MAX_VALUE) means no date filtering, "
             + "all data found in the table will be imported. ")
     int dayToImport() default Integer.MAX_VALUE;
+
+    @AttributeDefinition(name = "Server")
+    String server() default "%ENV%CLARITY_SQL_SERVER";
+
+    @AttributeDefinition(name = "Username")
+    String username() default "%ENV%CLARITY_SQL_USERNAME";
+
+    @AttributeDefinition(name = "Password")
+    String password() default "%ENV%CLARITY_SQL_PASSWORD";
+
+    @AttributeDefinition(name = "Encrypted connection", description = "Use either true or false")
+    String encrypt() default "%ENV%CLARITY_SQL_ENCRYPT";
+
+    @AttributeDefinition(name = "Schema")
+    String schemaName() default "%ENV%CLARITY_SQL_SCHEMA";
+
+    @AttributeDefinition(name = "Table")
+    String tableName() default "%ENV%CLARITY_SQL_TABLE";
+
+    @AttributeDefinition(name = "Date column", description = "An (optional) Clarity column to use for date filtering",
+        required = false)
+    String dateColumn() default "%ENV%CLARITY_EVENT_TIME_COLUMN";
+
+    @AttributeDefinition(name = "Column mapping", description = "Full path to the clarity mapping node")
+    String mapping() default "/apps/cards/clarityImport";
 }

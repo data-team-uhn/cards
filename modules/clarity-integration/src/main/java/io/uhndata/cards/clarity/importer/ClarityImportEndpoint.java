@@ -26,6 +26,7 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -60,6 +61,9 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
         policy = ReferencePolicy.DYNAMIC)
     private volatile List<ClarityDataProcessor> processors;
 
+    @Reference
+    private volatile List<ClarityImportConfig> configs;
+
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
@@ -72,9 +76,31 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
         }
 
         // Load configuration from environment variables
+        final String configName = request.getParameter("config");
+        ClarityImportConfigDefinition config;
+        if (StringUtils.isBlank(configName)) {
+            if (this.configs.size() != 1) {
+                writeError(400, this.configs.size() > 1 ? "Configuration name must be specified"
+                    : "No clarity import is configured", response);
+                return;
+            }
+            config = this.configs.get(0).getConfig();
+        } else {
+            config = this.configs.stream()
+                .filter(c -> configName.equals(c.getConfig().name()))
+                .map(ClarityImportConfig::getConfig)
+                .findFirst().orElse(null);
+            if (config == null) {
+                response.setStatus(404);
+                writeError(400, "Unknown clarity import configuration", response);
+                return;
+            }
+
+        }
+
         final int pastDayToQuery = getPastDayToQuery(request);
         final Runnable importJob =
-            new ClarityImportTask(pastDayToQuery, this.resolverFactory, this.rrp, this.processors);
+            new ClarityImportTask(config, pastDayToQuery, this.resolverFactory, this.rrp, this.processors);
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);

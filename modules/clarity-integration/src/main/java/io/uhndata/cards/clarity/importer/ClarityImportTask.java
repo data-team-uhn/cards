@@ -68,8 +68,6 @@ public class ClarityImportTask implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClarityImportTask.class);
 
-    private static final String MAPPING_CONFIG = "/apps/cards/clarityImport";
-
     private static final String SUBJECT_TYPE_PROP = "subjectType";
 
     private static final String QUESTION_PROP = "question";
@@ -81,6 +79,8 @@ public class ClarityImportTask implements Runnable
     private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
 
     private static final String VALUE_PROP = "value";
+
+    private final ClarityImportConfigDefinition config;
 
     private final int dayToQuery;
 
@@ -228,9 +228,11 @@ public class ClarityImportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
-    ClarityImportTask(final int dayToQuery, final ResourceResolverFactory resolverFactory,
-        final ThreadResourceResolverProvider rrp, final List<ClarityDataProcessor> processors)
+    ClarityImportTask(final ClarityImportConfigDefinition config, final int dayToQuery,
+        final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
+        final List<ClarityDataProcessor> processors)
     {
+        this.config = config;
         this.dayToQuery = dayToQuery;
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
@@ -245,9 +247,8 @@ public class ClarityImportTask implements Runnable
         LOGGER.info("Running ClarityImportTask");
 
         String connectionUrl =
-            String.format("jdbc:sqlserver://%s;user=%s;password=%s;encrypt=%s;", System.getenv("CLARITY_SQL_SERVER"),
-                System.getenv("CLARITY_SQL_USERNAME"), System.getenv("CLARITY_SQL_PASSWORD"),
-                System.getenv("CLARITY_SQL_ENCRYPT"));
+            String.format("jdbc:sqlserver://%s;user=%s;password=%s;encrypt=%s;", env(this.config.server()),
+                env(this.config.username()), env(this.config.password()), env(this.config.encrypt()));
 
         // Connect via SQL to the server
         boolean mustPopResolver = false;
@@ -259,7 +260,7 @@ public class ClarityImportTask implements Runnable
             final Session session = resolver.adaptTo(Session.class);
             this.versionManager.set(session.getWorkspace().getVersionManager());
 
-            populateClarityImportConfiguration(resolver, resolver.resolve(MAPPING_CONFIG),
+            populateClarityImportConfiguration(resolver, resolver.resolve(this.config.mapping()),
                 this.clarityImportConfiguration.get());
 
             // Generate and perform the query
@@ -417,13 +418,13 @@ public class ClarityImportTask implements Runnable
                 queryString += ", ";
             }
         }
-        queryString += " FROM " + System.getenv("CLARITY_SQL_SCHEMA") + ".[" + System.getenv("CLARITY_SQL_TABLE") + "]";
-        if (this.dayToQuery != Integer.MAX_VALUE && System.getenv("CLARITY_EVENT_TIME_COLUMN") != null) {
-            queryString += " WHERE CAST(" + System.getenv("CLARITY_EVENT_TIME_COLUMN") + " AS DATE) = CAST(GETDATE()"
+        queryString += " FROM " + env(this.config.schemaName()) + ".[" + env(this.config.tableName()) + "]";
+        if (this.dayToQuery != Integer.MAX_VALUE && env(this.config.dateColumn()) != null) {
+            queryString += " WHERE CAST(" + env(this.config.dateColumn()) + " AS DATE) = CAST(GETDATE()"
                 + (this.dayToQuery >= 0 ? "+" : "") + this.dayToQuery + " AS DATE)";
         }
-        if (System.getenv("CLARITY_EVENT_TIME_COLUMN") != null) {
-            queryString += " ORDER BY " + System.getenv("CLARITY_EVENT_TIME_COLUMN") + ";";
+        if (env(this.config.dateColumn()) != null) {
+            queryString += " ORDER BY " + env(this.config.dateColumn()) + ";";
         }
 
         return queryString;
@@ -712,6 +713,14 @@ public class ClarityImportTask implements Runnable
             props.put(ClarityImportTask.VALUE_PROP, multiValues);
         }
         return props;
+    }
+
+    private String env(final String value)
+    {
+        if (value != null && value.startsWith("%ENV%")) {
+            return System.getenv(value.substring("%ENV%".length()));
+        }
+        return value;
     }
 
     private void cleanupState()
