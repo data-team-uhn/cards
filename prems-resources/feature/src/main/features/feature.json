@@ -432,8 +432,8 @@
       "column": "STATUS",
       "value": "in-progress",
       "conditions": [
-        "UHN_ICC_STATUS = New Patient",
-        "UHN_ICC_PATIENT_ELIGIBILITY = Enrolled"
+        "UHN_ICC_STATUS = Enrolled",
+        "UHN_ICC_PATIENT_ELIGIBILITY = New Patient"
       ]
     },
     // Assign patients from Toronto Rehab to the Rehab cohort
