@@ -96,6 +96,7 @@
     "io.uhndata.cards.clarity.importer.ClarityImportConfig~proms-today-visits": {
       "name": "DATAPRO - Today's visits",
       "importSchedule": "0 15 7 * * ? *",
+      "mapping": "/apps/cards/clarityImport/DataPro",
       "dayToImport": 0
     },
 

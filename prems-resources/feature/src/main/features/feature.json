@@ -358,6 +358,7 @@
     "io.uhndata.cards.clarity.importer.ClarityImportConfig~prems-discharge-events": {
       "name": "Your Experience - Discharge events",
       "importSchedule": "0 0 3 * * ? *",
+      "mapping": "/apps/cards/clarityImport/YourExperience",
       "dayToImport": -7
     },
 
