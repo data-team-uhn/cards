@@ -40,10 +40,10 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Component(immediate = true)
-public class NightlyClarityImport
+public class ScheduledClarityImport
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(NightlyClarityImport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledClarityImport.class);
 
     private static final String SCHEDULER_JOB_PREFIX = "ScheduledClarityImport-";
 
