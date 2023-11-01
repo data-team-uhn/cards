@@ -103,14 +103,20 @@ public final class AppointmentEmailNotificationsFactory
             description = "Days to the visit - positive if the visit is in the future, "
                 + "negative if the visit is in the past")
         int daysToVisit();
+
+        @AttributeDefinition(name = "Schedule",
+            description = "Quartz-readable schedule for sending the emails, for example '0 0 6 * * ? *'. "
+                + "If empty, the environment variable NIGHTLY_NOTIFICATIONS_SCHEDULE is used. "
+                + "If that one isn't set either, a default schedule of 6 AM daily is used.")
+        String schedule();
     }
 
     @Activate
     private void activate(final Config config)
     {
         LOGGER.info("Activating appointment email notifications: {}", config.name());
-        final String nightlyNotificationsSchedule =
-            StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *");
+        final String nightlyNotificationsSchedule = StringUtils.defaultIfEmpty(config.schedule(),
+            StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *"));
 
         // Create the performance metrics measurement node
         Metrics.createStatistic(this.resolverFactory, config.name(), config.metricName());
