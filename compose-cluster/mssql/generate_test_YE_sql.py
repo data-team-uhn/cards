@@ -216,8 +216,8 @@ for i in range(args.n):
     insertion_values['LENGTH_OF_STAY_DAYS'] = random.randint(1, 15)
 
     # Integrated Care eligibility
-    insertion_values['UHN_ICC_STATUS'] = random.choices([None, 'New Patient'], [1, 2])[0]
-    insertion_values['UHN_ICC_PATIENT_ELIGIBILITY'] = random.choices([None, 'Enrolled'], [1, 2])[0]
+    insertion_values['UHN_ICC_STATUS'] = random.choices([None, 'Enrolled'], [1, 2])[0]
+    insertion_values['UHN_ICC_PATIENT_ELIGIBILITY'] = random.choices([None, 'New Patient'], [1, 2])[0]
 
     # Identifier columns
     insertion_values['PAT_ENC_CSN_ID'] = i
