@@ -181,7 +181,7 @@ function FormPagination (props) {
       type="submit"
       variant="outlined"
       // Don't disable until form submission started
-      disabled={(activePage === 0 && !pendingSubmission)
+      disabled={activePage === 0
         || saveInProgress
         || lastSaveStatus === false}
       className={classes.paginationButton}
