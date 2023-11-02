@@ -377,11 +377,6 @@
 		<name>ic_invitation_sent</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
