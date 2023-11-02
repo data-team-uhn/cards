@@ -172,7 +172,7 @@
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IC-InitialInvitationTask":{
       "name": "UHN-IC-InitialInvitationsTask",
-      "notificationType": "Invitation",
+      "notificationType": "IC_Invitation",
       "metricName": "{020} UHN-IC Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626676",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC/mailTemplates/InitialInvitation",
@@ -180,7 +180,7 @@
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IC-Reminder1NotificationsTask":{
       "name": "UHN-IC-Reminder1NotificationsTask",
-      "notificationType": "Reminder1",
+      "notificationType": "IC_Reminder1",
       "metricName": "{021} UHN-IC 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626676",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC/mailTemplates/ReminderNotification",
@@ -188,7 +188,7 @@
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IC-Reminder2NotificationsTask":{
       "name": "UHN-IC-Reminder2NotificationsTask",
-      "notificationType": "Reminder2",
+      "notificationType": "IC_Reminder2",
       "metricName": "{022} UHN-IC 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626676",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC/mailTemplates/ReminderNotification",
@@ -197,7 +197,7 @@
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIC-InitialInvitationTask":{
       "name": "UHN-EDIC-InitialInvitationsTask",
-      "notificationType": "Invitation",
+      "notificationType": "IC_Invitation",
       "metricName": "{020} UHN-IC Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465813",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-ED/mailTemplates/InitialInvitation",
@@ -205,7 +205,7 @@
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIC-Reminder1NotificationsTask":{
       "name": "UHN-EDIC-Reminder1NotificationsTask",
-      "notificationType": "Reminder1",
+      "notificationType": "IC_Reminder1",
       "metricName": "{021} UHN-IC 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465813",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-ED/mailTemplates/ReminderNotification",
@@ -213,7 +213,7 @@
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIC-Reminder2NotificationsTask":{
       "name": "UHN-EDIC-Reminder2NotificationsTask",
-      "notificationType": "Reminder2",
+      "notificationType": "IC_Reminder2",
       "metricName": "{022} UHN-IC 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465813",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-ED/mailTemplates/ReminderNotification",
@@ -222,7 +222,7 @@
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IPIC-InitialInvitationTask":{
       "name": "UHN-IPIC-InitialInvitationsTask",
-      "notificationType": "Invitation",
+      "notificationType": "IC_Invitation",
       "metricName": "{020} UHN-IC Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432335117",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-IP/mailTemplates/InitialInvitation",
@@ -230,7 +230,7 @@
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IPIC-Reminder1NotificationsTask":{
       "name": "UHN-IPIC-Reminder1NotificationsTask",
-      "notificationType": "Reminder1",
+      "notificationType": "IC_Reminder1",
       "metricName": "{021} UHN-IC 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432335117",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-IP/mailTemplates/ReminderNotification",
@@ -238,7 +238,7 @@
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IPIC-Reminder2NotificationsTask":{
       "name": "UHN-IPIC-Reminder2NotificationsTask",
-      "notificationType": "Reminder2",
+      "notificationType": "IC_Reminder2",
       "metricName": "{022} UHN-IC 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432335117",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-IP/mailTemplates/ReminderNotification",
@@ -247,7 +247,7 @@
 
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIPIC-InitialInvitationTask":{
       "name": "UHN-EDIPIC-InitialInvitationsTask",
-      "notificationType": "Invitation",
+      "notificationType": "IC_Invitation",
       "metricName": "{020} UHN-IC Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/1012196242",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-EDIP/mailTemplates/InitialInvitation",
@@ -255,7 +255,7 @@
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIPIC-Reminder1NotificationsTask":{
       "name": "UHN-EDIPIC-Reminder1NotificationsTask",
-      "notificationType": "Reminder1",
+      "notificationType": "IC_Reminder1",
       "metricName": "{021} UHN-IC 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/1012196242",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-EDIP/mailTemplates/ReminderNotification",
@@ -263,7 +263,7 @@
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIPIC-Reminder2NotificationsTask":{
       "name": "UHN-EDIPIC-Reminder2NotificationsTask",
-      "notificationType": "Reminder2",
+      "notificationType": "IC_Reminder2",
       "metricName": "{022} UHN-IC 2nd Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/1012196242",
       "emailConfiguration": "/apps/cards/clinics/UHN-IC-EDIP/mailTemplates/ReminderNotification",
