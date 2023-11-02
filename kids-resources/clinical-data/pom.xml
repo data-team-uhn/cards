@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>kids-resources</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9.20-SNAPSHOT</version>
   </parent>
 
   <artifactId>kids-resources-clinical-data</artifactId>
