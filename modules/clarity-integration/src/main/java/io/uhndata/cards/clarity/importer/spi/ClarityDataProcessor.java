@@ -71,6 +71,8 @@ public interface ClarityDataProcessor extends Comparable<ClarityDataProcessor>
     @Override
     default int compareTo(ClarityDataProcessor other)
     {
-        return this.getPriority() - other.getPriority();
+        return this.getPriority() != other.getPriority()
+            ? this.getPriority() - other.getPriority()
+            : this.getClass().getName().compareTo(other.getClass().getName());
     }
 }
