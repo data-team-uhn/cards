@@ -95,6 +95,7 @@
     // Clarity import scheduling
     "io.uhndata.cards.clarity.importer.ClarityImportConfig~proms-today-visits": {
       "name": "DATAPRO - Today's visits",
+      "type": "proms",
       "importSchedule": "0 15 7 * * ? *",
       "mapping": "/apps/cards/clarityImport/DataPro",
       "dayToImport": 0
@@ -105,12 +106,14 @@
     // Discard patients with invalid emails
     "io.uhndata.cards.clarity.importer.internal.EmailConsentFilter": {
       "enable": false,
+      "supportedTypes": ["proms"],
       "emailColumn": "EMAIL",
       "emailConsentColumn": ""
     },
 
     // Discard patients without DoB, since they won't be able to authenticate
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NoDateOfBirth":{
+      "supportedTypes": ["proms"],
       "priority": 10,
       "conditions": [
         "DATE_OF_BIRTH is empty"
@@ -119,6 +122,7 @@
 
     // Discard patients without MRN and OHIP, since they won't be able to authenticate
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NoMrnAndOhip":{
+      "supportedTypes": ["proms"],
       "priority": 10,
       "conditions": [
         "MRN is empty",
@@ -128,6 +132,7 @@
 
     // Merge TG-PMCC CARDIAC CLINICS DIAGNOSTIC into TG-PMCC CARDIAC CLINICS
     "io.uhndata.cards.clarity.importer.internal.ConfiguredGenericMapper~MergeDiagnosticIntoCardiacClinic":{
+      "supportedTypes": ["proms"],
       "priority": 5,
       "column": "ENCOUNTER_CLINIC",
       "value": "TG-PMCC CARDIAC CLINICS",
@@ -138,6 +143,7 @@
 
     // Only look at events from the participating clinics, discard everything else
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingClinics":{
+      "supportedTypes": ["proms"],
       "priority": 10,
       "conditions": [
         "ENCOUNTER_CLINIC <> TG-PMCC CARDIAC CLINICS"
@@ -148,6 +154,7 @@
     // Discard duplicates if there's more than one event per visit
     "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
       "enable": true,
+      "supportedTypes": ["proms"],
       "subjectType": "/SubjectTypes/Patient/Visit"
     },
     // Submission event listener
