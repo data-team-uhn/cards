@@ -105,14 +105,14 @@ def section_start_handler(self, questionnaire, row):
 def recurrent_section_handler(self, questionnaire, row):
     section_start_handler(self, questionnaire, row)
     questionnaire.parent['recurrent'] = True
-    
+
 def repeated_section_handler(self, questionnaire, row):
     section_start_handler(self, questionnaire, row)
     questionnaire.parent['repeated'] = True
     parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
     referenced_question_key = Headers['ENTRY_MODE_QUESTION'].get_value(row)
     referenced_question = questionnaire.parents[-2][referenced_question_key]
-    
+
     for key in referenced_question.keys():
         entry = referenced_question[key]
         if type(entry) == dict and 'jcr:primaryType' in entry and entry['jcr:primaryType'] == 'cards:AnswerOption':
@@ -123,13 +123,13 @@ def repeated_section_handler(self, questionnaire, row):
             questionnaire.push_section(new_section)
             condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
             questionnaire.complete_section()
-            
+
 def end_repeated_section(self, questionnaire, row):
     parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
-    
+
     repeated_conditionals = []
     non_repeated_children = []
-    
+
     for key in questionnaire.parent.keys():
         entry = questionnaire.parent[key]
         if type(entry) == dict:
@@ -138,19 +138,19 @@ def end_repeated_section(self, questionnaire, row):
                 repeated_conditionals.append(key)
             else:
                 non_repeated_children.append(key)
-                
+
     for non_repeated_key in non_repeated_children:
         non_repeated_child = questionnaire.parent.pop(non_repeated_key)
         for repeated_key in repeated_conditionals:
             questionnaire.parent[repeated_key][repeated_key + "_" + non_repeated_key] = non_repeated_child
-                
+
     questionnaire.parent.pop('repeated')
 
 def section_end_handler(self, questionnaire, row):
     if is_section(questionnaire.parent):
         if 'repeated' in questionnaire.parent:
             end_repeated_section(self, questionnaire, row)
-    
+
     if is_matrix(questionnaire.parent):
         # End any matrix sections first as matrixes cannot span section borders
         questionnaire.complete_section()
@@ -678,7 +678,7 @@ def condition_handle_single(questionnaire, condition_parent, conditional_string,
         "=",
         "<=",
         ">=",
-        "<>"
+        "<>",
         "<",
         ">",
     ]
@@ -760,22 +760,6 @@ def csv_to_json(title):
             json.dump(q, jsonFile, indent='\t')
         os.system("python3 ../JSON-to-XML/json_to_xml.py '" + name + ".json' > '" + name + ".xml'")
 
-# Specify the titles of each csv file and which set of column titles and options should be used
-# TODO: Add parameterized titles
-titles = [
-    "BPI",
-    "CSI",
-    "GAD-7",
-    "IEQ",
-    "P-3",
-    "PHQ-9",
-    "PQ",
-    "ROM",
-    "RPS IQ",
-    "S-LPS",
-    "WPI"
-]
-
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--forms", nargs="*", type=str, required=True)
 CLI.add_argument("--paginate", nargs=1, type=bool, default=False)
@@ -788,5 +772,5 @@ args = CLI.parse_args()
 for title in args.forms:
     Headers = DefaultHeaders
     Options = args
-    Options.logging = Logging.INFO
+    Options.logging = Logging.WARNING
     csv_to_json(title)
