@@ -977,18 +977,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // - After skipping "offset" items, output at most "limit" unique items to the resulting JSON
         // - After outputting "limit" items, keep counting how many new unique items are there until there are no more
         // results, or encounter 10 more pages of unique items, rounded up to a whole 10*page batch
-        final long[] counts = {
-            // The requested offset
-            resultOffset,
-            // The requested number of items
-            resultLimit,
-            // The returned number of items
-            0,
-            // The total number of items matching the query, up to (QUERY_SIZE_MULTIPLIER * resultLimit + 1);
-            0,
-            // There are probably more results than seen
-            0
-        };
+
+        // The returned number of items
+        long returnedResults = 0;
+        // If there are more results that haven't been counted
+        long andMore = 0;
         // Which unique items have been seen so far in the query results
         final Set<String> seenResources = new HashSet<>();
 
@@ -1029,10 +1022,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     if (seenResources.size() > resultOffset && limitCounter > 0) {
                         jsonGen.write(request.getResourceResolver().getResource(path).adaptTo(JsonObject.class));
                         --limitCounter;
-                        ++counts[2];
+                        ++returnedResults;
                     }
-                    ++counts[3];
-                    if (counts[3] >= totalLimit) {
+                    if (seenResources.size() >= totalLimit) {
                         break;
                     }
                 }
@@ -1041,12 +1033,22 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             //
         }
 
-        if (counts[3] == totalLimit) {
-            counts[4] = 1;
-            // We included the "and more" extra result in the count, remove 1 to get back to a round number
-            --counts[3];
+        // We included one extra result in the total limit, check if we went that far
+        if (seenResources.size() == totalLimit) {
+            andMore = 1;
         }
-        return counts;
+        return new long[] {
+            // The requested offset
+            resultOffset,
+            // The requested number of items
+            resultLimit,
+            // The returned number of items
+            returnedResults,
+            // The total number of items matching the query
+            seenResources.size() - andMore,
+            // There are probably more results than seen
+            andMore
+        };
     }
 
     /**
