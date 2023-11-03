@@ -32,6 +32,10 @@ public @interface ClarityImportConfigDefinition
     @AttributeDefinition(name = "Name", description = "Configuration name")
     String name();
 
+    @AttributeDefinition(name = "Type",
+        description = "A tag that can be used to filter the used import processors applied during the import")
+    String type();
+
     @AttributeDefinition(name = "Import schedule", description = "Quartz-readable import schedule")
     String importSchedule() default NIGHTLY;
 

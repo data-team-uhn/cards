@@ -68,6 +68,19 @@ public interface ClarityDataProcessor extends Comparable<ClarityDataProcessor>
      */
     int getPriority();
 
+    /**
+     * A processor can either be active for all imports, or just a subset of them. Each import has a specific type, and
+     * each processor can support specific types. This method check if an import type is supported. By default,
+     * processors are active for all imports, override this method to restrict it.
+     *
+     * @param type a short label identifying the import process
+     * @return {@code true} if this processor should be used for the specified import type, {@code false} otherwise
+     */
+    default boolean supportsImportType(String type)
+    {
+        return true;
+    }
+
     @Override
     default int compareTo(ClarityDataProcessor other)
     {

@@ -28,7 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -267,9 +267,9 @@ public class ClarityImportTask implements Runnable
             PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
             ResultSet results = statement.executeQuery();
 
-            // Sort the data processors
-            List<ClarityDataProcessor> sortedProcessors = new ArrayList<>(this.processors);
-            Collections.sort(sortedProcessors);
+            // Sort and filter the data processors
+            List<ClarityDataProcessor> sortedProcessors = new ArrayList<>(this.processors).stream()
+                .filter(p -> p.supportsImportType(this.config.type())).sorted().collect(Collectors.toList());
 
             while (results.next()) {
                 // Create the Subjects and Forms as is needed
