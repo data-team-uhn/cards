@@ -23,11 +23,13 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -38,12 +40,18 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  * @version $Id$
  */
 @Component
-public class ClinicMapper implements ClarityDataProcessor
+public class ClinicMapper extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClinicMapper.class);
 
     @Reference
     private ThreadResourceResolverProvider trrp;
+
+    @Activate
+    public ClinicMapper()
+    {
+        super(true, new String[] { "proms" }, 50);
+    }
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
@@ -69,11 +77,5 @@ public class ClinicMapper implements ClarityDataProcessor
         LOGGER.warn("Updated visit {} ENCOUNTER_CLINIC to {}",
             input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"), clinicPath);
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 50;
     }
 }

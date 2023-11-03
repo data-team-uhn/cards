@@ -41,6 +41,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
@@ -55,11 +56,9 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  */
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = RecentVisitDiscardFilter.Config.class)
-public class RecentVisitDiscardFilter implements ClarityDataProcessor
+public class RecentVisitDiscardFilter extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecentVisitDiscardFilter.class);
-
-    private final boolean enabled;
 
     private final int minimumFrequency;
 
@@ -86,6 +85,9 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
         @AttributeDefinition(name = "Enabled")
         boolean enable() default false;
 
+        @AttributeDefinition(name = "Supported import types", description = "Leave empty to support all imports")
+        String[] supportedTypes();
+
         @AttributeDefinition(name = "Minimum Frequency",
             description = "Minimum period in days between sending surveys to a patient")
         int minimum_visit_frequency();
@@ -94,14 +96,14 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
     @Activate
     public RecentVisitDiscardFilter(final Config configuration)
     {
-        this.enabled = configuration.enable();
+        super(configuration.enable(), configuration.supportedTypes(), 10);
         this.minimumFrequency = configuration.minimum_visit_frequency();
     }
 
     @Override
     public Map<String, String> processEntry(final Map<String, String> input)
     {
-        if (!this.enabled || this.minimumFrequency <= 0) {
+        if (this.minimumFrequency <= 0) {
             return input;
         }
         final String subjectId = input.get("/SubjectTypes/Patient");
@@ -124,12 +126,6 @@ public class RecentVisitDiscardFilter implements ClarityDataProcessor
             }
         }
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 10;
     }
 
     private boolean subjectHasRecentSurveyEvent(Resource subjectResource, String id)

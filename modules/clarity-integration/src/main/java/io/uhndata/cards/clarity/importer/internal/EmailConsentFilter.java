@@ -32,6 +32,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -42,11 +43,9 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  */
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = EmailConsentFilter.Config.class)
-public class EmailConsentFilter implements ClarityDataProcessor
+public class EmailConsentFilter extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailConsentFilter.class);
-
-    private final boolean enabled;
 
     private final String consentColumn;
 
@@ -60,6 +59,9 @@ public class EmailConsentFilter implements ClarityDataProcessor
         @AttributeDefinition(name = "Enabled")
         boolean enable() default false;
 
+        @AttributeDefinition(name = "Supported import types", description = "Leave empty to support all imports")
+        String[] supportedTypes();
+
         @AttributeDefinition(name = "Email address column", description = "If not provided, validity is not checked")
         String emailColumn();
 
@@ -70,7 +72,7 @@ public class EmailConsentFilter implements ClarityDataProcessor
     @Activate
     public EmailConsentFilter(Config config)
     {
-        this.enabled = config.enable();
+        super(config.enable(), config.supportedTypes(), 5);
         this.consentColumn = config.emailConsentColumn();
         this.emailColumn = config.emailColumn();
     }
@@ -78,10 +80,6 @@ public class EmailConsentFilter implements ClarityDataProcessor
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        if (!this.enabled) {
-            return input;
-        }
-
         // Discard invalid email addresses, if configured
         if (StringUtils.isNotBlank(this.emailColumn)
             && !EmailValidator.getInstance().isValid(input.get(this.emailColumn))) {
@@ -98,11 +96,5 @@ public class EmailConsentFilter implements ClarityDataProcessor
         }
 
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 5;
     }
 }

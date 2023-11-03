@@ -21,8 +21,10 @@ package io.uhndata.cards.proms.internal.importer;
 
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -31,9 +33,15 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  * @version $Id$
  */
 @Component
-public class EmailConsentBooleanMapper implements ClarityDataProcessor
+public class EmailConsentBooleanMapper extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final String COLUMN = "EMAIL_CONSENT";
+
+    @Activate
+    public EmailConsentBooleanMapper()
+    {
+        super(true, new String[] { "proms" }, 0);
+    }
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
@@ -44,11 +52,5 @@ public class EmailConsentBooleanMapper implements ClarityDataProcessor
             input.put(COLUMN, "Yes");
         }
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 0;
     }
 }

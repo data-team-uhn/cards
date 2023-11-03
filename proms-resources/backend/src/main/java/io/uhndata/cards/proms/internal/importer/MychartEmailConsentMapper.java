@@ -21,10 +21,12 @@ package io.uhndata.cards.proms.internal.importer;
 
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -33,9 +35,15 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  * @version $Id$
  */
 @Component
-public class MychartEmailConsentMapper implements ClarityDataProcessor
+public class MychartEmailConsentMapper extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(MychartEmailConsentMapper.class);
+
+    @Activate
+    public MychartEmailConsentMapper()
+    {
+        super(true, new String[] { "proms" }, 0);
+    }
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
@@ -46,11 +54,5 @@ public class MychartEmailConsentMapper implements ClarityDataProcessor
                 input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
         }
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 0;
     }
 }

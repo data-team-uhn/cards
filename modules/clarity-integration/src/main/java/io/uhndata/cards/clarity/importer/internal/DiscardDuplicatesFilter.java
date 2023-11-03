@@ -32,6 +32,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -42,13 +43,11 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  */
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = DiscardDuplicatesFilter.Config.class)
-public class DiscardDuplicatesFilter implements ClarityDataProcessor
+public class DiscardDuplicatesFilter extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiscardDuplicatesFilter.class);
 
     private final ThreadLocal<Set<String>> seenIdentifiers = ThreadLocal.withInitial(HashSet::new);
-
-    private final boolean enabled;
 
     private final String subjectType;
 
@@ -59,6 +58,9 @@ public class DiscardDuplicatesFilter implements ClarityDataProcessor
         @AttributeDefinition(name = "Enabled")
         boolean enable() default false;
 
+        @AttributeDefinition(name = "Supported import types", description = "Leave empty to support all imports")
+        String[] supportedTypes();
+
         @AttributeDefinition(name = "Subject type",
             description = "Subject type for which to discard duplicates: a patient or a visit.")
         String subjectType() default "/SubjectTypes/Patient";
@@ -67,20 +69,23 @@ public class DiscardDuplicatesFilter implements ClarityDataProcessor
     @Activate
     public DiscardDuplicatesFilter(Config config)
     {
-        this.enabled = config.enable();
+        // Running this later allows us to support this scenario:
+        // - patient discharged from ED to IP at 00:15
+        // - patient discharged from IP same day at 20:00
+        // In this case we want to only import the second discharge event, not the first, so we want to give a chance to
+        // another filter to remove the first event.
+        super(config.enable(), config.supportedTypes(), 200);
         this.subjectType = config.subjectType();
     }
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
-        if (this.enabled) {
-            final String subjectIdentifier = input.get(this.subjectType);
-            if (subjectIdentifier != null && !this.seenIdentifiers.get().add(subjectIdentifier)) {
-                LOGGER.warn("DiscardDuplicatesFilter discarded visit {} as duplicate",
-                    input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
-                return null;
-            }
+        final String subjectIdentifier = input.get(this.subjectType);
+        if (subjectIdentifier != null && !this.seenIdentifiers.get().add(subjectIdentifier)) {
+            LOGGER.warn("DiscardDuplicatesFilter discarded visit {} as duplicate",
+                input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
+            return null;
         }
         return input;
     }
@@ -89,16 +94,5 @@ public class DiscardDuplicatesFilter implements ClarityDataProcessor
     public void end()
     {
         this.seenIdentifiers.remove();
-    }
-
-    @Override
-    public int getPriority()
-    {
-        // Running this later allows us to support this scenario:
-        // - patient discharged from ED to IP at 00:15
-        // - patient discharged from IP same day at 20:00
-        // In this case we want to only import the second discharge event, not the first, so we want to give a chance to
-        // another filter to remove the first event.
-        return 200;
     }
 }

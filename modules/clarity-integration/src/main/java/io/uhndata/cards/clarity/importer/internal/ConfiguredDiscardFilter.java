@@ -48,6 +48,9 @@ public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProce
             + " conditions")
     public @interface Config
     {
+        @AttributeDefinition(name = "Supported import types", description = "Leave empty to support all imports")
+        String[] supportedTypes();
+
         @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
             + " Processors are run in ascending priority order")
         int priority();
@@ -72,7 +75,7 @@ public class ConfiguredDiscardFilter extends AbstractConditionalClarityDataProce
     @Activate
     public ConfiguredDiscardFilter(Config configuration) throws ConfigurationException
     {
-        super(configuration.priority(), configuration.conditions());
+        super(configuration.supportedTypes(), configuration.priority(), configuration.conditions());
         String pid = configuration.service_pid();
         this.id = pid.substring(pid.lastIndexOf("~") + 1);
     }

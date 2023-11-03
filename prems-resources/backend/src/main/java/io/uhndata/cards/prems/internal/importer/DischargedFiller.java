@@ -21,8 +21,10 @@ package io.uhndata.cards.prems.internal.importer;
 
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -31,19 +33,19 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  * @version $Id$
  */
 @Component
-public class DischargedFiller implements ClarityDataProcessor
+public class DischargedFiller extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
+    @Activate
+    public DischargedFiller()
+    {
+        super(true, new String[] { "prems" }, 30);
+    }
+
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
         // All visits we receive are discharged, add this to the output so it can get inserted into the visit
         input.put("STATUS", "discharged");
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 30;
     }
 }

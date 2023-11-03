@@ -38,6 +38,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
@@ -52,11 +53,9 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  */
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 @Designate(ocd = UnsubscribedFilter.Config.class)
-public class UnsubscribedFilter implements ClarityDataProcessor
+public class UnsubscribedFilter extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(UnsubscribedFilter.class);
-
-    private final boolean enabled;
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -80,20 +79,20 @@ public class UnsubscribedFilter implements ClarityDataProcessor
     {
         @AttributeDefinition(name = "Enabled")
         boolean enable() default false;
+
+        @AttributeDefinition(name = "Supported import types", description = "Leave empty to support all imports")
+        String[] supportedTypes();
     }
 
     @Activate
     public UnsubscribedFilter(Config configuration)
     {
-        this.enabled = configuration.enable();
+        super(configuration.enable(), configuration.supportedTypes(), 10);
     }
 
     @Override
     public Map<String, String> processEntry(final Map<String, String> input)
     {
-        if (!this.enabled) {
-            return input;
-        }
         final String mrn = input.get("/SubjectTypes/Patient");
         final String id = input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown");
 
@@ -115,12 +114,6 @@ public class UnsubscribedFilter implements ClarityDataProcessor
             }
         }
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 10;
     }
 
     private boolean patientHasUnsubscribed(Resource subjectResource, String id)

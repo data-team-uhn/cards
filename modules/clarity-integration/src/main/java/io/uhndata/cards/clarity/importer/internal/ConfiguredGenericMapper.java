@@ -47,6 +47,9 @@ public class ConfiguredGenericMapper extends AbstractConditionalClarityDataProce
         description = "Configuration for the Clarity importer to assign a specific value to a column")
     public @interface Config
     {
+        @AttributeDefinition(name = "Supported import types", description = "Leave empty to support all imports")
+        String[] supportedTypes();
+
         @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
             + " Processors are run in ascending priority order")
         int priority();
@@ -82,7 +85,7 @@ public class ConfiguredGenericMapper extends AbstractConditionalClarityDataProce
     @Activate
     public ConfiguredGenericMapper(Config configuration) throws ConfigurationException
     {
-        super(configuration.priority(), configuration.conditions());
+        super(configuration.supportedTypes(), configuration.priority(), configuration.conditions());
         this.column = configuration.column();
         this.value = configuration.value();
         String pid = configuration.service_pid();
