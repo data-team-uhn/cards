@@ -296,10 +296,10 @@ function Form (props) {
           setLastSaveStatus(true);
           setLastSaveTimestamp(new Date());
         }
-      } else if (response.status === 500) {
+      } else if (response.status >= 400 || response.status < 100) {
         response.json().then((json) => {
-            setErrorCode(json["status.code"]);
-            setErrorMessage(json.error.message);
+            setErrorCode(response.status);
+            setErrorMessage(json["status.message"]);
             openErrorDialog();
         })
         setLastSaveStatus(undefined);
