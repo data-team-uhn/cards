@@ -76,6 +76,8 @@ function Form (props) {
   let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
+  // This holds the base version of the form
+  let [ baseVersion, setBaseVersion ] = useState();
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // Marks that a save operation is in progress
@@ -207,6 +209,7 @@ function Form (props) {
       });
     }
     setData(json);
+    setBaseVersion(json["jcr:baseVersion"]);
     setStatusFlags(json.statusFlags);
 
     if (isEdit) {
@@ -249,6 +252,7 @@ function Form (props) {
     let data = new FormData(formNode.current);
     setSaveInProgress(true);
     setIncompleteQuestionEl(null);
+    data.append(":baseVersion", baseVersion);
     if (performCheckin) {
         data.append(":checkin", "true");
     }
@@ -296,6 +300,16 @@ function Form (props) {
           setLastSaveStatus(true);
           setLastSaveTimestamp(new Date());
         }
+      } else if (response.status === 409) {
+        response.json().then((json) => {
+            setErrorCode(response.status);
+            setErrorMessage(json["status.message"]);
+            // We remove the "are you sure you want to leave" and autosave handlers
+            // since we know the data is stale and won't be able to be saved
+            removeWindowHandlers?.();
+            openErrorDialog();
+        })
+        setLastSaveStatus(undefined);
       } else if (response.status >= 400 || response.status < 100) {
         response.json().then((json) => {
             setErrorCode(response.status);
@@ -650,7 +664,7 @@ function Form (props) {
       </Grid>
       <ErrorDialog title="Failed to save" open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <Typography variant="h6">Your changes were not saved.</Typography>
-        <Typography variant="body1" paragraph>Server responded with response code {errorCode}: {errorMessage}</Typography>
+        <Typography variant="body1" paragraph>Server responded with error code {errorCode}: {errorMessage}</Typography>
         {lastSaveTimestamp &&
           <Typography variant="body1" paragraph>Time of the last successful save: {getTimestampString(lastSaveTimestamp.toISOString())}</Typography>
         }
