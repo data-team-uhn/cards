@@ -193,7 +193,7 @@ function Statistic(props) {
   let generateFilter = (varDef, value) => {
     return varDef && {
       comparator: typeof(value) == 'undefined' ? "is empty" : "=",
-      name: varDef?.["@path"]?.replace(/^\/[^/]+\//, ""),
+      name: varDef?.["@path"],
       title: varDef?.["text"],
       type: varDef?.["dataType"],
       uuid: varDef?.["jcr:uuid"],
