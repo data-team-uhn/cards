@@ -74,6 +74,8 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
 function Form (props) {
   let { classes, id, contentOffset } = props;
   let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
+  // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
+  let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // This holds the base version of the form
@@ -186,6 +188,26 @@ function Form (props) {
     requireCompletion && paginationEnabled && setDisableProgress(true);
   }, [requireCompletion, paginationEnabled]);
 
+  let checkoutIfNeededAndFetchData = () => {
+    // Check if it was already checked out
+    fetchWithReLogin(globalLoginDisplay, formURL + "/jcr:isCheckedOut")
+      .then(response => response.text())
+      .then(text => {
+        setWasCheckedOut(text === "true");
+        if (isEdit) {
+          // Perform a JCR check-out of the Form
+          let checkoutForm = new FormData();
+          checkoutForm.set(":operation", "checkout");
+          fetchWithReLogin(globalLoginDisplay, formURL, {
+            method: "POST",
+            body: checkoutForm
+          }).then(fetchData);
+        } else {
+          fetchData();
+        }
+      });
+  };
+
   // Fetch the form's data as JSON from the server.
   // The data will contain the form metadata,
   // such as authorship and versioning information, the associated subject,
@@ -221,13 +243,6 @@ function Form (props) {
       // Take into account the option to hide answer instructions as specified in the questionnaire definition
       let hideInstructions = json?.['questionnaire']?.['hideAnswerInstructions'];
       !!hideInstructions && setClassNames(names => ([...names, classes.hideAnswerInstructions]));
-      //Perform a JCR check-out of the Form
-      let checkoutForm = new FormData();
-      checkoutForm.set(":operation", "checkout");
-      fetchWithReLogin(globalLoginDisplay, formURL, {
-        method: "POST",
-        body: checkoutForm
-      });
     }
   };
 
@@ -391,7 +406,7 @@ function Form (props) {
 
   // Load the Form, only once, upon initialization
   useEffect(() => {
-    fetchData();
+    checkoutIfNeededAndFetchData();
   }, []);
 
   // If the data has not yet been fetched, return an in-progress symbol
@@ -560,7 +575,7 @@ function Form (props) {
             : ""
           }
           {
-            data && data['jcr:isCheckedOut'] ?
+            wasCheckedOut ?
             <Typography variant="overline" className={classes.warningStatus}>Another user is editing</Typography>
             : ""
           }
