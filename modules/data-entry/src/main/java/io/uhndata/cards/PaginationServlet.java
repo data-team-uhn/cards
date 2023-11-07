@@ -971,83 +971,84 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     {
         // Problem 1: Currently Oak does not support DISTINCT, so we must manually ensure uniqueness of the results.
         // Problem 2: Currently Oak does not support giving a total number of matches, so we must gauge it.
-        // - Request results in batches of size (limit * QUERY_SIZE_MULTIPLIER).
-        // - Deduplicate the results in a batch
+        // - Request all results
+        // - Deduplicate the results as we process them
         // - Keep a count of how many unique results were skipped so far, until the requested "offset" items are skipped
         // - After skipping "offset" items, output at most "limit" unique items to the resulting JSON
         // - After outputting "limit" items, keep counting how many new unique items are there until there are no more
-        // results or encounter (limit + QUERY_SIZE_MULTIPLIER + 1) unique items (the termination condition)
-        // - If all the items in the current batch have been processed without reaching the termination condition,
-        // request the next batch
-        final long[] counts = new long[] {
+        // results, or encounter 10 more pages of unique items, rounded up to a whole 10*page batch
+
+        // The returned number of items
+        long returnedResults = 0;
+        // If there are more results that haven't been counted
+        long andMore = 0;
+        // Which unique items have been seen so far in the query results
+        final Set<String> seenResources = new HashSet<>();
+
+        // Termination condition limit: when to stop looking for new unique results
+        // We consider (10 * the page size) a batch, e.g. 100 for a 10-page, 250 for a 25-page
+        // We count up to a whole number of batches
+        // We go up until the batch that fully contains the batch that would start at the requested offset
+        // However, we include just one more result to see if there are "more than" results
+        // For example:
+        // - if the page size is 10 and the offset is 0, we stop at 101
+        // - if the page size is 10 and the offset is 110, we stop at 301
+        // - if the page size is 25 and the offset is 500, we stop at 751
+        // - if the page size is 25 and the offset is 501, we stop at 1001
+
+        // Batch size:
+        long totalLimit = (QUERY_SIZE_MULTIPLIER * resultLimit);
+        // Batch fully containing the requested page:
+        totalLimit = (((long) Math.ceil(((double) resultOffset) / ((double) totalLimit))) + 1) * totalLimit;
+        // And one more for the "more than" check:
+        ++totalLimit;
+
+        // How many more items to include in the output
+        long limitCounter = resultLimit < 0 ? 0 : resultLimit;
+
+        // Execute the query
+        try {
+            final QueryResult filterResult = query.execute();
+            final RowIterator rows = filterResult.getRows();
+
+            while (rows.hasNext()) {
+                final Row row = rows.nextRow();
+                final String path = row.getPath();
+                // If this resource was already seen, ignore it
+                if (!seenResources.contains(path)) {
+                    seenResources.add(path);
+                    // If we've passed the "offset" mark, and we didn't output "limit" items yet, include the
+                    // resource in the output
+                    if (seenResources.size() > resultOffset && limitCounter > 0) {
+                        jsonGen.write(request.getResourceResolver().getResource(path).adaptTo(JsonObject.class));
+                        --limitCounter;
+                        ++returnedResults;
+                    }
+                    if (seenResources.size() >= totalLimit) {
+                        break;
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            //
+        }
+
+        // We included one extra result in the total limit, check if we went that far
+        if (seenResources.size() == totalLimit) {
+            andMore = 1;
+        }
+        return new long[] {
             // The requested offset
             resultOffset,
             // The requested number of items
             resultLimit,
             // The returned number of items
-            0,
-            // The total number of items matching the query, up to (QUERY_SIZE_MULTIPLIER * resultLimit + 1);
-            0,
+            returnedResults,
+            // The total number of items matching the query
+            seenResources.size() - andMore,
             // There are probably more results than seen
-            0
+            andMore
         };
-        // Which unique items have been seen so far in the query results
-        final Set<String> seenResources = new HashSet<>();
-
-        // Items in a query batch
-        long batchSize = (QUERY_SIZE_MULTIPLIER * resultLimit);
-        // Current batch start
-        long batchStart = 0;
-        // Termination condition limit: when to stop looking for new unique results
-        long totalLimit = (((long) Math.ceil(((double) resultOffset) / ((double) batchSize))) + 1) * batchSize + 1;
-        // How many more items to include in the output
-        long limitCounter = resultLimit < 0 ? 0 : resultLimit;
-
-        // How many results were returned by the query
-        long itemsInBatch = 0;
-
-        // For the first query, request offset + regular batch size
-        query.setLimit(resultOffset + batchSize + 1);
-        do {
-            query.setOffset(batchStart);
-
-            // Execute the query
-            try {
-                final QueryResult filterResult = query.execute();
-                final RowIterator rows = filterResult.getRows();
-
-                itemsInBatch = 0;
-                while (rows.hasNext()) {
-                    ++itemsInBatch;
-                    final Row row = rows.nextRow();
-                    final String path = row.getPath();
-                    // If this resource was already seen, ignore it
-                    if (!seenResources.contains(path)) {
-                        seenResources.add(path);
-                        // If we've passed the "offset" mark, and we didn't output "limit" items yet, include the
-                        // resource in the output
-                        if (seenResources.size() > resultOffset && limitCounter > 0) {
-                            jsonGen.write(request.getResourceResolver().getResource(path).adaptTo(JsonObject.class));
-                            --limitCounter;
-                            ++counts[2];
-                        }
-                        ++counts[3];
-                    }
-                }
-                batchStart += itemsInBatch;
-            } catch (RepositoryException e) {
-                //
-            }
-            // Reset batch size to the regular window
-            query.setLimit(batchSize + 1);
-        } while (counts[3] < totalLimit && itemsInBatch > batchSize);
-
-        if (itemsInBatch > batchSize) {
-            counts[4] = 1;
-            // We included the "and more" extra result in the count, remove 1 to get back to a round number
-            counts[3] = totalLimit - 1;
-        }
-        return counts;
     }
 
     /**
