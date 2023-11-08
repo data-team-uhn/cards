@@ -70,8 +70,8 @@ public class PreventVersionOverrideServletFilter implements Filter
             Node node = slingRequest.getResource().adaptTo(Node.class);
             if (node != null && !requestBaseVersion.equals(node.getProperty("jcr:baseVersion").getNode().getPath())) {
                 slingRequest.setAttribute("javax.servlet.error.status_code", HttpServletResponse.SC_CONFLICT);
-                throw new ServletException(
-                    "The answers to this form were modified while you were editing. Please refresh to see the latest data.");
+                throw new ServletException("The answers to this form were modified while you were editing. "
+                    + "Please refresh to see the latest data.");
             }
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to determine current resource version: {}", e.getMessage(), e);
