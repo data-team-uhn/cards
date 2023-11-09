@@ -681,7 +681,7 @@ function Form (props) {
         <Typography variant="h6">Your changes were not saved.</Typography>
         <Typography variant="body1" paragraph>Server responded with error code {errorCode}: {errorMessage}</Typography>
         {lastSaveTimestamp &&
-          <Typography variant="body1" paragraph>Time of the last successful save: {getTimestampString(lastSaveTimestamp.toISOString())}</Typography>
+          <Typography variant="body1" paragraph>The last successful save was {getTimestampString(lastSaveTimestamp.toISOString())}.</Typography>
         }
       </ErrorDialog>
       { isEdit &&
