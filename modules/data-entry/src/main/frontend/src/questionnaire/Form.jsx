@@ -267,7 +267,6 @@ function Form (props) {
     let data = new FormData(formNode.current);
     setSaveInProgress(true);
     setIncompleteQuestionEl(null);
-    data.append(":baseVersion", baseVersion);
     if (performCheckin) {
         data.append(":checkin", "true");
     }
@@ -548,6 +547,7 @@ function Form (props) {
           ref={formNode}
           className={classNames?.join(' ')}
       >
+      <input type="hidden" name=":baseVersion" value={baseVersion} />
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
