@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>proms-resources</artifactId>
-    <version>0.9.20-SNAPSHOT</version>
+    <version>0.9.20.1</version>
   </parent>
 
   <artifactId>proms-permissions</artifactId>
