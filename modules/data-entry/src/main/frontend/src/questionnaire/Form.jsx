@@ -518,7 +518,7 @@ function Form (props) {
   }
 
   let validLinks = data?.["cards:links"]?.filter(link => link["to"]?.startsWith("/"));
-  let links = validLinks.length > 0 ?
+  let links = validLinks?.length > 0 ?
       (
         <Typography variant="overline">
           {"Related: "}
