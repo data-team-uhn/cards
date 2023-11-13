@@ -234,6 +234,8 @@ DefaultRowTypeMap = RowTypeMap(RowTypes.DEFAULT, "", True, "text")
 # Includes references to the questionnaire, section and question that is currently being created
 # as well as other data that is required between multiple rows and/or columns
 class QuestionnaireState:
+    FLAG_MUST_COMPLETE_SECTION = "must_complete_section"
+
     def __init__(self):
         self.clear_state()
 
@@ -241,6 +243,7 @@ class QuestionnaireState:
         # List of all questionnaires defined in the current CSV
         self.questionnaires = []
         self.clear_questionnaire()
+        self.flags = {}
 
     def clear_questionnaire(self):
         # How many unnamed sections have been created, used to create a unique generic section title
@@ -318,6 +321,17 @@ class QuestionnaireState:
             name = self.question.pop('name')
             self.parent[name] = self.question
             self.question = self.parent
+
+    def flag_must_complete_section(self):
+        self.flags[self.FLAG_MUST_COMPLETE_SECTION] = True
+
+    def handle_row_complete(self):
+        self.if_flag_run_and_clear(self.FLAG_MUST_COMPLETE_SECTION, self.complete_section)
+
+    def if_flag_run_and_clear(self, flag, toRun):
+        if flag in self.flags and self.flags.get(flag):
+            toRun()
+            self.flags.pop(flag)
 
 
 
@@ -624,7 +638,7 @@ def process_conditional(self, questionnaire, row):
     log(Logging.INFO, "Processing conditional " + conditional_string)
     condition_handle_brackets(questionnaire, questionnaire.parent, conditional_string)
 
-    questionnaire.complete_section()
+    questionnaire.flag_must_complete_section()
 
 def condition_handle_brackets(questionnaire, condition_parent, conditional_string, index=0):
     log(Logging.INFO, "Handling brackets      " + conditional_string)
@@ -751,6 +765,7 @@ def csv_to_json(title):
                 if header.has_value(row):
                     header.handler(header, questionnaireState, row)
             questionnaireState.complete_question()
+            questionnaireState.handle_row_complete()
 
     questionnaireState.complete_questionnaire()
 
@@ -760,10 +775,22 @@ def csv_to_json(title):
             json.dump(q, jsonFile, indent='\t')
         os.system("python3 ../JSON-to-XML/json_to_xml.py '" + name + ".json' > '" + name + ".xml'")
 
+def get_log_level(log_input):
+    log_input = log_input.lower()
+    if log_input == "run":
+        return Logging.RUN
+    elif log_input == "error":
+        return Logging.ERROR
+    elif log_input == "warning" or log_input == "warn":
+        return Logging.WARNING
+    else:
+        return Logging.INFO
+
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--forms", nargs="*", type=str, required=True)
 CLI.add_argument("--paginate", nargs=1, type=bool, default=False)
 CLI.add_argument("--subject-types", nargs=1, type=str, default="/SubjectTypes/Patient/Visit")
+CLI.add_argument("--logging", nargs=1, type=str, default="info")
 CLI.add_argument("--max-answers", nargs=1, type=int, default=1)
 CLI.add_argument("--max-per-subject", nargs=1, type=int, default=1)
 
@@ -772,5 +799,5 @@ args = CLI.parse_args()
 for title in args.forms:
     Headers = DefaultHeaders
     Options = args
-    Options.logging = Logging.WARNING
+    Options.logging = get_log_level(Options.logging[0])
     csv_to_json(title)
