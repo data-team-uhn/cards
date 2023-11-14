@@ -230,15 +230,15 @@ public final class AppointmentUtils
      * @param visitSubject the JCR Resource for the visit whose survey completion status we wish to obtain
      * @return the boolean survey completion status for the visit
      */
-    public static boolean isVisitSurveyComplete(FormUtils formUtils, Node visitSubject)
+    public static boolean isVisitSurveySubmitted(FormUtils formUtils, Node visitSubject)
     {
-        long isComplete = getQuestionAnswerForSubject(
+        long isSubmitted = getQuestionAnswerForSubject(
             formUtils,
             visitSubject,
-            "/Questionnaires/Visit information/surveys_complete",
+            "/Questionnaires/Visit information/surveys_submitted",
             "cards:BooleanAnswer",
             0L);
-        if (isComplete == 1) {
+        if (isSubmitted == 1) {
             return true;
         }
         return false;

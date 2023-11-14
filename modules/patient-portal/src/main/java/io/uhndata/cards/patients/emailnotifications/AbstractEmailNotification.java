@@ -120,7 +120,7 @@ abstract class AbstractEmailNotification
                 // This will have to be changed later,
                 // since we will have different visit information forms for the same subject
                 Node visitSubject = this.formUtils.getSubject(appointmentForm, "/SubjectTypes/Patient/Visit");
-                if (appointmentForm == null || AppointmentUtils.isVisitSurveyComplete(this.formUtils, visitSubject)) {
+                if (appointmentForm == null || AppointmentUtils.isVisitSurveySubmitted(this.formUtils, visitSubject)) {
                     continue;
                 }
 
