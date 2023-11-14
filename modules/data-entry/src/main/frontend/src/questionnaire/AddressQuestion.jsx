@@ -100,12 +100,21 @@ function AddressQuestion(props) {
   const [isValidApi, setIsValidApi] = useState(true);
 
   const countries = questionDefinition.countries?.split(/\s*,\s*/) || undefined;
+  let searchPlacesAround = undefined;
+  try {
+    searchPlacesAround = questionDefinition.searchPlacesAround ? JSON.parse(questionDefinition.searchPlacesAround) : undefined;
+  } catch (e) {
+    // No bounds
+  }
   let options = {
     types: ["address"],
     fields: ["formatted_address"]
   };
   if (countries) {
     options.componentRestrictions = { country: countries };
+  }
+  if (searchPlacesAround) {
+    options.bounds = searchPlacesAround;
   }
   const { ref: materialRef } = usePlacesWidget({
     apiKey: googleApiKey,

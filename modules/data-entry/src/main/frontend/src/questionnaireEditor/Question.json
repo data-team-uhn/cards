@@ -458,7 +458,8 @@
       },
       "address" : {
         "minAnswers": {"0":{}, "1":{}},
-        "countries": "string"
+        "countries": "string",
+        "searchPlacesAround": "string"
       }
     },
     "enableNotes": "boolean"
