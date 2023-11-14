@@ -153,7 +153,7 @@
   // - computed: a derived value automatically computed based on a formula applied on other values in the questionaire
   // - pedigree: a pedigree drawing
   // - phone: a phone or fax number
-  // - address: 
+  // - address: a postal address
   // The answer type can be further refined with the following properties
   - dataType (string) = 'text' mandatory autocreated
 

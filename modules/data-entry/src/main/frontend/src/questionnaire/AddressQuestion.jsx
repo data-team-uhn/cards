@@ -90,6 +90,8 @@ const inputGlobalStyles = <GlobalStyles
 // <AddressQuestion
 //   questionDefinition={{
 //     text: "Please enter the address",
+//     countries: "ca",
+//     searchPlacesAround: '{"east": -79.3, "west": -79.5, "north": 43.7, "south": 43.6}',
 //   }}
 //   />
 function AddressQuestion(props) {
