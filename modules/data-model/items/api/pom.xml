@@ -22,46 +22,28 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-modules</artifactId>
+    <artifactId>cards-data-model-items</artifactId>
     <version>0.9.25-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-commons</artifactId>
+  <artifactId>cards-data-model-items-api</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Common frontend resources</name>
+  <name>CARDS - Data model - Item nodetypes - Definitions, APIs and SPIs</name>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingfeature-maven-plugin</artifactId>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <!-- Initial content to be loaded on bundle installation -->
+            <Include-Resource>{maven-resources}</Include-Resource>
+            <Sling-Nodetypes>SLING-INF/nodetypes/items.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/apps/sling/servlet/errorhandler/;path:=/apps/sling/servlet/errorhandler/;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/libs/sling/servlet/errorhandler/;path:=/libs/sling/servlet/errorhandler/;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/ROOT/;path:=/;overwriteProperties:=true,
+              SLING-INF/content/libs/cards/Item/;path:=/libs/cards/Item/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <excludes combine.children="append">
-            <exclude>**/headerStyle.jsx</exclude>
-            <exclude>**/themeStyle.jsx</exclude>
-            <exclude>**/components/ComposedIcon.jsx</exclude>
-          </excludes>
         </configuration>
       </plugin>
     </plugins>

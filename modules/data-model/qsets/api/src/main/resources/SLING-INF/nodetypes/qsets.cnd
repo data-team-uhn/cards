@@ -28,7 +28,7 @@
 
 //-----------------------------------------------------------------------------
 // QuestionnaireConflict: a reference to a questionnaire that should prevent a QuestionnaireSet from being generated
-[cards:QuestionnaireConflict] > sling:Folder, mix:referenceable, mix:versionable
+[cards:QuestionnaireConflict] > cards:ResourcePart
   // Attributes
 
   // We can use questionnaire references in a query.
@@ -48,7 +48,7 @@
 
 //-----------------------------------------------------------------------------
 // QuestionnaireRef: a reference to a questionnaire included in a QuestionnaireSet
-[cards:QuestionnaireRef] > sling:Folder, mix:referenceable, mix:versionable
+[cards:QuestionnaireRef] > cards:ResourcePart
   // Attributes
 
   // We can use questionnaire references in a query.
@@ -58,9 +58,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/QuestionnaireRef" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A questionnaire path
   // Mandatory, each QuestionnaireRef must point to a questionnaire.
@@ -87,7 +84,7 @@
 
 //-----------------------------------------------------------------------------
 // QuestionnaireSet: a sequence of questionnaires to be filled out
-[cards:QuestionnaireSet] > sling:Folder, mix:referenceable, mix:versionable
+[cards:QuestionnaireSet] > cards:Resource
   // Attributes
 
   // The list of questionnaires needs to be ordered
@@ -102,9 +99,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/QuestionnaireSet" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A name for this QuestionnaireSet
   // Mandatory, each QuestionnaireSet must have a name.
