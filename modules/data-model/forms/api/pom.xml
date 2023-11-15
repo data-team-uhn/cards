@@ -41,6 +41,7 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/forms.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
+              SLING-INF/content/libs/cards/Answer/;path:=/libs/cards/Answer/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true
             </Sling-Initial-Content>
           </instructions>

@@ -26,12 +26,20 @@
             "start-order":"15"
         },
         {
+            "id":"${project.groupId}:cards-data-model-items-api:${project.version}",
+            "start-order":"21"
+        },
+        {
             "id":"${project.groupId}:cards-data-model-links-api:${project.version}",
-            "start-order":"25"
+            "start-order":"22"
         },
         {
             "id":"${project.groupId}:cards-data-model-links-impl:${project.version}",
             "start-order":"25"
+        },
+        {
+            "id":"${project.groupId}:cards-data-model-resources-api:${project.version}",
+            "start-order":"23"
         },
         {
             "id":"${project.groupId}:cards-data-model-subjects-api:${project.version}",

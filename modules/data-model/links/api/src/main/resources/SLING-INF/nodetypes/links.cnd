@@ -27,8 +27,11 @@
 //-----------------------------------------------------------------------------
 
 // The definition of a type of link.
-[cards:LinkDefinition] > sling:Folder, mix:referenceable, mix:lastModified
+[cards:LinkDefinition] > cards:Item, mix:referenceable, mix:lastModified
   // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/LinkDefinition" mandatory autocreated protected
 
   // Whether the link should be a hard or a weak link
   - weak (BOOLEAN) = false
@@ -64,7 +67,7 @@
   - onDelete (STRING) = REMOVE_LINK mandatory autocreated
 
 // A set of links to other resources
-[cards:Links] > sling:Folder
+[cards:Links] > cards:Item
   // Properties:
 
   // Hardcode the resource type.
@@ -77,7 +80,7 @@
   + * (cards:WeakLink) = cards:WeakLink IGNORE
 
 // A strong link to another resource
-[cards:Link] > sling:Folder, mix:lastModified
+[cards:Link] > cards:Item, mix:lastModified
   // Properties:
 
   // The type of link, a reference to a cards:LinkDefinition node
