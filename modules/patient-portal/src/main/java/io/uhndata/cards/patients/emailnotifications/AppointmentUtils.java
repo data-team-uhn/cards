@@ -224,11 +224,11 @@ public final class AppointmentUtils
     }
 
     /**
-     * Returns the completion status of surveys for a Visit.
+     * Returns the submission status of surveys for a Visit.
      *
      * @param formUtils form utilities service
-     * @param visitSubject the JCR Resource for the visit whose survey completion status we wish to obtain
-     * @return the boolean survey completion status for the visit
+     * @param visitSubject the JCR Resource for the visit whose survey submission status we wish to obtain
+     * @return {@code true} if the survey was submitted
      */
     public static boolean isVisitSurveySubmitted(FormUtils formUtils, Node visitSubject)
     {
