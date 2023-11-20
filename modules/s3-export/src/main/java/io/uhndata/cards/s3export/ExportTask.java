@@ -17,9 +17,10 @@
  * under the License.
  */
 
-package io.uhndata.cards.heracles.internal.export;
+package io.uhndata.cards.s3export;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.json.JsonArray;
@@ -37,6 +39,7 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -53,6 +56,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import io.uhndata.cards.errortracking.ErrorLogger;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
+import io.uhndata.cards.serialize.CSVString;
 
 public class ExportTask implements Runnable
 {
@@ -61,10 +65,23 @@ public class ExportTask implements Runnable
 
     private static final String DOT = "\\.";
 
+    private static final DateTimeFormatter JCR_DATE_FORMAT =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+
+    private static final Pattern FORMATTED_NOW = Pattern.compile("\\{now\\((.*?)\\)\\}");
+
+    private static final Pattern FORMATTED_YESTERDAY = Pattern.compile("\\{yesterday\\((.*?)\\)\\}");
+
+    private static final Pattern FORMATTED_START = Pattern.compile("\\{start\\((.*?)\\)\\}");
+
+    private static final Pattern FORMATTED_END = Pattern.compile("\\{end\\((.*?)\\)\\}");
+
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
     private final ThreadResourceResolverProvider rrp;
+
+    private final ExportConfigDefinition config;
 
     private final String exportRunMode;
 
@@ -73,17 +90,18 @@ public class ExportTask implements Runnable
     private final LocalDate exportUpperBound;
 
     ExportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
-        final String exportRunMode)
+        final ExportConfigDefinition config, final String exportRunMode)
     {
-        this(resolverFactory, rrp, exportRunMode, null, null);
+        this(resolverFactory, rrp, config, exportRunMode, null, null);
     }
 
     ExportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
-        final String exportRunMode,
+        final ExportConfigDefinition config, final String exportRunMode,
         final LocalDate exportLowerBound, final LocalDate exportUpperBound)
     {
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
+        this.config = config;
         this.exportRunMode = exportRunMode;
         this.exportLowerBound = exportLowerBound;
         this.exportUpperBound = exportUpperBound;
@@ -93,11 +111,11 @@ public class ExportTask implements Runnable
     public void run()
     {
         try {
-            if ("nightly".equals(this.exportRunMode) || "manualToday".equals(this.exportRunMode)) {
-                doNightlyExport();
-            } else if ("manualAfter".equals(this.exportRunMode)) {
-                doManualExport(this.exportLowerBound, null);
-            } else if ("manualBetween".equals(this.exportRunMode)) {
+            if ("scheduled".equals(this.exportRunMode)) {
+                doScheduledExport();
+            } else if ("today".equals(this.exportRunMode)) {
+                doDailyExport();
+            } else if ("manual".equals(this.exportRunMode)) {
                 doManualExport(this.exportLowerBound, this.exportUpperBound);
             }
         } catch (Exception e) {
@@ -113,52 +131,27 @@ public class ExportTask implements Runnable
 
     public void doManualExport(LocalDate lower, LocalDate upper) throws LoginException
     {
-        LOGGER.info("Executing ManualExport");
-        String fileDateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String requestDateStringLower =
-            lower.atStartOfDay(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
-        String requestDateStringUpper = (upper != null)
-            ? upper.atStartOfDay(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"))
-            : null;
-
-        boolean mustPopResolver = false;
-        try (ResourceResolver resolver =
-            this.resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "S3Export"))) {
-            this.rrp.push(resolver);
-            mustPopResolver = true;
-            Set<SubjectIdentifier> changedSubjects =
-                this.getChangedSubjects(requestDateStringLower, requestDateStringUpper, resolver);
-
-            for (SubjectIdentifier identifier : changedSubjects) {
-                SubjectContents subjectContents =
-                    getSubjectContents(identifier.getPath(), requestDateStringLower, requestDateStringUpper, resolver);
-                if (subjectContents != null) {
-                    String filename = String.format(
-                        "%s_formData_%s.json",
-                        cleanString(identifier.getParticipantId()),
-                        fileDateString);
-                    this.output(subjectContents, filename);
-                }
-            }
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            if (mustPopResolver) {
-                this.rrp.pop();
-            }
-        }
+        LOGGER.info("Executing Manual S3 Export {}", this.config.name());
+        doExport(lower != null ? lower.atStartOfDay(ZoneId.systemDefault()) : null,
+            upper != null ? upper.atStartOfDay(ZoneId.systemDefault()) : null);
     }
 
-    public void doNightlyExport() throws LoginException
+    public void doScheduledExport() throws LoginException
     {
-        LOGGER.info("Executing NightlyExport");
-        ZonedDateTime yesterday = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).minusDays(1);
-        String fileDateString = yesterday.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String startDateString = yesterday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
-        String endDateString =
-            yesterday.plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx"));
+        LOGGER.info("Executing Scheduled S3 Export {}", this.config.name());
+        doExport(getPastDayStartString(this.config.frequencyInDays()), getPastDayStartString(0));
+    }
+
+    public void doDailyExport() throws LoginException
+    {
+        LOGGER.info("Executing Daily S3 Export {}", this.config.name());
+        doExport(getPastDayStartString(0), null);
+    }
+
+    private void doExport(final ZonedDateTime startDate, final ZonedDateTime endDate) throws LoginException
+    {
+        final String startDateString = startDate == null ? null : startDate.format(JCR_DATE_FORMAT);
+        final String endDateString = endDate == null ? null : endDate.format(JCR_DATE_FORMAT);
         boolean mustPopResolver = false;
         try (ResourceResolver resolver =
             this.resolverFactory.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "S3Export"))) {
@@ -171,10 +164,8 @@ public class ExportTask implements Runnable
                 SubjectContents subjectContents =
                     getSubjectContents(identifier.getPath(), startDateString, endDateString, resolver);
                 if (subjectContents != null) {
-                    String filename = String.format(
-                        "%s_formData_%s.json",
-                        cleanString(identifier.getParticipantId()),
-                        fileDateString);
+                    String filename =
+                        getTargetFileName(cleanString(identifier.getSubjectId()), startDate, endDate);
                     this.output(subjectContents, filename);
                 }
             }
@@ -187,6 +178,11 @@ public class ExportTask implements Runnable
         }
     }
 
+    private ZonedDateTime getPastDayStartString(int numberOfDaysAgo)
+    {
+        return LocalDate.now().atStartOfDay(ZoneId.systemDefault()).minusDays(numberOfDaysAgo);
+    }
+
     private String cleanString(String input)
     {
         return input.replaceAll("[^A-Za-z0-9]", "");
@@ -197,16 +193,39 @@ public class ExportTask implements Runnable
         return input.replaceAll(DOT, Matcher.quoteReplacement(DOT));
     }
 
+    private String getTargetFileName(final String identifier, final ZonedDateTime startDate,
+        final ZonedDateTime endDate)
+    {
+        String result = this.config.fileNameFormat()
+            .replace("{subject}", cleanString(identifier))
+            .replace("{questionnaire}", identifier.replace('/', '_'))
+            .replace("{today}", DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.now()))
+            .replace("{yesterday}", DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.now().minusDays(1)))
+            .replace("{now}", DateTimeFormatter.ofPattern("HH-mm-ss").format(LocalDateTime.now()))
+            .replace("{period}", DateTimeFormatter.ISO_LOCAL_DATE.format(startDate)
+                + (endDate == null ? "+" : ("_" + DateTimeFormatter.ISO_LOCAL_DATE.format(endDate))));
+        Matcher m = FORMATTED_NOW.matcher(result);
+        result = m.replaceAll(match -> DateTimeFormatter.ofPattern(match.group(1)).format(ZonedDateTime.now()));
+        m = FORMATTED_YESTERDAY.matcher(result);
+        result = m
+            .replaceAll(match -> DateTimeFormatter.ofPattern(match.group(1)).format(ZonedDateTime.now().minusDays(1)));
+        m = FORMATTED_START.matcher(result);
+        result = m.replaceAll(match -> DateTimeFormatter.ofPattern(match.group(1)).format(startDate));
+        m = FORMATTED_END.matcher(result);
+        result = m.replaceAll(match -> DateTimeFormatter.ofPattern(match.group(1)).format(endDate));
+        return result + "." + this.config.exportFormat();
+    }
+
     private static final class SubjectIdentifier
     {
         private String path;
 
-        private String participantId;
+        private String id;
 
-        SubjectIdentifier(String path, String participantId)
+        SubjectIdentifier(String path, String subjectId)
         {
             this.path = path;
-            this.participantId = participantId;
+            this.id = subjectId;
         }
 
         public String getPath()
@@ -214,15 +233,15 @@ public class ExportTask implements Runnable
             return this.path;
         }
 
-        public String getParticipantId()
+        public String getSubjectId()
         {
-            return this.participantId;
+            return this.id;
         }
 
         @Override
         public int hashCode()
         {
-            return Objects.hashCode(this.path.hashCode()) + Objects.hashCode(this.participantId.hashCode());
+            return Objects.hashCode(this.path.hashCode()) + Objects.hashCode(this.id.hashCode());
         }
 
         @Override
@@ -236,13 +255,13 @@ public class ExportTask implements Runnable
             }
             SubjectIdentifier other = (SubjectIdentifier) obj;
             return Objects.equals(this.path, other.getPath())
-                && Objects.equals(this.participantId, other.getParticipantId());
+                && Objects.equals(this.id, other.getSubjectId());
         }
 
         @Override
         public String toString()
         {
-            return String.format("{path:\"%s\",participantId:\"%s\"}", this.path, this.participantId);
+            return String.format("{path:\"%s\",subjectId:\"%s\"}", this.path, this.id);
         }
     }
 
@@ -289,11 +308,13 @@ public class ExportTask implements Runnable
         String requestDateStringUpper, final ResourceResolver resolver) throws LoginException
     {
         Set<SubjectIdentifier> subjects = new HashSet<>();
+        // FIXME This doesn't take into account the questionnairesToBeExported setting
         String query = String.format(
             "SELECT subject.* FROM [cards:Form] AS form INNER JOIN [cards:Subject] AS subject"
                 + " ON form.'subject'=subject.[jcr:uuid]"
                 + " WHERE form.[jcr:lastModified] >= '%s'"
                 + (requestDateStringUpper != null ? " AND form.[jcr:lastModified] < '%s'" : "")
+                // FIXME This is hardcoded for now, revisit once CARDS-2430 is done
                 + " AND NOT form.[statusFlags] = 'INCOMPLETE'",
             requestDateStringLower, requestDateStringUpper);
 
@@ -310,30 +331,34 @@ public class ExportTask implements Runnable
     private SubjectContents getSubjectContents(String path, String requestDateStringLower,
         String requestDateStringUpper, final ResourceResolver resolver) throws LoginException
     {
-        String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates.nolinks"
+        // FIXME This doesn't take into account the questionnairesToBeExported setting
+        final String subjectDataUrl = String.format("%s%s.data.deep"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
+            // FIXME This is hardcoded for now, revisit once CARDS-2430 is done
             + ".dataFilter:statusNot=INCOMPLETE",
-            path, escapeForDataUrl(requestDateStringLower),
+            path, StringUtils.defaultString(this.config.selectors()), escapeForDataUrl(requestDateStringLower),
             requestDateStringUpper != null ? escapeForDataUrl(requestDateStringUpper) : "");
 
-        String identifiedSubjectDataUrl = String.format("%s.data.identify.-properties.-dereference"
+        final String identifiedSubjectDataUrl = String.format("%s%s.data.identify.-properties.-dereference"
             + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
+            // FIXME This is hardcoded for now, revisit once CARDS-2430 is done
             + ".dataFilter:statusNot=INCOMPLETE",
-            path, escapeForDataUrl(requestDateStringLower),
+            path, StringUtils.defaultString(this.config.selectors()), escapeForDataUrl(requestDateStringLower),
             requestDateStringUpper != null ? escapeForDataUrl(requestDateStringUpper) : "");
-        Resource subjectData = resolver.resolve(subjectDataUrl);
-        Resource identifiedSubjectData = resolver.resolve(identifiedSubjectDataUrl);
-        return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(),
+        final Resource subjectData = resolver.resolve(subjectDataUrl);
+        final Resource identifiedSubjectData = resolver.resolve(identifiedSubjectDataUrl);
+        final Class<?> c = "json".equals(this.config.exportFormat()) ? JsonObject.class : CSVString.class;
+        return new SubjectContents(subjectData.adaptTo(c).toString(),
             identifiedSubjectData.adaptTo(JsonObject.class), subjectDataUrl);
     }
 
     private void output(SubjectContents input, String filename)
     {
-        final String s3EndpointUrl = System.getenv("S3_ENDPOINT_URL");
-        final String s3EndpointRegion = System.getenv("S3_ENDPOINT_REGION");
-        final String s3BucketName = System.getenv("S3_BUCKET_NAME");
-        final String awsKey = System.getenv("AWS_KEY");
-        final String awsSecret = System.getenv("AWS_SECRET");
+        final String s3EndpointUrl = env(this.config.endpoint());
+        final String s3EndpointRegion = env(this.config.region());
+        final String s3BucketName = env(this.config.bucket());
+        final String awsKey = env(this.config.accessKey());
+        final String awsSecret = env(this.config.secretKey());
         final EndpointConfiguration endpointConfig =
             new EndpointConfiguration(s3EndpointUrl, s3EndpointRegion);
         final AWSCredentials credentials = new BasicAWSCredentials(awsKey, awsSecret);
@@ -353,5 +378,13 @@ public class ExportTask implements Runnable
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    private String env(final String value)
+    {
+        if (value != null && value.startsWith("%ENV%")) {
+            return System.getenv(value.substring("%ENV%".length()));
+        }
+        return value;
     }
 }

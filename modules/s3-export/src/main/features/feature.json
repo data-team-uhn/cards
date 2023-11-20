@@ -1,0 +1,89 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+{
+  "bundles":[
+    {
+      "id":"${project.groupId}:${project.artifactId}:${project.version}",
+      "start-order":"26"
+    },
+    {
+      "id":"com.amazonaws:aws-java-sdk-osgi:1.12.158",
+      "start-order":"26"
+    },
+    {
+      "id":"com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.13.1",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-tcnative-classes:2.0.61.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-codec-http:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-codec:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-handler:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-buffer:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-common:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-transport:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-transport-native-unix-common:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-resolver:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"software.amazon.ion:ion-java:1.5.1",
+      "start-order":"26"
+    }
+  ],
+  "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~scheduledS3export":{
+      "service.ranking:Integer":300,
+      "scripts": [
+        // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
+        "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes",
+        // Exporting data requires being able to read it
+        "create service user s3-export \n set ACL on /Questionnaires,/Forms,/Subjects,/SubjectTypes \n   allow jcr:read for s3-export \n end"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~scheduledS3export":{
+      "user.mapping":[
+        "io.uhndata.cards.s3-export=[s3-export]"
+      ]
+    }
+  }
+}
