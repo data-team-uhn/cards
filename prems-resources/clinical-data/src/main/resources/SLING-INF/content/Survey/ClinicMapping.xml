@@ -261,4 +261,33 @@
             <type>Double</type>
         </property>
     </node>
+    <node>
+        <name>258217454</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>PMH-YVM</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>YVM</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>Your Voice Matters (PMH)</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>PMH YVM</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>daysRelativeToEventWhileSurveyIsValid</name>
+            <value>30</value>
+            <type>Double</type>
+        </property>
+    </node>
 </node>
