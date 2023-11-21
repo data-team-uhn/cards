@@ -753,6 +753,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
 					<type>Long</type>
@@ -770,6 +775,11 @@
 					<name>value</name>
 					<value>-1</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>defaultOrder</name>
@@ -1339,6 +1349,11 @@ Note: If you had a telephone appointment, some of these options may not apply to
 						<name>value</name>
 						<value>-1</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>noneOfTheAbove</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<property>
 						<name>defaultOrder</name>
