@@ -1,0 +1,106 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+    <name>YVM</name>
+    <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
+    <property>
+        <name>name</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>intro</name>
+        <value>
+**Your Voice Matters** is a set of questions that gives you the chance to share your cancer care
+experience. Your answers will help us know how to improve the experience for patients and care
+partners at your hospital and across Ontario.
+
+Tell us about your most recent in-person (at the cancer clinic) or virtual (by telephone or video)
+cancer care appointment. It will take **about 5 minutes** to complete this survey. This survey is
+**confidential** (private). Your cancer care team will not see your responses to the questions. Your
+answers are combined with other people’s responses to help Ontario Health (Cancer Care Ontario)
+understand how to best support patients.
+        </value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>ending</name>
+        <value>
+Thank you for completing the Your Voice Matters survey.
+
+Your answers will be used by @{visit.location} and Ontario Health (Cancer Care Ontario) to help improve
+the cancer care experience.
+        </value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>frequencyIgnoreClinic</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <node>
+        <name>Your Voice Matters</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/YVM</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>4</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "mrn",
+      "label": "MRN",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Visit date",
+      "format": "date:yyyy-MM-dd",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "yvm_14",
+      "label": "Overall experience",
+      "link" : "string"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
+    </node>
+</node>
