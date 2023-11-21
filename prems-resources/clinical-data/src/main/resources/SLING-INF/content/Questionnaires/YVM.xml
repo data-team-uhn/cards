@@ -6,7 +6,9 @@
   to you under the Apache License, Version 2.0 (the
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
+
   http://www.apache.org/licenses/LICENSE-2.0
+
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -57,6 +59,74 @@
 			<value>Your most recent appointment</value>
 			<type>String</type>
 		</property>
+		<node>
+			<name>ywm_hospital</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Hospital</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>reference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>question</name>
+				<value>/Questionnaires/Visit information/location</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>ywm_department</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Department</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>reference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>question</name>
+				<value>/Questionnaires/Visit information/provider</value>
+				<type>String</type>
+			</property>
+		</node>
 		<node>
 			<name>yvm_1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -248,7 +318,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -267,7 +337,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>yes</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -276,7 +346,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -286,7 +356,7 @@
 				</property>
 			</node>
 			<node>
-				<name>no</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -295,7 +365,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>no</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -305,7 +375,7 @@
 				</property>
 			</node>
 			<node>
-				<name>nobutiwasgivenareasonwhy</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -314,7 +384,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>no, but i was given a reason why</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -324,7 +394,7 @@
 				</property>
 			</node>
 			<node>
-				<name>idonotremember</name>
+				<name>-1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -333,7 +403,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>i do not remember</value>
+					<value>-1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -353,13 +423,12 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value>Were you given the option to have a family member, friend or care partner join your most
-recent cancer care appointment?</value>
+				<value>Were you given the option to have a family member, friend or care partner join your most recent cancer care appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -373,7 +442,7 @@ recent cancer care appointment?</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>yes</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -382,7 +451,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -392,7 +461,7 @@ recent cancer care appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>no</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -401,7 +470,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>no</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -411,7 +480,7 @@ recent cancer care appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>idonotremember</name>
+				<name>-1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -420,7 +489,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>i do not remember</value>
+					<value>-1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -484,13 +553,12 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>text</value>
+					<value>long</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>text</name>
-					<value>Were the instructions for how to join your virtual
-(telephone or video) appointment clear?</value>
+					<value>Were the instructions for how to join your virtual (telephone or video) appointment clear?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -504,7 +572,7 @@ recent cancer care appointment?</value>
 					<type>Long</type>
 				</property>
 				<node>
-					<name>yes</name>
+					<name>2</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -513,7 +581,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>yes</value>
+						<value>2</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -523,7 +591,7 @@ recent cancer care appointment?</value>
 					</property>
 				</node>
 				<node>
-					<name>somewhat</name>
+					<name>1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -532,7 +600,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>somewhat</value>
+						<value>1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -542,7 +610,7 @@ recent cancer care appointment?</value>
 					</property>
 				</node>
 				<node>
-					<name>no</name>
+					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -551,7 +619,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>no</value>
+						<value>0</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -561,7 +629,7 @@ recent cancer care appointment?</value>
 					</property>
 				</node>
 				<node>
-					<name>iwasnotgiveninstructions</name>
+					<name>-1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -570,7 +638,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i was not given instructions</value>
+						<value>-1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -591,13 +659,12 @@ recent cancer care appointment?</value>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you contact the cancer clinic for any of these reasons before your appointment?
-</value>
+				<value>Did you contact the cancer clinic for any of these reasons before your appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -616,7 +683,7 @@ recent cancer care appointment?</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>yesaboutmyhealthexamplessymptomsmedicati</name>
+				<name>3</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -625,7 +692,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes, about my health (examples: symptoms, medications, treatment)</value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -635,7 +702,7 @@ recent cancer care appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>yesaboutmyappointmentexamplesappointment</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -644,7 +711,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes, about my appointment (examples: appointment time, instructions)</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -654,7 +721,7 @@ recent cancer care appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>yesforanotherreason</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -663,7 +730,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes, for another reason</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -673,7 +740,7 @@ recent cancer care appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>noididnotknowhowtocontacttheclinic</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -682,7 +749,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>no, i did not know how to contact the clinic</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -692,7 +759,7 @@ recent cancer care appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>noididnotcontacttheclinic</name>
+				<name>-1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -701,7 +768,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>no, i did not contact the clinic</value>
+					<value>-1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -715,6 +782,47 @@ recent cancer care appointment?</value>
 			<name>yvm_6bsection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value><![CDATA[>]]></value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>yvm_6a</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>0</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
 				<name>yvm_6b</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
@@ -724,7 +832,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>text</value>
+					<value>long</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -743,7 +851,7 @@ recent cancer care appointment?</value>
 					<type>Long</type>
 				</property>
 				<node>
-					<name>yes</name>
+					<name>2</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -752,7 +860,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>yes</value>
+						<value>2</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -762,7 +870,7 @@ recent cancer care appointment?</value>
 					</property>
 				</node>
 				<node>
-					<name>somewhat</name>
+					<name>1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -771,7 +879,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>somewhat</value>
+						<value>1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -781,7 +889,7 @@ recent cancer care appointment?</value>
 					</property>
 				</node>
 				<node>
-					<name>no</name>
+					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -790,7 +898,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>no</value>
+						<value>0</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -800,7 +908,7 @@ recent cancer care appointment?</value>
 					</property>
 				</node>
 				<node>
-					<name>idonotremember</name>
+					<name>-1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -809,7 +917,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not remember</value>
+						<value>-1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -839,13 +947,12 @@ recent cancer care appointment?</value>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did your most recent cancer care appointment start on time?
-</value>
+				<value>Did your most recent cancer care appointment start on time?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -859,7 +966,7 @@ recent cancer care appointment?</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>yes</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -868,7 +975,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -878,7 +985,7 @@ recent cancer care appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>no</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -887,7 +994,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>no</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -897,7 +1004,7 @@ recent cancer care appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>idonotremember</name>
+				<name>-1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -906,7 +1013,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>i do not remember</value>
+					<value>-1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -949,7 +1056,7 @@ recent cancer care appointment?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>no</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -970,7 +1077,7 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>text</value>
+					<value>long</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -989,7 +1096,7 @@ recent cancer care appointment?</value>
 					<type>Long</type>
 				</property>
 				<node>
-					<name>lessthan30minutes</name>
+					<name>1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -998,7 +1105,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>less than 30 minutes</value>
+						<value>1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1008,7 +1115,7 @@ recent cancer care appointment?</value>
 					</property>
 				</node>
 				<node>
-					<name>30minutesormore</name>
+					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1017,7 +1124,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>30 minutes or more</value>
+						<value>0</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1027,7 +1134,7 @@ recent cancer care appointment?</value>
 					</property>
 				</node>
 				<node>
-					<name>idonotremember</name>
+					<name>-1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1036,7 +1143,7 @@ recent cancer care appointment?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not remember</value>
+						<value>-1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1101,20 +1208,18 @@ recent cancer care appointment?</value>
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>text</value>
+					<value>long</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>text</name>
-					<value>Did you have any of these problems during your 
-virtual (telephone or video) appointment?</value>
+					<value>Did you have any of these problems during your virtual (telephone or video) appointment?</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>description</name>
 					<value>Choose all that apply.
-Note: If you had a telephone appointment, some of these options may not apply to you.
-</value>
+Note: If you had a telephone appointment, some of these options may not apply to you.</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1128,7 +1233,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					<type>Long</type>
 				</property>
 				<node>
-					<name>hearingmycancercareteam</name>
+					<name>4</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1137,7 +1242,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 					<property>
 						<name>value</name>
-						<value>hearing my cancer care team</value>
+						<value>4</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1147,7 +1252,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 				</node>
 				<node>
-					<name>seeingmycancercareteamonthescreen</name>
+					<name>3</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1156,7 +1261,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 					<property>
 						<name>value</name>
-						<value>seeing my cancer care team on the screen</value>
+						<value>3</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1166,7 +1271,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 				</node>
 				<node>
-					<name>settingupthecomputerprogram</name>
+					<name>2</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1175,7 +1280,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 					<property>
 						<name>value</name>
-						<value>setting up the computer program</value>
+						<value>2</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1185,7 +1290,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 				</node>
 				<node>
-					<name>connectingtotheinternet</name>
+					<name>1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1194,7 +1299,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 					<property>
 						<name>value</name>
-						<value>connecting to the internet</value>
+						<value>1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1204,7 +1309,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 				</node>
 				<node>
-					<name>joiningmyappointment</name>
+					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1213,7 +1318,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 					<property>
 						<name>value</name>
-						<value>joining my appointment</value>
+						<value>0</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1223,7 +1328,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 				</node>
 				<node>
-					<name>ididnothaveanyoftheseproblems</name>
+					<name>-1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1232,7 +1337,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					</property>
 					<property>
 						<name>value</name>
-						<value>i did not have any of these problems</value>
+						<value>-1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1253,12 +1358,12 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value> Did the cancer clinic provide care in your language of choice?</value>
+				<value>Did the cancer clinic provide care in your language of choice?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1272,7 +1377,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 				<type>Long</type>
 			</property>
 			<node>
-				<name>yes</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1281,7 +1386,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1291,7 +1396,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 				</property>
 			</node>
 			<node>
-				<name>no</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1300,7 +1405,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 				</property>
 				<property>
 					<name>value</name>
-					<value>no</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1310,7 +1415,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 				</property>
 			</node>
 			<node>
-				<name>idonotremember</name>
+				<name>-1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1319,7 +1424,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 				</property>
 				<property>
 					<name>value</name>
-					<value>i do not remember</value>
+					<value>-1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1329,532 +1434,539 @@ Note: If you had a telephone appointment, some of these options may not apply to
 				</property>
 			</node>
 		</node>
+	</node>
+	<node>
+		<name>s_4</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>How much do you agree with this statement about your most recent cancer care appointment?</value>
+			<type>String</type>
+		</property>
 		<node>
-			<name>s_4</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
+			<name>yvm_10a</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
-				<name>label</name>
-				<value>How much do you agree with this statement about your most recent cancer care 
-appointment?</value>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>text</name>
+				<value>My cancer care team spent enough time with me.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 			<node>
-				<name>yvm_10a</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>4</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>maxAnswers</name>
+					<name>label</name>
+					<value>Agree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
 					<value>1</value>
 					<type>Long</type>
 				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>My cancer care team spent enough time with me.</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>agree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>somewhatagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Somewhat agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>somewhat agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>neutral</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Neutral</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>neutral</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>somewhatdisagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Somewhat disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>somewhat disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>disagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
 			</node>
 			<node>
-				<name>yvm_10b</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
+					<name>label</name>
+					<value>Somewhat agree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
 					<type>Long</type>
 				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>My cancer care team explained things in a way I could understand.</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>agree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>somewhatagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Somewhat agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>somewhat agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>neutral</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Neutral</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>neutral</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>somewhatdisagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Somewhat disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>somewhat disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>disagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
 			</node>
 			<node>
-				<name>yvm_10c</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
+					<name>label</name>
+					<value>Neutral</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
 					<type>Long</type>
 				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>My cancer care team treated me with respect.</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>agree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>somewhatagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Somewhat agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>somewhat agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>neutral</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Neutral</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>neutral</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>somewhatdisagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Somewhat disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>somewhat disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>disagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
 			</node>
 			<node>
-				<name>yvm_10d</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>maxAnswers</name>
+					<name>label</name>
+					<value>Somewhat disagree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
 					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
 					<type>Long</type>
 				</property>
+			</node>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>label</name>
+					<value>Disagree</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>text</name>
-					<value> My cancer care team involved me in making decisions about my care in the way I 
-wanted.</value>
+					<name>value</name>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
+					<name>defaultOrder</name>
+					<value>5</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>agree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>somewhatagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Somewhat agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>somewhat agree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>neutral</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Neutral</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>neutral</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>somewhatdisagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Somewhat disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>somewhat disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>disagree</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>disagree</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>thisdoesnotapply</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>This does not apply</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>this does not apply</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>6</value>
-						<type>Long</type>
-					</property>
-				</node>
 			</node>
 		</node>
+		<node>
+			<name>yvm_10b</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>My cancer care team explained things in a way I could understand.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>4</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Agree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Somewhat agree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Neutral</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Somewhat disagree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Disagree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>yvm_10c</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>My cancer care team treated me with respect.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>4</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Agree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Somewhat agree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Neutral</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Somewhat disagree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Disagree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>yvm_10d</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>My cancer care team involved me in making decisions about my care in the way I wanted.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>4</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Agree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Somewhat agree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Neutral</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Somewhat disagree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Disagree</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>-1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>This does not apply</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>-1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>6</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>s_5</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>During your appointment</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>yvm_11a</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -1865,13 +1977,12 @@ wanted.</value>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did your cancer care team talk with you about your physical symptoms (examples: pain, 
-nausea) as much as you wanted?</value>
+				<value>Did your cancer care team talk with you about your physical symptoms (examples: pain, nausea) as much as you wanted?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1885,7 +1996,7 @@ nausea) as much as you wanted?</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>yes</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1894,7 +2005,7 @@ nausea) as much as you wanted?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1904,7 +2015,7 @@ nausea) as much as you wanted?</value>
 				</property>
 			</node>
 			<node>
-				<name>somewhat</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1913,7 +2024,7 @@ nausea) as much as you wanted?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>somewhat</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1923,7 +2034,7 @@ nausea) as much as you wanted?</value>
 				</property>
 			</node>
 			<node>
-				<name>no</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1932,7 +2043,7 @@ nausea) as much as you wanted?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>no</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1942,7 +2053,7 @@ nausea) as much as you wanted?</value>
 				</property>
 			</node>
 			<node>
-				<name>thisdoesnotapply</name>
+				<name>-1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1951,7 +2062,7 @@ nausea) as much as you wanted?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>this does not apply</value>
+					<value>-1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1969,7 +2080,7 @@ nausea) as much as you wanted?</value>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value><![CDATA[>=]]></value>
 					<type>String</type>
 				</property>
 				<node>
@@ -1994,7 +2105,7 @@ nausea) as much as you wanted?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>this does not apply</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -2015,13 +2126,12 @@ nausea) as much as you wanted?</value>
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>text</value>
+					<value>long</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>text</name>
-					<value>Did your cancer care team help you manage your physical symptoms (examples: 
-gave you advice, information, referral, medication)?</value>
+					<value>Did your cancer care team help you manage your physical symptoms (examples: gave you advice, information, referral, medication)?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2035,7 +2145,7 @@ gave you advice, information, referral, medication)?</value>
 					<type>Long</type>
 				</property>
 				<node>
-					<name>yes</name>
+					<name>1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2044,7 +2154,7 @@ gave you advice, information, referral, medication)?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>yes</value>
+						<value>1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2054,7 +2164,7 @@ gave you advice, information, referral, medication)?</value>
 					</property>
 				</node>
 				<node>
-					<name>no</name>
+					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2063,7 +2173,7 @@ gave you advice, information, referral, medication)?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>no</value>
+						<value>0</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2073,7 +2183,7 @@ gave you advice, information, referral, medication)?</value>
 					</property>
 				</node>
 				<node>
-					<name>thisdoesnotapply</name>
+					<name>-1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2082,7 +2192,7 @@ gave you advice, information, referral, medication)?</value>
 					</property>
 					<property>
 						<name>value</name>
-						<value>this does not apply</value>
+						<value>-1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2103,14 +2213,12 @@ gave you advice, information, referral, medication)?</value>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value> Did your cancer care team talk with you about your emotional worries and 
-concerns (examples: fear, sadness) as much as you wanted?
-</value>
+				<value>Did your cancer care team talk with you about your emotional worries and concerns (examples: fear, sadness) as much as you wanted?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2124,7 +2232,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 				<type>Long</type>
 			</property>
 			<node>
-				<name>yes</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2133,7 +2241,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2143,7 +2251,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 				</property>
 			</node>
 			<node>
-				<name>somewhat</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2152,7 +2260,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 				</property>
 				<property>
 					<name>value</name>
-					<value>somewhat</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2162,7 +2270,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 				</property>
 			</node>
 			<node>
-				<name>no</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2171,7 +2279,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 				</property>
 				<property>
 					<name>value</name>
-					<value>no</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2181,7 +2289,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 				</property>
 			</node>
 			<node>
-				<name>thisdoesnotapply</name>
+				<name>-1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2190,7 +2298,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 				</property>
 				<property>
 					<name>value</name>
-					<value>this does not apply</value>
+					<value>-1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2208,7 +2316,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value><![CDATA[>=]]></value>
 					<type>String</type>
 				</property>
 				<node>
@@ -2233,7 +2341,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 					<property>
 						<name>value</name>
 						<values>
-							<value>this does not apply</value>
+							<value>0</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -2254,13 +2362,12 @@ concerns (examples: fear, sadness) as much as you wanted?
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>text</value>
+					<value>long</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>text</name>
-					<value> Did your cancer care team help you manage your emotional worries and concerns
-(examples: gave you advice, information, referral, medication)?</value>
+					<value>Did your cancer care team help you manage your emotional worries and concerns (examples: gave you advice, information, referral, medication)?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2274,7 +2381,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 					<type>Long</type>
 				</property>
 				<node>
-					<name>yes</name>
+					<name>1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2283,7 +2390,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 					</property>
 					<property>
 						<name>value</name>
-						<value>yes</value>
+						<value>1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2293,7 +2400,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 					</property>
 				</node>
 				<node>
-					<name>no</name>
+					<name>0</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2302,7 +2409,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 					</property>
 					<property>
 						<name>value</name>
-						<value>no</value>
+						<value>0</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2312,7 +2419,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 					</property>
 				</node>
 				<node>
-					<name>thisdoesnotapply</name>
+					<name>-1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2321,7 +2428,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 					</property>
 					<property>
 						<name>value</name>
-						<value>this does not apply</value>
+						<value>-1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2334,7 +2441,7 @@ concerns (examples: fear, sadness) as much as you wanted?
 		</node>
 	</node>
 	<node>
-		<name>s_5</name>
+		<name>s_6</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
@@ -2351,13 +2458,12 @@ concerns (examples: fear, sadness) as much as you wanted?
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you have all the information you needed about the next steps in your care after your
-appointment?</value>
+				<value>Did you have all the information you needed about the next steps in your care after your appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2371,7 +2477,7 @@ appointment?</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>yes</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2380,7 +2486,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2390,7 +2496,7 @@ appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>somewhat</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2399,7 +2505,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>somewhat</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2409,7 +2515,7 @@ appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>no</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2418,7 +2524,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>no</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2428,7 +2534,7 @@ appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>idonotremember</name>
+				<name>-1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2437,7 +2543,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>i do not remember</value>
+					<value>-1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2457,7 +2563,7 @@ appointment?</value>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2476,7 +2582,7 @@ appointment?</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>yes</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2485,7 +2591,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>yes</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2495,7 +2601,7 @@ appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>no</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2504,7 +2610,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>no</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2514,7 +2620,7 @@ appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>idonotremember</name>
+				<name>-1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2523,7 +2629,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>i do not remember</value>
+					<value>-1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2535,7 +2641,7 @@ appointment?</value>
 		</node>
 	</node>
 	<node>
-		<name>s_6</name>
+		<name>s_7</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
@@ -2552,13 +2658,12 @@ appointment?</value>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value>Overall, how would you rate the care you received at your most recent cancer care 
-appointment?</value>
+				<value>Overall, how would you rate the care you received at your most recent cancer care appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2572,7 +2677,7 @@ appointment?</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>verygood</name>
+				<name>4</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2581,7 +2686,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>very good</value>
+					<value>4</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2591,7 +2696,7 @@ appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>good</name>
+				<name>3</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2600,7 +2705,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>good</value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2610,7 +2715,7 @@ appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>neutral</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2619,7 +2724,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>neutral</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2629,7 +2734,7 @@ appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>poor</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2638,7 +2743,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>poor</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2648,7 +2753,7 @@ appointment?</value>
 				</property>
 			</node>
 			<node>
-				<name>verypoor</name>
+				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -2657,7 +2762,7 @@ appointment?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>very poor</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 				<property>
