@@ -110,6 +110,9 @@
   // An optional intro text about the survey to guide the patient
   - intro (string)
 
+  // An optional ending text display to the patient after they submit the survey
+  - ending (string)
+
   // An optional setting whether to show a review screen after survey completion
   // Optional, defaults to the global setting for the patient portal
   - enableReviewScreen (boolean)

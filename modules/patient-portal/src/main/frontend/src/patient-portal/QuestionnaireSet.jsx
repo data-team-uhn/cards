@@ -111,9 +111,10 @@ function QuestionnaireSet(props) {
 
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
-  // Questionnaire set title and intro text, to display to the patient user
+  // Questionnaire set title, intro text, and ending text, to display to the patient user
   const [ title, setTitle ] = useState();
   const [ intro, setIntro ] = useState();
+  const [ ending, setEnding ] = useState();
   const [ tokenLifetime, setTokenLifetime ] = useState();
   // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
   const [ questionnaires, setQuestionnaires ] = useState();
@@ -321,9 +322,10 @@ function QuestionnaireSet(props) {
   }
 
   let parseQuestionnaireSet = (json) => {
-    // Extract the title and intro
+    // Extract the title, intro, and ending
     setTitle(json.name);
     setIntro(json.intro || "");
+    setEnding(json.ending || "");
     // If the questionnaire set specifies a value for `enableReviewScreen`, overwrite the curently stored value
     typeof(json.enableReviewScreen) != "undefined" && setEnableReviewScreen(json.enableReviewScreen);
 
@@ -702,7 +704,13 @@ function QuestionnaireSet(props) {
   // Are there any response interpretations to display to the patient?
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
+  // Replace any occurence of a visit information field with its value per current visit
+  pieces = pattern.exec(ending);
+  // Replace the occurrence of the pattern with the value
+  let endingMessage = ending.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
+
   let finalInstructions = (
+      endingMessage ? <FormattedText paragraph key="summary-instructions">{endingMessage}</FormattedText> :
       displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions", paragraph: true})
   );
 
