@@ -22,7 +22,7 @@ The survey will not load if you are using Internet Explorer. Please use another 
 such as Edge, Chrome, or Firefox.
 
 If you want to provide detailed feedback about your experience directly to the hospital,
-please contact patientexperience@uhn.ca.
+please contact your.voice.matters@uhn.ca.
 
 If you have any questions or concerns or wish to be removed from the survey,
 please contact us at yourexperience@uhn.ca. You can also unsubscribe from all

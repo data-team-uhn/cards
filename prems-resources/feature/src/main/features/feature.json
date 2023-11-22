@@ -327,6 +327,7 @@
       "frequency.in.days": 7,
       "export.schedule": "0 0 2 ? * SAT *",
       "questionnaires.to.be.exported": [
+        "/Questionnaires/YVM",
         "/Questionnaires/CPESIC",
         "/Questionnaires/IC",
         "/Questionnaires/OAIP",
@@ -343,6 +344,7 @@
       "frequency.in.days": 7,
       "export.schedule": "0 0 2 ? * SAT *",
       "questionnaires.to.be.exported": [
+        "/Questionnaires/YVM",
         "/Questionnaires/CPESIC",
         "/Questionnaires/IC",
         "/Questionnaires/OAIP",
