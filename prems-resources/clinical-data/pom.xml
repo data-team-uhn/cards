@@ -73,6 +73,7 @@
               SLING-INF/content/apps/cards/clinics/UHN-IC-IP/mailTemplates;path:=/apps/cards/clinics/UHN-IC-IP/mailTemplates;overwrite:=true,
               SLING-INF/content/apps/cards/clinics/UHN-IC-EDIP/mailTemplates;path:=/apps/cards/clinics/UHN-IC-EDIP/mailTemplates;overwrite:=true,
               SLING-INF/content/apps/cards/clinics/UHN-Rehab/mailTemplates;path:=/apps/cards/clinics/UHN-Rehab/mailTemplates;overwrite:=true,
+              SLING-INF/content/apps/cards/clinics/PMH-YVM/mailTemplates;path:=/apps/cards/clinics/PMH-YVM/mailTemplates;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/YourExperience.xml;path:=/apps/cards/clarityImport/YourExperience;overwrite:=true,
               SLING-INF/content/Statistics/;path:=/Statistics/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>

@@ -1,0 +1,38 @@
+Dear ${first_name} ${last_name},
+
+Your Voice Matters is a set of questions that gives you the chance to share your cancer care
+experience. Your answers will help us know how to improve the experience for patients and care
+partners at your hospital and across Ontario.
+
+Tell us about your most recent in-person (at the cancer clinic) or virtual (by telephone or video)
+cancer care appointment. It will take about 5 minutes to complete this survey. This survey is
+confidential (private). Your cancer care team will not see your responses to the questions.
+Your answers are combined with other people’s responses to help Ontario Health (Cancer Care Ontario)
+understand how to best support patients.
+
+You are receiving this email because you have recently been discharged from a
+University Health Network (UHN) hospital.
+
+To begin the survey, click the following link:
+${surveysLink}
+
+The survey will be available until ${expirationDate}.
+
+The survey will not load if you are using Internet Explorer. Please use another web browser,
+such as Edge, Chrome, or Firefox.
+
+If you want to provide detailed feedback about your experience directly to the hospital,
+please contact patientexperience@uhn.ca.
+
+If you have any questions or concerns or wish to be removed from the survey,
+please contact us at yourexperience@uhn.ca. You can also unsubscribe from all
+further emails from Your Experience by following this link:
+${unsubscribeLink}
+
+Best regards,
+The Patient Experience Team
+University Health Network
+
+------------------------------------------------------------------------
+
+Unsubscribe from further emails from Your Experience: ${unsubscribeLink}
