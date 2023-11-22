@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "cards:EmailTemplate",
-  "senderAddress": "yourexperience@uhn.ca",
-  "senderName": "Your Experience",
+  "senderAddress": "your.voice.matters@uhn.ca",
+  "senderName": "Your Voice Matters",
   "subject": "Your Voice Matters: We are listening",
   "first_name": "/Questionnaires/Patient information/first_name",
   "last_name": "/Questionnaires/Patient information/last_name"
