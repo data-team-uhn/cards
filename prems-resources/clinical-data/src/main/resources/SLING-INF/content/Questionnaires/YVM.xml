@@ -60,7 +60,7 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>ywm_hospital</name>
+			<name>yvm_hospital</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -94,7 +94,7 @@
 			</property>
 		</node>
 		<node>
-			<name>ywm_department</name>
+			<name>yvm_department</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
