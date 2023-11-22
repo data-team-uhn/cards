@@ -90,6 +90,9 @@ COPY --from=0 /metadata /metadata
 # Copy in the generic CARDS logo
 COPY --from=0 /cards/modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/media/default/logo_light_bg.png /metadata/logo.png
 
+# Create the ~/.cards-generic-m2/repository empty directory
+RUN mkdir -p /root/.cards-generic-m2/repository
+
 # This is the default command executed when starting the container
 COPY docker_entry.sh /docker_entry.sh
 RUN chmod +x /docker_entry.sh
