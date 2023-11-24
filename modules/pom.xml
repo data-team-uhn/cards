@@ -68,6 +68,7 @@
     <module>webhook-backup</module>
     <module>saml</module>
     <module>scheduled-csv-export</module>
+    <module>s3-export</module>
     <module>clarity-integration</module>
     <module>torch-import</module>
     <module>slack-notifications</module>

@@ -16,16 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.heracles.internal.export;
+package io.uhndata.cards.s3export;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Locale;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -39,10 +43,13 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
+    methods = { "GET" },
     selectors = { "s3push" })
 public class ExportEndpoint extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -1615592669184694095L;
+
+    private static final String ADMIN = "admin";
 
     @Reference
     private ResourceResolverFactory resolverFactory;
@@ -50,32 +57,48 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
     @Reference
     private ThreadResourceResolverProvider rrp;
 
+    @Reference
+    private volatile List<ExportConfig> configs;
+
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
-        final Writer out = response.getWriter();
-
         // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
-        if (remoteUser == null || !"admin".equals(remoteUser)) {
-            // admin login required
-            response.setStatus(403);
-            out.write("Only admin can perform this operation.");
+        if (remoteUser == null || !ADMIN.equals(remoteUser.toLowerCase(Locale.ROOT))) {
+            writeError(403, "Only admin can perform this operation.", response);
             return;
+        }
+
+        final String configName = request.getParameter("config");
+        ExportConfigDefinition config;
+        if (StringUtils.isBlank(configName)) {
+            if (this.configs.size() != 1) {
+                writeError(400, this.configs.size() > 1 ? "Configuration name must be specified"
+                    : "No S3 export is configured", response);
+                return;
+            }
+            config = this.configs.get(0).getConfig();
+        } else {
+            config = this.configs.stream()
+                .filter(c -> configName.equals(c.getConfig().name()))
+                .map(ExportConfig::getConfig)
+                .findFirst().orElse(null);
+            if (config == null) {
+                writeError(400, "Unknown S3 export configuration", response);
+                return;
+            }
         }
 
         final LocalDate dateLowerBound = this.strToDate(request.getParameter("dateLowerBound"));
         final LocalDate dateUpperBound = this.strToDate(request.getParameter("dateUpperBound"));
-        final String exportRunMode = (dateLowerBound != null && dateUpperBound != null)
-            ? "manualBetween"
-            : (dateLowerBound != null && dateUpperBound == null) ? "manualAfter" : "manualToday";
+        final String exportRunMode = (dateLowerBound != null) ? "manual" : "today";
 
-        final Runnable exportJob = ("manualToday".equals(exportRunMode))
-            ? new ExportTask(this.resolverFactory, this.rrp, exportRunMode)
-            : new ExportTask(this.resolverFactory, this.rrp, exportRunMode, dateLowerBound, dateUpperBound);
+        final Runnable exportJob =
+            new ExportTask(this.resolverFactory, this.rrp, config, exportRunMode, dateLowerBound, dateUpperBound);
         final Thread thread = new Thread(exportJob);
         thread.start();
-        out.write("S3 export started");
+        writeSuccess("S3 export started", response);
     }
 
     private LocalDate strToDate(final String date)
@@ -88,5 +111,31 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
         } catch (DateTimeParseException e) {
             return null;
         }
+    }
+
+    private void writeError(final int status, final String message, final SlingHttpServletResponse response)
+        throws IOException
+    {
+        final JsonObjectBuilder json = Json.createObjectBuilder();
+        json.add("status", "error");
+        json.add("error", message);
+        writeResponse(status, json.build().toString(), response);
+    }
+
+    private void writeSuccess(final String message, final SlingHttpServletResponse response)
+        throws IOException
+    {
+        final JsonObjectBuilder json = Json.createObjectBuilder();
+        json.add("status", "success");
+        json.add("message", message);
+        writeResponse(200, json.build().toString(), response);
+    }
+
+    private void writeResponse(final int status, final String body, final SlingHttpServletResponse response)
+        throws IOException
+    {
+        response.setStatus(status);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(body);
     }
 }
