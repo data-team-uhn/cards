@@ -196,14 +196,15 @@ public class ExportTask implements Runnable
     private String getTargetFileName(final String identifier, final ZonedDateTime startDate,
         final ZonedDateTime endDate)
     {
+
         String result = this.config.fileNameFormat()
             .replace("{subject}", cleanString(identifier))
             .replace("{questionnaire}", identifier.replace('/', '_'))
             .replace("{today}", DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.now()))
             .replace("{yesterday}", DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.now().minusDays(1)))
             .replace("{now}", DateTimeFormatter.ofPattern("HH-mm-ss").format(LocalDateTime.now()))
-            .replace("{period}", DateTimeFormatter.ISO_LOCAL_DATE.format(startDate)
-                + (endDate == null ? "+" : ("_" + DateTimeFormatter.ISO_LOCAL_DATE.format(endDate))));
+            .replace("{period}", DateTimeFormatter.ISO_LOCAL_DATE.format(startDate) + "_"
+                + DateTimeFormatter.ISO_LOCAL_DATE.format(endDate == null ? LocalDateTime.now() : endDate));
         Matcher m = FORMATTED_NOW.matcher(result);
         result = m.replaceAll(match -> DateTimeFormatter.ofPattern(match.group(1)).format(ZonedDateTime.now()));
         m = FORMATTED_YESTERDAY.matcher(result);
