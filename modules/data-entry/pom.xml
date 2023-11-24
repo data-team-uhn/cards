@@ -43,12 +43,14 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Include-Resource>{maven-resources}</Include-Resource>
+            <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
               SLING-INF/content/apps/cards/config/;path:=/apps/cards/config/;overwrite:=false,
               SLING-INF/content/libs/cards/dataQuery/;path:=/libs/cards/dataQuery/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
+              SLING-INF/content/libs/cards/resources/media/dataEntry/;path:=/libs/cards/resources/media/dataEntry/;overwrite:=true;uninstall:=true;ignoreImportProviders:=json,
+              SLING-INF/content/libs/cards/dataEntry/SelectableArea/;path:=/libs/cards/dataEntry/SelectableArea/;overwrite:=false,
               SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true

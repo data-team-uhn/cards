@@ -43,6 +43,7 @@ import ResourceQuestion from "./ResourceQuestion";
 import DicomQuestion from "./DicomQuestion";
 import ReferenceQuestion from "./ReferenceQuestion";
 import PhoneQuestion from "./PhoneQuestion";
+import SelectableArea from "./SelectableAreaQuestion";
 
 import { hasWarningFlags } from "./FormUtilities";
 
