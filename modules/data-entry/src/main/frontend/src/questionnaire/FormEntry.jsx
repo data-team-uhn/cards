@@ -44,6 +44,7 @@ import DicomQuestion from "./DicomQuestion";
 import ReferenceQuestion from "./ReferenceQuestion";
 import PhoneQuestion from "./PhoneQuestion";
 import AddressQuestion from "./AddressQuestion";
+import SelectableArea from "./SelectableAreaQuestion";
 
 import { hasWarningFlags } from "./FormUtilities";
 

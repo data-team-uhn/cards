@@ -154,6 +154,7 @@
   // - pedigree: a pedigree drawing
   // - phone: a phone or fax number
   // - address: a postal address
+  // - selectableArea: a area selected from an image
   // The answer type can be further refined with the following properties
   - dataType (string) = 'text' mandatory autocreated
 
@@ -757,6 +758,17 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/AddressAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// Selectable area answers, stored as strings
+[cards:SelectableAreaAnswer] > cards:Answer
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/SelectableAreaAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected

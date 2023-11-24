@@ -455,6 +455,33 @@
                 }
             }
         },
+        "cards:SelectableAreaAnswer": {
+            "jcr:primaryType": "nt:unstructured",
+            "properties": {
+                "jcr:primaryType": "nt:unstructured",
+                "question": {
+                    "name": "question",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": false,
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "form": {
+                    "propertyIndex": true,
+                    "notNullCheckEnabled": true,
+                    "type": "String"
+                },
+                "value": {
+                    "name": "value",
+                    "propertyIndex": true,
+                    "type": "String",
+                    "analyzed": true,
+                    "notNullCheckEnabled": true,
+                    "nullCheckEnabled": true,
+                    "jcr:primaryType": "nt:unstructured"
+                }
+            }
+        },
         "cards:Form" : {
             "jcr:primaryType": "nt:unstructured",
             "properties": {
