@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useContext, useEffect, useLayoutEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
@@ -29,7 +29,6 @@ import Answer, { LABEL_POS, VALUE_POS } from "./Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerComponentManager from "./AnswerComponentManager";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // Component that renders a multiple choice question, with optional text input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -48,7 +47,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 //    variant="/libs/cards/dataEntry/SelectableArea/FullBody"
 //    />
 function SelectableAreaQuestion(props) {
-  let { errorText, existingAnswer, ...rest } = props;
+  let { errorText, existingAnswer, questionName, ...rest } = props;
   let { variant, maxAnswers } = {...props.questionDefinition, ...props};
   const [ error, setError ] = useState(false);
   const [ map, setMap ] = useState(null);
@@ -58,8 +57,9 @@ function SelectableAreaQuestion(props) {
   const [ initialized, setInitialized ] = useState(false);
   const [ maxWidth, setMaxWidth ] = useState(null);
   const [ currentWidth, setCurrentWidth] = useState(0);
+  const [ strokeColor, setStrokeColor ] = useState(null);
+  const [ highlightColor, setHighlightColor ] = useState(null);
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
   const mapperRef = useRef(null);
   const questionRef = useRef(null);
 
@@ -84,7 +84,7 @@ function SelectableAreaQuestion(props) {
       for (let i = 0; i < selections.length; i++) {
         if (selections[i][VALUE_POS] === mapEntry.value) {
           // Area has been selected, highlight it.
-          mapEntry.preFillColor = mapEntry.fillColor;
+          mapEntry.preFillColor = highlightColor ? highlightColor : mapEntry.fillColor;
           found = true;
           break;
         }
@@ -132,6 +132,8 @@ function SelectableAreaQuestion(props) {
       setMap(unparsedMap ? JSON.parse(unparsedMap) : null);
       setImageUrl(variant.image);
       setMaxWidth(variant.maxWidth);
+      setStrokeColor(variant.strokeColor);
+      setHighlightColor(variant.highlightColor);
     } else {
       resetQuestionData();
     }
@@ -184,6 +186,7 @@ function SelectableAreaQuestion(props) {
           containerRef={mapperRef}
           responsive={true}
           parentWidth={(maxWidth == null || maxWidth > currentWidth) ? currentWidth : maxWidth}
+          strokeColor={strokeColor ? strokeColor : null}
           />
         : <></>
       )
@@ -212,6 +215,7 @@ function SelectableAreaQuestion(props) {
       <Answer
         answers={selections}
         existingAnswer={existingAnswer}
+        questionName={questionName}
         isMultivalued={maxAnswers!==1}
         answerNodeType="cards:SelectableAreaAnswer"
         {...rest}
