@@ -124,3 +124,11 @@
 
   // The maximum width that the question should be displayed with
   - maxWidth (long)
+
+  // The color of the outlines around highlighted areas
+  -strokeColor (STRING)
+
+  // The color that the areas should be highlighted in when selected.
+  // If present, `fillColor` as specified in the image map will be used as a hover color
+  // and this color will be usedfor selected areas.
+  - highlightColor (STRING)

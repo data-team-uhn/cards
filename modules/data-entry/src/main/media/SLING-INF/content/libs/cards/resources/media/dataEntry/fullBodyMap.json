@@ -5,8 +5,7 @@
     "value": "face",
     "shape": "poly",
     "name": "1",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       315, 155,
       297, 150,
@@ -29,8 +28,7 @@
     "value": "leftjaw",
     "shape": "poly",
     "name": "2",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       354, 156,
       395, 156,
@@ -44,8 +42,7 @@
     "value": "rightjaw",
     "shape": "poly",
     "name": "3",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       353, 156,
       315, 156,
@@ -59,8 +56,7 @@
     "value": "rightchest",
     "shape": "rect",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       260, 240,
       353, 370
@@ -72,8 +68,7 @@
     "value": "leftchest",
     "shape": "rect",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       354, 240,
       445, 370
@@ -85,8 +80,7 @@
     "value": "abdomen",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       260, 371,
       445, 371,
@@ -102,8 +96,7 @@
     "value": "pelvis",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       260, 531,
       325, 591,
@@ -123,8 +116,7 @@
     "value": "leftgroin",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       354, 611,
       380, 611,
@@ -138,8 +130,7 @@
     "value": "rightgroin",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       353, 611,
       353, 660,
@@ -153,8 +144,7 @@
     "value": "leftupperarm",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       446, 240,
       490, 270,
@@ -169,8 +159,7 @@
     "value": "rightupperarm",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       259, 240,
       259, 370,
@@ -185,8 +174,7 @@
     "value": "leftelbow",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       500, 406,
       510, 455,
@@ -200,8 +188,7 @@
     "value": "rightelbow",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       255, 416,
       250, 475,
@@ -215,8 +202,7 @@
     "value": "leftlowerarm",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       510, 456,
       530, 550,
@@ -230,8 +216,7 @@
     "value": "rightlowerarm",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       250, 476,
       215, 570,
@@ -245,8 +230,7 @@
     "value": "leftwristhand",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       530, 551,
       585, 615,
@@ -262,8 +246,7 @@
     "value": "rightwristhand",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       215, 571,
       190, 670,
@@ -279,8 +262,7 @@
     "value": "leftupperleg",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       465, 600,
       460, 815,
@@ -294,8 +276,7 @@
     "value": "rightupperleg",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       345, 659,
       325, 815,
@@ -309,8 +290,7 @@
     "value": "leftknee",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       460, 816,
       470, 895,
@@ -324,8 +304,7 @@
     "value": "rightknee",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       325, 816,
       305, 895,
@@ -339,8 +318,7 @@
     "value": "leftlowerleg",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       470, 896,
       475, 965,
@@ -357,8 +335,7 @@
     "value": "rightlowerleg",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       305, 896,
       305, 965,
@@ -375,8 +352,7 @@
     "value": "leftanklefoot",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       450, 1096,
       465, 1220,
@@ -391,8 +367,7 @@
     "value": "rightanklefoot",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       295, 1096,
       305, 1185,
@@ -407,8 +382,7 @@
     "value": "head",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       870, 30,
       910, 45,
@@ -431,8 +405,7 @@
     "value": "neck",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       910, 156,
       905, 195,
@@ -448,8 +421,8 @@
     "value": "rightshoulder",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
+    "strokeColor": "tranparent",
     "coords": [
       936, 220,
       1000, 250,
@@ -464,8 +437,7 @@
     "value": "left shoulder",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       804, 220,
       804, 295,
@@ -480,8 +452,7 @@
     "value": "upperback",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       935, 221,
       935, 296,
@@ -499,8 +470,7 @@
     "value": "lowerback",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       960, 416,
       965, 510,
@@ -514,8 +484,7 @@
     "value": "righthip",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       965, 511,
       975, 560,
@@ -529,8 +498,7 @@
     "value": "",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       870, 511,
       870, 560,
@@ -544,8 +512,7 @@
     "value": "rightbuttock",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       975, 561,
       985, 650,
@@ -559,8 +526,7 @@
     "value": "leftbuttock",
     "shape": "poly",
     "name": "",
-    "fillColor": "#eab54d4d",
-    "strokeColor": "black",
+    "fillColor": "#b5b5b5b5",
     "coords": [
       870, 560,
       870, 650,
