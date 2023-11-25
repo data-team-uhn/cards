@@ -47,7 +47,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    variant="/libs/cards/dataEntry/SelectableArea/FullBody"
 //    />
 function SelectableAreaQuestion(props) {
-  let { errorText, existingAnswer, questionName, ...rest } = props;
+  let { errorText, existingAnswer, questionName, pageActive, ...rest } = props;
   let { variant, maxAnswers } = {...props.questionDefinition, ...props};
   const [ error, setError ] = useState(false);
   const [ map, setMap ] = useState(null);
@@ -170,6 +170,9 @@ function SelectableAreaQuestion(props) {
       }
     }
 
+    let newSelections = selections.concat()
+    setSelections(newSelections)
+
     // Update the displayed highlights and list
     updateMapWithSelections();
     updateSelectionsDisplay();
@@ -178,7 +181,7 @@ function SelectableAreaQuestion(props) {
   // Recreate the image mapper whenever needed.
   useEffect(()=> {
     setImageMapper(
-      initialized && map ? 
+      initialized && map ?
         <ImageMapper
           src={imageUrl}
           map={{"name": props.questionDefinition["@name"], "areas": map}}
@@ -218,6 +221,7 @@ function SelectableAreaQuestion(props) {
         questionName={questionName}
         isMultivalued={maxAnswers!==1}
         answerNodeType="cards:SelectableAreaAnswer"
+        pageActive={pageActive}
         {...rest}
         />
     </Question>);
