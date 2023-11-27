@@ -22,7 +22,7 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-parent</artifactId>
+    <artifactId>cards-platform</artifactId>
     <version>0.9.21-SNAPSHOT</version>
   </parent>
 

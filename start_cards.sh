@@ -204,7 +204,7 @@ function message_connect_jdb() {
 }
 
 function get_cards_version() {
-  CARDS_VERSION=$(cat pom.xml | grep --max-count=1 '<version>' | cut '-d>' -f2 | cut '-d<' -f1)
+  CARDS_VERSION=$(cat pom.xml | grep --max-count=1 '^  <version>' | cut '-d>' -f2 | cut '-d<' -f1)
   echo CARDS_VERSION $CARDS_VERSION
 }
 
