@@ -47,7 +47,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    variant="/libs/cards/dataEntry/SelectableArea/FullBody"
 //    />
 function SelectableAreaQuestion(props) {
-  let { errorText, existingAnswer, questionName, pageActive, ...rest } = props;
+  let { classes, errorText, existingAnswer, questionName, pageActive, ...rest } = props;
   let { variant, maxAnswers } = {...props.questionDefinition, ...props};
   const [ error, setError ] = useState(false);
   const [ map, setMap ] = useState(null);
@@ -59,6 +59,7 @@ function SelectableAreaQuestion(props) {
   const [ currentWidth, setCurrentWidth] = useState(0);
   const [ strokeColor, setStrokeColor ] = useState(null);
   const [ highlightColor, setHighlightColor ] = useState(null);
+  const [ isAreaHovered, setAreaHovered ] = useState(false);
 
   const mapperRef = useRef(null);
   const questionRef = useRef(null);
@@ -178,6 +179,14 @@ function SelectableAreaQuestion(props) {
     updateSelectionsDisplay();
   }
 
+  let onMouseEnter = (area, index, event) => {
+    setAreaHovered(true);
+  }
+
+  let onMouseLeave = (area, index, event) => {
+    setAreaHovered(false);
+  }
+
   // Recreate the image mapper whenever needed.
   useEffect(()=> {
     setImageMapper(
@@ -186,6 +195,8 @@ function SelectableAreaQuestion(props) {
           src={imageUrl}
           map={{"name": props.questionDefinition["@name"], "areas": map}}
           onClick={onAreaClicked}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
           containerRef={mapperRef}
           responsive={true}
           parentWidth={(maxWidth == null || maxWidth > currentWidth) ? currentWidth : maxWidth}
@@ -211,7 +222,7 @@ function SelectableAreaQuestion(props) {
       {...props}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
-      <div ref={questionRef} style={{width: '100%'}}>
+      <div className={isAreaHovered ? classes.imageMapperHovered : null} ref={questionRef} style={{width: '100%'}}>
         {imageMapper}
       </div>
       {selectionDisplay}
