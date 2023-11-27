@@ -696,6 +696,9 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
+    imageMapperHovered : {
+      "cursor": "pointer"
+    }
 });
 
 export default questionnaireStyle;
