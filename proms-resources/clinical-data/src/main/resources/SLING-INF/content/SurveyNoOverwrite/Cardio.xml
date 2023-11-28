@@ -22,15 +22,15 @@
     <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
     <property>
         <name>name</name>
-        <value>ACHD pre-appointment questionnaires</value>
+        <value>SPARC Questionnaires</value>
         <type>String</type>
     </property>
     <node>
-        <name>EQ5D</name>
+        <name>BPI</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
-            <value>/Questionnaires/EQ5D</value>
+            <value>/Questionnaires/BPI</value>
             <type>Reference</type>
         </property>
         <property>
@@ -48,43 +48,13 @@
             <value>1</value>
             <type>Long</type>
         </property>
-        <property>
-            <name>view</name>
-            <value>
-[
-    {
-      "key": "last_name",
-      "label": "Last name",
-      "format": "string"
-    },
-    {
-      "key": "first_name",
-      "label": "First name",
-      "format": "string"
-    },
-    {
-      "key": "time",
-      "label": "Visit time",
-      "format": "date:yyyy-MM-dd HH:mm",
-      "link" : "dashboard+path"
-    },
-    {
-      "key": "score",
-      "label": "Score",
-      "format": "string",
-      "link" : "dashboard+path"
-    }
-]
-            </value>
-            <type>String</type>
-        </property>
     </node>
     <node>
-        <name>PHQ9</name>
+        <name>PHQ9b</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
-            <value>/Questionnaires/PHQ9</value>
+            <value>/Questionnaires/PHQ9b</value>
             <type>Reference</type>
         </property>
         <property>
@@ -102,125 +72,13 @@
             <value>2</value>
             <type>Long</type>
         </property>
-        <property>
-            <name>view</name>
-            <value>
-[
-    {
-      "key": "last_name",
-      "label": "Last name",
-      "format": "string"
-    },
-    {
-      "key": "first_name",
-      "label": "First name",
-      "format": "string"
-    },
-    {
-      "key": "time",
-      "label": "Visit time",
-      "format": "date:yyyy-MM-dd hh:mm",
-      "link" : "dashboard+path"
-    },
-    {
-      "key": "score",
-      "label": "Score",
-      "format": "string",
-      "link" : "dashboard+path"
-    },
-    {
-      "key": "risk",
-      "label": "Self-harm risk",
-      "format": "string",
-      "link" : "dashboard+path"
-    }
-]
-            </value>
-            <type>String</type>
-        </property>
-        <node>
-            <name>summary_risk_assessment</name>
-            <primaryNodeType>cards:Question</primaryNodeType>
-            <property>
-                <name>expression</name>
-                <value><![CDATA[
-                    return (
-                        ( 0 < @{phq9_9} ? "Your responses indicate that you are having thoughts of hurting yourself or being better off dead. If you feel like your safety is at risk, please seek immediate help from a professional mental health provider using the below resources."
-                            + "\n\n" + "**Talk Suicide** (across Canada)"
-                            + "\n\n" + "Call [1-833-456-4566](tel:1-833-456-4566)"
-                            + "\n\n" + "Text `45645`"
-                            + "\n" + "- Support for anyone facing suicide available 24/7/365"
-                            + "\n" + "- Can connect you to responders immediately"
-                            + "\n\n" + "For more information, see [Talk Suicide’s website](https://talksuicide.ca)."
-                            + "\n\n" + "**Distress and Crisis Ontario**"
-                            + "\n\n" + "Visit [Distress and Crisis Ontario’s website](https://www.dcontario.org/locations/) to find a Distress Centre or Crisis Line near you."
-                            + "\n" + "- Free, confidential, immediate support"
-                            + "\n" + "- Text SUPPORT to `258258` (available 2PM-2AM EST daily)"
-                            + "\n" + "- Online chat option is also available"
-                            + "\n\n" + "**Immediate Assistance**"
-                            + "\n\n" + "If you need immediate assistance, please proceed to your nearest Emergency Department or call 911."
-                            : null
-                        )
-                    )]]>
-                </value>
-                <type>String</type>
-            </property>
-            <property>
-                <name>text</name>
-                <value>PHQ-9 Risk Assessment</value>
-                <type>String</type>
-            </property>
-            <property>
-                <name>displayMode</name>
-                <value>summary</value>
-                <type>String</type>
-            </property>
-            <property>
-                <name>entryMode</name>
-                <value>computed</value>
-                <type>String</type>
-            </property>
-        </node>
-        <node>
-              <name>summary_score</name>
-              <primaryNodeType>cards:Question</primaryNodeType>
-              <property>
-                  <name>expression</name>
-                  <value>
-                      var score = (+@{phq9_1:-0} + +@{phq9_2:-0} + +@{phq9_3:-0} + +@{phq9_4:-0} + +@{phq9_5:-0} + +@{phq9_6:-0} + +@{phq9_7:-0} + +@{phq9_8:-0} + +@{phq9_9:-0});
-                      return (
-                          "Your Score: " + score
-                          + "\n\n" +
-                          ( 14 >= score ? "If your symptoms result in a score of 0 - 14, consider accessing self-care resources available on the [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
-                              : "If your symptoms result in a score of 15 or more, make sure to bring them up to your provider at your next appointment as further assessment of depressive symptoms may be required. Note that if your symptoms are severe (for example 20 - 27), you should consider telling your health care team right away or go to the closest emergency department."
-                          )
-                      )
-                  </value>
-                  <type>String</type>
-              </property>
-              <property>
-                  <name>text</name>
-                  <value>Patient Health Questionnaire-9</value>
-                  <type>String</type>
-              </property>
-              <property>
-                  <name>displayMode</name>
-                  <value>summary</value>
-                  <type>String</type>
-              </property>
-              <property>
-                  <name>entryMode</name>
-                  <value>computed</value>
-                  <type>String</type>
-              </property>
-        </node>
     </node>
     <node>
-        <name>GAD7</name>
+        <name>GAD7b</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
-            <value>/Questionnaires/GAD7</value>
+            <value>/Questionnaires/GAD7b</value>
             <type>Reference</type>
         </property>
         <property>
@@ -238,76 +96,13 @@
             <value>3</value>
             <type>Long</type>
         </property>
-        <property>
-            <name>view</name>
-            <value>
-[
-    {
-      "key": "last_name",
-      "label": "Last name",
-      "format": "string"
-    },
-    {
-      "key": "first_name",
-      "label": "First name",
-      "format": "string"
-    },
-    {
-      "key": "time",
-      "label": "Visit time",
-      "format": "date:yyyy-MM-dd hh:mm",
-      "link" : "dashboard+path"
-    },
-    {
-      "key": "score",
-      "label": "Score",
-      "format": "string",
-      "link" : "dashboard+path"
-    }
-]
-            </value>
-            <type>String</type>
-        </property>
-        <node>
-            <name>summary_score</name>
-            <primaryNodeType>cards:Question</primaryNodeType>
-            <property>
-                <name>expression</name>
-                <value>
-                    var score = (+@{gad7_1:-0} + +@{gad7_2:-0} + +@{gad7_3:-0} + +@{gad7_4:-0} + +@{gad7_5:-0} + +@{gad7_6:-0} + +@{gad7_7:-0});
-                    return (
-                        "Your Score: " + score
-                        + "\n\n" +
-                        ( 10 >= score ? "If your symptoms result in a score of 0 - 10, consider accessing self-care resources available on the [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
-                            : "If your symptoms result in a score of 11 or more, make sure to bring them up to your provider at your next appointment as further assessment of anxiety symptoms may be required. Note that if your symptoms are severe (for example 15 - 21), you should consider telling your health care team right away or go to the closest emergency department."
-                        )
-                    )
-                </value>
-                <type>String</type>
-            </property>
-            <property>
-                <name>text</name>
-                <value>General Anxiety Disorder-7</value>
-                <type>String</type>
-            </property>
-            <property>
-                <name>displayMode</name>
-                <value>summary</value>
-                <type>String</type>
-            </property>
-            <property>
-                <name>entryMode</name>
-                <value>computed</value>
-                <type>String</type>
-            </property>
-        </node>
     </node>
     <node>
-        <name>AUDITC</name>
+        <name>RPSIQ</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
-            <value>/Questionnaires/AUDITC</value>
+            <value>/Questionnaires/RPSIQ</value>
             <type>Reference</type>
         </property>
         <property>
@@ -325,82 +120,13 @@
             <value>4</value>
             <type>Long</type>
         </property>
-        <property>
-            <name>view</name>
-            <value>
-[
-    {
-      "key": "last_name",
-      "label": "Last name",
-      "format": "string"
-    },
-    {
-      "key": "first_name",
-      "label": "First name",
-      "format": "string"
-    },
-    {
-      "key": "time",
-      "label": "Visit time",
-      "format": "date:yyyy-MM-dd hh:mm",
-      "link" : "dashboard+path"
-    },
-    {
-      "key": "score",
-      "label": "Score",
-      "format": "string",
-      "link" : "dashboard+path"
-    }
-]
-            </value>
-            <type>String</type>
-        </property>
-        <node>
-            <name>summary_score</name>
-            <primaryNodeType>cards:Question</primaryNodeType>
-            <property>
-                <name>expression</name>
-                <value>
-                  var score = (+@{audit_1:-0} + +@{audit_2:-0} + +@{audit_3:-0});
-                  var maleText = 4 > score ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on the [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
-                      : "If your symptoms result in a score of 4 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
-                  var femaleText = 3 > score ? "If your symptoms result in a score of 0 - 2, consider accessing self-care resources available on the [Toronto ACHD Program website](https://torontoachd.ca/online-resources/) for how to manage those symptoms."
-                      : "If your symptoms result in a score of 3 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
-                  return (
-                    "Your Score: " + score
-                    + "\n\n" +
-                    (
-                      "male" === @{audit_sex:-""}.toLowerCase() ? maleText
-                        : "female" === @{audit_sex:-""}.toLowerCase() ? femaleText
-                          : "If you are a man:\n\n" + maleText + "\n\n If you are a woman:\n\n" + femaleText
-                    )
-                  )
-                </value>
-                <type>String</type>
-            </property>
-            <property>
-                <name>text</name>
-                <value>Alcohol Use Disorders Identification Test</value>
-                <type>String</type>
-            </property>
-            <property>
-                <name>displayMode</name>
-                <value>summary</value>
-                <type>String</type>
-            </property>
-            <property>
-                <name>entryMode</name>
-                <value>computed</value>
-                <type>String</type>
-            </property>
-        </node>
     </node>
     <node>
-        <name>Smoking Cessation</name>
+        <name>IEQ</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
-            <value>/Questionnaires/SC</value>
+            <value>/Questionnaires/IEQ</value>
             <type>Reference</type>
         </property>
         <property>
@@ -418,29 +144,149 @@
             <value>5</value>
             <type>Long</type>
         </property>
+    </node>
+    <node>
+        <name>P3</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
-            <name>view</name>
-            <value>
-[
-    {
-      "key": "last_name",
-      "label": "Last name",
-      "format": "string"
-    },
-    {
-      "key": "first_name",
-      "label": "First name",
-      "format": "string"
-    },
-    {
-      "key": "time",
-      "label": "Visit time",
-      "format": "date:yyyy-MM-dd hh:mm",
-      "link" : "dashboard+path"
-    }
-]
-            </value>
-            <type>String</type>
+            <name>questionnaire</name>
+            <value>/Questionnaires/P3</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>52</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>6</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>PQ</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/PQ</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>52</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>7</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>SLPS</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/SLPS</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>52</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>8</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>CSI</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/CSI</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>52</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>9</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>NPD</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/NPD</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>52</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>10</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>AP</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/AP</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>52</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>11</value>
+            <type>Long</type>
         </property>
     </node>
 </node>
