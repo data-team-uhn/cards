@@ -21,6 +21,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
+import Tooltip from "@mui/material/Tooltip";
 
 import ImageMapper from "react-img-mapper"
 import PropTypes from "prop-types";
@@ -52,7 +53,7 @@ function SelectableAreaQuestion(props) {
   const [ error, setError ] = useState(false);
   const [ map, setMap ] = useState(null);
   const [ imageUrl, setImageUrl ] = useState(null);
-  const [ imageMapper, setImageMapper ] = useState([]);
+  const [ imageMapper, setImageMapper ] = useState(<></>);
   const [ selectionDisplay, setSelectionDisplay ] = useState(<></>);
   const [ initialized, setInitialized ] = useState(false);
   const [ maxWidth, setMaxWidth ] = useState(null);
@@ -60,6 +61,7 @@ function SelectableAreaQuestion(props) {
   const [ strokeColor, setStrokeColor ] = useState(null);
   const [ highlightColor, setHighlightColor ] = useState(null);
   const [ isAreaHovered, setAreaHovered ] = useState(false);
+  const [ tooltipTitle, setTooltipTitle ] = useState("");
 
   const mapperRef = useRef(null);
   const questionRef = useRef(null);
@@ -179,8 +181,10 @@ function SelectableAreaQuestion(props) {
     updateSelectionsDisplay();
   }
 
+  // Track when the user's cursor is over one of the areas
   let onMouseEnter = (area, index, event) => {
     setAreaHovered(true);
+    setTooltipTitle(area.title);
   }
 
   let onMouseLeave = (area, index, event) => {
@@ -222,9 +226,11 @@ function SelectableAreaQuestion(props) {
       {...props}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
-      <div className={isAreaHovered ? classes.imageMapperHovered : null} ref={questionRef} style={{width: '100%'}}>
-        {imageMapper}
-      </div>
+      <Tooltip title={tooltipTitle} open={isAreaHovered} followCursor>
+        <div className={isAreaHovered ? classes.imageMapperHovered : null} ref={questionRef} style={{width: '100%', position: 'relative'}}>
+          {imageMapper}
+        </div>
+      </Tooltip>
       {selectionDisplay}
       <Answer
         answers={selections}
