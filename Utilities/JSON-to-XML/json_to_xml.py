@@ -46,7 +46,7 @@ def get_jcr_type(d):
         return "String"
 
 def convert_xml_safe(itm):
-    if str(itm) in ["<>", "<", ">"] or (isinstance(itm, str) and ("<" in itm or ">" in itm)):
+    if str(itm) in ["<>", "<", ">"] or (isinstance(itm, str) and ("<" in itm or ">" in itm or "&" in itm)):
         return "<![CDATA[" + str(itm) + "]]>"
     return str(itm)
 

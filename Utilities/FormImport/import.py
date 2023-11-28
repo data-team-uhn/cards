@@ -421,7 +421,10 @@ def option_handler(self, questionnaire, row):
 
 def number_handler(self, questionnaire, row):
     value = self.get_value(row)
-    questionnaire.question[self.name] = float(value) if '.' in value else int(value)
+    try:
+        questionnaire.question[self.name] = float(value) if '.' in value else int(value)
+    except ValueError:
+        log(Logging.WARNING, "Could not parse \"{}\" to number".format(value))
 
 def min_value_handler(self, questionnaire, row):
     range_value_handler(self, questionnaire, row, "lowerLimit")
