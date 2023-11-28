@@ -21,6 +21,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
+import { useTheme } from '@mui/material/styles';
 import Tooltip from "@mui/material/Tooltip";
 
 import ImageMapper from "react-img-mapper"
@@ -48,20 +49,18 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    variant="/libs/cards/dataEntry/SelectableArea/FullBody"
 //    />
 function SelectableAreaQuestion(props) {
-  let { classes, errorText, existingAnswer, questionName, pageActive, ...rest } = props;
+  let { classes, errorText, existingAnswer, questionName, questionDefinition, pageActive, ...rest } = props;
   let { variant, maxAnswers } = {...props.questionDefinition, ...props};
   const [ error, setError ] = useState(false);
   const [ map, setMap ] = useState(null);
-  const [ imageUrl, setImageUrl ] = useState(null);
-  const [ imageMapper, setImageMapper ] = useState(<></>);
-  const [ selectionDisplay, setSelectionDisplay ] = useState(<></>);
   const [ initialized, setInitialized ] = useState(false);
-  const [ maxWidth, setMaxWidth ] = useState(null);
+
   const [ currentWidth, setCurrentWidth] = useState(0);
-  const [ strokeColor, setStrokeColor ] = useState(null);
-  const [ highlightColor, setHighlightColor ] = useState(null);
   const [ isAreaHovered, setAreaHovered ] = useState(false);
   const [ tooltipTitle, setTooltipTitle ] = useState("");
+
+  const [ imageMapper, setImageMapper ] = useState(<></>);
+  const [ selectionDisplay, setSelectionDisplay ] = useState(<></>);
 
   const mapperRef = useRef(null);
   const questionRef = useRef(null);
@@ -74,8 +73,7 @@ function SelectableAreaQuestion(props) {
     // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
     .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
 
-
-  const [ selections, setSelections ] = useState(initialSelection);
+  const [ selection, setSelection ] = useState(initialSelection);
 
   // Image Mapper does support tracking it's own set of highlighted areas.
   // However, there is no way to initialize self tracked highlights with pre-highlighted areas.
@@ -84,31 +82,61 @@ function SelectableAreaQuestion(props) {
     map.forEach((mapEntry => {
       // Check if this area is selected.
       let found = false;
-      for (let i = 0; i < selections.length; i++) {
-        if (selections[i][VALUE_POS] === mapEntry.value) {
+      for (let i = 0; i < selection.length; i++) {
+        if (selection[i][VALUE_POS] === mapEntry.value) {
           // Area has been selected, highlight it.
-          mapEntry.preFillColor = highlightColor ? highlightColor : mapEntry.fillColor;
+          mapEntry.preFillColor = getSelectedColor(mapEntry);
           found = true;
           break;
         }
       }
       if (!found) {
-        // Area has not been selected, clear any highlight.
-        delete mapEntry.preFillColor;
+        mapEntry.preFillColor = getUnselectedColor(mapEntry);
       }
     }))
   }
 
-  // As the displayed values are based on an extension, the backend doesn't know what display values go with what values.
-  // Once the map has loaded, initialize the selections to set the approriate display values.
+  const theme = useTheme();
+
+  let getUnselectedColor = (area) => getColor(area, "unselectedColor", null)
+  let getSelectedColor = (area) => getColor(area, "selectedColor", theme.palette.primary.main + "66")
+  let getHoverColor = (area) => getColor(area, "hoverColor", "#55555555");
+  let getStrokeColor = (area) => getColor(area, "strokeColor", "black");
+
+  let getColor = (area, property, fallback) => {
+    let result = fallback;
+    // Color Priority Order:
+    // question with override > variant with override > map area specific > question > variant > default
+    if (questionDefinition?.overrideMapColors && questionDefinition[property]) {
+      result = questionDefinition[property];
+    } else if (variant?.overrideMapColors && variant?.[property]) {
+      result = variant[property];
+    } else if (area?.[property]) {
+      result = area[property];
+    } else if (questionDefinition[property]) {
+      result = questionDefinition[property];
+    } else if (variant?.[property]) {
+      result = variant[property]
+    }
+    
+    return result;
+  }
+
+  // Perform any initialization that is required once the map has loaded.
   useEffect(() => {
     if(!initialized && map) {
-      selections.forEach(selection =>{
-        map.forEach(mapEntry => {
+      // TODO: Return a new selections array so useEffect is consistent
+      map.forEach(mapEntry => {
+        mapEntry.fillColor = getHoverColor(mapEntry);
+        mapEntry.strokeColor = getStrokeColor(mapEntry);
+
+        // Check if any selections match the map entry
+        selection.forEach(selection => {
           if (mapEntry.value === selection[LABEL_POS] && mapEntry.title) {
+            // Load the appropriate display values from the map.
             selection[LABEL_POS] = mapEntry.title;
           }
-        });
+        })
       })
 
       // Update both the map highlights and the displayed list of selections
@@ -116,13 +144,14 @@ function SelectableAreaQuestion(props) {
       updateSelectionsDisplay();
       setInitialized(true);
     }
-  }, [initialized, map])
+  }, [map])
 
   // List out the selected areas in text
+  // TODO: Switch to useEffect
   let updateSelectionsDisplay = () => {
     setSelectionDisplay(
-      <ul>
-        {selections.map(selection => {
+      <ul style={{float: "left"}}>
+        {selection.map(selection => {
           return <li key={selection[VALUE_POS]}>{selection[LABEL_POS]}</li>
         })}
       </ul>);
@@ -133,22 +162,10 @@ function SelectableAreaQuestion(props) {
     if (variant) {
       let unparsedMap = variant.map?.["jcr:content"]?.["jcr:data"];
       setMap(unparsedMap ? JSON.parse(unparsedMap) : null);
-      setImageUrl(variant.image);
-      setMaxWidth(variant.maxWidth);
-      setStrokeColor(variant.strokeColor);
-      setHighlightColor(variant.highlightColor);
     } else {
-      resetQuestionData();
+      setMap(null);
     }
   }, [variant])
-
-  // Clear out any data associated with a specific question
-  let resetQuestionData = () => {
-    setImageUrl(null);
-    setMap(null);
-    setSelections(initialSelection);
-    setMaxWidth(null);
-  }
 
   // When an area is clicked, update the selection associated with that area.
   let onAreaClicked = (area, index) => {
@@ -156,25 +173,25 @@ function SelectableAreaQuestion(props) {
 
     if (maxAnswers == 1) {
       // Single select: Just set selection to the most recent value
-      selections.pop();
-      selections.push(clickedEntry);
+      selection.pop();
+      selection.push(clickedEntry);
     } else {
       // Multi select: toggle the values' selection state
       let entryIndex = -1;
-      selections.forEach((selectionValue, selectionIndex) => {
+      selection.forEach((selectionValue, selectionIndex) => {
         if (selectionValue[VALUE_POS] === clickedEntry[VALUE_POS]) {
           entryIndex = selectionIndex;
         }
       })
       if(entryIndex == -1) {
-        selections.push(clickedEntry);
+        selection.push(clickedEntry);
       } else {
-        selections.splice(entryIndex, 1);
+        selection.splice(entryIndex, 1);
       }
     }
 
-    let newSelections = selections.concat()
-    setSelections(newSelections)
+    let newSelections = selection.concat()
+    setSelection(newSelections)
 
     // Update the displayed highlights and list
     updateMapWithSelections();
@@ -196,15 +213,15 @@ function SelectableAreaQuestion(props) {
     setImageMapper(
       initialized && map ?
         <ImageMapper
-          src={imageUrl}
+          src={variant?.image}
           map={{"name": props.questionDefinition["@name"], "areas": map}}
           onClick={onAreaClicked}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           containerRef={mapperRef}
           responsive={true}
-          parentWidth={(maxWidth == null || maxWidth > currentWidth) ? currentWidth : maxWidth}
-          strokeColor={strokeColor ? strokeColor : null}
+          parentWidth={(variant?.maxWidth == null || variant?.maxWidth > currentWidth)
+            ? currentWidth : variant?.maxWidth}
           />
         : <></>
       )
@@ -226,16 +243,20 @@ function SelectableAreaQuestion(props) {
       {...props}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
-      <Tooltip title={tooltipTitle} open={isAreaHovered} followCursor>
-        <div className={isAreaHovered ? classes.imageMapperHovered : null} ref={questionRef} style={{width: '100%', position: 'relative'}}>
-          {imageMapper}
-        </div>
-      </Tooltip>
-      {selectionDisplay}
+      <div ref={questionRef}>
+        <Tooltip title={tooltipTitle} open={isAreaHovered} followCursor>
+          <div className={isAreaHovered ? classes.imageMapperHovered : null} style={{position: 'relative', float:"left"}}>
+            {imageMapper}
+          </div>
+        </Tooltip>
+        {selectionDisplay}
+        <div style={{clear: "both"}}></div>
+      </div>
       <Answer
-        answers={selections}
+        answers={selection}
         existingAnswer={existingAnswer}
         questionName={questionName}
+        questionDefinition={props.questionDefinition}
         isMultivalued={maxAnswers!==1}
         answerNodeType="cards:SelectableAreaAnswer"
         pageActive={pageActive}
