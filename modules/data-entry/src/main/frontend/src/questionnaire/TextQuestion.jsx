@@ -59,8 +59,9 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    validationErrorText={"Please enter a lowercase input"}
 //    />
 function TextQuestion(props) {
-  let { displayMode, validationRegexp, validationErrorText } = {validationErrorText: "Invalid input", ...props.questionDefinition, ...props};
+  let { dataType, displayMode, validationRegexp, validationErrorText } = {validationErrorText: "Invalid input", ...props.questionDefinition, ...props};
   const regexp = new RegExp(validationRegexp);
+  const answerNodeType = "cards:" + dataType.charAt(0).toUpperCase() + dataType.slice(1) + "Answer";
 
   // Validation against the regular expression if one is provided
   // Empty inputs are considered valid
@@ -93,6 +94,7 @@ function TextQuestion(props) {
       <MultipleChoice
         input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
+        answerNodeType={answerNodeType}
         validate={validate}
         validationErrorText={validationErrorText}
         {...props}

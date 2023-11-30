@@ -455,6 +455,11 @@
         "defaultCountry": "string",
         "onlyCountries": "string",
         "regions": "string"
+      },
+      "address" : {
+        "minAnswers": {"0":{}, "1":{}},
+        "countries": "string",
+        "searchPlacesAround": "string"
       }
     },
     "enableNotes": "boolean"

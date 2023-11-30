@@ -84,6 +84,10 @@
         {
             "id":"${project.groupId}:cards-embedded-view:${project.version}",
             "start-order":"26"
+        },
+        {
+            "id":"io.uhndata.cards:cards-google-apis:${project.version}",
+            "start-order":"25"
         }
     ]
 }

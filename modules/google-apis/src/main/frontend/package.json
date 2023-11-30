@@ -1,7 +1,7 @@
 {
-  "name": "cards-dataentry",
+  "name": "cards-google-apis",
   "version": "0.1.0",
-  "description": "Data storage for the CARDS project",
+  "description": "Google API key management",
   "author": "UHN DATA",
   "license": "Apache-2.0",
   "repository": {
@@ -37,26 +37,8 @@
   "dependencies": {
     "@mui/icons-material": "5.11.0",
     "@mui/material": "5.11.3",
-    "@mui/styles": "5.11.2",
-    "@mui/lab": "5.0.0-alpha.114",
-    "@mui/x-date-pickers": "6.0.4",
-    "classnames": "2.3.2",
-    "cornerstone-core": "2.6.1",
-    "cornerstone-wado-image-loader": "4.6.0",
-    "dicom-parser": "1.8.20",
     "react": "^18.0.0",
-    "react-beautiful-dnd": "13.1.1",
     "react-dom": "^18.0.0",
-    "react-number-format": "5.1.2",
-    "react-phone-input-2": "2.15.1",
-    "react-google-autocomplete": "2.7.3",
-    "react-router-dom": "5.2.0",
-    "react-to-print": "2.14.4",
-    "material-react-table": "1.10.0",
-    "material-ui-dropzone": "3.5.0",
-    "luxon": "3.2.1",
-    "prop-types": "15.8.1",
-    "uuid": "9.0.0",
-    "@uiw/react-md-editor": "3.20.2"
+    "react-router-dom": "5.2.0"
   }
 }
