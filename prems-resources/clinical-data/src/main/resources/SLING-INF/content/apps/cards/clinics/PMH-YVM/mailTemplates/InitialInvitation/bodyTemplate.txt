@@ -1,17 +1,8 @@
 Dear ${first_name} ${last_name},
 
-Your Voice Matters is a set of questions that gives you the chance to share your cancer care
-experience. Your answers will help us know how to improve the experience for patients and care
-partners at your hospital and across Ontario.
-
-Tell us about your most recent in-person (at the cancer clinic) or virtual (by telephone or video)
-cancer care appointment. It will take about 5 minutes to complete this survey. This survey is
-confidential (private). Your cancer care team will not see your responses to the questions.
-Your answers are combined with other people’s responses to help Ontario Health (Cancer Care Ontario)
-understand how to best support patients.
-
-You are receiving this email because you have recently been discharged from a
-University Health Network (UHN) hospital.
+We are always striving to improve the experience of care at Princess Margaret Cancer Centre.
+We would like to learn more about your most recent visit in an optional survey. It should
+take approximately 5-10 minutes to complete.
 
 To begin the survey, click the following link:
 ${surveysLink}
@@ -21,17 +12,29 @@ The survey will be available until ${expirationDate}.
 The survey will not load if you are using Internet Explorer. Please use another web browser,
 such as Edge, Chrome, or Firefox.
 
-If you want to provide detailed feedback about your experience directly to the hospital,
-please contact your.voice.matters@uhn.ca.
+Your contribution is important to improving care. This link is unique to you and should not be
+forwarded to others. Your participation is voluntary, and all answers will be kept confidential.
+Your care will not be affected in any way. Your responses will not be linked to your name or
+personal information, and will be stored separately from your personal health information.
 
-If you have any questions or concerns or wish to be removed from the survey,
-please contact us at yourexperience@uhn.ca. You can also unsubscribe from all
-further emails from Your Experience by following this link:
+Your answers will be shared only with the Patient and Family Experience Committee and Health Care
+Leaders to improve quality.
+
+We have done everything we can to make sure that this survey does not go to families who have
+lost a loved one. If you received this survey after your loved one has passed away, please accept
+our heartfelt condolences and our sincere apology. You may respond to this survey on behalf of
+your loved one if you would like. For all additional patient experience feedback, please email us
+at PMExperience@uhn.ca
+
+If you wish to be removed from the survey, please contact us at yourexperience@uhn.ca. You can also
+unsubscribe from all further emails from Your Experience by following this link:
 ${unsubscribeLink}
 
-Best regards,
+Thank you for your time and participation!
+
+Sincerely,
 The Patient Experience Team
-University Health Network
+Princess Margaret Cancer Centre, UHN
 
 ------------------------------------------------------------------------
 
