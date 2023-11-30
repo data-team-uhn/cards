@@ -61,6 +61,11 @@ contact [your.voice.matters@uhn.ca](mailto:your.voice.matters@uhn.ca).
         <value>True</value>
         <type>Boolean</type>
     </property>
+    <property>
+        <name>conflictMode</name>
+        <value>any</value>
+        <type>String</type>
+    </property>
     <node>
         <name>Your Voice Matters</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
@@ -76,7 +81,7 @@ contact [your.voice.matters@uhn.ca](mailto:your.voice.matters@uhn.ca).
         </property>
         <property>
             <name>frequency</name>
-            <value>4</value>
+            <value>26</value>
             <type>Long</type>
         </property>
         <property>
