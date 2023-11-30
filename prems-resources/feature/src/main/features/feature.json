@@ -309,15 +309,7 @@
       "metricName": "{020} PHM-YVM 1st Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/258217454",
       "emailConfiguration": "/apps/cards/clinics/PMH-YVM/mailTemplates/ReminderNotification",
-      "daysToVisit": -4
-    },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~PMH-YVM-Reminder2NotificationsTask":{
-      "name": "PMH-YVM-Reminder2NotificationsTask",
-      "notificationType": "Reminder2",
-      "metricName": "{021} PMH-YVM 2nd Reminder Emails Sent",
-      "clinicId": "/Survey/ClinicMapping/258217454",
-      "emailConfiguration": "/apps/cards/clinics/PMH-YVM/mailTemplates/ReminderNotification",
-      "daysToVisit": -6
+      "daysToVisit": -5
     },
 
     // Periodic CSV exports of all new and updated data
