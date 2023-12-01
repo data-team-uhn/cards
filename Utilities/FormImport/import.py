@@ -498,7 +498,7 @@ def split_ignore_strings(input, splitters, limit = -1):
         elif len(ignore_list) == 0:
             for splitter in splitters:
                 if i + len(splitter) <= len(input):
-                    if input[i:i+len(splitter)] == splitter:
+                    if input[i:i+len(splitter)].lower() == splitter.lower():
                         results.append(input[last_split:i].strip())
                         i += len(splitter)
                         last_split = i
@@ -636,12 +636,12 @@ def process_conditional(self, questionnaire, row):
     needs_section = get_row_type_map(row).row_type not in (SECTION_TYPES + MATRIX_TYPES)
     if needs_section:
         questionnaire.push_section(create_new_section(questionnaire.question['name'] + "section", False), False)
+        questionnaire.flag_must_complete_section()
 
     conditional_string = self.get_value(row)
     log(Logging.INFO, "Processing conditional " + conditional_string)
     condition_handle_brackets(questionnaire, questionnaire.parent, conditional_string)
 
-    questionnaire.flag_must_complete_section()
 
 def condition_handle_brackets(questionnaire, condition_parent, conditional_string, index=0):
     log(Logging.INFO, "Handling brackets      " + conditional_string)
