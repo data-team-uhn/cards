@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -89,7 +89,7 @@ fi
 
 if [ ! -z $ADDITIONAL_SLING_FEATURES ]
 then
-  featureFlagString="$featureFlagString -f $ADDITIONAL_SLING_FEATURES"
+  featureFlagString="$featureFlagString -f ${ADDITIONAL_SLING_FEATURES@P}"
 fi
 
 #Parse the (legacy) ADDITIONAL_RUN_MODES environment variable and determine the features that need to be enabled

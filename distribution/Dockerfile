@@ -51,7 +51,8 @@ RUN apk upgrade --available
 RUN apk add \
   openjdk11-jre \
   python3 \
-  tzdata
+  tzdata \
+  bash
 
 # Optional: enable remote debugging at port 5005
 ENV DEBUG=
