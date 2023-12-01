@@ -110,19 +110,24 @@ def repeated_section_handler(self, questionnaire, row):
     section_start_handler(self, questionnaire, row)
     questionnaire.parent['repeated'] = True
     parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
-    referenced_question_key = Headers['ENTRY_MODE_QUESTION'].get_value(row)
-    referenced_question = questionnaire.parents[-2][referenced_question_key]
+    referenced_question_keys = split_ignore_strings(Headers['ENTRY_MODE_QUESTION'].get_value(row), [","])
 
-    for key in referenced_question.keys():
-        entry = referenced_question[key]
-        if type(entry) == dict and 'jcr:primaryType' in entry and entry['jcr:primaryType'] == 'cards:AnswerOption':
-            conditional_label = parent_label + "_" + clean_name(entry['value'])
-            new_section = create_new_section(conditional_label)
-            new_section['label'] = entry['label']
-            new_section['repeated_parent'] = parent_label
-            questionnaire.push_section(new_section)
-            condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
-            questionnaire.complete_section()
+    for referenced_question_key in referenced_question_keys:
+        question = {}
+        for questionMap in questionnaire.questions:
+            if referenced_question_key in questionMap.keys():
+                question = questionMap[referenced_question_key]
+
+        for key in question.keys():
+            entry = question[key]
+            if type(entry) == dict and 'jcr:primaryType' in entry and entry['jcr:primaryType'] == 'cards:AnswerOption':
+                conditional_label = parent_label + "_" + clean_name(entry['value'])
+                new_section = create_new_section(conditional_label)
+                new_section['label'] = entry['label']
+                new_section['repeated_parent'] = parent_label
+                questionnaire.push_section(new_section)
+                condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
+                questionnaire.complete_section()
 
 def end_repeated_section(self, questionnaire, row):
     parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
@@ -270,6 +275,7 @@ class QuestionnaireState:
         self.parents = [questionnaire]
         self.parent = questionnaire
         self.question = questionnaire
+        self.questions = []
 
     # Finish off the current questionnaire and any children
     def complete_questionnaire(self):
@@ -320,6 +326,7 @@ class QuestionnaireState:
         if is_question(self.question):
             name = self.question.pop('name')
             self.parent[name] = self.question
+            self.questions.append({name: self.question})
             self.question = self.parent
 
     def flag_must_complete_section(self):
