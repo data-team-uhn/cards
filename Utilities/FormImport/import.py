@@ -125,6 +125,7 @@ def repeated_section_handler(self, questionnaire, row):
                 new_section = create_new_section(conditional_label)
                 new_section['label'] = entry['label']
                 new_section['repeated_parent'] = parent_label
+                new_section['title'] = parent_label + "_" + clean_name(entry['label'].lower())
                 questionnaire.push_section(new_section)
                 condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
                 questionnaire.complete_section()
@@ -148,13 +149,17 @@ def end_repeated_section(self, questionnaire, row):
         non_repeated_child = questionnaire.parent.pop(non_repeated_key)
         for repeated_key in repeated_conditionals:
             questionnaire.parent[repeated_key][repeated_key + "_" + non_repeated_key] = non_repeated_child
+            questionnaire.parents[-2][repeated_key] = questionnaire.parent[repeated_key]
 
-    questionnaire.parent.pop('repeated')
+    questionnaire.parents.pop()
+    questionnaire.parent = questionnaire.parents[-1]
+    questionnaire.question = questionnaire.parent
 
 def section_end_handler(self, questionnaire, row):
     if is_section(questionnaire.parent):
         if 'repeated' in questionnaire.parent:
             end_repeated_section(self, questionnaire, row)
+            return
 
     if is_matrix(questionnaire.parent):
         # End any matrix sections first as matrixes cannot span section borders
