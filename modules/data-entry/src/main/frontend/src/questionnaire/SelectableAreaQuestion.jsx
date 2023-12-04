@@ -78,23 +78,25 @@ function SelectableAreaQuestion(props) {
   // Image Mapper does support tracking it's own set of highlighted areas.
   // However, there is no way to initialize self tracked highlights with pre-highlighted areas.
   // As a result, we manually highlight the selected areas.
-  let updateMapWithSelections = () => {
-    map.forEach((mapEntry => {
-      // Check if this area is selected.
-      let found = false;
-      for (let i = 0; i < selection.length; i++) {
-        if (selection[i][VALUE_POS] === mapEntry.value) {
-          // Area has been selected, highlight it.
-          mapEntry.preFillColor = getSelectedColor(mapEntry);
-          found = true;
-          break;
+  useEffect(() => {
+    if (map ) {
+      map.forEach((mapEntry => {
+        // Check if this area is selected.
+        let found = false;
+        for (let i = 0; i < selection.length; i++) {
+          if (selection[i][VALUE_POS] === mapEntry.value) {
+            // Area has been selected, highlight it.
+            mapEntry.preFillColor = getSelectedColor(mapEntry);
+            found = true;
+            break;
+          }
         }
-      }
-      if (!found) {
-        mapEntry.preFillColor = getUnselectedColor(mapEntry);
-      }
-    }))
-  }
+        if (!found) {
+          mapEntry.preFillColor = getUnselectedColor(mapEntry);
+        }
+      }))
+    }
+  }, [selection, map])
 
   const theme = useTheme();
 
@@ -118,44 +120,44 @@ function SelectableAreaQuestion(props) {
     } else if (variant?.[property]) {
       result = variant[property]
     }
-    
+
     return result;
   }
 
   // Perform any initialization that is required once the map has loaded.
   useEffect(() => {
     if(!initialized && map) {
-      // TODO: Return a new selections array so useEffect is consistent
-      map.forEach(mapEntry => {
-        mapEntry.fillColor = getHoverColor(mapEntry);
-        mapEntry.strokeColor = getStrokeColor(mapEntry);
+      setSelection(oldSelection => {
+        let newSelection = oldSelection.slice();
 
-        // Check if any selections match the map entry
-        selection.forEach(selection => {
-          if (mapEntry.value === selection[LABEL_POS] && mapEntry.title) {
-            // Load the appropriate display values from the map.
-            selection[LABEL_POS] = mapEntry.title;
-          }
+        map.forEach(mapEntry => {
+          mapEntry.fillColor = getHoverColor(mapEntry);
+          mapEntry.strokeColor = getStrokeColor(mapEntry);
+
+          // Check if any selections match the map entry
+          newSelection.forEach(selectionValue => {
+            if (mapEntry.value === selectionValue[LABEL_POS] && mapEntry.title) {
+              // Load the appropriate display values from the map.
+              selectionValue[LABEL_POS] = mapEntry.title;
+            }
+          })
         })
+        return newSelection;
       })
 
-      // Update both the map highlights and the displayed list of selections
-      updateMapWithSelections();
-      updateSelectionsDisplay();
       setInitialized(true);
     }
   }, [map])
 
   // List out the selected areas in text
-  // TODO: Switch to useEffect
-  let updateSelectionsDisplay = () => {
+  useEffect(() => {
     setSelectionDisplay(
       <ul style={{float: "left"}}>
         {selection.map(selection => {
           return <li key={selection[VALUE_POS]}>{selection[LABEL_POS]}</li>
         })}
       </ul>);
-  }
+  }, [selection])
 
   // When the question's variant changes, load the relevant data.
   useEffect(() => {
@@ -171,31 +173,27 @@ function SelectableAreaQuestion(props) {
   let onAreaClicked = (area, index) => {
     let clickedEntry = [area.title, area.value];
 
-    if (maxAnswers == 1) {
-      // Single select: Just set selection to the most recent value
-      selection.pop();
-      selection.push(clickedEntry);
-    } else {
-      // Multi select: toggle the values' selection state
-      let entryIndex = -1;
-      selection.forEach((selectionValue, selectionIndex) => {
-        if (selectionValue[VALUE_POS] === clickedEntry[VALUE_POS]) {
-          entryIndex = selectionIndex;
-        }
-      })
-      if(entryIndex == -1) {
-        selection.push(clickedEntry);
+    setSelection(oldSelection => {
+      if (maxAnswers == 1) {
+        // Single select: Just set selection to the most recent value
+        return [clickedEntry];
       } else {
-        selection.splice(entryIndex, 1);
+        // Multi select: toggle the values' selection state
+        let newSelection = oldSelection.slice();
+        let entryIndex = -1;
+        newSelection.forEach((selectionValue, selectionIndex) => {
+          if (selectionValue[VALUE_POS] === clickedEntry[VALUE_POS]) {
+            entryIndex = selectionIndex;
+          }
+        })
+        if(entryIndex == -1) {
+          newSelection.push(clickedEntry);
+        } else {
+          newSelection.splice(entryIndex, 1);
+        }
+        return newSelection;
       }
-    }
-
-    let newSelections = selection.concat()
-    setSelection(newSelections)
-
-    // Update the displayed highlights and list
-    updateMapWithSelections();
-    updateSelectionsDisplay();
+    })
   }
 
   // Track when the user's cursor is over one of the areas

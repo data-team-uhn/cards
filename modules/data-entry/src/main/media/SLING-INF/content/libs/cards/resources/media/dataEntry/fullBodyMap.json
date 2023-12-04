@@ -1,10 +1,8 @@
 [
   {
-    "id": "c74ab3e0-9aec-4440-9954-1d35b54fbbe2",
     "title": "Face",
     "value": "face",
     "shape": "poly",
-    "name": "1",
     "coords": [
       315, 155,
       297, 150,
@@ -22,11 +20,9 @@
     ]
   },
   {
-    "id": "bf9e869e-189c-474e-bcb2-a7dabc7b021d",
     "title": "Left Jaw",
     "value": "leftjaw",
     "shape": "poly",
-    "name": "2",
     "coords": [
       354, 156,
       395, 156,
@@ -35,11 +31,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Jaw",
     "value": "rightjaw",
     "shape": "poly",
-    "name": "3",
     "coords": [
       353, 156,
       315, 156,
@@ -48,33 +42,27 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Chest/Breast",
     "value": "rightchest",
     "shape": "rect",
-    "name": "",
     "coords": [
       260, 240,
       353, 370
     ]
   },
   {
-    "id": "",
     "title": "Left Chest/Breast",
     "value": "leftchest",
     "shape": "rect",
-    "name": "",
     "coords": [
       354, 240,
       445, 370
     ]
   },
   {
-    "id": "",
     "title": "Abdomen",
     "value": "abdomen",
     "shape": "poly",
-    "name": "",
     "coords": [
       260, 371,
       445, 371,
@@ -85,11 +73,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Pelvis",
     "value": "pelvis",
     "shape": "poly",
-    "name": "",
     "coords": [
       260, 531,
       325, 591,
@@ -104,11 +90,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Groin",
     "value": "leftgroin",
     "shape": "poly",
-    "name": "",
     "coords": [
       354, 611,
       380, 611,
@@ -117,11 +101,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Groin",
     "value": "rightgroin",
     "shape": "poly",
-    "name": "",
     "coords": [
       353, 611,
       353, 660,
@@ -130,11 +112,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Upper Arm",
     "value": "leftupperarm",
     "shape": "poly",
-    "name": "",
     "coords": [
       446, 240,
       490, 270,
@@ -144,11 +124,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Upper Arm",
     "value": "rightupperarm",
     "shape": "poly",
-    "name": "",
     "coords": [
       259, 240,
       259, 370,
@@ -158,11 +136,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Elbow",
     "value": "leftelbow",
     "shape": "poly",
-    "name": "",
     "coords": [
       500, 406,
       510, 455,
@@ -171,11 +147,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Elbow",
     "value": "rightelbow",
     "shape": "poly",
-    "name": "",
     "coords": [
       255, 416,
       250, 475,
@@ -184,11 +158,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Lower Arm",
     "value": "leftlowerarm",
     "shape": "poly",
-    "name": "",
     "coords": [
       510, 456,
       530, 550,
@@ -197,11 +169,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Lower Arm",
     "value": "rightlowerarm",
     "shape": "poly",
-    "name": "",
     "coords": [
       250, 476,
       215, 570,
@@ -210,11 +180,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Wrist/Hand",
     "value": "leftwristhand",
     "shape": "poly",
-    "name": "",
     "coords": [
       530, 551,
       585, 615,
@@ -225,11 +193,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Wrist/Hand",
     "value": "rightwristhand",
     "shape": "poly",
-    "name": "",
     "coords": [
       215, 571,
       190, 670,
@@ -240,11 +206,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Upper Leg",
     "value": "leftupperleg",
     "shape": "poly",
-    "name": "",
     "coords": [
       465, 600,
       460, 815,
@@ -253,11 +217,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Upper Leg",
     "value": "rightupperleg",
     "shape": "poly",
-    "name": "",
     "coords": [
       345, 659,
       325, 815,
@@ -266,11 +228,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Knee",
     "value": "leftknee",
     "shape": "poly",
-    "name": "",
     "coords": [
       460, 816,
       470, 895,
@@ -279,11 +239,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Knee",
     "value": "rightknee",
     "shape": "poly",
-    "name": "",
     "coords": [
       325, 816,
       305, 895,
@@ -292,11 +250,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Lower Leg",
     "value": "leftlowerleg",
     "shape": "poly",
-    "name": "",
     "coords": [
       470, 896,
       475, 965,
@@ -308,11 +264,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Lower Leg",
     "value": "rightlowerleg",
     "shape": "poly",
-    "name": "",
     "coords": [
       305, 896,
       305, 965,
@@ -324,11 +278,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Ankle/Foot",
     "value": "leftanklefoot",
     "shape": "poly",
-    "name": "",
     "coords": [
       450, 1096,
       465, 1220,
@@ -338,11 +290,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Ankle/Foot",
     "value": "rightanklefoot",
     "shape": "poly",
-    "name": "",
     "coords": [
       295, 1096,
       305, 1185,
@@ -352,11 +302,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Head",
     "value": "head",
     "shape": "poly",
-    "name": "",
     "coords": [
       870, 30,
       910, 45,
@@ -374,11 +322,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Neck",
     "value": "neck",
     "shape": "poly",
-    "name": "",
     "coords": [
       910, 156,
       905, 195,
@@ -389,11 +335,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Shoulder",
     "value": "rightshoulder",
     "shape": "poly",
-    "name": "",
     "coords": [
       936, 220,
       1000, 250,
@@ -403,11 +347,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Shoulder",
     "value": "left shoulder",
     "shape": "poly",
-    "name": "",
     "coords": [
       804, 220,
       804, 295,
@@ -417,11 +359,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Upper Back",
     "value": "upperback",
     "shape": "poly",
-    "name": "",
     "coords": [
       935, 221,
       935, 296,
@@ -434,11 +374,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Lower Back",
     "value": "lowerback",
     "shape": "poly",
-    "name": "",
     "coords": [
       960, 416,
       965, 510,
@@ -447,11 +385,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Right Hip",
     "value": "righthip",
     "shape": "poly",
-    "name": "",
     "coords": [
       965, 511,
       975, 560,
@@ -460,11 +396,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Hip",
-    "value": "",
+    "value": "lefthip",
     "shape": "poly",
-    "name": "",
     "coords": [
       870, 511,
       870, 560,
@@ -473,11 +407,9 @@
     ]
   },
   {
-    "id": "",
-    "title": "Right Buttocks",
+    "title": "Right Buttock",
     "value": "rightbuttock",
     "shape": "poly",
-    "name": "",
     "coords": [
       975, 561,
       985, 650,
@@ -486,11 +418,9 @@
     ]
   },
   {
-    "id": "",
     "title": "Left Buttock",
     "value": "leftbuttock",
     "shape": "poly",
-    "name": "",
     "coords": [
       870, 560,
       870, 650,
