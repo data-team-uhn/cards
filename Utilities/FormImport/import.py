@@ -50,6 +50,9 @@ class RowTypes(enum.Enum):
     MATRIX_END = 14
     VOCABULARY = 15
     SECTION_REPEATED = 16
+    ADDRESS = 17
+    PHONE = 18
+    SELECTABLE_AREAS = 19
 
 # Basic logging support
 class Logging:
@@ -230,7 +233,10 @@ RowTypesMappings = [
     RowTypeMap(RowTypes.SECTION_END, "section end", True, "", section_end_handler),
     RowTypeMap(RowTypes.SECTION_RECURRENT, "recurrent section", True, "", recurrent_section_handler),
     RowTypeMap(RowTypes.MATRIX_END, "matrix end", True, "", matrix_end_handler),
-    RowTypeMap(RowTypes.SECTION_REPEATED, "repeated section", True, "", repeated_section_handler)
+    RowTypeMap(RowTypes.SECTION_REPEATED, "repeated section", True, "", repeated_section_handler),
+    RowTypeMap(RowTypes.ADDRESS, "address"),
+    RowTypeMap(RowTypes.PHONE, "phone"),
+    RowTypeMap(RowTypes.SELECTABLE_AREAS, "selectablearea", True, "selectableArea")
 ]
 DefaultRowTypeMap = RowTypeMap(RowTypes.DEFAULT, "", True, "text")
 
@@ -480,7 +486,14 @@ DefaultHeaders["SLIDER_MARK"] = HeaderColumn("Slider Mark Step", "sliderMarkStep
 DefaultHeaders["SLIDER_ORIENTATION"] = HeaderColumn("Slider Orientation", "sliderOrientation")
 DefaultHeaders["ENTRY_MODE"] = HeaderColumn("Entry Mode", "entryMode")
 DefaultHeaders["ENTRY_MODE_QUESTION"] = HeaderColumn("Reference Question", "question")
-
+DefaultHeaders["ENABLE_NOTES"] = HeaderColumn("enableNotes", "enableNotes")
+DefaultHeaders["VALIDATION_REGEXP"] = HeaderColumn("Validation regexp", "validationRegexp")
+DefaultHeaders["VARIANT"] = HeaderColumn("variant", "variant")
+DefaultHeaders["COUNTRIES"] = HeaderColumn("countries", "countries")
+DefaultHeaders["DEFAULT_COUNTRY"] = HeaderColumn("defaultCountry", "defaultCountry")
+DefaultHeaders["ONLY_COUNTRIES"] = HeaderColumn("onlyCountries", "onlyCountries")
+DefaultHeaders["REGIONS"] = HeaderColumn("regions", "regions")
+DefaultHeaders["SEARCH_PLACES_AROUND"] = HeaderColumn("searchPlacesAround", "searchPlacesAround")
 
 
 #==================
