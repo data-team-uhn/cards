@@ -40,20 +40,20 @@ fi
 CARDS_ARTIFACTID=$1
 CARDS_VERSION=$2
 
-VALID_CARDS_PROJECTS="||cards4kids|cards4lfs|cards4proms|cards4prems|cards4heracles|"
-[ -e /external_project/project_code.txt ] && VALID_CARDS_PROJECTS="${VALID_CARDS_PROJECTS}$(cat /external_project/project_code.txt | head -n 1 | tr -d '\n')|"
-echo "${VALID_CARDS_PROJECTS}" | grep -q "|${CARDS_PROJECT}|" || { echo "Invalid project specified - defaulting to generic CARDS."; unset CARDS_PROJECT; }
-
-featureFlagString=""
-if [ ! -z $CARDS_PROJECT ] && [ ! -z $PROJECT_VERSION ]
+if [ -z $PROJECT_VERSION ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/${CARDS_PROJECT}/${PROJECT_VERSION}/slingosgifeature"
+  PROJECT_VERSION=$CARDS_VERSION
 fi
 
-[[ "${CARDS_PROJECT}" == 'cards4proms' || "${CARDS_PROJECT}" == 'cards4prems' ]] && SMTPS_ENABLED="true"
+VALID_PROJECT_NAMES="||cards4kids|cards4lfs|cards4proms|cards4prems|cards4heracles|"
+[ -e /external_project/project_code.txt ] && VALID_PROJECT_NAMES="${VALID_PROJECT_NAMES}$(cat /external_project/project_code.txt | head -n 1 | tr -d '\n')|"
+echo "${VALID_PROJECT_NAMES}" | grep -q "|${PROJECT_NAME}|" || { echo "Invalid project specified - defaulting to generic CARDS."; unset PROJECT_NAME; }
 
-[[ "${CARDS_PROJECT}" == 'cards4prems' ]] && CSV_EXPORT_ENABLED="true"
-[[ "${CARDS_PROJECT}" == 'cards4proms' || "${CARDS_PROJECT}" == 'cards4prems' ]] && CLARITY_IMPORT_ENABLED="true"
+featureFlagString=""
+if [ ! -z $PROJECT_NAME ] && [ ! -z $PROJECT_VERSION ]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/${PROJECT_NAME}/${PROJECT_VERSION}/slingosgifeature"
+fi
 
 if [ ! -z $DEV ]
 then
@@ -92,52 +92,8 @@ then
   featureFlagString="$featureFlagString -f ${ADDITIONAL_SLING_FEATURES@P}"
 fi
 
-#Parse the (legacy) ADDITIONAL_RUN_MODES environment variable and determine the features that need to be enabled
-legacyRunModes=$(echo $ADDITIONAL_RUN_MODES | tr "," "\n")
-for legacyRunMode in $legacyRunModes
-do
-  #Perform the translation
-  if [[ ${legacyRunMode} == 'oak_tar' ]]
-  then
-    STORAGE=tar
-  elif [[ ${legacyRunMode} == 'oak_mongo' ]]
-  then
-    STORAGE=mongo
-  elif [[ ${legacyRunMode} == 'dev' ]]
-  then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum"
-  elif [[ ${legacyRunMode} == 'kids' ]]
-  then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${CARDS_VERSION}/slingosgifeature"
-  elif [[ ${legacyRunMode} == 'lfs' ]]
-  then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4lfs/${CARDS_VERSION}/slingosgifeature"
-  elif [[ ${legacyRunMode} == 'proms' ]]
-  then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${CARDS_VERSION}/slingosgifeature"
-    SMTPS_ENABLED="true"
-  elif [[ ${legacyRunMode} == 'test' ]]
-  then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature"
-  elif [[ ${legacyRunMode} == 'demo' ]]
-  then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${CARDS_VERSION}/slingosgifeature,"
-    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${CARDS_VERSION}/slingosgifeature,"
-    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/forms_demo"
-  elif [[ ${legacyRunMode} == 'permissions_open' ]]
-  then
-    PERMISSIONS="open"
-  elif [[ ${legacyRunMode} == 'permissions_trusted' ]]
-  then
-    PERMISSIONS="trusted"
-  elif [[ ${legacyRunMode} == 'permissions_ownership' ]]
-  then
-    PERMISSIONS="ownership"
-  fi
-done
-
 # Read /sling-features.json and enable the features required for this project
-PROJECT_REQUIRED_FEATURES=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${CARDS_PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json)
+PROJECT_REQUIRED_FEATURES=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT_NAME} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json)
 if [ ! -z $PROJECT_REQUIRED_FEATURES ]
 then
   featureFlagString="$featureFlagString -f $PROJECT_REQUIRED_FEATURES"
@@ -153,7 +109,7 @@ echo "ADDITIONAL_RUN_MODES = $ADDITIONAL_RUN_MODES"
 echo "ADDITIONAL_SLING_FEATURES = $ADDITIONAL_SLING_FEATURES"
 echo "CARDS_ARTIFACTID = $CARDS_ARTIFACTID"
 echo "CARDS_VERSION = $CARDS_VERSION"
-echo "CARDS_PROJECT = $CARDS_PROJECT"
+echo "PROJECT_NAME = $PROJECT_NAME"
 echo "PROJECT_VERSION = $PROJECT_VERSION"
 
 #Are we using an external MongoDB service for data storage?
