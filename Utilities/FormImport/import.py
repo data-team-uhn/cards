@@ -96,7 +96,7 @@ class RowTypeMap:
         self.handler = handler
 
 def section_start_handler(self, questionnaire, row):
-    if (not Headers["SECTION"].has_value(row)):
+    if (not Headers["SECTION"].has_value(row) and not Headers["QUESTION"].has_value(row)):
         # Section will not have been created yet: Create a section with a unique name
         questionnaire.section_index += 1
         label = "Section {}".format(questionnaire.section_index)
@@ -396,7 +396,7 @@ def question_handler(self, questionnaire, row):
         if Headers["SECTION"].has_value(row):
             questionnaire.parent["title"] = title
         else:
-            questionnaire.push_section(create_new_section(""))
+            questionnaire.push_section(create_new_section(title, False))
     else:
         create_question(questionnaire, self.get_value(row).strip().lower())
 
