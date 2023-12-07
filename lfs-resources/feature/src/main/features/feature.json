@@ -42,7 +42,7 @@
       "start-order":"26"
     },
     {
-      "id":"${project.groupId}:lfs-variants:${project.version}",
+      "id":"${project.groupId}:cards-variants:${project.version}",
       "start-order":"26"
     }
   ]

@@ -3,6 +3,6 @@
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
   "cards:extensionName": "Variants",
   "cards:targetURL": "/content.html/Variants",
-  "cards:icon": "asset:lfs-variants.variantsIcon.js",
+  "cards:icon": "asset:cards-variants.variantsIcon.js",
   "cards:defaultOrder": 20
 }
