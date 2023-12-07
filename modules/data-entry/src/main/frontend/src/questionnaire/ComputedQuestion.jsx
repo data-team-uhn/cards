@@ -23,7 +23,7 @@ import { InputAdornment, TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
-import Answer from "./Answer";
+import Answer, {VALUE_POS} from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import DateQuestionUtilities from "./DateQuestionUtilities";
 import Question from "./Question";
@@ -137,8 +137,12 @@ let ComputedQuestion = (props) => {
   let missingValue = false;
   let getQuestionValue = (name, form, defaultValue) => {
     let value;
-    if (form[name] && form[name][0]) {
-      value = form[name][0][1];
+    if (form[name]?.length > 0) {
+      if (form[name].length == 1) {
+        value = form[name][0][VALUE_POS];
+      } else {
+        value = form[name].map(e => e[VALUE_POS]);
+      }
     }
     if (typeof(value) === "undefined" || value === "") {
       if (defaultValue != null) {
