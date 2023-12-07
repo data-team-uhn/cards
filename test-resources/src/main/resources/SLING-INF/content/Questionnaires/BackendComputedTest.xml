@@ -27,7 +27,7 @@
     </property>
     <property>
         <name>description</name>
-        <value>CARDS-1800</value>
+        <value>CARDS-1800, CARDS-2441</value>
         <type>String</type>
     </property>
     <node>
@@ -304,10 +304,10 @@ which can then be verified for accuracy by opening the form in read mode with th
             <property>
                 <name>expression</name>
                 <value><![CDATA[
-var values = typeof(@{question4_multi}) != 'object' ? [@{question4_multi}] : @{question4_multi};
+var values = @{[question4_multi]};
 var result = "";
 for (var i = 0; values && i < values.length; i++) {
-  result += "\n* " + i + ": " + values[i];
+  result += "\n* " + (i+1) + ": " + values[i];
 }
 return result;
                 ]]></value>
