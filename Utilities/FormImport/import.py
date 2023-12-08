@@ -24,6 +24,7 @@ import enum
 import json
 import csv
 import re
+import copy
 
 
 
@@ -123,7 +124,11 @@ def repeated_section_handler(self, questionnaire, row):
 
         for key in question.keys():
             entry = question[key]
-            if type(entry) == dict and 'jcr:primaryType' in entry and entry['jcr:primaryType'] == 'cards:AnswerOption':
+            if (type(entry) == dict
+                    and 'jcr:primaryType' in entry
+                    and entry['jcr:primaryType'] == 'cards:AnswerOption'
+                    and ('noneOfTheAbove' not in entry.keys() or not entry['noneOfTheAbove'])
+                    and ('notApplicable' not in entry.keys() or not entry['notApplicable'])):
                 conditional_label = parent_label + "_" + clean_name(entry['value'])
                 new_section = create_new_section(conditional_label)
                 new_section['label'] = entry['label']
@@ -132,6 +137,20 @@ def repeated_section_handler(self, questionnaire, row):
                 questionnaire.push_section(new_section)
                 condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
                 questionnaire.complete_section()
+
+def modify_repeated_conditionals(self, repeated_parent, repeated_name):
+    for key in repeated_parent.keys():
+        entry = repeated_parent[key]
+        if type(entry) == dict and "jcr:primaryType" in entry:
+            if entry["jcr:primaryType"] == "cards:Conditional":
+                if "operandA" in entry.keys() and entry["operandA"]["isReference"]:
+                    for i, reference in enumerate(entry["operandA"]["value"]):
+                        entry["operandA"]["value"][i] = "{}_{}".format(repeated_name, reference)
+                if "operandB" in entry.keys() and entry["operandB"]["isReference"]:
+                    for i, reference in enumerate(entry["operandB"]["value"]):
+                        entry["operandB"]["value"][i] = "{}_{}".format(repeated_name, reference)
+            else:
+                modify_repeated_conditionals(self, entry, repeated_name)
 
 def end_repeated_section(self, questionnaire, row):
     parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
@@ -151,7 +170,9 @@ def end_repeated_section(self, questionnaire, row):
     for non_repeated_key in non_repeated_children:
         non_repeated_child = questionnaire.parent.pop(non_repeated_key)
         for repeated_key in repeated_conditionals:
-            questionnaire.parent[repeated_key][repeated_key + "_" + non_repeated_key] = non_repeated_child
+            repeated_child_name = repeated_key + "_" + non_repeated_key
+            questionnaire.parent[repeated_key][repeated_child_name] = copy.deepcopy(non_repeated_child)
+            modify_repeated_conditionals(self, questionnaire.parent[repeated_key][repeated_child_name], repeated_key)
             questionnaire.parents[-2][repeated_key] = questionnaire.parent[repeated_key]
 
     questionnaire.parents.pop()
@@ -259,7 +280,6 @@ class QuestionnaireState:
         # List of all questionnaires defined in the current CSV
         self.questionnaires = []
         self.clear_questionnaire()
-        self.flags = {}
 
     def clear_questionnaire(self):
         # How many unnamed sections have been created, used to create a unique generic section title
@@ -277,6 +297,8 @@ class QuestionnaireState:
         self.question = {}
         # Stack of currently being created questionnaires/sections
         self.parents = []
+
+        self.flags = {}
 
     # Add a new questionnaire to the list of questionnaires and update current regerences
     def add_questionnaire(self, questionnaire):
@@ -516,8 +538,8 @@ def split_ignore_strings(input, splitters, limit = -1):
     number_splits = 0
     i = 0
     last_split = 0
-    while i < len(input) and (limit == -1 or number_splits <= limit):
-        if len(ignore_list) > 0 and input[i] == ignore_list[len(ignore_list) - 1]:
+    while i < len(input) and (limit == -1 or number_splits < limit):
+        if len(ignore_list) > 0 and input[i] == ignore_list[-1]:
             ignore_list.pop()
         elif input[i] in STRING_GROUPS.keys():
             ignore_list.append(STRING_GROUPS[input[i]])
@@ -533,7 +555,7 @@ def split_ignore_strings(input, splitters, limit = -1):
         i += 1
     results.append(input[last_split:].strip())
     if (len(ignore_list) > 0):
-        print("Split ignore list not cleared for '{}': {}".format(input, ignore_list))
+        log(Logging.WARNING, "Split ignore list not cleared for '{}': {}".format(input, ignore_list))
         pass
     return results
 
@@ -565,7 +587,7 @@ def create_new_questionnaire(title):
     new_questionnaire = {}
     new_questionnaire['jcr:primaryType'] = 'cards:Questionnaire'
     new_questionnaire['title'] = clean_title(title)
-    new_questionnaire['jcr:reference:requiredSubjectTypes'] = [Options.subject_types]
+    new_questionnaire['jcr:reference:requiredSubjectTypes'] = Options.subject_types
     new_questionnaire['paginate'] = Options.paginate
     if Options.max_per_subject >  0:
         new_questionnaire['maxPerSubject'] = Options.max_per_subject
@@ -733,22 +755,14 @@ def condition_handle_single(questionnaire, condition_parent, conditional_string,
             # Found a single operand conditional
             for operator in OPERATORS_SINGLE:
                 if conditional_string.endswith(operator):
-                    create_condition(questionnaire, condition_parent, index, terms[0], operator, terms[0])
+                    create_condition(questionnaire, condition_parent, index, terms[0], operator, None)
         else:
             operator = conditional_string[len(terms[0]):-len(terms[1])].strip()
             create_condition(questionnaire, condition_parent, index, terms[0], operator, terms[1])
 
 def create_condition(questionnaire, condition_parent, index, operand_a, operator, operand_b):
-    log(Logging.INFO, "Creating condition     " + operand_a + " " + operator + " " + operand_b)
     if operand_a[0] == "\"" and operand_a[-1] == "\"":
         operand_a = operand_a[1:-1]
-    if operand_b[0] == "\"" and operand_b[-1] == "\"":
-        operand_b = operand_b[1:-1]
-
-    # TODO: Do conditionals support arrays of values in operandA or operand_b?
-    # If so, handle that case
-
-    is_reference = operand_b in questionnaire.question_title_list
 
     result = {
         'jcr:primaryType': 'cards:Conditional',
@@ -757,13 +771,23 @@ def create_condition(questionnaire, condition_parent, index, operand_a, operator
             'value': [operand_a.lower()],
             'isReference': True
         },
-        'comparator' : operator,
-        'operandB': {
+        'comparator' : operator
+    }
+
+    if operand_b != None:
+        if operand_b[0] == "\"" and operand_b[-1] == "\"":
+            operand_b = operand_b[1:-1]
+
+        # TODO: Do conditionals support arrays of values in operandA or operand_b?
+        # If so, handle that case
+
+        is_reference = operand_b in questionnaire.question_title_list
+
+        result['operandB'] = {
             'jcr:primaryType': 'cards:ConditionalValue',
             'value': [operand_b.lower()],
             'isReference': is_reference
         }
-    }
 
     # TODO: Do conditionals support arrays of values in operandA or operand_b?
     # If so, handle that case:
@@ -817,8 +841,8 @@ def get_log_level(log_input):
 
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--forms", nargs="*", type=str, required=True)
-CLI.add_argument("--paginate", nargs=1, type=bool, default=False)
-CLI.add_argument("--subject-types", nargs=1, type=str, default="/SubjectTypes/Patient/Visit")
+CLI.add_argument("--paginate", type=bool, default=False)
+CLI.add_argument("--subject-types", nargs=1, type=str, default=["/SubjectTypes/Patient/Visit"])
 CLI.add_argument("--logging", nargs=1, type=str, default="info")
 CLI.add_argument("--max-answers", nargs=1, type=int, default=1)
 CLI.add_argument("--max-per-subject", nargs=1, type=int, default=1)
