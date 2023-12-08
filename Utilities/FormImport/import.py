@@ -152,6 +152,31 @@ def modify_repeated_conditionals(self, repeated_parent, repeated_name):
             else:
                 modify_repeated_conditionals(self, entry, repeated_name)
 
+def process_repeated_child_section(section, repeated_key):
+    for key in list(section.keys()):
+        child = section[key]
+        if type(child) == dict:
+            if is_section(child):
+                section[repeated_key + "_" + key] = process_repeated_child_section(section.pop(key), repeated_key)
+            elif is_question(child):
+                section[repeated_key + "_" + key] = section.pop(key)
+    return section
+
+
+def process_repeated(self, questionnaire, child, repeated_conditionals, non_repeated_key):
+    for repeated_key in repeated_conditionals:
+        repeated_child_name = repeated_key + "_" + non_repeated_key
+        new_child = copy.deepcopy(child)
+
+        if type(new_child) == dict and is_section(new_child):
+            new_child = process_repeated_child_section(new_child, repeated_key)
+
+        # TODO: clean up mess of nested []: changing the order of operations and using new_child instead may make this more readable
+        questionnaire.parent[repeated_key][repeated_child_name] = new_child
+        modify_repeated_conditionals(self, questionnaire.parent[repeated_key][repeated_child_name], repeated_key)
+        questionnaire.parents[-2][repeated_key] = questionnaire.parent[repeated_key]
+
+
 def end_repeated_section(self, questionnaire, row):
     parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
 
@@ -169,11 +194,7 @@ def end_repeated_section(self, questionnaire, row):
 
     for non_repeated_key in non_repeated_children:
         non_repeated_child = questionnaire.parent.pop(non_repeated_key)
-        for repeated_key in repeated_conditionals:
-            repeated_child_name = repeated_key + "_" + non_repeated_key
-            questionnaire.parent[repeated_key][repeated_child_name] = copy.deepcopy(non_repeated_child)
-            modify_repeated_conditionals(self, questionnaire.parent[repeated_key][repeated_child_name], repeated_key)
-            questionnaire.parents[-2][repeated_key] = questionnaire.parent[repeated_key]
+        process_repeated(self, questionnaire, non_repeated_child, repeated_conditionals, non_repeated_key)
 
     questionnaire.parents.pop()
     questionnaire.parent = questionnaire.parents[-1]
