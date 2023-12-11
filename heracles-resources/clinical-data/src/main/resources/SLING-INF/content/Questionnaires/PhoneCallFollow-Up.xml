@@ -37,7 +37,7 @@
 		<value>True</value>
 		<type>Boolean</type>
 	</property>
-		<property>
+	<property>
 		<name>requireCompletion</name>
 		<value>True</value>
 		<type>Boolean</type>
@@ -86,6 +86,11 @@
 			<property>
 				<name>validationRegexp</name>
 				<value>^(MH|PI)[0-9A-Fa-f]{6}$</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>validationErrorText</name>
+				<value>The value must consist of "MH" or "PI" followed by 6 hexadecimal digits, for example "MH1234EF"</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -291,6 +296,11 @@
 					<value>^[0-9A-Fa-f]{8}$</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>validationErrorText</name>
+					<value>The value must consist of 8 hexadecimal digits, for example "123AC456"</value>
+					<type>String</type>
+				</property>
 			</node>
 			<node>
 				<name>pc_7</name>
@@ -323,6 +333,11 @@
 				<property>
 					<name>validationRegexp</name>
 					<value>^[0-9A-Fa-f]{8}$</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>validationErrorText</name>
+					<value>The value must consist of 8 hexadecimal digits, for example "123AC456"</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -686,6 +701,11 @@
 				<property>
 					<name>validationRegexp</name>
 					<value>^PI[0-9A-Fa-f]{6}$</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>validationErrorText</name>
+					<value>The value must consist of "PI" followed by 6 hexadecimal digits, for example "PIAB0987"</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -15411,6 +15431,11 @@
 					<name>maxValue</name>
 					<value>365</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>validationErrorText</name>
+					<value>The number must be between 0 and 365</value>
+					<type>String</type>
 				</property>
 			</node>
 		</node>
