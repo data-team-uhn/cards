@@ -1551,7 +1551,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Subtype</value>
+					<value>Cardiovascular Other Subtype</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1873,7 +1873,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -1955,7 +1955,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 			</node>
 		</node>
 		<node>
-			<name>ec_21section</name>
+			<name>section_clinical_service_inpatient</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -1999,7 +1999,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</node>
 			</node>
 			<node>
-				<name>ec_21</name>
+				<name>ec_21_inpatient</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2017,92 +2017,13 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
 				</property>
 			</node>
-		</node>
-		<node>
-			<name>ec_22</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>boolean</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Has the participant been discharged from the hospital?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>ec_23section</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>ec_22</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>ec_23</name>
+				<name>ec_22</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2111,29 +2032,231 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>long</value>
+					<value>boolean</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>text</name>
-					<value>How many days ago?</value>
+					<value>Has the participant been discharged from the hospital?</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
 				</property>
-				<property>
-					<name>minValue</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>maxValue</name>
-					<value>365</value>
-					<type>Long</type>
-				</property>
+			</node>
+			<node>
+				<name>ec_23section</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ec_22</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>1</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>ec_23</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>long</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>How many days ago?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>minValue</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>maxValue</name>
+						<value>365</value>
+						<type>Long</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>ec_21_outpatientsection</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ec_20</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>outpatient</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>ec_21_outpatient</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>When did the participant visit the hospital as an outpatient?</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>ec_21_ersection</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ec_20</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>er</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>ec_21_er</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>When did the participant visit the ER?</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -2200,7 +2323,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2426,7 +2549,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2557,7 +2680,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2688,7 +2811,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5954,7 +6077,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6180,7 +6303,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6615,7 +6738,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7764,7 +7887,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 			</node>
 			<node>
-				<name>-1</name>
+				<name>noneoftheabove</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7773,7 +7896,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>value</name>
-					<value>-1</value>
+					<value>none of the above</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9444,7 +9567,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 			</node>
 			<node>
-				<name>-1</name>
+				<name>contextunknown</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -9453,13 +9576,37 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>value</name>
-					<value>-1</value>
+					<value>context unknown</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>defaultOrder</name>
 					<value>16</value>
 					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>noneoftheabove</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>None of the above</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>none of the above</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>17</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
@@ -9583,7 +9730,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 			</property>
 			<property>
 				<name>text</name>
-				<value>Comments</value>
+				<value>Clinical event comments</value>
 				<type>String</type>
 			</property>
 			<property>

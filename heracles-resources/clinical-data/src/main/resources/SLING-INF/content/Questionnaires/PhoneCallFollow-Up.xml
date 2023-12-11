@@ -1214,7 +1214,7 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Stroke</value>
+						<value>Stroke / Transient ischemic attack</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1359,16 +1359,16 @@
 						</property>
 					</node>
 					<node>
-						<name>medicationuptitration</name>
+						<name>medicationchange</name>
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Medication uptitration</value>
+							<value>Medication change</value>
 							<type>String</type>
 						</property>
 						<property>
 							<name>value</name>
-							<value>medication uptitration</value>
+							<value>medication change</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -2294,7 +2294,7 @@
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
-						<value>1</value>
+						<value>0</value>
 						<type>Long</type>
 					</property>
 					<property>
@@ -2309,7 +2309,7 @@
 					</property>
 					<property>
 						<name>displayMode</name>
-						<value>list</value>
+						<value>list+input</value>
 						<type>String</type>
 					</property>
 					<node>
@@ -2520,25 +2520,6 @@
 						</property>
 					</node>
 					<node>
-						<name>transientischemicattacktiaorministroke</name>
-						<primaryNodeType>cards:AnswerOption</primaryNodeType>
-						<property>
-							<name>label</name>
-							<value>Transient ischemic attack (TIA or ministroke)</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>value</name>
-							<value>transient ischemic attack (tia or ministroke)</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>defaultOrder</name>
-							<value>4</value>
-							<type>Long</type>
-						</property>
-					</node>
-					<node>
 						<name>cancer</name>
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
@@ -2553,7 +2534,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>5</value>
+							<value>4</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2572,7 +2553,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>6</value>
+							<value>5</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2591,7 +2572,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>7</value>
+							<value>6</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2610,7 +2591,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>8</value>
+							<value>7</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2629,7 +2610,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>9</value>
+							<value>8</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2648,7 +2629,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>10</value>
+							<value>9</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2667,7 +2648,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>11</value>
+							<value>10</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2686,7 +2667,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>12</value>
+							<value>11</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2705,7 +2686,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>13</value>
+							<value>12</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2724,7 +2705,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>14</value>
+							<value>13</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2743,7 +2724,7 @@
 						</property>
 						<property>
 							<name>defaultOrder</name>
-							<value>15</value>
+							<value>14</value>
 							<type>Long</type>
 						</property>
 						<property>
@@ -8492,11 +8473,11 @@
 			</node>
 		</node>
 		<node>
-			<name>section_conditions_list_stroke</name>
+			<name>section_conditions_list_stroke-transient</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Stroke</value>
+				<value>Stroke / Transient ischemic attack</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -8541,7 +8522,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_conditions_list_stroke_pc_13</name>
+				<name>section_conditions_list_stroke-transient_pc_13</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8570,7 +8551,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_conditions_list_stroke_section_conditions_symptoms</name>
+				<name>section_conditions_list_stroke-transient_section_conditions_symptoms</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -8586,7 +8567,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>section_conditions_list_stroke_pc_13</value>
+								<value>section_conditions_list_stroke-transient_pc_13</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -8614,7 +8595,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_conditions_list_stroke_pc_13_1</name>
+					<name>section_conditions_list_stroke-transient_pc_13_1</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8790,7 +8771,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_conditions_list_stroke_section_symptoms_info_tightnesspressurep</name>
+					<name>section_conditions_list_stroke-transient_section_symptoms_info_tightnesspressurep</name>
 					<primaryNodeType>cards:Section</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -8811,7 +8792,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>section_conditions_list_stroke_pc_13_1</value>
+									<value>section_conditions_list_stroke-transient_pc_13_1</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -8839,7 +8820,7 @@
 						</node>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_tightnesspressurep_pc_13_2</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_tightnesspressurep_pc_13_2</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -8863,7 +8844,7 @@
 						</property>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_tightnesspressurep_pc_13_3</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_tightnesspressurep_pc_13_3</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -8988,7 +8969,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_conditions_list_stroke_section_symptoms_info_nauseaorindigestio</name>
+					<name>section_conditions_list_stroke-transient_section_symptoms_info_nauseaorindigestio</name>
 					<primaryNodeType>cards:Section</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -9009,7 +8990,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>section_conditions_list_stroke_pc_13_1</value>
+									<value>section_conditions_list_stroke-transient_pc_13_1</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -9037,7 +9018,7 @@
 						</node>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_nauseaorindigestio_pc_13_2</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_nauseaorindigestio_pc_13_2</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9061,7 +9042,7 @@
 						</property>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_nauseaorindigestio_pc_13_3</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_nauseaorindigestio_pc_13_3</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9186,7 +9167,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_conditions_list_stroke_section_symptoms_info_heartrhythmproblem</name>
+					<name>section_conditions_list_stroke-transient_section_symptoms_info_heartrhythmproblem</name>
 					<primaryNodeType>cards:Section</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -9207,7 +9188,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>section_conditions_list_stroke_pc_13_1</value>
+									<value>section_conditions_list_stroke-transient_pc_13_1</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -9235,7 +9216,7 @@
 						</node>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_heartrhythmproblem_pc_13_2</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_heartrhythmproblem_pc_13_2</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9259,7 +9240,7 @@
 						</property>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_heartrhythmproblem_pc_13_3</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_heartrhythmproblem_pc_13_3</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9384,7 +9365,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_conditions_list_stroke_section_symptoms_info_shortnessofbreatha</name>
+					<name>section_conditions_list_stroke-transient_section_symptoms_info_shortnessofbreatha</name>
 					<primaryNodeType>cards:Section</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -9405,7 +9386,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>section_conditions_list_stroke_pc_13_1</value>
+									<value>section_conditions_list_stroke-transient_pc_13_1</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -9433,7 +9414,7 @@
 						</node>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_shortnessofbreatha_pc_13_2</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_shortnessofbreatha_pc_13_2</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9457,7 +9438,7 @@
 						</property>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_shortnessofbreatha_pc_13_3</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_shortnessofbreatha_pc_13_3</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9582,7 +9563,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_conditions_list_stroke_section_symptoms_info_rapidunexplainedch</name>
+					<name>section_conditions_list_stroke-transient_section_symptoms_info_rapidunexplainedch</name>
 					<primaryNodeType>cards:Section</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -9603,7 +9584,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>section_conditions_list_stroke_pc_13_1</value>
+									<value>section_conditions_list_stroke-transient_pc_13_1</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -9631,7 +9612,7 @@
 						</node>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_rapidunexplainedch_pc_13_2</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_rapidunexplainedch_pc_13_2</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9655,7 +9636,7 @@
 						</property>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_rapidunexplainedch_pc_13_3</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_rapidunexplainedch_pc_13_3</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9780,7 +9761,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_conditions_list_stroke_section_symptoms_info_swellinginlegsankl</name>
+					<name>section_conditions_list_stroke-transient_section_symptoms_info_swellinginlegsankl</name>
 					<primaryNodeType>cards:Section</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -9801,7 +9782,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>section_conditions_list_stroke_pc_13_1</value>
+									<value>section_conditions_list_stroke-transient_pc_13_1</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -9829,7 +9810,7 @@
 						</node>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_swellinginlegsankl_pc_13_2</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_swellinginlegsankl_pc_13_2</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9853,7 +9834,7 @@
 						</property>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_swellinginlegsankl_pc_13_3</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_swellinginlegsankl_pc_13_3</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -9978,7 +9959,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_conditions_list_stroke_section_symptoms_info_discomfortandpaini</name>
+					<name>section_conditions_list_stroke-transient_section_symptoms_info_discomfortandpaini</name>
 					<primaryNodeType>cards:Section</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -9999,7 +9980,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>section_conditions_list_stroke_pc_13_1</value>
+									<value>section_conditions_list_stroke-transient_pc_13_1</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -10027,7 +10008,7 @@
 						</node>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_discomfortandpaini_pc_13_2</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_discomfortandpaini_pc_13_2</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -10051,7 +10032,7 @@
 						</property>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_discomfortandpaini_pc_13_3</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_discomfortandpaini_pc_13_3</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -10176,7 +10157,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_conditions_list_stroke_section_symptoms_info_lightheadednessdiz</name>
+					<name>section_conditions_list_stroke-transient_section_symptoms_info_lightheadednessdiz</name>
 					<primaryNodeType>cards:Section</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -10197,7 +10178,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>section_conditions_list_stroke_pc_13_1</value>
+									<value>section_conditions_list_stroke-transient_pc_13_1</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -10225,7 +10206,7 @@
 						</node>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_lightheadednessdiz_pc_13_2</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_lightheadednessdiz_pc_13_2</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -10249,7 +10230,7 @@
 						</property>
 					</node>
 					<node>
-						<name>section_conditions_list_stroke_section_symptoms_info_lightheadednessdiz_pc_13_3</name>
+						<name>section_conditions_list_stroke-transient_section_symptoms_info_lightheadednessdiz_pc_13_3</name>
 						<primaryNodeType>cards:Question</primaryNodeType>
 						<property>
 							<name>maxAnswers</name>
@@ -19289,6 +19270,30 @@
 							<type>Long</type>
 						</property>
 					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 		</node>
@@ -19678,6 +19683,30 @@
 							<name>defaultOrder</name>
 							<value>6</value>
 							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
 						</property>
 					</node>
 				</node>
@@ -20071,6 +20100,30 @@
 							<type>Long</type>
 						</property>
 					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 		</node>
@@ -20460,6 +20513,30 @@
 							<name>defaultOrder</name>
 							<value>6</value>
 							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
 						</property>
 					</node>
 				</node>
@@ -20853,6 +20930,30 @@
 							<type>Long</type>
 						</property>
 					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 		</node>
@@ -21242,6 +21343,30 @@
 							<name>defaultOrder</name>
 							<value>6</value>
 							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
 						</property>
 					</node>
 				</node>
@@ -21635,6 +21760,30 @@
 							<type>Long</type>
 						</property>
 					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 		</node>
@@ -22024,6 +22173,30 @@
 							<name>defaultOrder</name>
 							<value>6</value>
 							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
 						</property>
 					</node>
 				</node>
@@ -22604,6 +22777,30 @@
 						<type>Long</type>
 					</property>
 				</node>
+				<node>
+					<name>notapplicable</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>7</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -22919,6 +23116,30 @@
 						<name>defaultOrder</name>
 						<value>6</value>
 						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>notapplicable</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>7</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -23238,6 +23459,30 @@
 						<type>Long</type>
 					</property>
 				</node>
+				<node>
+					<name>notapplicable</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>7</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -23553,6 +23798,30 @@
 						<name>defaultOrder</name>
 						<value>6</value>
 						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>notapplicable</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>7</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -23872,6 +24141,30 @@
 						<type>Long</type>
 					</property>
 				</node>
+				<node>
+					<name>notapplicable</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>7</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -24187,6 +24480,30 @@
 						<name>defaultOrder</name>
 						<value>6</value>
 						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>notapplicable</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>7</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -24506,6 +24823,30 @@
 						<type>Long</type>
 					</property>
 				</node>
+				<node>
+					<name>notapplicable</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>7</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -24821,6 +25162,30 @@
 						<name>defaultOrder</name>
 						<value>6</value>
 						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>notapplicable</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>not applicable</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>7</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
