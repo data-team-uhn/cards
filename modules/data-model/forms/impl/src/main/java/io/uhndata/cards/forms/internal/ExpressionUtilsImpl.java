@@ -90,6 +90,10 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         return null;
     }
 
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity",
+        "checkstyle:ExecutableStatementCount",
+        "checkstyle:JavaNCSS",
+        "checkstyle:NPathComplexity"})
     private ExpressionUtilsImpl.ParsedExpression parseExpressionInputs(final String expression,
         final Map<String, Object> values)
     {
@@ -98,30 +102,66 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         Boolean missingValue = false;
         Map<String, ExpressionArgument> questions = new HashMap<>();
 
-        int start = expr.indexOf(START_MARKER);
-        int end = expr.indexOf(END_MARKER, start);
+        String startMarker;
+        String endMarker;
+        Boolean isArrayArgument;
+
+        int arrayStart = expr.indexOf(START_MARKER_ARRAY);
+        int singleStart = expr.indexOf(START_MARKER_SINGLE);
+
+        if (arrayStart > -1 && (singleStart < 0 || arrayStart <= singleStart)) {
+            isArrayArgument = true;
+            startMarker = START_MARKER_ARRAY;
+            endMarker = END_MARKER_ARRAY;
+        } else {
+            isArrayArgument = false;
+            startMarker = START_MARKER_SINGLE;
+            endMarker = END_MARKER_SINGLE;
+        }
+
+        int start = expr.indexOf(startMarker);
+        int end = expr.indexOf(endMarker);
+
         // For each argument in the expression, parse the question name and default value if present.
         // To prevent question names from breaking the evaluating funtion, replace them with a default
         // argument name in the evaluated expression.
         while (start > -1 && end > -1) {
             int defaultStart = expr.indexOf(DEFAULT_MARKER, start);
             boolean hasDefault = defaultStart > -1 && defaultStart < end;
+            boolean isOptional = false;
 
             // Parse out the question name and default value if provided
             String questionName;
             String defaultValue = null;
             if (hasDefault) {
-                questionName = expr.substring(start + START_MARKER.length(), defaultStart);
+                questionName = expr.substring(start + startMarker.length(), defaultStart);
                 defaultValue = expr.substring(defaultStart + DEFAULT_MARKER.length(), end);
             } else {
-                questionName = expr.substring(start + START_MARKER.length(), end);
+                questionName = expr.substring(start + startMarker.length(), end);
+            }
+
+            if (questionName.lastIndexOf(OPTIONAL_MARKER) > -1
+                && questionName.lastIndexOf(OPTIONAL_MARKER)
+                    == (questionName.length() - OPTIONAL_MARKER.length())
+            ) {
+                isOptional = true;
+                questionName = questionName.substring(0, questionName.lastIndexOf(OPTIONAL_MARKER));
             }
 
             // Insert this question into the list of arguments
             if (!questions.containsKey(questionName)) {
-                ExpressionArgument arg = new ExpressionArgument("arg" + questions.size(),
-                    getQuestionValue(questionName, values, defaultValue));
-                if (arg.getValue() == null) {
+                Object questionValue = getQuestionValue(questionName, values, defaultValue);
+
+                if (questionValue != null) {
+                    if (questionValue.getClass().isArray() && !isArrayArgument) {
+                        questionValue = ((Object[]) questionValue)[0];
+                    } else if (!questionValue.getClass().isArray() && isArrayArgument) {
+                        questionValue = new Object[]{questionValue};
+                    }
+                }
+
+                ExpressionArgument arg = new ExpressionArgument("arg" + questions.size(), questionValue);
+                if (arg.getValue() == null && !isOptional) {
                     missingValue = true;
                 }
                 questions.put(questionName, arg);
@@ -129,10 +169,23 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
             // Remove the start and end tags and replace the question name with the argument name for this question
             expr = expr.substring(0, start) + questions.get(questionName).getArgument()
-                + expr.substring(end + END_MARKER.length());
+                + expr.substring(end + endMarker.length());
 
-            start = expr.indexOf(START_MARKER);
-            end = expr.indexOf(END_MARKER, start);
+            arrayStart = expr.indexOf(START_MARKER_ARRAY);
+            singleStart = expr.indexOf(START_MARKER_SINGLE);
+
+            if (arrayStart > -1 && (singleStart < 0 || arrayStart <= singleStart)) {
+                isArrayArgument = true;
+                startMarker = START_MARKER_ARRAY;
+                endMarker = END_MARKER_ARRAY;
+            } else {
+                isArrayArgument = false;
+                startMarker = START_MARKER_SINGLE;
+                endMarker = END_MARKER_SINGLE;
+            }
+
+            start = expr.indexOf(startMarker);
+            end = expr.indexOf(endMarker);
         }
         return new ParsedExpression(questions, expr, missingValue);
     }
