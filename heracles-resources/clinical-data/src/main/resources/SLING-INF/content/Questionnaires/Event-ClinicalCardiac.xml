@@ -594,7 +594,6 @@
 			<property>
 				<name>description</name>
 				<value>If inpatient/hospitalization, input date admitted into the hospital.
-Event Date Relative to Study Start (date differential b/w what study team gets from records and study start of May 15, 2022).
 </value>
 				<type>String</type>
 			</property>
@@ -687,7 +686,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Why did patient not provide consent?</value>
+					<value>Why did the patient not provide consent?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1006,7 +1005,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Heart Failure Subtype</value>
+					<value>Heart Failure (HF) Subtype</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1175,7 +1174,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Valvular Heart Disease Subtype</value>
+					<value>Valvular Heart Disease (VHD) Subtype</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1551,7 +1550,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Cardiovascular Other Subtype</value>
+					<value>Cardiovascular Other (CV Other) Subtype</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2110,7 +2109,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>text</name>
-						<value>How many days ago?</value>
+						<value>How long was the hospital stay?</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3149,12 +3148,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3271,12 +3265,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3393,12 +3382,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3515,12 +3499,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3637,12 +3616,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3759,12 +3733,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3881,12 +3850,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4003,12 +3967,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4125,12 +4084,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4247,12 +4201,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4369,12 +4318,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4491,12 +4435,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4613,12 +4552,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4735,12 +4669,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4857,12 +4786,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4979,12 +4903,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5101,12 +5020,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5223,12 +5137,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5345,12 +5254,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5467,12 +5371,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5589,12 +5488,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5711,12 +5605,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5833,12 +5722,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5955,12 +5839,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
+					<value>Diagnostic Test Date</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7351,6 +7230,25 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 				</node>
 				<node>
+					<name>troponinnormal</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Troponin normal</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>troponin normal</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>4</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
 					<name>positivepe</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
@@ -7365,7 +7263,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>4</value>
+						<value>5</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7384,7 +7282,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>5</value>
+						<value>6</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7403,7 +7301,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>6</value>
+						<value>7</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7422,7 +7320,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>7</value>
+						<value>8</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7441,7 +7339,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>8</value>
+						<value>9</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7460,7 +7358,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>9</value>
+						<value>10</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7479,7 +7377,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>10</value>
+						<value>11</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7488,7 +7386,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Afib</value>
+						<value>AFib</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7498,7 +7396,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>11</value>
+						<value>12</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7517,7 +7415,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>12</value>
+						<value>13</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7536,7 +7434,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>13</value>
+						<value>14</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7555,7 +7453,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>14</value>
+						<value>15</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7574,7 +7472,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>15</value>
+						<value>16</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7593,7 +7491,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>16</value>
+						<value>17</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7612,7 +7510,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>17</value>
+						<value>18</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -7631,7 +7529,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>18</value>
+						<value>19</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -8072,11 +7970,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -8191,11 +8084,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				<property>
 					<name>text</name>
 					<value>Procedure date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8316,11 +8204,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -8435,11 +8318,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				<property>
 					<name>text</name>
 					<value>Procedure date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8560,11 +8438,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -8679,11 +8552,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				<property>
 					<name>text</name>
 					<value>Procedure date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8804,11 +8672,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -8923,11 +8786,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				<property>
 					<name>text</name>
 					<value>Procedure date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9048,11 +8906,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -9170,11 +9023,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -9289,11 +9137,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				<property>
 					<name>text</name>
 					<value>Procedure date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9450,11 +9293,6 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				<property>
 					<name>text</name>
 					<value>Procedure date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Event date relative to enrolment or study start</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9631,6 +9469,63 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 			</node>
 			<node>
+				<name>volumeoverloadimproved</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Volume overload improved</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>volume overload improved</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>6</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>volumeoverloadunchanged</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Volume overload unchanged</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>volume overload unchanged</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>7</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>volumeoverloadworsened</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Volume overload worsened</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>volume overload worsened</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>8</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
 				<name>pressuregradientimproved</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
@@ -9645,7 +9540,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>6</value>
+					<value>9</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9664,7 +9559,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>7</value>
+					<value>10</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9683,7 +9578,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>8</value>
+					<value>11</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9702,7 +9597,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>9</value>
+					<value>12</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9721,7 +9616,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>10</value>
+					<value>13</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9740,7 +9635,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>11</value>
+					<value>14</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9759,7 +9654,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>12</value>
+					<value>15</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9778,7 +9673,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>13</value>
+					<value>16</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9797,7 +9692,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>14</value>
+					<value>17</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9816,7 +9711,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>15</value>
+					<value>18</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9835,7 +9730,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>16</value>
+					<value>19</value>
 					<type>Long</type>
 				</property>
 			</node>
@@ -9854,7 +9749,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</property>
 				<property>
 					<name>defaultOrder</name>
-					<value>17</value>
+					<value>20</value>
 					<type>Long</type>
 				</property>
 				<property>

@@ -18698,7 +18698,7 @@
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<node>
@@ -22574,14 +22574,9 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
-			<name>pc_18_4section</name>
+			<name>section_symptoms_crt_info</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -22805,2732 +22800,2732 @@
 					</property>
 				</node>
 			</node>
-		</node>
-		<node>
-			<name>section_symptoms_pp_severity_tightnesspr</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Tightness, pressure, pain or discomfort in the chest</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>section_symptoms_pp_severity_tightnesspr</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
+					<name>label</name>
+					<value>Tightness, pressure, pain or discomfort in the chest</value>
 					<type>String</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>pc_18_4</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>pc_18_4</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>tightness, pressure, pain or discomfort in the chest</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>section_symptoms_pp_severity_tightnesspr_pc_18_5</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>tightness, pressure, pain or discomfort in the chest</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_tightnesspr_pc_18_5</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>How would you rate the symptom?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>verymild</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>maxAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>uncomfortable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Uncomfortable</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>uncomfortable</value>
+						<name>text</name>
+						<value>How would you rate the symptom?</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>tolerable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Tolerable</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>tolerable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>distressing</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>debilitating</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_tightnesspr_pc_18_6</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>Approximately how often does the symptom occur?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>severaltimesaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several Times a Day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>minAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
+					<node>
+						<name>verymild</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>uncomfortable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>tolerable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>distressing</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>debilitating</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>onceaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_tightnesspr_pc_18_6</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimeaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>onceaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimesamonth</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>varies</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>6</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>notapplicable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>7</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_symptoms_pp_severity_nauseaorind</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Nausea or indigestion</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>pc_18_4</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>nausea or indigestion</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_nauseaorind_pc_18_5</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>How would you rate the symptom?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>verymild</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>maxAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>uncomfortable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Uncomfortable</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>uncomfortable</value>
+						<name>text</name>
+						<value>Approximately how often does the symptom occur?</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>tolerable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Tolerable</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>tolerable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>distressing</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>debilitating</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_nauseaorind_pc_18_6</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>Approximately how often does the symptom occur?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>severaltimesaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several Times a Day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>minAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>onceaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimeaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>onceaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimesamonth</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>varies</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>6</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>notapplicable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>7</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_symptoms_pp_severity_heartrhythm</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>pc_18_4</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>severaltimesaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several Times a Day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimeaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimesamonth</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>varies</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>6</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_pp_severity_heartrhythm_pc_18_5</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>section_symptoms_pp_severity_nauseaorind</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>label</name>
+					<value>Nausea or indigestion</value>
 					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>How would you rate the symptom?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
 				</property>
 				<node>
-					<name>verymild</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Very mild</value>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>pc_18_4</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>nausea or indigestion</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>section_symptoms_pp_severity_nauseaorind_pc_18_5</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<value>very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>maxAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>uncomfortable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Uncomfortable</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>uncomfortable</value>
+						<name>text</name>
+						<value>How would you rate the symptom?</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>tolerable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Tolerable</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>tolerable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>distressing</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>debilitating</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_heartrhythm_pc_18_6</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>Approximately how often does the symptom occur?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>severaltimesaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several Times a Day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>minAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
+					<node>
+						<name>verymild</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>uncomfortable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>tolerable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>distressing</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>debilitating</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>onceaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_nauseaorind_pc_18_6</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimeaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>onceaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimesamonth</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>varies</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>6</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>notapplicable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>7</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_symptoms_pp_severity_shortnessof</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Shortness of breath and/or fatigue, cough, fever, chills</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>pc_18_4</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>shortness of breath andor fatigue, cough, fever, chills</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_shortnessof_pc_18_5</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>How would you rate the symptom?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>verymild</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>maxAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>uncomfortable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Uncomfortable</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>uncomfortable</value>
+						<name>text</name>
+						<value>Approximately how often does the symptom occur?</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>tolerable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Tolerable</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>tolerable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>distressing</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>debilitating</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_shortnessof_pc_18_6</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>Approximately how often does the symptom occur?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>severaltimesaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several Times a Day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>minAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>onceaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimeaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>onceaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimesamonth</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>varies</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>6</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>notapplicable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>7</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_symptoms_pp_severity_rapidunexpl</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Rapid unexplained change in weight</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>pc_18_4</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>rapid unexplained change in weight</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>severaltimesaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several Times a Day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimeaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimesamonth</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>varies</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>6</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_pp_severity_rapidunexpl_pc_18_5</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>section_symptoms_pp_severity_heartrhythm</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>label</name>
+					<value>Heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat</value>
 					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>How would you rate the symptom?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
 				</property>
 				<node>
-					<name>verymild</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Very mild</value>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>pc_18_4</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>section_symptoms_pp_severity_heartrhythm_pc_18_5</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<value>very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>maxAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>uncomfortable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Uncomfortable</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>uncomfortable</value>
+						<name>text</name>
+						<value>How would you rate the symptom?</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>tolerable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Tolerable</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>tolerable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>distressing</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>debilitating</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_rapidunexpl_pc_18_6</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>Approximately how often does the symptom occur?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>severaltimesaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several Times a Day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>minAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
+					<node>
+						<name>verymild</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>uncomfortable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>tolerable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>distressing</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>debilitating</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>onceaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_heartrhythm_pc_18_6</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimeaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>onceaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimesamonth</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>varies</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>6</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>notapplicable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>7</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_symptoms_pp_severity_swellinginl</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Swelling in legs, ankles or feet</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>pc_18_4</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>swelling in legs, ankles or feet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_swellinginl_pc_18_5</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>How would you rate the symptom?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>verymild</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>maxAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>uncomfortable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Uncomfortable</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>uncomfortable</value>
+						<name>text</name>
+						<value>Approximately how often does the symptom occur?</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>tolerable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Tolerable</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>tolerable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>distressing</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>debilitating</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_swellinginl_pc_18_6</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>Approximately how often does the symptom occur?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>severaltimesaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several Times a Day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>minAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>onceaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimeaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>onceaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimesamonth</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>varies</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>6</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>notapplicable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>7</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_symptoms_pp_severity_discomforta</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Discomfort and pain in the legs and/or buttocks</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>pc_18_4</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>discomfort and pain in the legs andor buttocks</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>severaltimesaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several Times a Day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimeaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimesamonth</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>varies</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>6</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_pp_severity_discomforta_pc_18_5</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>section_symptoms_pp_severity_shortnessof</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>label</name>
+					<value>Shortness of breath and/or fatigue, cough, fever, chills</value>
 					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>How would you rate the symptom?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
 				</property>
 				<node>
-					<name>verymild</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Very mild</value>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>pc_18_4</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>shortness of breath andor fatigue, cough, fever, chills</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>section_symptoms_pp_severity_shortnessof_pc_18_5</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<value>very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>maxAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>uncomfortable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Uncomfortable</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>uncomfortable</value>
+						<name>text</name>
+						<value>How would you rate the symptom?</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>tolerable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Tolerable</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>tolerable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>distressing</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>debilitating</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_discomforta_pc_18_6</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>Approximately how often does the symptom occur?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>severaltimesaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several Times a Day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>minAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
+					<node>
+						<name>verymild</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>uncomfortable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>tolerable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>distressing</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>debilitating</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>onceaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_shortnessof_pc_18_6</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimeaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>onceaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>severaltimesamonth</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>varies</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>6</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>notapplicable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>7</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_symptoms_pp_severity_lightheaded</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Light headedness, dizziness, or sweating more than usual</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>pc_18_4</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>light headedness, dizziness, or sweating more than usual</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_lightheaded_pc_18_5</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>How would you rate the symptom?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>verymild</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>very mild</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>maxAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>uncomfortable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Uncomfortable</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>uncomfortable</value>
+						<name>text</name>
+						<value>Approximately how often does the symptom occur?</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>tolerable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Tolerable</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>tolerable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>distressing</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>distressing</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>debilitating</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>debilitating</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_symptoms_pp_severity_lightheaded_pc_18_6</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>text</name>
-					<value>Approximately how often does the symptom occur?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>severaltimesaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Several Times a Day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
+						<name>minAnswers</name>
 						<value>1</value>
 						<type>Long</type>
 					</property>
+					<node>
+						<name>severaltimesaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several Times a Day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimeaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimesamonth</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>varies</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>6</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+			</node>
+			<node>
+				<name>section_symptoms_pp_severity_rapidunexpl</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Rapid unexplained change in weight</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>pc_18_4</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>rapid unexplained change in weight</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>onceaday</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_rapidunexpl_pc_18_5</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a day</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
+						<name>maxAnswers</name>
+						<value>1</value>
 						<type>Long</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>How would you rate the symptom?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<node>
+						<name>verymild</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>uncomfortable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>tolerable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>distressing</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>debilitating</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>severaltimeaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_rapidunexpl_pc_18_6</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several time a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>3</value>
+						<name>maxAnswers</name>
+						<value>1</value>
 						<type>Long</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Approximately how often does the symptom occur?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<node>
+						<name>severaltimesaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several Times a Day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimeaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimesamonth</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>varies</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>6</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+			</node>
+			<node>
+				<name>section_symptoms_pp_severity_swellinginl</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Swelling in legs, ankles or feet</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>pc_18_4</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>swelling in legs, ankles or feet</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>onceaweek</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_swellinginl_pc_18_5</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>once a week</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
+						<name>maxAnswers</name>
+						<value>1</value>
 						<type>Long</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>How would you rate the symptom?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<node>
+						<name>verymild</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>uncomfortable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>tolerable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>distressing</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>debilitating</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>severaltimesamonth</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_swellinginl_pc_18_6</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>several times a month</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>5</value>
+						<name>maxAnswers</name>
+						<value>1</value>
 						<type>Long</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Approximately how often does the symptom occur?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<node>
+						<name>severaltimesaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several Times a Day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimeaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimesamonth</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>varies</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>6</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+			</node>
+			<node>
+				<name>section_symptoms_pp_severity_discomforta</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Discomfort and pain in the legs and/or buttocks</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>pc_18_4</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>discomfort and pain in the legs andor buttocks</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>varies</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_discomforta_pc_18_5</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>varies</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>6</value>
+						<name>maxAnswers</name>
+						<value>1</value>
 						<type>Long</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>How would you rate the symptom?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<node>
+						<name>verymild</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>uncomfortable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>tolerable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>distressing</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>debilitating</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>notapplicable</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>section_symptoms_pp_severity_discomforta_pc_18_6</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>not applicable</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>7</value>
+						<name>maxAnswers</name>
+						<value>1</value>
 						<type>Long</type>
 					</property>
 					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
 					</property>
+					<property>
+						<name>text</name>
+						<value>Approximately how often does the symptom occur?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<node>
+						<name>severaltimesaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several Times a Day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimeaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimesamonth</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>varies</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>6</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+			</node>
+			<node>
+				<name>section_symptoms_pp_severity_lightheaded</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Light headedness, dizziness, or sweating more than usual</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>pc_18_4</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>light headedness, dizziness, or sweating more than usual</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>section_symptoms_pp_severity_lightheaded_pc_18_5</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>How would you rate the symptom?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<node>
+						<name>verymild</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>very mild</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>uncomfortable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>uncomfortable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>tolerable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>tolerable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>distressing</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>distressing</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>debilitating</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>debilitating</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>section_symptoms_pp_severity_lightheaded_pc_18_6</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Approximately how often does the symptom occur?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<node>
+						<name>severaltimesaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several Times a Day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaday</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a day</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>2</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimeaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several time a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>3</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>onceaweek</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>once a week</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>4</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>severaltimesamonth</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>several times a month</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>5</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>varies</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>varies</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>6</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>notapplicable</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>not applicable</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>defaultOrder</name>
+							<value>7</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 		</node>
