@@ -7669,7 +7669,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list+input</value>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -7908,6 +7908,99 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 					<name>noneOfTheAbove</name>
 					<value>True</value>
 					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>anotherprocedurenotonthislist</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Another procedure not on this list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>another procedure not on this list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>13</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>ec_37_othersection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>ec_37</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>another procedure not on this list</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>ec_37_other</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>What other procedure not specified in the list was performed?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>input</value>
+					<type>String</type>
 				</property>
 			</node>
 		</node>
@@ -9235,6 +9328,167 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 			</node>
 			<node>
 				<name>procedures_info_valvereplacementorrepair_ec_40</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>Procedure codes from EHR</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>procedures_info_anotherprocedurenotonthi</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Another procedure not on this list</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>ec_37</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>another procedure not on this list</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>procedures_info_anotherprocedurenotonthi_ec_38_other_value</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Please enter details for the following procedure:</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>expression</name>
+					<value>return @{[ec_37_other]}.join(", ")</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>entryMode</name>
+					<value>computed</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>formatted</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>procedures_info_anotherprocedurenotonthi_ec_38</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>Procedure date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Event date relative to enrolment or study start</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>procedures_info_anotherprocedurenotonthi_ec_39</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>Procedure coding system/ source</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>procedures_info_anotherprocedurenotonthi_ec_40</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
