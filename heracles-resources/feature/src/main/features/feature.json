@@ -68,7 +68,7 @@
       "name": "heracles",
       "exportSchedule": "0 0 0 * * ? *",
       "fileNameFormat": "{subject}_formData_{yesterday(yyyyMMdd)}",
-      "selectors": ".bare.-labels.-identify.relativeDates.nolinks"
+      "selectors": ".bare.-labels.-identify.relativeDates.nolinks.answerFilter.answerFilter:exclude=/Questionnaires/PhoneCallFollow-Up/section_medical_care/section_provider_emergencyclinic/section_provider_emergencyclinic_section_provider_info.answerFilter:exclude=/Questionnaires/PhoneCallFollow-Up/section_medical_care/section_provider_hospitalvisit/section_provider_hospitalvisit_section_provider_info.answerFilter:exclude=/Questionnaires/PhoneCallFollow-Up/section_medical_care/section_provider_walkin/section_provider_walkin_section_provider_info.answerFilter:exclude=/Questionnaires/PhoneCallFollow-Up/section_medical_care/section_provider_familydoctor/section_provider_familydoctor_section_provider_info.answerFilter:exclude=/Questionnaires/PhoneCallFollow-Up/section_medical_care/section_provider_specialist/section_provider_specialist_section_provider_info"
     }
   }
 }
