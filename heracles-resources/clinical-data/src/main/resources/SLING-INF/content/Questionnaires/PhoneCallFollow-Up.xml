@@ -15440,7 +15440,7 @@
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list+input</value>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -15662,12 +15662,12 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Other bone,joint, or muscle surgery</value>
+					<value>Other bone, joint, or muscle surgery</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>other bone,joint, or muscle surgery</value>
+					<value>other bone, joint, or muscle surgery</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15698,6 +15698,99 @@
 					<name>noneOfTheAbove</name>
 					<value>True</value>
 					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>anotherprocedurenotonthislist</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Another procedure not on this list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>another procedure not on this list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>14</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>pc_15_3_othersection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>pc_15_3</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>another procedure not on this list</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>pc_15_3_other</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>What other procedure not specified in the list was performed?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>input</value>
+					<type>String</type>
 				</property>
 			</node>
 		</node>
@@ -18039,7 +18132,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Other bone,joint, or muscle surgery</value>
+			<value>Other bone, joint, or muscle surgery</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -18072,7 +18165,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>other bone,joint, or muscle surgery</value>
+						<value>other bone, joint, or muscle surgery</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -18104,6 +18197,257 @@
 		</node>
 		<node>
 			<name>section_procedure_info_otherbonejointorm_pc_15_5</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>How would you describe the outcome of the procedure?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list+input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>resolved</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Resolved</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>resolved</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>prevented</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Prevented</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>prevented</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>worsening</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Worsening</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>worsening</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>nochangeintheissue</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>No change in the issue</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>no change in the issue</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>additionalproceduresareneeded-planned</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Additional procedures are needed/planned</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>additional procedures are neededplanned</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>upcoming</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Upcoming</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>upcoming</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>6</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>section_procedure_info_anotherproceduren</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Another procedure not on this list</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>condition0</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>pc_15_3</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>another procedure not on this list</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>section_procedure_info_anotherproceduren_other_value</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Please enter details for the following procedure:</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{[pc_15_3_other]}.join(", ")</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>section_procedure_info_anotherproceduren_pc_15_4</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Can you confirm the date of this procedure?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>section_procedure_info_anotherproceduren_pc_15_5</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>

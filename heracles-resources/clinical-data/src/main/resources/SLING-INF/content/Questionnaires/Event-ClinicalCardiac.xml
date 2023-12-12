@@ -9396,7 +9396,7 @@ Event Date Relative to Study Start (date differential b/w what study team gets f
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_anotherprocedurenotonthi_ec_38_other_value</name>
+				<name>procedures_info_anotherprocedurenotonthi_other_value</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
