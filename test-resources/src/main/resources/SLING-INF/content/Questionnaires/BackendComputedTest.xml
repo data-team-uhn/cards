@@ -284,11 +284,11 @@ which can then be verified for accuracy by opening the form in read mode with th
             </property>
         </node>
         <node>
-            <name>question4computed</name>
+            <name>question4a_computed</name>
             <primaryNodeType>cards:Question</primaryNodeType>
             <property>
                 <name>text</name>
-                <value>Question 4 Computed. Should display the values from Question 4, formatted</value>
+                <value>Question 4a Computed. If any values are entered at Question 4, they should appear as a bullet list, preceded by an intro text</value>
                 <type>String</type>
             </property>
             <property>
@@ -305,11 +305,64 @@ which can then be verified for accuracy by opening the form in read mode with th
                 <name>expression</name>
                 <value><![CDATA[
 var values = @{[question4_multi]};
-var result = "";
+var result = "The values entered at question 4 are:";
 for (var i = 0; values && i < values.length; i++) {
   result += "\n* " + (i+1) + ": " + values[i];
 }
 return result;
+                ]]></value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question4b_computed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Question 4b Computed. If no values are entered at Question 4, display "No values at Question 4", otherwise display them comma-separated</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>displayMode</name>
+                <value>formatted</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value><![CDATA[
+var values = @{[question4_multi?]};
+return values.length == 0 ? "No values at Question 4" : values.join(", ");
+                ]]></value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question4c_computed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Question 4c Computed. Displays "The first value from Question 4 is " and the first value, if any</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>displayMode</name>
+                <value>formatted</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value><![CDATA[
+return "The first value from Question 4 is " + @{question4_multi?};
                 ]]></value>
                 <type>String</type>
             </property>
