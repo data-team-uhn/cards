@@ -28680,34 +28680,35 @@ Have you experienced a change in the time you are active as a result of recent e
 			</property>
 			<property>
 				<name>expression</name>
-				<value><![CDATA[var conditions = @{[!pc_12_1]} || [];
+				<value><![CDATA[
+var conditions = @{[pc_12_1?]} || [];
 var map = {
   'cad': {
     label: "Coronary Artery Disease (CAD)",
-    items: @{[!pc_12_3_1]}
+    items: @{[pc_12_3_1?]} || []
   },
   'hf': {
     label: "Heart Failure (HF)",
-    items: @{[!pc_12_3_2]}
+    items: @{[pc_12_3_2?]} || []
   },
   'vhd': {
     label: "Valvular Heart Disease (VHD)",
-    items: @{[!pc_12_3_3]}
+    items: @{[pc_12_3_3?]} || []
   },
   'stroke': {
     label: "Stroke",
-    items: @{[!pc_12_3_4]}
+    items: @{[pc_12_3_4?]} || []
   },
   'cvother': {
     label: "Cardiovascular Other (CV Other)",
-    items: @{[!pc_12_3_5]}
+    items: @{[pc_12_3_5?]} || []
   },
   'heart attack': {
-    items: @{[!pc_12_3_6]}
+    items: @{[pc_12_3_6?]} || []
   },
   'other': {
     label: "Other",
-    items: @{[!pc_12_3_7]}
+    items: @{[pc_12_3_7?]} || []
   }
 };
 var result = "";
@@ -28726,7 +28727,8 @@ for (var i = 0; i < conditions.length; i++) {
     }
   }
 }
-return result;]]></value>
+return result;
+				]]></value>
 				<type>String</type>
 			</property>
 			<property>
