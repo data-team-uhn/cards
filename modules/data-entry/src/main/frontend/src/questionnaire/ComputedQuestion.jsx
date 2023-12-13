@@ -70,7 +70,7 @@ let ComputedQuestion = (props) => {
   const endTagSingleVal = "}";
   const startTagArrayVal = "@{[";
   const endTagArrayVal = "]}";
-  const acceptMissingTag = "?";
+  const optionalTag = "?";
   const defaultTag = ":-";
   const booleanDefaultLabels = {"0": "No", "1": "Yes", "-1": "Unknown"}
 
@@ -198,10 +198,10 @@ let ComputedQuestion = (props) => {
       }
 
       // Check if missing values are acceptable
-      let acceptMissingValue = false;
-      if (questionName.endsWith(acceptMissingTag)) {
-        acceptMissingValue = true;
-        questionName = questionName.replace(acceptMissingTag, "");
+      let isValueOptional = false;
+      if (questionName.endsWith(optionalTag)) {
+        isValueOptional = true;
+        questionName = questionName.substring(0, questionName.lastIndexOf(optionalTag));
       }
 
       // Insert this question into the list of arguments
@@ -211,7 +211,7 @@ let ComputedQuestion = (props) => {
             "value": getQuestionValue(questionName, form, defaultValue, asArray)});
       }
 
-      missingValue &&= !acceptMissingValue;
+      missingValue &&= !isValueOptional;
       if (missingValue) {
         // Exit early as the expression cannot be evaluated without all inputs
         return null;
