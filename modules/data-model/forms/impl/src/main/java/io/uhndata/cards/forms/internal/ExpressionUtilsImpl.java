@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,6 +68,22 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         }
     }
 
+    private Object toJavaScriptObject(ScriptEngine javascriptEngine, Object javaObject)
+    {
+        if (javaObject != null && (javaObject.getClass().isArray() || javaObject instanceof List)) {
+            try {
+                String tempKey = "tmpCardsObjectConversionKey";
+                Bindings tmpBindings = javascriptEngine.createBindings();
+                tmpBindings.put(tempKey, javaObject);
+                return javascriptEngine.eval("Java.from(" + tempKey + ")", tmpBindings);
+            } catch (ScriptException e) {
+                LOGGER.warn("Parsing Object {} to JSObject failed: {}", javaObject,
+                    e.getMessage(), e);
+            }
+        }
+        return javaObject;
+    }
+
     @Override
     public Object evaluate(final Node question, final Map<String, Object> values, final Type<?> type)
     {
@@ -80,7 +97,8 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             ScriptEngine engine = this.manager.getEngineByName("JavaScript");
 
             Bindings env = engine.createBindings();
-            parsedExpression.getQuestions().forEach((key, value) -> env.put(value.getArgument(), value.getValue()));
+            parsedExpression.getQuestions().forEach((key, value) ->
+                env.put(value.getArgument(), toJavaScriptObject(engine, value.getValue())));
             Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
             return ValueFormatter.formatResult(result, type);
         } catch (ScriptException e) {
