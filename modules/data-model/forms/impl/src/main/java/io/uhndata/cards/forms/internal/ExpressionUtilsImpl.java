@@ -178,28 +178,24 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             // Insert this question into the list of arguments
             if (!this.questions.containsKey(questionName)) {
                 Object questionValue = getQuestionValue(questionName, this.questionValues,
-                    getDefaultValue(hasDefault, defaultStart));
+                    getDefaultValue(hasDefault, defaultStart), this.isArrayArgument);
 
-                if (questionValue != null) {
-                    if (questionValue.getClass().isArray() && !this.isArrayArgument) {
-                        questionValue = ((Object[]) questionValue)[0];
-                    } else if (!questionValue.getClass().isArray() && this.isArrayArgument) {
-                        questionValue = new Object[]{questionValue};
+                if (questionValue == null) {
+                    if (!isOptional) {
+                        this.missingValue = true;
+                    } else if (isOptional && this.isArrayArgument) {
+                        questionValue = new Object[]{};
                     }
                 }
 
                 ExpressionArgument arg = new ExpressionArgument("arg" + this.questions.size(), questionValue);
 
-                if (arg.getValue() == null && !isOptional) {
-                    this.missingValue = true;
-                }
                 this.questions.put(questionName, arg);
             }
 
             // Remove the start and end tags and replace the question name with the argument name for this question
             this.expression = this.expression.substring(0, this.start) + this.questions.get(questionName).getArgument()
                 + this.expression.substring(this.end + this.endMarker.length());
-
             scanNextArgument();
         }
 
@@ -213,12 +209,22 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
     }
 
-    private Object getQuestionValue(String questionName, final Map<String, Object> values, String defaultValue)
+    private Object getQuestionValue(String questionName, final Map<String, Object> values, String defaultValue,
+        boolean shouldBeArray)
     {
         Object value = values.get(questionName);
         if (value == null) {
             value = defaultValue;
         }
+
+        if (value != null) {
+            if (value.getClass().isArray() && !shouldBeArray) {
+                value = ((Object[]) value)[0];
+            } else if (!value.getClass().isArray() && shouldBeArray) {
+                value = new Object[]{value};
+            }
+        }
+
         return value;
     }
 
