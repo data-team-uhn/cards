@@ -18,7 +18,7 @@
 -->
 
 <node>
-	<name>Event-ClinicalCardiac</name>
+	<name>Event - Clinical Cardiac</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
