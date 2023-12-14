@@ -148,6 +148,7 @@ let ComputedQuestion = (props) => {
         form[name] || (defaultValue !== null ? [[defaultValue, defaultValue]] : [])
       ).map(e => e[VALUE_POS])
        .map(v => (typeof(v) === "undefined" || v === "") && defaultValue != null ? defaultValue : v)
+       .filter(v => !(typeof(v) === "undefined" || v === ""))
        .map(v => v && !isNaN(Number(v)) ? Number(v) : v);
 
     // Record whether a value is absent
