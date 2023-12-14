@@ -21,7 +21,7 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>cards-data-model-subjects-types</artifactId>
-    <version>0.9.21-SNAPSHOT</version>
+    <version>0.9.22-SNAPSHOT</version>
   </parent>
 
   <artifactId>cards-visit-subject-type</artifactId>
