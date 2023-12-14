@@ -1326,7 +1326,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Can you confirm if any of the following is true with respect to Coronary Artery Disease?</value>
+						<value>Can you confirm if any of the following is true with respect to Coronary Artery Disease (CAD)?</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1533,7 +1533,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Can you confirm if any of the following is true with respect to Heart Failure? </value>
+						<value>Can you confirm if any of the following is true with respect to Heart Failure (HF)? </value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1702,7 +1702,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Can you confirm if any of the following is true with respect to Valvular Heart Disease?</value>
+						<value>Can you confirm if any of the following is true with respect to Valvular Heart Disease (VHD)?</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2078,7 +2078,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Can you confirm if any of the following is true with respect to Cardiovascular Other?</value>
+						<value>Can you confirm if any of the following is true with respect to Cardiovascular Other (CV Other)?</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2354,7 +2354,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Can you confirm if any of the following is true with respect to Coronary Artery Disease and Heart Attack?</value>
+						<value>Can you confirm if any of the following is true with respect to Coronary Artery Disease (CAD) and Heart Attack?</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3014,6 +3014,11 @@
 						<name>displayMode</name>
 						<value>list+input</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
 					<node>
 						<name>tightnesspressurepainordiscomfortinthech</name>
@@ -4899,6 +4904,11 @@
 						<value>list+input</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
 					<node>
 						<name>tightnesspressurepainordiscomfortinthech</name>
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6782,6 +6792,11 @@
 						<name>displayMode</name>
 						<value>list+input</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
 					<node>
 						<name>tightnesspressurepainordiscomfortinthech</name>
@@ -8667,6 +8682,11 @@
 						<value>list+input</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
 					<node>
 						<name>tightnesspressurepainordiscomfortinthech</name>
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10551,6 +10571,11 @@
 						<value>list+input</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
 					<node>
 						<name>tightnesspressurepainordiscomfortinthech</name>
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -12434,6 +12459,11 @@
 						<name>displayMode</name>
 						<value>list+input</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
 					<node>
 						<name>tightnesspressurepainordiscomfortinthech</name>
