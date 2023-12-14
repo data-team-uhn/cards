@@ -126,7 +126,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             this.startMarker = this.isArrayArgument ? START_MARKER_ARRAY : START_MARKER_SINGLE;
             this.endMarker = this.isArrayArgument ? END_MARKER_ARRAY : END_MARKER_SINGLE;
             this.start = this.expression.indexOf(this.startMarker);
-            this.end = this.expression.indexOf(this.endMarker);
+            this.end = this.expression.indexOf(this.endMarker, this.start);
         }
 
         public ParsedExpression parse()
@@ -183,7 +183,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
                 if (questionValue == null) {
                     if (!isOptional) {
                         this.missingValue = true;
-                    } else if (isOptional && this.isArrayArgument) {
+                    } else if (this.isArrayArgument) {
                         questionValue = new Object[]{};
                     }
                 }
@@ -218,7 +218,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         }
 
         if (value != null) {
-            if (value.getClass().isArray() && !shouldBeArray) {
+            if (value.getClass().isArray() && !shouldBeArray && ((Object[]) value).length > 0) {
                 value = ((Object[]) value)[0];
             } else if (!value.getClass().isArray() && shouldBeArray) {
                 value = new Object[]{value};
