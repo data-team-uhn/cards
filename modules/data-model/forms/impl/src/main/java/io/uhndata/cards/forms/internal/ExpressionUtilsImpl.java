@@ -218,8 +218,12 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         }
 
         if (value != null) {
-            if (value.getClass().isArray() && !shouldBeArray && ((Object[]) value).length > 0) {
-                value = ((Object[]) value)[0];
+            if (value.getClass().isArray() && !shouldBeArray) {
+                if (((Object[]) value).length > 0) {
+                    value = ((Object[]) value)[0];
+                } else {
+                    value = null;
+                }
             } else if (!value.getClass().isArray() && shouldBeArray) {
                 value = new Object[]{value};
             }
