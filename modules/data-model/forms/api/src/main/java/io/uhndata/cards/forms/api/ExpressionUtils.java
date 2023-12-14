@@ -31,14 +31,21 @@ import org.apache.jackrabbit.oak.api.Type;
  */
 public interface ExpressionUtils
 {
-    /** Marker for the start of a variable. */
-    String START_MARKER = "@{";
+    /** Marker for the start of a single valued variable. */
+    String START_MARKER_SINGLE = "@{";
+    /** Marker for the end of a single valued variable. */
+    String END_MARKER_SINGLE = "}";
 
-    /** Marker for the end of a variable. */
-    String END_MARKER = "}";
+    /** Marker for the start of a multi valued variable. */
+    String START_MARKER_ARRAY = "@{[";
+    /** Marker for the end of a multi valued variable. */
+    String END_MARKER_ARRAY = "]}";
 
     /** Marker for the default value to use for a variable when it doesn't have a value. */
     String DEFAULT_MARKER = ":-";
+
+    /** Marker for an optional variable. */
+    String OPTIONAL_MARKER = "?";
 
     /**
      * List the variable names used in the expression of a computed question.

@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>CARDS-317, CARDS-699, CARDS-1302, CARDS-1463</value>
+		<value>CARDS-317, CARDS-699, CARDS-1302, CARDS-1463, CARDS-2441</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -389,6 +389,67 @@ or
 			<property>
 				<name>expression</name>
 				<value>return (@{textAnswerInput:-} ? ("* You wrote *" + @{textAnswerInput} + "*...\n* ...and **nothing else**") : "You wrote nothing")</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>textAnswerInputMultivalue</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Enter several lines of text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>textAnswerFormattedMultivalue</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed text using multiple values, formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value><![CDATA[
+Expected output:
+
+> * Entry 1: line one from previous question
+> * Entry 2: line two from previous question
+> * ....
+				]]></value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value><![CDATA[
+var values = @{[textAnswerInputMultivalue]};
+var result = "";
+for (var i = 0; values && i < values.length; i++) {
+  result += "\n* Entry " + (i+1) + ": " + values[i];
+}
+return result;
+				]]></value>
 				<type>String</type>
 			</property>
 		</node>
@@ -1109,6 +1170,61 @@ or
 			<property>
 				<name>expression</name>
 				<value>return @{longAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>longAnswerInputMultivalue</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Enter several numbers</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>longAnswerComputedMultivalue</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Sum of all the numbers entered at the previous question</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: the sum of the numbers entered above</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value><![CDATA[
+var values = @{[longAnswerInputMultivalue:-0]};
+var result = 0;
+for (var i = 0; i < values.length; i++) {
+  result += values[i];
+}
+return result;
+				]]></value>
 				<type>String</type>
 			</property>
 		</node>

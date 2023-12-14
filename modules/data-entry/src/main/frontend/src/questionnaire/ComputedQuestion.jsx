@@ -23,7 +23,7 @@ import { InputAdornment, TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
-import Answer from "./Answer";
+import Answer, {VALUE_POS} from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import DateQuestionUtilities from "./DateQuestionUtilities";
 import Question from "./Question";
@@ -66,8 +66,11 @@ let ComputedQuestion = (props) => {
   const [isFormatted, changeIsFormatted] = useState(false);
 
   const form = useFormReaderContext();
-  const startTag = "@{";
-  const endTag = "}";
+  const startTagSingleVal = "@{";
+  const endTagSingleVal = "}";
+  const startTagArrayVal = "@{[";
+  const endTagArrayVal = "]}";
+  const optionalTag = "?";
   const defaultTag = ":-";
   const booleanDefaultLabels = {"0": "No", "1": "Yes", "-1": "Unknown"}
 
@@ -135,34 +138,56 @@ let ComputedQuestion = (props) => {
   }
 
   let missingValue = false;
-  let getQuestionValue = (name, form, defaultValue) => {
-    let value;
-    if (form[name] && form[name][0]) {
-      value = form[name][0][1];
-    }
-    if (typeof(value) === "undefined" || value === "") {
-      if (defaultValue != null) {
-        value = defaultValue;
-      } else {
-        missingValue = true;
-      }
-    }
-    if (!isNaN(Number(value))) {
-      value = Number(value);
-    }
-    return value;
+
+  let getQuestionValue = (name, form, defaultValue, asArray) => {
+    // Get all the [label, value] pairs for this answer
+    // If there are no values and a default is provided, use it
+    // Discard labels, keep only values
+    // Parse numbers from non-empty strings when possible
+    let values = (
+        form[name] || (defaultValue !== null ? [[defaultValue, defaultValue]] : [])
+      ).map(e => e[VALUE_POS])
+       .map(v => (typeof(v) === "undefined" || v === "") && defaultValue != null ? defaultValue : v)
+       .filter(v => !(typeof(v) === "undefined" || v === ""))
+       .map(v => v && !isNaN(Number(v)) ? Number(v) : v);
+
+    // Record whether a value is absent
+    missingValue = (values.length == 0);
+
+    // Return array or single value per request
+    return (asArray ? values : values[0]);
   }
 
   let parseExpressionInputs = (expr, form) => {
     // List of all the questions that have an argument already
     let questions = new Map();
 
-    let start = expr.indexOf(startTag);
-    let end = expr.indexOf(endTag, start);
+    let start = -1, end = -1;
+    let startTag = "", endTag = "";
+    let asArray = false;
+
     // For each argument in the expression, parse the question name and default value if present.
     // To prevent question names from breaking the evaluating funtion, replace them with a default
     // argument name in the evaluated expression.
-    while(start > -1 && end > -1) {
+    while (expr) {
+      let arrayStart = expr.indexOf(startTagArrayVal);
+      let singleStart = expr.indexOf(startTagSingleVal);
+      if (arrayStart >= 0 && (singleStart < 0  || arrayStart <= singleStart)) {
+        start = arrayStart;
+        end = expr.indexOf(endTagArrayVal, start);
+        asArray = true;
+        startTag = startTagArrayVal;
+        endTag = endTagArrayVal;
+      } else {
+        start = singleStart;
+        end = expr.indexOf(endTagSingleVal, start);
+        asArray = false;
+        startTag = startTagSingleVal;
+        endTag = endTagSingleVal;
+      }
+      // Stop when we can't find any more variables in the expression
+      if (!(start > -1 && end > -1)) break;
+
       let defaultStart = expr.indexOf(defaultTag, start);
       let hasDefault = (defaultStart > -1 && defaultStart < end);
 
@@ -176,13 +201,21 @@ let ComputedQuestion = (props) => {
         questionName = expr.substring(start + startTag.length, end);
       }
 
+      // Check if missing values are acceptable
+      let isValueOptional = false;
+      if (questionName.endsWith(optionalTag)) {
+        isValueOptional = true;
+        questionName = questionName.substring(0, questionName.lastIndexOf(optionalTag));
+      }
+
       // Insert this question into the list of arguments
       if (!questions.has(questionName)) {
         questions.set(questionName,
           {"argument": "arg" + (questions.size + 1),
-            "value": getQuestionValue(questionName, form, defaultValue)});
+            "value": getQuestionValue(questionName, form, defaultValue, asArray)});
       }
 
+      missingValue &&= !isValueOptional;
       if (missingValue) {
         // Exit early as the expression cannot be evaluated without all inputs
         return null;
@@ -191,8 +224,6 @@ let ComputedQuestion = (props) => {
       // Remove the start and end tags and replace the question name with the argument name for this question
       expr = [expr.substring(0, start), questions.get(questionName)["argument"],
         expr.substring(end + endTag.length)].join('');
-      start = expr.indexOf(startTag);
-      end = expr.indexOf(endTag, start);
     }
     return [questions, expr];
   }

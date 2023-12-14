@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,6 +68,22 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         }
     }
 
+    private Object toJavaScriptObject(ScriptEngine javascriptEngine, Object javaObject)
+    {
+        if (javaObject != null && (javaObject.getClass().isArray() || javaObject instanceof List)) {
+            try {
+                String tempKey = "tmpCardsObjectConversionKey";
+                Bindings tmpBindings = javascriptEngine.createBindings();
+                tmpBindings.put(tempKey, javaObject);
+                return javascriptEngine.eval("Java.from(" + tempKey + ")", tmpBindings);
+            } catch (ScriptException e) {
+                LOGGER.warn("Parsing Object {} to JSObject failed: {}", javaObject,
+                    e.getMessage(), e);
+            }
+        }
+        return javaObject;
+    }
+
     @Override
     public Object evaluate(final Node question, final Map<String, Object> values, final Type<?> type)
     {
@@ -80,7 +97,8 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             ScriptEngine engine = this.manager.getEngineByName("JavaScript");
 
             Bindings env = engine.createBindings();
-            parsedExpression.getQuestions().forEach((key, value) -> env.put(value.getArgument(), value.getValue()));
+            parsedExpression.getQuestions().forEach((key, value) ->
+                env.put(value.getArgument(), toJavaScriptObject(engine, value.getValue())));
             Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
             return ValueFormatter.formatResult(result, type);
         } catch (ScriptException e) {
@@ -93,56 +111,142 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     private ExpressionUtilsImpl.ParsedExpression parseExpressionInputs(final String expression,
         final Map<String, Object> values)
     {
-        String expr = expression;
+        ExpressionParser parser = new ExpressionParser(expression, values);
+        return parser.parse();
+    }
 
-        Boolean missingValue = false;
-        Map<String, ExpressionArgument> questions = new HashMap<>();
+    private final class ExpressionParser
+    {
+        private String expression;
+        private final Map<String, Object> questionValues;
+        private boolean missingValue;
+        private Map<String, ExpressionArgument> questions = new HashMap<>();
 
-        int start = expr.indexOf(START_MARKER);
-        int end = expr.indexOf(END_MARKER, start);
-        // For each argument in the expression, parse the question name and default value if present.
-        // To prevent question names from breaking the evaluating funtion, replace them with a default
-        // argument name in the evaluated expression.
-        while (start > -1 && end > -1) {
-            int defaultStart = expr.indexOf(DEFAULT_MARKER, start);
-            boolean hasDefault = defaultStart > -1 && defaultStart < end;
+        // Next argument details
+        private boolean isArrayArgument;
+        private String startMarker;
+        private String endMarker;
+        private int start;
+        private int end;
 
-            // Parse out the question name and default value if provided
-            String questionName;
-            String defaultValue = null;
-            if (hasDefault) {
-                questionName = expr.substring(start + START_MARKER.length(), defaultStart);
-                defaultValue = expr.substring(defaultStart + DEFAULT_MARKER.length(), end);
-            } else {
-                questionName = expr.substring(start + START_MARKER.length(), end);
+
+        ExpressionParser(String expression, final Map<String, Object> questionValues)
+        {
+            this.expression = expression;
+            this.questionValues = questionValues;
+
+            scanNextArgument();
+        }
+
+        private void scanNextArgument()
+        {
+            this.isArrayArgument = isNextArgumentMultivalued(this.expression);
+            this.startMarker = this.isArrayArgument ? START_MARKER_ARRAY : START_MARKER_SINGLE;
+            this.endMarker = this.isArrayArgument ? END_MARKER_ARRAY : END_MARKER_SINGLE;
+            this.start = this.expression.indexOf(this.startMarker);
+            this.end = this.expression.indexOf(this.endMarker, this.start);
+        }
+
+        public ParsedExpression parse()
+        {
+            while (hasNextArgument()) {
+                parseNextArgument();
             }
+            return new ParsedExpression(this.questions, this.expression, this.missingValue);
+
+        }
+
+        private boolean hasNextArgument()
+        {
+            return this.start > -1 && this.end > -1;
+        }
+
+        private boolean isOptionalQuestion(boolean hasDefault, int defaultStart)
+        {
+            int endIndex = hasDefault ? defaultStart : this.end;
+            String potentialOptionalString = this.expression.substring(endIndex - OPTIONAL_MARKER.length(), endIndex);
+
+            return OPTIONAL_MARKER.equals(potentialOptionalString);
+        }
+
+        private String getQuestionName(boolean hasDefault, int defaultStart, boolean isOptional)
+        {
+            String questionName = this.expression.substring(this.start + this.startMarker.length(),
+                hasDefault ? defaultStart : this.end);
+            if (isOptional) {
+                questionName = questionName.substring(0, questionName.length() - OPTIONAL_MARKER.length());
+            }
+            return questionName;
+        }
+
+        private String getDefaultValue(boolean hasDefault, int defaultStart)
+        {
+            return hasDefault ? this.expression.substring(defaultStart + DEFAULT_MARKER.length(), this.end) : null;
+        }
+
+        private void parseNextArgument()
+        {
+            // Parse the question name and default value if present.
+            int defaultStart = this.expression.indexOf(DEFAULT_MARKER, this.start);
+            boolean hasDefault = defaultStart > -1 && defaultStart < this.end;
+
+            boolean isOptional = isOptionalQuestion(hasDefault, defaultStart);
+            String questionName = getQuestionName(hasDefault, defaultStart, isOptional);
 
             // Insert this question into the list of arguments
-            if (!questions.containsKey(questionName)) {
-                ExpressionArgument arg = new ExpressionArgument("arg" + questions.size(),
-                    getQuestionValue(questionName, values, defaultValue));
-                if (arg.getValue() == null) {
-                    missingValue = true;
+            if (!this.questions.containsKey(questionName)) {
+                Object questionValue = getQuestionValue(questionName, this.questionValues,
+                    getDefaultValue(hasDefault, defaultStart), this.isArrayArgument);
+
+                if (questionValue == null) {
+                    if (!isOptional) {
+                        this.missingValue = true;
+                    } else if (this.isArrayArgument) {
+                        questionValue = new Object[]{};
+                    }
                 }
-                questions.put(questionName, arg);
+
+                ExpressionArgument arg = new ExpressionArgument("arg" + this.questions.size(), questionValue);
+
+                this.questions.put(questionName, arg);
             }
 
             // Remove the start and end tags and replace the question name with the argument name for this question
-            expr = expr.substring(0, start) + questions.get(questionName).getArgument()
-                + expr.substring(end + END_MARKER.length());
-
-            start = expr.indexOf(START_MARKER);
-            end = expr.indexOf(END_MARKER, start);
+            this.expression = this.expression.substring(0, this.start) + this.questions.get(questionName).getArgument()
+                + this.expression.substring(this.end + this.endMarker.length());
+            scanNextArgument();
         }
-        return new ParsedExpression(questions, expr, missingValue);
+
+        private boolean isNextArgumentMultivalued(String expr)
+        {
+            int arrayStart = expr.indexOf(START_MARKER_ARRAY);
+            int singleStart = expr.indexOf(START_MARKER_SINGLE);
+
+            return (arrayStart > -1 && (singleStart < 0 || arrayStart <= singleStart));
+        }
+
     }
 
-    private Object getQuestionValue(String questionName, final Map<String, Object> values, String defaultValue)
+    private Object getQuestionValue(String questionName, final Map<String, Object> values, String defaultValue,
+        boolean shouldBeArray)
     {
         Object value = values.get(questionName);
         if (value == null) {
             value = defaultValue;
         }
+
+        if (value != null) {
+            if (value.getClass().isArray() && !shouldBeArray) {
+                if (((Object[]) value).length > 0) {
+                    value = ((Object[]) value)[0];
+                } else {
+                    value = null;
+                }
+            } else if (!value.getClass().isArray() && shouldBeArray) {
+                value = new Object[]{value};
+            }
+        }
+
         return value;
     }
 

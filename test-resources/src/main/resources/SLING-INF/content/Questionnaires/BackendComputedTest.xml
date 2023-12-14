@@ -27,7 +27,7 @@
     </property>
     <property>
         <name>description</name>
-        <value>CARDS-1800</value>
+        <value>CARDS-1800, CARDS-2441</value>
         <type>String</type>
     </property>
     <node>
@@ -141,6 +141,20 @@ which can then be verified for accuracy by opening the form in read mode with th
                 <name>compact</name>
                 <value>True</value>
                 <type>Boolean</type>
+            </property>
+        </node>
+        <node>
+            <name>question4_multi</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Question 4: Multi-valued answer</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>0</value>
+                <type>Long</type>
             </property>
         </node>
     </node>
@@ -266,6 +280,90 @@ which can then be verified for accuracy by opening the form in read mode with th
             <property>
                 <name>expression</name>
                 <value>return @{question 3}</value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question4a_computed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Question 4a Computed. If any values are entered at Question 4, they should appear as a bullet list, preceded by an intro text</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>displayMode</name>
+                <value>formatted</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value><![CDATA[
+var values = @{[question4_multi]};
+var result = "The values entered at question 4 are:";
+for (var i = 0; values && i < values.length; i++) {
+  result += "\n* " + (i+1) + ": " + values[i];
+}
+return result;
+                ]]></value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question4b_computed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Question 4b Computed. If no values are entered at Question 4, display "No values at Question 4", otherwise display them comma-separated</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>displayMode</name>
+                <value>formatted</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value><![CDATA[
+var values = @{[question4_multi?]};
+return values.length == 0 ? "No values at Question 4" : values.join(", ");
+                ]]></value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question4c_computed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Question 4c Computed. Displays "The first value from Question 4 is " and the first value, if any</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>displayMode</name>
+                <value>formatted</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value><![CDATA[
+return "The first value from Question 4 is " + @{question4_multi?};
+                ]]></value>
                 <type>String</type>
             </property>
         </node>
