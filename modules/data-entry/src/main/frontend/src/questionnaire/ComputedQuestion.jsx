@@ -168,14 +168,16 @@ let ComputedQuestion = (props) => {
     // To prevent question names from breaking the evaluating funtion, replace them with a default
     // argument name in the evaluated expression.
     while (expr) {
-      start = expr.indexOf(startTagArrayVal);
-      if (start >= 0) {
+      let arrayStart = expr.indexOf(startTagArrayVal);
+      let singleStart = expr.indexOf(startTagSingleVal);
+      if (arrayStart >= 0 && (singleStart < 0  || arrayStart <= singleStart)) {
+        start = arrayStart;
         end = expr.indexOf(endTagArrayVal, start);
         asArray = true;
         startTag = startTagArrayVal;
         endTag = endTagArrayVal;
       } else {
-        start = expr.indexOf(startTagSingleVal)
+        start = singleStart;
         end = expr.indexOf(endTagSingleVal, start);
         asArray = false;
         startTag = startTagSingleVal;
