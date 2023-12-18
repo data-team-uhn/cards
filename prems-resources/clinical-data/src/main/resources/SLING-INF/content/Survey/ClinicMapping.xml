@@ -286,7 +286,7 @@
         </property>
         <property>
             <name>daysRelativeToEventWhileSurveyIsValid</name>
-            <value>30</value>
+            <value>12</value>
             <type>Double</type>
         </property>
     </node>
