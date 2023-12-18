@@ -37,7 +37,7 @@
 	</property>
 	<property>
 		<name>xVar</name>
-		<value>/Questionnaires/YVM/s_7/yvm_14</value>
+		<value>/Questionnaires/YVM/section_overall/yvm_14</value>
 		<type>Reference</type>
 	</property>
 	<property>
