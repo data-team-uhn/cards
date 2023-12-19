@@ -373,10 +373,11 @@
       "emailConsentColumn": "EMAIL_CONSENT_YN"
     },
     // Only send surveys to patients once every 6 months
-    "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter": {
+    "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~ye": {
       "enable": true,
       "supportedTypes": ["prems"],
-      "minimum.visit.frequency": 183
+      "minimum.visit.frequency": 183,
+      "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242"]
     },
     // Don't import visits for patients who have opted out of emails
     "io.uhndata.cards.clarity.importer.internal.UnsubscribedFilter": {
