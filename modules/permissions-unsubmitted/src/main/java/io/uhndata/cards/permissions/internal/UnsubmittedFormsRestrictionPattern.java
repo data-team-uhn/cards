@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.proms.permissions;
+package io.uhndata.cards.permissions.internal;
 
 import java.util.List;
 

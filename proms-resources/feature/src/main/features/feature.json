@@ -37,7 +37,7 @@
       "start-order":"26"
     },
     {
-      "id":"${project.groupId}:proms-permissions:${project.version}",
+      "id":"${project.groupId}:cards-permissions-unsubmitted:${project.version}",
       "start-order":"15"
     },
     {
@@ -60,14 +60,13 @@
         // Access rights for the special "guest-patient" user (not using a link from the notification email): only allow access to the session subject data, excluding certain clinician-only sections/questions and PII
         "create user guest-patient \n set ACL for guest-patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,time,location,provider,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/time,/Questionnaires/Visit*information/location,/Questionnaires/Visit*information/provider,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n end",
         // Trusted users can only access forms submitted by their patients, and delete forms that they created
-        "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms restriction(rep:ntNames,cards:Form,cards:Subject) \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n    deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end ",
+        "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms restriction(rep:ntNames,cards:Form,cards:Subject) \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n end ",
         // Allow the Clarity import to access the clinic names
         "create service user clarity-import \n set ACL for clarity-import \n   allow jcr:read on /Survey \n end "
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~proms":{
       "user.mapping":[
-        "io.uhndata.cards.proms-permissions:UnsubmittedFormsRestriction=[sling-readall]",
         "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]"
       ]
     },
