@@ -22,32 +22,30 @@ package io.uhndata.cards.clarity.importer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
-@Component(configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true)
-@Designate(ocd = ClarityImportConfigDefinition.class)
-public class NightlyClarityImport
+@Component(immediate = true)
+public class ScheduledClarityImport
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(NightlyClarityImport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledClarityImport.class);
 
-    private static final String SCHEDULER_JOB_NAME = "NightlyClarityImport";
+    private static final String SCHEDULER_JOB_PREFIX = "ScheduledClarityImport-";
 
     /** Provides access to resources. */
     @Reference
@@ -61,43 +59,53 @@ public class NightlyClarityImport
         policy = ReferencePolicy.DYNAMIC)
     private volatile List<ClarityDataProcessor> processors = new ArrayList<>();
 
+    @Reference(policyOption = ReferencePolicyOption.GREEDY, bind = "configAdded", unbind = "configRemoved")
+    private volatile List<ClarityImportConfig> configs;
+
     /** The scheduler for rescheduling jobs. */
     @Reference
     private Scheduler scheduler;
 
-    @Activate
-    protected void activate(final ClarityImportConfigDefinition config)
+    public void configAdded(final ClarityImportConfig newConfig)
     {
         if (this.scheduler == null) {
+            // This method can be called both before the component is activated, while the scheduler dependency may
+            // still be unsatisfied, and while the component is active and the configuration is changed.
+            // If the scheduler is not bound, it's OK to do nothing now, the method will be called during activation.
+            return;
+        }
+        final ClarityImportConfigDefinition config = newConfig.getConfig();
+        LOGGER.debug("Added clarity import configuration {}", config.name());
+
+        final String schedule = config.importSchedule();
+        if (StringUtils.isBlank(schedule)) {
+            LOGGER.info("ClarityImport {} skipped because a cron schedule was not specified.", config.name());
             return;
         }
 
-        LOGGER.info("Activating Clarity Importer configuration");
-
-        final String nightlyClarityImportSchedule = config.nightly_import_schedule();
-        if ("".equals(nightlyClarityImportSchedule)) {
-            LOGGER.error("Failed to schedule NightlyClarityImport because a cron schedule was not given.");
-            return;
-        }
-
-        final ScheduleOptions options = this.scheduler.EXPR(nightlyClarityImportSchedule);
-        options.name(SCHEDULER_JOB_NAME);
+        final ScheduleOptions options = this.scheduler.EXPR(schedule);
+        options.name(SCHEDULER_JOB_PREFIX + config.name());
         options.canRunConcurrently(true);
 
-        final Runnable importJob =
-            new ClarityImportTask(config.dayToImport(), this.resolverFactory, this.rrp, this.processors);
+        final Runnable job =
+            new ClarityImportTask(config, config.dayToImport(), this.resolverFactory, this.rrp, this.processors);
         try {
-            this.scheduler.schedule(importJob, options);
-            LOGGER.info("Activated Clarity Importer configuration");
+            this.scheduler.schedule(job, options);
+            LOGGER.debug("Activated scheduled clarity import configuration {}", config.name());
         } catch (final Exception e) {
-            LOGGER.error("NightlyClarityImport Failed to schedule: {}", e.getMessage(), e);
+            LOGGER.error("Scheduled clarity import {} failed to schedule: {}", config.name(), e.getMessage(), e);
         }
     }
 
-    @Deactivate
-    private void deactivate()
+    public void configRemoved(final ClarityImportConfig removedConfig)
     {
-        LOGGER.info("Deactivated Clarity Importer");
-        this.scheduler.unschedule(SCHEDULER_JOB_NAME);
+        LOGGER.debug("Removed clarity import configuration {}", removedConfig.getConfig().name());
+        this.scheduler.unschedule(SCHEDULER_JOB_PREFIX + removedConfig.getConfig().name());
+    }
+
+    @Activate
+    protected void activate()
+    {
+        this.configs.forEach(this::configAdded);
     }
 }

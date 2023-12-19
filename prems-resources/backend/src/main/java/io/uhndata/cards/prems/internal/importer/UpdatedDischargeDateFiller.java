@@ -34,6 +34,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -44,13 +45,11 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  */
 @Designate(ocd = UpdatedDischargeDateFiller.Config.class)
 @Component(immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class UpdatedDischargeDateFiller implements ClarityDataProcessor
+public class UpdatedDischargeDateFiller extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdatedDischargeDateFiller.class);
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    private final boolean enabled;
 
     private final int pastDaysLimit;
 
@@ -60,9 +59,7 @@ public class UpdatedDischargeDateFiller implements ClarityDataProcessor
     public @interface Config
     {
         @AttributeDefinition(name = "Enabled")
-        boolean enable()
-
-        default false;
+        boolean enable() default false;
 
         @AttributeDefinition(name = "Past days limit", description = "How many days ago is the cutoff before which the"
             + " discharge date is moved up. 1 means anything older than 24 hours ago will be moved to exactly 24 hours"
@@ -73,16 +70,13 @@ public class UpdatedDischargeDateFiller implements ClarityDataProcessor
     @Activate
     public UpdatedDischargeDateFiller(Config config)
     {
-        this.enabled = config.enable();
+        super(config.enable(), new String[] { "prems" }, 300);
         this.pastDaysLimit = config.pastDaysLimit();
     }
 
     @Override
     public Map<String, String> processEntry(final Map<String, String> input)
     {
-        if (!this.enabled) {
-            return input;
-        }
         try {
             final Calendar discharge = Calendar.getInstance();
             final Calendar cutoff = Calendar.getInstance();
@@ -99,11 +93,5 @@ public class UpdatedDischargeDateFiller implements ClarityDataProcessor
             // We don't do anything if the date is missing or malformed
         }
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 300;
     }
 }

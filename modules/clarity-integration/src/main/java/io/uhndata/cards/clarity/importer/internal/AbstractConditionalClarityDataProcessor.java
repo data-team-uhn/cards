@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.osgi.service.cm.ConfigurationException;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -36,15 +37,15 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  *
  * @version $Id$
  */
-public abstract class AbstractConditionalClarityDataProcessor implements ClarityDataProcessor
+public abstract class AbstractConditionalClarityDataProcessor extends AbstractClarityDataProcessor
+    implements ClarityDataProcessor
 {
-    protected final int priority;
-
     protected final List<ConditionDefinition> conditions;
 
-    AbstractConditionalClarityDataProcessor(int priority, String[] conditionStrings) throws ConfigurationException
+    protected AbstractConditionalClarityDataProcessor(String[] types, int priority, String[] conditionStrings)
+        throws ConfigurationException
     {
-        this.priority = priority;
+        super(true, types, priority);
         this.conditions = new ArrayList<>(conditionStrings.length);
         for (String conditionString : conditionStrings) {
             ConditionDefinition def = new ConditionDefinition(conditionString);
@@ -70,12 +71,6 @@ public abstract class AbstractConditionalClarityDataProcessor implements Clarity
         }
         // All filters match if data got here
         return this.handleAllConditionsMatched(input);
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return this.priority;
     }
 
     private enum Operator

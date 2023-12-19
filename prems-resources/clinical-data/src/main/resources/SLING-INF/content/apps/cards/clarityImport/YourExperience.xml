@@ -18,14 +18,14 @@
 -->
 
 <node>
-  <name>clarityImport</name>
+  <name>YourExperience</name>
   <primaryNodeType>sling:Folder</primaryNodeType>
   <node>
     <name>Patient</name>
     <primaryNodeType>cards:ClaritySubjectMapping</primaryNodeType>
     <property>
       <name>subjectIDColumn</name>
-      <value>PATIENT_ID</value>
+      <value>PAT_MRN</value>
       <type>String</type>
     </property>
     <property>
@@ -49,7 +49,7 @@
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
-            <value>MRN</value>
+            <value>PAT_MRN</value>
             <type>String</type>
           </property>
           <property>
@@ -63,21 +63,7 @@
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
-            <value>OHIP_NBR</value>
-            <type>String</type>
-          </property>
-          <property>
-            <name>question</name>
-            <value>/Questionnaires/Patient information/health_card</value>
-            <type>String</type>
-          </property>
-        </node>
-        <node>
-          <name>00000003</name>
-          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-          <property>
-            <name>column</name>
-            <value>FIRST_NAME</value>
+            <value>PAT_FIRST_NAME</value>
             <type>String</type>
           </property>
           <property>
@@ -87,11 +73,11 @@
           </property>
         </node>
         <node>
-          <name>00000004</name>
+          <name>00000003</name>
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
-            <value>LAST_NAME</value>
+            <value>PAT_LAST_NAME</value>
             <type>String</type>
           </property>
           <property>
@@ -101,39 +87,11 @@
           </property>
         </node>
         <node>
-          <name>00000005</name>
+          <name>00000004</name>
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
-            <value>DATE_OF_BIRTH</value>
-            <type>String</type>
-          </property>
-          <property>
-            <name>question</name>
-            <value>/Questionnaires/Patient information/date_of_birth</value>
-            <type>String</type>
-          </property>
-        </node>
-        <node>
-          <name>00000006</name>
-          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-          <property>
-            <name>column</name>
-            <value>SEX</value>
-            <type>String</type>
-          </property>
-          <property>
-            <name>question</name>
-            <value>/Questionnaires/Patient information/sex</value>
-            <type>String</type>
-          </property>
-        </node>
-        <node>
-          <name>00000007</name>
-          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-          <property>
-            <name>column</name>
-            <value>EMAIL</value>
+            <value>EMAIL_ADDRESS</value>
             <type>String</type>
           </property>
           <property>
@@ -143,11 +101,11 @@
           </property>
         </node>
         <node>
-          <name>00000008</name>
+          <name>00000005</name>
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
-            <value>EMAIL_CONSENT</value>
+            <value>EMAIL_CONSENT_YN</value>
             <type>String</type>
           </property>
           <property>
@@ -157,7 +115,7 @@
           </property>
         </node>
         <node>
-          <name>00000009</name>
+          <name>00000006</name>
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
@@ -171,11 +129,11 @@
           </property>
         </node>
         <node>
-          <name>00000010</name>
+          <name>00000007</name>
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
-            <value>PATIENT_ID</value>
+            <value>DEATH_DATE</value>
             <type>String</type>
           </property>
           <property>
@@ -199,7 +157,7 @@
         </property>
         <property>
           <name>subjectIDColumn</name>
-          <value>ENCOUNTER_ID</value>
+          <value>PAT_ENC_CSN_ID</value>
           <type>String</type>
         </property>
         <property>
@@ -223,7 +181,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>ATTENDING_PROV_NAME</value>
+                <value>DISCH_DEPT_NAME</value>
                 <type>String</type>
               </property>
               <property>
@@ -237,7 +195,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>ENCOUNTER_DATE</value>
+                <value>HOSP_DISCHARGE_DTTM</value>
                 <type>String</type>
               </property>
               <property>
@@ -251,12 +209,26 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>LOCATION</value>
+                <value>DISCH_LOC_NAME</value>
                 <type>String</type>
               </property>
               <property>
                 <name>question</name>
                 <value>/Questionnaires/Visit information/location</value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000004</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>CLINIC</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value>/Questionnaires/Visit information/clinic</value>
                 <type>String</type>
               </property>
               <property>
@@ -266,25 +238,11 @@
               </property>
             </node>
             <node>
-              <name>00000004</name>
-              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
-              <property>
-                <name>column</name>
-                <value>ENCOUNTER_CLINIC</value>
-                <type>String</type>
-              </property>
-              <property>
-                <name>question</name>
-                <value>/Questionnaires/Visit information/clinic</value>
-                <type>String</type>
-              </property>
-            </node>
-            <node>
               <name>00000005</name>
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>ENCOUNTER_STATUS</value>
+                <value>STATUS</value>
                 <type>String</type>
               </property>
               <property>
@@ -292,13 +250,144 @@
                 <value>/Questionnaires/Visit information/status</value>
                 <type>String</type>
               </property>
+              <property>
+                <name>computed</name>
+                <value>True</value>
+                <type>Boolean</type>
+              </property>
             </node>
             <node>
-              <name>00000006</name>
+              <name>00000007</name>
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>ENCOUNTER_ID</value>
+                <value>DISCH_DISPOSITION</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000008</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>LEVEL_OF_CARE</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000009</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>ED_IP_TRANSFER_YN</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000010</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>LENGTH_OF_STAY_DAYS</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000012</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>HOSP_ADMISSION_DTTM</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000013</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>PRIMARY_DX_NAME</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000014</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>PAT_ENC_CSN_ID</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000015</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>PATIENT_CLASS</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000016</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>UHN_ICC_STATUS</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000017</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>UHN_ICC_PATIENT_ELIGIBILITY</value>
                 <type>String</type>
               </property>
               <property>

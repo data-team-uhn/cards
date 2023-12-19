@@ -30,6 +30,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -40,7 +41,7 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  */
 @Component
 @Designate(ocd = SendCPESForDepartmentFrequency.SendCPESForDepartmentFrequencyConfigDefinition.class)
-public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
+public class SendCPESForDepartmentFrequency extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendCPESForDepartmentFrequency.class);
 
@@ -63,6 +64,7 @@ public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
     @Activate
     public SendCPESForDepartmentFrequency(SendCPESForDepartmentFrequencyConfigDefinition configuration)
     {
+        super(true, new String[] { "prems" }, 120);
         this.defaultFrequency = configuration.default_frequency();
         this.perDepartmentFrequency = new HashMap<>(configuration.frequency_per_department().length);
         for (String clinic : configuration.frequency_per_department()) {
@@ -86,11 +88,5 @@ public class SendCPESForDepartmentFrequency implements ClarityDataProcessor
                 input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"));
         }
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 120;
     }
 }

@@ -34,6 +34,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -44,7 +45,7 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  */
 @Component
 @Designate(ocd = LengthOfStayMapper.LengthOfStayMapperConfigDefinition.class)
-public class LengthOfStayMapper implements ClarityDataProcessor
+public class LengthOfStayMapper extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(LengthOfStayMapper.class);
 
@@ -62,11 +63,13 @@ public class LengthOfStayMapper implements ClarityDataProcessor
     }
 
     private final boolean overwrite;
+
     private final boolean useCalendarDays;
 
     @Activate
     public LengthOfStayMapper(LengthOfStayMapperConfigDefinition configuration)
     {
+        super(true, new String[] { "prems" }, 10);
         this.overwrite = configuration.overwrite();
         this.useCalendarDays = configuration.useCalendarDays();
     }
@@ -107,11 +110,5 @@ public class LengthOfStayMapper implements ClarityDataProcessor
             }
         }
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 10;
     }
 }

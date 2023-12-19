@@ -48,6 +48,9 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
             + " cohort")
     public @interface Config
     {
+        @AttributeDefinition(name = "Supported import types", description = "Leave empty to support all imports")
+        String[] supportedTypes();
+
         @AttributeDefinition(name = "Priority", description = "Clarity Data Processor priority."
             + " Processors are run in ascending priority order")
         int priority();
@@ -79,7 +82,7 @@ public class ConfiguredCohortMapper extends AbstractConditionalClarityDataProces
     @Activate
     public ConfiguredCohortMapper(Config configuration) throws ConfigurationException
     {
-        super(configuration.priority(), configuration.conditions());
+        super(configuration.supportedTypes(), configuration.priority(), configuration.conditions());
         this.cohort = configuration.clinic();
         String pid = configuration.service_pid();
         this.id = pid.substring(pid.lastIndexOf("~") + 1);

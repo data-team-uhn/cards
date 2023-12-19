@@ -16,41 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package io.uhndata.cards.proms.internal.importer;
-
-import java.util.Map;
+package io.uhndata.cards.clarity.importer;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.metatype.annotations.Designate;
 
-import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
-import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
-
-/**
- * Clarity import processor that replaces the email consent column to Yes or No instead of UHN_EXTERNAL_EMAIL or NULL.
- *
- * @version $Id$
- */
-@Component
-public class EmailConsentBooleanMapper extends AbstractClarityDataProcessor implements ClarityDataProcessor
+@Component(immediate = true, service = ClarityImportConfig.class)
+@Designate(ocd = ClarityImportConfigDefinition.class, factory = true)
+public class ClarityImportConfig
 {
-    private static final String COLUMN = "EMAIL_CONSENT";
+    private ClarityImportConfigDefinition config;
 
     @Activate
-    public EmailConsentBooleanMapper()
+    protected void activate(final ClarityImportConfigDefinition config)
     {
-        super(true, new String[] { "proms" }, 0);
+        this.config = config;
     }
 
-    @Override
-    public Map<String, String> processEntry(Map<String, String> input)
+    public ClarityImportConfigDefinition getConfig()
     {
-        if (input.get(COLUMN) == null) {
-            input.put(COLUMN, "No");
-        } else if ("UHN_EXTERNAL_EMAIL".equals(input.get(COLUMN))) {
-            input.put(COLUMN, "Yes");
-        }
-        return input;
+        return this.config;
     }
 }

@@ -22,8 +22,10 @@ package io.uhndata.cards.proms.internal.importer;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
+import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 
 /**
@@ -32,9 +34,15 @@ import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
  * @version $Id$
  */
 @Component
-public class EncounterStatusFhirMapper implements ClarityDataProcessor
+public class EncounterStatusFhirMapper extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final String COLUMN = "ENCOUNTER_STATUS";
+
+    @Activate
+    public EncounterStatusFhirMapper()
+    {
+        super(true, new String[] { "proms" }, 0);
+    }
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
@@ -46,11 +54,5 @@ public class EncounterStatusFhirMapper implements ClarityDataProcessor
             input.put(COLUMN, "planned");
         }
         return input;
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 0;
     }
 }

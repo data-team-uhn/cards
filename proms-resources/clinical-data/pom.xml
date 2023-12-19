@@ -52,7 +52,7 @@
               SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,
               SLING-INF/content/libs/cards/conf/AppName.json;path:=/libs/cards/conf/AppName;overwrite:=true,
               SLING-INF/content/libs/cards/conf/ThemeColor.json;path:=/libs/cards/conf/ThemeColor;overwrite:=true,
-              SLING-INF/content/apps/cards/clarityMapping.xml;path:=/apps/cards/clarityImport;overwrite:=true,
+              SLING-INF/content/apps/cards/clarityImport/DataPro.xml;path:=/apps/cards/clarityImport/DataPro;overwrite:=true,
               SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
