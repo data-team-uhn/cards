@@ -18,11 +18,13 @@
 #
 
 from optparse import Option
+import argparse
 import os
 import enum
 import json
 import csv
 import re
+import copy
 
 
 
@@ -48,6 +50,10 @@ class RowTypes(enum.Enum):
     MATRIX_START = 13
     MATRIX_END = 14
     VOCABULARY = 15
+    SECTION_REPEATED = 16
+    ADDRESS = 17
+    PHONE = 18
+    SELECTABLE_AREAS = 19
 
 # Basic logging support
 class Logging:
@@ -57,17 +63,10 @@ class Logging:
     INFO = 3
 
 def log(log_level, object):
-    if log_level <= Options.LOGGING:
+    if log_level <= Options.logging:
         print(object)
 
-class DefaultOptions:
-    PAGINATE = True
-    LOGGING = Logging.WARNING
-    SUBJECT_TYPES = "/SubjectTypes/Patient/Visit"
-    MAX_ANSWERS = 1
-    MAX_PER_SUBJECT = 1
-
-SECTION_TYPES = [RowTypes.SECTION_START, RowTypes.SECTION_RECURRENT, RowTypes.SECTION_END]
+SECTION_TYPES = [RowTypes.SECTION_START, RowTypes.SECTION_RECURRENT, RowTypes.SECTION_END, RowTypes.SECTION_REPEATED]
 MATRIX_TYPES = [RowTypes.MATRIX_START, RowTypes.MATRIX_END]
 STRING_GROUPS = {
     "(": ")",
@@ -98,7 +97,7 @@ class RowTypeMap:
         self.handler = handler
 
 def section_start_handler(self, questionnaire, row):
-    if (not Headers["SECTION"].has_value(row)):
+    if (not Headers["SECTION"].has_value(row) and not Headers["QUESTION"].has_value(row)):
         # Section will not have been created yet: Create a section with a unique name
         questionnaire.section_index += 1
         label = "Section {}".format(questionnaire.section_index)
@@ -111,7 +110,102 @@ def recurrent_section_handler(self, questionnaire, row):
     section_start_handler(self, questionnaire, row)
     questionnaire.parent['recurrent'] = True
 
+def repeated_section_handler(self, questionnaire, row):
+    section_start_handler(self, questionnaire, row)
+    questionnaire.parent['repeated'] = True
+    parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
+    referenced_question_keys = split_ignore_strings(Headers['ENTRY_MODE_QUESTION'].get_value(row), [","])
+
+    for referenced_question_key in referenced_question_keys:
+        question = {}
+        for questionMap in questionnaire.questions:
+            if referenced_question_key in questionMap.keys():
+                question = questionMap[referenced_question_key]
+
+        for key in question.keys():
+            entry = question[key]
+            if (type(entry) == dict
+                    and 'jcr:primaryType' in entry
+                    and entry['jcr:primaryType'] == 'cards:AnswerOption'
+                    and ('noneOfTheAbove' not in entry.keys() or not entry['noneOfTheAbove'])
+                    and ('notApplicable' not in entry.keys() or not entry['notApplicable'])):
+                conditional_label = parent_label + "_" + clean_name(entry['value'])
+                new_section = create_new_section(conditional_label)
+                new_section['label'] = entry['label']
+                new_section['repeated_parent'] = parent_label
+                new_section['title'] = parent_label + "_" + clean_name(entry['label'].lower())
+                questionnaire.push_section(new_section)
+                condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
+                questionnaire.complete_section()
+
+def modify_repeated_conditionals(self, repeated_parent, repeated_name):
+    for key in repeated_parent.keys():
+        entry = repeated_parent[key]
+        if type(entry) == dict and "jcr:primaryType" in entry:
+            if entry["jcr:primaryType"] == "cards:Conditional":
+                if "operandA" in entry.keys() and entry["operandA"]["isReference"]:
+                    for i, reference in enumerate(entry["operandA"]["value"]):
+                        entry["operandA"]["value"][i] = "{}_{}".format(repeated_name, reference)
+                if "operandB" in entry.keys() and entry["operandB"]["isReference"]:
+                    for i, reference in enumerate(entry["operandB"]["value"]):
+                        entry["operandB"]["value"][i] = "{}_{}".format(repeated_name, reference)
+            else:
+                modify_repeated_conditionals(self, entry, repeated_name)
+
+def process_repeated_child_section(section, repeated_key):
+    for key in list(section.keys()):
+        child = section[key]
+        if type(child) == dict:
+            if is_section(child):
+                section[repeated_key + "_" + key] = process_repeated_child_section(section.pop(key), repeated_key)
+            elif is_question(child):
+                section[repeated_key + "_" + key] = section.pop(key)
+    return section
+
+
+def process_repeated(self, questionnaire, child, repeated_conditionals, non_repeated_key):
+    for repeated_key in repeated_conditionals:
+        repeated_child_name = repeated_key + "_" + non_repeated_key
+        new_child = copy.deepcopy(child)
+
+        if type(new_child) == dict and is_section(new_child):
+            new_child = process_repeated_child_section(new_child, repeated_key)
+
+        # TODO: clean up mess of nested []: changing the order of operations and using new_child instead may make this more readable
+        questionnaire.parent[repeated_key][repeated_child_name] = new_child
+        modify_repeated_conditionals(self, questionnaire.parent[repeated_key][repeated_child_name], repeated_key)
+        questionnaire.parents[-2][repeated_key] = questionnaire.parent[repeated_key]
+
+
+def end_repeated_section(self, questionnaire, row):
+    parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
+
+    repeated_conditionals = []
+    non_repeated_children = []
+
+    for key in questionnaire.parent.keys():
+        entry = questionnaire.parent[key]
+        if type(entry) == dict:
+            if 'repeated_parent' in entry and entry['repeated_parent'] == parent_label:
+                entry.pop('repeated_parent')
+                repeated_conditionals.append(key)
+            else:
+                non_repeated_children.append(key)
+
+    for non_repeated_key in non_repeated_children:
+        non_repeated_child = questionnaire.parent.pop(non_repeated_key)
+        process_repeated(self, questionnaire, non_repeated_child, repeated_conditionals, non_repeated_key)
+
+    questionnaire.parents.pop()
+    questionnaire.parent = questionnaire.parents[-1]
+    questionnaire.question = questionnaire.parent
+
 def section_end_handler(self, questionnaire, row):
+    if is_section(questionnaire.parent):
+        if 'repeated' in questionnaire.parent:
+            end_repeated_section(self, questionnaire, row)
+            return
+
     if is_matrix(questionnaire.parent):
         # End any matrix sections first as matrixes cannot span section borders
         questionnaire.complete_section()
@@ -127,7 +221,7 @@ def matrix_start_handler(self, questionnaire, row):
     # Set the new section to be a matrix section
     questionnaire.parent['displayMode'] = 'matrix'
 
-    if (Options.MAX_ANSWERS > 0):
+    if (Options.max_answers > 0):
         questionnaire.parent['maxAnswers'] = 1
 
     # Matrixes are defined with question type = "matrix start <matrix type>"
@@ -180,7 +274,11 @@ RowTypesMappings = [
     RowTypeMap(RowTypes.SECTION_START, "section start", True, "", section_start_handler),
     RowTypeMap(RowTypes.SECTION_END, "section end", True, "", section_end_handler),
     RowTypeMap(RowTypes.SECTION_RECURRENT, "recurrent section", True, "", recurrent_section_handler),
-    RowTypeMap(RowTypes.MATRIX_END, "matrix end", True, "", matrix_end_handler)
+    RowTypeMap(RowTypes.MATRIX_END, "matrix end", True, "", matrix_end_handler),
+    RowTypeMap(RowTypes.SECTION_REPEATED, "repeated section", True, "", repeated_section_handler),
+    RowTypeMap(RowTypes.ADDRESS, "address"),
+    RowTypeMap(RowTypes.PHONE, "phone"),
+    RowTypeMap(RowTypes.SELECTABLE_AREAS, "selectablearea", True, "selectableArea")
 ]
 DefaultRowTypeMap = RowTypeMap(RowTypes.DEFAULT, "", True, "text")
 
@@ -194,6 +292,8 @@ DefaultRowTypeMap = RowTypeMap(RowTypes.DEFAULT, "", True, "text")
 # Includes references to the questionnaire, section and question that is currently being created
 # as well as other data that is required between multiple rows and/or columns
 class QuestionnaireState:
+    FLAG_MUST_COMPLETE_SECTION = "must_complete_section"
+
     def __init__(self):
         self.clear_state()
 
@@ -219,6 +319,8 @@ class QuestionnaireState:
         # Stack of currently being created questionnaires/sections
         self.parents = []
 
+        self.flags = {}
+
     # Add a new questionnaire to the list of questionnaires and update current regerences
     def add_questionnaire(self, questionnaire):
         self.complete_questionnaire()
@@ -227,6 +329,7 @@ class QuestionnaireState:
         self.parents = [questionnaire]
         self.parent = questionnaire
         self.question = questionnaire
+        self.questions = []
 
     # Finish off the current questionnaire and any children
     def complete_questionnaire(self):
@@ -247,6 +350,7 @@ class QuestionnaireState:
     # Adds the current section as a child node of the object above it in the stack.
     def complete_section(self):
         if (is_section(self.parent)):
+            log(Logging.INFO, "Completing section")
             self.complete_question()
             section = self.parents.pop()
 
@@ -276,7 +380,21 @@ class QuestionnaireState:
         if is_question(self.question):
             name = self.question.pop('name')
             self.parent[name] = self.question
+            self.questions.append({name: self.question})
             self.question = self.parent
+
+    def flag_must_complete_section(self):
+        self.flags[self.FLAG_MUST_COMPLETE_SECTION] = True
+
+    def handle_row_complete(self):
+        self.if_flag_run_and_clear(self.FLAG_MUST_COMPLETE_SECTION, self.complete_section)
+
+    def if_flag_run_and_clear(self, flag, toRun):
+        if flag in self.flags and self.flags.get(flag):
+            toRun()
+            self.flags.pop(flag)
+
+
 
 #=====================
 # Column Data Handlers
@@ -308,7 +426,7 @@ def condition_handler(self, questionnaire, row):
 def section_handler(self, questionnaire, row):
     label = self.get_value(row)
 
-    if (get_row_type_map(row).row_type not in SECTION_TYPES):
+    if (get_row_type_map(row).row_type not in (SECTION_TYPES + MATRIX_TYPES)):
         # This section is defined in line with a question.
         # For this simpler section definition style, complete the previous section automatically
         questionnaire.complete_section()
@@ -321,12 +439,11 @@ def question_handler(self, questionnaire, row):
         if Headers["SECTION"].has_value(row):
             questionnaire.parent["title"] = title
         else:
-            questionnaire.push_section(create_new_section(""))
+            questionnaire.push_section(create_new_section(title, False))
     else:
         create_question(questionnaire, self.get_value(row).strip().lower())
 
 def title_handler(self, questionnaire, row):
-    # If this row doesn't have an explicit backend question name, reuse the title
     if not Headers["QUESTION"].has_value(row):
         create_question(questionnaire, self.get_value(row).strip().lower())
 
@@ -365,7 +482,10 @@ def option_handler(self, questionnaire, row):
 
 def number_handler(self, questionnaire, row):
     value = self.get_value(row)
-    questionnaire.question[self.name] = float(value) if '.' in value else int(value)
+    try:
+        questionnaire.question[self.name] = float(value) if '.' in value else int(value)
+    except ValueError:
+        log(Logging.WARNING, "Could not parse \"{}\" to number".format(value))
 
 def min_value_handler(self, questionnaire, row):
     range_value_handler(self, questionnaire, row, "lowerLimit")
@@ -379,6 +499,8 @@ def range_value_handler(self, questionnaire, row, datetime_limit):
         questionnaire.question[datetime_limit] = self.get_value(row)
     else:
         number_handler(self, questionnaire, row)
+
+
 
 # Create a dictionary containing all the columns expected in a form spreadsheet
 # This dictionary maps columns to expected json property names and a handler
@@ -407,8 +529,16 @@ DefaultHeaders["SLIDER_MARK"] = HeaderColumn("Slider Mark Step", "sliderMarkStep
 DefaultHeaders["SLIDER_ORIENTATION"] = HeaderColumn("Slider Orientation", "sliderOrientation")
 DefaultHeaders["ENTRY_MODE"] = HeaderColumn("Entry Mode", "entryMode")
 DefaultHeaders["ENTRY_MODE_QUESTION"] = HeaderColumn("Reference Question", "question")
-
-
+DefaultHeaders["ENABLE_NOTES"] = HeaderColumn("enableNotes", "enableNotes")
+DefaultHeaders["VALIDATION_REGEXP"] = HeaderColumn("Validation regexp", "validationRegexp")
+DefaultHeaders["VARIANT"] = HeaderColumn("variant", "variant")
+DefaultHeaders["COUNTRIES"] = HeaderColumn("countries", "countries")
+DefaultHeaders["DEFAULT_COUNTRY"] = HeaderColumn("defaultCountry", "defaultCountry")
+DefaultHeaders["ONLY_COUNTRIES"] = HeaderColumn("onlyCountries", "onlyCountries")
+DefaultHeaders["REGIONS"] = HeaderColumn("regions", "regions")
+DefaultHeaders["SEARCH_PLACES_AROUND"] = HeaderColumn("searchPlacesAround", "searchPlacesAround")
+DefaultHeaders["TYPE_PROPERTY"] = HeaderColumn("type", "type")
+DefaultHeaders["VALIDATION_ERROR_TEXT"] = HeaderColumn("validationErrorText", "validationErrorText")
 
 #==================
 # Utility functions
@@ -429,15 +559,15 @@ def split_ignore_strings(input, splitters, limit = -1):
     number_splits = 0
     i = 0
     last_split = 0
-    while i < len(input) and (limit == -1 or number_splits <= limit):
-        if len(ignore_list) > 0 and input[i] == ignore_list[len(ignore_list) - 1]:
+    while i < len(input) and (limit == -1 or number_splits < limit):
+        if len(ignore_list) > 0 and input[i] == ignore_list[-1]:
             ignore_list.pop()
         elif input[i] in STRING_GROUPS.keys():
             ignore_list.append(STRING_GROUPS[input[i]])
         elif len(ignore_list) == 0:
             for splitter in splitters:
                 if i + len(splitter) <= len(input):
-                    if input[i:i+len(splitter)] == splitter:
+                    if input[i:i+len(splitter)].lower() == splitter.lower():
                         results.append(input[last_split:i].strip())
                         i += len(splitter)
                         last_split = i
@@ -446,7 +576,7 @@ def split_ignore_strings(input, splitters, limit = -1):
         i += 1
     results.append(input[last_split:].strip())
     if (len(ignore_list) > 0):
-        print("Split ignore list not cleared for '{}': {}".format(input, ignore_list))
+        log(Logging.WARNING, "Split ignore list not cleared for '{}': {}".format(input, ignore_list))
         pass
     return results
 
@@ -470,21 +600,23 @@ def clean_title(title):
 # Clean a string for use in a node name
 # TODO: replace with white list
 def clean_name(name):
-    return re.sub(':|\(|\)|\[|\]| |,', '', name.replace("/", "-"))
+    result = re.sub(':|\(|\)|\[|\]| |,', '', name.replace("/", "-"))
+    return result[:40]
 
 # Create a questionnaire object containing a title and all the default quetionnaire properties
 def create_new_questionnaire(title):
     new_questionnaire = {}
     new_questionnaire['jcr:primaryType'] = 'cards:Questionnaire'
     new_questionnaire['title'] = clean_title(title)
-    new_questionnaire['jcr:reference:requiredSubjectTypes'] = [Options.SUBJECT_TYPES]
-    new_questionnaire['paginate'] = Options.PAGINATE
-    if Options.MAX_PER_SUBJECT >  0:
-        new_questionnaire['maxPerSubject'] = Options.MAX_PER_SUBJECT
+    new_questionnaire['jcr:reference:requiredSubjectTypes'] = Options.subject_types
+    new_questionnaire['paginate'] = Options.paginate
+    if Options.max_per_subject >  0:
+        new_questionnaire['maxPerSubject'] = Options.max_per_subject
     return new_questionnaire
 
-# Create a questionnaire object containing a title and all the default quetionnaire properties
+# Create a questionnaire object containing a title and all the default questionnaire properties
 def create_new_section(title, title_as_label=True):
+    log(Logging.INFO, "Creating section {}".format(title))
     new_section = {}
     new_section['jcr:primaryType'] = 'cards:Section'
     if(len(title) > 0):
@@ -498,7 +630,6 @@ def get_row_type_map(row):
         type_string = Headers["TYPE"].get_value(row)
         row_type = get_row_type_map_from_string(type_string)
     else:
-        # Uncomment to check if any data is being lost
         log(Logging.WARNING, "Skipped row {}".format(row))
         pass
     return row_type
@@ -546,7 +677,7 @@ def add_option(value, label, question, index = 0):
     option_details = {
         'jcr:primaryType': 'cards:AnswerOption',
         'label': label,
-        'value': clean_title(value)
+        'value': clean_title(value).lower()
     }
     if index:
         option_details.update({"defaultOrder": index})
@@ -574,12 +705,12 @@ def process_conditional(self, questionnaire, row):
     needs_section = get_row_type_map(row).row_type not in (SECTION_TYPES + MATRIX_TYPES)
     if needs_section:
         questionnaire.push_section(create_new_section(questionnaire.question['name'] + "section", False), False)
+        questionnaire.flag_must_complete_section()
 
     conditional_string = self.get_value(row)
     log(Logging.INFO, "Processing conditional " + conditional_string)
     condition_handle_brackets(questionnaire, questionnaire.parent, conditional_string)
 
-    questionnaire.complete_section()
 
 def condition_handle_brackets(questionnaire, condition_parent, conditional_string, index=0):
     log(Logging.INFO, "Handling brackets      " + conditional_string)
@@ -633,7 +764,7 @@ def condition_handle_single(questionnaire, condition_parent, conditional_string,
         "=",
         "<=",
         ">=",
-        "<>"
+        "<>",
         "<",
         ">",
     ]
@@ -645,22 +776,14 @@ def condition_handle_single(questionnaire, condition_parent, conditional_string,
             # Found a single operand conditional
             for operator in OPERATORS_SINGLE:
                 if conditional_string.endswith(operator):
-                    create_condition(questionnaire, condition_parent, index, terms[0], operator, terms[0])
+                    create_condition(questionnaire, condition_parent, index, terms[0], operator, None)
         else:
             operator = conditional_string[len(terms[0]):-len(terms[1])].strip()
             create_condition(questionnaire, condition_parent, index, terms[0], operator, terms[1])
 
 def create_condition(questionnaire, condition_parent, index, operand_a, operator, operand_b):
-    log(Logging.INFO, "Creating condition     " + operand_a + " " + operator + " " + operand_b)
     if operand_a[0] == "\"" and operand_a[-1] == "\"":
         operand_a = operand_a[1:-1]
-    if operand_b[0] == "\"" and operand_b[-1] == "\"":
-        operand_b = operand_b[1:-1]
-
-    # TODO: Do conditionals support arrays of values in operandA or operand_b?
-    # If so, handle that case
-
-    is_reference = operand_b in questionnaire.question_title_list
 
     result = {
         'jcr:primaryType': 'cards:Conditional',
@@ -669,13 +792,23 @@ def create_condition(questionnaire, condition_parent, index, operand_a, operator
             'value': [operand_a.lower()],
             'isReference': True
         },
-        'comparator' : operator,
-        'operandB': {
+        'comparator' : operator
+    }
+
+    if operand_b != None:
+        if operand_b[0] == "\"" and operand_b[-1] == "\"":
+            operand_b = operand_b[1:-1]
+
+        # TODO: Do conditionals support arrays of values in operandA or operand_b?
+        # If so, handle that case
+
+        is_reference = operand_b in questionnaire.question_title_list
+
+        result['operandB'] = {
             'jcr:primaryType': 'cards:ConditionalValue',
             'value': [operand_b.lower()],
             'isReference': is_reference
         }
-    }
 
     # TODO: Do conditionals support arrays of values in operandA or operand_b?
     # If so, handle that case:
@@ -692,31 +825,53 @@ def create_condition(questionnaire, condition_parent, index, operand_a, operator
 
 # Creates a JSON file that contains the tsv file as an cards:Questionnaire
 def csv_to_json(title):
+    log(Logging.RUN, "Importing {}".format(title))
     questionnaireState = QuestionnaireState()
     with open(title + '.csv', encoding="utf-8-sig") as csvfile:
         reader = csv.DictReader(csvfile, dialect='excel')
         for index, row in enumerate(reader):
+            # Add 2 to index to match up with spreadsheet view:
+            # +1 from index being 0 based, +1 from header row
+            log(Logging.INFO, "Row {}".format(index + 2))
             if index == 0 and not Headers["QUESTIONNAIRE"].has_value(row):
                 questionnaireState.add_questionnaire(create_new_questionnaire(title))
             for header in DefaultHeaders.values():
                 if header.has_value(row):
                     header.handler(header, questionnaireState, row)
+            questionnaireState.complete_question()
+            questionnaireState.handle_row_complete()
 
     questionnaireState.complete_questionnaire()
 
     for q in questionnaireState.questionnaires:
-        name = clean_title(q['title'])
+        name = clean_name(q['title'])
         with open(name + '.json', 'w') as jsonFile:
             json.dump(q, jsonFile, indent='\t')
         os.system("python3 ../JSON-to-XML/json_to_xml.py '" + name + ".json' > '" + name + ".xml'")
 
-# Specify the titles of each csv file and which set of column titles and options should be used
-titles = [
-    "prems questionnaires - CPESIC",
-    "prems questionnaires - OAIP",
-    "prems questionnaires - OED"
-]
-for title in titles:
+def get_log_level(log_input):
+    log_input = log_input.lower()
+    if log_input == "run":
+        return Logging.RUN
+    elif log_input == "error":
+        return Logging.ERROR
+    elif log_input == "warning" or log_input == "warn":
+        return Logging.WARNING
+    else:
+        return Logging.INFO
+
+CLI = argparse.ArgumentParser()
+CLI.add_argument("--forms", nargs="*", type=str, required=True)
+CLI.add_argument("--paginate", type=bool, default=False)
+CLI.add_argument("--subject-types", nargs=1, type=str, default=["/SubjectTypes/Patient/Visit"])
+CLI.add_argument("--logging", nargs=1, type=str, default="info")
+CLI.add_argument("--max-answers", nargs=1, type=int, default=1)
+CLI.add_argument("--max-per-subject", nargs=1, type=int, default=1)
+
+args = CLI.parse_args()
+
+for title in args.forms:
     Headers = DefaultHeaders
-    Options = DefaultOptions
+    Options = args
+    Options.logging = get_log_level(Options.logging[0])
     csv_to_json(title)
