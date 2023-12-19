@@ -429,7 +429,7 @@
 					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
 						<name>comparator</name>
-						<value>=</value>
+						<value><![CDATA[<>]]></value>
 						<type>String</type>
 					</property>
 					<node>
@@ -454,7 +454,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>in person</value>
+								<value>video</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -470,7 +470,7 @@
 					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
 						<name>comparator</name>
-						<value>=</value>
+						<value><![CDATA[<>]]></value>
 						<type>String</type>
 					</property>
 					<node>
@@ -495,7 +495,48 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>2</value>
+								<value>0</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>condition2</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value><![CDATA[<>]]></value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>yvm_3</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>1</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -517,7 +558,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>What prevented you from having a virtual care?</value>
+					<value>Did you decline a video virtual visit? If yes, why?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -531,16 +572,16 @@
 					<type>String</type>
 				</property>
 				<node>
-					<name>idonothaveaccesstoacomputertabletorsmart</name>
+					<name>irequireanin-personappointmentformycare</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I do not have access to a computer, tablet, or smart phone</value>
+						<value>I require an in-person appointment for my care</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not have access to a computer, tablet, or smart phone</value>
+						<value>i require an in-person appointment for my care</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -550,16 +591,16 @@
 					</property>
 				</node>
 				<node>
-					<name>idonothaveaccesstotheinternetorphonedata</name>
+					<name>idonothaveaccesstothepersonalequipmenteg</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I do not have access to the internet or phone data connection</value>
+						<value>I do not have access to the personal equipment eg. a computer, tablet, or smart phone</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not have access to the internet or phone data connection</value>
+						<value>i do not have access to the personal equipment eg. a computer, tablet, or smart phone</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -569,21 +610,40 @@
 					</property>
 				</node>
 				<node>
-					<name>idonothaveastableinternetorphonedataconn</name>
+					<name>idonothaveaccesstostableinternet</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I do not have a stable internet or phone data connection</value>
+						<value>I do not have access to stable internet</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not have a stable internet or phone data connection</value>
+						<value>i do not have access to stable internet</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>defaultOrder</name>
 						<value>3</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>idonothaveaccesstomsteams</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>I do not have access to MS Teams</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>i do not have access to ms teams</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>4</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -598,25 +658,6 @@
 					<property>
 						<name>value</name>
 						<value>i am not confident using the computer or internet</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>4</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>iamunabletotraveltoplaceswhereicanaccess</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>I am unable to travel to places where I can access the internet</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>i am unable to travel to places where i can access the internet</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -645,59 +686,21 @@
 					</property>
 				</node>
 				<node>
-					<name>iprefertomeetwithmycareteaminperson</name>
+					<name>idonotfeelcomfortableshowingmyfaceorbody</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I prefer to meet with my care team in person</value>
+						<value>I do not feel comfortable showing my face or body on a video camera</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i prefer to meet with my care team in person</value>
+						<value>i do not feel comfortable showing my face or body on a video camera</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>defaultOrder</name>
 						<value>7</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>ifeelthatmypersonalinformationwillnotbes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>I feel that my personal information will not be safe over the internet</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>i feel that my personal information will not be safe over the internet</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>8</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>idonotfeelcomfortableshowingmybodyonavid</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>I do not feel comfortable showing my body on a video camera</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>i do not feel comfortable showing my body on a video camera</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>9</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -716,7 +719,26 @@
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>10</value>
+						<value>8</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>ifeelthatmypersonalinformationwillnotbes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>I feel that my personal information will not be safe over the internet</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>i feel that my personal information will not be safe over the internet</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>9</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -3096,10 +3118,6 @@ Note: If you had a telephone appointment, some of these options may not apply to
 				</property>
 			</node>
 		</node>
-	</node>
-	<node>
-		<name>section_feedback</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>yvm_15</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
