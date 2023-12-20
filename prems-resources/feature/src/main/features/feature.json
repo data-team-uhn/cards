@@ -374,6 +374,8 @@
     },
 
     // Clarity import scheduling
+
+    // YourExperience
     "io.uhndata.cards.clarity.importer.ClarityImportConfig~prems-discharge-events": {
       "name": "Your Experience - Discharge events",
       "type": "prems",
@@ -382,12 +384,21 @@
       "dayToImport": -7
     },
 
+    // YVM
+    "io.uhndata.cards.clarity.importer.ClarityImportConfig~prems-discharge-events": {
+      "name": "Your Voice Matters - Discharge events",
+      "type": "yvm",
+      "importSchedule": "0 0 3 * * ? *",
+      "mapping": "/apps/cards/clarityImport/PMH-YVM",
+      "dayToImport": -2
+    },
+
     // Clarity import filters and mappers
 
     // Discard patients with invalid or non-consented emails
     "io.uhndata.cards.clarity.importer.internal.EmailConsentFilter": {
       "enable": true,
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["prems", "yvm"],
       "emailColumn": "EMAIL_ADDRESS",
       "emailConsentColumn": "EMAIL_CONSENT_YN"
     },
@@ -398,10 +409,16 @@
       "minimum.visit.frequency": 183,
       "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242"]
     },
+    "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~yvm": {
+      "enable": true,
+      "supportedTypes": ["yvm"],
+      "minimum.visit.frequency": 183,
+      "clinics": ["/Survey/ClinicMapping/PMH-YVM"]
+    },
     // Don't import visits for patients who have opted out of emails
     "io.uhndata.cards.clarity.importer.internal.UnsubscribedFilter": {
       "enable": true,
-      "supportedTypes": ["prems"]
+      "supportedTypes": ["prems", "yvm"]
     },
     // Only look at events from the participating hospitals, discard everything else
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
@@ -418,7 +435,14 @@
         "DISCH_LOC_NAME <> Toronto Rehab - University Centre"
       ]
     },
-    // Only look at actual Emergency or Inpatient events
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
+      "supportedTypes": ["yvm"],
+      "priority": 10,
+      "conditions": [
+        "DISCH_LOC_NAME <> Princess Margaret Cancer Centre"
+      ]
+    },
+    // YE: Only look at actual Emergency or Inpatient events
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-OtherVisitTypes":{
       "supportedTypes": ["prems"],
       "priority": 10,
@@ -426,9 +450,17 @@
         "PATIENT_CLASS not in Emergency; Inpatient; Inpatient Rehab"
       ]
     },
+    // PMH: Only look at actual Outpatient events
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVM-Nonpatients":{
+      "supportedTypes": ["yvm"],
+      "priority": 10,
+      "conditions": [
+        "PATIENT_CLASS not in Outpatient"
+      ]
+    },
     // Discard deceased patients
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DeathDate":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["prems", "yvm"],
       "priority": 20,
       "conditions": ["DEATH_DATE is not empty"]
     },
@@ -569,10 +601,16 @@
       "clinic": "/Survey/ClinicMapping/-1792626663",
       "conditions": ["CLINIC is empty"]
     },
+    // Assign YVM patients to the only clinic, PMH
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-PMH-YVM":{
+      "supportedTypes": ["yvm"],
+      "priority": 40,
+      "clinic": "/Survey/ClinicMapping/PMH-YVM"
+    },
     // Discard duplicates if there's more than one event per patient
     "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
       "enable": true,
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["prems", "yvm"],
       "subjectType": "/SubjectTypes/Patient"
     },
     // Submission event listener

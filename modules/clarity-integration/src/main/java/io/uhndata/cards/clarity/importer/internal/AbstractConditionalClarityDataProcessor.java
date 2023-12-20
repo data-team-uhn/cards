@@ -46,13 +46,15 @@ public abstract class AbstractConditionalClarityDataProcessor extends AbstractCl
         throws ConfigurationException
     {
         super(true, types, priority);
-        this.conditions = new ArrayList<>(conditionStrings.length);
-        for (String conditionString : conditionStrings) {
-            ConditionDefinition def = new ConditionDefinition(conditionString);
-            if (def.isValid()) {
-                this.conditions.add(def);
-            } else {
-                throw new ConfigurationException("condition", "Invalid condition " + conditionString);
+        this.conditions = new ArrayList<>(conditionStrings == null ? 0 : conditionStrings.length);
+        if (conditionStrings != null) {
+            for (String conditionString : conditionStrings) {
+                ConditionDefinition def = new ConditionDefinition(conditionString);
+                if (def.isValid()) {
+                    this.conditions.add(def);
+                } else {
+                    throw new ConfigurationException("condition", "Invalid condition " + conditionString);
+                }
             }
         }
     }
