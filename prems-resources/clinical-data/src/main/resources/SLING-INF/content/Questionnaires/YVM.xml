@@ -563,7 +563,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>Choose all that apply. You can add  other reasons in the text box.</value>
+					<value>Choose all that apply. You can add other reasons in the text box.</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -595,7 +595,7 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I do not have access to the personal equipment eg. a computer, tablet, or smart phone</value>
+						<value>I do not have access to the needed personal equipment, eg. a computer, tablet, or smart phone</value>
 						<type>String</type>
 					</property>
 					<property>
