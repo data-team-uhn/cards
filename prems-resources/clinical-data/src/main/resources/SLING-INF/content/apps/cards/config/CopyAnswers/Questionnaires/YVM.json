@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:yvm_14": "/Questionnaires/YVM/s_7/yvm_14",
-  "jcr:reference:yvm_department": "/Questionnaires/YVM/s_1/yvm_department",
+  "jcr:reference:yvm_14": "/Questionnaires/YVM/section_overall/yvm_14",
+  "jcr:reference:yvm_department": "/Questionnaires/YVM/section_appt/yvm_department",
   "jcr:reference:time": "/Questionnaires/Visit information/time",
   "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
 }
