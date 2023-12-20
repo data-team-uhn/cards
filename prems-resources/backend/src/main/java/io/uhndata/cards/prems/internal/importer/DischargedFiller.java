@@ -38,7 +38,7 @@ public class DischargedFiller extends AbstractClarityDataProcessor implements Cl
     @Activate
     public DischargedFiller()
     {
-        super(true, new String[] { "prems" }, 30);
+        super(true, new String[] { "prems", "yvm" }, 30);
     }
 
     @Override
