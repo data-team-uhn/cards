@@ -30,7 +30,13 @@
 
   <build>
     <plugins>
-      <!-- This is an OSGi bundle -->
+      <!-- Build a slingfeature -->
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+      </plugin>
+
+      <!-- Build an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
