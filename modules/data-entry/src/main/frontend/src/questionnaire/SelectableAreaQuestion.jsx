@@ -79,7 +79,7 @@ function SelectableAreaQuestion(props) {
   // However, there is no way to initialize self tracked highlights with pre-highlighted areas.
   // As a result, we manually highlight the selected areas.
   useEffect(() => {
-    if (map ) {
+    if (map) {
       map.forEach((mapEntry => {
         // Check if this area is selected.
         let found = false;
@@ -125,29 +125,38 @@ function SelectableAreaQuestion(props) {
   }
 
   // Perform any initialization that is required once the map has loaded.
-  useEffect(() => {
-    if(!initialized && map) {
-      setSelection(oldSelection => {
-        let newSelection = oldSelection.slice();
+  if(!initialized && variant?.map) {
+    let unparsedMap = variant.map?.["jcr:content"]?.["jcr:data"];
+    let inputMap = unparsedMap ? JSON.parse(unparsedMap) : null;
 
-        map.forEach(mapEntry => {
-          mapEntry.fillColor = getHoverColor(mapEntry);
-          mapEntry.strokeColor = getStrokeColor(mapEntry);
-
-          // Check if any selections match the map entry
-          newSelection.forEach(selectionValue => {
-            if (mapEntry.value === selectionValue[LABEL_POS] && mapEntry.title) {
-              // Load the appropriate display values from the map.
-              selectionValue[LABEL_POS] = mapEntry.title;
-            }
-          })
-        })
-        return newSelection;
+    let options = {};
+    Object.entries(questionDefinition)
+      // answers are nodes with "jcr:primaryType" = "cards:AnswerOption"
+      .filter( (answer) => {
+        return answer[1]['jcr:primaryType'] && answer[1]['jcr:primaryType'] === 'cards:AnswerOption'
       })
+      // turn these answers into options and populate our valueToLabel
+      .forEach( (answer) => {
+        let value = answer[1]['value'];
+        let label = answer[1]['label'] || value;
+        options[value] = label;
+      });
 
+    let outputMap = [];
+    inputMap.forEach(mapEntry => {
+      if (mapEntry.value in options) {
+        mapEntry.title = options[mapEntry.value];
+        mapEntry.fillColor = getHoverColor(mapEntry);
+        mapEntry.strokeColor = getStrokeColor(mapEntry);
+        outputMap.push(mapEntry);
+      }
+    })
+
+    setMap(outputMap);
+    if (outputMap) {
       setInitialized(true);
     }
-  }, [map])
+  }
 
   // List out the selected areas in text
   useEffect(() => {
@@ -158,16 +167,6 @@ function SelectableAreaQuestion(props) {
         })}
       </ul>);
   }, [selection])
-
-  // When the question's variant changes, load the relevant data.
-  useEffect(() => {
-    if (variant) {
-      let unparsedMap = variant.map?.["jcr:content"]?.["jcr:data"];
-      setMap(unparsedMap ? JSON.parse(unparsedMap) : null);
-    } else {
-      setMap(null);
-    }
-  }, [variant])
 
   // When an area is clicked, update the selection associated with that area.
   let onAreaClicked = (area, index) => {
