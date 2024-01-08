@@ -528,7 +528,7 @@
     },
     // As a special filter, a small percentage of patients are assigned to the long-form CPESIC cohort
     "io.uhndata.cards.prems.internal.importer.SendCPESForDepartmentFrequency":{
-      "default.frequency": 0.08,
+      "default.frequency": 0.12,
       "frequency.per.department": [
         // This applies to the DISCH_DEPT_NAME column. For example:
         // "Department name = 0.02"
