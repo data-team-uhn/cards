@@ -45,9 +45,9 @@ VALID_CARDS_PROJECTS="||cards4kids|cards4lfs|cards4proms|cards4prems|cards4herac
 echo "${VALID_CARDS_PROJECTS}" | grep -q "|${CARDS_PROJECT}|" || { echo "Invalid project specified - defaulting to generic CARDS."; unset CARDS_PROJECT; }
 
 featureFlagString=""
-if [ ! -z $CARDS_PROJECT ]
+if [ ! -z $CARDS_PROJECT ] && [ ! -z $CARDS_PROJECT_VERSION ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/${CARDS_PROJECT}/${CARDS_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/${CARDS_PROJECT}/${CARDS_PROJECT_VERSION}/slingosgifeature"
 fi
 
 [[ "${CARDS_PROJECT}" == 'cards4proms' || "${CARDS_PROJECT}" == 'cards4prems' ]] && SMTPS_ENABLED="true"
