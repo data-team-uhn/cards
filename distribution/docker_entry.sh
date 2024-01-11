@@ -38,7 +38,7 @@ then
 fi
 
 CARDS_ARTIFACTID=$1
-PROJECT_VERSION=$2
+CARDS_VERSION=$2
 
 VALID_CARDS_PROJECTS="||cards4kids|cards4lfs|cards4proms|cards4prems|cards4heracles|"
 [ -e /external_project/project_code.txt ] && VALID_CARDS_PROJECTS="${VALID_CARDS_PROJECTS}$(cat /external_project/project_code.txt | head -n 1 | tr -d '\n')|"
@@ -47,7 +47,7 @@ echo "${VALID_CARDS_PROJECTS}" | grep -q "|${CARDS_PROJECT}|" || { echo "Invalid
 featureFlagString=""
 if [ ! -z $CARDS_PROJECT ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/${CARDS_PROJECT}/${PROJECT_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/${CARDS_PROJECT}/${CARDS_VERSION}/slingosgifeature"
 fi
 
 [[ "${CARDS_PROJECT}" == 'cards4proms' || "${CARDS_PROJECT}" == 'cards4prems' ]] && SMTPS_ENABLED="true"
@@ -57,33 +57,33 @@ fi
 
 if [ ! -z $DEV ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${PROJECT_VERSION}/slingosgifeature/composum"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum"
 fi
 
 if [ ! -z $DEMO ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature,"
-  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${PROJECT_VERSION}/slingosgifeature,"
-  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/forms_demo"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${CARDS_VERSION}/slingosgifeature,"
+  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${CARDS_VERSION}/slingosgifeature,"
+  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/forms_demo"
 else
   if [ ! -z $DEMO_BANNER ]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${CARDS_VERSION}/slingosgifeature"
   fi
 fi
 
 if [ ! -z $ENABLE_TEST_FEATURES ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${PROJECT_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature"
 fi
 
 if [ ! -z $SAML_CLOUD_IAM_DEMO ]
 then
   if [[ ${BEHIND_SSL_PROXY} == 'true' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support-ssl/${PROJECT_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support-ssl/${CARDS_VERSION}/slingosgifeature"
   else
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${PROJECT_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${CARDS_VERSION}/slingosgifeature"
   fi
 fi
 
@@ -105,25 +105,25 @@ do
     STORAGE=mongo
   elif [[ ${legacyRunMode} == 'dev' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${PROJECT_VERSION}/slingosgifeature/composum"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum"
   elif [[ ${legacyRunMode} == 'kids' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${PROJECT_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${CARDS_VERSION}/slingosgifeature"
   elif [[ ${legacyRunMode} == 'lfs' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4lfs/${PROJECT_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4lfs/${CARDS_VERSION}/slingosgifeature"
   elif [[ ${legacyRunMode} == 'proms' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${PROJECT_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${CARDS_VERSION}/slingosgifeature"
     SMTPS_ENABLED="true"
   elif [[ ${legacyRunMode} == 'test' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${PROJECT_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature"
   elif [[ ${legacyRunMode} == 'demo' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature,"
-    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${PROJECT_VERSION}/slingosgifeature,"
-    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/forms_demo"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${CARDS_VERSION}/slingosgifeature,"
+    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${CARDS_VERSION}/slingosgifeature,"
+    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/forms_demo"
   elif [[ ${legacyRunMode} == 'permissions_open' ]]
   then
     PERMISSIONS="open"
@@ -137,7 +137,7 @@ do
 done
 
 # Read /sling-features.json and enable the features required for this project
-PROJECT_REQUIRED_FEATURES=$(CARDS_VERSION=${PROJECT_VERSION} PROJECT_NAME=${CARDS_PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json)
+PROJECT_REQUIRED_FEATURES=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${CARDS_PROJECT} PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json)
 if [ ! -z $PROJECT_REQUIRED_FEATURES ]
 then
   featureFlagString="$featureFlagString -f $PROJECT_REQUIRED_FEATURES"
@@ -152,7 +152,7 @@ echo "PERMISSIONS = $PERMISSIONS"
 echo "ADDITIONAL_RUN_MODES = $ADDITIONAL_RUN_MODES"
 echo "ADDITIONAL_SLING_FEATURES = $ADDITIONAL_SLING_FEATURES"
 echo "CARDS_ARTIFACTID = $CARDS_ARTIFACTID"
-echo "PROJECT_VERSION = $PROJECT_VERSION"
+echo "CARDS_VERSION = $CARDS_VERSION"
 
 #Are we using an external MongoDB service for data storage?
 EXT_MONGO_VARIABLES=""
@@ -179,31 +179,31 @@ fi
 #Should the SMTPS OSGi bundle be enabled?
 if [[ "$SMTPS_ENABLED" == "true" ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-email-notifications/${PROJECT_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-email-notifications/${CARDS_VERSION}/slingosgifeature"
 fi
 
 #Should the SAML OSGi bundle be enabled?
 if [[ "$SAML_AUTH_ENABLED" == "true" ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${PROJECT_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL -f mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${PROJECT_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${CARDS_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL -f mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${CARDS_VERSION}/slingosgifeature"
 fi
 
 #Should the scheduled-csv-export module be loaded?
 if [[ "$CSV_EXPORT_ENABLED" == "true" ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-scheduled-csv-export/${PROJECT_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-scheduled-csv-export/${CARDS_VERSION}/slingosgifeature"
 fi
 
 #Should the clarity-integration module be loaded?
 if [[ "$CLARITY_IMPORT_ENABLED" == "true" ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-clarity-integration/${PROJECT_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-clarity-integration/${CARDS_VERSION}/slingosgifeature"
 fi
 
 #Should the cards-slack-notifications module be loaded?
 if [[ "$SLACK_NOTIFICATIONS_ENABLED" == "true" ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-slack-notifications/${PROJECT_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-slack-notifications/${CARDS_VERSION}/slingosgifeature"
 fi
 
 if [[ "$SMTPS_LOCALHOST_PROXY" == "true" ]]
@@ -229,4 +229,4 @@ done
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java -Djdk.xml.entityExpansionLimit=0 ${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),file://$(realpath ${HOME}/.cards-generic-m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${CARDS_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}
+java -Djdk.xml.entityExpansionLimit=0 ${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),file://$(realpath ${HOME}/.cards-generic-m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${CARDS_ARTIFACTID}-${CARDS_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}
