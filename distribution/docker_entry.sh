@@ -37,7 +37,7 @@ then
   PERMISSIONS="${PERMISSIONS:-trusted}"
 fi
 
-PROJECT_ARTIFACTID=$1
+CARDS_ARTIFACTID=$1
 PROJECT_VERSION=$2
 
 VALID_CARDS_PROJECTS="||cards4kids|cards4lfs|cards4proms|cards4prems|cards4heracles|"
@@ -151,7 +151,7 @@ echo "DEBUG = $DEBUG"
 echo "PERMISSIONS = $PERMISSIONS"
 echo "ADDITIONAL_RUN_MODES = $ADDITIONAL_RUN_MODES"
 echo "ADDITIONAL_SLING_FEATURES = $ADDITIONAL_SLING_FEATURES"
-echo "PROJECT_ARTIFACTID = $PROJECT_ARTIFACTID"
+echo "CARDS_ARTIFACTID = $CARDS_ARTIFACTID"
 echo "PROJECT_VERSION = $PROJECT_VERSION"
 
 #Are we using an external MongoDB service for data storage?
@@ -229,4 +229,4 @@ done
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java -Djdk.xml.entityExpansionLimit=0 ${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),file://$(realpath ${HOME}/.cards-generic-m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}
+java -Djdk.xml.entityExpansionLimit=0 ${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),file://$(realpath ${HOME}/.cards-generic-m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${CARDS_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}
