@@ -23,6 +23,7 @@
     "description": "markdown",
     "displayMode": {
       "default" : {
+        "compact" : "boolean",
         "recurrent": {
           "true" : {
             "initialNumberOfInstances" : "long"

@@ -284,6 +284,17 @@ const questionnaireStyle = theme => ({
         },
       },
     },
+    horizontalSection : {
+      [theme.breakpoints.up('md')]: {
+        flexFlow: "row",
+        flexWrap: "wrap",
+      },
+      "& > .MuiGrid-item > .MuiCard-root" : {
+        [theme.breakpoints.up('md')]: {
+          height: "100%",
+        },
+      },
+    },
     subjectTabs: {
       "& .MuiTab-root" : {
         minWidth: "auto",

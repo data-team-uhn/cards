@@ -62,8 +62,9 @@ function createTitle(label, idx, isRecurrent) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps } = props;
   const isRecurrent = sectionDefinition['recurrent'];
+  const isCompact = sectionDefinition['compact'];
   const { displayMode } = sectionDefinition;
 
   const headerVariant = "h5";
@@ -179,6 +180,7 @@ function Section(props) {
       in={isDisplayed}
       component={Grid}
       item
+      {...gridProps}
       mountOnEnter
       unmountOnExit
       className={collapseClasses.join(" ")}
@@ -254,7 +256,7 @@ function Section(props) {
                 component={Grid}
                 item
                 >
-                <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+                <Grid container {...FORM_ENTRY_CONTAINER_PROPS} className={isCompact ? classes.horizontalSection : undefined}>
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     sectionEntries.map(([key, definition]) =>
                       <FormEntry
@@ -270,6 +272,7 @@ function Section(props) {
                         isEdit={isEdit}
                         isSummary={isSummary}
                         contentOffset={contentOffset}
+                        gridProps={isCompact ? {xs: 12, md: 4} : undefined}
                         pageActive={pageActive}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {

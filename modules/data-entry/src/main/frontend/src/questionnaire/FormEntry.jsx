@@ -62,7 +62,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPE
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId, gridProps) => {
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
@@ -83,7 +83,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
 
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
-    <Grid item key={key} className={gridClasses.join(" ")}>
+    <Grid item key={key} className={gridClasses.join(" ")} {...gridProps}>
       <QuestionDisplay
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
@@ -111,7 +111,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
  */
-let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset) => {
+let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps) => {
   if (isSummary && sectionDefinition.displayMode !== "summary") {
     return null;
   }
@@ -135,14 +135,15 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
       isSummary={isSummary}
       instanceId={instanceId || ''}
       contentOffset={contentOffset}
+      gridProps={gridProps}
       />
   );
 }
 
-let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
+let displayInformation = (infoDefinition, key, classes, pageActive, isEdit, gridProps) => {
   return (
     isEdit && pageActive && infoDefinition.text &&
-    <Grid item key={key}>
+    <Grid item key={key} {...gridProps}>
       <Information infoDefinition={infoDefinition} />
     </Grid>
     || null
@@ -159,7 +160,7 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
  * @param {Object} classes style classes
  * @returns a React component that renders the matrix section
  */
-let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, pageActive, isEdit, contentOffset) => {
+let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, pageActive, isEdit, contentOffset, gridProps) => {
   // Find the existing AnswerSection for this section, if available
   const existingSectionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
@@ -184,7 +185,7 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
   }
 
   return (
-    <Grid item key={key} className={gridClasses.join(" ")}>
+    <Grid item key={key} className={gridClasses.join(" ")} {...gridProps}>
       <QuestionMatrix
         sectionDefinition={sectionDefinition}
         existingSectionAnswer={existingSectionAnswer}
@@ -210,20 +211,21 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset} = props;
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps} = props;
+  gridProps = gridProps || {};
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId, gridProps);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
     if ("matrix" === entryDefinition["displayMode"]) {
-      return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, contentOffset);
+      return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, contentOffset, gridProps);
     } else {
-      return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset);
+      return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps);
     }
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit);
+    return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit, gridProps);
   }
 }
