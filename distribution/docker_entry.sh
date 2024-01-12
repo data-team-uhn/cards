@@ -42,6 +42,9 @@ fi
 PROJECT_ARTIFACTID=$1
 PROJECT_VERSION=$2
 
+# Resolve any environment variable references in ADDITIONAL_SLING_FEATURES
+export ADDITIONAL_SLING_FEATURES=$(echo "$ADDITIONAL_SLING_FEATURES" | envsubst)
+
 VALID_CARDS_PROJECTS="||cards4kids|cards4lfs|cards4proms|cards4prems|cards4heracles|"
 echo "${VALID_CARDS_PROJECTS}" | grep -q "|${CARDS_PROJECT}|" || { echo "Invalid project specified - defaulting to generic CARDS."; unset CARDS_PROJECT; }
 

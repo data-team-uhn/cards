@@ -49,6 +49,7 @@ RUN apk update
 RUN apk add --upgrade apk-tools
 RUN apk upgrade --available
 RUN apk add \
+  gettext \
   openjdk11-jre \
   tzdata
 
