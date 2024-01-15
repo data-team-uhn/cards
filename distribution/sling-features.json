@@ -1,0 +1,6 @@
+{
+  "cards4heracles": [
+    "mvn:io.uhndata.cards/cards-s3-export/{PROJECT_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-slack-notifications/{PROJECT_VERSION}/slingosgifeature"
+  ]
+}

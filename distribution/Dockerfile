@@ -50,6 +50,7 @@ RUN apk add --upgrade apk-tools
 RUN apk upgrade --available
 RUN apk add \
   openjdk11-jre \
+  python3 \
   tzdata
 
 # Optional: enable remote debugging at port 5005
@@ -66,6 +67,8 @@ COPY target/${project.artifactId}-${project.version}-core_mongo_far.far .
 COPY target/${project.artifactId}-${project.version}-core_tar_far.far .
 COPY logback.xml ./.cards-data/
 COPY mailcap /root/.mailcap
+COPY get_project_dependency_features.py /get_project_dependency_features.py
+COPY sling-features.json /sling-features.json
 
 # This is where Sling stores its data
 # Make this a volume which can be persisted between different container versions

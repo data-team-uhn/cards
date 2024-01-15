@@ -88,6 +88,13 @@ then
   fi
 fi
 
+# Read /sling-features.json and enable the features required for this project
+PROJECT_REQUIRED_FEATURES=$(PROJECT_VERSION=${PROJECT_VERSION} python3 /get_project_dependency_features.py /sling-features.json)
+if [ ! -z $PROJECT_REQUIRED_FEATURES ]
+then
+  featureFlagString="$featureFlagString -f $PROJECT_REQUIRED_FEATURES"
+fi
+
 if [ ! -z $ADDITIONAL_SLING_FEATURES ]
 then
   featureFlagString="$featureFlagString -f $ADDITIONAL_SLING_FEATURES"
