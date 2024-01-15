@@ -238,12 +238,14 @@ let QuestionMatrix = (props) => {
 
   let renderViewMode = () => {
     return (<>
-      { existingAnswers.map((answer, idx) => (answer[1].displayedValue || hasWarningFlags(answer)) && (
-        <TableRow key={answer[0] + idx} className={enableVerticalLayout ? classes.questionMatrixStackedAnswer : ''}>
-          { renderQuestion(answer[1].question, hasWarningFlags(answer)) }
-          { !enableVerticalLayout && <TableCell>—</TableCell> }
-          { renderAnswer(answer[1], (enableVerticalLayout ? '-' : '')) }
-        </TableRow>
+      { subquestions.map( question => existingAnswers.find(answer  => answer[1]?.question?.["@path"] == question[1]?.["@path"]) )
+          .filter (answer => answer && (answer[1].displayedValue || hasWarningFlags(answer)))
+          .map( (answer, idx) => (
+            <TableRow key={answer[0] + idx} className={enableVerticalLayout ? classes.questionMatrixStackedAnswer : ''}>
+              { renderQuestion(answer[1].question, hasWarningFlags(answer)) }
+              { !enableVerticalLayout && <TableCell>—</TableCell> }
+              { renderAnswer(answer[1], (enableVerticalLayout ? '-' : '')) }
+            </TableRow>
       ))}
     </>);
   };
