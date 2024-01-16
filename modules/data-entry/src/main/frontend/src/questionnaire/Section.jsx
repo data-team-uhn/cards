@@ -272,7 +272,7 @@ function Section(props) {
                         isEdit={isEdit}
                         isSummary={isSummary}
                         contentOffset={contentOffset}
-                        gridProps={isCompact && sectionEntries.length > 1 ? {xs: 12, sm: 6, md: 6, lg: (sectionEntries.length == 2 ? 6 : 4)} : undefined}
+                        gridProps={isCompact && sectionEntries.length > 1 ? {xs: 12, sm: 12, md: 6, lg: (sectionEntries.length == 2 ? 6 : 4)} : undefined}
                         pageActive={pageActive}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {
