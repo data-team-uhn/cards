@@ -77,24 +77,25 @@ export function parseSectionOrQuestionnaire (sectionJson) {
 export function getFirstIncompleteQuestionEl (json) {
     // If the form is incomplete
     if (hasWarningFlags(json)) {
-      // Get an array of the question paths in the order defined by the questionnaire
-      let sortedQuestions = parseSectionOrQuestionnaire(json.questionnaire);
       // Get the map answerId->questionPath of incomplete answers
       let missingAnswers = getIncompleteQuestionsMap(json);
 
+      // If we have incomplete answers
       if (Object.keys(missingAnswers).length > 0) {
-        // Loop through the questions in the order defined by questionnaire
-        for (const qPath of sortedQuestions) {
-          let missingAnswerId = Object.keys(missingAnswers).find(a => missingAnswers[a] == qPath);
-          let answerElt = missingAnswerId && document.getElementById("answer-" + missingAnswerId);
-          if (answerElt) {
-            let questionElt = answerElt.closest('[id="' + qPath + '"]');
-            // return the first _visible_ question element with an incomplete answer
-            if (questionElt && getComputedStyle(questionElt.parentElement).display != 'none') {
-              return questionElt;
-            }
-          }
-        }
+        // Obtain their corresponding question card elements
+        let incompleteQuestions = (
+          // Each question card contains a hidden input with the answer node name as value
+          // Obtain an array of these inputs in the order they appear in on the screen
+          Array.from(document.getElementsByClassName("cards-answer-id"))
+            // Retain only the missing answers
+            .filter(idElt => missingAnswers[idElt.value])
+            // Obtain the corresponding question card elements
+            .map(idElt => idElt.closest('[id="' + missingAnswers[idElt.value] + '"]'))
+            // Retain only visible questions
+            .filter(questionElt => questionElt && getComputedStyle(questionElt.parentElement).display != 'none')
+        );
+        // Return the first question card with an incomplete answer
+        return incompleteQuestions[0];
       }
     }
     return null;

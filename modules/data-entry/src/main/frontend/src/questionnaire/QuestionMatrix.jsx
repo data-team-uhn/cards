@@ -303,7 +303,7 @@ let QuestionMatrix = (props) => {
         </TableBody>
       </Table>
       { isEdit && <>
-      <input type="hidden" id={"answer-" + answerSectionID}></input>
+      <input type="hidden" className="cards-answer-id" value={answerSectionID}></input>
       <input type="hidden" name={`${sectionAnswerPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
       <input type="hidden" name={`${sectionAnswerPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`${sectionAnswerPath}/section@TypeHint`} value="Reference"></input>
