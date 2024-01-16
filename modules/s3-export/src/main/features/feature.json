@@ -75,7 +75,7 @@
       "service.ranking:Integer":300,
       "scripts": [
         // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
-        "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes",
+        "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes \n create path (sling:Folder) /Metrics",
         // Exporting data requires being able to read it
         "create service user s3-export \n set ACL on /Questionnaires,/Forms,/Subjects,/SubjectTypes \n   allow jcr:read for s3-export \n end",
         // We also want to keep track of S3 export performance metrics
