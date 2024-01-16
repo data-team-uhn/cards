@@ -256,7 +256,7 @@ function Section(props) {
                 component={Grid}
                 item
                 >
-                <Grid container {...FORM_ENTRY_CONTAINER_PROPS} className={isCompact ? classes.horizontalSection : undefined}>
+                <Grid container {...FORM_ENTRY_CONTAINER_PROPS} className={isCompact && sectionEntries.length > 1 ? classes.horizontalSection : undefined}>
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     sectionEntries.map(([key, definition]) =>
                       <FormEntry
@@ -272,7 +272,7 @@ function Section(props) {
                         isEdit={isEdit}
                         isSummary={isSummary}
                         contentOffset={contentOffset}
-                        gridProps={isCompact ? {xs: 12, md: 4} : undefined}
+                        gridProps={isCompact && sectionEntries.length > 1 ? {xs: 12, sm: 6, md: 6, lg: (sectionEntries.length == 2 ? 6 : 4)} : undefined}
                         pageActive={pageActive}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {
