@@ -29,19 +29,19 @@ export function hasWarningFlags (data) {
 }
 
 // A helper recursive function to loop through the sections/questions data 
-// and collect all questions that have incomplete status among it's statusFlags
-// Recursively build a map of uuid->path of all incomplete questions
+// and collect all answers that have the incomplete status flag
+// Recursively build a map answerId->questionPath of all incomplete questions
 export function getIncompleteQuestionsMap (sectionJson) {
     let retFields = {};
     Object.entries(sectionJson).map(([title, object]) => {
         // We only care about children that are cards/Answers or cards:AnswerSections
         if (object["sling:resourceSuperType"] == "cards/Answer" && hasWarningFlags(object)) {
           // If this is an cards:Question, we copy the entire path to the array
-          retFields[object.question["jcr:uuid"]] = object.question["@path"];
+          retFields[object["@name"]] = object.question["@path"];
         } else if (object["jcr:primaryType"] == "cards:AnswerSection" && hasWarningFlags(object)) {
-          // if this is matrix - save the section path as this section is rendered in Question component
+          // If this is a matrix, save the section path as this section is rendered as a Question component
           if ("matrix" === object.section["displayMode"]) {
-            retFields[object.section["jcr:uuid"]] = object.section["@path"];
+            retFields[object["@name"]] = object.section["@path"];
           } else {
             // If this is a normal cards:Section, recurse deeper
             retFields = {...retFields, ...getIncompleteQuestionsMap(object)};
@@ -52,17 +52,17 @@ export function getIncompleteQuestionsMap (sectionJson) {
     return retFields;
 }
 
-// Recursively collect all uuids of questions in the *right order*
+// Recursively collect all questions in the *right order*
 export function parseSectionOrQuestionnaire (sectionJson) {
     let retFields = [];
     Object.entries(sectionJson).map(([title, object]) => {
         // We only care about children that are cards:Questions or cards:Sections
         if (object["jcr:primaryType"] == "cards:Question") {
           // If this is an cards:Question, copy the entire thing over to our Json value
-          retFields.push(object["jcr:uuid"]);
+          retFields.push(object["@path"]);
         } else if (object["jcr:primaryType"] == "cards:Section") {
           if ("matrix" === object["displayMode"]) {
-            retFields.push(object["jcr:uuid"]);
+            retFields.push(object["@path"]);
           } else {
             // If this is a normal cards:Section, recurse deeper
             retFields.push(...parseSectionOrQuestionnaire(object));
@@ -73,22 +73,26 @@ export function parseSectionOrQuestionnaire (sectionJson) {
     return retFields;
 }
 
-// Gets the first visible incomplete question element from the form json
+// Gets the first visible question element with an incomplete answer element from the form json
 export function getFirstIncompleteQuestionEl (json) {
-    //if the form is incomplete itself
+    // If the form is incomplete
     if (hasWarningFlags(json)) {
-      // Get an array of the question uuids in the order defined by questionnaire
-      let allUuids = parseSectionOrQuestionnaire(json.questionnaire);
-      // Get the map of uuid:path of the incomplete answers
-      let incompleteQuestions = getIncompleteQuestionsMap(json);
+      // Get an array of the question paths in the order defined by the questionnaire
+      let sortedQuestions = parseSectionOrQuestionnaire(json.questionnaire);
+      // Get the map answerId->questionPath of incomplete answers
+      let missingAnswers = getIncompleteQuestionsMap(json);
 
-      if (Object.keys(incompleteQuestions).length > 0) {
-	// Loop through the question uuids in the order defined by questionnaire
-        for (const uuid of allUuids) {
-          let firstEl = document.getElementById(incompleteQuestions[uuid]);
-          // Find first visible element by path from incomplete answers map
-          if (firstEl && getComputedStyle(firstEl.parentElement).display != 'none') {
-            return firstEl;
+      if (Object.keys(missingAnswers).length > 0) {
+        // Loop through the questions in the order defined by questionnaire
+        for (const qPath of sortedQuestions) {
+          let missingAnswerId = Object.keys(missingAnswers).find(a => missingAnswers[a] == qPath);
+          let answerElt = missingAnswerId && document.getElementById("answer-" + missingAnswerId);
+          if (answerElt) {
+            let questionElt = answerElt.closest('[id="' + qPath + '"]');
+            // return the first _visible_ question element with an incomplete answer
+            if (questionElt && getComputedStyle(questionElt.parentElement).display != 'none') {
+              return questionElt;
+            }
           }
         }
       }

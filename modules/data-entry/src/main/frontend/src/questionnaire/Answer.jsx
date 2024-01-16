@@ -75,6 +75,7 @@ function Answer (props) {
 
   return (
     <React.Fragment>
+      <input type="hidden" id={`answer-${answerID}`}></input>
       <input type="hidden" name={`${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
       <input type="hidden" name={`${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`${answerPath}/question@TypeHint`} value="Reference"></input>
