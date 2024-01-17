@@ -31,12 +31,10 @@ STORAGE=tar
 #If (inside a docker-compose environment), we are supposed to wait for http://cardsinitial:8080/ to start
 [ -z $WAIT_FOR_CARDSINIT ] || (while true; do (wget -S --spider http://cardsinitial:8080/ 2>&1 | grep 'HTTP/1.1 200 OK') && break; sleep 10; done)
 
-#If SAML is enabled, default to "trusted" permissions. Otherwise, default to "open" permissions.
+#If SAML is enabled, default to "trusted" permissions. Otherwise, default to whatever is specified by the project via sling-features.json.
 if [[ "$SAML_AUTH_ENABLED" == "true" ]]
 then
   PERMISSIONS="${PERMISSIONS:-trusted}"
-else
-  PERMISSIONS="${PERMISSIONS:-open}"
 fi
 
 PROJECT_ARTIFACTID=$1
