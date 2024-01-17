@@ -256,7 +256,14 @@ function Section(props) {
                 component={Grid}
                 item
                 >
-                <Grid container {...FORM_ENTRY_CONTAINER_PROPS} className={isCompact && sectionEntries.length > 1 ? classes.horizontalSection : undefined}>
+                <Grid container
+                    {...FORM_ENTRY_CONTAINER_PROPS}
+                    className={
+                      isCompact && sectionEntries.length > 1 ?
+                        [classes.horizontalSection, "cards-horizontal-section"].join(' ')
+                      : undefined
+                    }
+                  >
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
                     sectionEntries.map(([key, definition]) =>
                       <FormEntry
