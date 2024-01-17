@@ -357,6 +357,7 @@ do
   fi
 done
 
+PROJECT_SPECIFIED=false
 for ((i=0; i<${ARGS_LENGTH}; ++i));
 do
   if [[ ${ARGS[$i]} == '-P' || ${ARGS[$i]} == '--project' ]]
@@ -370,10 +371,19 @@ do
       # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
       PROJECT="cards4${PROJECT#cards4}"
       ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature,$(CARDS_PROJECT=${PROJECT} PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+      PROJECT_SPECIFIED=true
     done
     ARGS[$i]=${ARGS[$i]#,}
   fi
 done
+
+if [ $PROJECT_SPECIFIED = false ]
+then
+  ARGS[$ARGS_LENGTH]=-f
+  ARGS_LENGTH=${ARGS_LENGTH}+1
+  ARGS[$ARGS_LENGTH]=$(CARDS_PROJECT="" PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+  ARGS_LENGTH=${ARGS_LENGTH}+1
+fi
 
 SMTPS_ENABLED=false
 echo "${ARGS[@]}" | grep -q "mvn:io.uhndata.cards/cards-email-notifications/" && SMTPS_ENABLED=true
