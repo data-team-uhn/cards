@@ -159,7 +159,7 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
  * @param {Object} classes style classes
  * @returns a React component that renders the matrix section
  */
-let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, pageActive, isEdit) => {
+let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, pageActive, isEdit, contentOffset) => {
   // Find the existing AnswerSection for this section, if available
   const existingSectionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
@@ -192,6 +192,7 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
         path={path}
         isEdit={isEdit}
         pageActive={pageActive}
+        contentOffset={contentOffset}
       />
     </Grid>
   );
@@ -218,7 +219,7 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
     if ("matrix" === entryDefinition["displayMode"]) {
-      return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit);
+      return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, contentOffset);
     } else {
       return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset);
     }

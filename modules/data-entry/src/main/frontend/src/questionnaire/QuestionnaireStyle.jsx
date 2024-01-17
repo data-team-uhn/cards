@@ -642,7 +642,7 @@ const questionnaireStyle = theme => ({
     questionMatrixControls: {
       "& .MuiTableHead-root th": {
         fontWeight: "bold",
-        paddingTop: 0,
+        padding: theme.spacing(.5, 1, 1, .5),
         verticalAlign: "top",
       },
       "& .MuiTableBody-root th": {
@@ -653,6 +653,15 @@ const questionnaireStyle = theme => ({
       },
     },
     questionMatrixHorizontal: {
+      position: "relative",
+      "& .MuiTableHead-root" : {
+        position: "sticky",
+        boxShadow: "0 1px 0 " + theme.palette.divider,
+        zIndex: 1,
+        "& th" : {
+          backgroundColor: theme.palette.background.paper,
+        },
+      },
       "& .MuiFormControlLabel-root" : {
         margin: "0 !important",
       },

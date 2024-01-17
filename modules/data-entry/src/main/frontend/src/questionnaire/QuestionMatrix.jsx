@@ -62,7 +62,7 @@ const DATA_TO_NODE_TYPE = {
 // existingAnswer array of sub-question answers
 
 let QuestionMatrix = (props) => {
-  const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, pageActive, ...rest} = props;
+  const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, pageActive, contentOffset, ...rest} = props;
   const { maxAnswers, minAnswers } = {...sectionDefinition, ...props};
 
   // Use existing existingAnswer, Otherwise, create a new UUID
@@ -192,7 +192,7 @@ let QuestionMatrix = (props) => {
 
   let renderTableHead = () => {
     return ((!isEdit || enableVerticalLayout) ? null :
-      <TableHead>
+      <TableHead sx={{top: contentOffset}}>
         <TableRow>
         { [["",""]].concat(defaults).map( (option, index) => (
           <TableCell key={index} align="center" component="th">
