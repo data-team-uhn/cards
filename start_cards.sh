@@ -235,8 +235,6 @@ declare -a ARGS=("$@")
 declare -i ARGS_LENGTH=${#ARGS[@]}
 # Storage engine: default is TAR storage, allow switching to Mongo
 declare OAK_STORAGE="tar"
-# Permissions scheme: default is open, allow switching to something else
-declare PERMISSIONS="open"
 declare PERMISSIONS_EXPLICITLY_SET="false"
 # Are we using the Cloud-IAM.com Keycloak demo instance?
 declare CLOUD_IAM_DEMO="false"
@@ -254,19 +252,6 @@ do
     unset ARGS[$i]
     i=${i}+1
     unset ARGS[$i]
-  elif [[ ${ARGS[$i]} == '-P' || ${ARGS[$i]} == '--project' ]]
-  then
-    ARGS[$i]='-f'
-    i=${i}+1
-    PROJECTS=${ARGS[$i]//,/ }
-    ARGS[$i]=''
-    for PROJECT in $PROJECTS
-    do
-      # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
-      PROJECT="cards4${PROJECT#cards4}"
-      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature,$(CARDS_PROJECT=${PROJECT} PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
-    done
-    ARGS[$i]=${ARGS[$i]#,}
   elif [[ ${ARGS[$i]} == '--permissions' ]]
   then
     PERMISSIONS_EXPLICITLY_SET="true"
@@ -369,6 +354,24 @@ do
     ARGS_LENGTH=${ARGS_LENGTH}+1
   else
     ARGS[$i]=${ARGS[$i]/VERSION/${CARDS_VERSION}}
+  fi
+done
+
+for ((i=0; i<${ARGS_LENGTH}; ++i));
+do
+  if [[ ${ARGS[$i]} == '-P' || ${ARGS[$i]} == '--project' ]]
+  then
+    ARGS[$i]='-f'
+    i=${i}+1
+    PROJECTS=${ARGS[$i]//,/ }
+    ARGS[$i]=''
+    for PROJECT in $PROJECTS
+    do
+      # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
+      PROJECT="cards4${PROJECT#cards4}"
+      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature,$(CARDS_PROJECT=${PROJECT} PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+    done
+    ARGS[$i]=${ARGS[$i]#,}
   fi
 done
 
