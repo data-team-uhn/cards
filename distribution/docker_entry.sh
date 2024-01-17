@@ -88,13 +88,6 @@ then
   fi
 fi
 
-# Read /sling-features.json and enable the features required for this project
-PROJECT_REQUIRED_FEATURES=$(PROJECT_VERSION=${PROJECT_VERSION} python3 /get_project_dependency_features.py /sling-features.json)
-if [ ! -z $PROJECT_REQUIRED_FEATURES ]
-then
-  featureFlagString="$featureFlagString -f $PROJECT_REQUIRED_FEATURES"
-fi
-
 if [ ! -z $ADDITIONAL_SLING_FEATURES ]
 then
   featureFlagString="$featureFlagString -f $ADDITIONAL_SLING_FEATURES"
@@ -143,6 +136,13 @@ do
     PERMISSIONS="ownership"
   fi
 done
+
+# Read /sling-features.json and enable the features required for this project
+PROJECT_REQUIRED_FEATURES=$(PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json)
+if [ ! -z $PROJECT_REQUIRED_FEATURES ]
+then
+  featureFlagString="$featureFlagString -f $PROJECT_REQUIRED_FEATURES"
+fi
 
 echo "STORAGE = $STORAGE"
 echo "DEV = $DEV"
@@ -230,4 +230,4 @@ done
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java -Djdk.xml.entityExpansionLimit=0 ${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES} -f mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_${PERMISSIONS}${featureFlagString}
+java -Djdk.xml.entityExpansionLimit=0 ${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}

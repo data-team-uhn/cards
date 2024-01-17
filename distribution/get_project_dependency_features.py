@@ -22,22 +22,78 @@ import os
 import sys
 import json
 
+"""
+Get a list of the keys in a Python format string
+
+For example: gatherFormatStringKeys("Hello {planet} my name is {name}.")
+would return ["planet", "name"]
+"""
+def gatherFormatStringKeys(fstring):
+  placeholders = {}
+  while True:
+    try:
+      fstring.format(**placeholders)
+      return list(placeholders.keys())
+    except KeyError as e:
+      placeholders[e.args[0]] = ""
+
+"""
+Determines the values that are to be used for each key.
+
+Going left-to-right, the key is assigned the first available value
+
+For example: `$name|John` would first try to use the value of the `name`
+variable. If the `name` variable is not defined, it would use the
+literal value "John".
+"""
+def buildFormatStringValuesMap(keys, variables):
+  kvmap = {}
+  for key in keys:
+    for v in key.split('|'):
+      if v.startswith('$'):
+        # This is a reference to a variable
+        varname = v[1:]
+        if varname in variables:
+          kvmap[key] = variables[varname]
+          break
+      else:
+        # Otherwise this is a immediate value
+        kvmap[key] = v
+        break
+  return kvmap
+
+"""
+Renders a format string using the available values
+
+For example:
+
+>>> renderFormatString("Hello {$name|there}!", {})
+Hello there!
+
+>>> renderFormatString("Hello {$name|there}!, {'name': 'John'})
+Hello John!
+"""
+def renderFormatString(fstring, variables):
+  keys = gatherFormatStringKeys(fstring)
+  varmap = buildFormatStringValuesMap(keys, variables)
+  return fstring.format(**varmap)
+
+
 SLING_REQUIRED_FEATURES_FILE = sys.argv[1]
 
 with open(SLING_REQUIRED_FEATURES_FILE, 'r') as f:
   SLING_REQUIRED_FEATURES = json.load(f)
 
 if 'CARDS_PROJECT' not in os.environ:
-  print("")
-  sys.exit(1)
-
-CARDS_PROJECT = os.environ['CARDS_PROJECT']
+  CARDS_PROJECT = ""
+else:
+  CARDS_PROJECT = os.environ['CARDS_PROJECT']
 
 if CARDS_PROJECT not in SLING_REQUIRED_FEATURES:
   print("")
   sys.exit(1)
 
 features_template_list = SLING_REQUIRED_FEATURES[CARDS_PROJECT]
-features_list = [template.format(**os.environ) for template in features_template_list]
+features_list = [renderFormatString(template, os.environ) for template in features_template_list]
 
 print(",".join(features_list))
