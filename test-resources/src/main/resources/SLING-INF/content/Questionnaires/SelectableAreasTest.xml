@@ -589,31 +589,50 @@
 			</property>
 		</node>
 		<node>
-			<name>rightbuttock</name>
+			<name>rightbuttocks</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Right Buttock</value>
+				<value>Right Buttocks</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>rightbuttock</value>
+				<value>rightbuttocks</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>leftbuttock</name>
+			<name>leftbuttocks</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Left Buttock</value>
+				<value>Left Buttocks</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>leftbuttock</value>
+				<value>leftbuttocks</value>
 				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>noChronicPainLabeled</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>noChronicPainLabeled</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>No Chronic Pain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>
@@ -1089,16 +1108,16 @@
 			</property>
 		</node>
 		<node>
-			<name>buttock</name>
+			<name>buttocks</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Buttock</value>
+				<value>Buttocks</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>buttock</value>
+				<value>buttocks</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -1128,6 +1147,25 @@
 				<name>value</name>
 				<value>rightheel</value>
 				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>noChronicPainUnlabled</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>value</name>
+				<value>noChronicPainUnlabled</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>help</name>
+				<value>Example option description</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>

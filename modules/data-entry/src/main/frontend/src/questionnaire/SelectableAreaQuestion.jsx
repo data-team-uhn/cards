@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 
-import { Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import { useTheme } from '@mui/material/styles';
 import Tooltip from "@mui/material/Tooltip";
@@ -31,6 +31,7 @@ import Answer, { LABEL_POS, VALUE_POS } from "./Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerComponentManager from "./AnswerComponentManager";
+import FormattedText from "../components/FormattedText.jsx";
 
 // Component that renders a multiple choice question, with optional text input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -62,7 +63,9 @@ function SelectableAreaQuestion(props) {
   const [ imageMapper, setImageMapper ] = useState(<></>);
   const [ selectionDisplay, setSelectionDisplay ] = useState(<></>);
 
-  const mapperRef = useRef(null);
+  const [ notApplicableOption, setNotApplicableOption ] = useState(null);
+  const [ notApplicableChecked, setNotApplicableChecked ] = useState(false);
+
   const questionRef = useRef(null);
 
   let initialSelection =
@@ -80,23 +83,27 @@ function SelectableAreaQuestion(props) {
   // As a result, we manually highlight the selected areas.
   useEffect(() => {
     if (map) {
-      map.forEach((mapEntry => {
-        // Check if this area is selected.
-        let found = false;
-        for (let i = 0; i < selection.length; i++) {
-          if (selection[i][VALUE_POS] === mapEntry.value) {
-            // Area has been selected, highlight it.
-            mapEntry.preFillColor = getSelectedColor(mapEntry);
-            found = true;
-            break;
+      setMap(
+        map.map((mapEntry => {
+          let entry = mapEntry
+          // Check if this area is selected.
+          let found = false;
+          for (let i = 0; i < selection.length; i++) {
+            if (selection[i][VALUE_POS] === entry.value) {
+              // Area has been selected, highlight it.
+              entry.preFillColor = getSelectedColor(entry);
+              found = true;
+              break;
+            }
           }
-        }
-        if (!found) {
-          mapEntry.preFillColor = getUnselectedColor(mapEntry);
-        }
-      }))
+          if (!found) {
+            entry.preFillColor = getUnselectedColor(entry);
+          }
+          return entry;
+        }))
+      )
     }
-  }, [selection, map])
+  }, [selection])
 
   const theme = useTheme();
 
@@ -132,13 +139,20 @@ function SelectableAreaQuestion(props) {
     let options = {};
     Object.entries(questionDefinition)
       // answers are nodes with "jcr:primaryType" = "cards:AnswerOption"
-      .filter( (answer) => {
-        return answer[1]['jcr:primaryType'] && answer[1]['jcr:primaryType'] === 'cards:AnswerOption'
+      .filter( (childNode) => {
+        return childNode[1]['jcr:primaryType'] && childNode[1]['jcr:primaryType'] === 'cards:AnswerOption'
       })
       // turn these answers into options and populate our valueToLabel
-      .forEach( (answer) => {
-        let value = answer[1]['value'];
-        let label = answer[1]['label'] || value;
+      .forEach( (answerOption) => {
+        if (answerOption[1].notApplicable) {
+          setNotApplicableOption(answerOption[1])
+          if (selection.length == 1 && selection[0][VALUE_POS] == answerOption[1].value) {
+            setSelection([]);
+            setNotApplicableChecked(true);
+          }
+        }
+        let value = answerOption[1]['value'];
+        let label = answerOption[1]['label'] || value;
         options[value] = label;
       });
 
@@ -172,6 +186,7 @@ function SelectableAreaQuestion(props) {
   let onAreaClicked = (area, index) => {
     let clickedEntry = [area.title, area.value];
 
+    setNotApplicableChecked(false);
     setSelection(oldSelection => {
       if (maxAnswers == 1) {
         // Single select: Just set selection to the most recent value
@@ -195,6 +210,11 @@ function SelectableAreaQuestion(props) {
     })
   }
 
+  let onNotApplicableClicked = () => {
+    setSelection([]);
+    setNotApplicableChecked(!notApplicableChecked);
+  }
+
   // Track when the user's cursor is over one of the areas
   let onMouseEnter = (area, index, event) => {
     setAreaHovered(true);
@@ -215,7 +235,6 @@ function SelectableAreaQuestion(props) {
           onClick={onAreaClicked}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
-          containerRef={mapperRef}
           responsive={true}
           parentWidth={(variant?.maxWidth == null || variant?.maxWidth > currentWidth)
             ? currentWidth : variant?.maxWidth}
@@ -240,6 +259,29 @@ function SelectableAreaQuestion(props) {
       {...props}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
+      {
+        notApplicableOption != null ?
+        <>
+          <FormControlLabel
+            control={
+            <Checkbox
+                checked={notApplicableChecked}
+                onChange={() => {onNotApplicableClicked()}}
+                className={classes.checkbox}
+                color="secondary"
+              />}
+            label={notApplicableOption.label || notApplicableOption.value}
+            value={notApplicableOption.value}
+            className={classes.childFormControl}
+            classes={{
+              label: classes.inputLabel
+            }}
+          />
+          <FormattedText className={classes.selectionDescription} variant="caption" color="textSecondary">
+            {notApplicableOption.help}
+          </FormattedText>
+        </> : <></>
+      }
       <div ref={questionRef}>
         <Tooltip title={tooltipTitle} open={isAreaHovered} followCursor>
           <div className={isAreaHovered ? classes.imageMapperHovered : null} style={{position: 'relative', float:"left"}}>
@@ -250,7 +292,7 @@ function SelectableAreaQuestion(props) {
         <div style={{clear: "both"}}></div>
       </div>
       <Answer
-        answers={selection}
+        answers={notApplicableChecked ? [[notApplicableOption.label | notApplicableOption.value, notApplicableOption.value]] : selection}
         existingAnswer={existingAnswer}
         questionName={questionName}
         questionDefinition={props.questionDefinition}
