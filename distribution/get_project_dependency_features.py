@@ -78,6 +78,15 @@ def renderFormatString(fstring, variables):
   varmap = buildFormatStringValuesMap(keys, variables)
   return fstring.format(**varmap)
 
+"""
+Return a copy of a passed dictionary and remove any key-value pairs
+which have a value of an empty string
+
+>>> removeEmptyKeys({"foo": "bar", "hello": ""})
+{"foo": "bar"}
+"""
+def removeEmptyKeys(d):
+  return {k: d[k] for k in d if d[k] != ""}
 
 SLING_REQUIRED_FEATURES_FILE = sys.argv[1]
 
@@ -94,6 +103,6 @@ if CARDS_PROJECT not in SLING_REQUIRED_FEATURES:
   sys.exit(1)
 
 features_template_list = SLING_REQUIRED_FEATURES[CARDS_PROJECT]
-features_list = [renderFormatString(template, os.environ) for template in features_template_list]
+features_list = [renderFormatString(template, removeEmptyKeys(os.environ)) for template in features_template_list]
 
 print(",".join(features_list))
