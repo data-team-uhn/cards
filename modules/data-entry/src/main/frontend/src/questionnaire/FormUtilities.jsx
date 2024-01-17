@@ -52,27 +52,6 @@ export function getIncompleteQuestionsMap (sectionJson) {
     return retFields;
 }
 
-// Recursively collect all questions in the *right order*
-export function parseSectionOrQuestionnaire (sectionJson) {
-    let retFields = [];
-    Object.entries(sectionJson).map(([title, object]) => {
-        // We only care about children that are cards:Questions or cards:Sections
-        if (object["jcr:primaryType"] == "cards:Question") {
-          // If this is an cards:Question, copy the entire thing over to our Json value
-          retFields.push(object["@path"]);
-        } else if (object["jcr:primaryType"] == "cards:Section") {
-          if ("matrix" === object["displayMode"]) {
-            retFields.push(object["@path"]);
-          } else {
-            // If this is a normal cards:Section, recurse deeper
-            retFields.push(...parseSectionOrQuestionnaire(object));
-          }
-        }
-        // Otherwise, we don't care about this value
-    });
-    return retFields;
-}
-
 // Gets the first visible question element with an incomplete answer element from the form json
 export function getFirstIncompleteQuestionEl (json) {
     // If the form is incomplete
