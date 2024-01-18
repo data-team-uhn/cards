@@ -426,6 +426,15 @@ def number_handler(self, questionnaire, row):
     except ValueError:
         log(Logging.WARNING, "Could not parse \"{}\" to number".format(value))
 
+def boolean_handler(self, questionnaire, row):
+    value = self.get_value(row)
+    if (value.lower() == "true"):
+        questionnaire.question[self.name] = True
+    elif (value.lower() =="false"):
+        questionnaire.question[self.name] = False
+    else:   
+        log(Logging.WARNING, "Could not parse \"{}\" to boolean".format(value))
+
 def min_value_handler(self, questionnaire, row):
     range_value_handler(self, questionnaire, row, "lowerLimit")
 
@@ -468,6 +477,7 @@ DefaultHeaders["SLIDER_MARK"] = HeaderColumn("Slider Mark Step", "sliderMarkStep
 DefaultHeaders["SLIDER_ORIENTATION"] = HeaderColumn("Slider Orientation", "sliderOrientation")
 DefaultHeaders["ENTRY_MODE"] = HeaderColumn("Entry Mode", "entryMode")
 DefaultHeaders["ENTRY_MODE_QUESTION"] = HeaderColumn("Reference Question", "question")
+DefaultHeaders["IS_RANGE"] = HeaderColumn("isRange", "isRange", boolean_handler)
 
 
 
