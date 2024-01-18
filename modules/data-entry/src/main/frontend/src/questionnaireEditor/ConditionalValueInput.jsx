@@ -22,7 +22,9 @@ import PropTypes from "prop-types";
 
 import {
   Autocomplete,
+  FormControlLabel,
   ListItemText,
+  Switch,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -52,6 +54,7 @@ let ConditionalValueInput = (props) => {
 
   let [ values, setValues ] = useState(data[objectKey]?.value || []);
   let [ isReference, setReference ] = useState(data[objectKey] ? data[objectKey].isReference : (objectKey == 'operandA'));
+  let [ requireAll, setRequireAll ] = useState(data[objectKey]?.requireAll);
   let [ valueExists, setValueExists ] = useState();
 
   let variables = useQuestionnaireReaderContext();
@@ -125,6 +128,17 @@ let ConditionalValueInput = (props) => {
           )}
         />
       }
+
+      <FormControlLabel control={
+        <Switch
+          color="secondary"
+          onChange={event => setRequireAll(event.target.checked)}
+          checked={requireAll}
+        />}
+        label="Require all"
+      />
+      <input type="hidden" name={`${path}/requireAll`} value={requireAll || false} />
+      <input type="hidden" name={`${path}/requireAll@TypeHint`} value="Boolean" />
 
       {/* Metadata to sent to the server */}
       { !!(values?.length) ?
