@@ -8,8 +8,17 @@
       "<=" : {"operandB" : "conditionalValue"},
       ">"  : {"operandB" : "conditionalValue"},
       ">=" : {"operandB" : "conditionalValue"},
+      "includes" : {"operandB" : "conditionalValue"},
+      "excludes" : {"operandB" : "conditionalValue"},
       "is empty" : {},
       "is not empty" : {}
+    },
+    "dataType" : {
+      "text" : {},
+      "long" : {},
+      "decimal" : {},
+      "double" : {},
+      "date" : {}
     }
   }
 ]

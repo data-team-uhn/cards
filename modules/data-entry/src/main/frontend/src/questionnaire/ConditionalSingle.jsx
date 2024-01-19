@@ -20,112 +20,85 @@
 import { VALUE_POS } from "./Answer";
 import ConditionalComponentManager from "./ConditionalComponentManager";
 
-// A mapping from operands to conditionals
-const EMPTY = [null, undefined, ""];
+let transform = (values, transformerFunc) => values.map(v => Array.isArray(v) ? v.map(e => transformerFunc(e)) : transformerFunc(v));
+
 const TRANSFORMATIONS = {
-  "text": (a, b) => ([a, b]),
-  "date": (a, b) => ([new Date(a).getTime(), new Date(b).getTime()]),
-  "long": (a, b) => ([parseInt(a), parseInt(b)]),
-  "decimal": (a, b) => ([parseFloat(a), parseFloat(b)]),
-  "double": (a, b) => ([parseFloat(a), parseFloat(b)])
+  "text": (a, b) => [a, b],
+  "date": (a, b) => transform([a, b], v => new Date(v).getTime()),
+  "long": (a, b) => transform([a, b], parseInt),
+  "decimal": (a, b) => transform([a, b], parseFloat),
+  "double": (a, b) => transform([a, b], parseFloat)
 };
 
 const OPERATIONS = {
-  "=": (a, b) => (a == b),
+  "=": (a, b) => a.length == b.length && a.every((e, idx) => b[idx] == e), // array equality
   "<": (a, b) => (a < b),
   ">": (a, b) => (a > b),
   "<=": (a, b) => (a <= b),
   ">=": (a, b) => (a >= b),
-  "<>": (a, b) => (a != b),
-  "is empty": (a, b) => (EMPTY.indexOf(a) >= 0 || EMPTY.indexOf(b) >= 0),
-  "is not empty": (a, b) => (EMPTY.indexOf(a) < 0 || EMPTY.indexOf(b) < 0)
+  "<>": (a, b) => a.length != b.length || a.some((e, idx) => b[idx] != e), // array inequality
+  "is empty": (a) => a.length == 0,
+  "is not empty": (a) => a.length > 0,
+  "includes": (a, b) => b.every(e => a.includes(e)),
+  "excludes": (a, b) => b.every(e => !a.includes(e))
 };
 
-let compare = function(a, b, type, operation) {
-  if (operation === "is empty" || operation === "is not empty") {
-    return OPERATIONS[operation](a, b);
-  } else if (EMPTY.indexOf(a) >= 0 || EMPTY.indexOf(b) >= 0) {
-    return false;
-  }
-  return OPERATIONS?.[operation]?.(...(TRANSFORMATIONS[type] || TRANSFORMATIONS["text"])(a, b));
-}
-
-/**
- * Determines whether or not the conditional is satisfied.
- * @param {STRING} comparator The operator to use as a comparison
- * @param {STRING...} operands Any number of operands used for the comparison
- */
-export function isConditionalSatisfied(compareDataType, comparator, ...operands) {
-  if (!(compareDataType in TRANSFORMATIONS)) {
-    // Invalid data type
-    throw new Error("Invalid data type specified.")
-  }
-  if (!(comparator in OPERATIONS)) {
-    // Invalid operand
-    throw new Error("Invalid operand specified.")
-  }
-
-  return compare(...operands, compareDataType, comparator);
-}
 
 /**
  * Determines if the given cards:Conditional is true or not.
  * @param {Object} conditional The cards:Conditional to assert the truth of
  * @param {Object} context The React Context from which to pull values
  */
-export function isConditionalObjSatisfied(conditional, context) {
-  const requireAllOperandA = conditional["operandA"]["requireAll"];
-  const requireAllOperandB = conditional["operandB"]?.requireAll;
-
-  // If the operands aren't loaded yet, treat them as being empty
-  var operandA = getValue(context, conditional["operandA"]) || [""];
-  if (!allIsNull(operandA)) {
-      operandA = removeAllNull(operandA);
+export function isConditionalSatisfied(conditional, context) {
+  if (!(conditional.comparator in OPERATIONS)) {
+    // Invalid operation
+    throw new Error("Invalid operation specified.")
   }
+  var dataType = TRANSFORMATIONS[conditional.dataType] ? conditional.dataType : 'text';
+  var operandA = getValue(conditional.operandA, context);
+  var operandB = getValue(conditional.operandB, context);
 
-  var operandB = getValue(context, conditional["operandB"]) || [""];
-  if (!allIsNull(operandB)) {
-      operandB = removeAllNull(operandB);
-  }
-
-  const firstCondition = requireAllOperandA ? ((func) => operandA.every(func)) : ((func) => operandA.some(func));
-  const secondCondition = requireAllOperandB ? ((func) => operandB.every(func)) : ((func) => operandB.some(func));
-
-  return firstCondition( (valueA) => {
-    return secondCondition( (valueB) => {
-      return isConditionalSatisfied(conditional["dataType"], conditional["comparator"], valueA, valueB);
-    })
-  })
+  return compare(operandA, operandB, dataType, conditional.comparator);
 }
 
-function removeAllNull(lst) {
-  return lst.filter(item => (EMPTY.indexOf(item) < 0));
-}
-
-function allIsNull(lst) {
-  for (var i = 0; i < lst.length; i++) {
-    if (EMPTY.indexOf(lst[i]) < 0) {
-      return false;
-    }
-  }
-  return true;
-}
 
 /**
  * Converts a potential reference into its value from the given context, or returns the id input.
+ * @param {String} operand an object {isReference: true/false, value} where value is the id of the
+ *    question to use if isReference is true, or a set of raw values
  * @param {Object} context The React Context from which to pull values
- * @param {String} valueObj The ID of the field to use, or its raw value
  */
-function getValue(context, valueObj) {
-  return (valueObj && (valueObj["isReference"] ?
-    // Find the value from the referred position, and remap it to only include its values
-    (context[valueObj["value"]]?.map((element) => (element[VALUE_POS])))
+let getValue = function(operand, context) {
+  let value = (operand?.isReference ?
+    // Assume only one variable and retrieve its values from the form context
+    context[operand.value]?.map(v => v[VALUE_POS])
     // Otherwise use the value as is
-    : valueObj["value"]));
+    : operand?.value
+  // Filter out blanks, default to empty array
+  )?.filter(v => v) || [];
+  return value;
+}
+
+let compare = function(a, b, type, operation) {
+  // Some preprocessing before comparison
+  let _a = a, _b = b;
+
+  if (["=", "<>"]. includes(operation)) {
+    // Sort the arrays before comparing
+    _a = Array.from(a).sort();
+    _b = Array.from(b).sort();
+  }
+  if (["<", ">", "<=", ">="]. includes(operation)) {
+    // These operations are not fit for arrays
+    if (a.length > 1 || b.length > 1) return false;
+    _a = a[0];
+    _b = b[0];
+  }
+  return OPERATIONS[operation]?.(...(TRANSFORMATIONS[type])(_a, _b));
 }
 
 ConditionalComponentManager.registerConditionComponent((conditionDefinition) => {
   if (conditionDefinition["jcr:primaryType"] === "cards:Conditional") {
-    return [isConditionalObjSatisfied, 50];
+    return [isConditionalSatisfied, 50];
   }
 }, ["cards:Conditional"]);
