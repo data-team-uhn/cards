@@ -602,7 +602,7 @@ def is_matrix(parent):
 # Clean a title for display to the user
 def clean_title(title):
     result = title
-    return result.strip().replace('/','')
+    return result.strip()
 
 # Clean a string for use in a node name
 # TODO: replace with white list
