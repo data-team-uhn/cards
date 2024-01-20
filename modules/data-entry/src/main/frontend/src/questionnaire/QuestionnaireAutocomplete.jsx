@@ -74,10 +74,11 @@ let entitySpecs = {
   }
 }
 
-// Component that renders a multi-select autocomplete where the options are expected to be questions or sections
+// Component that renders an autocomplete where the options are expected to be questions or sections
 // from a certain questionnaire
 //
 // Props:
+// * multiple: a boolean specifying if the autocomplete is single (false) or multi (true) select; defaults to false
 // * entities: an array of objects describing questionnaire entries; the object shape is expected to be:
 //   { uuid: string, name: string, text: string, path: string, relativePath: string }
 // * selection: an array of strings representing the values of the selected option (according to getOptionValue)
@@ -86,7 +87,7 @@ let entitySpecs = {
 // Any other props are passed directly to the Autocomplete component.
 
 function QuestionnaireAutocomplete(props) {
-  const { entities, selection, onSelectionChanged, getOptionValue, ...rest } = props;
+  const { multiple, entities, selection, onSelectionChanged, getOptionValue, ...rest } = props;
 
   const filterOptions = createFilterOptions({
     stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
@@ -121,7 +122,7 @@ function QuestionnaireAutocomplete(props) {
     );
   }
 
-  let getQuestionnaireEntryText = (entry) => {
+  let getQuestionnaireEntryText = (entry, withPath = true) => {
     return (
       <ListItemText
         className={classes.optionText}
@@ -130,7 +131,7 @@ function QuestionnaireAutocomplete(props) {
             { entry.text }
           </FormattedText>
         }
-        secondary={
+        secondary={ withPath &&
           <>
             <span>{ entry.relativePath }</span>
             { entry.name }
@@ -143,13 +144,16 @@ function QuestionnaireAutocomplete(props) {
   return (<>
     <FormControl variant="standard" fullWidth>
       <Autocomplete
-        multiple
-        disableCloseOnSelect
+        multiple={!!multiple}
+        disableCloseOnSelect={!!multiple}
         disableClearable
-        value={entities?.filter(v => selection.includes(getOptionValue(v))) || []}
+        value={ multiple
+          ? entities?.filter(v => selection.includes(getOptionValue(v))) ?? []
+          : entities.find(v => selection.includes(getOptionValue(v))) ?? ""
+        }
         filterOptions={filterOptions}
         onChange={(event, value) => {
-          onSelectionChanged(value?.map(item => getOptionValue(item)));
+          onSelectionChanged(multiple ? value?.map(item => getOptionValue(item)) : [getOptionValue(value)]);
         }}
         renderTags={() => null}
         getOptionLabel={(option) => option?.name}
@@ -191,7 +195,7 @@ function QuestionnaireAutocomplete(props) {
             }
           >
             { getAvatar(value.type) }
-            { getQuestionnaireEntryText(value) }
+            { getQuestionnaireEntryText(value, multiple) }
           </ListItem>
         </React.Fragment>
       )}
@@ -200,12 +204,14 @@ function QuestionnaireAutocomplete(props) {
 }
 
 QuestionnaireAutocomplete.propTypes = {
+  multiple: PropTypes.bool,
   entities: PropTypes.array.isRequired,
   selection: PropTypes.array,
   onSelectionChanged: PropTypes.func,
   getOptionValue: PropTypes.func,
 }
 QuestionnaireAutocomplete.defaultProps = {
+  multiple: false,
   selection: [],
   onSelectionChanged: () => {},
   getOptionValue: (option) => option?.path,
