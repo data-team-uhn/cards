@@ -385,7 +385,7 @@
     },
 
     // YVM
-    "io.uhndata.cards.clarity.importer.ClarityImportConfig~prems-discharge-events": {
+    "io.uhndata.cards.clarity.importer.ClarityImportConfig~yvm-discharge-events": {
       "name": "Your Voice Matters - Discharge events",
       "type": "yvm",
       "importSchedule": "0 0 3 * * ? *",
