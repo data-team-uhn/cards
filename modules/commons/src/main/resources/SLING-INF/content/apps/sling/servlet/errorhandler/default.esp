@@ -53,7 +53,7 @@ if (statusMessage == null) {
   }
 }
 if ("application/json".equals(request.getHeader("Accept"))) {
-  out.print('{"status":"error","status.message":"' + statusMessage + '","status.code":' + statusCode + '}');
+  out.print('{"status":"error","status.message":"' + Packages.org.apache.commons.text.StringEscapeUtils.escapeJson(statusMessage) + '","status.code":' + statusCode + '}');
 } else {
   let version = currentSession.getNode("/libs/cards/conf/Version").getProperty("Version").getString();
   let appName = currentSession.getNode("/libs/cards/conf/AppName").getProperty("AppName").getString();
@@ -69,23 +69,23 @@ if ("application/json".equals(request.getHeader("Accept"))) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="version" content="${version}">
-    <meta name="platformName" content="${platformName}">
-    <meta name="title" content="${appName}">
-    <title>${appName}</title>
-    <meta name="statusCode" content="${statusCode}">
-    <meta name="statusMessage" content="${statusMessage}">
+    <meta name="version" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(version})">
+    <meta name="platformName" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(platformName)}">
+    <meta name="title" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appName)}">
+    <title>${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appName)}</title>
+    <meta name="statusCode" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(statusCode)}">
+    <meta name="statusMessage" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(statusMessage)}">
 <%
       let colorProps = colors.getProperties();
       for (let i in colorProps) {
         if (!i.startsWith("jcr:")) {
-          out.println('    <meta name="' + i + '" content="' + colorProps[i] + '"/>');
+          out.println('    <meta name="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(i) + '" content="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(colorProps[i]) + '"/>');
         }
       }
       let mediaProps = media.getProperties();
       for (let i in mediaProps) {
         if (!i.startsWith("jcr:")) {
-          out.println('    <meta name="' + i + '" content="' + mediaProps[i] + '"/>');
+          out.println('    <meta name="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(i) + '" content="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(mediaProps[i]) + '"/>');
         }
       }
 %>
