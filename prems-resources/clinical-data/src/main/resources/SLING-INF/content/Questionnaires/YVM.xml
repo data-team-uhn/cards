@@ -572,6 +572,30 @@
 					<type>String</type>
 				</property>
 				<node>
+					<name>notApplicable</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+					<property>
+						<name>label</name>
+						<value>I did not decline a virtual visit</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>i did not decline a virtual visit</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
 					<name>irequireanin-personappointmentformycare</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
