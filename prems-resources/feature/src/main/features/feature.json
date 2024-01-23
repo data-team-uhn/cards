@@ -389,6 +389,7 @@
       "name": "Your Voice Matters - Discharge events",
       "type": "yvm",
       "importSchedule": "0 0 3 * * ? *",
+      "tableName": "%ENV%CLARITY_YVM_SQL_TABLE",
       "mapping": "/apps/cards/clarityImport/PMH-YVM",
       "dayToImport": -2
     },
