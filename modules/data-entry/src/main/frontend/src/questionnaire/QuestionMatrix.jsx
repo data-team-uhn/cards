@@ -62,7 +62,7 @@ const DATA_TO_NODE_TYPE = {
 // existingAnswer array of sub-question answers
 
 let QuestionMatrix = (props) => {
-  const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, pageActive, ...rest} = props;
+  const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, pageActive, contentOffset, ...rest} = props;
   const { maxAnswers, minAnswers } = {...sectionDefinition, ...props};
 
   // Use existing existingAnswer, Otherwise, create a new UUID
@@ -192,7 +192,7 @@ let QuestionMatrix = (props) => {
 
   let renderTableHead = () => {
     return ((!isEdit || enableVerticalLayout) ? null :
-      <TableHead>
+      <TableHead sx={{top: contentOffset}}>
         <TableRow>
         { [["",""]].concat(defaults).map( (option, index) => (
           <TableCell key={index} align="center" component="th">
@@ -238,12 +238,14 @@ let QuestionMatrix = (props) => {
 
   let renderViewMode = () => {
     return (<>
-      { existingAnswers.map((answer, idx) => (answer[1].displayedValue || hasWarningFlags(answer)) && (
-        <TableRow key={answer[0] + idx} className={enableVerticalLayout ? classes.questionMatrixStackedAnswer : ''}>
-          { renderQuestion(answer[1].question, hasWarningFlags(answer)) }
-          { !enableVerticalLayout && <TableCell>—</TableCell> }
-          { renderAnswer(answer[1], (enableVerticalLayout ? '-' : '')) }
-        </TableRow>
+      { subquestions.map( question => existingAnswers.find(answer  => answer[1]?.question?.["@path"] == question[1]?.["@path"]) )
+          .filter (answer => answer && (answer[1].displayedValue || hasWarningFlags(answer)))
+          .map( (answer, idx) => (
+            <TableRow key={answer[0] + idx} className={enableVerticalLayout ? classes.questionMatrixStackedAnswer : ''}>
+              { renderQuestion(answer[1].question, hasWarningFlags(answer)) }
+              { !enableVerticalLayout && <TableCell>—</TableCell> }
+              { renderAnswer(answer[1], (enableVerticalLayout ? '-' : '')) }
+            </TableRow>
       ))}
     </>);
   };
