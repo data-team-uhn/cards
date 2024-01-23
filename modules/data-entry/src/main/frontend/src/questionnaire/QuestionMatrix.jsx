@@ -69,7 +69,8 @@ let QuestionMatrix = (props) => {
   const isRadio = maxAnswers === 1;
   const ControlElement = isRadio ? Radio : Checkbox;
   const valueType = sectionDefinition.dataType.charAt(0).toUpperCase() + sectionDefinition.dataType.slice(1);
-  const [sectionAnswerPath, setSectionAnswerPath ] = useState(path + "/" + ( existingSectionAnswer ? existingSectionAnswer[0] : uuidv4()));
+  const answerSectionID = existingSectionAnswer ? existingSectionAnswer[0] : uuidv4();
+  const [sectionAnswerPath, setSectionAnswerPath ] = useState(path + "/" + answerSectionID);
 
   const enableVerticalLayout = useMediaQuery('(max-width:600px)');
 
@@ -304,6 +305,7 @@ let QuestionMatrix = (props) => {
         </TableBody>
       </Table>
       { isEdit && <>
+      <input type="hidden" className="cards-answer-id" value={answerSectionID}></input>
       <input type="hidden" name={`${sectionAnswerPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
       <input type="hidden" name={`${sectionAnswerPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`${sectionAnswerPath}/section@TypeHint`} value="Reference"></input>
