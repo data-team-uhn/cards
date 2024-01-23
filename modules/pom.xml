@@ -75,5 +75,6 @@
     <module>embedded-view</module>
     <module>error-tracking</module>
     <module>google-apis</module>
+    <module>variants</module>
   </modules>
 </project>

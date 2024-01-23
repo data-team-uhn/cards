@@ -20,17 +20,23 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>lfs-resources</artifactId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9.22-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-variants</artifactId>
+  <artifactId>cards-variants</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS Resources - Variants management</name>
+  <name>CARDS - Variants management</name>
 
   <build>
     <plugins>
-      <!-- This is an OSGi bundle -->
+      <!-- Build a slingfeature -->
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+      </plugin>
+
+      <!-- Build an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -47,4 +53,25 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-patient-subject-type</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-tumor-subject-type</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-tumor-region-subject-type</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
 </project>
