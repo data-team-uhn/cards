@@ -474,9 +474,6 @@ def type_handler(self, questionnaire, row):
     type_map = get_row_type_map(row)
     type_map.handler(type_map, questionnaire, row)
 
-def compact_handler(self, questionnaire, row):
-    questionnaire.question[self.name] = self.get_value(row) == 'Y'
-
 def option_handler(self, questionnaire, row):
     insert_list(self.get_value(row), questionnaire.question)
 
@@ -486,6 +483,15 @@ def number_handler(self, questionnaire, row):
         questionnaire.question[self.name] = float(value) if '.' in value else int(value)
     except ValueError:
         log(Logging.WARNING, "Could not parse \"{}\" to number".format(value))
+
+def boolean_handler(self, questionnaire, row):
+    value = self.get_value(row)
+    if (value.lower() in ["true", "y"]):
+        questionnaire.question[self.name] = True
+    elif (value.lower() in ["false", "n"]):
+        questionnaire.question[self.name] = False
+    else:   
+        log(Logging.WARNING, "Could not parse \"{}\" to boolean".format(value))
 
 def min_value_handler(self, questionnaire, row):
     range_value_handler(self, questionnaire, row, "lowerLimit")
@@ -515,7 +521,7 @@ DefaultHeaders["DESCRIPTION"] = HeaderColumn("Description", "description")
 DefaultHeaders["OPTIONS"] = HeaderColumn("Options", "", option_handler)
 DefaultHeaders["CONDITIONS"] = HeaderColumn("Conditional Display", "", condition_handler)
 DefaultHeaders["EXPRESSION"] = HeaderColumn("Specify Calculation", "expression")
-DefaultHeaders["COMPACT"] = HeaderColumn("Compact", "compact", compact_handler)
+DefaultHeaders["COMPACT"] = HeaderColumn("Compact", "compact", boolean_handler)
 DefaultHeaders["MIN_ANSWERS"] = HeaderColumn("Min Answers", "minAnswers", number_handler)
 DefaultHeaders["MAX_ANSWERS"] = HeaderColumn("Max Answers", "maxAnswers", number_handler)
 DefaultHeaders["UNITS"] = HeaderColumn("Units", "unitOfMeasurement")
@@ -539,6 +545,7 @@ DefaultHeaders["REGIONS"] = HeaderColumn("regions", "regions")
 DefaultHeaders["SEARCH_PLACES_AROUND"] = HeaderColumn("searchPlacesAround", "searchPlacesAround")
 DefaultHeaders["TYPE_PROPERTY"] = HeaderColumn("type", "type")
 DefaultHeaders["VALIDATION_ERROR_TEXT"] = HeaderColumn("validationErrorText", "validationErrorText")
+DefaultHeaders["IS_RANGE"] = HeaderColumn("isRange", "isRange", boolean_handler)
 
 #==================
 # Utility functions
@@ -595,7 +602,7 @@ def is_matrix(parent):
 # Clean a title for display to the user
 def clean_title(title):
     result = title
-    return result.strip().replace('/','')
+    return result.strip()
 
 # Clean a string for use in a node name
 # TODO: replace with white list
