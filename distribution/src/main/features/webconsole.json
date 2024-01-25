@@ -33,7 +33,11 @@
             "start-order":"5"
         },
         {
-            "id":"org.apache.felix:org.apache.felix.healthcheck.webconsoleplugin:2.0.2",
+            "id":"org.apache.felix:org.apache.felix.healthcheck.webconsoleplugin:2.1.0",
+            "start-order":"5"
+        },
+        {
+            "id":"org.owasp.encoder:encoder:1.2.3",
             "start-order":"5"
         },
         {
