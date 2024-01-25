@@ -524,7 +524,7 @@ fi
 if [ $CLOUD_IAM_DEMO = true ]
 then
   (cd Utilities/Administration/SAML/ && sha256sum -c cloud-iam_demo_samlKeystore.p12.sha256sum && message_sha256_cloud_iam_ok || message_sha256_cloud_iam_error)
-  KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT="https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml"
+  KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT="https://lemur-15.cloud-iam.com/auth/realms/uhn-cards-test/protocol/saml"
 fi
 
 #Check if we are using SAML

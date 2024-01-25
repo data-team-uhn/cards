@@ -1,4 +1,4 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "value": "https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml"
+  "value": "https://lemur-15.cloud-iam.com/auth/realms/uhn-cards-test/protocol/saml"
 }

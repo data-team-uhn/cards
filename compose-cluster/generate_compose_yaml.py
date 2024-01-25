@@ -898,7 +898,7 @@ if args.saml:
   if args.saml_idp_destination:
     idp_url = args.saml_idp_destination
   elif args.saml_cloud_iam_demo:
-    idp_url = "https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml"
+    idp_url = "https://lemur-15.cloud-iam.com/auth/realms/uhn-cards-test/protocol/saml"
   else:
     idp_url = input("Enter the SAML2 IdP destination: ")
 
