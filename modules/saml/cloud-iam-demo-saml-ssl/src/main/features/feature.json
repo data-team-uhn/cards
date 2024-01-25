@@ -30,7 +30,7 @@
       "saml2userIDAttr": "urn:oid:1.2.840.113549.1.9.1",
       "saml2userHome": "/home/users/saml",
       "saml2SessionAttr": "saml2AuthInfo",
-      "saml2IDPDestination": "https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml",
+      "saml2IDPDestination": "https://lemur-15.cloud-iam.com/auth/realms/uhn-cards-test/protocol/saml",
       "saml2LogoutURL": "https://localhost/",
       "saml2SPEnabled": true,
       "saml2SPEncryptAndSign": true,

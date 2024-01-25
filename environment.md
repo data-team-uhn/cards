@@ -43,7 +43,7 @@ The following environment variables are read by the CARDS Docker container _entr
 | `DEBUG` | If specified, starts CARDS in _debug_ mode, so that JDB can connect to the container's Java process at port `5005`. | `true` |
 | `ENABLE_TEST_FEATURES` | If specified, enables the _complete_ set of CARDS _test_ Forms. | `true` |
 | `SAML_AUTH_ENABLED` | If set to `true`, enables user authentication via SAML | `true` |
-| `SAML_CLOUD_IAM_DEMO` | If specified, allows SAML authentication via https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml. (Only useful for UHN DATA Team Developers) | `true` |
+| `SAML_CLOUD_IAM_DEMO` | If specified, allows SAML authentication via https://lemur-15.cloud-iam.com/auth/realms/uhn-cards-test/protocol/saml. (Only useful for UHN DATA Team Developers) | `true` |
 | `OAK_FILESYSTEM` | If specified, the local file system, as opposed to a Mongo database, will be used for JCR data storage. | `true` |
 | `PERMISSIONS` | The _permissions mode_ to use for the data entered into CARDS | `open`, `trusted`, `ownership` |
 | `EXTERNAL_MONGO_URI` | The URI of a Mongo database to use for data persistence | `mongodb.example.com:27017` |

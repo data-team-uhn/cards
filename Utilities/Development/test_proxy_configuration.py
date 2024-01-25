@@ -181,7 +181,7 @@ def check_goto_saml_login():
   r = testClient.adminGET("/goto_saml_login", allow_redirects=False)
   assert r.status_code == 302, "FAIL: Request to /goto_saml_login on the admin port did not return HTTP 302"
   assert 'Location' in r.headers, "FAIL: Location HTTP header was not present"
-  assert r.headers['Location'].startswith("https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml?SAMLRequest=")
+  assert r.headers['Location'].startswith("https://lemur-15.cloud-iam.com/auth/realms/uhn-cards-test/protocol/saml?SAMLRequest=")
   print("PASS: Client accessing /goto_saml_login on the admin port was redirected to the IdP login page")
 
   assert 'Cache-Control' in r.headers, "FAIL: Cache-Control header is not present"
@@ -201,7 +201,7 @@ def check_fetch_requires_saml_login():
   r = testClient.adminGET("/fetch_requires_saml_login.html", allow_redirects=False)
   assert r.status_code == 302, "FAIL: Request to /fetch_requires_saml_login.html on the admin port did not return HTTP 302"
   assert 'Location' in r.headers, "FAIL: Location HTTP header was not present"
-  assert r.headers['Location'].startswith("https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml?SAMLRequest=")
+  assert r.headers['Location'].startswith("https://lemur-15.cloud-iam.com/auth/realms/uhn-cards-test/protocol/saml?SAMLRequest=")
   print("PASS: Client accessing /fetch_requires_saml_login.html on the admin port was redirected to the IdP login page")
 
   # Check that the Cache-Control header is appropriately set
