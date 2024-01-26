@@ -11327,7 +11327,7 @@
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
-						<value>1</value>
+						<value>2</value>
 						<type>Long</type>
 					</property>
 					<property>
