@@ -20,8 +20,12 @@
 package io.uhndata.cards.clarity.importer.internal;
 
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -33,7 +37,6 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
@@ -54,13 +57,15 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
-@Designate(ocd = RecentVisitDiscardFilter.Config.class)
+@Component
+@Designate(ocd = RecentVisitDiscardFilter.Config.class, factory = true)
 public class RecentVisitDiscardFilter extends AbstractClarityDataProcessor implements ClarityDataProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecentVisitDiscardFilter.class);
 
     private final int minimumFrequency;
+
+    private final Set<String> clinics;
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -91,6 +96,11 @@ public class RecentVisitDiscardFilter extends AbstractClarityDataProcessor imple
         @AttributeDefinition(name = "Minimum Frequency",
             description = "Minimum period in days between sending surveys to a patient")
         int minimum_visit_frequency();
+
+        @AttributeDefinition(name = "Clinics to consider",
+            description = "List paths to the clinics to consider as a recent visit."
+                + " If empty, all other visits will be considered regardless of their clinic.")
+        String[] clinics();
     }
 
     @Activate
@@ -98,6 +108,7 @@ public class RecentVisitDiscardFilter extends AbstractClarityDataProcessor imple
     {
         super(configuration.enable(), configuration.supportedTypes(), 10);
         this.minimumFrequency = configuration.minimum_visit_frequency();
+        this.clinics = configuration.clinics() != null ? Set.of(configuration.clinics()) : Collections.emptySet();
     }
 
     @Override
@@ -179,10 +190,27 @@ public class RecentVisitDiscardFilter extends AbstractClarityDataProcessor imple
         }
     }
 
-    private boolean formIsRecentSurveyEvent(Node form)
+    private boolean formIsRecentSurveyEvent(Node form) throws RepositoryException
     {
         final Node questionnaire = this.formUtils.getQuestionnaire(form);
         if (isSurveyEventsForm(questionnaire)) {
+
+            if (!this.clinics.isEmpty()) {
+                Node clinicQuestion =
+                    this.questionnaireUtils.getQuestion(questionnaire.getNode("../Visit information"),
+                        "clinic");
+                Collection<Node> clinic = this.formUtils.findAllFormRelatedAnswers(form, clinicQuestion,
+                    EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS));
+                if (!clinic.isEmpty() && !clinic.stream().anyMatch(c -> {
+                    try {
+                        return this.clinics.contains(c.getPath());
+                    } catch (RepositoryException e) {
+                        return false;
+                    }
+                })) {
+                    return false;
+                }
+            }
             Node invitationSentQuestion =
                 this.questionnaireUtils.getQuestion(questionnaire, "invitation_sent");
 
