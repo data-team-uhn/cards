@@ -262,7 +262,7 @@
         </property>
     </node>
     <node>
-        <name>258217454</name>
+        <name>PMH-YVM</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
@@ -286,7 +286,7 @@
         </property>
         <property>
             <name>daysRelativeToEventWhileSurveyIsValid</name>
-            <value>30</value>
+            <value>12</value>
             <type>Double</type>
         </property>
     </node>

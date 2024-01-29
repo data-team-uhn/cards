@@ -41,11 +41,6 @@ Please do not include any other hospital stays in your answers.
         <value>True</value>
         <type>Boolean</type>
     </property>
-    <property>
-        <name>conflictMode</name>
-        <value>any</value>
-        <type>String</type>
-    </property>
     <node>
         <name>ED Survey</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>

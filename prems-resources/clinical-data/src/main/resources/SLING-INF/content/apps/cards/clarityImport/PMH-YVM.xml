@@ -1,0 +1,306 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+  <name>PMH-YVM</name>
+  <primaryNodeType>sling:Folder</primaryNodeType>
+  <node>
+    <name>Patient</name>
+    <primaryNodeType>cards:ClaritySubjectMapping</primaryNodeType>
+    <property>
+      <name>subjectIDColumn</name>
+      <value>PAT_MRN</value>
+      <type>String</type>
+    </property>
+    <property>
+      <name>subjectType</name>
+      <value>/SubjectTypes/Patient</value>
+      <type>String</type>
+    </property>
+    <node>
+      <name>questionnaires</name>
+      <primaryNodeType>sling:Folder</primaryNodeType>
+      <node>
+        <name>Patient information</name>
+        <primaryNodeType>cards:ClarityQuestionnaireMapping</primaryNodeType>
+        <property>
+          <name>updatesExisting</name>
+          <value>true</value>
+          <type>Boolean</type>
+        </property>
+        <node>
+          <name>00000001</name>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>column</name>
+            <value>PAT_MRN</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value>/Questionnaires/Patient information/mrn</value>
+            <type>String</type>
+          </property>
+        </node>
+        <node>
+          <name>00000002</name>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>column</name>
+            <value>PAT_FIRST_NAME</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value>/Questionnaires/Patient information/first_name</value>
+            <type>String</type>
+          </property>
+        </node>
+        <node>
+          <name>00000003</name>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>column</name>
+            <value>PAT_LAST_NAME</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value>/Questionnaires/Patient information/last_name</value>
+            <type>String</type>
+          </property>
+        </node>
+        <node>
+          <name>00000004</name>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>column</name>
+            <value>EMAIL_ADDRESS</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value>/Questionnaires/Patient information/email</value>
+            <type>String</type>
+          </property>
+        </node>
+        <node>
+          <name>00000005</name>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>column</name>
+            <value>EMAIL_CONSENT_YN</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value>/Questionnaires/Patient information/email_ok</value>
+            <type>String</type>
+          </property>
+        </node>
+        <node>
+          <name>00000006</name>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>column</name>
+            <value>MYCHART_STATUS</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value></value>
+            <type>String</type>
+          </property>
+        </node>
+        <node>
+          <name>00000007</name>
+          <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>column</name>
+            <value>DEATH_DATE</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value></value>
+            <type>String</type>
+          </property>
+        </node>
+      </node>
+    </node>
+    <node>
+      <name>childSubjects</name>
+      <primaryNodeType>sling:Folder</primaryNodeType>
+      <node>
+        <name>Visit</name>
+        <primaryNodeType>cards:ClaritySubjectMapping</primaryNodeType>
+        <property>
+          <name>subjectType</name>
+          <value>/SubjectTypes/Patient/Visit</value>
+          <type>String</type>
+        </property>
+        <property>
+          <name>subjectIDColumn</name>
+          <value>PAT_ENC_CSN_ID</value>
+          <type>String</type>
+        </property>
+        <property>
+          <name>incrementMetricOnCreation</name>
+          <value>ImportedAppointments</value>
+          <type>String</type>
+        </property>
+        <node>
+          <name>questionnaires</name>
+          <primaryNodeType>sling:Folder</primaryNodeType>
+          <node>
+            <name>Visit information</name>
+            <primaryNodeType>cards:ClarityQuestionnaireMapping</primaryNodeType>
+            <property>
+              <name>updatesExisting</name>
+              <value>true</value>
+              <type>Boolean</type>
+            </property>
+            <node>
+              <name>00000001</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>DISCH_DEPT_NAME</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value>/Questionnaires/Visit information/provider</value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000002</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>HOSP_DISCHARGE_DTTM</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value>/Questionnaires/Visit information/time</value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000003</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>DISCH_LOC_NAME</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value>/Questionnaires/Visit information/location</value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000004</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>CLINIC</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value>/Questionnaires/Visit information/clinic</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>computed</name>
+                <value>True</value>
+                <type>Boolean</type>
+              </property>
+            </node>
+            <node>
+              <name>00000005</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>STATUS</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value>/Questionnaires/Visit information/status</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>computed</name>
+                <value>True</value>
+                <type>Boolean</type>
+              </property>
+            </node>
+            <node>
+              <name>00000007</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>DISCH_DISPOSITION</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000008</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>PAT_ENC_CSN_ID</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000009</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>PATIENT_CLASS</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
+</node>

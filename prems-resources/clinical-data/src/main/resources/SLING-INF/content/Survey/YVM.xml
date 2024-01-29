@@ -45,20 +45,16 @@ understand how to best support patients.
         <value>
 Thank you for completing the Your Voice Matters survey.
 
-Your answers will be used by @{visit.location} and Ontario Health (Cancer Care Ontario) to help improve
+Your answers will be used by @{visit.location} and Ontario Health
+([Cancer Care Ontario](https://www.cancercareontario.ca/)) to help improve
 the cancer care experience.
 
 If you want to provide detailed feedback about your experience directly to the hospital, please
-contact [patientexperience@uhn.ca](mailto:patientexperience@uhn.ca).
+contact [PMExperience@uhn.ca](mailto:PMExperience@uhn.ca).
 
-Your answers have been received. You can now close this page.
+**Your answers have been received. You can now close this page.**
         </value>
         <type>String</type>
-    </property>
-    <property>
-        <name>frequencyIgnoreClinic</name>
-        <value>True</value>
-        <type>Boolean</type>
     </property>
     <node>
         <name>Your Voice Matters</name>
@@ -75,7 +71,7 @@ Your answers have been received. You can now close this page.
         </property>
         <property>
             <name>frequency</name>
-            <value>4</value>
+            <value>26</value>
             <type>Long</type>
         </property>
         <property>

@@ -42,7 +42,7 @@ public class MychartEmailConsentMapper extends AbstractClarityDataProcessor impl
     @Activate
     public MychartEmailConsentMapper()
     {
-        super(true, new String[] { "prems" }, 0);
+        super(true, new String[] { "prems", "yvm" }, 0);
     }
 
     @Override
