@@ -436,7 +436,7 @@
         "DISCH_LOC_NAME <> Toronto Rehab - University Centre"
       ]
     },
-    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVMNonParticipatingHospitals":{
       "supportedTypes": ["yvm"],
       "priority": 10,
       "conditions": [
