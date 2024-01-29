@@ -44,7 +44,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, resourceSelectors, columns, defaultLimit, updateData, classes,
+  const { customUrl, resourceSelectors, columns, showTotalRows, defaultLimit, updateData, classes,
     filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
     onDataReceived, onFiltersChange, filtersJsonString, ...rest } = props;
   const [tableData, setTableData] = useState();
@@ -129,6 +129,7 @@ function LiveTable(props) {
     url.searchParams.set("offset", goToStart ? 0 : newPage.offset ?? paginationData.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
+    url.searchParams.set("showTotalRows", showTotalRows);
     resourceSelectors && url.searchParams.set("resourceSelectors", resourceSelectors);
 
     // filters should be nullable, but if left undefined we use the cached filters
@@ -436,7 +437,8 @@ function LiveTable(props) {
 }
 
 LiveTable.defaultProps = {
-  defaultLimit: 20
+  defaultLimit: 20,
+  showTotalRows: false
 }
 
 export default withStyles(LiveTableStyle)(LiveTable);
