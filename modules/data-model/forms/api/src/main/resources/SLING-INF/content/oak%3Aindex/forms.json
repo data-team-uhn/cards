@@ -463,6 +463,8 @@
                     "name": "jcr:uuid",
                     "propertyIndex": true,
                     "notNullCheckEnabled": true,
+                    "sync": true,
+                    "unique": true,
                     "type": "String"
                 },
                 "primaryType": {
