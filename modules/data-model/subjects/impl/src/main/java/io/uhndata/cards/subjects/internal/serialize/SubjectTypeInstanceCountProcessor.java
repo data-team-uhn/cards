@@ -95,9 +95,9 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
                 // Getting the count directly fails for some index types, so we have to manually count the number of
                 // items returned.
                 AtomicLong atomicCount = new AtomicLong();
-                Consumer<Object> consumer = i -> atomicCount.incrementAndGet();
-                while (queryResult.hasNext()) {
-                    consumer.accept(queryResult.next());
+                Predicate<Object> consumer = i -> atomicCount.incrementAndGet() < 10000;
+                while (queryResult.hasNext() && consumer.test(queryResult.next())) {
+                    // Nothing to do, all the code is in the conditions above
                 }
                 count = atomicCount.get();
             }
