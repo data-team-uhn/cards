@@ -44,7 +44,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, updateData, classes,
+  const { customUrl, resourceSelectors, columns, defaultLimit, updateData, classes,
     filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
     onDataReceived, onFiltersChange, filtersJsonString, ...rest } = props;
   const [tableData, setTableData] = useState();
@@ -129,6 +129,7 @@ function LiveTable(props) {
     url.searchParams.set("offset", goToStart ? 0 : newPage.offset ?? paginationData.offset);
     url.searchParams.set("limit", newPage.limit || paginationData.limit);
     url.searchParams.set("req", ++fetchStatus.currentRequestNumber);
+    resourceSelectors && url.searchParams.set("resourceSelectors", resourceSelectors);
 
     // filters should be nullable, but if left undefined we use the cached filters
     let filters = (newPage.filters === null ? null : (newPage.filters || cachedFilters));
