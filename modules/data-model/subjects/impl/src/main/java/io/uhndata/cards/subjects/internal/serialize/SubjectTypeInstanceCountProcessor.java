@@ -19,8 +19,8 @@
 package io.uhndata.cards.subjects.internal.serialize;
 
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -69,7 +69,7 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     @Override
     public boolean isEnabledByDefault(Resource resource)
     {
-        return true;
+        return false;
     }
 
     @Override
@@ -110,9 +110,8 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     private String generateDataQuery(final Node node)
         throws RepositoryException
     {
-        String query = String.format(
-            "select n from [cards:Subject] as n where n.type = '%s' OPTION (index tag property)",
+        return String.format(
+            "select [jcr:path] from [cards:Subject] as n where n.type = '%s' OPTION (index tag property)",
             node.getProperty("jcr:uuid").getString());
-        return query;
     }
 }
