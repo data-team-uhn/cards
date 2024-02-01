@@ -27,6 +27,16 @@ from os import path
 
 package_name = 'cards-aggregated-frontend'
 
+def update_dependency_version_map(dependencies, new_dependencies):
+    for key in new_dependencies:
+        if key not in dependencies:
+            dependencies[key] = new_dependencies[key]
+        else:
+            if dependencies[key] == new_dependencies[key]:
+                continue
+            else:
+                raise Exception("Conflicting versions of package {}".format(key))
+
 def merge_package_json_files(root, dir_name, project_to_name_map, package_merged):
     fl = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'package.json')
     if path.exists(fl):
@@ -46,8 +56,9 @@ def merge_package_json_files(root, dir_name, project_to_name_map, package_merged
             for i in package["babel"]["plugins"]:
                 if i not in package_merged["babel"]["plugins"]:
                     package_merged["babel"]["plugins"].append(i)
-            package_merged["devDependencies"].update(package["devDependencies"])
-            package_merged["dependencies"].update(package["dependencies"])
+            update_dependency_version_map(package_merged["devDependencies"], package["devDependencies"])
+            update_dependency_version_map(package_merged["dependencies"], package["dependencies"])
+
             if "resolutions" in package:
                 package_merged["resolutions"].update(package["resolutions"])
 
