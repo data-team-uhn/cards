@@ -147,7 +147,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
+				<value>excludes</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -165,11 +165,6 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
-				<property>
-					<name>requireAll</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
 			</node>
 			<node>
 				<name>operandB</name>
@@ -180,11 +175,6 @@
 						<value>hello</value>
 					</values>
 					<type>String</type>
-				</property>
-				<property>
-					<name>requireAll</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
@@ -366,7 +356,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
+				<value>excludes</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -384,11 +374,6 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
-				<property>
-					<name>requireAll</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
 			</node>
 			<node>
 				<name>operandB</name>
@@ -402,11 +387,6 @@
 				</property>
 				<property>
 					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
