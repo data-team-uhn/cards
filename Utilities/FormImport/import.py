@@ -812,8 +812,6 @@ def create_condition(questionnaire, condition_parent, index, operand_a, operator
 
     # TODO: Do conditionals support arrays of values in operandA or operand_b?
     # If so, handle that case:
-    # # If the operator is <>, make sure that all entries for operand_a meet that requirement
-    # if (operator == "<>"):result['operandA']['requireAll'] = True
 
     condition_parent["condition" + str(index)] = result
 
