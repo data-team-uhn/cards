@@ -36,3 +36,4 @@ mvn:io.uhndata.cards/cards-clarity-integration/${PROJECT_VERSION}/slingosgifeatu
 mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_open
 mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_trusted
 mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_ownership
+mvn:io.uhndata.cards/cards-s3-export/${PROJECT_VERSION}/slingosgifeature

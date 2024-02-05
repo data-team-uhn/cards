@@ -1,0 +1,27 @@
+{
+  "cards4heracles": [
+    "mvn:io.uhndata.cards/cards-s3-export/{$CARDS_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-slack-notifications/{$CARDS_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
+  ],
+  "cards4proms": [
+    "mvn:io.uhndata.cards/cards-email-notifications/{$CARDS_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-clarity-integration/{$CARDS_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|trusted}"
+  ],
+  "cards4prems": [
+    "mvn:io.uhndata.cards/cards-email-notifications/{$CARDS_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-clarity-integration/{$CARDS_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-scheduled-csv-export/{$CARDS_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|trusted}"
+  ],
+  "cards4lfs": [
+    "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
+  ],
+  "cards4kids": [
+    "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
+  ],
+  "": [
+    "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
+  ]
+}

@@ -31,12 +31,10 @@ STORAGE=tar
 #If (inside a docker-compose environment), we are supposed to wait for http://cardsinitial:8080/ to start
 [ -z $WAIT_FOR_CARDSINIT ] || (while true; do (wget -S --spider http://cardsinitial:8080/ 2>&1 | grep 'HTTP/1.1 200 OK') && break; sleep 10; done)
 
-#If SAML is enabled, default to "trusted" permissions. Otherwise, default to "open" permissions.
+#If SAML is enabled, default to "trusted" permissions. Otherwise, default to whatever is specified by the project via sling-features.json.
 if [[ "$SAML_AUTH_ENABLED" == "true" ]]
 then
   PERMISSIONS="${PERMISSIONS:-trusted}"
-else
-  PERMISSIONS="${PERMISSIONS:-open}"
 fi
 
 PROJECT_ARTIFACTID=$1
@@ -137,6 +135,13 @@ do
   fi
 done
 
+# Read /sling-features.json and enable the features required for this project
+PROJECT_REQUIRED_FEATURES=$(CARDS_VERSION=${PROJECT_VERSION} PROJECT_NAME=${CARDS_PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json)
+if [ ! -z $PROJECT_REQUIRED_FEATURES ]
+then
+  featureFlagString="$featureFlagString -f $PROJECT_REQUIRED_FEATURES"
+fi
+
 echo "STORAGE = $STORAGE"
 echo "DEV = $DEV"
 echo "DEMO = $DEMO"
@@ -223,4 +228,4 @@ done
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java -Djdk.xml.entityExpansionLimit=0 ${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES} -f mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_${PERMISSIONS}${featureFlagString}
+java -Djdk.xml.entityExpansionLimit=0 ${CARDS_JAVA_MEMORY_LIMIT_MB:+ -Xmx${CARDS_JAVA_MEMORY_LIMIT_MB}m} ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=*:5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES}${featureFlagString}

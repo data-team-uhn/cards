@@ -235,8 +235,6 @@ declare -a ARGS=("$@")
 declare -i ARGS_LENGTH=${#ARGS[@]}
 # Storage engine: default is TAR storage, allow switching to Mongo
 declare OAK_STORAGE="tar"
-# Permissions scheme: default is open, allow switching to something else
-declare PERMISSIONS="open"
 declare PERMISSIONS_EXPLICITLY_SET="false"
 # Are we using the Cloud-IAM.com Keycloak demo instance?
 declare CLOUD_IAM_DEMO="false"
@@ -254,53 +252,6 @@ do
     unset ARGS[$i]
     i=${i}+1
     unset ARGS[$i]
-  elif [[ ${ARGS[$i]} == '-P' || ${ARGS[$i]} == '--project' ]]
-  then
-    ARGS[$i]='-f'
-    i=${i}+1
-    PROJECTS=${ARGS[$i]//,/ }
-    ARGS[$i]=''
-    for PROJECT in $PROJECTS
-    do
-      # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
-      PROJECT="cards4${PROJECT#cards4}"
-      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature
-      if [[ ${PROJECT} == 'cards4proms' || ${PROJECT} == 'cards4prems' ]]
-      then
-        # cards4proms requires the email module, make sure it's enabled
-        ARGS[$ARGS_LENGTH]=-f
-        ARGS_LENGTH=${ARGS_LENGTH}+1
-        ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-email-notifications/${CARDS_VERSION}/slingosgifeature
-        ARGS_LENGTH=${ARGS_LENGTH}+1
-
-        # cards4proms requires the clarity-integration module, make sure it's enabled
-        ARGS[$ARGS_LENGTH]=-f
-        ARGS_LENGTH=${ARGS_LENGTH}+1
-        ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-clarity-integration/${CARDS_VERSION}/slingosgifeature
-        ARGS_LENGTH=${ARGS_LENGTH}+1
-
-        # cards4proms uses the Trusted permission scheme by default
-        if [[ ${PERMISSIONS_EXPLICITLY_SET} == 'false' ]]
-        then
-          PERMISSIONS="trusted"
-        fi
-      fi
-      if [[ ${PROJECT} == 'cards4prems' ]]
-      then
-        # cards4prems requires the scheduled-csv-export module, make sure it's enabled
-        ARGS[$ARGS_LENGTH]=-f
-        ARGS_LENGTH=${ARGS_LENGTH}+1
-        ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-scheduled-csv-export/${CARDS_VERSION}/slingosgifeature
-        ARGS_LENGTH=${ARGS_LENGTH}+1
-
-        # cards4prems requires the clarity-integration module, make sure it's enabled
-        ARGS[$ARGS_LENGTH]=-f
-        ARGS_LENGTH=${ARGS_LENGTH}+1
-        ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-clarity-integration/${CARDS_VERSION}/slingosgifeature
-        ARGS_LENGTH=${ARGS_LENGTH}+1
-      fi
-    done
-    ARGS[$i]=${ARGS[$i]#,}
   elif [[ ${ARGS[$i]} == '--permissions' ]]
   then
     PERMISSIONS_EXPLICITLY_SET="true"
@@ -406,6 +357,34 @@ do
   fi
 done
 
+PROJECT_SPECIFIED=false
+for ((i=0; i<${ARGS_LENGTH}; ++i));
+do
+  if [[ ${ARGS[$i]} == '-P' || ${ARGS[$i]} == '--project' ]]
+  then
+    ARGS[$i]='-f'
+    i=${i}+1
+    PROJECTS=${ARGS[$i]//,/ }
+    ARGS[$i]=''
+    for PROJECT in $PROJECTS
+    do
+      # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
+      PROJECT="cards4${PROJECT#cards4}"
+      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature,$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+      PROJECT_SPECIFIED=true
+    done
+    ARGS[$i]=${ARGS[$i]#,}
+  fi
+done
+
+if [ $PROJECT_SPECIFIED = false ]
+then
+  ARGS[$ARGS_LENGTH]=-f
+  ARGS_LENGTH=${ARGS_LENGTH}+1
+  ARGS[$ARGS_LENGTH]=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME="" PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+  ARGS_LENGTH=${ARGS_LENGTH}+1
+fi
+
 SMTPS_ENABLED=false
 echo "${ARGS[@]}" | grep -q "mvn:io.uhndata.cards/cards-email-notifications/" && SMTPS_ENABLED=true
 
@@ -442,7 +421,7 @@ fi
 ERROR_LOG_LAST_MODIFIED_TIME_ORIGIN=$(get_error_log_last_modified)
 
 #Start CARDS in the background
-java ${JAVA_DEBUGGING_FLAGS} -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath "${HOME}/.m2/repository"),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/core_${OAK_STORAGE} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
+java ${JAVA_DEBUGGING_FLAGS} -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath "${HOME}/.m2/repository"),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/core_${OAK_STORAGE} "${ARGS[@]}" &
 CARDS_PID=$!
 
 if [ ! -z "$JAVA_DEBUGGING_FLAGS" ]
