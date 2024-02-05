@@ -45,9 +45,9 @@ VALID_CARDS_PROJECTS="||cards4kids|cards4lfs|cards4proms|cards4prems|cards4herac
 echo "${VALID_CARDS_PROJECTS}" | grep -q "|${CARDS_PROJECT}|" || { echo "Invalid project specified - defaulting to generic CARDS."; unset CARDS_PROJECT; }
 
 featureFlagString=""
-if [ ! -z $CARDS_PROJECT ] && [ ! -z $CARDS_PROJECT_VERSION ]
+if [ ! -z $CARDS_PROJECT ] && [ ! -z $PROJECT_VERSION ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/${CARDS_PROJECT}/${CARDS_PROJECT_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/${CARDS_PROJECT}/${PROJECT_VERSION}/slingosgifeature"
 fi
 
 [[ "${CARDS_PROJECT}" == 'cards4proms' || "${CARDS_PROJECT}" == 'cards4prems' ]] && SMTPS_ENABLED="true"
@@ -137,7 +137,7 @@ do
 done
 
 # Read /sling-features.json and enable the features required for this project
-PROJECT_REQUIRED_FEATURES=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${CARDS_PROJECT} PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json)
+PROJECT_REQUIRED_FEATURES=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${CARDS_PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json)
 if [ ! -z $PROJECT_REQUIRED_FEATURES ]
 then
   featureFlagString="$featureFlagString -f $PROJECT_REQUIRED_FEATURES"
@@ -154,7 +154,7 @@ echo "ADDITIONAL_SLING_FEATURES = $ADDITIONAL_SLING_FEATURES"
 echo "CARDS_ARTIFACTID = $CARDS_ARTIFACTID"
 echo "CARDS_VERSION = $CARDS_VERSION"
 echo "CARDS_PROJECT = $CARDS_PROJECT"
-echo "CARDS_PROJECT_VERSION = $CARDS_PROJECT_VERSION"
+echo "PROJECT_VERSION = $PROJECT_VERSION"
 
 #Are we using an external MongoDB service for data storage?
 EXT_MONGO_VARIABLES=""
