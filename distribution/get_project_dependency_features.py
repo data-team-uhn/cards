@@ -93,16 +93,16 @@ SLING_REQUIRED_FEATURES_FILE = sys.argv[1]
 with open(SLING_REQUIRED_FEATURES_FILE, 'r') as f:
   SLING_REQUIRED_FEATURES = json.load(f)
 
-if 'CARDS_PROJECT' not in os.environ:
-  CARDS_PROJECT = ""
+if 'PROJECT_NAME' not in os.environ:
+  PROJECT_NAME = ""
 else:
-  CARDS_PROJECT = os.environ['CARDS_PROJECT']
+  PROJECT_NAME = os.environ['PROJECT_NAME']
 
-if CARDS_PROJECT not in SLING_REQUIRED_FEATURES:
+if PROJECT_NAME not in SLING_REQUIRED_FEATURES:
   print("")
   sys.exit(1)
 
-features_template_list = SLING_REQUIRED_FEATURES[CARDS_PROJECT]
+features_template_list = SLING_REQUIRED_FEATURES[PROJECT_NAME]
 features_list = [renderFormatString(template, removeEmptyKeys(os.environ)) for template in features_template_list]
 
 print(",".join(features_list))
