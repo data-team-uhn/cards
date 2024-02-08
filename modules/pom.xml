@@ -49,6 +49,7 @@
     <module>permissions</module>
     <module>permissions-ownership</module>
     <module>permissions-trusted</module>
+    <module>permissions-unsubmitted</module>
     <module>vocabularies</module>
     <module>demo-banner</module>
     <module>downtime-warning-banner</module>
