@@ -29,22 +29,23 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.patients.api.DataRetentionConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
- * Schedule the cleanup of patient draft answers.
+ * Schedule the cleanup of Patient information data every midnight.
  *
  * @version $Id$
- * @since 0.9.6
+ * @since 0.9.16
  */
 @Component(immediate = true)
-public class DraftsAnswersCleanupScheduler
+public class PatientInformationCleanupScheduler
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(DraftsAnswersCleanupScheduler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatientInformationCleanupScheduler.class);
 
-    private static final String SCHEDULER_JOB_NAME = "DraftsAnswersCleanup";
+    private static final String SCHEDULER_JOB_NAME = "PatientInformationCleanup";
 
     /** Provides access to resources. */
     @Reference
@@ -54,7 +55,11 @@ public class DraftsAnswersCleanupScheduler
     @Reference
     private ThreadResourceResolverProvider rrp;
 
-    /** Grab details on the number of days draft responses from patients are kept. */
+    /** The utils for working with form data. */
+    @Reference
+    private FormUtils formUtils;
+
+    /** The data retention configuration. */
     @Reference
     private DataRetentionConfiguration dataRetentionConfiguration;
 
@@ -71,11 +76,11 @@ public class DraftsAnswersCleanupScheduler
             options.name(SCHEDULER_JOB_NAME);
             options.canRunConcurrently(false);
 
-            final Runnable cleanupJob = new DraftsAnswersCleanupTask(this.resolverFactory, this.rrp,
-                this.dataRetentionConfiguration);
+            final Runnable cleanupJob = new PatientInformationCleanupTask(this.resolverFactory, this.rrp,
+                this.formUtils, this.dataRetentionConfiguration);
             this.scheduler.schedule(cleanupJob, options);
         } catch (final Exception e) {
-            LOGGER.error("DraftsAnswersCleanup failed to schedule: {}", e.getMessage(), e);
+            LOGGER.error("PatientInformationCleanup failed to schedule: {}", e.getMessage(), e);
         }
     }
 }

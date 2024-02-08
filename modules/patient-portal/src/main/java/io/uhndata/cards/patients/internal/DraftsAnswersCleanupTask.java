@@ -37,7 +37,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.patients.api.DataRetentionConfiguration;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
@@ -60,19 +60,19 @@ public class DraftsAnswersCleanupTask implements Runnable
     private final ThreadResourceResolverProvider rrp;
 
     /** Grab details on the number of days draft responses from patients are kept. */
-    private final PatientAccessConfiguration patientAccessConfiguration;
+    private final DataRetentionConfiguration dataRetentionConfiguration;
 
     /**
      * @param resolverFactory a valid ResourceResolverFactory providing access to resources
      * @param rrp sharing the resource resolver with other services
-     * @param patientAccessConfiguration details on the number of days draft responses from patients are kept
+     * @param dataRetentionConfiguration details on the number of days draft responses from patients are kept
      */
     DraftsAnswersCleanupTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
-        final PatientAccessConfiguration patientAccessConfiguration)
+        final DataRetentionConfiguration dataRetentionConfiguration)
     {
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
-        this.patientAccessConfiguration = patientAccessConfiguration;
+        this.dataRetentionConfiguration = dataRetentionConfiguration;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class DraftsAnswersCleanupTask implements Runnable
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
             this.rrp.push(resolver);
             mustPopResolver = true;
-            final int draftLifetime = this.patientAccessConfiguration.getDraftLifetime();
+            final int draftLifetime = this.dataRetentionConfiguration.getDraftLifetime();
             // If draftLifetime is -1, do nothing
             // (-1 means never delete; any cleanup that is necessary will be done by UnsubmittedFormsCleanupTask)
             if (draftLifetime == -1) {
