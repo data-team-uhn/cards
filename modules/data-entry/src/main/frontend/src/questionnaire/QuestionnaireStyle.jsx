@@ -18,6 +18,7 @@
 //
 
 import { orange, grey } from '@mui/material/colors';
+import { alpha } from '@mui/material/styles';
 
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {
@@ -726,6 +727,17 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
+    imageMapperHovered : {
+      "cursor": "pointer"
+    },
+    imageMapperHovered : {
+      "& polygon:hover": {
+        fill: alpha(theme.palette.text.primary, 0.4)
+      },
+      "& rect:hover": {
+        fill: alpha(theme.palette.text.primary, 0.4)
+      }
+    }
 });
 
 export default questionnaireStyle;
