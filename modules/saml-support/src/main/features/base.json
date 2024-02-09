@@ -24,7 +24,7 @@
       "start-order":"15"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.auth.saml2:${sling.saml.version}",
+      "id":"io.uhndata.cards:org.apache.sling.auth.saml2:${sling.saml.version}",
       "start-order":"15"
     },
     {
