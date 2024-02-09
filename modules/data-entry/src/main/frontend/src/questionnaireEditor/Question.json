@@ -464,7 +464,10 @@
       "selectableArea": {
         "minAnswers": {"0":{}, "1":{}},
         "maxAnswers": "long",
-        "variant": "cards:SelectableAreaVariant"
+        "answerOptions" : {
+          "type": "textOptions",
+          "childrenType": "cards:AnswerOption"
+        }
       }
     },
     "enableNotes": "boolean"

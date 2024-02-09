@@ -262,9 +262,11 @@ function SelectableAreaQuestion(props) {
             href={variant?.image}
             width={width}/>
           <>
-            {map.map(mapEntry => {
+            {map.map((mapEntry, index) => {
               if (mapEntry.shape == "rect") {
                 return <rect
+                  key={index}
+
                   x={mapEntry.coords[0] * scale}
                   y={mapEntry.coords[1] * scale}
                   width={(mapEntry.coords[2] - mapEntry.coords[0]) * scale}
@@ -286,6 +288,8 @@ function SelectableAreaQuestion(props) {
                   i += 2;
                 }
                 return <polygon
+                  key={index}
+
                   points={coordinateString}
 
                   fill={mapEntry.fill}
