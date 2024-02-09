@@ -460,6 +460,11 @@
         "minAnswers": {"0":{}, "1":{}},
         "countries": "string",
         "searchPlacesAround": "string"
+      },
+      "selectableArea": {
+        "minAnswers": {"0":{}, "1":{}},
+        "maxAnswers": "long",
+        "variant": "cards:SelectableAreaVariant"
       }
     },
     "enableNotes": "boolean"
