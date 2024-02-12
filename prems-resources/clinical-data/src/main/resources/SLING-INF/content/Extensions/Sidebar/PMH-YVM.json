@@ -1,8 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/sidebar/entry",
-  "cards:extensionName": "PMH YVM",
-  "cards:targetURL": "/content.html/Dashboard/PMH-YVM",
-  "cards:icon": "asset:patient-portal.clinicIcon.js",
-  "cards:defaultOrder": 19
-}

@@ -2046,11 +2046,6 @@
   <modules>
     <module>modules</module>
     <module>aggregated-frontend</module>
-    <module>lfs-resources</module>
-    <module>heracles-resources</module>
-    <module>kids-resources</module>
-    <module>prems-resources</module>
-    <module>proms-resources</module>
     <module>test-resources</module>
     <module>distribution</module>
     <module>Utilities</module>

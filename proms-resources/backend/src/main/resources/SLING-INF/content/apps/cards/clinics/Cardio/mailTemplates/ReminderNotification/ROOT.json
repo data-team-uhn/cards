@@ -1,7 +1,0 @@
-{
-  "jcr:primaryType": "cards:EmailTemplate",
-  "senderAddress": "data.pro@uhn.ca",
-  "senderName": "UHN DATA-PRO",
-  "subject": "Reminder: You have 24 hours left to complete your pre-appointment questions",
-  "time": "/Questionnaires/Visit information/time"
-}

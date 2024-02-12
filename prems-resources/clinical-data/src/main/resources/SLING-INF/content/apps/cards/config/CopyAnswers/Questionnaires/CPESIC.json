@@ -1,7 +1,0 @@
-{
-  "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:cpesic_41": "/Questionnaires/CPESIC/YourOverallRatings/cpesic_41",
-  "jcr:reference:cpesic_department": "/Questionnaires/CPESIC/Section1/cpesic_department",
-  "jcr:reference:time": "/Questionnaires/Visit information/time",
-  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
-}

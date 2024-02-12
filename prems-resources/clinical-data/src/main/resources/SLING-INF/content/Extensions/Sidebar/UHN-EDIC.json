@@ -1,8 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/sidebar/entry",
-  "cards:extensionName": "UHN ED-IC",
-  "cards:targetURL": "/content.html/Dashboard/-432465813",
-  "cards:icon": "asset:patient-portal.clinicIcon.js",
-  "cards:defaultOrder": 17
-}
