@@ -19,8 +19,8 @@
 package io.uhndata.cards.subjects.internal.serialize;
 
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -44,6 +44,8 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
 {
     private static final String NAME = "instanceCount";
+
+    private static final long MAX_RESULTS = 10_000;
 
     /** An original resource path. */
     private ThreadLocal<String> originalPath = new ThreadLocal<>();
@@ -69,7 +71,7 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     @Override
     public boolean isEnabledByDefault(Resource resource)
     {
-        return true;
+        return false;
     }
 
     @Override
@@ -95,9 +97,9 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
                 // Getting the count directly fails for some index types, so we have to manually count the number of
                 // items returned.
                 AtomicLong atomicCount = new AtomicLong();
-                Consumer<Object> consumer = i -> atomicCount.incrementAndGet();
-                while (queryResult.hasNext()) {
-                    consumer.accept(queryResult.next());
+                Predicate<Object> consumer = i -> atomicCount.incrementAndGet() < MAX_RESULTS;
+                while (queryResult.hasNext() && consumer.test(queryResult.next())) {
+                    // Nothing to do, all the code is in the conditions above
                 }
                 count = atomicCount.get();
             }
@@ -110,9 +112,8 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     private String generateDataQuery(final Node node)
         throws RepositoryException
     {
-        String query = String.format(
-            "select n from [cards:Subject] as n where n.type = '%s' OPTION (index tag property)",
+        return String.format(
+            "select [jcr:path] from [cards:Subject] as n where n.type = '%s' OPTION (index tag property)",
             node.getProperty("jcr:uuid").getString());
-        return query;
     }
 }

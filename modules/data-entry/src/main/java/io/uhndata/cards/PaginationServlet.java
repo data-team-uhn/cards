@@ -978,6 +978,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // - After outputting "limit" items, keep counting how many new unique items are there until there are no more
         // results, or encounter 10 more pages of unique items, rounded up to a whole 10*page batch
 
+        final String selectors =
+            (request.getParameter("resourceSelectors") == null ? "" : "." + request.getParameter("resourceSelectors"))
+                .replaceAll("\\.\\.", ".");
         // The returned number of items
         long returnedResults = 0;
         // If there are more results that haven't been counted
@@ -1020,7 +1023,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     // If we've passed the "offset" mark, and we didn't output "limit" items yet, include the
                     // resource in the output
                     if (seenResources.size() > resultOffset && limitCounter > 0) {
-                        jsonGen.write(request.getResourceResolver().getResource(path).adaptTo(JsonObject.class));
+                        jsonGen.write(
+                            request.getResourceResolver().resolve(path + selectors).adaptTo(JsonObject.class));
                         --limitCounter;
                         ++returnedResults;
                     }

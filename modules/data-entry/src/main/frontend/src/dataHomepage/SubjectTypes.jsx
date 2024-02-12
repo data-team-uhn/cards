@@ -74,7 +74,7 @@ function SubjectTypes(props) {
       "label": "Default Order",
       "format": "string",
     },
-        {
+    {
       "key": "jcr:createdBy",
       "label": "Created by",
       "format": "string",
@@ -119,6 +119,7 @@ function SubjectTypes(props) {
         title: "New subject type",
         onClick: () => setDialogOpen(true)
       }}
+      resourceSelectors=".instanceCount"
       columns={columns}
       entryType={"Subject Type"}
       admin={true}
