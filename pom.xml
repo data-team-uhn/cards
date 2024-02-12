@@ -49,6 +49,13 @@
     <name>DATA Team at UHN</name>
     <url>https://uhndata.io/</url>
   </organization>
+  <developers>
+    <developer>
+      <id>uhn</id>
+      <name>DATA Team at UHN</name>
+      <url>https://uhndata.io/</url>
+    </developer>
+  </developers>
 
   <distributionManagement>
     <snapshotRepository>
