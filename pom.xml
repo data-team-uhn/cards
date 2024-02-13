@@ -536,6 +536,9 @@
             <exclude>**/mailTemplates/**</exclude>
             <!-- No license in mailcap file -->
             <exclude>mailcap</exclude>
+            <!-- No license in the project-specific identifiers -->
+            <exclude>project_code.txt</exclude>
+            <exclude>project_name.txt</exclude>
           </excludes>
         </configuration>
         <executions>
