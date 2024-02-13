@@ -107,7 +107,7 @@ TextQuestion.propTypes = {
     text: PropTypes.string,
     minAnswers: PropTypes.number,
     maxAnswers: PropTypes.number,
-    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input", "hidden", "formatted"]),
+    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input", "select", "hidden", "formatted"]),
     validationRegexp: PropTypes.string,
     validationErrorText: PropTypes.string,
     liveValidation: PropTypes.bool,
