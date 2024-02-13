@@ -36,6 +36,12 @@
                   "type": "textOptions",
                   "childrenType": "cards:AnswerOption"
                 }
+              },
+              "select" : {
+                "answerOptions" : {
+                  "type": "textOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               }
             }
           },
@@ -147,6 +153,12 @@
                   "childrenType": "cards:AnswerOption"
                 }
               },
+              "select" : {
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
+              },
               "slider": {
                 "isRange" : "boolean",
                 "minValueLabel" : "string",
@@ -204,6 +216,12 @@
               },
               "list+input" : {
                 "compact" : "boolean",
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
+              },
+              "select" : {
                 "answerOptions" : {
                   "type": "numberOptions",
                   "childrenType": "cards:AnswerOption"
