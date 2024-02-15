@@ -714,7 +714,7 @@ if args.debug:
   newListIfEmpty(yaml_obj, 'services', 'cardsinitial', 'ports').append("127.0.0.1:5005:5005")
 
 if args.cards_project:
-  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_PROJECT={}".format(args.cards_project))
+  yaml_obj['services']['cardsinitial']['environment'].append("PROJECT_NAME={}".format(args.cards_project))
 
 if args.composum:
   yaml_obj['services']['cardsinitial']['environment'].append("DEV=true")

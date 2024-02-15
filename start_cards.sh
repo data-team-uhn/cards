@@ -353,7 +353,8 @@ do
     ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-slack-notifications/${CARDS_VERSION}/slingosgifeature
     ARGS_LENGTH=${ARGS_LENGTH}+1
   else
-    ARGS[$i]=${ARGS[$i]/VERSION/${CARDS_VERSION}}
+    ARGS[$i]=${ARGS[$i]@P}
+    ARGS[$i]=${ARGS[$i]//VERSION/${CARDS_VERSION}}
   fi
 done
 
