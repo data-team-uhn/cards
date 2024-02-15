@@ -198,8 +198,14 @@ function SelectableAreaQuestion(props) {
     setNotApplicableChecked(false);
     setSelection(oldSelection => {
       if (maxAnswers == 1) {
-        // Single select: Just set selection to the most recent value
-        return [clickedEntry];
+        // Single select
+        if (selection.length == 1 && selection[0][VALUE_POS] === clickedEntry[VALUE_POS]) {
+          // Unselect the selection if the user clicked it again
+          return [];
+        } else {
+          // Just set selection to the most recent value
+          return [clickedEntry];
+        }
       } else {
         // Multi select: toggle the values' selection state
         let newSelection = oldSelection.slice();
