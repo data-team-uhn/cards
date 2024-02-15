@@ -310,6 +310,9 @@
   // Section display mode, one of default, header, footer, matrix
   - displayMode (string) = 'default' autocreated
 
+  // For sections with the default display mode, whether to use horizontal layout (compact = true) to minimize negative space, or use vertical layout (default)
+  - compact (boolean)
+
   // Same as for cards:Question.
   - minAnswers (long) = '0' autocreated
 

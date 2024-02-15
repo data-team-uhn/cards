@@ -284,6 +284,27 @@ const questionnaireStyle = theme => ({
         },
       },
     },
+    horizontalSection : {
+      [theme.breakpoints.up('md')]: {
+        flexFlow: "row",
+        flexWrap: "wrap",
+      },
+      "& > .MuiGrid-item > .MuiCard-root" : {
+        [theme.breakpoints.up('md')]: {
+          height: "100%",
+        },
+      },
+      "& .MuiTextField-root, .MuiInputBase-root" : {
+        [theme.breakpoints.between('md','xl')]: {
+          minWidth: "200px !important",
+        },
+      },
+      "& .MuiListItem-root .MuiTextField-root,  .MuiListItem-root .MuiInputBase-root" : {
+        [theme.breakpoints.between('md','xl')]: {
+          minWidth: "160px !important",
+        },
+      },
+    },
     subjectTabs: {
       "& .MuiTab-root" : {
         minWidth: "auto",
