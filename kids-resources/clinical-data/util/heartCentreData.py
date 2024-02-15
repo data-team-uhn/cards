@@ -114,8 +114,6 @@ def create_conditional(operand_a, operator, operand_b, title):
             'isReference': is_reference
         }
     }
-    # If the operator is <>, make sure that all entries for operand_a meet that requirement
-    if (operator == "<>"):result['operandA']['requireAll'] = True
     return {title: result}
 
 

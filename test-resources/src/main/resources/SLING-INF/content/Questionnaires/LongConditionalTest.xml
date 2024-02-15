@@ -682,6 +682,7 @@
 	</node>
 	<node>
 		<name>must_be_null_details</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
 			<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -697,22 +698,6 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>must_be_null</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>operandB</name>
 				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
@@ -774,6 +759,7 @@
 	</node>
 	<node>
 		<name>must_not_be_null_details</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
 			<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -789,22 +775,6 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>must_not_be_null</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>operandB</name>
 				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>

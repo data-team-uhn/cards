@@ -2531,7 +2531,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
+				<value>excludes</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -2546,11 +2546,6 @@
 				</property>
 				<property>
 					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
@@ -4947,7 +4942,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
+				<value>excludes</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -4962,11 +4957,6 @@
 				</property>
 				<property>
 					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
@@ -7867,7 +7857,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
+				<value>excludes</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -7882,11 +7872,6 @@
 				</property>
 				<property>
 					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
@@ -10390,7 +10375,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
+				<value>excludes</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -10405,11 +10390,6 @@
 				</property>
 				<property>
 					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
@@ -11935,7 +11915,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -11950,11 +11930,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -11981,7 +11956,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -11996,11 +11971,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -12027,7 +11997,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -12042,11 +12012,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -12073,7 +12038,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -12088,11 +12053,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -20945,7 +20905,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -20960,11 +20920,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -20991,7 +20946,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -21006,11 +20961,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -21968,7 +21918,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -21983,11 +21933,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -22014,7 +21959,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -22029,11 +21974,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -22060,7 +22000,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -22075,11 +22015,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -23146,7 +23081,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
+				<value>excludes</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -23161,11 +23096,6 @@
 				</property>
 				<property>
 					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
@@ -24148,7 +24078,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -24163,11 +24093,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -24194,7 +24119,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>excludes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -24209,11 +24134,6 @@
 					</property>
 					<property>
 						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>requireAll</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
@@ -30482,7 +30402,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
+				<value>excludes</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -30497,11 +30417,6 @@
 				</property>
 				<property>
 					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>requireAll</name>
 					<value>True</value>
 					<type>Boolean</type>
 				</property>

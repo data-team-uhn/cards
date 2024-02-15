@@ -420,11 +420,7 @@
   // Whether or not this value is a reference or not
   - isReference (BOOLEAN) = false autocreated
 
-  // Require that the parent conditional checks every value (for a multi-valued field)
-  // Otherwise it will return true if at least one value fits
-  - requireAll (BOOLEAN) = false mandatory autocreated
-
-  // We don't define any subchildren.
+  // We don't define any children.
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.

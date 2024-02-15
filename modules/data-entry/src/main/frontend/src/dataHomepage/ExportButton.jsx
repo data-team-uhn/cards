@@ -364,6 +364,7 @@ function ExportButton(props) {
             </Grid>
             <Grid item xs={8}>
               <QuestionnaireAutocomplete
+                multiple
                 entities={entities || []}
                 selection={selectedEntityIds}
                 onSelectionChanged={setSelectedEntityIds}
