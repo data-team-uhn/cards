@@ -114,29 +114,52 @@ def repeated_section_handler(self, questionnaire, row):
     section_start_handler(self, questionnaire, row)
     questionnaire.parent['repeated'] = True
     parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
-    referenced_question_keys = split_ignore_strings(Headers['ENTRY_MODE_QUESTION'].get_value(row), [","])
+    parent_label_trimmed = parent_label
+    if parent_label_trimmed[-1] == "_":
+        parent_label_trimmed = parent_label_trimmed[:-1]
+    isStatic = Headers['OPTIONS'].has_value(row)
 
-    for referenced_question_key in referenced_question_keys:
-        question = {}
-        for questionMap in questionnaire.questions:
-            if referenced_question_key in questionMap.keys():
-                question = questionMap[referenced_question_key]
+    if isStatic:
+        options = split_ignore_strings(Headers['OPTIONS'].get_value(row), ["\n"])
+        for option in options:
+            split_value = partition_ignore_strings(option, "=")
+            if len(split_value) > 1:
+                value = split_value[0]
+                label = split_value[1]
+            else:
+                value, label = option
+            section_title = parent_label_trimmed + "_" + clean_name(value)
+            new_section = create_new_section(section_title)
+            new_section['label'] = label
+            new_section['repeated_parent'] = parent_label
+            new_section['title'] = section_title
+            questionnaire.push_section(new_section)
+            questionnaire.complete_section()
+        Headers['OPTIONS'].clear_value(row)
+    else:
+        referenced_question_keys = split_ignore_strings(Headers['ENTRY_MODE_QUESTION'].get_value(row), [","])
 
-        for key in question.keys():
-            entry = question[key]
-            if (type(entry) == dict
-                    and 'jcr:primaryType' in entry
-                    and entry['jcr:primaryType'] == 'cards:AnswerOption'
-                    and ('noneOfTheAbove' not in entry.keys() or not entry['noneOfTheAbove'])
-                    and ('notApplicable' not in entry.keys() or not entry['notApplicable'])):
-                conditional_label = parent_label + "_" + clean_name(entry['value'])
-                new_section = create_new_section(conditional_label)
-                new_section['label'] = entry['label']
-                new_section['repeated_parent'] = parent_label
-                new_section['title'] = parent_label + "_" + clean_name(entry['label'].lower())
-                questionnaire.push_section(new_section)
-                condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
-                questionnaire.complete_section()
+        for referenced_question_key in referenced_question_keys:
+            question = {}
+            for questionMap in questionnaire.questions:
+                if referenced_question_key in questionMap.keys():
+                    question = questionMap[referenced_question_key]
+
+            for key in question.keys():
+                entry = question[key]
+                if (type(entry) == dict
+                        and 'jcr:primaryType' in entry
+                        and entry['jcr:primaryType'] == 'cards:AnswerOption'
+                        and ('noneOfTheAbove' not in entry.keys() or not entry['noneOfTheAbove'])
+                        and ('notApplicable' not in entry.keys() or not entry['notApplicable'])):
+                    section_title = parent_label + "_" + clean_name(entry['value'])
+                    new_section = create_new_section(section_title)
+                    new_section['label'] = entry['label']
+                    new_section['repeated_parent'] = parent_label
+                    new_section['title'] = section_title
+                    questionnaire.push_section(new_section)
+                    condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
+                    questionnaire.complete_section()
 
 def modify_repeated_conditionals(self, repeated_parent, repeated_name):
     for key in repeated_parent.keys():
@@ -415,6 +438,9 @@ class HeaderColumn:
     def get_value(self, row):
         return row[self.column]
 
+    def clear_value(self, row):
+        del row[self.column]
+
 def questionnaire_handler(self, questionnaire, row):
     new_questionnaire = create_new_questionnaire(self.get_value(row))
     questionnaire.add_questionnaire(new_questionnaire)
@@ -490,7 +516,7 @@ def boolean_handler(self, questionnaire, row):
         questionnaire.question[self.name] = True
     elif (value.lower() in ["false", "n"]):
         questionnaire.question[self.name] = False
-    else:   
+    else:
         log(Logging.WARNING, "Could not parse \"{}\" to boolean".format(value))
 
 def min_value_handler(self, questionnaire, row):
