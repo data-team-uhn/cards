@@ -1,4 +1,4 @@
- //
+//
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
 //  distributed with this work for additional information
@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Chip, Input, MenuItem, Select, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
@@ -30,27 +30,27 @@ import { useFieldsWriterContext } from "./FieldsContext";
 
 let ListInput = (props) => {
   let { objectKey, data, value: type, hint } = props;
-  let [ value, setValue ] = React.useState(Array.isArray(data[objectKey]) ? data[objectKey] : data[objectKey] ? [data[objectKey]] : []);
-  const [ options, setOptions ] = React.useState([]);
+  let [ selection, setSelection ] = useState(Array.of(data[objectKey] ?? []).flat());
+  const [ options, setOptions ] = useState([]);
   const changeFieldsContext = useFieldsWriterContext();
 
   let changeValue = (val) => {
     changeFieldsContext((oldContext) => ({...oldContext, [objectKey]: val}));
-    setValue(val);
+    setSelection(Array.of(val ?? []).flat().filter(v => v?.[type.identifierProperty] != ''));
   }
 
-  if (options.length === 0) {
+  useEffect(() => {
     fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        let optionTypes = Array.from(json["rows"]);
-        if (optionTypes.length == 0 && value.length == 0) {
+        let listOptions = Array.from(json?.rows ?? []);
+        if (listOptions.length == 0 && selection.length == 0) {
           return;
         }
         let updatedValues = [];
-        for (let val of value) {
+        for (let val of selection) {
           let found = false;
-          for (let option of optionTypes) {
+          for (let option of listOptions) {
             let compareVal = typeof(val) === "string" ? val : val[type.identifierProperty];
             if (compareVal === option[type.identifierProperty]) {
               found = true;
@@ -63,15 +63,22 @@ let ListInput = (props) => {
             newOption[type.identifierProperty] = val;
             newOption["jcr:uuid"] = val;
             newOption[type.displayProperty] = val;
-            optionTypes.push(newOption);
+            listOptions.push(newOption);
             updatedValues.push(newOption);
           }
         }
-        setOptions(optionTypes);
+        // Include an empty option to allow unselecting a single value
+        if (!type.multiple) {
+          listOptions.splice(0, 0, {
+            [type.identifierProperty]: '',
+            [type.displayProperty]: ' '
+          });
+        }
+        setOptions(listOptions);
         changeValue(updatedValues);
       })
       .catch(handleError);
-  }
+  }, []);
 
   let handleError = () => {
     console.log('error');
@@ -83,33 +90,33 @@ let ListInput = (props) => {
 
   return (
     <EditorInput name={objectKey} hint={hint}>
-      <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType + '[]'} />
+      <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType + (type.multiple ? '[]' : '') } />
       {
         // Maps each selected object to a reference type for submitting
-        value.map((typeObject, index) => <input type="hidden" name={objectKey} value={typeObject[type.identifierProperty]} key={typeObject + index} />)
+        selection.map((val, index) => <input type="hidden" name={objectKey} value={val[type.identifierProperty]} key={val[type.identifierProperty] + index} />)
       }
       {
         // Delete the current values within this list if nothing is selected
-        value.length == 0 && <input type="hidden" name={objectKey + "@Delete"} value="" />
+        selection.length == 0 && <input type="hidden" name={objectKey + "@Delete"} value="" />
       }
       <Select
         variant="standard"
         id={objectKey}
-        multiple
-        value={value}
+        multiple={type.multiple}
+        value={type.multiple ? selection : (selection?.[0] ?? '')}
         onChange={handleChange}
         input={<Input id={objectKey} />}
-        renderValue={(value) => (
+        renderValue={type.multiple ? () => (
           <div>
-            {value.map((val, index) => (
-              <Chip key={val+index} label={val[type.displayProperty]}/>
+            {selection.map((val, index) => (
+              <Chip key={val[type.identifierProperty] + index} label={val[type.displayProperty]}/>
             ))}
           </div>
-        )}
+        ) : undefined}
       >
-      {options.map((name, index) => (
-        <MenuItem key={name + index} value={name}>
-          <Typography>{name[type.displayProperty]}</Typography>
+      {options.map((option, index) => (
+        <MenuItem key={option[type.identifierProperty] + index} value={option}>
+          <Typography>{option[type.displayProperty]}</Typography>
         </MenuItem>
       ))}
     </Select>
@@ -135,7 +142,7 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
 // List value displayer: display "Any" for an empty value array
 let ListValue = (props) => {
   let { objectKey, value, data } = props;
-  return (Array.of(data[objectKey] || []).flat().map(e => e[value.displayProperty]).join(', ') || 'Any');
+  return (Array.of(data[objectKey] ?? []).flat().map(e => (e[value.displayProperty] ?? e)).join(', ') || 'Any');
 };
 
 ValueComponentManager.registerValueComponent((definition) => {
