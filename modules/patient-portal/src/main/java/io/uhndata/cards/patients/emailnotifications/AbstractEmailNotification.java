@@ -181,13 +181,15 @@ abstract class AbstractEmailNotification
         // Send the Notification Email
         Map<String, String> valuesMap = new HashMap<>();
         valuesMap.put("surveysLink", "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token);
-        valuesMap.put("unsubscribeLink",
-            "https://" + CARDS_HOST_AND_PORT + "/Survey.unsubscribe.html?auth_token=" + token);
+        final String unsubscribeLink =
+            "https://" + CARDS_HOST_AND_PORT + "/Survey.unsubscribe.html?auth_token=" + token;
+        valuesMap.put("unsubscribeLink", unsubscribeLink);
         final DateFormat sdf = DateFormat.getDateInstance();
         sdf.setTimeZone(tokenExpiryDate.getTimeZone());
         valuesMap.put("expirationDate", sdf.format(tokenExpiryDate.getTime()));
         return template.getEmailBuilderForSubject(visitSubject, valuesMap, this.formUtils)
             .withRecipient(patientEmailAddress, patientFullName)
+            .withExtraHeader("List-Unsubscribe", "<" + unsubscribeLink + ">")
             .build();
     }
 

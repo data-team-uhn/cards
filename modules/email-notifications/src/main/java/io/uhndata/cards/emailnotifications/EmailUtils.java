@@ -27,7 +27,6 @@ import org.apache.sling.commons.messaging.mail.MessageBuilder;
 
 import jakarta.mail.Header;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 
 public final class EmailUtils
 {
@@ -59,15 +58,17 @@ public final class EmailUtils
     public static void sendTextEmail(final Email email, final MailService mailService)
         throws MessagingException
     {
-        MimeMessage message = mailService.getMessageBuilder()
+        final MessageBuilder message = mailService.getMessageBuilder()
             .from(email.getSenderAddress(), email.getSenderName())
             .to(email.getRecipientAddress(), email.getRecipientName())
             .replyTo(email.getReplyToAddress(), email.getReplyToName())
             .subject(email.getSubject())
-            .text(email.getTextBody())
-            .build();
+            .text(email.getTextBody());
+        for (Map.Entry<String, String> header : email.getExtraHeaders().entrySet()) {
+            message.header(header.getKey(), header.getValue());
+        }
 
-        mailService.sendMessage(message);
+        mailService.sendMessage(message.build());
     }
 
     /**
@@ -87,6 +88,9 @@ public final class EmailUtils
             .subject(email.getSubject())
             .text(email.getTextBody())
             .html(email.getHtmlBody());
+        for (Map.Entry<String, String> header : email.getExtraHeaders().entrySet()) {
+            message.header(header.getKey(), header.getValue());
+        }
         email.getInlineAttachments()
             .forEach(attachment -> message.inline(attachment.getRight(), attachment.getMiddle(), attachment.getLeft(),
                 Collections.singleton(

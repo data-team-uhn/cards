@@ -18,6 +18,9 @@
  */
 package io.uhndata.cards.emailnotifications;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * A read-only email ready to be sent. Emails are built from {@link EmailTemplate templates}, so the first step for
  * creating an email is to build an email template, for example
@@ -39,6 +42,8 @@ public class Email extends EmailTemplate
     private String htmlBody;
 
     private String textBody;
+
+    private Map<String, String> extraHeaders = new LinkedHashMap<>();
 
     protected Email(final EmailTemplate template)
     {
@@ -83,6 +88,11 @@ public class Email extends EmailTemplate
     public String getTextBody()
     {
         return this.textBody;
+    }
+
+    public Map<String, String> getExtraHeaders()
+    {
+        return this.extraHeaders;
     }
 
     /**
@@ -130,6 +140,12 @@ public class Email extends EmailTemplate
         {
             this.instance.toAddress = address;
             this.instance.toName = name;
+            return this;
+        }
+
+        public Builder withExtraHeader(final String name, final String value)
+        {
+            this.instance.extraHeaders.put(name, value);
             return this;
         }
 
