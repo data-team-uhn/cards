@@ -40,8 +40,11 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.serialize.DataFilters;
+import io.uhndata.cards.serialize.DataFiltersParser;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
@@ -61,12 +64,15 @@ public class DataProcessor implements ResourceJsonProcessor
     // Max depth level of children whose data will be included in the output
     private ThreadLocal<Object> displayLevel = ThreadLocal.withInitial(() -> 0);
 
-    private ThreadLocal<Map<String, String>> filters = new ThreadLocal<>();
+    private ThreadLocal<DataFilters> filters = new ThreadLocal<>();
 
     private ThreadLocal<Map<String, String>> options = new ThreadLocal<>();
 
     // Node uuid and its type, either questionnaire or subject
     private ThreadLocal<Map<String, String>> uuidsWithEntityFilter = ThreadLocal.withInitial(HashMap::new);
+
+    @Reference
+    private DataFiltersParser filtersParser;
 
     @Override
     public String getName()
@@ -89,21 +95,8 @@ public class DataProcessor implements ResourceJsonProcessor
         this.selectors.set(resource.getResourceMetadata().getResolutionPathInfo());
         // We only serialize data for the serialized subject, not other nodes
         this.rootNode.set(resource.getPath());
-        final Map<String, String> filtersMap = new HashMap<>();
-        // Split by unescaped dots. A backslash escapes a dot, but two backslashes are just one escaped backslash.
-        // Match by:
-        // - no preceding backslash, i.e. start counting at the first backslash (?<!\)
-        // - an even number of backslashes, i.e. any number of groups of two backslashes (?:\\)*
-        // - a literal dot \.
-        // Each backslash, except the \., is escaped twice, once as a special escape char inside a Java string, and
-        // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
-        // char inside a Java string, since it must retain its escaping meaning in the RegExp.
-        Arrays.asList(this.selectors.get().split("(?<!\\\\)(?:\\\\\\\\)*\\.")).stream()
-            .filter(s -> StringUtils.startsWith(s, "dataFilter:"))
-            .map(s -> StringUtils.substringAfter(s, "dataFilter:"))
-            .forEach(s -> filtersMap.put(StringUtils.substringBefore(s, "="),
-                StringUtils.substringAfter(s, "=").replaceAll("\\\\\\.", ".")));
-        this.filters.set(filtersMap);
+
+        this.filters.set(this.filtersParser.parseFilters(this.selectors.get()));
 
         final Map<String, String> optionsMap = new HashMap<>();
         Arrays.asList(this.selectors.get().split("(?<!\\\\)(?:\\\\\\\\)*\\.")).stream()
@@ -150,9 +143,9 @@ public class DataProcessor implements ResourceJsonProcessor
             });
             // The data JSONs have been collected, add them to the subject's JSON
             formsJsons.forEach(json::add);
-            final JsonObjectBuilder filtersJson = Json.createObjectBuilder();
+            final JsonArrayBuilder filtersJson = Json.createArrayBuilder();
             final JsonObjectBuilder optionsJson = Json.createObjectBuilder();
-            this.filters.get().forEach(filtersJson::add);
+            this.filters.get().getFilters().forEach(f -> filtersJson.add(f.toString()));
             this.options.get().forEach(optionsJson::add);
             json.add("dataFilters", filtersJson);
             json.add("dataOptions", optionsJson);
@@ -223,43 +216,16 @@ public class DataProcessor implements ResourceJsonProcessor
 
     private String generateDataQuery(String currentNodeIdentifier) throws RepositoryException
     {
-        StringBuilder result = new StringBuilder("select * from [cards:Form] as n where n."
+        StringBuilder result = new StringBuilder("select form.* from [cards:Form] as form");
+        result.append(this.filters.get().getExtraQuerySelectors());
+        result.append(" where (form."
             + this.uuidsWithEntityFilter.get().get(currentNodeIdentifier) + " = '" + currentNodeIdentifier + "'");
         this.uuidsWithEntityFilter.get().remove(currentNodeIdentifier);
-        this.uuidsWithEntityFilter.get().forEach((key, value) ->
-            result.append(" or n.").append(value).append(" = '").append(key).append("'"));
-
-        this.filters.get().forEach((key, value) -> {
-            switch (key) {
-                case "createdAfter":
-                    result.append(" and n.[jcr:created] >= '").append(value).append('\'');
-                    break;
-                case "createdBefore":
-                    result.append(" and n.[jcr:created] < '").append(value).append('\'');
-                    break;
-                case "createdBy":
-                    result.append(" and n.[jcr:createdBy] = '").append(value).append('\'');
-                    break;
-                case "status":
-                    result.append(" and n.[statusFlags] = '").append(value).append('\'');
-                    break;
-                case "statusNot":
-                    result.append(" and not n.[statusFlags] = '").append(value).append('\'');
-                    break;
-                case "modifiedAfter":
-                    result.append(" and n.[jcr:lastModified] >= '").append(value).append('\'');
-                    break;
-                case "modifiedBefore":
-                    result.append(" and n.[jcr:lastModified] < '").append(value).append('\'');
-                    break;
-                case "modifiedBy":
-                    result.append(" and n.[jcr:lastModifiedBy] = '").append(value).append('\'');
-                    break;
-                default:
-                    break;
-            }
-        });
-        result.append(" order by n.'jcr:created' ASC");
+        this.uuidsWithEntityFilter.get()
+            .forEach((key, value) -> result.append(" or form.").append(value).append(" = '").append(key).append("'"));
+        result.append(")");
+        result.append(this.filters.get().getExtraQueryConditions());
+        result.append(" order by form.'jcr:created' ASC");
         result.append(" OPTION (index tag cards)");
         return result.toString();
     }
