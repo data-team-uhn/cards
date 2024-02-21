@@ -149,6 +149,11 @@
     </dependency>
     <dependency>
       <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-utils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
       <artifactId>cards-permissions</artifactId>
       <version>${project.version}</version>
     </dependency>
