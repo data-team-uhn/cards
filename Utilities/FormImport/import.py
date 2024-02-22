@@ -643,6 +643,8 @@ def create_new_questionnaire(title):
     new_questionnaire['title'] = clean_title(title)
     new_questionnaire['jcr:reference:requiredSubjectTypes'] = Options.subject_types
     new_questionnaire['paginate'] = Options.paginate
+    new_questionnaire['requireCompletion'] = Options.requireCompletion
+    new_questionnaire['hideAnswerInstructions'] = Options.hideAnswerInstructions
     if Options.max_per_subject >  0:
         new_questionnaire['maxPerSubject'] = Options.max_per_subject
     return new_questionnaire
@@ -894,6 +896,8 @@ def get_log_level(log_input):
 CLI = argparse.ArgumentParser()
 CLI.add_argument("--forms", nargs="*", type=str, required=True)
 CLI.add_argument("--paginate", type=bool, default=False)
+CLI.add_argument("--requireCompletion", type=bool, default=False)
+CLI.add_argument("--hideAnswerInstructions", type=bool, default=False)
 CLI.add_argument("--subject-types", nargs=1, type=str, default=["/SubjectTypes/Patient/Visit"])
 CLI.add_argument("--logging", nargs=1, type=str, default="info")
 CLI.add_argument("--max-answers", nargs=1, type=int, default=1)
