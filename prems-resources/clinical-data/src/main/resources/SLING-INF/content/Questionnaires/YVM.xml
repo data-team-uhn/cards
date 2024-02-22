@@ -142,7 +142,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>How did you attend your most recent cancer care appointment?</value>
+				<value>**How did you attend** your most recent cancer care appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -156,7 +156,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>inperson</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -165,7 +165,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>in person</value>
+					<value>In person</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -175,7 +175,7 @@
 				</property>
 			</node>
 			<node>
-				<name>telephone</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -184,7 +184,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>telephone</value>
+					<value>Telephone</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -194,7 +194,7 @@
 				</property>
 			</node>
 			<node>
-				<name>video</name>
+				<name>3</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -203,7 +203,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>video</value>
+					<value>Video</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -242,7 +242,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>withinthepastmonth</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -251,7 +251,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>within the past month</value>
+					<value>Within the past month</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -261,7 +261,7 @@
 				</property>
 			</node>
 			<node>
-				<name>morethan1monthago</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -270,7 +270,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>more than 1 month ago</value>
+					<value>More than 1 month ago</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -280,7 +280,7 @@
 				</property>
 			</node>
 			<node>
-				<name>idonotremember</name>
+				<name>3</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -289,7 +289,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>i do not remember</value>
+					<value>I do not remember</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -454,7 +454,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>video</value>
+								<value>Video</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -572,7 +572,7 @@
 					<type>String</type>
 				</property>
 				<node>
-					<name>notApplicable</name>
+					<name>1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>notApplicable</name>
@@ -586,26 +586,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>i did not decline a virtual visit</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>0</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>irequireanin-personappointmentformycare</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>I require an in-person appointment for my care</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>i require an in-person appointment for my care</value>
+						<value>I did not decline a virtual visit</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -615,16 +596,16 @@
 					</property>
 				</node>
 				<node>
-					<name>idonothaveaccesstothepersonalequipmenteg</name>
+					<name>2</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I do not have access to the needed personal equipment, eg. a computer, tablet, or smart phone</value>
+						<value>I require an in-person appointment for my care</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not have access to the personal equipment eg. a computer, tablet, or smart phone</value>
+						<value>I require an in-person appointment for my care</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -634,16 +615,16 @@
 					</property>
 				</node>
 				<node>
-					<name>idonothaveaccesstostableinternet</name>
+					<name>3</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I do not have access to stable internet</value>
+						<value>I do not have access to the needed personal equipment, eg. a computer, tablet, or smart phone</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not have access to stable internet</value>
+						<value>I do not have access to the needed personal equipment, eg. a computer, tablet, or smart phone</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -653,16 +634,16 @@
 					</property>
 				</node>
 				<node>
-					<name>idonothaveaccesstomsteams</name>
+					<name>4</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I do not have access to MS Teams</value>
+						<value>I do not have access to stable internet</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not have access to ms teams</value>
+						<value>I do not have access to stable internet</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -672,16 +653,16 @@
 					</property>
 				</node>
 				<node>
-					<name>iamnotconfidentusingthecomputerorinterne</name>
+					<name>5</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I am not confident using the computer or internet</value>
+						<value>I do not have access to MS Teams</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i am not confident using the computer or internet</value>
+						<value>I do not have access to MS Teams</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -691,16 +672,16 @@
 					</property>
 				</node>
 				<node>
-					<name>idonothaveasuitablespaceforaprivateconve</name>
+					<name>6</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I do not have a suitable space for a private conversation</value>
+						<value>I am not confident using the computer or internet</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not have a suitable space for a private conversation</value>
+						<value>I am not confident using the computer or internet</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -710,16 +691,16 @@
 					</property>
 				</node>
 				<node>
-					<name>idonotfeelcomfortableshowingmyfaceorbody</name>
+					<name>7</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I do not feel comfortable showing my face or body on a video camera</value>
+						<value>I do not have a suitable space for a private conversation</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i do not feel comfortable showing my face or body on a video camera</value>
+						<value>I do not have a suitable space for a private conversation</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -729,16 +710,16 @@
 					</property>
 				</node>
 				<node>
-					<name>irequiredassistancecommunicatingorinterp</name>
+					<name>8</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I required assistance communicating or interpretation services</value>
+						<value>I do not feel comfortable showing my face or body on a video camera</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i required assistance communicating or interpretation services</value>
+						<value>I do not feel comfortable showing my face or body on a video camera</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -748,7 +729,26 @@
 					</property>
 				</node>
 				<node>
-					<name>ifeelthatmypersonalinformationwillnotbes</name>
+					<name>9</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>I required assistance communicating or interpretation services</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>I required assistance communicating or interpretation services</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>9</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>10</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -757,12 +757,12 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>i feel that my personal information will not be safe over the internet</value>
+						<value>I feel that my personal information will not be safe over the internet</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>9</value>
+						<value>10</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -855,7 +855,7 @@
 			</node>
 		</node>
 		<node>
-			<name>yvm_5section</name>
+			<name>section_yvm_5</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -887,7 +887,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>in person</value>
+							<value>In person</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1144,47 +1144,138 @@
 			</node>
 		</node>
 		<node>
-			<name>yvm_6bsection</name>
+			<name>section_yvm_6b</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value><![CDATA[>]]></value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>False</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>yvm_6a</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>yvm_6a</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>3</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>0</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
 						<type>String</type>
 					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>yvm_6a</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>2</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>condition2</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
 					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>yvm_6a</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>1</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
@@ -1202,7 +1293,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Were you satisfied with the response from the cancer clinic?</value>
+					<value>Were you satisfied with the **response from the cancer clinic**?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1389,7 +1480,7 @@
 			</node>
 		</node>
 		<node>
-			<name>yvm_7bsection</name>
+			<name>section_yvm_7b</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -1520,7 +1611,7 @@
 			</node>
 		</node>
 		<node>
-			<name>yvm_8section</name>
+			<name>section_yvm_8</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -1552,7 +1643,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>in person</value>
+							<value>In person</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1828,7 +1919,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</property>
 			<property>
 				<name>text</name>
-				<value>My cancer care team spent enough time with me.</value>
+				<value>My cancer care team **spent enough time** with me.</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1952,7 +2043,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</property>
 			<property>
 				<name>text</name>
-				<value>My cancer care team explained things in a way I could understand.</value>
+				<value>My cancer care team **explained things** in a way I could understand.</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2076,7 +2167,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</property>
 			<property>
 				<name>text</name>
-				<value>My cancer care team treated me with respect.</value>
+				<value>My cancer care team treated me with **respect**.</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2200,7 +2291,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</property>
 			<property>
 				<name>text</name>
-				<value>My cancer care team involved me in making decisions about my care in the way I wanted.</value>
+				<value>My cancer care team involved me in making **decisions** about my care in the way I wanted.</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2443,7 +2534,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</node>
 		</node>
 		<node>
-			<name>yvm_11bsection</name>
+			<name>section_yvm_11b</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -2679,7 +2770,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</node>
 		</node>
 		<node>
-			<name>yvm_11dsection</name>
+			<name>section_yvm_11d</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -2833,7 +2924,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you have all the information you needed about the next steps in your care after your appointment?</value>
+				<value>Did you have all the **information** you needed about the next steps in your care after your appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2938,7 +3029,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you know who to contact if you had questions or concerns after your appointment?</value>
+				<value>Did you know **who to contact** if you had questions or concerns after your appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
