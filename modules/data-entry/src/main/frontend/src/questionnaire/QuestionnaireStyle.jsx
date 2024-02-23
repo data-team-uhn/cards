@@ -727,17 +727,6 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
-    imageMapperHovered : {
-      "cursor": "pointer"
-    },
-    imageMapperHovered : {
-      "& polygon:hover": {
-        fill: alpha(theme.palette.text.primary, 0.4)
-      },
-      "& rect:hover": {
-        fill: alpha(theme.palette.text.primary, 0.4)
-      }
-    }
 });
 
 export default questionnaireStyle;
