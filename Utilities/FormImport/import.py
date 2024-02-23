@@ -796,6 +796,8 @@ def condition_handle_single(questionnaire, condition_parent, conditional_string,
     # `=` must be before '<=` and `>=`
     # `<>`, `<=`, and `>=` must be before `<` and `>`
     OPERATORS_PAIR = [
+        "includes",
+        "excludes",
         "=",
         "<=",
         ">=",
