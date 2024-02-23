@@ -56,8 +56,8 @@ function SelectableAreaQuestion(props) {
   const [ initialized, setInitialized ] = useState(false);
 
   const [ currentWidth, setCurrentWidth] = useState(0);
-  const [ isAreaHovered, setAreaHovered ] = useState(false);
   const [ tooltipTitle, setTooltipTitle ] = useState("");
+  const [ hoveredIndex, setHoveredIndex ] = useState(-1);
 
   const [ imageMap, setImageMap ] = useState(<></>);
   const [ selectionDisplay, setSelectionDisplay ] = useState(<></>);
@@ -77,39 +77,14 @@ function SelectableAreaQuestion(props) {
 
   const [ selection, setSelection ] = useState(initialSelection);
 
-  // Update the map to match the current selected values
-  useEffect(() => {
-    if (map) {
-      setMap(
-        map.map((mapEntry => {
-          let entry = mapEntry
-          // Check if this area is selected.
-          let found = false;
-          for (let i = 0; i < selection.length; i++) {
-            if (selection[i][VALUE_POS] === entry.value) {
-              // Area has been selected, highlight it.
-              entry.fill = getSelectedColor(entry);
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            // Area is not selected
-            entry.fill = getUnselectedColor(entry);
-          }
-          return entry;
-        }))
-      )
-    }
-  }, [selection])
+  let isAreaSelected = (area) => selection.filter(selectedArea => selectedArea[VALUE_POS] == area.value).length > 0;
 
   const theme = useTheme();
 
   let getUnselectedColor = (area) => getColor(area, "unselectedColor", "transparent")
-  let getSelectedColor = (area) => getColor(area, "selectedColor", theme.palette.primary.main + "66")
-  // TODO: reimplement hover color configuration. Currently hover color is fixed by QuestionnaireStyle
-  let getHoverColor = (area) => getColor(area, "hoverColor", alpha(theme.palette.text.primary, 0.4));
-  let getStrokeColor = (area) => getColor(area, "strokeColor", theme.palette.text.primary);
+  let getSelectedColor = (area) => getColor(area, "selectedColor", alpha(theme.palette.primary.main, 0.35))
+  let getHoverColor = (area) => alpha(getColor(area, "hoverColor", theme.palette.action.active), isAreaSelected(area) ? 0.6 : 0.4);
+  let getStrokeColor = (area) => getColor(area, "strokeColor", theme.palette.divider);
 
   let getColor = (area, property, fallback) => {
     let result = fallback;
@@ -128,6 +103,11 @@ function SelectableAreaQuestion(props) {
     }
 
     return result;
+  }
+
+  let updateAreaColor = (area) => {
+    area.fill = (area.isHovered ? getHoverColor(area)
+      : (isAreaSelected(area) ? getSelectedColor(area) : getUnselectedColor(area)));
   }
 
   // Perform any initialization that is required once the map has loaded.
@@ -175,6 +155,19 @@ function SelectableAreaQuestion(props) {
       setInitialized(true);
     }
   }
+
+  // Update the map to match the current selected values
+  useEffect(() => {
+    if (map) {
+      setMap(
+        map.map((mapEntry => {
+          let entry = mapEntry
+          updateAreaColor(entry);
+          return entry;
+        }))
+      )
+    }
+  }, [selection])
 
   // List out the selected areas in text
   useEffect(() => {
@@ -233,19 +226,23 @@ function SelectableAreaQuestion(props) {
   }
 
   // Track when the user's cursor is over one of the areas
-  let onMouseEnter = (mapEntry) => {
+  let onMouseEnter = (mapEntry, index) => {
     // Only give the user hover feedback if:
     // - it is edit mode
     // - or if it is view mode and the user is hovering a previously selected area
-    if (isEdit || selection.filter(selectedArea => selectedArea[VALUE_POS] == mapEntry.value).length > 0)
+    if (isEdit || isAreaSelected(mapEntry))
     {
-      setAreaHovered(true);
+      mapEntry.isHovered = true;
+      updateAreaColor(mapEntry);
       setTooltipTitle(mapEntry.title);
+      setHoveredIndex(index);
     }
   }
 
-  let onMouseLeave = () => {
-    setAreaHovered(false);
+  let onMouseLeave = (mapEntry) => {
+    mapEntry.isHovered = false;
+    updateAreaColor(mapEntry);
+    setHoveredIndex(-1);
   }
 
   // Create the SVG of possible areas
@@ -281,8 +278,8 @@ function SelectableAreaQuestion(props) {
                   fill={mapEntry.fill}
                   stroke={mapEntry.strokeColor}
 
-                  onMouseEnter={()=>{onMouseEnter(mapEntry)}}
-                  onMouseLeave={()=>{onMouseLeave()}}
+                  onMouseEnter={()=>{onMouseEnter(mapEntry, index)}}
+                  onMouseLeave={()=>{onMouseLeave(mapEntry)}}
                   onClick={()=>{onAreaClicked(mapEntry)}}
                   />
               } else if (mapEntry.shape == "poly") {
@@ -301,8 +298,8 @@ function SelectableAreaQuestion(props) {
                   fill={mapEntry.fill}
                   stroke={mapEntry.strokeColor}
 
-                  onMouseEnter={()=>{onMouseEnter(mapEntry)}}
-                  onMouseLeave={()=>{onMouseLeave()}}
+                  onMouseEnter={()=>{onMouseEnter(mapEntry, index)}}
+                  onMouseLeave={()=>{onMouseLeave(mapEntry)}}
                   onClick={()=>{onAreaClicked(mapEntry)}}/>
               } else return <></>
             })}
@@ -310,7 +307,7 @@ function SelectableAreaQuestion(props) {
         </svg>
         : <></>
       )
-  }, [map, initialized, currentWidth])
+  }, [map, initialized, currentWidth, hoveredIndex])
 
   // Track the current width of the question in order to ensure the image isn't too wide
   useEffect(() => {
@@ -359,8 +356,8 @@ function SelectableAreaQuestion(props) {
       {
         (isEdit || notApplicableOption == null || !notApplicableChecked) ?
           <div ref={questionRef}>
-            <Tooltip title={tooltipTitle} open={isAreaHovered} followCursor>
-              <div className={isAreaHovered && isEdit ? classes.imageMapperHovered : null} style={{position: 'relative', float:"left"}}>
+            <Tooltip title={tooltipTitle} open={hoveredIndex >= 0} followCursor>
+              <div style={{position: 'relative', float:"left", cursor: (hoveredIndex >= 0 && isEdit ? "pointer" : "auto")}}>
                 {imageMap}
               </div>
             </Tooltip>
