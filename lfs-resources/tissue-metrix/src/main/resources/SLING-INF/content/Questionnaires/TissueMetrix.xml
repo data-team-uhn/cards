@@ -91,12 +91,12 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Canide</value>
+					<value>Canine</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>canide</value>
+					<value>canine</value>
 					<type>String</type>
 				</property>
 			</node>
