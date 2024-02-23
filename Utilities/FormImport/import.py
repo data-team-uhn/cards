@@ -739,7 +739,7 @@ def add_option_properties(option, label):
 def process_conditional(self, questionnaire, row):
     needs_section = get_row_type_map(row).row_type not in (SECTION_TYPES + MATRIX_TYPES)
     if needs_section:
-        questionnaire.push_section(create_new_section(questionnaire.question['name'] + "section", False), False)
+        questionnaire.push_section(create_new_section("section_" + questionnaire.question['name'], False), False)
         questionnaire.flag_must_complete_section()
 
     conditional_string = self.get_value(row)
