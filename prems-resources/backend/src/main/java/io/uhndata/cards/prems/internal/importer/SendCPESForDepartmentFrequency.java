@@ -64,7 +64,7 @@ public class SendCPESForDepartmentFrequency extends AbstractClarityDataProcessor
     @Activate
     public SendCPESForDepartmentFrequency(SendCPESForDepartmentFrequencyConfigDefinition configuration)
     {
-        super(true, new String[] { "prems" }, 120);
+        super(true, new String[] { "inpatient-ed" }, 120);
         this.defaultFrequency = configuration.default_frequency();
         this.perDepartmentFrequency = new HashMap<>(configuration.frequency_per_department().length);
         for (String clinic : configuration.frequency_per_department()) {

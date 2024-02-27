@@ -69,7 +69,7 @@ public class LengthOfStayMapper extends AbstractClarityDataProcessor implements 
     @Activate
     public LengthOfStayMapper(LengthOfStayMapperConfigDefinition configuration)
     {
-        super(true, new String[] { "prems" }, 10);
+        super(true, new String[] { "inpatient-ed" }, 10);
         this.overwrite = configuration.overwrite();
         this.useCalendarDays = configuration.useCalendarDays();
     }

@@ -376,9 +376,9 @@
     // Clarity import scheduling
 
     // YourExperience
-    "io.uhndata.cards.clarity.importer.ClarityImportConfig~prems-discharge-events": {
+    "io.uhndata.cards.clarity.importer.ClarityImportConfig~inpatient-ed-discharge-events": {
       "name": "Your Experience - Discharge events",
-      "type": "prems",
+      "type": "inpatient-ed",
       "importSchedule": "0 0 3 * * ? *",
       "mapping": "/apps/cards/clarityImport/YourExperience",
       "dayToImport": -7
@@ -399,14 +399,14 @@
     // Discard patients with invalid or non-consented emails
     "io.uhndata.cards.clarity.importer.internal.EmailConsentFilter": {
       "enable": true,
-      "supportedTypes": ["prems", "yvm"],
+      "supportedTypes": ["inpatient-ed", "yvm"],
       "emailColumn": "EMAIL_ADDRESS",
       "emailConsentColumn": "EMAIL_CONSENT_YN"
     },
     // Only send surveys to patients once every 6 months
     "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~ye": {
       "enable": true,
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "minimum.visit.frequency": 183,
       "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242"]
     },
@@ -419,11 +419,11 @@
     // Don't import visits for patients who have opted out of emails
     "io.uhndata.cards.clarity.importer.internal.UnsubscribedFilter": {
       "enable": true,
-      "supportedTypes": ["prems", "yvm"]
+      "supportedTypes": ["inpatient-ed", "yvm"]
     },
     // Only look at events from the participating hospitals, discard everything else
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 10,
       "conditions": [
         "DISCH_LOC_NAME <> Toronto General Hospital",
@@ -445,7 +445,7 @@
     },
     // YE: Only look at actual Emergency or Inpatient events
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-OtherVisitTypes":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 10,
       "conditions": [
         "PATIENT_CLASS not in Emergency; Inpatient; Inpatient Rehab"
@@ -461,47 +461,47 @@
     },
     // Discard deceased patients
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DeathDate":{
-      "supportedTypes": ["prems", "yvm"],
+      "supportedTypes": ["inpatient-ed", "yvm"],
       "priority": 20,
       "conditions": ["DEATH_DATE is not empty"]
     },
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Deceased":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 20,
       "conditions": ["DISCH_DISPOSITION in Cad Donor; Deceased; Died on Leav; Died; Donor; Stillbirth; Suicide Out; Death After; MAID; Death on Arr; IP Medically; IP In-Facili; IP Died Whil; IP Out of Fa; DOA; OP Medically; OP In-Facili; Suicide fac; Still Born; Pt. suicide; Expired LOA; Expired; Med assist d; Suicide fac; DOA"]
     },
     // Discard patients discharged to another institution or not arrived at all
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DischargeToLocation":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 20,
       "conditions": ["DISCH_DISPOSITION in Not Arrived; Left Triage; Jail; Diverted; Shelter; Jail or half; Res Care; Inpatient Ac; Inpt Ac Diff; Inpt Ac Same; Inpatient Ps; IP Trnsfr; OP Discharge; OP Transfer; RehabPsych"]
     },
     // Discard patients with special care
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-AlternativeLevelOfCare":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 20,
       "conditions": ["LEVEL_OF_CARE matches ALC.*"]
     },
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Psychiatric":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 20,
       "conditions": ["DISCH_DEPT_NAME = TG-8ES PSYCHIATRY"]
     },
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Palliative":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 20,
       "conditions": ["DISCH_DEPT_NAME in PM-PALLIATIVE CARE ONCOLOGY CLINIC; TW-PALLIATIVE CARE CLINIC; TG-PALLIATIVE CARE; PM-16P PALLIATIVE CARE"]
     },
     // Set the visit status to "discharged"
     "io.uhndata.cards.clarity.importer.internal.ConfiguredGenericMapper~VisitStatus":{
-      "supportedTypes": ["prems", "yvm"],
+      "supportedTypes": ["inpatient-ed", "yvm"],
       "priority": 30,
       "column": "STATUS",
       "value": "discharged"
     },
     // Patients eligible for Integrated Care surveys should have a different status
     "io.uhndata.cards.clarity.importer.internal.ConfiguredGenericMapper~IntegratedCareStatusInProgress":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 35,
       "column": "STATUS",
       "value": "in-progress",
@@ -512,61 +512,61 @@
     },
     // Assign patients from Toronto Rehab to the Rehab cohort
     "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-Rehab":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 40,
       "clinic": "/Survey/ClinicMapping/78840662",
       "conditions": ["DISCH_LOC_NAME matches Toronto Rehab .*"]
     },
     // From the Rehab, exclude patients from the Special Dementia Unit
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-Dementia":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME = UC-5 SOUTH IP"]
     },
     // From the Rehab, exclude Complex Continuing Care patients
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-ComplexContinuingCare":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME in BC-3 NORTH TCU IP; BC-5A NORTH IP; BC-5B NORTH IP; BC-3 SOUTH IP; BC-5 SOUTH IP"]
     },
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-ComplexContinuingMatch":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME matches .*CCC.*"]
     },
     // From the Rehab, exclude patients that are not rehab patients
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-NotRehabDepartments":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME in BC-AAC CLINIC; BC-DENTISTRY; LC-ASSISTIVE TECHNOLOGY; LC-CHIROPODY CLINIC; LC-ITB CLINIC; LC-NEUROPHYSIOLOGY CLINIC; LC-NURSING CLINIC; LC-PHYSIATRY; LC-PSYCHIATRY CLINIC; LC-ROBSON CLINIC; LC-SEATING CLINIC; LC-SKIN AND WOUND; LC-SPINAL CORD REHAB-OP-ALLIED HEALTH; RN-CHRONIC PAIN LEAP SERVICE; UC-DENTISTRY; UC-EMG CLINIC; UC-GERIATRIC REHAB SERVICE; UC-PHYSIOTHERAPY-LOGIN; UC-SLEEP LAB"]
     },
     "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-NotRehabPatients":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "PATIENT_CLASS <> Inpatient Rehab"]
     },
     // Only non-rehab patients from now on.
     // Discard patients not from Rehab, and with psychiatric or substance abuse as primary diagnosis
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NotRehab-PsychiatricOrSubstanceAbusePrimaryDiagnosis":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 60,
       "conditions": ["CLINIC is empty", "PRIMARY_DX_NAME in Acute alcoholic intoxication; Acute delirium; Adjustment disorder; Adjustment disorder with mixed anxiety and depressed mood; Adjustment disorders, unspecified; Agitation; Alcohol dependence in remission; Alcohol intoxication; Alcohol use; Alcohol use disorder; Alcohol withdrawal; Alcoholism in recovery; Alzheimer disease; Anoxic brain injury; Anxiety; Anxiety about health; Anxiety and depression; Bipolar 1 disorder; Bipolar affective disorder, current episode manic; Bipolar disorder; Cocaine use; Cocaine use disorder, severe, dependence; Cognitive impairment; Confusion; Delirium; Delirium superimposed on dementia; Dementia; Depression; Depression, prolonged; Developmental delay; Drug-induced psychotic disorder; Essential tremor; Generalized anxiety disorder; Impaired cognition; Major depressive disorder; Memory impairment; MDD (major depressive disorder); Mood disorder; Overdose; Overdose of drug/medicinal substance; Overdose of tricyclic antidepressants; Polysubstance dependence; Schizoaffective disorder; Schizoaffective disorder, bipolar type; Schizophrenia; Seizure; Seizure disorder; Seizures; Severe anxiety with panic; Stress; Stress and adjustment reaction; Substance abuse; Substance use; Substance use disorder; Suicidal ideation; Tremor; Unspecified intellectual developmental disorder (intellectual disability); Unspecified schizophrenia spectrum and other psychotic disorder; Unspecified trauma- and stressor-related disorder; Vapes nicotine containing substance; Withdrawal symptoms, alcohol"]
     },
     // Discard patients not from Rehab, and discharged to long term care
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NotRehab-LongTermCare":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 60,
       "conditions": ["CLINIC is empty", "DISCH_DISPOSITION in Residential; Discharge; IP Transfer; LTC; Res Care; Board & Care"]
     },
     // Assign patients that were only at the emergency department to the ED cohort
     "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-ED-NoTransferTG":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 80,
       "clinic": "/Survey/ClinicMapping/-1792626799",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = no", "DISCH_DEPT_NAME = TG-EMERGENCY"]
     },
     "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-ED-NoTransferTW":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 80,
       "clinic": "/Survey/ClinicMapping/-1792626799",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = no", "DISCH_DEPT_NAME = TW-EMERGENCY"]
@@ -574,14 +574,14 @@
     // Discard patients that were discharged from the emergency department to in-patient for now;
     // a follow up event will be generated later when they are discharged from in-patient
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-ED-Transfer":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 100,
       "conditions": ["CLINIC is empty", "DISCH_DEPT_NAME matches .*EMERGENCY.*"]
     },
     // Only in-patients from now on.
     // Discard patients that were only in-patient for a short time
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-IP-ShortStay":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 100,
       "conditions": ["CLINIC <> /Survey/ClinicMapping/-1792626799", "LENGTH_OF_STAY_DAYS < 1"]
     },
@@ -596,14 +596,14 @@
     // Only non-CPESIC patients from now on.
     // Assign patients that were both in the emergency and in-patient to the EDIP cohort
     "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-EDIP-Transfer":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 140,
       "clinic": "/Survey/ClinicMapping/-432465800",
       "conditions": ["CLINIC is empty", "ED_IP_TRANSFER_YN = yes"]
     },
     // Assign patients that were only in-patient to the IP cohort
     "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-IP":{
-      "supportedTypes": ["prems"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 160,
       "clinic": "/Survey/ClinicMapping/-1792626663",
       "conditions": ["CLINIC is empty"]
@@ -617,7 +617,7 @@
     // Discard duplicates if there's more than one event per patient
     "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
       "enable": true,
-      "supportedTypes": ["prems", "yvm"],
+      "supportedTypes": ["inpatient-ed", "yvm"],
       "subjectType": "/SubjectTypes/Patient"
     },
     // Submission event listener
