@@ -55,7 +55,7 @@
 		</property>
 		<property>
 			<name>variant</name>
-			<value>/libs/cards/dataEntry/SelectableArea/FullBody</value>
+			<value>/libs/cards/dataEntry/SelectableArea/Face</value>
 			<type>Reference</type>
 		</property>
 		<node>
