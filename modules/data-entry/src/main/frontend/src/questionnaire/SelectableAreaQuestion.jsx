@@ -256,11 +256,19 @@ function SelectableAreaQuestion(props) {
     let scale = width / variant.imageWidth;
     let height = variant.imageHeight * scale;
 
+    let viewBox = variant.viewBox || null;
+    if (viewBox) {
+      // Viewbox is a set of 4 space seperated numbers "<min-x> <min-y> <width> <height>".
+      // These numbers must be scaled by the same factor as other coordinates then recombined.
+      viewBox = viewBox.split(" ").map(value => Number(value) * scale).join(" ")
+    }
+
     setImageMap(
       initialized && map ?
         <svg className={classes.selectableArea}
           width={width}
-          height={height}>
+          height={height}
+          viewBox={viewBox}>
           <image
             href={variant?.image}
             width={width}/>
