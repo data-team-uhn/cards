@@ -377,7 +377,7 @@
 
     // YourExperience
     "io.uhndata.cards.clarity.importer.ClarityImportConfig~inpatient-ed-discharge-events": {
-      "name": "Your Experience - Discharge events",
+      "name": "Your Experience - Inpatient and ED discharge events",
       "type": "inpatient-ed",
       "importSchedule": "0 0 3 * * ? *",
       "mapping": "/apps/cards/clarityImport/YourExperience",
@@ -386,7 +386,7 @@
 
     // YVM
     "io.uhndata.cards.clarity.importer.ClarityImportConfig~yvm-discharge-events": {
-      "name": "Your Voice Matters - Discharge events",
+      "name": "Your Voice Matters - PMCC outpatient visits",
       "type": "yvm",
       "importSchedule": "0 0 3 * * ? *",
       "tableName": "%ENV%CLARITY_YVM_SQL_TABLE",
