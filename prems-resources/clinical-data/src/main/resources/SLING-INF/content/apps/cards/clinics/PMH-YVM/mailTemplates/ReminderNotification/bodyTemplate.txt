@@ -11,6 +11,9 @@ ${surveysLink}
 
 The survey will be available until ${expirationDate}.
 
+Please note that this survey is compatible with voice activated software which
+can be used to navigate it.
+
 The survey will not load if you are using Internet Explorer. Please use another web browser,
 such as Edge, Chrome, or Firefox.
 
