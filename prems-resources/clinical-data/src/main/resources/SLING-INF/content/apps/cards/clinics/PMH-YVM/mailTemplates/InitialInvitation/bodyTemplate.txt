@@ -1,13 +1,17 @@
 Dear ${first_name} ${last_name},
 
 We are always striving to improve the experience of care at Princess Margaret Cancer Centre.
-We would like to learn more about your most recent visit in an optional survey. It should
-take approximately 5-10 minutes to complete.
+Our records show that you had a recent outpatient clinic visit with your nurse and/or doctor.
+We would like to learn more about your experience in an optional survey. It should take
+approximately 5-10 minutes to complete.
 
 To begin the survey, click the following link:
 ${surveysLink}
 
 The survey will be available until ${expirationDate}.
+
+Please note that this survey is compatible with voice activated software which
+can be used to navigate it.
 
 The survey will not load if you are using Internet Explorer. Please use another web browser,
 such as Edge, Chrome, or Firefox.
