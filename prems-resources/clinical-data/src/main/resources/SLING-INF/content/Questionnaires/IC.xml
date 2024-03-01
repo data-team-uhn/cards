@@ -875,45 +875,94 @@ A member of the quality improvement team will reach out to you for an interview.
 			<name>ic_contact_phone_section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionGroup</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>False</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>ic_contact_mode</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ic_contact_mode</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>Phone</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition2</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>Phone</value>
-							<value>Text</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ic_contact_mode</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>Text</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
@@ -1024,46 +1073,78 @@ A member of the quality improvement team will reach out to you for an interview.
 			<name>ic_contact_name_section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionGroup</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>ic_contact_mode</value>
-						</values>
+						<name>comparator</name>
+						<value>is not empty</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ic_contact_mode</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition2</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>Phone</value>
-							<value>Text</value>
-							<value>Email</value>
-						</values>
+						<name>comparator</name>
+						<value><![CDATA[<>]]></value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ic_contact_mode</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>No</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
