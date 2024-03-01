@@ -431,6 +431,32 @@
         "DISCH_LOC_NAME <> Princess Margaret Cancer Centre"
       ]
     },
+    // YVM: Only retain visits to certain clinics
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVMNonParticipatingUnits":{
+      "supportedTypes": ["yvm"],
+      "priority": 10,
+      "conditions": [
+        "DISCH_DEPT_NAME <> PM-BMT ALLOGENEIC CLINIC",
+        "DISCH_DEPT_NAME <> PM-BREAST ONCOLOGY CLINIC",
+        "DISCH_DEPT_NAME <> PM-CANCER REHAB & SURVIVORSHIP",
+        "DISCH_DEPT_NAME <> PM-CNS ONCOLOGY CLINIC",
+        "DISCH_DEPT_NAME <> PM-ENDOCRINE ONCOLOGY CLINIC",
+        "DISCH_DEPT_NAME <> PM-ENT ONCOLOGY CLINIC",
+        "DISCH_DEPT_NAME <> PM-GASTROINTESTINAL ONCOLOGY CLINIC",
+        "DISCH_DEPT_NAME <> PM-GENITOURINARY ONCOLOGY CLINIC",
+        "DISCH_DEPT_NAME <> PM-GERIATRIC ONCOLOGY CLINIC",
+        "DISCH_DEPT_NAME <> PM-GYNECOLOGICAL ONCOLOGY CLINIC",
+        "DISCH_DEPT_NAME <> PM-LEUKEMIA CLINIC",
+        "DISCH_DEPT_NAME <> PM-LYMPHOMA CLINIC",
+        "DISCH_DEPT_NAME <> PM-MYELOMA CLINIC",
+        "DISCH_DEPT_NAME <> PM-PALLIATIVE CARE ONCOLOGY CLINIC",
+        "DISCH_DEPT_NAME <> PM-PSYCHOSOCIAL ONCOLOGY PROGRAM",
+        "DISCH_DEPT_NAME <> PM-SARCOMA CLINIC",
+        "DISCH_DEPT_NAME <> PM-SKIN MELANOMA CLINIC",
+        "DISCH_DEPT_NAME <> PM-THORACIC ONCOLOGY CLINIC"
+      ]
+    },
+
     // YE: Only look at actual Emergency or Inpatient events
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-OtherVisitTypes":{
       "supportedTypes": ["inpatient-ed"],
