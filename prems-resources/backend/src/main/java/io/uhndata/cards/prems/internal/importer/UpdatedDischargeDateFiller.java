@@ -70,7 +70,7 @@ public class UpdatedDischargeDateFiller extends AbstractClarityDataProcessor imp
     @Activate
     public UpdatedDischargeDateFiller(Config config)
     {
-        super(config.enable(), new String[] { "prems" }, 300);
+        super(config.enable(), new String[] { "inpatient-ed" }, 300);
         this.pastDaysLimit = config.pastDaysLimit();
     }
 
