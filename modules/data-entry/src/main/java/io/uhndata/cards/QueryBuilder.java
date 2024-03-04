@@ -113,6 +113,8 @@ import io.uhndata.cards.spi.SearchParametersFactory;
  */
 public class QueryBuilder implements Use
 {
+    private static final int QUERY_SIZE_MULTIPLIER = 10;
+
     private Logger logger = LoggerFactory.getLogger(QueryBuilder.class);
 
     private String content;
@@ -299,7 +301,7 @@ public class QueryBuilder implements Use
         }
 
         final JsonObjectBuilder output = Json.createObjectBuilder();
-        buildResults(output, builder.build(), outputRows, totalRows);
+        buildResults(output, builder.build(), outputRows, totalRows, 0);
         this.content = output.build().toString();
     }
 
@@ -319,10 +321,19 @@ public class QueryBuilder implements Use
     {
         Set<String> seenPaths = new HashSet<>();
         long returnedRows = 0;
-        long totalRows = 0;
 
         long offsetCounter = this.offset;
+
+        // How many more items to include in the output
         long limitCounter = this.limit;
+
+        // Batch size:
+        long totalLimit = (QUERY_SIZE_MULTIPLIER * this.limit);
+        // Batch fully containing the requested page:
+        totalLimit = (((long) Math.ceil(((double) this.offset) / ((double) totalLimit))) + 1) * totalLimit;
+        // And one more for the "more than" check:
+        ++totalLimit;
+        totalLimit = this.showTotalRows ? Long.MAX_VALUE : totalLimit;
 
         final JsonArrayBuilder builder = Json.createArrayBuilder();
 
@@ -348,17 +359,19 @@ public class QueryBuilder implements Use
                     builder.add(serializeNode(path));
                     --limitCounter;
                     ++returnedRows;
-                } else if (!this.showTotalRows) {
+                }
+                if (seenPaths.size() >= totalLimit) {
                     break;
                 }
-                // Count the total number of results
-                ++totalRows;
             } catch (RepositoryException e) {
                 this.logger.warn("Failed to serialize search results: {}", e.getMessage(), e);
             }
         }
-
-        buildResults(output, builder.build(), returnedRows, totalRows);
+        long andMore = 0;
+        if (seenPaths.size() == totalLimit) {
+            andMore = 1;
+        }
+        buildResults(output, builder.build(), returnedRows, seenPaths.size() - andMore, andMore);
     }
 
     /**
@@ -369,14 +382,26 @@ public class QueryBuilder implements Use
      * @param queryResults the raw query results
      * @throws RepositoryException if running the query fails
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private void outputRawQueryResults(final JsonObjectBuilder output, final QueryResult queryResults)
         throws RepositoryException
     {
         long returnedRows = 0;
-        long totalRows = 0;
 
         long offsetCounter = this.offset;
+
+        // How many more items to include in the output
         long limitCounter = this.limit;
+
+        // Batch size:
+        long totalLimit = (QUERY_SIZE_MULTIPLIER * this.limit);
+        // Batch fully containing the requested page:
+        totalLimit = (((long) Math.ceil(((double) this.offset) / ((double) totalLimit))) + 1) * totalLimit;
+        // And one more for the "more than" check:
+        ++totalLimit;
+        totalLimit = this.showTotalRows ? Long.MAX_VALUE : totalLimit;
+
+        long totalRows = 0;
 
         final JsonArrayBuilder builder = Json.createArrayBuilder();
 
@@ -403,16 +428,21 @@ public class QueryBuilder implements Use
                     builder.add(serializedRow.build());
                     --limitCounter;
                     ++returnedRows;
-                } else if (!this.showTotalRows) {
-                    break;
                 }
                 // Count the total number of results
                 ++totalRows;
+                if (totalRows >= totalLimit) {
+                    break;
+                }
             } catch (RepositoryException e) {
                 this.logger.warn("Failed to serialize search results: {}", e.getMessage(), e);
             }
         }
-        buildResults(output, builder.build(), returnedRows, totalRows);
+        long andMore = 0;
+        if (totalRows == totalLimit) {
+            andMore = 1;
+        }
+        buildResults(output, builder.build(), returnedRows, totalRows - andMore, andMore);
     }
 
     /**
@@ -440,14 +470,15 @@ public class QueryBuilder implements Use
     }
 
     private void buildResults(final JsonObjectBuilder output, final JsonArray data, final long returnedRows,
-        final long totalRows)
+        final long totalRows, final long totalIsApproximate)
     {
         output.add("rows", data);
         output.add("req", this.requestID);
         output.add("offset", this.offset);
         output.add("limit", this.limit);
         output.add("returnedrows", returnedRows);
-        output.add("totalrows", this.showTotalRows ? totalRows : -1L);
+        output.add("totalrows", totalRows);
+        output.add("totalIsApproximate", totalIsApproximate);
     }
 
     /**
