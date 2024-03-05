@@ -21,7 +21,7 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>cards-saml-modules</artifactId>
-    <version>0.9.22-SNAPSHOT</version>
+    <version>0.9.22</version>
   </parent>
 
   <artifactId>cards-cloud-iam-demo-saml-support-ssl</artifactId>
