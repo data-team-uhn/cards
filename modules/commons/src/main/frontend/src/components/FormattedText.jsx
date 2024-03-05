@@ -33,6 +33,9 @@ const useStyles = makeStyles(theme => ({
       "& .anchor" : {
         display: "none",
       },
+      "& img": {
+        background: "transparent"
+      }
     },
   }
 }));
