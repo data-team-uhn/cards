@@ -6132,7 +6132,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
