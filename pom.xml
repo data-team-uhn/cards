@@ -349,6 +349,32 @@
         </executions>
       </plugin>
 
+      <!-- Package LICENSE and NOTICE files in the built artifacts -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>io.uhndata.cards</groupId>
+            <artifactId>cards-license-resources</artifactId>
+            <version>1.0-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>generate-license-resources</id>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <resourceBundles>
+                <resourceBundle>io.uhndata.cards:cards-license-resources:1.0-SNAPSHOT</resourceBundle>
+              </resourceBundles>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Fail the build if the test coverage is below a given value. -->
       <plugin>
         <groupId>org.jacoco</groupId>
