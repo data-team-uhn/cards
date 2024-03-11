@@ -976,7 +976,7 @@ function SubjectSelectorList(props) {
       }
       if (currentSubject) {
         let subjectID = currentSubject["jcr:uuid"];
-        conditions.push(`(n.'ancestors'='${subjectID}' OR isdescendantnode(n,'${currentSubject["@path"]}') OR n.'jcr:uuid'='${subjectID}')`);
+        conditions.push(`(isdescendantnode(n,'${currentSubject["@path"]}') OR n.'jcr:uuid'='${subjectID}')`);
       }
       let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
