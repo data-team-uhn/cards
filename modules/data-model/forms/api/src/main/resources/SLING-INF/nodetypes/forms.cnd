@@ -313,18 +313,19 @@
   // For sections with the default display mode, whether to use horizontal layout (compact = true) to minimize negative space, or use vertical layout (default)
   - compact (boolean)
 
+  // These make sense for question matrix sections, since such a section behaves like a question
   // Same as for cards:Question.
-  - minAnswers (long) = '0' autocreated
+  - minAnswers (long) = '0'
 
   // Same as for cards:Question.
-  - maxAnswers (long) = '0' autocreated
+  - maxAnswers (long) = '0'
 
   // Which type of data is being recorded?
   // The possible values are limited to:
   // - text: simple text, either from a list of predefined options, or free text entered by the user
   // - long, double, decimal: a number
   // - vocabulary: a term from a vocabulary
-  - dataType (string) = 'text' mandatory autocreated
+  - dataType (string) = 'text'
 
   // Children
 
