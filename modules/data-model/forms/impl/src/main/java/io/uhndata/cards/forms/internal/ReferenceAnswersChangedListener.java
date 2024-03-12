@@ -145,7 +145,8 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                 final NodeIterator resourceIteratorReferencingAnswers = session
                     .getWorkspace().getQueryManager().createQuery(
                         // Answers that were explicitly copied from this answer
-                        "SELECT a.* FROM [" + answerNodeType + "] AS a WHERE a.copiedFrom = '" + node.getPath() + "'"
+                        "SELECT a.* FROM [" + answerNodeType + "] AS a WHERE a.copiedFrom = '"
+                            + escape(node.getPath()) + "'"
                             + " UNION "
                             // Answers that don't have a value yet
                             + "SELECT a.* FROM [" + answerNodeType + "] AS a"
@@ -155,7 +156,8 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                             // The answer doesn't have a value
                             + "    a.value is null"
                             // The answer's question references this question
-                            + "    AND q.question = '" + node.getProperty("question").getNode().getPath() + "'"
+                            + "    AND q.question = '"
+                            + escape(node.getProperty("question").getNode().getPath()) + "'"
                             // The answer belongs to the same subject or one of its descendants
                             + "    AND f.relatedSubjects = '" + subject + "'"
                             // Use the fast index for the query
@@ -214,5 +216,10 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             referenceValues.add(referenceAnswerValue.getValue().getString());
         }
         return !sourceValues.equals(referenceValues);
+    }
+
+    private String escape(final String value)
+    {
+        return value.replace("'", "''");
     }
 }
