@@ -482,6 +482,7 @@
                 "subject": {
                     "analyzed": false,
                     "boost": 1,
+                    "weight": 1000000,
                     "nodeScopeIndex": false,
                     "useInExcerpt": true,
                     "ordered": true,
@@ -491,6 +492,7 @@
                 "relatedSubjects": {
                     "analyzed": false,
                     "boost": 1,
+                    "weight": 100000,
                     "nodeScopeIndex": false,
                     "useInExcerpt": true,
                     "ordered": false,

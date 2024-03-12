@@ -15,6 +15,7 @@
                 "identifier": {
                     "analyzed": false,
                     "boost": 100,
+                    "weight": 100000,
                     "nodeScopeIndex": true,
                     "useInExcerpt": true,
                     "ordered": true,
@@ -22,6 +23,7 @@
                 },
                 "loweridentifier": {
                     "function": "lower([identifier])",
+                    "weight": 100000,
                     "ordered": true,
                     "propertyIndex": true
                 },
@@ -43,6 +45,7 @@
                 "parents": {
                     "propertyIndex": true,
                     "notNullCheckEnabled": true,
+                    "weight": 100000,
                     "type": "String"
                 },
                 "uuid": {
