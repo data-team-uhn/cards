@@ -357,7 +357,7 @@
           <dependency>
             <groupId>io.uhndata.cards</groupId>
             <artifactId>cards-license-resources</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1</version>
           </dependency>
         </dependencies>
         <executions>
@@ -368,7 +368,7 @@
             </goals>
             <configuration>
               <resourceBundles>
-                <resourceBundle>io.uhndata.cards:cards-license-resources:1.0-SNAPSHOT</resourceBundle>
+                <resourceBundle>io.uhndata.cards:cards-license-resources:1</resourceBundle>
               </resourceBundles>
             </configuration>
           </execution>
