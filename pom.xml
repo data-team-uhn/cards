@@ -487,6 +487,8 @@
             <!-- No license in the project-specific identifiers -->
             <exclude>project_code.txt</exclude>
             <exclude>project_name.txt</exclude>
+            <!-- Content with non-Apache Licenses -->
+            <exclude>**/fullBody.svg</exclude>
           </excludes>
         </configuration>
         <executions>

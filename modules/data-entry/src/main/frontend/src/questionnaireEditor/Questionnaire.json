@@ -32,6 +32,7 @@
     },
     "requiredSubjectTypes": {
       "type": "list",
+      "multiple" : true,
       "primaryType": "cards:SubjectType",
       "saveType": "Reference",
       "displayProperty": "label",
