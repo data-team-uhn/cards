@@ -27,6 +27,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -49,6 +50,8 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 public class SortChildrenEditor extends DefaultEditor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SortChildrenEditor.class);
+
+    private static final String ORDER_PROPERTY = ":childOrder";
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
@@ -132,15 +135,32 @@ public class SortChildrenEditor extends DefaultEditor
     private void sortNodes(final NodeBuilder node, final Node definition)
     {
         final List<Pair<String, NodeBuilder>> sortedNodes = new ArrayList<>();
+        // First we maintain the original order, since this will keep the order in which nodes were added
+        if (node.hasProperty(ORDER_PROPERTY)) {
+            PropertyState initialOrder = node.getProperty(ORDER_PROPERTY);
+            for (int i = 0; i < initialOrder.count(); ++i) {
+                final String childName = initialOrder.getValue(Type.STRING, i);
+                final NodeBuilder child = node.getChildNode(childName);
+                if (child.exists()) {
+                    sortedNodes.add(Pair.of(childName, child));
+                }
+            }
+        }
+        // We add any nodes not found in the original :childOrder
         for (String childName : node.getChildNodeNames()) {
+            if (sortedNodes.stream().anyMatch(p -> childName.equals(p.getKey()))) {
+                continue;
+            }
             NodeBuilder child = node.getChildNode(childName);
             sortedNodes.add(Pair.of(childName, child));
             if (this.formUtils.isAnswerSection(child)) {
                 sortNodes(child, this.formUtils.getSection(child));
             }
         }
+        // We sort by the order imposed by the questionnaire
+        // Since this is a stable sort, it will maintain the relative ordering of repeatable sections
         sortedNodes.sort(new DefinitionComparator(definition));
-        node.setProperty(":childOrder", sortedNodes.stream().map(Pair::getKey).collect(Collectors.toList()),
+        node.setProperty(ORDER_PROPERTY, sortedNodes.stream().map(Pair::getKey).collect(Collectors.toList()),
             Type.NAMES);
     }
 
