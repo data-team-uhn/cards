@@ -63,22 +63,21 @@ IF OBJECT_ID('path.PatientActivity_Outpatient_PMCC_data_for_PtExpSurvey', 'U') I
     DROP TABLE [path].[PatientActivity_Outpatient_PMCC_data_for_PtExpSurvey];
 
 CREATE TABLE [path].[PatientActivity_Outpatient_PMCC_data_for_PtExpSurvey] (
-    ADT_PAT_CLASS_C varchar(66) NULL,
-    DEATH_DATE datetime2 NULL,
-    DEPARTMENT_ID decimal(18,0) NULL,
-    DISCH_DEPT_NAME varchar(254) NULL,
-    DISCH_DISPOSITION varchar(254) NULL,
-    DISCH_LOC_NAME varchar(200) NULL,
-    EMAIL_ADDRESS varchar(255) NULL,
-    EMAIL_CONSENT_YN varchar(3),
-    ENC_START_DTTM datetime2 NULL,
-    HSP_DIS_EVENT_ID decimal(18,0) NULL,
-    MYCHART_STATUS varchar(254) NULL,
-    PATIENT_CLASS varchar(254) NULL,
+    PAT_MRN varchar(102) NULL,
     PAT_ENC_CSN_ID decimal(18,0),
     PAT_FIRST_NAME varchar(200) NULL,
     PAT_LAST_NAME varchar(200) NULL,
-    PAT_MRN varchar(102) NULL
+    DEATH_DATE datetime2 NULL,
+    EMAIL_ADDRESS varchar(255) NULL,
+    EMAIL_CONSENT_YN varchar(3),
+    MYCHART_STATUS varchar(254) NULL,
+    ENC_START_DTTM datetime2 NULL,
+    LOCATION_NAME varchar(200) NULL,
+    DEPARTMENT_NAME varchar(254) NULL,
+    DISCH_DISPOSITION varchar(254) NULL,
+    PATIENT_CLASS varchar(254) NULL,
+    APPT_STATUS varchar(254) NULL,
+    STAFF_RESOURCE varchar(20) NULL
 );
 
 -- Insert test data
@@ -103,7 +102,7 @@ HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES14 General Med
 
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'] = []
 # PMCC visits to these departments should be imported if all other conditions are satisfied:
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-ADOLESCENT AND YOUNG ADULT PROGRAMC")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-ADOLESCENT AND YOUNG ADULT PROGRAM")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-BMT ALLOGENEIC CLINIC")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-BREAST ONCOLOGY CLINIC")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-CANCER & CHRONIC PAIN CLINIC")
@@ -150,7 +149,6 @@ HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-2B UNIT 6
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-2B UNIT 8")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-3 OPERATING ROOM")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-3 PACU")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-AUTOLOGOUS TRANSPLANT DAY HOSPITAL")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-BONE MINERAL DENSITOMETRY")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-BRACHYTHERAPY")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-BREAST IMAGING")
@@ -180,7 +178,7 @@ def convertToSqlType(insertion_values):
 
 # Insert test data
 args.file.write("INSERT INTO [path].[PatientActivity_Outpatient_PMCC_data_for_PtExpSurvey]")
-args.file.write("\t(PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, MYCHART_STATUS, DEATH_DATE, DISCH_DISPOSITION, PATIENT_CLASS)\n")
+args.file.write("\t(PAT_ENC_CSN_ID, PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, ENC_START_DTTM, DEPARTMENT_NAME, LOCATION_NAME, EMAIL_CONSENT_YN, MYCHART_STATUS, DEATH_DATE, DISCH_DISPOSITION, PATIENT_CLASS, APPT_STATUS, STAFF_RESOURCE)\n")
 args.file.write("\tVALUES\n")
 for i in range(args.n):
     insertion_values = {}
@@ -208,13 +206,13 @@ for i in range(args.n):
     potential_death_time = discharge_time + datetime.timedelta(seconds=random.randint(0, 5*24*60*60))
     potential_death_time_str = potential_death_time.strftime('%Y-%m-%d %H:%M:%S')
 
-    # DISCH_LOC_NAME
+    # LOCATION_NAME
     disch_dept_location = random.choice(list(HOSPITALS_TO_DEPARTMENTS.keys()))
-    insertion_values['DISCH_LOC_NAME'] = disch_dept_location
+    insertion_values['LOCATION_NAME'] = disch_dept_location
 
-    # DISCH_DEPT_NAME
+    # DEPARTMENT_NAME
     disch_dept_name = random.choice(HOSPITALS_TO_DEPARTMENTS[disch_dept_location])
-    insertion_values['DISCH_DEPT_NAME'] = disch_dept_name
+    insertion_values['DEPARTMENT_NAME'] = disch_dept_name
 
     # EMAIL_CONSENT_YN
     email_consent_yn = random.choices(['Yes', 'No'], [10, 1])[0]
@@ -226,16 +224,22 @@ for i in range(args.n):
     # DISCH_DISPOSITION
     insertion_values['DISCH_DISPOSITION'] = random.choices(['Home', 'Deceased'], [20, 1])[0]
 
+    # APPT_STATUS
+    insertion_values['APPT_STATUS'] = random.choices(['Arrived', 'Completed', 'Left without seen', 'HH Incomplete', 'Scheduled', 'No Show', 'Canceled'], [1, 5, 1, 1, 1, 1, 1])[0]
+
     # DEATH_DATE
     insertion_values['DEATH_DATE'] = random.choices([None, potential_death_time_str], [20, 1])[0]
 
     # PATIENT_CLASS
     insertion_values['PATIENT_CLASS'] = random.choices(["Inpatient", "Outpatient", None], [1, 2, 1])[0]
 
+    # STAFF_RESOURCE
+    insertion_values['STAFF_RESOURCE'] = random.choices(["Person", "Resource", None], [10, 1, 1])[0]
+
     # Identifier columns
     insertion_values['PAT_ENC_CSN_ID'] = i
 
-    args.file.write("\t({PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {ENC_START_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART_STATUS}, {DEATH_DATE}, {DISCH_DISPOSITION}, {PATIENT_CLASS})".format(**convertToSqlType(insertion_values)))
+    args.file.write("\t({PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {ENC_START_DTTM}, {DEPARTMENT_NAME}, {LOCATION_NAME}, {EMAIL_CONSENT_YN}, {MYCHART_STATUS}, {DEATH_DATE}, {DISCH_DISPOSITION}, {PATIENT_CLASS}, {APPT_STATUS}, {STAFF_RESOURCE})".format(**convertToSqlType(insertion_values)))
     if i < args.n - 1:
         args.file.write(",")
     args.file.write("\n")
