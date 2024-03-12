@@ -293,6 +293,20 @@
                 <type>String</type>
               </property>
             </node>
+            <node>
+              <name>00000010</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>STAFF_RESOURCE</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
           </node>
         </node>
       </node>

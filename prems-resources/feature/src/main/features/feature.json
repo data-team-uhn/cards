@@ -489,6 +489,14 @@
         "PATIENT_CLASS not in Outpatient"
       ]
     },
+    // PMH: Only look at visits with a clinician, not technical/imaging ones
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVM-NonClinicianAppointments":{
+      "supportedTypes": ["yvm"],
+      "priority": 10,
+      "conditions": [
+        "STAFF_RESOURCE not in Person"
+      ]
+    },
     // Discard deceased patients
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DeathDate":{
       "supportedTypes": ["inpatient-ed", "yvm"],
