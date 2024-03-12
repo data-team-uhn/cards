@@ -181,7 +181,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>DISCH_DEPT_NAME</value>
+                <value>DEPTARTMENT_NAME</value>
                 <type>String</type>
               </property>
               <property>
@@ -209,7 +209,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>DISCH_LOC_NAME</value>
+                <value>LOCATION_NAME</value>
                 <type>String</type>
               </property>
               <property>
