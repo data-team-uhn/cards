@@ -71,9 +71,7 @@ CREATE TABLE [path].[PatientActivity_Outpatient_PMCC_data_for_PtExpSurvey] (
     DISCH_LOC_NAME varchar(200) NULL,
     EMAIL_ADDRESS varchar(255) NULL,
     EMAIL_CONSENT_YN varchar(3),
-    ENTRY_TIME datetime2 NULL,
-    HOSP_ADMISSION_DTTM datetime2 NULL,
-    HOSP_DISCHARGE_DTTM datetime2 NULL,
+    ENC_START_DTTM datetime2 NULL,
     HSP_DIS_EVENT_ID decimal(18,0) NULL,
     MYCHART_STATUS varchar(254) NULL,
     PATIENT_CLASS varchar(254) NULL,
@@ -203,10 +201,10 @@ for i in range(args.n):
     email = 'test' + str(mrn) + '@test.com'
     insertion_values['EMAIL_ADDRESS'] = email
 
-    # HOSP_DISCHARGE_DTTM
+    # ENC_START_DTTM
     discharge_time = args.basedate - datetime.timedelta(seconds=random.randint(0, args.time_spread_seconds))
     discharge_time_str = discharge_time.strftime('%Y-%m-%d %H:%M:%S')
-    insertion_values['HOSP_DISCHARGE_DTTM'] = discharge_time_str
+    insertion_values['ENC_START_DTTM'] = discharge_time_str
     potential_death_time = discharge_time + datetime.timedelta(seconds=random.randint(0, 5*24*60*60))
     potential_death_time_str = potential_death_time.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -237,7 +235,7 @@ for i in range(args.n):
     # Identifier columns
     insertion_values['PAT_ENC_CSN_ID'] = i
 
-    args.file.write("\t({PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {HOSP_DISCHARGE_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART_STATUS}, {DEATH_DATE}, {DISCH_DISPOSITION}, {PATIENT_CLASS})".format(**convertToSqlType(insertion_values)))
+    args.file.write("\t({PAT_ENC_CSN_ID:07d}, {PAT_MRN:07d}, {PAT_FIRST_NAME}, {PAT_LAST_NAME}, {EMAIL_ADDRESS}, {ENC_START_DTTM}, {DISCH_DEPT_NAME}, {DISCH_LOC_NAME}, {EMAIL_CONSENT_YN}, {MYCHART_STATUS}, {DEATH_DATE}, {DISCH_DISPOSITION}, {PATIENT_CLASS})".format(**convertToSqlType(insertion_values)))
     if i < args.n - 1:
         args.file.write(",")
     args.file.write("\n")

@@ -195,7 +195,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>HOSP_DISCHARGE_DTTM</value>
+                <value>ENC_START_DTTM</value>
                 <type>String</type>
               </property>
               <property>

@@ -378,6 +378,7 @@
       "type": "yvm",
       "importSchedule": "0 0 3 * * ? *",
       "tableName": "%ENV%CLARITY_YVM_SQL_TABLE",
+      "dateColumn": "ENC_START_DTTM",
       "mapping": "/apps/cards/clarityImport/PMH-YVM",
       "dayToImport": -2
     },
