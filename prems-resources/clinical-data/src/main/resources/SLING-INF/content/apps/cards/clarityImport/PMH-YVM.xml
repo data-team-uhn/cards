@@ -242,18 +242,13 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>STATUS</value>
+                <value>APPT_STATUS</value>
                 <type>String</type>
               </property>
               <property>
                 <name>question</name>
                 <value>/Questionnaires/Visit information/status</value>
                 <type>String</type>
-              </property>
-              <property>
-                <name>computed</name>
-                <value>True</value>
-                <type>Boolean</type>
               </property>
             </node>
             <node>
