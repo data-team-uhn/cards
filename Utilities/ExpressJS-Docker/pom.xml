@@ -36,6 +36,9 @@
       <id>docker</id>
       <activation>
         <activeByDefault>false</activeByDefault>
+        <property>
+          <name>selenium</name>
+        </property>
       </activation>
       <build>
         <plugins>
