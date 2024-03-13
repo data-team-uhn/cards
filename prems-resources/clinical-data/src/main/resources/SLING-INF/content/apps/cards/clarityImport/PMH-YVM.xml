@@ -181,7 +181,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>DEPTARTMENT_NAME</value>
+                <value>DEPARTMENT_NAME</value>
                 <type>String</type>
               </property>
               <property>
