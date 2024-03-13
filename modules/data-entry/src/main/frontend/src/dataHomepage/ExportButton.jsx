@@ -193,16 +193,16 @@ function ExportButton(props) {
       path += ".dataFilter:modifiedBy=" + modifiedBy.replace('.', '%5C.');
     }
     if (createdAfter) {
-      path += ".dataFilter:createdAfter=" + createdAfter.toISO().replace('.', '%5C.');
+      path += ".dataFilter:createdAfter=" + createdAfter.startOf('minute').toISO().replace('.', '%5C.');
     }
     if (createdBefore) {
-      path += ".dataFilter:createdBefore=" + createdBefore.toISO().replace('.', '%5C.');
+      path += ".dataFilter:createdBefore=" + createdBefore.startOf('minute').toISO().replace('.', '%5C.');
     }
     if (modifiedAfter) {
-      path += ".dataFilter:modifiedAfter=" + modifiedAfter.toISO().replace('.', '%5C.');
+      path += ".dataFilter:modifiedAfter=" + modifiedAfter.startOf('minute').toISO().replace('.', '%5C.');
     }
     if (modifiedBefore) {
-      path += ".dataFilter:modifiedBefore=" + modifiedBefore.toISO().replace('.', '%5C.');
+      path += ".dataFilter:modifiedBefore=" + modifiedBefore.startOf('minute').toISO().replace('.', '%5C.');
     }
     if (status) {
       let pref = `.dataFilter:${statusSelectionMode}=`;
