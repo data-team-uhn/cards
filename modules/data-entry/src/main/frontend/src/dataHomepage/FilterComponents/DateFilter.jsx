@@ -64,7 +64,7 @@ const DateFilter = forwardRef((props, ref) => {
         value={displayedDate}
         onChange={(value) => {
           setDisplayedDate(value);
-          onChangeInput(value ? value.toISO() : null, value ? value.toFormat(dateFormat) : null);
+          onChangeInput(value ? DateQuestionUtilities.toPrecision(value, dateFormat).toISO() : null, value ? value.toFormat(dateFormat) : null);
         }}
         componentsProps={{ textField: {
                              variant: 'standard',
