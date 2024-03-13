@@ -1,0 +1,98 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<cards = 'https://cards.uhndata.io/'>
+
+//-----------------------------------------------------------------------------
+//
+// Resource: the base node type for a thing we can store as a whole, like a Subject or a Form.
+//
+// All Resources are expected to be referenceable and to track changes.
+//
+// This is an abstract node type which isn't supposed to be used directly,
+// only as a helper for other concrete node types.
+//
+//-----------------------------------------------------------------------------
+
+[cards:Resource] > cards:Item, mix:referenceable, mix:versionable, mix:lastModified
+  // Attributes:
+
+  // This is an abstract node type, specific resource types must be defined.
+  abstract
+
+  // We can use resources in a query.
+  query
+
+  // Properties
+
+  // Hardcode the supertype to the parent cards/Resource type.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // Children
+
+  // Container for links to other resources
+  + cards:links (cards:Links) = cards:Links AUTOCREATED IGNORE
+
+//-----------------------------------------------------------------------------
+//
+// Resource Part: the base node type for a piece of information we can collect, like a specific question, or a specific answer.
+//
+// This is an abstract node type which isn't supposed to be used directly,
+// only as a helper for other concrete node types.
+//
+//-----------------------------------------------------------------------------
+
+[cards:ResourcePart] > cards:Item
+  // Attributes:
+
+  // This is an abstract node type, specific resource part types must be defined.
+  abstract
+
+  // Properties
+
+  // Hardcode the supertype to the parent cards/ResourcePart type.
+  - sling:resourceSuperType (STRING) = "cards/ResourcePart" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+//
+// Resource Homepage: a container for a type of resources.
+//
+// Resources of a specific type are collected under a common parent,
+// and that common parent is called a Homepage, and is a subtype of cards:ResourceHomepage.
+// All resource homepages provide common tools, like the ability to query their resources.
+//
+// This is an abstract node type which isn't supposed to be used directly,
+// only as a helper for other concrete node types.
+//
+//-----------------------------------------------------------------------------
+
+[cards:ResourceHomepage] > cards:Item, rep:AccessControllable
+  // Attributes:
+
+  // This is an abstract node type, specific resource homepage types must be defined.
+  abstract
+
+  // We can use homepages in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the supertype to the parent cards/ResourceHomepage type.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
