@@ -542,7 +542,7 @@
       "supportedTypes": ["yvm"],
       "priority": 30,
       "conditions": [
-        "APPT_STATUS not in Arrived, Completed, Left without seen, HH Incomplete, Scheduled"
+        "APPT_STATUS not in Arrived; Completed; Left without seen; HH Incomplete; Scheduled"
       ]
     },
     // Patients eligible for Integrated Care surveys should have a different status
