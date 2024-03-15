@@ -378,6 +378,7 @@
       "type": "yvm",
       "importSchedule": "0 0 3 * * ? *",
       "tableName": "%ENV%CLARITY_YVM_SQL_TABLE",
+      "dateColumn": "ENC_START_DTTM",
       "mapping": "/apps/cards/clarityImport/PMH-YVM",
       "dayToImport": -2
     },
@@ -428,7 +429,7 @@
       "supportedTypes": ["yvm"],
       "priority": 10,
       "conditions": [
-        "DISCH_LOC_NAME <> Princess Margaret Cancer Centre"
+        "LOCATION_NAME <> Princess Margaret Cancer Centre"
       ]
     },
     // YVM: Only retain visits to certain clinics
@@ -436,36 +437,34 @@
       "supportedTypes": ["yvm"],
       "priority": 10,
       "conditions": [
-        "DISCH_DEPT_NAME <> PM-ADOLESCENT AND YOUNG ADULT PROGRAMC",
-        "DISCH_DEPT_NAME <> PM-BMT ALLOGENEIC CLINIC",
-        "DISCH_DEPT_NAME <> PM-BREAST ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-CANCER & CHRONIC PAIN CLINIC",
-        "DISCH_DEPT_NAME <> PM-CANCER GENETICS",
-        "DISCH_DEPT_NAME <> PM-CANCER REHAB & SURVIVORSHIP",
-        "DISCH_DEPT_NAME <> PM-CNS ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-DENTAL ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-ENDOCRINE ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-ENT ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-EYE ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-GASTROINTESTINAL ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-GATTUSO RAPID DIAGNOSTIC CLINIC",
-        "DISCH_DEPT_NAME <> PM-GENITOURINARY ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-GERIATRIC ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-GU TESTES ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-GYNECOLOGICAL ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-LEUKEMIA CLINIC",
-        "DISCH_DEPT_NAME <> PM-LYMPHOMA CLINIC",
-        "DISCH_DEPT_NAME <> PM-MYELOMA CLINIC",
-        "DISCH_DEPT_NAME <> PM-PALLIATIVE CARE ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-PEDIATRIC AFTER CARE CLINIC",
-        "DISCH_DEPT_NAME <> PM-PLASTIC ONCOLOGY CLINIC",
-        "DISCH_DEPT_NAME <> PM-PROP",
-        "DISCH_DEPT_NAME <> PM-PROSTATE CENTRE",
-        "DISCH_DEPT_NAME <> PM-PSYCHOSOCIAL ONCOLOGY PROGRAM",
-        "DISCH_DEPT_NAME <> PM-RADIATION THERAPY REVIEW CLINIC",
-        "DISCH_DEPT_NAME <> PM-SARCOMA CLINIC",
-        "DISCH_DEPT_NAME <> PM-SKIN MELANOMA CLINIC",
-        "DISCH_DEPT_NAME <> PM-THORACIC ONCOLOGY CLINIC"
+        "DEPARTMENT_NAME <> PM-ADOLESCENT AND YOUNG ADULT PROGRAM",
+        "DEPARTMENT_NAME <> PM-ADULT RADIATION LATE EFFECTS CLINIC",
+        "DEPARTMENT_NAME <> PM-ALLO BMT RESPIROLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-AUTOLOGOUS TRANSPLANT DAY HOSPITAL",
+        "DEPARTMENT_NAME <> PM-BMT ALLOGENEIC CLINIC",
+        "DEPARTMENT_NAME <> PM-BREAST ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-CANCER & CHRONIC PAIN CLINIC",
+        "DEPARTMENT_NAME <> PM-CANCER REHAB & SURVIVORSHIP",
+        "DEPARTMENT_NAME <> PM-CNS ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-DENTAL ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-ENDOCRINE ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-ENT ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-EYE ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-GASTROINTESTINAL ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-GENITOURINARY ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-GERIATRIC ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-GU TESTES ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-GYNECOLOGICAL ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-LEUKEMIA CLINIC",
+        "DEPARTMENT_NAME <> PM-LYMPHOMA CLINIC",
+        "DEPARTMENT_NAME <> PM-MYELOMA CLINIC",
+        "DEPARTMENT_NAME <> PM-PALLIATIVE CARE ONCOLOGY CLINIC",
+        "DEPARTMENT_NAME <> PM-PROSTATE CENTRE",
+        "DEPARTMENT_NAME <> PM-PSYCHOSOCIAL ONCOLOGY PROGRAM",
+        "DEPARTMENT_NAME <> PM-RADIATION THERAPY REVIEW CLINIC",
+        "DEPARTMENT_NAME <> PM-SARCOMA CLINIC",
+        "DEPARTMENT_NAME <> PM-SKIN MELANOMA CLINIC",
+        "DEPARTMENT_NAME <> PM-THORACIC ONCOLOGY CLINIC"
       ]
     },
 
@@ -483,6 +482,14 @@
       "priority": 10,
       "conditions": [
         "PATIENT_CLASS not in Outpatient"
+      ]
+    },
+    // PMH: Only look at visits with a clinician, not technical/imaging ones
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVM-NonClinicianAppointments":{
+      "supportedTypes": ["yvm"],
+      "priority": 10,
+      "conditions": [
+        "STAFF_RESOURCE not in Person"
       ]
     },
     // Discard deceased patients
@@ -518,12 +525,20 @@
       "priority": 20,
       "conditions": ["DISCH_DEPT_NAME in PM-PALLIATIVE CARE ONCOLOGY CLINIC; TW-PALLIATIVE CARE CLINIC; TG-PALLIATIVE CARE; PM-16P PALLIATIVE CARE"]
     },
-    // Set the visit status to "discharged"
+    // Set the visit status to "discharged" for YE visits, which don't have a status in the database
     "io.uhndata.cards.clarity.importer.internal.ConfiguredGenericMapper~VisitStatus":{
-      "supportedTypes": ["inpatient-ed", "yvm"],
+      "supportedTypes": ["inpatient-ed"],
       "priority": 30,
       "column": "STATUS",
       "value": "discharged"
+    },
+    // Filter specific visit statuses for YVM. The visit status is not always correctly updated, so we also allow visits with Status=Scheduled
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVM-VisitStatus":{
+      "supportedTypes": ["yvm"],
+      "priority": 30,
+      "conditions": [
+        "APPT_STATUS not in Arrived; Completed; Left without seen; HH Incomplete; Scheduled"
+      ]
     },
     // Patients eligible for Integrated Care surveys should have a different status
     "io.uhndata.cards.clarity.importer.internal.ConfiguredGenericMapper~IntegratedCareStatusInProgress":{

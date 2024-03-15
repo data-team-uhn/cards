@@ -181,7 +181,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>DISCH_DEPT_NAME</value>
+                <value>DEPARTMENT_NAME</value>
                 <type>String</type>
               </property>
               <property>
@@ -195,7 +195,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>HOSP_DISCHARGE_DTTM</value>
+                <value>ENC_START_DTTM</value>
                 <type>String</type>
               </property>
               <property>
@@ -209,7 +209,7 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>DISCH_LOC_NAME</value>
+                <value>LOCATION_NAME</value>
                 <type>String</type>
               </property>
               <property>
@@ -242,18 +242,13 @@
               <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
               <property>
                 <name>column</name>
-                <value>STATUS</value>
+                <value>APPT_STATUS</value>
                 <type>String</type>
               </property>
               <property>
                 <name>question</name>
                 <value>/Questionnaires/Visit information/status</value>
                 <type>String</type>
-              </property>
-              <property>
-                <name>computed</name>
-                <value>True</value>
-                <type>Boolean</type>
               </property>
             </node>
             <node>
@@ -290,6 +285,20 @@
               <property>
                 <name>column</name>
                 <value>PATIENT_CLASS</value>
+                <type>String</type>
+              </property>
+              <property>
+                <name>question</name>
+                <value></value>
+                <type>String</type>
+              </property>
+            </node>
+            <node>
+              <name>00000010</name>
+              <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
+              <property>
+                <name>column</name>
+                <value>STAFF_RESOURCE</value>
                 <type>String</type>
               </property>
               <property>
