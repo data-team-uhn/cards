@@ -359,6 +359,10 @@ do
 done
 
 PROJECT_SPECIFIED=false
+if [ -z $PROJECT_VERSION ]
+then
+  PROJECT_VERSION=$CARDS_VERSION
+fi
 for ((i=0; i<${ARGS_LENGTH}; ++i));
 do
   if [[ ${ARGS[$i]} == '-P' || ${ARGS[$i]} == '--project' ]]
@@ -371,7 +375,7 @@ do
     do
       # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
       PROJECT="cards4${PROJECT#cards4}"
-      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature,$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${PROJECT_VERSION}/slingosgifeature,$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
       PROJECT_SPECIFIED=true
     done
     ARGS[$i]=${ARGS[$i]#,}
@@ -382,7 +386,7 @@ if [ $PROJECT_SPECIFIED = false ]
 then
   ARGS[$ARGS_LENGTH]=-f
   ARGS_LENGTH=${ARGS_LENGTH}+1
-  ARGS[$ARGS_LENGTH]=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME="" PROJECT_VERSION=${CARDS_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+  ARGS[$ARGS_LENGTH]=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME="" PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
   ARGS_LENGTH=${ARGS_LENGTH}+1
 fi
 
