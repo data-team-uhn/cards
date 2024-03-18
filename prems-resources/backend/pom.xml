@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>prems-resources</artifactId>
-    <version>0.9.23-SNAPSHOT</version>
+    <version>0.9.23</version>
   </parent>
 
   <artifactId>prems-backend</artifactId>
