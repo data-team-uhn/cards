@@ -22,7 +22,7 @@
 
   <groupId>io.uhndata.cards</groupId>
   <artifactId>cards-parent</artifactId>
-  <version>0.9.23-SNAPSHOT</version>
+  <version>0.9.23.1</version>
   <packaging>pom</packaging>
 
   <name>CARDS - Parent POM</name>
@@ -42,7 +42,7 @@
     <connection>scm:git:git://github.com/data-team-uhn/cards.git</connection>
     <developerConnection>scm:git:git@github.com:data-team-uhn/cards.git</developerConnection>
     <url>https://github.com/data-team-uhn/cards/tree/master/</url>
-    <tag>HEAD</tag>
+    <tag>cards-0.9.23.1</tag>
   </scm>
 
   <organization>
@@ -850,12 +850,12 @@
                       <module name="ModifierOrder" />
 
                       <module name="MultipleStringLiterals">
-                        <property name="ignoreStringsRegexp" value="^(&#38;#34;&#38;#34;)|(&#38;#34;[0-9]&#38;#34;)|(&#38;#34; &#38;#34;)|(&#38;#34;\]&#38;#34;)|(&#38;#34;\[&#38;#34;)|(&#38;#34;,&#38;#34;)|(&#38;#34;, &#38;#34;)|(&#38;#34;/&#38;#34;)$" />
+                        <property name="ignoreStringsRegexp" value="^(&amp;#34;&amp;#34;)|(&amp;#34;[0-9]&amp;#34;)|(&amp;#34; &amp;#34;)|(&amp;#34;\]&amp;#34;)|(&amp;#34;\[&amp;#34;)|(&amp;#34;,&amp;#34;)|(&amp;#34;, &amp;#34;)|(&amp;#34;/&amp;#34;)$" />
                         <property name="allowedDuplicates" value="4" />
                       </module>
 
                       <module name="MultipleStringLiterals">
-                        <property name="ignoreStringsRegexp" value="^(&#38;#34;&#38;#34;)|(&#38;#34;[0-9]&#38;#34;)|(&#38;#34; &#38;#34;)|(&#38;#34;\]&#38;#34;)|(&#38;#34;\[&#38;#34;)|(&#38;#34;,&#38;#34;)|(&#38;#34;, &#38;#34;)|(&#38;#34;/&#38;#34;)$" />
+                        <property name="ignoreStringsRegexp" value="^(&amp;#34;&amp;#34;)|(&amp;#34;[0-9]&amp;#34;)|(&amp;#34; &amp;#34;)|(&amp;#34;\]&amp;#34;)|(&amp;#34;\[&amp;#34;)|(&amp;#34;,&amp;#34;)|(&amp;#34;, &amp;#34;)|(&amp;#34;/&amp;#34;)$" />
                         <property name="severity" value="warning" />
                       </module>
 
@@ -1144,8 +1144,7 @@
                       <!--module name="ClassDataAbstractionCoupling"/-->
 
                       <!--module name="ClassFanOutComplexity">
-                        <property name="excludedClasses" value="boolean, byte, char, double, float, int, long, short, void,
-                          Boolean, Byte, Character, Double, Float, Integer, Long, Short, Void,
+                        <property name="excludedClasses" value="boolean, byte, char, double, float, int, long, short, void, Boolean, Byte, Character, Double, Float, Integer, Long, Short, Void,
                           Object, Class, String, StringBuffer, StringBuilder,
                           ArrayIndexOutOfBoundsException, Exception, RuntimeException, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, NullPointerException, Throwable, SecurityException, UnsupportedOperationException,
                           List, ArrayList, Deque, Queue, LinkedList, Set, HashSet, SortedSet, TreeSet, Map, HashMap, LinkedHashMap, SortedMap, TreeMap, Collections, Collection, Iterator, Iterable, Arrays,
@@ -1319,7 +1318,7 @@
                       <module name="ModifierOrder" />
 
                       <module name="MultipleStringLiterals">
-                        <property name="ignoreStringsRegexp" value="^(&#38;#34;&#38;#34;)|(&#38;#34;[0-9]&#38;#34;)|(&#38;#34; &#38;#34;)|(&#38;#34;\]&#38;#34;)|(&#38;#34;\[&#38;#34;)|(&#38;#34;,&#38;#34;)|(&#38;#34;, &#38;#34;)|(&#38;#34;/&#38;#34;)$" />
+                        <property name="ignoreStringsRegexp" value="^(&amp;#34;&amp;#34;)|(&amp;#34;[0-9]&amp;#34;)|(&amp;#34; &amp;#34;)|(&amp;#34;\]&amp;#34;)|(&amp;#34;\[&amp;#34;)|(&amp;#34;,&amp;#34;)|(&amp;#34;, &amp;#34;)|(&amp;#34;/&amp;#34;)$" />
                         <property name="allowedDuplicates" value="20" />
                       </module>
 
