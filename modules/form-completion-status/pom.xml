@@ -27,7 +27,8 @@
 
   <artifactId>cards-form-completion-status</artifactId>
   <packaging>bundle</packaging>
-  <name>Flags form answers as incomplete or invalid</name>
+  <name>CARDS - Status Flags</name>
+  <description>Flags form answers as incomplete or invalid</description>
 
   <build>
     <plugins>

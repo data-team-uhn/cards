@@ -28,7 +28,7 @@
 
   <artifactId>proms-backend</artifactId>
   <packaging>bundle</packaging>
-  <name>Proms Resources - Backend code</name>
+  <name>Cards for PROMs Resources - Backend code</name>
 
   <build>
     <plugins>

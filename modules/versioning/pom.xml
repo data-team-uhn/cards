@@ -27,7 +27,8 @@
 
   <artifactId>cards-versioning</artifactId>
   <packaging>bundle</packaging>
-  <name>Records the date/time of most recent modification done to a node</name>
+  <name>CARDS - Versioning</name>
+  <description>Records the date/time of most recent modification done to a node</description>
 
   <build>
     <plugins>
