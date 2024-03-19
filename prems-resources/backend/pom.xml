@@ -28,7 +28,7 @@
 
   <artifactId>prems-backend</artifactId>
   <packaging>bundle</packaging>
-  <name>Prems Resources - Backend code</name>
+  <name>Cards for PREMs Resources - Backend code</name>
 
   <build>
     <plugins>
