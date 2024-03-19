@@ -61,7 +61,7 @@ public class MinMaxAnswersValidator implements AnswerValidator
         final long minAnswers =
             question.hasProperty("minAnswers") ? question.getProperty("minAnswers").getLong() : 0;
         final long maxAnswers =
-            question.hasProperty("maxAnswers") ? question.getProperty("maxAnswers").getLong() : 0;
+            question.hasProperty("maxAnswers") ? question.getProperty("maxAnswers").getLong() : 1;
 
         // Checks if the number of values is within the specified minAnswers ... maxAnswers range,
         if (valuesCount < minAnswers && minAnswers != 0) {
