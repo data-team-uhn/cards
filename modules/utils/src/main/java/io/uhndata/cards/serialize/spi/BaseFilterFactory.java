@@ -39,7 +39,6 @@ import org.osgi.service.component.annotations.Component;
  * @version $Id$
  * @since 0.9.22
  */
-@Component
 public abstract class BaseFilterFactory implements DataFilterFactory
 {
     /**
