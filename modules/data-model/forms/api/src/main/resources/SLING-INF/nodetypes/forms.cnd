@@ -421,6 +421,9 @@
   // Whether or not this value is a reference or not
   - isReference (BOOLEAN) = false autocreated
 
+  // Allow any other properties
+  - * (undefined)
+
   // We don't define any children.
 
 //-----------------------------------------------------------------------------
