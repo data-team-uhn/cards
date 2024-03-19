@@ -69,7 +69,7 @@ if ("application/json".equals(request.getHeader("Accept"))) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="version" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(version})">
+    <meta name="version" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(version)}">
     <meta name="platformName" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(platformName)}">
     <meta name="title" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appName)}">
     <title>${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appName)}</title>
