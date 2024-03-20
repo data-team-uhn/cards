@@ -161,9 +161,7 @@ function PedigreeQuestion(props) {
       <Answer
         answers={outputAnswers}
         answerMetadata={answerMetadata}
-        questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
-        answerNodeType="cards:PedigreeAnswer"
         valueType="String"
         pageActive={pageActive}
         {...rest}

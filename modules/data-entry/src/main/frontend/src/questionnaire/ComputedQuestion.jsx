@@ -52,8 +52,8 @@ import { MakeRequest } from "../vocabQuery/util.jsx";
 //  expression="if (@{question_b} === 0) setError('Can not divide by 0'); return @{question_a}/@{question_b}"
 //  />
 let ComputedQuestion = (props) => {
-  const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
-  const { text, expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = {...props.questionDefinition, ...props};
+  const { existingAnswer, classes, pageActive, ...rest} = props;
+  const { expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
 
@@ -354,7 +354,6 @@ let ComputedQuestion = (props) => {
       }
       <Answer
         answers={answer}
-        questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
         answerNodeType={answerNodeType}
         valueType={answerType}

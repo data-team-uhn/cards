@@ -40,12 +40,6 @@ import MultipleChoice from "./MultipleChoice";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
-/** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
-const DATA_TO_NODE_TYPE = {
-  "long": "cards:LongAnswer",
-  "double": "cards:DoubleAnswer",
-  "decimal": "cards:DecimalAnswer",
-};
 /** Conversion between the `dataType` setting in the question definition and the corresponding value type for storing the value in the `Answer` node. */
 const DATA_TO_VALUE_TYPE = {
   "long": "Long",
@@ -97,21 +91,11 @@ const useSliderStyles = makeStyles(theme => ({
 }));
 
 // Component that renders a multiple choice question, with optional number input.
-// Selected answers are placed in a series of <input type="hidden"> tags for
-// submission.
+// Selected answers are placed in a series of <input type="hidden"> tags for submission.
 //
 // Optional props:
-//  minAnswers: Integer denoting minimum number of options that may be selected
-//  maxAnswers: Integer denoting maximum number of options that may be selected
-//  text: String containing the question to ask
 //  defaults: Array of arrays, each with two values, a "label" which will be displayed to the user,
 //            and a "value" denoting what will actually be stored
-//  displayMode: Either "input", "list", "list+input", "slider", or undefined denoting the type of
-//             user input. If nothing is specified or if displayMode is "slider" but the conditions
-//             are not met (minValue or maxValue missing), "input" is used by default.
-//  maxValue: The maximum allowed input value
-//  minValue: The minimum allowed input value
-//  type: One of "integer" or "float" (default: "float")
 //  errorText: String to display when the input is not valid (default: "")
 //  isRange: Whether or not to display a range instead of a single value
 //  sliderStep: The increment between selectable slider values
@@ -120,22 +104,18 @@ const useSliderStyles = makeStyles(theme => ({
 //
 // Sample usage:
 // <NumberQuestion
-//    text="Please enter the patient's age"
 //    defaults={[
 //      ["<18", -1]
 //    ]}
-//    maxAnswers={1}
-//    minValue={18}
-//    type="long"
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { existingAnswer, errorText, classes, pageActive, disableValueInstructions, ...rest} = props;
-  const { dataType,displayMode, minAnswers, minValue, maxValue, isRange,
-    sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel }
+  const { errorText, classes, disableValueInstructions, ...rest} = props;
+  const { dataType, displayMode, minAnswers, minValue, maxValue, isRange,
+    sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel, pageActive, existingAnswer }
     = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
-  const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
-  const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
+
+  const valueType = DATA_TO_VALUE_TYPE[dataType];
   const [ minMaxError, setMinMaxError ] = useState(false);
   const [ rangeError, setRangeError ] = useState(false);
 
@@ -401,10 +381,7 @@ function NumberQuestion(props) {
         }
         <Answer
           answers={answers}
-          existingAnswer={existingAnswer}
-          answerNodeType={answerNodeType}
           valueType={valueType}
-          pageActive={pageActive}
           {...rest}
           />
         </>
@@ -425,16 +402,12 @@ function NumberQuestion(props) {
           }
           <Answer
             answers={answers}
-            existingAnswer={existingAnswer}
-            answerNodeType={answerNodeType}
             valueType={valueType}
-            pageActive={pageActive}
             {...rest}
             />
           </>)
           :
           <MultipleChoice
-            answerNodeType={answerNodeType}
             valueType={valueType}
             input={displayMode === "input" || displayMode === "list+input"}
             textbox={displayMode === "textbox"}
@@ -442,8 +415,6 @@ function NumberQuestion(props) {
             additionalInputProps={textFieldProps}
             muiInputProps={muiInputProps}
             error={minMaxError}
-            existingAnswer={existingAnswer}
-            pageActive={pageActive}
             {...rest}
             />
         }
@@ -487,17 +458,12 @@ NumberQuestion.propTypes = {
     minValue: PropTypes.number,
     maxValue: PropTypes.number,
     displayMode: PropTypes.oneOf([undefined, "input", "list", "list+input", "slider"]),
+    dataType: PropTypes.oneOf(['long', 'double', 'decimal']),
   }).isRequired,
-  text: PropTypes.string,
-  minAnswers: PropTypes.number,
-  maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  displayMode: PropTypes.oneOf([undefined, "input", "list", "list+input", "slider"]),
-  dataType: PropTypes.oneOf(['long', 'double', 'decimal']),
-  minValue: PropTypes.number,
-  maxValue: PropTypes.number,
   errorText: PropTypes.string,
   isRange: PropTypes.bool,
+  disableValueInstructions: PropTypes.bool,
 };
 
 NumberQuestion.defaultProps = {

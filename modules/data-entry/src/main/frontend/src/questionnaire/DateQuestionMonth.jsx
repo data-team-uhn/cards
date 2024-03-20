@@ -44,15 +44,14 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //
 // Sample usage:
 //<DateQuestion
-//  text="Please enter a date-time in 2019"
 //  dateFormat="yyyy-MM"
 //  lowerLimit={new Date("01-01-2019")}
 //  upperLimit={new Date("12-31-2019")}
 //  type="timestamp"
 //  />
 function DateQuestionMonth(props) {
-  let {existingAnswer, classes, pageActive, ...rest} = props;
-  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy/MM", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
+  let {classes, ...rest} = props;
+  let {dateFormat, minAnswers, type, lowerLimit, upperLimit, existingAnswer, pageActive} = {dateFormat: "yyyy/MM", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
   let startValues = existingAnswer && existingAnswer[1].value || "";
 
@@ -207,11 +206,7 @@ function DateQuestionMonth(props) {
       </>}
       <Answer
         answers={outputAnswers}
-        questionDefinition={props.questionDefinition}
-        existingAnswer={existingAnswer}
-        answerNodeType="cards:DateAnswer"
         valueType="Date"
-        pageActive={pageActive}
         {...rest}
         />
     </Question>);

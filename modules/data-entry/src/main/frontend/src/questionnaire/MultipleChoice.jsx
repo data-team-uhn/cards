@@ -53,7 +53,7 @@ const GHOST_SENTINEL = "custom-input";
   */
 function MultipleChoice(props) {
   let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
-  let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
+  let { maxAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let { validate, validationErrorText, liveValidation } = {...props.questionDefinition, ...props};
   // pageActive should be passed to the Answer component, so we make sure to include it in the `rest` variable above
   let { instanceId, pageActive } = props;
@@ -584,7 +584,6 @@ function MultipleChoice(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           questionName={questionName}
-          isMultivalued={true}
           onAddSuggestion={acceptOptionFromWidget}
           {...rest}
           />
@@ -690,9 +689,6 @@ function ResponseChild(props) {
 
 MultipleChoice.propTypes = {
   classes: PropTypes.object.isRequired,
-  text: PropTypes.string,
-  description: PropTypes.string,
-  maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
   input: PropTypes.bool,
   additionalInputProps: PropTypes.object,

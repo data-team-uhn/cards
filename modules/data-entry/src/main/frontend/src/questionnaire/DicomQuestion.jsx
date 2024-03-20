@@ -71,7 +71,7 @@ const useStyles = makeStyles(theme => ({
 // submission.
 //
 function DicomQuestion(props) {
-  const { existingAnswer, questionDefinition, ...rest } = props;
+  const { questionDefinition, ...rest } = props;
 
   let [ dicomMetadataNote, setDicomMetadataNote ] = useState();
   let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState();
@@ -123,7 +123,7 @@ function DicomQuestion(props) {
   }
 
   let fetchDicomFile = () => {
-    let dicomFilePath = existingAnswer?.[1]
+    let dicomFilePath = props.existingAnswer?.[1]
         .value?.split("/")
         .map(s => encodeURIComponent(s))
         .join("/");
@@ -310,7 +310,6 @@ function DicomQuestion(props) {
       </ResponsiveDialog>
       <FileQuestion
         questionDefinition={{...questionDefinition, maxAnswers: 1, enableNotes: true}}
-        existingAnswer={existingAnswer}
         {...rest}
         onBeforeUpload={processDicomFile}
         onDelete={() => {
@@ -318,7 +317,6 @@ function DicomQuestion(props) {
           setDicomImagePreviewURL(undefined);
         }}
         previewRenderer={previewRenderer}
-        answerNodeType="cards:DicomAnswer"
         noteProps={{
           fullSize: true,
           placeholder: "Dicom metadata",
