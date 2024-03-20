@@ -184,7 +184,7 @@ abstract class AbstractEmailNotification
         final String unsubscribeLink =
             "https://" + CARDS_HOST_AND_PORT + "/Survey.unsubscribe.html?auth_token=" + token;
         valuesMap.put("unsubscribeLink", unsubscribeLink);
-        final DateFormat sdf = DateFormat.getDateInstance();
+        final DateFormat sdf = DateFormat.getDateInstance(DateFormat.LONG);
         sdf.setTimeZone(tokenExpiryDate.getTimeZone());
         valuesMap.put("expirationDate", sdf.format(tokenExpiryDate.getTime()));
         return template.getEmailBuilderForSubject(visitSubject, valuesMap, this.formUtils)
