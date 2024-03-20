@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.osgi.service.component.annotations.Component;
 
 /**
  * Base implementation for {@link DataFilterFactory} providing utility methods for parsing filters into a single value,
