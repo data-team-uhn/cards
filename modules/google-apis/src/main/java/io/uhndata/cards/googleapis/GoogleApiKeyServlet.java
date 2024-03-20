@@ -49,6 +49,7 @@ public class GoogleApiKeyServlet extends SlingSafeMethodsServlet
      * The response from this service is a JSON object with this key holding the Google API key as its value.
      */
     private static final String RESPONSE_JSON_KEY = "apikey";
+
     private static final long serialVersionUID = -574543232589675813L;
 
     @Reference
@@ -63,6 +64,8 @@ public class GoogleApiKeyServlet extends SlingSafeMethodsServlet
             String key = this.apiKeyManager.getAPIKey();
             jsonGen.write(RESPONSE_JSON_KEY, key);
             jsonGen.writeEnd().flush();
+        } catch (Exception e) {
+            // This usually happens because we're closing the writer twice, through the generator and as itself
         }
     }
 }
