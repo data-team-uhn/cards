@@ -3,7 +3,7 @@ Dear ${first_name} ${last_name},
 We are always striving to improve the experience of care at Princess Margaret Cancer Centre.
 Our records show that you had a recent outpatient clinic visit with your nurse and/or doctor.
 We would like to learn more about your experience in an optional survey. It should take
-approximately 5-10 minutes to complete.
+approximately 5 minutes to complete.
 
 To begin the survey, click the following link:
 ${surveysLink}
