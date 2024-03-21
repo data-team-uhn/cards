@@ -203,7 +203,7 @@ public class RecentVisitDiscardFilter extends AbstractClarityDataProcessor imple
                     EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS));
                 if (!clinic.isEmpty() && !clinic.stream().anyMatch(c -> {
                     try {
-                        return this.clinics.contains(c.getPath());
+                        return c.hasProperty("value") && this.clinics.contains(c.getProperty("value").getString());
                     } catch (RepositoryException e) {
                         return false;
                     }
