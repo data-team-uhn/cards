@@ -576,12 +576,12 @@
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME matches .*CCC.*"]
     },
     // From the Rehab, exclude patients that are not rehab patients
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-NotRehabDepartments":{
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-NotRehabDepartments":{
       "supportedTypes": ["inpatient-ed"],
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "DISCH_DEPT_NAME in BC-AAC CLINIC; BC-DENTISTRY; LC-ASSISTIVE TECHNOLOGY; LC-CHIROPODY CLINIC; LC-ITB CLINIC; LC-NEUROPHYSIOLOGY CLINIC; LC-NURSING CLINIC; LC-PHYSIATRY; LC-PSYCHIATRY CLINIC; LC-ROBSON CLINIC; LC-SEATING CLINIC; LC-SKIN AND WOUND; LC-SPINAL CORD REHAB-OP-ALLIED HEALTH; RN-CHRONIC PAIN LEAP SERVICE; UC-DENTISTRY; UC-EMG CLINIC; UC-GERIATRIC REHAB SERVICE; UC-PHYSIOTHERAPY-LOGIN; UC-SLEEP LAB"]
     },
-    "io.uhndata.cards.prems.internal.importer.ConfiguredDiscardFilter~Discard-Rehab-NotRehabPatients":{
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Rehab-NotRehabPatients":{
       "supportedTypes": ["inpatient-ed"],
       "priority": 60,
       "conditions": ["CLINIC = /Survey/ClinicMapping/78840662", "PATIENT_CLASS <> Inpatient Rehab"]
