@@ -376,7 +376,7 @@
     "io.uhndata.cards.clarity.importer.ClarityImportConfig~yvm-discharge-events": {
       "name": "Your Voice Matters - PMCC outpatient visits",
       "type": "yvm",
-      "importSchedule": "0 0 3 * * ? *",
+      "importSchedule": "0 0 7 * * ? *",
       "tableName": "%ENV%CLARITY_YVM_SQL_TABLE",
       "dateColumn": "ENC_START_DTTM",
       "mapping": "/apps/cards/clarityImport/PMH-YVM",
