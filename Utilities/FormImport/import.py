@@ -158,7 +158,7 @@ def repeated_section_handler(self, questionnaire, row):
                     new_section['repeated_parent'] = parent_label
                     new_section['title'] = section_title
                     questionnaire.push_section(new_section)
-                    condition_handle_brackets(questionnaire, new_section, referenced_question_key + "=\"" + entry['value'] + "\"")
+                    condition_handle_brackets(questionnaire, new_section, referenced_question_key + " includes \"" + entry['value'] + "\"")
                     questionnaire.complete_section()
 
 def modify_repeated_conditionals(self, repeated_parent, repeated_name):
