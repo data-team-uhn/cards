@@ -21,11 +21,6 @@
 	<name>Physical Assessments</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
-		<name>maxPerSubject</name>
-		<value>1</value>
-		<type>Long</type>
-	</property>
-	<property>
 		<name>title</name>
 		<value>Physical Assessments</value>
 		<type>String</type>
@@ -38,12 +33,12 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>visit_number</name>
+		<name>pa_reason</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Visit Number</value>
-			<type>String</type>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -51,38 +46,415 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>expression</name>
-			<value>return 1</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>entryMode</name>
-			<value>computed</value>
+			<name>text</name>
+			<value>Reason for Physical Assessments</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>formatted</value>
+			<value>list</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<node>
+			<name>st</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Study</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>st</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>defaultOrder</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>ta</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Triggered Assessment</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>ta</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>defaultOrder</name>
+				<value>2</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>section_ta</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>condition0</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>pa_reason</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>ta</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>ta_year</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Year Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>y1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Y1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>y1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>y2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Y2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>y2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>y3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Y3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>y3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>y4</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Y4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>y4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>y5</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Y5</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>y5</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>ta_number</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Triggered Assessment Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>t1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>T1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>t1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>t2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>T2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>t2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>t3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>T3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>t3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>section_visit_number</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>condition0</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>pa_reason</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>st</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>visit_number</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Visit Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return 1</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>height</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
-	</node>
-	<node>
-		<name>height</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
 		<property>
 			<name>text</name>
 			<value>Height</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>decimal</value>
-			<type>String</type>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -91,32 +463,37 @@
 		</property>
 		<property>
 			<name>minValue</name>
-			<value>0.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
 		</property>
 	</node>
 	<node>
 		<name>weight</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Weight</value>
-			<type>String</type>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Weight</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -125,32 +502,37 @@
 		</property>
 		<property>
 			<name>minValue</name>
-			<value>0.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
 		</property>
 	</node>
 	<node>
 		<name>waist_circumference</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Waist circumference</value>
-			<type>String</type>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Waist circumference</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -159,18 +541,13 @@
 		</property>
 		<property>
 			<name>minValue</name>
-			<value>0.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
 		</property>
 	</node>
 </node>
