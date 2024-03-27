@@ -749,8 +749,14 @@ def process_conditional(self, questionnaire, row):
 
 def condition_handle_brackets(questionnaire, condition_parent, conditional_string, index=0):
     log(Logging.INFO, "Handling brackets      " + conditional_string)
-    if conditional_string.startswith("(") and conditional_string.endswith(")"):
-        conditional_string = conditional_string[1:-1].strip()
+    if conditional_string.startswith("("):
+        # Check if the starting "(" is paired with a ")" at the end of the string
+        # Can't simply check if the last character is ")" as there may be multiple "()" pairs.
+        # Should be stripped:     (q1 = a or q1 = b)
+        # Should not be stripped: (q1 = a or q1 = b) and (q2 = a or q2 = b)
+        split_result = split_ignore_strings(conditional_string[1:], ")", 2)
+        if len(split_result) == 2 and len(split_result[1]) == 0:
+            conditional_string = conditional_string[1:-1].strip()
     condition_handle_block(questionnaire, condition_parent, conditional_string, index)
 
 # TODO: Better name?
