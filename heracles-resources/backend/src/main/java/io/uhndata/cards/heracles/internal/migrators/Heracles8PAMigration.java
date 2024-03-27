@@ -114,8 +114,8 @@ public class Heracles8PAMigration implements DataMigrator
         question.setProperty("text", "Reason for Physical Assessments");
         question.setProperty("displayMode", "list");
         question.setProperty("minAnswers", 1L);
-        addAnswerOption(question, "Study", "st", 1L);
-        addAnswerOption(question, "Triggered Assessment", "ta", 2L);
+        addAnswerOption(question, "Study", "Study", 1L);
+        addAnswerOption(question, "Triggered Assessment", "Triggered Assessment", 2L);
     }
 
     private void migrateVisitNumberQuestion(Session session, VersionManager versionManager, Node questionnaire,
@@ -131,7 +131,7 @@ public class Heracles8PAMigration implements DataMigrator
         opA.setProperty("value", new String[] {"pa_reason"});
         opA.setProperty("isReference", true);
         Node opB = getOrCreateNode(condition, "operandB", "cards:ConditionalValue");
-        opB.setProperty("value", new String[] {"st"});
+        opB.setProperty("value", new String[] {"Study"});
         opB.setProperty("isReference", false);
 
         // TODO: if old_visit_number does not exist
@@ -176,14 +176,15 @@ public class Heracles8PAMigration implements DataMigrator
             if (visitAnswerNode != null) {
                 Node section = form.addNode(UUID.randomUUID().toString(), FormUtils.ANSWER_SECTION_NODETYPE);
                 section.setProperty(FormUtils.SECTION_PROPERTY, visitSection);
-                // TODO: This move is not occuring
-                session.move(visitAnswerNode.getPath(), section.getPath() + visitAnswerNode.getName());
+                LOGGER.error("Moving from {} to {}", visitAnswerNode.getPath(),
+                    section.getPath() + "/" + visitAnswerNode.getName());
+                session.move(visitAnswerNode.getPath(), section.getPath() + "/" + visitAnswerNode.getName());
             }
 
             // Create pa_reason answer
             Node paAnswer = form.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
             paAnswer.setProperty(FormUtils.QUESTION_PROPERTY, paQuestion);
-            paAnswer.setProperty("value", "st");
+            paAnswer.setProperty("value", "Study");
 
         }
     }
