@@ -21455,8 +21455,7 @@ return (@{[pc_14_2]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</property>
 			<property>
 				<name>text</name>
-				<value>What types of physical activity did you engage in **prior** to your event?
-</value>
+				<value>What types of physical activity did you engage in **prior** to your event?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21876,8 +21875,7 @@ return (@{[pc_14_2]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</property>
 			<property>
 				<name>text</name>
-				<value>Approximately, how many minutes per week do you currently usually engage in physical activities?
-</value>
+				<value>Approximately, how many minutes per week do you currently usually engage in physical activities?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21993,8 +21991,7 @@ Have you experienced a change in the time you are active as a result of recent e
 			</property>
 			<property>
 				<name>text</name>
-				<value>Have you experienced a change in the level/intensity of your activity?
-</value>
+				<value>Have you experienced a change in the level/intensity of your activity?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -22075,8 +22072,7 @@ Have you experienced a change in the time you are active as a result of recent e
 			</property>
 			<property>
 				<name>text</name>
-				<value>Which best describes how you feel after physical activity?
-</value>
+				<value>Which best describes how you feel after physical activity?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -22162,8 +22158,7 @@ Have you experienced a change in the time you are active as a result of recent e
 			</property>
 			<property>
 				<name>text</name>
-				<value>Do you usually wear your Apple Watch during physical activity?
-</value>
+				<value>Do you usually wear your Apple Watch during physical activity?</value>
 				<type>String</type>
 			</property>
 			<property>

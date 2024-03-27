@@ -1481,14 +1481,12 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Event clinical date/record date
-</value>
+				<value>Event clinical date/record date</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>description</name>
-				<value>If inpatient/hospitalization, input date admitted into the hospital.
-</value>
+				<value>If inpatient/hospitalization, input date admitted into the hospital.</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -10619,19 +10617,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Procedures performed
-
-
-
-
-
-
-
-
-
-
-
-</value>
+					<value>Procedures performed</value>
 					<type>String</type>
 				</property>
 				<property>
