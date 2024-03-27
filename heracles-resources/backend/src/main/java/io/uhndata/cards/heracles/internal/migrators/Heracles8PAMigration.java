@@ -39,10 +39,11 @@ import io.uhndata.cards.migrators.spi.DataMigrator;
 @Component(immediate = true)
 public class Heracles8PAMigration implements DataMigrator
 {
-    private static final String PA_REASON_QUESTION_PATH = "/Questionnaires/Physical Assessments/pa_reason";
     private static final String PA_QUESTIONNAIRE_PATH = "/Questionnaires/Physical Assessments";
-    private static final String VISIT_NUMBER_SECTION_PATH = "/Questionnaires/Physical Assessments/section_visit_number";
+    private static final String PA_REASON_QUESTION_PATH = "/Questionnaires/Physical Assessments/pa_reason";
     private static final String OLD_VISIT_NUMBER_QUESTION_PATH = "/Questionnaires/Physical Assessments/visit_number";
+    private static final String NEW_VISIT_NUMBER_SECTION_PATH
+        = "/Questionnaires/Physical Assessments/section_visit_number";
     private static final String NEW_VISIT_NUMBER_QUESTION_PATH
         = "/Questionnaires/Physical Assessments/section_visit_number/visit_number";
 
@@ -134,7 +135,6 @@ public class Heracles8PAMigration implements DataMigrator
         opB.setProperty("value", new String[] {"Study"});
         opB.setProperty("isReference", false);
 
-        // TODO: if old_visit_number does not exist
         session.move(OLD_VISIT_NUMBER_QUESTION_PATH, NEW_VISIT_NUMBER_QUESTION_PATH);
     }
 
@@ -145,7 +145,7 @@ public class Heracles8PAMigration implements DataMigrator
         final String formId = questionnaire.getIdentifier();
         final String visitQuestionId = session.getNode(NEW_VISIT_NUMBER_QUESTION_PATH).getIdentifier();
         final Node paQuestion = session.getNode(PA_REASON_QUESTION_PATH);
-        final Node visitSection = session.getNode(VISIT_NUMBER_SECTION_PATH);
+        final Node visitSection = session.getNode(NEW_VISIT_NUMBER_SECTION_PATH);
 
         final NodeIterator forms = session.getWorkspace().getQueryManager().createQuery(
             "select form.* from [cards:Form] as form"
@@ -154,11 +154,7 @@ public class Heracles8PAMigration implements DataMigrator
 
         while (forms.hasNext()) {
             Node form = forms.nextNode();
-            final boolean wasCheckedOut = versionManager.isCheckedOut(form.getPath());
-            if (!wasCheckedOut) {
-                versionManager.checkout(form.getPath());
-                nodesToCheckin.add(form.getPath());
-            }
+            checkoutIfNeeded(versionManager, form.getPath(), nodesToCheckin);
 
             // Move visit_number answer
             Node visitAnswerNode = null;
@@ -176,8 +172,6 @@ public class Heracles8PAMigration implements DataMigrator
             if (visitAnswerNode != null) {
                 Node section = form.addNode(UUID.randomUUID().toString(), FormUtils.ANSWER_SECTION_NODETYPE);
                 section.setProperty(FormUtils.SECTION_PROPERTY, visitSection);
-                LOGGER.error("Moving from {} to {}", visitAnswerNode.getPath(),
-                    section.getPath() + "/" + visitAnswerNode.getName());
                 session.move(visitAnswerNode.getPath(), section.getPath() + "/" + visitAnswerNode.getName());
             }
 
