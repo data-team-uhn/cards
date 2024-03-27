@@ -22,7 +22,7 @@
     "emailnotifications.smtps.host":"localhost",
     "emailnotifications.smtps.port":"8465",
     "emailnotifications.smtps.checkserveridentity": "true",
-    "emailnotifications.smtps.from":"envelope-from@localhost",
+    "emailnotifications.smtps.from":"",
     "emailnotifications.smtps.username":"username",
     "emailnotifications.smtps.password":"DFMeLL3AOICFmg4+uUoOx16clt6Xe0BMdNSBFqcuKiaVKMqfFudz3KOwM5Gj3t/g",
     "emailnotifications.messageidprovider.host": "localhost"
