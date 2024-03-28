@@ -282,7 +282,7 @@ public final class AppointmentUtils
             lowerBoundDate.set(Calendar.SECOND, 0);
             lowerBoundDate.set(Calendar.MILLISECOND, 0);
             final Calendar upperBoundDate = (Calendar) lowerBoundDate.clone();
-            upperBoundDate.add(Calendar.HOUR, 24);
+            upperBoundDate.add(Calendar.DAY_OF_YEAR, 1);
             LOGGER.info("Querying for appointments for clinic {} between {} and {}.",
                 clinicId,
                 formatter.format(lowerBoundDate.getTime()),
