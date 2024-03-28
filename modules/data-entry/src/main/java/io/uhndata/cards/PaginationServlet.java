@@ -694,7 +694,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     {
         //
         // thisDay = start of day in a custom timezone
-        // nextDay = thisDay + 24h
+        // nextDay = thisDay + 1 day
         // IF (=) THEN CHECK (>= thisDay AND < nextDay)
         // IF (<>) THEN CHECK (< thisDay OR >= nextDay)
         // IF (<) THEN CHECK (< thisDay)
