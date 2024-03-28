@@ -61,7 +61,7 @@
 			<type>Long</type>
 		</property>
 		<node>
-			<name>st</name>
+			<name>Study</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -70,7 +70,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>st</value>
+				<value>Study</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -80,7 +80,7 @@
 			</property>
 		</node>
 		<node>
-			<name>ta</name>
+			<name>Triggered Assessment</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -89,7 +89,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>ta</value>
+				<value>Triggered Assessment</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -132,7 +132,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>ta</value>
+						<value>Triggered Assessment</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -387,7 +387,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>st</value>
+						<value>Study</value>
 					</values>
 					<type>String</type>
 				</property>
