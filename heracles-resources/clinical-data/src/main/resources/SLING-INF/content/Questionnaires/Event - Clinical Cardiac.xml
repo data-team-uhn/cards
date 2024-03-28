@@ -3184,12 +3184,12 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Angiography  (diagnostic only)</value>
+						<value>Angiography (diagnostic only)</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>angiography  (diagnostic only)</value>
+						<value>angiography (diagnostic only)</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -5096,7 +5096,7 @@
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Angiography  (diagnostic only)</value>
+					<value>Angiography (diagnostic only)</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -5129,7 +5129,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>angiography  (diagnostic only)</value>
+								<value>angiography (diagnostic only)</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -12941,7 +12941,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>angiography  (diagnostic only)</value>
+									<value>angiography (diagnostic only)</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13176,44 +13176,94 @@
 					</node>
 				</node>
 				<node>
-					<name>condition1</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>conditionalGroup1</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>includes</value>
-						<type>String</type>
+						<name>requireAll</name>
+						<value>False</value>
+						<type>Boolean</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>ec_24</value>
-							</values>
+							<name>comparator</name>
+							<value>includes</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>ec_24</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>stress echo</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>stress echo</value>
-							</values>
+							<name>comparator</name>
+							<value>includes</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>ec_28_noncv</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>stress echo</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 			</node>
@@ -13474,7 +13524,89 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>angiography  (diagnostic only)</value>
+									<value>angiography (diagnostic only)</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+					<node>
+						<name>condition2</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>includes</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>ec_28_noncv</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>cardiac ct</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+					<node>
+						<name>condition3</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>includes</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>ec_28_noncv</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>angiography (diagnostic only)</value>
 								</values>
 								<type>String</type>
 							</property>
