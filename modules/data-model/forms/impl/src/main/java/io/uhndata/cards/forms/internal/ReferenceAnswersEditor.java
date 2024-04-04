@@ -118,7 +118,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
             return;
         }
         final QuestionTree unansweredQuestionsTree =
-            getUnansweredMatchingQuestions(questionnaireNode);
+            getUnmodifiedMatchingQuestions(questionnaireNode);
 
         // There are missing reference questions, let's create them!
         if (unansweredQuestionsTree != null) {

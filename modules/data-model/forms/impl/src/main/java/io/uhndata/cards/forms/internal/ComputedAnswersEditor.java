@@ -126,9 +126,9 @@ public class ComputedAnswersEditor extends AnswersEditor
             return;
         }
         final QuestionTree computedQuestionsTree =
-            getUnansweredMatchingQuestions(questionnaireNode);
+            getUnmodifiedMatchingQuestions(questionnaireNode);
 
-        // There are missing computed questions, let's create them!
+        // There are computed questions that were not modified in the most recent save, calculate them!
         if (computedQuestionsTree != null) {
             Map<Node, NodeBuilder> questionAndAnswers =
                 computedQuestionsTree.getQuestionAndAnswers(this.currentNodeBuilder);
@@ -145,6 +145,18 @@ public class ComputedAnswersEditor extends AnswersEditor
                 }).collect(Collectors.toConcurrentMap(Pair::getKey, Pair::getValue));
             final List<String> orderedAnswersToCompute = sortDependencies(computedAnswerDependencies);
 
+            final Set<String> changedQuestions = new HashSet<>();
+            for (String modifiedAnswer : this.answerChangeTracker.getAllModifiedAnswers()) {
+                try {
+                    Node questionNode = this.currentSession.getNodeByIdentifier(modifiedAnswer);
+                    String name = questionNode.getName();
+                    changedQuestions.add(name);
+                } catch (Exception e) {
+                    // Could not find the answer: not an answer the user has permissions to edit so can't be modified
+                    // by the user
+                }
+            }
+
             // We have the right order, compute all the missing answers
             orderedAnswersToCompute.stream()
                 // Get the right answer node
@@ -154,35 +166,57 @@ public class ComputedAnswersEditor extends AnswersEditor
                     .findFirst().get())
                 // Evaluate it
                 .forEachOrdered(entry -> {
-                    computeAnswer(entry, answersByQuestionName);
+                    computeAnswer(entry, form, answersByQuestionName, changedQuestions);
                 });
         }
     }
 
-    private void computeAnswer(final Map.Entry<Node, NodeBuilder> entry,
-        final Map<String, Object> answersByQuestionName)
+    // Calculate and save the answer for the provided computed question if it should be evaluated
+    private void computeAnswer(final Map.Entry<Node, NodeBuilder> entry, NodeState form,
+        final Map<String, Object> answersByQuestionName, final Set<String> changedQuestions)
     {
-        final Node question = entry.getKey();
-        final NodeBuilder answer = entry.getValue();
-        Type<?> resultType = getAnswerType(question);
-        Object result = this.expressionUtils.evaluate(question, answersByQuestionName, resultType);
+        try {
+            final Node question = entry.getKey();
+            final NodeBuilder answer = entry.getValue();
+            Type<?> resultType = getAnswerType(question);
 
-        if (result == null || (result instanceof String && "null".equals(result))) {
-            answer.removeProperty(FormUtils.VALUE_PROPERTY);
-        } else {
-            // Type erasure makes the actual type irrelevant, there's only one real implementation method
-            // The implementation can extract the right type from the type object
-            @SuppressWarnings("unchecked")
-            Type<Object> untypedResultType = (Type<Object>) resultType;
-            answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
-        }
-        // Update the computed value in the map of existing answers
-        String questionName = this.questionnaireUtils.getQuestionName(question);
-        if (answersByQuestionName.containsKey(questionName)) {
-            // Question has multiple answers. Ignore this answer, just keep previous.
-            // TODO: Implement better recurrent section handling
-        } else {
-            answersByQuestionName.put(questionName, result);
+            ExpressionUtils.ExpressionResult expressionResult = this.expressionUtils.evaluate(question,
+                answersByQuestionName, resultType, changedQuestions);
+            // Do not compute the question if all the following are true
+            // - The expression depends on other questions
+            // - One of the other questions has changed
+            // - The computed question already has an answer
+            if (
+                expressionResult.numberOfArguments() > 0
+                    && !expressionResult.expressionUsedChangedValue()
+                    && this.formUtils.getAnswer(form, question) != null
+            ) {
+                return;
+            }
+
+            Object result = expressionResult.getResult();
+
+            if (result == null || (result instanceof String && "null".equals(result))) {
+                answer.removeProperty(FormUtils.VALUE_PROPERTY);
+            } else {
+                // Type erasure makes the actual type irrelevant, there's only one real implementation method
+                // The implementation can extract the right type from the type object
+                @SuppressWarnings("unchecked")
+                Type<Object> untypedResultType = (Type<Object>) resultType;
+                answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
+                changedQuestions.add(question.getName());
+            }
+            // Update the computed value in the map of existing answers
+            String questionName = this.questionnaireUtils.getQuestionName(question);
+            if (answersByQuestionName.containsKey(questionName)) {
+                // Question has multiple answers. Ignore this answer, just keep previous.
+                // TODO: Implement better recurrent section handling
+            } else {
+                answersByQuestionName.put(questionName, result);
+            }
+        } catch (RepositoryException e) {
+            // Should not happen
+            LOGGER.warn("Error calculating computing answer", e);
         }
     }
 
