@@ -93,7 +93,7 @@ then
 fi
 
 # Read /sling-features.json and enable the features required for this project
-PROJECT_REQUIRED_FEATURES=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT_NAME} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json)
+PROJECT_REQUIRED_FEATURES=$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT_NAME} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 /get_project_dependency_features.py /sling-features.json /external_project/project-sling-features.json)
 if [ ! -z $PROJECT_REQUIRED_FEATURES ]
 then
   featureFlagString="$featureFlagString -f $PROJECT_REQUIRED_FEATURES"
