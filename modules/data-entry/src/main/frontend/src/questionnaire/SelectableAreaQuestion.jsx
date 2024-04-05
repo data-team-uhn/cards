@@ -32,7 +32,9 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerComponentManager from "./AnswerComponentManager";
 import FormattedText from "../components/FormattedText.jsx";
 
-// Component that renders a multiple choice question, with optional text input.
+// Component that renders an image with clickable areas based on the available
+// areas defined by the image and the options defined in the question. Selected
+// options will be highlighted and listed in text format.
 // Selected answers are placed in a series of <input type="hidden"> tags for
 // submission.
 //
@@ -83,7 +85,9 @@ function SelectableAreaQuestion(props) {
 
   let getUnselectedColor = (area) => getColor(area, "unselectedColor", "transparent")
   let getSelectedColor = (area) => getColor(area, "selectedColor", alpha(theme.palette.primary.main, 0.35))
-  let getHoverColor = (area) => alpha(getColor(area, "hoverColor", theme.palette.action.active), isAreaSelected(area) ? 0.6 : 0.4);
+  let getHoverColor = (area) => isAreaSelected(area) ? getSelectedHoverColor(area) : getUnselectedHoverColor(area);
+  let getUnselectedHoverColor = (area) => getColor(area, "hoverColor", alpha(theme.palette.action.active, 0.4));
+  let getSelectedHoverColor = (area) => getColor(area, "selectedHoverColor", alpha(theme.palette.action.active, 0.6));
   let getStrokeColor = (area) => getColor(area, "strokeColor", theme.palette.divider);
 
   let getColor = (area, property, fallback) => {
@@ -161,7 +165,7 @@ function SelectableAreaQuestion(props) {
     if (map) {
       setMap(
         map.map((mapEntry => {
-          let entry = mapEntry
+          let entry = mapEntry;
           updateAreaColor(entry);
           return entry;
         }))

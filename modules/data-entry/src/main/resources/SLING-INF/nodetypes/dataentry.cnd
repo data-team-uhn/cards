@@ -96,39 +96,3 @@
 
   // Children
   + * (cards:QueryCache)
-
-//-----------------------------------------------------------------------------
-// The configuration for a selectable area question variant
-[cards:SelectableAreaVariant] > sling:Folder, mix:referenceable
-  // Attributes:
-
-  // We can use this in a query.
-  query
-
-  // Properties:
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/SelectableAreaVariant" mandatory autocreated protected
-
-  // Hardcode the resource supertype: the  is a resource homepage.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
-
-  // The name of this variant used to select it when designing a form
-  - name (STRING) mandatory
-
-  // The image that should be displayed for this variant
-  - image (STRING) mandatory
-
-  // The data mapp that should be applied to this variant
-  - map (PATH) mandatory
-
-  // The maximum width that the question should be displayed with
-  - maxWidth (long)
-
-  // The color of the outlines around highlighted areas
-  -strokeColor (STRING)
-
-  // The color that the areas should be highlighted in when selected.
-  // If present, `fillColor` as specified in the image map will be used as a hover color
-  // and this color will be usedfor selected areas.
-  - highlightColor (STRING)
