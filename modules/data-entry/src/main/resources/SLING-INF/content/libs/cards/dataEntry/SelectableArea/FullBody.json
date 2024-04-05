@@ -5,7 +5,5 @@
     "jcr:path:map": "/libs/cards/resources/media/dataEntry/fullBodyMap.json",
     "maxWidth": 720,
     "imageWidth": 1280,
-    "imageHeight": 1280,
-    "strokeColor": "#00000000",
-    "hoverColor": "#55555555"
+    "imageHeight": 1280
 }

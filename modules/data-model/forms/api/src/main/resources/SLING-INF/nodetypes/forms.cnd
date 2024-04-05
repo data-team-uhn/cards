@@ -891,3 +891,48 @@
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// The configuration for a selectable area question variant
+[cards:SelectableAreaVariant] > sling:Folder, mix:referenceable
+  // Attributes:
+
+  // We can use this in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/SelectableAreaVariant" mandatory autocreated protected
+
+  // Hardcode the resource supertype. Each variant is a resource
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // The name of this variant used to select it when designing a form
+  - name (STRING) mandatory
+
+  // The image that should be displayed for this variant
+  - image (STRING) mandatory
+
+  // The raw dimensions of the svg image used
+  - imageWidth (long) mandatory
+  - imageHeight (long) mandatory
+
+  // The data map that should be applied to this variant
+  - map (PATH) mandatory
+
+  // The maximum width that the svg area should be displayed with
+  - maxWidth (long)
+
+  // The area of the svg image and map that should be displayed
+  - viewbox (STRING)
+
+  // Optional colors defining how areas should be displayed based on their status
+  - unselectedColor (STRING)
+  - selectedColor (STRING)
+  - hoverColor (STRING)
+  - selectedHoverColor (STRING)
+  - strokeColor (STRING)
+
+  // If the colors provided above should take priority over non-prioritized colors
+  - overrideMapColors (boolean)

@@ -18,7 +18,6 @@
 //
 
 import { orange, grey } from '@mui/material/colors';
-import { alpha } from '@mui/material/styles';
 
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {

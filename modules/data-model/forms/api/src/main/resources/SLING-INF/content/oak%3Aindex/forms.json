@@ -444,6 +444,10 @@
                     "notNullCheckEnabled": true,
                     "type": "String"
                 },
+                "copiedFrom": {
+                    "propertyIndex": true,
+                    "type": "String"
+                },
                 "value": {
                     "name": "value",
                     "propertyIndex": true,

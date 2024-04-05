@@ -476,7 +476,13 @@
         "answerOptions" : {
           "type": "textOptions",
           "childrenType": "cards:AnswerOption"
-        }
+        },
+        "unselectedColor": "string",
+        "selectedColor": "string",
+        "hoverColor": "string",
+        "selectedHoverColor": "string",
+        "strokeColor": "string",
+        "overrideMapColors": "boolean"
       }
     },
     "enableNotes": "boolean"
