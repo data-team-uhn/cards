@@ -57,6 +57,9 @@
   // Full hierarchy of Subject identifiers
   - fullIdentifier (String) = ''
 
+  // A potentially empty list of status flags for the subject
+  - statusFlags (STRING) autocreated multiple IGNORE
+
 //-----------------------------------------------------------------------------
 // The homepage for the Subjects space.
 [cards:SubjectsHomepage] > sling:Folder

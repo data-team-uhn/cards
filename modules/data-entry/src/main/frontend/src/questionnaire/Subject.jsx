@@ -234,6 +234,7 @@ function SubjectHeader(props) {
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+  let [ statusFlags, setStatusFlags ] = useState([]);
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -252,6 +253,7 @@ function SubjectHeader(props) {
   let handleSubjectResponse = (json) => {
     getSubject(json);
     setSubject({data: json});
+    setStatusFlags(json.statusFlags);
   };
 
   // Callback method for the `fetchData` method, invoked when the request failed.
@@ -320,6 +322,14 @@ function SubjectHeader(props) {
         breadcrumbs={parentDetails}
         action={subjectMenu}
         contentOffset={props.contentOffset}
+        tags={ statusFlags?.map( item => (
+          <Chip
+            label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
+            variant="outlined"
+            className={`${classes[item + "Chip"] || classes.DefaultChip}`}
+            size="small"
+          />
+        ))}
         >
       {
         subject?.data?.['jcr:created'] ?
@@ -405,6 +415,7 @@ function SubjectMemberInternal (props) {
 
   let identifier = data && data.identifier ? data.identifier : id;
   let label = data?.type?.label;
+  let statusFlags = data?.statusFlags;
   let title = `${label || "Subject"} ${identifier}`;
   let path = data ? data["@path"] : "/Subjects/" + id;
   let avatar = <Avatar className={classes.subjectAvatar}><SubjectIcon/></Avatar>;
@@ -434,6 +445,15 @@ function SubjectMemberInternal (props) {
                  />
                </>
 
+  let tags = statusFlags?.map( item => (
+      <Chip
+        label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
+        variant="outlined"
+        className={`${[classes[item + "Chip"] || classes.DefaultChip, classes.subjectChartChip].join(" ")}`}
+        size="small"
+      />
+    ))
+
   return ( data &&
     <>
     {
@@ -444,7 +464,8 @@ function SubjectMemberInternal (props) {
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
               <Typography variant="overline">
-                 {label} <Link to={"/content.html" + path} underline="hover">{identifier}</Link>
+                 {label} <Link to={"/content.html" + path} underline="hover" className={classes.subjectChartLink}>{identifier}</Link>
+                 {tags}
                  {action}
               </Typography>
             </Grid>
