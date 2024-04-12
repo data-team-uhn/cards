@@ -234,19 +234,19 @@ const questionnaireStyle = theme => ({
           padding: theme.spacing(0, GRID_SPACE_UNIT),
         }
     },
-    subjectAvatar : {
+    subjectAvatar: {
         backgroundColor: theme.palette.secondary.main,
         marginLeft: theme.spacing(-1),
         marginRight: theme.spacing(1.5),
         zoom: .75,
     },
-    subjectFormAvatar : {
+    subjectFormAvatar: {
         backgroundColor: theme.palette.primary.main,
         marginTop: theme.spacing(-.5),
         marginRight: theme.spacing(1.5),
         zoom: .75,
     },
-    subjectChartLink : {
+    subjectChartLink: {
       marginRight: theme.spacing(1)
     },
     childSubjectHeader: {
