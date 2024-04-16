@@ -397,7 +397,7 @@
       "enable": true,
       "supportedTypes": ["inpatient-ed"],
       "minimum.visit.frequency": 183,
-      "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242"]
+      "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242", "/Survey/ClinicMapping/PMH-AC", "/Survey/ClinicMapping/PMH-AC-IP"]
     },
     "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~yvm": {
       "enable": true,
@@ -509,7 +509,13 @@
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DischargeToLocation":{
       "supportedTypes": ["inpatient-ed"],
       "priority": 20,
-      "conditions": ["DISCH_DISPOSITION in Not Arrived; Left Triage; Jail; Diverted; Shelter; Jail or half; Res Care; Inpatient Ac; Inpt Ac Diff; Inpt Ac Same; Inpatient Ps; IP Trnsfr; OP Discharge; OP Transfer; RehabPsych"]
+      "conditions": ["DISCH_DISPOSITION in Not Arrived; Left Triage; Jail; Diverted; Shelter; Jail or half; Res Care; Inpatient Ac; Inpt Ac Diff; Inpt Ac Same; Inpatient Ps; IP Trnsfr; OP Transfer; RehabPsych"]
+    },
+    // OP Discharge must also be discarded, but not for PMH-Acute Care patients
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Outpatients":{
+      "supportedTypes": ["inpatient-ed"],
+      "priority": 20,
+      "conditions": ["DISCH_DISPOSITION = OP Discharge", "DISCH_DEPT_NAME not in PM-DAY ONCOLOGY/AWA; PM-URGENT CARE; PM-RADIATION NURSING CLINIC"]
     },
     // Discard patients with special care
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-AlternativeLevelOfCare":{
@@ -601,6 +607,13 @@
       "priority": 60,
       "conditions": ["CLINIC is empty", "DISCH_DISPOSITION in Residential; Discharge; IP Transfer; LTC; Res Care; Board & Care"]
     },
+    // Assign patients that were at the PMH Acute Care departments to the PMH-AC clinic
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-PMH-AC":{
+      "supportedTypes": ["inpatient-ed"],
+      "priority": 80,
+      "clinic": "/Survey/ClinicMapping/PMH-AC",
+      "conditions": ["DISCH_DEPT_NAME in PM-DAY ONCOLOGY/AWA; PM-URGENT CARE; PM-RADIATION NURSING CLINIC"]
+    },
     // Assign patients that were only at the emergency department to the ED cohort
     "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-ED-NoTransferTG":{
       "supportedTypes": ["inpatient-ed"],
@@ -626,7 +639,7 @@
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-IP-ShortStay":{
       "supportedTypes": ["inpatient-ed"],
       "priority": 100,
-      "conditions": ["CLINIC <> /Survey/ClinicMapping/-1792626799", "LENGTH_OF_STAY_DAYS < 1"]
+      "conditions": ["CLINIC not in /Survey/ClinicMapping/-1792626799; /Survey/ClinicMapping/PMH-AC", "LENGTH_OF_STAY_DAYS < 1"]
     },
     // As a special filter, a small percentage of patients are assigned to the long-form CPESIC cohort
     "io.uhndata.cards.prems.internal.importer.SendCPESForDepartmentFrequency":{
