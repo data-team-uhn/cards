@@ -137,6 +137,10 @@ HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-15C Auto 
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-17A Breast, Gyn, GI & GU")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-17B Head & Neck, Sarc & Lung")
 HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-18B Short Term Care")
+# PMH-Acute Care
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-DAY ONCOLOGY/AWA")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-URGENT CARE")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-RADIATION NURSING CLINIC")
 
 def convertToSqlType(insertion_values):
     converted_values = {}
@@ -195,7 +199,7 @@ for i in range(args.n):
     insertion_values['MYCHART_STATUS'] = random.choices([None, 'Activating', 'Activated'], [2, 1, 3])[0]
 
     # DISCH_DISPOSITION
-    insertion_values['DISCH_DISPOSITION'] = random.choices(['Home', 'Deceased'], [20, 1])[0]
+    insertion_values['DISCH_DISPOSITION'] = random.choices(['Home', 'Deceased', 'OP Discharge'], [20, 1, 10])[0]
 
     # DEATH_DATE
     insertion_values['DEATH_DATE'] = random.choices([None, potential_death_time_str], [20, 1])[0]
