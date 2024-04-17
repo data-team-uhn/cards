@@ -48,6 +48,11 @@
 		<type>Boolean</type>
 	</property>
 	<property>
+		<name>paginationVariant</name>
+		<value>text</value>
+		<type>String</type>
+	</property>
+	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
 		<type>Long</type>
@@ -57,7 +62,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-                       <value>During this visit...</value>
+			<value>During this visit...</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -91,6 +96,40 @@
 			<property>
 				<name>question</name>
 				<value>/Questionnaires/Visit information/location</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>pma_department</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Department</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>reference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>question</name>
+				<value>/Questionnaires/Visit information/provider</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -1506,7 +1545,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Sometimes it is helpful for us to speak with people who have completed this survey to help us improve care at PM. Is it ok for us to contact you in the future?</value>
+				<value>Sometimes it is helpful for us to speak with people who have completed this survey to help us improve care at Princess Margaret. Is it ok for us to contact you in the future?</value>
 				<type>String</type>
 			</property>
 		</node>
