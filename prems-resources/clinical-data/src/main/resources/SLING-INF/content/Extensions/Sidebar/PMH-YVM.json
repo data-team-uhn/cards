@@ -4,5 +4,5 @@
   "cards:extensionName": "PMH YVM",
   "cards:targetURL": "/content.html/Dashboard/PMH-YVM",
   "cards:icon": "asset:patient-portal.clinicIcon.js",
-  "cards:defaultOrder": 19
+  "cards:defaultOrder": 7
 }

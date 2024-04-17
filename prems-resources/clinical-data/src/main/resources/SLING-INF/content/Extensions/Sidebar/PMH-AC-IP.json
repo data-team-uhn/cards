@@ -4,5 +4,5 @@
   "cards:extensionName": "PMH AC-IP",
   "cards:targetURL": "/content.html/Dashboard/PMH-AC-IP",
   "cards:icon": "asset:patient-portal.clinicIcon.js",
-  "cards:defaultOrder": 21
+  "cards:defaultOrder": 9
 }

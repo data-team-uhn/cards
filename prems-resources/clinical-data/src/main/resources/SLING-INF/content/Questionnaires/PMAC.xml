@@ -18,7 +18,7 @@
 -->
 
 <node>
-	<name>PMHAC</name>
+	<name>PMAC</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
