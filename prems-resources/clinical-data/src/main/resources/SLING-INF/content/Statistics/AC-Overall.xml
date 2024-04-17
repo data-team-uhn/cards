@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Statistic</primaryNodeType>
 	<property>
 		<name>name</name>
-		<value>PMH Acute Care Overall Rating, split by hospital</value>
+		<value>PM Acute Care Overall Rating</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -37,17 +37,12 @@
 	</property>
 	<property>
 		<name>xVar</name>
-		<value>/Questionnaires/PMHAC/oed_module1/oed_8</value>
+		<value>/Questionnaires/PMAC/pma_module1/pma_8</value>
 		<type>Reference</type>
 	</property>
 	<property>
 		<name>yVar</name>
 		<value>/SubjectTypes/Patient/Visit</value>
-		<type>Reference</type>
-	</property>
-	<property>
-		<name>splitVar</name>
-		<value>/Questionnaires/PMHAC/oed_module1/oed_hospital</value>
 		<type>Reference</type>
 	</property>
 </node>

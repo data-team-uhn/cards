@@ -28,11 +28,11 @@
     <property>
         <name>intro</name>
         <value>
-Please answer some questions about your recent emergency visit and hospital stay at:
+Please answer some questions about your recent acute care visit and hospital stay at:
 
 **@{visit.location}**
 
-Please do not include any other hospital stays in your answers.
+Please do not include any other encounters or hospital stays in your answers.
         </value>
         <type>String</type>
     </property>
@@ -46,7 +46,7 @@ Please do not include any other hospital stays in your answers.
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
-            <value>/Questionnaires/PMHAC</value>
+            <value>/Questionnaires/PMAC</value>
             <type>Reference</type>
         </property>
         <property>
@@ -80,7 +80,7 @@ Please do not include any other hospital stays in your answers.
       "link" : "dashboard+path"
     },
     {
-      "key": "oed_9",
+      "key": "pma_8",
       "label": "Overall experience",
       "link" : "string"
     }
