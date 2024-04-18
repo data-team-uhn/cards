@@ -21,6 +21,7 @@ package io.uhndata.cards.locking;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -35,13 +36,14 @@ import javax.jcr.version.VersionManager;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -51,16 +53,15 @@ import org.slf4j.LoggerFactory;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/Subject" },
-    methods = { "POST" })
-public class LockServlet extends SlingAllMethodsServlet
+    methods = { "LOCK", "UNLOCK" })
+public class LockServlet extends SlingSafeMethodsServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(LockServlet.class);
 
     private static final long serialVersionUID = 1L;
 
-    private static final String POST_ACTION_NAME = "action";
-    private static final String POST_ACTION_LOCK = "LOCK";
-    private static final String POST_ACTION_UNLOCK = "UNLOCK";
+    private static final String METHOD_LOCK = "LOCK";
+    private static final String METHOD_UNLOCK = "UNLOCK";
     private static final String STATUS_PROPERTY = "statusFlags";
     private static final String LOCKED_FLAG = "LOCKED";
     private static final String LOCK_NODE_PATH = "lock";
@@ -79,8 +80,54 @@ public class LockServlet extends SlingAllMethodsServlet
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
     @Override
-    public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
-            throws IOException, IllegalArgumentException
+    protected boolean mayService(SlingHttpServletRequest request, SlingHttpServletResponse response)
+        throws ServletException, IOException
+    {
+        if (super.mayService(request, response)) {
+            return true;
+        }
+
+        // assume the method is known for now
+        boolean methodKnown = true;
+
+        String method = request.getMethod();
+        if (METHOD_LOCK.equals(method)) {
+            doLock(request, response);
+        } else if (METHOD_UNLOCK.equals(method)) {
+            doUnlock(request, response);
+        } else {
+            // actually we do not know the method
+            methodKnown = false;
+        }
+        return methodKnown;
+    }
+
+    @Override
+    protected StringBuffer getAllowedRequestMethods(Map<String, Method> declaredMethods)
+    {
+        StringBuffer allowBuf = super.getAllowedRequestMethods(declaredMethods);
+
+        allowBuf.append(", ").append(METHOD_LOCK);
+        allowBuf.append(", ").append(METHOD_UNLOCK);
+
+        return allowBuf;
+    }
+
+    public void doLock(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+        throws IOException, IllegalArgumentException
+    {
+        handleRequest(request, response, true);
+    }
+
+    public void doUnlock(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+        throws IOException, IllegalArgumentException
+    {
+        handleRequest(request, response, false);
+    }
+
+    public void handleRequest(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
+        final boolean isLockRequest)
+        throws IOException, IllegalArgumentException
     {
         this.request = request;
         this.response = response;
@@ -95,19 +142,7 @@ public class LockServlet extends SlingAllMethodsServlet
 
             final Node node = session.getNode(requestNode.getPath());
 
-            final String action = request.getParameter(POST_ACTION_NAME);
-            final boolean isLockAction;
-            if (POST_ACTION_LOCK.equals(action)) {
-                isLockAction = true;
-            } else if (POST_ACTION_UNLOCK.equals(action)) {
-                isLockAction = false;
-            } else {
-                writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST,
-                    "Must specify if the node is to be locked or unlocked");
-                return;
-            }
-
-            if (handleSubject(node, versionManager, isLockAction, true)) {
+            if (handleSubject(node, versionManager, isLockRequest, true)) {
                 // Node was successfully processed
                 session.save();
                 for (String path : this.nodesToCheckin.get()) {
@@ -123,24 +158,24 @@ public class LockServlet extends SlingAllMethodsServlet
         }
     }
 
-    private boolean handleSubject(Node node, VersionManager versionManager, boolean isLockAction)
+    private boolean handleSubject(Node node, VersionManager versionManager, boolean isLockMethod)
         throws RepositoryException, IOException
     {
-        return handleSubject(node, versionManager, isLockAction, false);
+        return handleSubject(node, versionManager, isLockMethod, false);
     }
 
     // TODO: Clean up
     @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
-    private boolean handleSubject(Node node, VersionManager versionManager, boolean isLockAction, boolean isRoot)
+    private boolean handleSubject(Node node, VersionManager versionManager, boolean isLockRequest, boolean isRoot)
         throws RepositoryException, IOException
     {
         final Set<String> statusFlags = getStatusFlags(node);
 
         final boolean isLocked = statusFlags.contains(LOCKED_FLAG);
-        if (isLocked && !isLockAction) {
+        if (isLocked && !isLockRequest) {
             // Trying to unlock a locked subject
             // If there is a locked parent, this node cannot be unlocked
-            if (parentIsLocked(node)) {
+            if (isParentLocked(node)) {
                 writeError(this.response, 409, "A parent subject is locked");
                 return false;
             }
@@ -159,8 +194,8 @@ public class LockServlet extends SlingAllMethodsServlet
             checkoutIfNeeded(node, versionManager);
             statusFlags.remove(LOCKED_FLAG);
             node.setProperty(STATUS_PROPERTY, statusFlags.toArray(new String[0]));
-            handleSubjectChildren(node, versionManager, isLockAction);
-        } else if (!isLocked && isLockAction) {
+            handleSubjectChildren(node, versionManager, isLockRequest);
+        } else if (!isLocked && isLockRequest) {
             // Trying to lock an unlocked subject
             checkoutIfNeeded(node, versionManager);
 
@@ -172,33 +207,33 @@ public class LockServlet extends SlingAllMethodsServlet
 
             statusFlags.add(LOCKED_FLAG);
             node.setProperty(STATUS_PROPERTY, statusFlags.toArray(new String[0]));
-            handleSubjectChildren(node, versionManager, isLockAction);
-        } else if (isLocked && isLockAction && isRoot) {
+            handleSubjectChildren(node, versionManager, isLockRequest);
+        } else if (isLocked && isLockRequest && isRoot) {
             writeError(this.response, 409, "This node is already locked");
             return false;
         }
         return true;
     }
 
-    private void handleForm(Node node, VersionManager versionManager, boolean isLockAction)
+    private void handleForm(Node node, VersionManager versionManager, boolean isLockRequest)
         throws RepositoryException
     {
-        handleForm(node, versionManager, isLockAction, false);
+        handleForm(node, versionManager, isLockRequest, false);
     }
 
-    private void handleForm(Node node, VersionManager versionManager, boolean isLockAction, boolean isRoot)
+    private void handleForm(Node node, VersionManager versionManager, boolean isLockRequest, boolean isRoot)
         throws RepositoryException
     {
         final Set<String> statusFlags = getStatusFlags(node);
 
         final boolean isLocked = statusFlags.contains(LOCKED_FLAG);
 
-        if (isLocked && !isLockAction) {
+        if (isLocked && !isLockRequest) {
             // Trying to unlock a locked form
             checkoutIfNeeded(node, versionManager);
             statusFlags.remove(LOCKED_FLAG);
             node.setProperty(STATUS_PROPERTY, statusFlags.toArray(new String[0]));
-        } else if (!isLocked && isLockAction) {
+        } else if (!isLocked && isLockRequest) {
             // Trying to lock an unlocked form
             checkoutIfNeeded(node, versionManager);
             statusFlags.add(LOCKED_FLAG);
@@ -206,7 +241,7 @@ public class LockServlet extends SlingAllMethodsServlet
         }
     }
 
-    private boolean parentIsLocked(Node node)
+    private boolean isParentLocked(Node node)
         throws RepositoryException
     {
         Node parent = node.getParent();
@@ -225,7 +260,7 @@ public class LockServlet extends SlingAllMethodsServlet
         return statusFlags;
     }
 
-    private boolean handleSubjectChildren(Node node, VersionManager versionManager, boolean isLockAction)
+    private boolean handleSubjectChildren(Node node, VersionManager versionManager, boolean isLockRequest)
         throws RepositoryException, IOException
     {
         // Handle child subjects
@@ -233,7 +268,7 @@ public class LockServlet extends SlingAllMethodsServlet
         while (childNodes.hasNext()) {
             Node childNode = childNodes.nextNode();
             if (childNode.isNodeType("cards:Subject")) {
-                boolean result = handleSubject(childNode, versionManager, isLockAction);
+                boolean result = handleSubject(childNode, versionManager, isLockRequest);
                 if (!result) {
                     // Error occured, halt
                     return false;
@@ -246,7 +281,7 @@ public class LockServlet extends SlingAllMethodsServlet
         while (references.hasNext()) {
             Node referenceNode = references.nextProperty().getParent();
             if (referenceNode.isNodeType("cards:Form")) {
-                handleForm(referenceNode, versionManager, isLockAction);
+                handleForm(referenceNode, versionManager, isLockRequest);
             }
         }
 
