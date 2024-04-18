@@ -57,6 +57,7 @@ import PrintButton from "../dataHomepage/PrintButton.jsx";
 import ResourceHeader from "./ResourceHeader.jsx"
 import SubjectTimeline from "./SubjectTimeline.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import LockButton from "../dataHomepage/LockButton.jsx";
 
 /***
  * Create a URL that checks for the existence of a subject
@@ -297,20 +298,26 @@ function SubjectHeader(props) {
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let subjectMenu = (
             <div className={classes.actionsMenu}>
-               <PrintButton
-                 resourcePath={path}
-                 resourceData={subject?.data}
-                 breadcrumb={pageTitle}
-                 date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-               />
-               <DeleteButton
-                 entryPath={path}
-                 entryName={getEntityIdentifier(subject?.data)}
-                 entryType="Subject"
-                 entryLabel={label}
-                 onComplete={handleDeletion}
-                 size="large"
-               />
+              <LockButton
+                entryPath={path}
+                entryName={identifier}
+                entryType={label}
+                statusFlags={statusFlags}
+              />
+              <PrintButton
+                resourcePath={path}
+                resourceData={subject?.data}
+                breadcrumb={pageTitle}
+                date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+              />
+              <DeleteButton
+                entryPath={path}
+                entryName={getEntityIdentifier(subject?.data)}
+                entryType="Subject"
+                entryLabel={label}
+                onComplete={handleDeletion}
+                size="large"
+              />
             </div>
   );
   let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true) || [getHomepageLink(subject?.data)]);;
@@ -427,23 +434,30 @@ function SubjectMemberInternal (props) {
     </Tooltip>
   )
   let action = <>
-                 <PrintButton
-                   resourcePath={path}
-                   resourceData={data}
-                   breadcrumb={getTextHierarchy(data, true)}
-                   date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-                   className={classes.childSubjectHeaderButton}
-                   disableShortcut
-                 />
-                 <DeleteButton
-                   entryPath={path}
-                   entryName={getEntityIdentifier(data)}
-                   entryType="Subject"
-                   entryLabel={label}
-                   onComplete={onDelete}
-                   className={classes.childSubjectHeaderButton}
-                 />
-               </>
+                <LockButton
+                  entryPath={path}
+                  entryType={label}
+                  entryName={identifier}
+                  statusFlags={statusFlags}
+                  className={classes.childSubjectHeaderButton}
+                />
+                <PrintButton
+                  resourcePath={path}
+                  resourceData={data}
+                  breadcrumb={getTextHierarchy(data, true)}
+                  date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+                  className={classes.childSubjectHeaderButton}
+                  disableShortcut
+                />
+                <DeleteButton
+                  entryPath={path}
+                  entryName={getEntityIdentifier(data)}
+                  entryType="Subject"
+                  entryLabel={label}
+                  onComplete={onDelete}
+                  className={classes.childSubjectHeaderButton}
+                />
+              </>
 
   let tags = statusFlags?.map( item => (
       <Chip
