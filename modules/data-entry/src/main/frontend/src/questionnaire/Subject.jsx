@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
@@ -84,6 +84,7 @@ function Subject(props) {
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
+  const fetchRelated = useRef();
 
   // TODO: These tabs should be extensible.
   // This will involve moving SubjectContainer to it's own file and moving
@@ -123,7 +124,15 @@ function Subject(props) {
         { "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
       </NewFormDialog>
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"} pageTitle={pageTitle} classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
+        <SubjectHeader
+          id={currentSubjectId}
+          key={"SubjectHeader"}
+          pageTitle={pageTitle}
+          classes={classes}
+          getSubject={handleSubject}
+          reloadSubject={fetchRelated}
+          history={history}
+          contentOffset={props.contentOffset}/>
         <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
@@ -143,6 +152,7 @@ function Subject(props) {
               maxDisplayed={maxDisplayed}
               pageSize={pageSize}
               subject={currentSubject}
+              fetchSubjectData={fetchRelated.current}
             />
           : <Grid item>
             <SubjectTimeline
@@ -164,7 +174,7 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { id, classes, level, maxDisplayed, pageSize, subject } = props;
+  let { id, classes, level, maxDisplayed, pageSize, subject, fetchSubjectData } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // hold related subjects
@@ -223,7 +233,15 @@ function SubjectContainer(props) {
 
   return (
     subject && <React.Fragment>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}} childSubjects={relatedSubjects}/>
+      <SubjectMember
+        classes={classes}
+        id={id} level={currentLevel}
+        data={subject}
+        maxDisplayed={maxDisplayed}
+        pageSize={pageSize}
+        onDelete={() => {setDeleted(true)}}
+        childSubjects={relatedSubjects}
+        fetchSubjectData={fetchSubjectData}/>
     </React.Fragment>
   );
 }
@@ -232,14 +250,22 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject, history, pageTitle } = props;
+  let { id, classes, getSubject, history, pageTitle, reloadSubject } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   let [ statusFlags, setStatusFlags ] = useState([]);
+  let [ initialized, setInitialized ] = useState(false);
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
+
+  useEffect(() => {
+    if (!initialized) {
+      reloadSubject.current = fetchSubjectData;
+      setInitialized(true);
+    }
+  }, [initialized]);
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
@@ -305,6 +331,7 @@ function SubjectHeader(props) {
                 entryName={identifier}
                 entryType={label}
                 statusFlags={statusFlags}
+                onComplete={fetchSubjectData}
               />
               <PrintButton
                 resourcePath={path}
@@ -357,7 +384,7 @@ function SubjectHeader(props) {
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
 function SubjectMemberInternal (props) {
-  let { classes, data, id, level, maxDisplayed, onDelete, pageSize, childSubjects } = props;
+  let { classes, data, id, level, maxDisplayed, onDelete, pageSize, childSubjects, fetchSubjectData } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // Whether a subject is expanded and displaying its forms
@@ -442,6 +469,7 @@ function SubjectMemberInternal (props) {
                   entryName={identifier}
                   statusFlags={statusFlags}
                   className={classes.childSubjectHeaderButton}
+                  onComplete={fetchSubjectData}
                 />
                 <PrintButton
                   resourcePath={path}
@@ -633,7 +661,15 @@ function SubjectMemberInternal (props) {
           {childSubjects.map( (subject, i) => {
             // Render the container again for each child subject
             return(
-              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={level+1} maxDisplayed={maxDisplayed} pageSize={pageSize} subject={subject}/>
+              <SubjectContainer
+                key={i}
+                classes={classes}
+                path={subject["@path"]}
+                level={level+1}
+                maxDisplayed={maxDisplayed}
+                pageSize={pageSize}
+                subject={subject}
+                fetchSubjectData={fetchSubjectData}/>
             )
           })}
         </Grid>
