@@ -18,24 +18,23 @@
 {
   "bundles":[
     {
-      "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
-      "start-order":"25"
-    },
-    {
-      "id":"${project.groupId}:cards-visit-subject-type:${project.version}",
-      "start-order":"26"
-    },
-    {
       "id":"${project.groupId}:${project.artifactId}:${project.version}",
       "start-order":"25"
     }
   ],
   "configurations":{
-    "org.apache.sling.jcr.repoinit.RepositoryInitializer~test":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~locking":{
       "service.ranking:Integer":300,
-      "scripts":[
-        "create user testuser with password testpassword \n set ACL for testuser \n deny rep:write on /Forms,/Subjects restriction(cards:locked) \n end",
-        "create user computedtestuser with password testpassword \n set ACL for computedtestuser \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,computedquestions) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/BackendComputedTest/question1computed,/Questionnaires/BackendComputedTest/question2computed,/Questionnaires/BackendComputedTest/question3computed) \n     end"
+      "scripts": [
+        // Locking and unlocking subjects and appropriate visits
+        "create service user locking \n set ACL for locking \n   allow jcr:all on /Forms, /Subjects \n end"
+        // TODO: Once locking and unlocking permissions are implemented, deny locked node editing to everyone
+        // "set ACL for everyone \n deny rep:write,jcr:versionManagement on /Forms,/Subjects restriction(cards:locked) \n end"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~patientUi":{
+      "user.mapping":[
+        "io.uhndata.cards.locking:locking=[locking]"
       ]
     }
   }
