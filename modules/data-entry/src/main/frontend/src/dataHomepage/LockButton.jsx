@@ -31,7 +31,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 import ErrorDialog from "../components/ErrorDialog.jsx";
 
 function LockButton(props) {
-  const { classes, entryPath, onOpen, onClose, size, variant, entryType, entryName, className, statusFlags } = props;
+  const { classes, entryPath, onOpen, onClose, onComplete, size, variant, entryType, entryName, className, statusFlags } = props;
 
   const [ open, setOpen ] = useState(false);
   const [ dialogMessage, setDialogMessage ] = useState("");
@@ -116,6 +116,7 @@ function LockButton(props) {
       setRequestInProgress(false);
       if (response.ok)  {
         closeDialog();
+        onComplete && onComplete();
       } else {
         handleError(response.status, response);
       }
@@ -179,6 +180,7 @@ LockButton.propTypes = {
   className: PropTypes.string,
   onOpen: PropTypes.func,
   onClose: PropTypes.func,
+  onComplete: PropTypes.func,
   size: PropTypes.oneOf(["small", "medium", "large"]),
 }
 
