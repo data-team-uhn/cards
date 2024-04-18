@@ -22,6 +22,7 @@ package io.uhndata.cards.locking;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -202,6 +203,7 @@ public class LockServlet extends SlingSafeMethodsServlet
             if (isRoot) {
                 String userID = this.request.getResourceResolver().adaptTo(Session.class).getUserID();
                 Node lockNode = node.addNode(LOCK_NODE_PATH, LOCK_NODE_TYPE);
+                lockNode.setProperty("time", Calendar.getInstance());
                 lockNode.setProperty("author", userID);
             }
 
