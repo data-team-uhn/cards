@@ -577,6 +577,10 @@ const questionnaireStyle = theme => ({
         borderColor: theme.palette.error.main,
         color: theme.palette.error.main,
     },
+    LOCKEDChip:{
+      backgroundColor: theme.palette.primary.main,
+      color: "#FFF"
+    },
     DefaultChip: {
     },
     formPreview: {
