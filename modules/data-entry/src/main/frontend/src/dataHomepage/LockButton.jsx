@@ -24,7 +24,6 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, 
 import withStyles from '@mui/styles/withStyles';
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import PrintPreview from "../questionnaire/PrintPreview.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -43,9 +42,8 @@ function LockButton(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const POST_ACTION_NAME = "action";
-  const POST_ACTION_LOCK = "LOCK";
-  const POST_ACTION_UNLOCK = "UNLOCK";
+  const METHOD_LOCK = "LOCK";
+  const METHOD_UNLOCK = "UNLOCK";
 
   let lockUnlockText = isLocked ? "Unlock" : "Lock";
   let lockUnlockProgressText = isLocked ? "Unlocking..." : "Locking..."
@@ -105,13 +103,8 @@ function LockButton(props) {
     let url = new URL(entryPath, window.location.origin);
     setRequestInProgress(true);
 
-    let request_data = new FormData();
-    // Populate the request data with information about the tou_accepted answer
-    request_data.append(POST_ACTION_NAME, isLocked ? POST_ACTION_UNLOCK : POST_ACTION_LOCK);
-
     fetchWithReLogin(globalLoginDisplay, url, {
-      method: "POST",
-      body: request_data
+      method: isLocked ? METHOD_UNLOCK : METHOD_LOCK,
     }).then((response) => {
       setRequestInProgress(false);
       if (response.ok)  {
