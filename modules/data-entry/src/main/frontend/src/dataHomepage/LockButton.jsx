@@ -21,6 +21,7 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Tooltip, Typography } from "@mui/material";
+import Alert from '@mui/material/Alert';
 import withStyles from '@mui/styles/withStyles';
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -33,8 +34,8 @@ function LockButton(props) {
   const { classes, entryPath, onOpen, onClose, onComplete, size, variant, entryType, entryName, className, statusFlags } = props;
 
   const [ open, setOpen ] = useState(false);
-  const [ dialogMessage, setDialogMessage ] = useState("");
-  const [ dialogAction, setDialogAction ] = useState("");
+  const [ dialogContent, setDialogContent ] = useState(<></>);
+  const [ username, setUsername ] = useState("");
   const [ errorOpen, setErrorOpen ] = useState(false);
   const [ errorMessage, setErrorMessage ] = useState("");
   const [ requestInProgress, setRequestInProgress ] = useState(false);
@@ -54,15 +55,25 @@ function LockButton(props) {
 
   useEffect(() => {
     if (isLocked) {
-      setDialogMessage("Are you sure you would like to unlock this " + entryType + "?");
+      setDialogContent(<>
+        <Alert severity="warning">If you unlock this {entryType} all the associated data forms
+          will be unlocked as well unless they were seperately locked. Proceed?</Alert>
+      </>)
     } else {
-      setDialogMessage("Would you like to lock this " + entryType + "?");
+      setDialogContent(<>
+        <Typography variant="body1">Signed off by: {username}</Typography>
+        <Typography variant="body1">Date: {new Date().toDateString()}</Typography>
+        <Alert severity="warning">Once you sign off on this {entryType}, it will be locked along with
+          all the associated data forms and no further edits will be possible. Proceed?</Alert>
+        </>)
     }
-  }, [isLocked, entryType]);
-
+  }, [isLocked, entryType, username]);
 
   let openDialog = () => {
     onOpen && onOpen();
+    // TODO: move to a global context?
+    // See: AdminNavbarLinks
+    fetchUsername();
     setOpen(true);
   }
 
@@ -81,6 +92,12 @@ function LockButton(props) {
     setErrorOpen(false);
   }
 
+  let fetchUsername = () => {
+    fetchWithReLogin(globalLoginDisplay, "/system/sling/info.sessionInfo.json")
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => setUsername(json["userID"]))
+      .catch((error) => console.log(error));
+  }
 
   let handleError = (status, response) => {
     if (status === 404) {
@@ -124,11 +141,10 @@ function LockButton(props) {
     </ErrorDialog>
     <Dialog open={open} onClose={closeDialog}>
       <DialogTitle>
-        {lockUnlockText} {entryType} {entryName}
+        {isLocked ? "Unlock" : "Signoff and lock"} {entryType} {entryName}
       </DialogTitle>
       <DialogContent>
-          <Typography variant="body1">{dialogMessage}</Typography>
-          <Typography variant="body1">{dialogAction}</Typography>
+        {dialogContent}
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
           <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>

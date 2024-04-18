@@ -38,7 +38,7 @@
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The time that the parent node was locked
-  - time (date)
+  - time (date) mandatory
 
   // The author who locked the parent node
   - author (STRING) mandatory
