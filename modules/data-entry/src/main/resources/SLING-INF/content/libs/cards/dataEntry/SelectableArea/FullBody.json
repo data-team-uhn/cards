@@ -1,0 +1,9 @@
+{
+    "jcr:primaryType": "cards:SelectableAreaVariant",
+    "name": "fullBody",
+    "image": "/libs/cards/resources/media/dataEntry/fullBody.svg",
+    "jcr:path:map": "/libs/cards/resources/media/dataEntry/fullBodyMap.json",
+    "maxWidth": 720,
+    "imageWidth": 1280,
+    "imageHeight": 1280
+}
