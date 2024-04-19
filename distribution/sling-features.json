@@ -21,6 +21,10 @@
   "cards4kids": [
     "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
   ],
+  "cards4sparc": [
+    "mvn:io.uhndata.cards/cards-email-notifications/{$CARDS_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
+  ],
   "": [
     "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
   ]

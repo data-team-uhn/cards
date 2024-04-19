@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "logoDark": "/libs/cards/resources/media/sparc/logo_sparc.png",
+  "logoLight": "/libs/cards/resources/media/prems/logo_sparc_light.png",
+  "affiliationLogoDark" : "/libs/cards/resources/media/prems/logo2.png",
+  "affiliationLogoLight" : "/libs/cards/resources/media/prems/logo2.png",
+  "sidebarBackground": "/libs/cards/resources/media/default/background.jpg"
+}

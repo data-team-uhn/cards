@@ -1,0 +1,189 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+    <name>SPARC</name>
+    <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
+    <property>
+        <name>name</name>
+        <value>SPARC</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>intro</name>
+        <value>
+Please answer the following questionnaires.
+        </value>
+        <type>String</type>
+    </property>
+    <node>
+        <name>BPI</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/BPI</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>PHQ-9</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/PHQ-9</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>2</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>GAD-7</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/GAD-7</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>3</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>IEQ</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/IEQ</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>4</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>painDetect</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/painDETECT</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>S-LANSS</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/S-LANSS</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>6</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>DN4</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/DN4</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>7</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>CSI</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/CSI</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>8</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>RPSIQ</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/RPSIQ</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>9</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>P-3</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/P-3</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>10</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>AP</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/AP</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>11</value>
+            <type>Long</type>
+        </property>
+    </node>
+</node>

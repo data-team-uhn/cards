@@ -488,7 +488,7 @@
             <exclude>project_code.txt</exclude>
             <exclude>project_name.txt</exclude>
             <!-- Content with non-Apache Licenses -->
-            <exclude>**/fullBody.svg</exclude>
+            <exclude>**/*.svg</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -2017,6 +2017,7 @@
     <module>kids-resources</module>
     <module>prems-resources</module>
     <module>proms-resources</module>
+    <module>sparc-resources</module>
     <module>test-resources</module>
     <module>distribution</module>
     <module>Utilities</module>
