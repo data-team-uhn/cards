@@ -424,7 +424,7 @@ class QuestionnaireState:
 #=====================
 class HeaderColumn:
     def default_column_handler(self, questionnaire, row):
-        questionnaire.question[self.name] = self.get_value(row)
+        questionnaire.question[self.name] = self.get_value(row).strip()
 
     def __init__(self, column, name, handler=default_column_handler):
         self.column = column
