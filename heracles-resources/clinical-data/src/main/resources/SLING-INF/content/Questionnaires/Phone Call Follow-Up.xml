@@ -1568,7 +1568,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Can you confirm if any of the following is true with respect to Heart Failure (HF)? </value>
+						<value>Can you confirm if any of the following is true with respect to Heart Failure (HF)?</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3571,7 +3571,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>I am going to ask you to think back to the time when your symptoms began related to the above mentioned condition. Next, I’m going to read you a list of symptoms and ask you if you’ve experienced any of these over the past month to which you will either answer “yes” or “no” to each. </value>
+					<value>I am going to ask you to think back to the time when your symptoms began related to the above mentioned condition. Next, I’m going to read you a list of symptoms and ask you if you’ve experienced any of these over the past month to which you will either answer “yes” or “no” to each.</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5939,7 +5939,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Where did you seek medical care? </value>
+					<value>Where did you seek medical care?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19335,7 +19335,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</property>
 			<property>
 				<name>text</name>
-				<value>How is your recovery? </value>
+				<value>How is your recovery?</value>
 				<type>String</type>
 			</property>
 			<property>
