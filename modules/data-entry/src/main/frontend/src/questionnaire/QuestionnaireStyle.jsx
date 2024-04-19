@@ -234,17 +234,20 @@ const questionnaireStyle = theme => ({
           padding: theme.spacing(0, GRID_SPACE_UNIT),
         }
     },
-    subjectAvatar : {
+    subjectAvatar: {
         backgroundColor: theme.palette.secondary.main,
         marginLeft: theme.spacing(-1),
         marginRight: theme.spacing(1.5),
         zoom: .75,
     },
-    subjectFormAvatar : {
+    subjectFormAvatar: {
         backgroundColor: theme.palette.primary.main,
         marginTop: theme.spacing(-.5),
         marginRight: theme.spacing(1.5),
         zoom: .75,
+    },
+    subjectChartLink: {
+      marginRight: theme.spacing(1)
     },
     childSubjectHeader: {
         marginLeft: theme.spacing(-5),
@@ -564,11 +567,19 @@ const questionnaireStyle = theme => ({
         marginBottom: theme.spacing(1),
         marginRight: theme.spacing(1),
     },
+    subjectChartChip: {
+      marginLeft: theme.spacing(1),
+      textTransform: "none"
+    },
     INCOMPLETEChip: {
     },
     INVALIDChip: {
         borderColor: theme.palette.error.main,
         color: theme.palette.error.main,
+    },
+    LOCKEDChip:{
+      backgroundColor: theme.palette.primary.main,
+      color: "#FFF"
     },
     DefaultChip: {
     },

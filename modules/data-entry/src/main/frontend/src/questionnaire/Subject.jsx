@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
@@ -57,6 +57,7 @@ import PrintButton from "../dataHomepage/PrintButton.jsx";
 import ResourceHeader from "./ResourceHeader.jsx"
 import SubjectTimeline from "./SubjectTimeline.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import LockButton from "../dataHomepage/LockButton.jsx";
 
 /***
  * Create a URL that checks for the existence of a subject
@@ -83,6 +84,7 @@ function Subject(props) {
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
+  const fetchRelated = useRef();
 
   // TODO: These tabs should be extensible.
   // This will involve moving SubjectContainer to it's own file and moving
@@ -122,7 +124,15 @@ function Subject(props) {
         { "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
       </NewFormDialog>
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"} pageTitle={pageTitle} classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
+        <SubjectHeader
+          id={currentSubjectId}
+          key={"SubjectHeader"}
+          pageTitle={pageTitle}
+          classes={classes}
+          getSubject={handleSubject}
+          reloadSubject={fetchRelated}
+          history={history}
+          contentOffset={props.contentOffset}/>
         <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
@@ -142,6 +152,7 @@ function Subject(props) {
               maxDisplayed={maxDisplayed}
               pageSize={pageSize}
               subject={currentSubject}
+              fetchSubjectData={fetchRelated.current}
             />
           : <Grid item>
             <SubjectTimeline
@@ -163,7 +174,7 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { id, classes, level, maxDisplayed, pageSize, subject } = props;
+  let { id, classes, level, maxDisplayed, pageSize, subject, fetchSubjectData } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // hold related subjects
@@ -222,7 +233,15 @@ function SubjectContainer(props) {
 
   return (
     subject && <React.Fragment>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}} childSubjects={relatedSubjects}/>
+      <SubjectMember
+        classes={classes}
+        id={id} level={currentLevel}
+        data={subject}
+        maxDisplayed={maxDisplayed}
+        pageSize={pageSize}
+        onDelete={() => {setDeleted(true)}}
+        childSubjects={relatedSubjects}
+        fetchSubjectData={fetchSubjectData}/>
     </React.Fragment>
   );
 }
@@ -231,13 +250,22 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject, history, pageTitle } = props;
+  let { id, classes, getSubject, history, pageTitle, reloadSubject } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+  let [ statusFlags, setStatusFlags ] = useState([]);
+  let [ initialized, setInitialized ] = useState(false);
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
+
+  useEffect(() => {
+    if (!initialized) {
+      reloadSubject.current = fetchSubjectData;
+      setInitialized(true);
+    }
+  }, [initialized]);
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
@@ -254,6 +282,7 @@ function SubjectHeader(props) {
   let handleSubjectResponse = (json) => {
     getSubject(json);
     setSubject({data: json});
+    setStatusFlags(json.statusFlags);
   };
 
   // Callback method for the `fetchData` method, invoked when the request failed.
@@ -297,20 +326,27 @@ function SubjectHeader(props) {
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let subjectMenu = (
             <div className={classes.actionsMenu}>
-               <PrintButton
-                 resourcePath={path}
-                 resourceData={subject?.data}
-                 breadcrumb={pageTitle}
-                 date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-               />
-               <DeleteButton
-                 entryPath={path}
-                 entryName={getEntityIdentifier(subject?.data)}
-                 entryType="Subject"
-                 entryLabel={label}
-                 onComplete={handleDeletion}
-                 size="large"
-               />
+              <LockButton
+                entryPath={path}
+                entryName={identifier}
+                entryType={label}
+                statusFlags={statusFlags}
+                onComplete={fetchSubjectData}
+              />
+              <PrintButton
+                resourcePath={path}
+                resourceData={subject?.data}
+                breadcrumb={pageTitle}
+                date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+              />
+              <DeleteButton
+                entryPath={path}
+                entryName={getEntityIdentifier(subject?.data)}
+                entryType="Subject"
+                entryLabel={label}
+                onComplete={handleDeletion}
+                size="large"
+              />
             </div>
   );
   let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true) || [getHomepageLink(subject?.data)]);;
@@ -322,6 +358,14 @@ function SubjectHeader(props) {
         breadcrumbs={parentDetails}
         action={subjectMenu}
         contentOffset={props.contentOffset}
+        tags={ statusFlags?.map( item => (
+          <Chip
+            label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
+            variant="outlined"
+            className={`${classes[item + "Chip"] || classes.DefaultChip}`}
+            size="small"
+          />
+        ))}
         >
       {
         subject?.data?.['jcr:created'] ?
@@ -340,7 +384,7 @@ function SubjectHeader(props) {
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
 function SubjectMemberInternal (props) {
-  let { classes, data, id, level, maxDisplayed, onDelete, pageSize, childSubjects } = props;
+  let { classes, data, id, level, maxDisplayed, onDelete, pageSize, childSubjects, fetchSubjectData } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // Whether a subject is expanded and displaying its forms
@@ -407,6 +451,7 @@ function SubjectMemberInternal (props) {
 
   let identifier = data && data.identifier ? data.identifier : id;
   let label = data?.type?.label;
+  let statusFlags = data?.statusFlags;
   let title = `${label || "Subject"} ${identifier}`;
   let path = data ? data["@path"] : "/Subjects/" + id;
   let avatar = <Avatar className={classes.subjectAvatar}><SubjectIcon/></Avatar>;
@@ -418,23 +463,40 @@ function SubjectMemberInternal (props) {
     </Tooltip>
   )
   let action = <>
-                 <PrintButton
-                   resourcePath={path}
-                   resourceData={data}
-                   breadcrumb={getTextHierarchy(data, true)}
-                   date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-                   className={classes.childSubjectHeaderButton}
-                   disableShortcut
-                 />
-                 <DeleteButton
-                   entryPath={path}
-                   entryName={getEntityIdentifier(data)}
-                   entryType="Subject"
-                   entryLabel={label}
-                   onComplete={onDelete}
-                   className={classes.childSubjectHeaderButton}
-                 />
-               </>
+                <LockButton
+                  entryPath={path}
+                  entryType={label}
+                  entryName={identifier}
+                  statusFlags={statusFlags}
+                  className={classes.childSubjectHeaderButton}
+                  onComplete={fetchSubjectData}
+                />
+                <PrintButton
+                  resourcePath={path}
+                  resourceData={data}
+                  breadcrumb={getTextHierarchy(data, true)}
+                  date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+                  className={classes.childSubjectHeaderButton}
+                  disableShortcut
+                />
+                <DeleteButton
+                  entryPath={path}
+                  entryName={getEntityIdentifier(data)}
+                  entryType="Subject"
+                  entryLabel={label}
+                  onComplete={onDelete}
+                  className={classes.childSubjectHeaderButton}
+                />
+              </>
+
+  let tags = statusFlags?.map( item => (
+      <Chip
+        label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
+        variant="outlined"
+        className={`${[classes[item + "Chip"] || classes.DefaultChip, classes.subjectChartChip].join(" ")}`}
+        size="small"
+      />
+    ))
 
   return ( data &&
     <>
@@ -446,7 +508,8 @@ function SubjectMemberInternal (props) {
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
               <Typography variant="overline">
-                 {label} <Link to={"/content.html" + path} underline="hover">{identifier}</Link>
+                 {label} <Link to={"/content.html" + path} underline="hover" className={classes.subjectChartLink}>{identifier}</Link>
+                 {tags}
                  {action}
               </Typography>
             </Grid>
@@ -598,7 +661,15 @@ function SubjectMemberInternal (props) {
           {childSubjects.map( (subject, i) => {
             // Render the container again for each child subject
             return(
-              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={level+1} maxDisplayed={maxDisplayed} pageSize={pageSize} subject={subject}/>
+              <SubjectContainer
+                key={i}
+                classes={classes}
+                path={subject["@path"]}
+                level={level+1}
+                maxDisplayed={maxDisplayed}
+                pageSize={pageSize}
+                subject={subject}
+                fetchSubjectData={fetchSubjectData}/>
             )
           })}
         </Grid>
