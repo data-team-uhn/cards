@@ -1,0 +1,5 @@
+{
+  "jcr:primaryType": "cards:ExtensionPoint",
+  "cards:extensionPointId": "cards/coreUI/subjectActions",
+  "cards:extensionPointName": "Action buttons for subjects"
+}

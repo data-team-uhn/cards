@@ -30,7 +30,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ErrorDialog from "../components/ErrorDialog.jsx";
 
-function LockButton(props) {
+function SubjectLockAction(props) {
   const { classes, entryPath, onOpen, onClose, onComplete, size, variant, entryType, entryName, className, statusFlags } = props;
 
   const [ open, setOpen ] = useState(false);
@@ -179,7 +179,7 @@ function LockButton(props) {
   </>)
 }
 
-LockButton.propTypes = {
+SubjectLockAction.propTypes = {
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
   entryType: PropTypes.string.isRequired,
   entryName: PropTypes.string.isRequired,
@@ -193,9 +193,9 @@ LockButton.propTypes = {
   size: PropTypes.oneOf(["small", "medium", "large"]),
 }
 
-LockButton.defaultProps = {
+SubjectLockAction.defaultProps = {
   variant: "icon",
   size: "large",
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(LockButton));
+export default withStyles(QuestionnaireStyle)(withRouter(SubjectLockAction));
