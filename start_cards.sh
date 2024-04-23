@@ -376,6 +376,13 @@ do
       # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
       PROJECT="cards4${PROJECT#cards4}"
       ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${PROJECT_VERSION}/slingosgifeature,$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py distribution/sling-features.json)
+      TEMPDEPDIR=$(mktemp -d)
+      mvn --quiet --non-recursive dependency:copy -Dartifact=io.uhndata.cards:${PROJECT#cards4}-docker-packaging:${PROJECT_VERSION}:dependencies -DoutputDirectory=${TEMPDEPDIR} 2>&1 > /dev/null
+      if [[ -f ${TEMPDEPDIR}/${PROJECT#cards4}-docker-packaging-${PROJECT_VERSION}.dependencies ]]
+      then
+        ARGS[$i]=${ARGS[$i]}$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py ${TEMPDEPDIR}/*.dependencies)
+      fi
+      rm -rf ${TEMPDEPDIR}
       PROJECT_SPECIFIED=true
     done
     ARGS[$i]=${ARGS[$i]#,}
