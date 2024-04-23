@@ -164,6 +164,12 @@ then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-slack-notifications/${CARDS_VERSION}/slingosgifeature"
 fi
 
+#Should the cards-locking module be loaded?
+if [[ "$LOCKING_ENABLED" == "true" ]]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-locking/${CARDS_VERSION}/slingosgifeature"
+fi
+
 if [[ "$SMTPS_LOCALHOST_PROXY" == "true" ]]
 then
   keytool -import -trustcacerts -file /etc/cert/smtps_certificate.crt -keystore /etc/ssl/certs/java/cacerts -keypass changeit -storepass changeit -noprompt
