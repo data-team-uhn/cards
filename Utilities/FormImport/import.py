@@ -114,7 +114,7 @@ def repeated_section_handler(self, questionnaire, row):
     section_start_handler(self, questionnaire, row)
     questionnaire.parent['repeated'] = True
     parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
-    parent_label_trimmed = parent_label
+    parent_label_trimmed = parent_label.strip()
     if parent_label_trimmed[-1] == "_":
         parent_label_trimmed = parent_label_trimmed[:-1]
     isStatic = Headers['OPTIONS'].has_value(row)
@@ -130,9 +130,9 @@ def repeated_section_handler(self, questionnaire, row):
                 value, label = option
             section_title = parent_label_trimmed + "_" + clean_name(value)
             new_section = create_new_section(section_title)
-            new_section['label'] = label
+            new_section['label'] = clean_title(label)
             new_section['repeated_parent'] = parent_label
-            new_section['title'] = section_title
+            new_section['title'] = clean_title(section_title)
             questionnaire.push_section(new_section)
             questionnaire.complete_section()
         Headers['OPTIONS'].clear_value(row)
@@ -154,9 +154,9 @@ def repeated_section_handler(self, questionnaire, row):
                         and ('notApplicable' not in entry.keys() or not entry['notApplicable'])):
                     section_title = parent_label + "_" + clean_name(entry['value'])
                     new_section = create_new_section(section_title)
-                    new_section['label'] = entry['label']
+                    new_section['label'] = clean_title(entry['label'])
                     new_section['repeated_parent'] = parent_label
-                    new_section['title'] = section_title
+                    new_section['title'] = clean_title(section_title)
                     questionnaire.push_section(new_section)
                     condition_handle_brackets(questionnaire, new_section, referenced_question_key + " includes \"" + entry['value'] + "\"")
                     questionnaire.complete_section()
@@ -201,7 +201,7 @@ def process_repeated(self, questionnaire, child, repeated_conditionals, non_repe
 
 
 def end_repeated_section(self, questionnaire, row):
-    parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
+    parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label'].strip()
 
     repeated_conditionals = []
     non_repeated_children = []
@@ -381,9 +381,9 @@ class QuestionnaireState:
             title = clean_name(section.pop('title') if 'title' in section else section['label'])
             if title in self.section_title_list:
                 tag = 2
-                while title + " " + str(tag) in self.section_title_list:
+                while title + "_" + str(tag) in self.section_title_list:
                     tag += 1
-                title = title + " " + str(tag)
+                title = title + "_" + str(tag)
 
             self.section_title_list.append(title)
             self.parents[-1][title] = section
@@ -424,7 +424,7 @@ class QuestionnaireState:
 #=====================
 class HeaderColumn:
     def default_column_handler(self, questionnaire, row):
-        questionnaire.question[self.name] = self.get_value(row)
+        questionnaire.question[self.name] = self.get_value(row).strip()
 
     def __init__(self, column, name, handler=default_column_handler):
         self.column = column
@@ -463,7 +463,7 @@ def question_handler(self, questionnaire, row):
     title = self.get_value(row).strip().lower()
     if get_row_type_map(row).row_type in (SECTION_TYPES + MATRIX_TYPES):
         if Headers["SECTION"].has_value(row):
-            questionnaire.parent["title"] = title
+            questionnaire.parent["title"] = clean_title(title)
         else:
             questionnaire.push_section(create_new_section(title, False))
     else:
@@ -633,7 +633,7 @@ def clean_title(title):
 # Clean a string for use in a node name
 # TODO: replace with white list
 def clean_name(name):
-    result = re.sub(':|\(|\)|\[|\]| |,', '', name.replace("/", "-"))
+    result = re.sub(':|\(|\)|\[|\]| |,', '', name.strip().replace("/", "-"))
     return result[:40]
 
 # Create a questionnaire object containing a title and all the default quetionnaire properties
@@ -742,7 +742,7 @@ def process_conditional(self, questionnaire, row):
         questionnaire.push_section(create_new_section("section_" + questionnaire.question['name'], False), False)
         questionnaire.flag_must_complete_section()
 
-    conditional_string = self.get_value(row)
+    conditional_string = self.get_value(row).strip()
     log(Logging.INFO, "Processing conditional " + conditional_string)
     condition_handle_brackets(questionnaire, questionnaire.parent, conditional_string)
 
