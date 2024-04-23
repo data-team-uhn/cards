@@ -32,7 +32,7 @@
         // "set ACL for everyone \n deny rep:write,jcr:versionManagement on /Forms,/Subjects restriction(cards:locked) \n end"
       ]
     },
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~patientUi":{
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~locking":{
       "user.mapping":[
         "io.uhndata.cards.locking:locking=[locking]"
       ]
