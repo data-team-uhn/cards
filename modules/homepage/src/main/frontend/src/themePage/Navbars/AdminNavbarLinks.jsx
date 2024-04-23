@@ -129,7 +129,7 @@ function HeaderLinks (props) {
             ref={avatarRef}
             size="large"
             >
-            <Avatar className={classes[color]}>{initials}</Avatar>
+            <Avatar className={classes[color]} id="adminnavbaravatar">{initials}</Avatar>
           </IconButton>
         </Box>
       </Tooltip>
