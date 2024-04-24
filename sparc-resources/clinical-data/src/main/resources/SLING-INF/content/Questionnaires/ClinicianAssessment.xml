@@ -37309,7 +37309,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Knee (flextion)</value>
+				<value>Knee (flexion)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -37589,7 +37589,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left flextion 150°</value>
+						<value>Left flexion 150°</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -37651,7 +37651,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 					</property>
 					<property>
 						<name>text</name>
-						<value>Right flextion 150°</value>
+						<value>Right flexion 150°</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -37732,7 +37732,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left flextion 150°</value>
+						<value>Left flexion 150°</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -37794,7 +37794,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 					</property>
 					<property>
 						<name>text</name>
-						<value>Right flextion 150°</value>
+						<value>Right flexion 150°</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -38447,7 +38447,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left flextion 60°</value>
+						<value>Left flexion 60°</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -38509,7 +38509,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 					</property>
 					<property>
 						<name>text</name>
-						<value>Right flextion 60°</value>
+						<value>Right flexion 60°</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -38558,7 +38558,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left flextion 60°</value>
+					<value>Left flexion 60°</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -38587,7 +38587,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				</property>
 				<property>
 					<name>text</name>
-					<value>Right flextion 60°</value>
+					<value>Right flexion 60°</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -38635,7 +38635,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left flextion 80°</value>
+					<value>Left flexion 80°</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -38664,7 +38664,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				</property>
 				<property>
 					<name>text</name>
-					<value>Right flextion 80°</value>
+					<value>Right flexion 80°</value>
 					<type>String</type>
 				</property>
 				<property>
