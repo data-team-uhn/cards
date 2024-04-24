@@ -25,13 +25,14 @@ import Alert from '@mui/material/Alert';
 import withStyles from '@mui/styles/withStyles';
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import { DateTime } from "luxon";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ErrorDialog from "../components/ErrorDialog.jsx";
 
 function SubjectLockAction(props) {
-  const { classes, entryPath, onOpen, onClose, onComplete, size, variant, entryType, entryName, className, statusFlags } = props;
+  const { classes, subject, reloadSubject, size, variant, className } = props;
 
   const [ open, setOpen ] = useState(false);
   const [ dialogContent, setDialogContent ] = useState(<></>);
@@ -40,6 +41,7 @@ function SubjectLockAction(props) {
   const [ errorMessage, setErrorMessage ] = useState("");
   const [ requestInProgress, setRequestInProgress ] = useState(false);
   const [ isLocked, setLocked ] = useState(false);
+  const [ incompleteFormAlert, setIncompleteFormAlert ] = useState(null);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -48,29 +50,34 @@ function SubjectLockAction(props) {
 
   let lockUnlockText = isLocked ? "Unlock" : "Lock";
   let lockUnlockProgressText = isLocked ? "Unlocking..." : "Locking..."
+  let entryType = subject?.type?.label || "Subject";
+  let entryPath = subject?.["@path"];
 
   useEffect(() => {
-    setLocked(statusFlags && statusFlags.includes("LOCKED"));
-  }, [statusFlags]);
+    setLocked(subject?.statusFlags && subject.statusFlags.includes("LOCKED"))
+  }, [subject])
 
   useEffect(() => {
     if (isLocked) {
       setDialogContent(<>
-        <Alert severity="warning">If you unlock this {entryType} all the associated data forms
+        <Alert severity="warning">If you unlock this {subject?.type?.label} all the associated data forms
           will be unlocked as well unless they were seperately locked. Proceed?</Alert>
       </>)
     } else {
       setDialogContent(<>
+        {incompleteFormAlert}
         <Typography variant="body1">Signed off by: {username}</Typography>
         <Typography variant="body1">Date: {new Date().toDateString()}</Typography>
         <Alert severity="warning">Once you sign off on this {entryType}, it will be locked along with
           all the associated data forms and no further edits will be possible. Proceed?</Alert>
         </>)
     }
-  }, [isLocked, entryType, username]);
+  }, [isLocked, entryType, username, incompleteFormAlert]);
 
   let openDialog = () => {
-    onOpen && onOpen();
+    if (!isLocked) {
+      fetchIncompleteForms();
+    }
     // TODO: move to a global context?
     // See: AdminNavbarLinks
     fetchUsername();
@@ -78,7 +85,7 @@ function SubjectLockAction(props) {
   }
 
   let closeDialog = () => {
-    onClose && onClose();
+    setIncompleteFormAlert(null);
     setOpen(false);
   }
 
@@ -97,6 +104,45 @@ function SubjectLockAction(props) {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => setUsername(json["userID"]))
       .catch((error) => console.log(error));
+  }
+
+  let fetchIncompleteForms = () => {
+    setIncompleteFormAlert(null);
+
+    let subjects = [subject["jcr:uuid"]]
+    getChildSubjects(subject, subjects);
+    fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT * FROM [cards:Form] as f where f.'subject' in ('${subjects.join("','")}') and f.'statusFlags'='INCOMPLETE'`)
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then((response) => {
+      let rows = response.rows;
+      if (rows?.length > 0) {
+        setIncompleteFormAlert(
+          <Alert severity="warning">
+            {rows.length} form{rows.length > 1 ? "s are" : " is"} incomplete:
+            <ul>
+              {rows.map((row, index) => {
+                let date = row["jcr:created"];
+                let dateObj = DateTime.fromISO(date);
+                if (dateObj.isValid) {
+                  date = dateObj.toFormat("yyyy-MM-dd");
+                }
+                return <li key={index}>{row.questionnaire.title} created on {date}</li>
+              })}
+
+            </ul>
+          </Alert>
+        )
+      }
+    })
+  }
+
+  let getChildSubjects = (subject, subjects) => {
+    Object.values(subject).forEach((child) => {
+      if (child["jcr:primaryType"] == "cards:Subject" && child["@path"].startsWith(subject["@path"])) {
+        subjects.push(child["jcr:uuid"]);
+        getChildSubjects(child, subjects);
+      }
+    })
   }
 
   let handleError = (status, response) => {
@@ -126,7 +172,7 @@ function SubjectLockAction(props) {
       setRequestInProgress(false);
       if (response.ok)  {
         closeDialog();
-        onComplete && onComplete();
+        reloadSubject && reloadSubject();
       } else {
         handleError(response.status, response);
       }
@@ -141,7 +187,7 @@ function SubjectLockAction(props) {
     </ErrorDialog>
     <Dialog open={open} onClose={closeDialog}>
       <DialogTitle>
-        {isLocked ? "Unlock" : "Signoff and lock"} {entryType} {entryName}
+        {isLocked ? "Unlock" : "Signoff and lock"} {entryType} {subject?.identifier}
       </DialogTitle>
       <DialogContent>
         {dialogContent}
@@ -180,17 +226,11 @@ function SubjectLockAction(props) {
 }
 
 SubjectLockAction.propTypes = {
-  variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
-  entryType: PropTypes.string.isRequired,
-  entryName: PropTypes.string.isRequired,
-  entryPath: PropTypes.string.isRequired,
-  buttonText: PropTypes.string,
-  statusFlags: PropTypes.arrayOf(PropTypes.string),
+  subject: PropTypes.object,
   className: PropTypes.string,
-  onOpen: PropTypes.func,
-  onClose: PropTypes.func,
-  onComplete: PropTypes.func,
+  reloadSubject: PropTypes.func,
   size: PropTypes.oneOf(["small", "medium", "large"]),
+  variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
 }
 
 SubjectLockAction.defaultProps = {
