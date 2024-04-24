@@ -965,7 +965,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -1784,7 +1784,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -2603,7 +2603,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -3422,7 +3422,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -4241,7 +4241,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -5060,7 +5060,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -5879,7 +5879,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -6698,7 +6698,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -7517,7 +7517,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -8336,7 +8336,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -9155,7 +9155,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -9974,7 +9974,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -10793,7 +10793,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -11612,7 +11612,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -12431,7 +12431,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -13250,7 +13250,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -14069,7 +14069,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -14888,7 +14888,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -15707,7 +15707,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -16526,7 +16526,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -17345,7 +17345,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -18164,7 +18164,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -18983,7 +18983,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -19802,7 +19802,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -20621,7 +20621,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -21440,7 +21440,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -22259,7 +22259,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -23078,7 +23078,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -23897,7 +23897,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -24716,7 +24716,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -25535,7 +25535,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -26354,7 +26354,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -27173,7 +27173,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -27992,7 +27992,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -28811,7 +28811,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -29630,7 +29630,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -30449,7 +30449,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -31268,7 +31268,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -32087,7 +32087,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -32906,7 +32906,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -33725,7 +33725,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -34544,7 +34544,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value>=</value>
+					<value>includes</value>
 					<type>String</type>
 				</property>
 				<node>
