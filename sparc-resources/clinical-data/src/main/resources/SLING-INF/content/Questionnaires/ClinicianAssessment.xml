@@ -881,6 +881,11 @@
 				<name>noneoftheabove</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>label</name>
 					<value>No chronic pain</value>
 					<type>String</type>
@@ -920,7 +925,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>pain_diagram_empty</value>
+						<value>pain_diagram</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -936,7 +941,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>1</value>
+						<value>noneoftheabove</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -36544,6 +36549,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Back.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -36615,6 +36625,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>description</name>
 				<value>![](/Questionnaires/ClinicianAssessment/Lateral-Flexion.svg)</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>rom_3</name>
@@ -36688,6 +36703,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Neck.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -36759,6 +36779,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>description</name>
 				<value>![](/Questionnaires/ClinicianAssessment/Neck-LateralBending.svg)</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>rom_7</name>
@@ -36832,6 +36857,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Neck-Rotation.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_9</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -36904,6 +36934,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Hip-BackwardExtension.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_11</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -36975,6 +37010,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>description</name>
 				<value>![](/Questionnaires/ClinicianAssessment/Hip-Flexion.svg)</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>rom_13</name>
@@ -37106,6 +37146,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Hip-Adduction.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_17</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -37177,6 +37222,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>description</name>
 				<value>![](/Questionnaires/ClinicianAssessment/Hip-Abduction.svg)</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>rom_19</name>
@@ -37250,6 +37300,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Knee-Flexion.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_21</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -37321,6 +37376,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>description</name>
 				<value>![](/Questionnaires/ClinicianAssessment/Shoulder-AbductionAdduction.svg)</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>rom_23</name>
@@ -37452,6 +37512,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Shoulder-FlexionExtension.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_27</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -37581,6 +37646,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>description</name>
 				<value>![](/Questionnaires/ClinicianAssessment/Elbow.svg)</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>rom_31</name>
@@ -37712,6 +37782,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Forearm-PronationSupination.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_35</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -37841,6 +37916,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>description</name>
 				<value>![](/Questionnaires/ClinicianAssessment/Ankle.svg)</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>rom_39</name>
@@ -37972,6 +38052,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Ankle-FlexionExtension.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_43</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -38101,6 +38186,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>description</name>
 				<value>![](/Questionnaires/ClinicianAssessment/Wrist-RadialUlnar.svg)</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>rom_47</name>
@@ -38232,6 +38322,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Wrist.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_51</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -38362,6 +38457,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>![](/Questionnaires/ClinicianAssessment/Thumb-MPJoint.svg)</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>rom_55</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -38433,6 +38533,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>description</name>
 				<value>![](/Questionnaires/ClinicianAssessment/Thumb-IPJoint.svg)</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>rom_57</name>
