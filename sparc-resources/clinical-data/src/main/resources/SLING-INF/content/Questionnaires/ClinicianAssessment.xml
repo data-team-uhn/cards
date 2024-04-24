@@ -35898,7 +35898,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value> 0-19 points (office use only)</value>
+					<value>0-19 points (office use only)</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -37605,7 +37605,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				</node>
 			</node>
 			<node>
-				<name>section_shoulder_fe_left 2</name>
+				<name>section_shoulder_fe_left_2</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>rom_29</name>
@@ -47035,7 +47035,7 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 			</node>
 		</node>
 		<node>
-			<name>section_wpi 2</name>
+			<name>section_wpi_2</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
