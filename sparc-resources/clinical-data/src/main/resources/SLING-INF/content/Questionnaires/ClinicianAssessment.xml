@@ -38701,6 +38701,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>Trapezius Left</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>section_tpm_trapezius_left_tpm_type</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -38961,6 +38966,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>label</name>
 				<value>Trapezius Right</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>section_tpm_trapezius_right_tpm_type</name>
@@ -39223,6 +39233,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>Splenius Cervicis Left</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>section_tpm_splenius_cervicis_left_tpm_type</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -39483,6 +39498,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>label</name>
 				<value>Splenius Cervicis Right</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>section_tpm_splenius_cervicis_right_tpm_type</name>
@@ -39745,6 +39765,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>Levator Scapuale Left</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>section_tpm_levator_scapuale_left_tpm_type</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -40005,6 +40030,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>label</name>
 				<value>Levator Scapuale Right</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>section_tpm_levator_scapuale_right_tpm_type</name>
@@ -40267,6 +40297,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>Rhomboid Left</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>section_tpm_rhomboid_left_tpm_type</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -40527,6 +40562,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>label</name>
 				<value>Rhomboid Right</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>section_tpm_rhomboid_right_tpm_type</name>
@@ -40789,6 +40829,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>Latissimus Dorsi Left</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>section_tpm_latissimus_dorsi_left_tpm_type</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -41049,6 +41094,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>label</name>
 				<value>Latissimus Dorsi Right</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>section_tpm_latissimus_dorsi_right_tpm_type</name>
@@ -41311,6 +41361,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>Multifidus Left</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>section_tpm_multifidus_left_tpm_type</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -41571,6 +41626,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>label</name>
 				<value>Multifidus Right</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>section_tpm_multifidus_right_tpm_type</name>
@@ -41833,6 +41893,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>Gluteus Medius Left</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>section_tpm_gluteus_medius_left_tpm_type</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -42093,6 +42158,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>label</name>
 				<value>Gluteus Medius Right</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>section_tpm_gluteus_medius_right_tpm_type</name>
@@ -42355,6 +42425,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>Pirformis Left</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>section_tpm_pirformis_left_tpm_type</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -42615,6 +42690,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>label</name>
 				<value>Pirformis Right</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>section_tpm_pirformis_right_tpm_type</name>
@@ -42877,6 +42957,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<value>Gastrocnemius Left</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>section_tpm_gastrocnemius_left_tpm_type</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -43137,6 +43222,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 				<name>label</name>
 				<value>Gastrocnemius Right</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<node>
 				<name>section_tpm_gastrocnemius_right_tpm_type</name>
@@ -43452,6 +43542,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 		<node>
 			<name>section_ppt_spine</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
+			<property>
+				<name>compact</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>ppt_cervical_spine</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -43554,6 +43649,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 		<node>
 			<name>section_ppt_shoulder</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>ppt_shoulder_right</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -43656,6 +43756,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 		<node>
 			<name>section_ppt_hand</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>ppt_hand_right</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -43758,6 +43863,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 		<node>
 			<name>section_ppt_leg</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>ppt_leg_right</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -43860,6 +43970,11 @@ A diagnosis of FM is valid irrespective of other diagnoses. A diagnosis of FM do
 		<node>
 			<name>section_ppt_ankle</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 			<node>
 				<name>ppt_ankle_right</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
