@@ -20,7 +20,20 @@ import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Tooltip, Typography } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Tooltip,
+  TextField,
+  Typography
+} from "@mui/material";
 import Alert from '@mui/material/Alert';
 import withStyles from '@mui/styles/withStyles';
 import LockIcon from "@mui/icons-material/Lock";
@@ -34,22 +47,24 @@ import ErrorDialog from "../components/ErrorDialog.jsx";
 function SubjectLockAction(props) {
   const { classes, subject, reloadSubject, size, variant, className } = props;
 
+  const METHOD_LOCK = "LOCK";
+  const METHOD_UNLOCK = "UNLOCK";
+  const ACTION_CONTINUE = "CONTINUE";
+  const ACTION_LOCK = "SIGN OFF";
+  const ACTION_UNLOCK = "UNLOCK";
+
   const [ open, setOpen ] = useState(false);
-  const [ dialogContent, setDialogContent ] = useState(<></>);
-  const [ username, setUsername ] = useState("");
+  const [ dialogTitle, setDialogTitle ] = useState(null);
+  const [ dialogContent, setDialogContent ] = useState(null);
+  const [ nextAction, setNextAction ] = useState(ACTION_CONTINUE);
   const [ errorOpen, setErrorOpen ] = useState(false);
   const [ errorMessage, setErrorMessage ] = useState("");
   const [ requestInProgress, setRequestInProgress ] = useState(false);
   const [ isLocked, setLocked ] = useState(false);
-  const [ incompleteFormAlert, setIncompleteFormAlert ] = useState(null);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const METHOD_LOCK = "LOCK";
-  const METHOD_UNLOCK = "UNLOCK";
-
   let lockUnlockText = isLocked ? "Unlock" : "Lock";
-  let lockUnlockProgressText = isLocked ? "Unlocking..." : "Locking..."
   let entryType = subject?.type?.label || "Subject";
   let entryPath = subject?.["@path"];
 
@@ -57,35 +72,20 @@ function SubjectLockAction(props) {
     setLocked(subject?.statusFlags && subject.statusFlags.includes("LOCKED"))
   }, [subject])
 
-  useEffect(() => {
-    if (isLocked) {
-      setDialogContent(<>
-        <Alert severity="warning">If you unlock this {subject?.type?.label} all the associated data forms
-          will be unlocked as well unless they were seperately locked. Proceed?</Alert>
-      </>)
-    } else {
-      setDialogContent(<>
-        {incompleteFormAlert}
-        <Typography variant="body1">Signed off by: {username}</Typography>
-        <Typography variant="body1">Date: {new Date().toDateString()}</Typography>
-        <Alert severity="warning">Once you sign off on this {entryType}, it will be locked along with
-          all the associated data forms and no further edits will be possible. Proceed?</Alert>
-        </>)
-    }
-  }, [isLocked, entryType, username, incompleteFormAlert]);
-
   let openDialog = () => {
-    if (!isLocked) {
+    setDialogContent(null);
+    if (isLocked) {
+      handleOpenDialogLocked();
+    } else {
+      handleOpenDialogUnlocked();
       fetchIncompleteForms();
     }
     // TODO: move to a global context?
     // See: AdminNavbarLinks
-    fetchUsername();
     setOpen(true);
   }
 
   let closeDialog = () => {
-    setIncompleteFormAlert(null);
     setOpen(false);
   }
 
@@ -99,41 +99,101 @@ function SubjectLockAction(props) {
     setErrorOpen(false);
   }
 
+  let handleOpenDialogUnlocked = () => {
+    setDialogTitle(`Signoff and lock ${entryType} ${subject?.identifier}`)
+    setNextAction(ACTION_CONTINUE);
+    setDialogContent(null);
+    fetchIncompleteForms()
+  }
+
+  let getLockWarning = () => {
+    return <Alert severity="warning">Once you sign off on this {entryType}, it will be locked along with
+            all the associated data forms and no further edits will be possible. Proceed?</Alert>
+  }
+
   let fetchUsername = () => {
+    setRequestInProgress(true);
     fetchWithReLogin(globalLoginDisplay, "/system/sling/info.sessionInfo.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => setUsername(json["userID"]))
-      .catch((error) => console.log(error));
+      .then((json) => {
+        setNextAction(ACTION_LOCK);
+        setDialogContent(
+          <>
+            <TextField
+              disabled
+              id="user"
+              label="Signing User"
+              defaultValue={json["userID"]}
+              className={classes.lockDialogInput}
+              />
+            <TextField
+              disabled
+              id="date"
+              label="Date"
+              defaultValue={new Date().toDateString()}
+              className={classes.lockDialogInput}
+              />
+            {getLockWarning()}
+          </>
+        )
+        setRequestInProgress(false);
+      })
+      .catch(response => handleError(response.status, response));
+  }
+
+  let handleOpenDialogLocked = () => {
+    setDialogTitle(`Unlock ${entryType} ${subject?.identifier}`)
+    setNextAction(ACTION_UNLOCK)
+    setDialogContent(
+      <Alert severity="warning">
+        If you unlock this {subject?.type?.label} all the associated data forms
+        will be unlocked as well unless they were seperately locked. Proceed?
+      </Alert>
+    )
+  }
+
+  let handleContinue = () => {
+    fetchUsername();
   }
 
   let fetchIncompleteForms = () => {
-    setIncompleteFormAlert(null);
+    setRequestInProgress(true);
 
     let subjects = [subject["jcr:uuid"]]
     getChildSubjects(subject, subjects);
     fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT * FROM [cards:Form] as f where f.'subject' in ('${subjects.join("','")}') and f.'statusFlags'='INCOMPLETE'`)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((response) => {
-      let rows = response.rows;
-      if (rows?.length > 0) {
-        setIncompleteFormAlert(
-          <Alert severity="warning">
-            {rows.length} form{rows.length > 1 ? "s are" : " is"} incomplete:
-            <ul>
-              {rows.map((row, index) => {
-                let date = row["jcr:created"];
-                let dateObj = DateTime.fromISO(date);
-                if (dateObj.isValid) {
-                  date = dateObj.toFormat("yyyy-MM-dd");
-                }
-                return <li key={index}>{row.questionnaire.title} created on {date}</li>
-              })}
-
-            </ul>
-          </Alert>
-        )
+      if (response.rows?.length > 0) {
+        handleIncompleteForms(response.rows);
+      } else {
+        handleContinue();
       }
+      setRequestInProgress(false);
     })
+    .catch(response => handleError(response.status, response));
+  }
+
+  let handleIncompleteForms = (rows) => {
+    setNextAction(ACTION_CONTINUE);
+    setDialogContent(
+      <>
+        <Typography variant="body1">{rows.length} form{rows.length > 1 ? "s are" : " is"} incomplete:</Typography>
+        <List>
+          {rows.map((row, index) => {
+            let date = row["jcr:created"];
+            let dateObj = DateTime.fromISO(date);
+            if (dateObj.isValid) {
+              date = dateObj.toFormat("yyyy-MM-dd");
+            }
+            return <ListItem key={index}>
+                <ListItemText primary={row.questionnaire.title} secondary={"Created on " + date}></ListItemText>
+              </ListItem>
+          })}
+        </List>
+        {getLockWarning()}
+      </>
+    )
   }
 
   let getChildSubjects = (subject, subjects) => {
@@ -146,6 +206,7 @@ function SubjectLockAction(props) {
   }
 
   let handleError = (status, response) => {
+    setRequestInProgress(false);
     if (status === 404) {
       // NOT FOUND
       openError(`Item could not be found. This item may have already been deleted.`);
@@ -157,7 +218,26 @@ function SubjectLockAction(props) {
     }
   }
 
-  let handleConfirm = () => {
+  let handleActionClicked = () => {
+    switch (nextAction) {
+      case ACTION_CONTINUE:
+        handleContinue();
+        break;
+      case ACTION_LOCK:
+        handleSave(METHOD_LOCK);
+        break;
+      case ACTION_UNLOCK:
+        handleSave(METHOD_UNLOCK);
+        break;
+      default:
+        // Should not happen
+        console.warn("Subject Lock dialog encountered unknown next action " + nextAction);
+        closeDialog();
+        break;
+    }
+  }
+
+  let handleSave = (method) => {
     // If no path is provided, can't lock or unlock anything
     if (!entryPath) {
       openError("Could not " + lockUnlockText.toLowerCase() + " as the path to this item is unknown");
@@ -165,9 +245,8 @@ function SubjectLockAction(props) {
     }
     let url = new URL(entryPath, window.location.origin);
     setRequestInProgress(true);
-
     fetchWithReLogin(globalLoginDisplay, url, {
-      method: isLocked ? METHOD_UNLOCK : METHOD_LOCK,
+      method: method,
     }).then((response) => {
       setRequestInProgress(false);
       if (response.ok)  {
@@ -186,9 +265,7 @@ function SubjectLockAction(props) {
       <Typography variant="body1">{errorMessage}</Typography>
     </ErrorDialog>
     <Dialog open={open} onClose={closeDialog}>
-      <DialogTitle>
-        {isLocked ? "Unlock" : "Signoff and lock"} {entryType} {subject?.identifier}
-      </DialogTitle>
+      <DialogTitle>{dialogTitle}</DialogTitle>
       <DialogContent>
         {dialogContent}
       </DialogContent>
@@ -197,10 +274,10 @@ function SubjectLockAction(props) {
           <Button
             variant="contained"
             size="small"
-            onClick={() => handleConfirm()}
+            onClick={handleActionClicked}
             disabled={requestInProgress}
           >
-            {requestInProgress ? lockUnlockProgressText : lockUnlockText}
+            {nextAction}
           </Button>
       </DialogActions>
     </Dialog>
