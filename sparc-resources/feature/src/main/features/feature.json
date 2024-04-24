@@ -21,6 +21,14 @@
   },
   "bundles":[
     {
+      "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
+      "start-order": "20"
+    },
+    {
+      "id":"${project.groupId}:cards-visit-subject-type:${project.version}",
+      "start-order": "21"
+    },
+    {
       "id":"io.uhndata.cards:sparc-resources-clinical-data:${project.version}",
       "start-order":"26"
     }
