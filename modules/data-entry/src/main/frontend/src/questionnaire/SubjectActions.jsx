@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import { loadExtensions } from "../uiextension/extensionManager";
 
 export default function SubjectActions(props) {
-  let { entryPath, entryName, entryType, statusFlags, onComplete, className } = props;
+  let { subject, reloadSubject, className, size, variant } = props;
 
   const [ extensionPointComponents, setExtensionPointComponents ] = useState([]);
   const [ isInitialized, setIsInitialized ] = useState(false);
@@ -47,12 +47,11 @@ export default function SubjectActions(props) {
           return (
             <ThisComp
               key={`SubjectAction-${index}`}
-              entryPath={entryPath}
-              entryName={entryName}
-              entryType={entryType}
-              statusFlags={statusFlags}
-              onComplete={onComplete}
+              subject={subject}
+              reloadSubject={reloadSubject}
               className={className}
+              size={size}
+              variant={variant}
             />
           );
         })

@@ -325,11 +325,8 @@ function SubjectHeader(props) {
   let subjectMenu = (
             <div className={classes.actionsMenu}>
               <SubjectActions
-                entryPath={path}
-                entryName={identifier}
-                entryType={label}
-                statusFlags={statusFlags}
-                onComplete={fetchSubjectData}
+                subject={subject?.data}
+                reloadSubject={fetchSubjectData}
               />
               <PrintButton
                 resourcePath={path}
@@ -424,8 +421,10 @@ function SubjectMemberInternal (props) {
 
   // Fetch table data for all forms related to a Subject
   useEffect(() => {
-    fetchTableData();
-  }, [data['jcr:uuid']]);
+    if (data['jcr:uuid']) {
+      fetchTableData();
+    }
+  }, [data]);
 
   // If the subjectGroups data has not yet been fetched, return an in-progress symbol
   if (!subjectGroups) {
@@ -461,13 +460,9 @@ function SubjectMemberInternal (props) {
     </Tooltip>
   )
   let action = <>
-
                 <SubjectActions
-                  entryPath={path}
-                  entryType={label}
-                  entryName={identifier}
-                  statusFlags={statusFlags}
-                  onComplete={fetchSubjectData}
+                  subject={data}
+                  reloadSubject={fetchSubjectData}
                   className={classes.childSubjectHeaderButton}
                 />
                 <PrintButton
