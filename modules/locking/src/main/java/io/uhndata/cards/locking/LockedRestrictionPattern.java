@@ -18,7 +18,10 @@
  */
 package io.uhndata.cards.locking;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
@@ -48,12 +51,10 @@ public class LockedRestrictionPattern implements RestrictionPattern
     @Override
     public boolean matches(final Tree tree, final PropertyState property)
     {
-        if (!isFormOrSubject(tree)) {
-            // Not a form or subject
-            return false;
+        if (isSubjectOrForm(tree)) {
+            return isLocked(tree) || isParentSubjectLocked(tree);
         }
-
-        return isLocked(tree);
+        return false;
     }
 
     @Override
@@ -75,19 +76,57 @@ public class LockedRestrictionPattern implements RestrictionPattern
         PropertyState flags = node.getProperty("statusFlags");
         for (int i = 0; i < flags.count(); ++i) {
             if ("LOCKED".equals(flags.getValue(Type.STRING, i))) {
-                String path = node.getPath();
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isFormOrSubject(final Tree node)
+    private boolean isLocked(final Node node)
+        throws RepositoryException
     {
-        if (node.hasProperty("jcr:primaryType")) {
-            String type = node.getProperty("jcr:primaryType").getValue(Type.STRING);
-            return "cards:Form".equals(type) || "cards:Subject".equals(type);
+        Value[] flags = node.getProperty("statusFlags").getValues();
+        for (int i = 0; i < flags.length; ++i) {
+            if ("LOCKED".equals(flags[i].getString())) {
+                return true;
+            }
         }
         return false;
+    }
+
+
+    private boolean isParentSubjectLocked(final Tree node)
+    {
+        if (isForm(node)) {
+            String subject = node.getProperty("subject").getValue(Type.REFERENCE);
+            try {
+                return isLocked(this.session.getNodeByIdentifier(subject));
+            } catch (RepositoryException e) {
+                // User cannot access the subject they are trying to create a form for
+                // so cannot check if it is locked
+                return true;
+            }
+        } else {
+            // Must be a subject
+            Tree parent = node.getParent();
+            return isSubject(parent) && isLocked(parent);
+        }
+    }
+
+    private boolean isSubjectOrForm(final Tree node)
+    {
+        return isForm(node) || isSubject(node);
+    }
+
+    private boolean isForm(final Tree node)
+    {
+        return node.hasProperty("jcr:primaryType")
+            && "cards:Form".equals(node.getProperty("jcr:primaryType").getValue(Type.STRING));
+    }
+
+    private boolean isSubject(final Tree node)
+    {
+        return node.hasProperty("jcr:primaryType")
+            && "cards:Subject".equals(node.getProperty("jcr:primaryType").getValue(Type.STRING));
     }
 }
