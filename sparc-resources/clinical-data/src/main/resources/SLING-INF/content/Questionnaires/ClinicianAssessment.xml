@@ -1002,7 +1002,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_face_pc_1</name>
+				<name>pc_pain_diagram_selection_face_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -1340,7 +1340,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_face_pc_2</name>
+				<name>pc_pain_diagram_selection_face_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -1407,7 +1407,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_face_pc_3</name>
+				<name>pc_pain_diagram_selection_face_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -1550,7 +1550,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_face_pc_4</name>
+				<name>pc_pain_diagram_selection_face_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -1584,7 +1584,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_face_pc_5</name>
+				<name>pc_pain_diagram_selection_face_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -1618,7 +1618,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_face_pc_6</name>
+				<name>pc_pain_diagram_selection_face_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -1704,7 +1704,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_face_pc_7</name>
+				<name>pc_pain_diagram_selection_face_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -1821,7 +1821,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_head_pc_1</name>
+				<name>pc_pain_diagram_selection_head_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2159,7 +2159,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_head_pc_2</name>
+				<name>pc_pain_diagram_selection_head_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2226,7 +2226,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_head_pc_3</name>
+				<name>pc_pain_diagram_selection_head_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2369,7 +2369,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_head_pc_4</name>
+				<name>pc_pain_diagram_selection_head_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2403,7 +2403,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_head_pc_5</name>
+				<name>pc_pain_diagram_selection_head_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2437,7 +2437,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_head_pc_6</name>
+				<name>pc_pain_diagram_selection_head_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2523,7 +2523,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_head_pc_7</name>
+				<name>pc_pain_diagram_selection_head_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2640,7 +2640,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightj_pc_1</name>
+				<name>pc_pain_diagram_selection_rightjaw_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2978,7 +2978,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightj_pc_2</name>
+				<name>pc_pain_diagram_selection_rightjaw_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3045,7 +3045,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightj_pc_3</name>
+				<name>pc_pain_diagram_selection_rightjaw_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3188,7 +3188,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightj_pc_4</name>
+				<name>pc_pain_diagram_selection_rightjaw_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3222,7 +3222,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightj_pc_5</name>
+				<name>pc_pain_diagram_selection_rightjaw_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3256,7 +3256,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightj_pc_6</name>
+				<name>pc_pain_diagram_selection_rightjaw_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3342,7 +3342,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightj_pc_7</name>
+				<name>pc_pain_diagram_selection_rightjaw_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3459,7 +3459,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftja_pc_1</name>
+				<name>pc_pain_diagram_selection_leftjaw_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3797,7 +3797,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftja_pc_2</name>
+				<name>pc_pain_diagram_selection_leftjaw_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3864,7 +3864,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftja_pc_3</name>
+				<name>pc_pain_diagram_selection_leftjaw_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4007,7 +4007,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftja_pc_4</name>
+				<name>pc_pain_diagram_selection_leftjaw_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4041,7 +4041,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftja_pc_5</name>
+				<name>pc_pain_diagram_selection_leftjaw_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4075,7 +4075,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftja_pc_6</name>
+				<name>pc_pain_diagram_selection_leftjaw_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4161,7 +4161,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftja_pc_7</name>
+				<name>pc_pain_diagram_selection_leftjaw_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4278,7 +4278,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_neck_pc_1</name>
+				<name>pc_pain_diagram_selection_neck_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4616,7 +4616,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_neck_pc_2</name>
+				<name>pc_pain_diagram_selection_neck_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4683,7 +4683,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_neck_pc_3</name>
+				<name>pc_pain_diagram_selection_neck_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4826,7 +4826,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_neck_pc_4</name>
+				<name>pc_pain_diagram_selection_neck_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4860,7 +4860,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_neck_pc_5</name>
+				<name>pc_pain_diagram_selection_neck_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4894,7 +4894,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_neck_pc_6</name>
+				<name>pc_pain_diagram_selection_neck_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4980,7 +4980,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_neck_pc_7</name>
+				<name>pc_pain_diagram_selection_neck_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -5097,7 +5097,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rights_pc_1</name>
+				<name>pc_pain_diagram_selection_rightshoulder_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -5435,7 +5435,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rights_pc_2</name>
+				<name>pc_pain_diagram_selection_rightshoulder_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -5502,7 +5502,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rights_pc_3</name>
+				<name>pc_pain_diagram_selection_rightshoulder_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -5645,7 +5645,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rights_pc_4</name>
+				<name>pc_pain_diagram_selection_rightshoulder_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -5679,7 +5679,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rights_pc_5</name>
+				<name>pc_pain_diagram_selection_rightshoulder_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -5713,7 +5713,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rights_pc_6</name>
+				<name>pc_pain_diagram_selection_rightshoulder_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -5799,7 +5799,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rights_pc_7</name>
+				<name>pc_pain_diagram_selection_rightshoulder_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -5916,7 +5916,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftsh_pc_1</name>
+				<name>pc_pain_diagram_selection_leftshoulder_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -6254,7 +6254,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftsh_pc_2</name>
+				<name>pc_pain_diagram_selection_leftshoulder_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -6321,7 +6321,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftsh_pc_3</name>
+				<name>pc_pain_diagram_selection_leftshoulder_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -6464,7 +6464,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftsh_pc_4</name>
+				<name>pc_pain_diagram_selection_leftshoulder_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -6498,7 +6498,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftsh_pc_5</name>
+				<name>pc_pain_diagram_selection_leftshoulder_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -6532,7 +6532,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftsh_pc_6</name>
+				<name>pc_pain_diagram_selection_leftshoulder_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -6618,7 +6618,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftsh_pc_7</name>
+				<name>pc_pain_diagram_selection_leftshoulder_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -6735,7 +6735,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightc_pc_1</name>
+				<name>pc_pain_diagram_selection_rightchest_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7073,7 +7073,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightc_pc_2</name>
+				<name>pc_pain_diagram_selection_rightchest_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7140,7 +7140,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightc_pc_3</name>
+				<name>pc_pain_diagram_selection_rightchest_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7283,7 +7283,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightc_pc_4</name>
+				<name>pc_pain_diagram_selection_rightchest_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7317,7 +7317,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightc_pc_5</name>
+				<name>pc_pain_diagram_selection_rightchest_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7351,7 +7351,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightc_pc_6</name>
+				<name>pc_pain_diagram_selection_rightchest_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7437,7 +7437,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightc_pc_7</name>
+				<name>pc_pain_diagram_selection_rightchest_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7554,7 +7554,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftch_pc_1</name>
+				<name>pc_pain_diagram_selection_leftchest_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7892,7 +7892,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftch_pc_2</name>
+				<name>pc_pain_diagram_selection_leftchest_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7959,7 +7959,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftch_pc_3</name>
+				<name>pc_pain_diagram_selection_leftchest_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8102,7 +8102,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftch_pc_4</name>
+				<name>pc_pain_diagram_selection_leftchest_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8136,7 +8136,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftch_pc_5</name>
+				<name>pc_pain_diagram_selection_leftchest_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8170,7 +8170,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftch_pc_6</name>
+				<name>pc_pain_diagram_selection_leftchest_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8256,7 +8256,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftch_pc_7</name>
+				<name>pc_pain_diagram_selection_leftchest_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8373,7 +8373,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb_pc_1</name>
+				<name>pc_pain_diagram_selection_rightbreast_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8711,7 +8711,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb_pc_2</name>
+				<name>pc_pain_diagram_selection_rightbreast_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8778,7 +8778,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb_pc_3</name>
+				<name>pc_pain_diagram_selection_rightbreast_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8921,7 +8921,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb_pc_4</name>
+				<name>pc_pain_diagram_selection_rightbreast_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8955,7 +8955,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb_pc_5</name>
+				<name>pc_pain_diagram_selection_rightbreast_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8989,7 +8989,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb_pc_6</name>
+				<name>pc_pain_diagram_selection_rightbreast_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9075,7 +9075,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb_pc_7</name>
+				<name>pc_pain_diagram_selection_rightbreast_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9192,7 +9192,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbr_pc_1</name>
+				<name>pc_pain_diagram_selection_leftbreast_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9530,7 +9530,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbr_pc_2</name>
+				<name>pc_pain_diagram_selection_leftbreast_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9597,7 +9597,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbr_pc_3</name>
+				<name>pc_pain_diagram_selection_leftbreast_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9740,7 +9740,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbr_pc_4</name>
+				<name>pc_pain_diagram_selection_leftbreast_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9774,7 +9774,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbr_pc_5</name>
+				<name>pc_pain_diagram_selection_leftbreast_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9808,7 +9808,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbr_pc_6</name>
+				<name>pc_pain_diagram_selection_leftbreast_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9894,7 +9894,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbr_pc_7</name>
+				<name>pc_pain_diagram_selection_leftbreast_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10011,7 +10011,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu_pc_1</name>
+				<name>pc_pain_diagram_selection_rightupperarm_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10349,7 +10349,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu_pc_2</name>
+				<name>pc_pain_diagram_selection_rightupperarm_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10416,7 +10416,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu_pc_3</name>
+				<name>pc_pain_diagram_selection_rightupperarm_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10559,7 +10559,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu_pc_4</name>
+				<name>pc_pain_diagram_selection_rightupperarm_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10593,7 +10593,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu_pc_5</name>
+				<name>pc_pain_diagram_selection_rightupperarm_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10627,7 +10627,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu_pc_6</name>
+				<name>pc_pain_diagram_selection_rightupperarm_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10713,7 +10713,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu_pc_7</name>
+				<name>pc_pain_diagram_selection_rightupperarm_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10830,7 +10830,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup_pc_1</name>
+				<name>pc_pain_diagram_selection_leftupperarm_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11168,7 +11168,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup_pc_2</name>
+				<name>pc_pain_diagram_selection_leftupperarm_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11235,7 +11235,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup_pc_3</name>
+				<name>pc_pain_diagram_selection_leftupperarm_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11378,7 +11378,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup_pc_4</name>
+				<name>pc_pain_diagram_selection_leftupperarm_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11412,7 +11412,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup_pc_5</name>
+				<name>pc_pain_diagram_selection_leftupperarm_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11446,7 +11446,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup_pc_6</name>
+				<name>pc_pain_diagram_selection_leftupperarm_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11532,7 +11532,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup_pc_7</name>
+				<name>pc_pain_diagram_selection_leftupperarm_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11649,7 +11649,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righte_pc_1</name>
+				<name>pc_pain_diagram_selection_rightelbow_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11987,7 +11987,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righte_pc_2</name>
+				<name>pc_pain_diagram_selection_rightelbow_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12054,7 +12054,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righte_pc_3</name>
+				<name>pc_pain_diagram_selection_rightelbow_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12197,7 +12197,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righte_pc_4</name>
+				<name>pc_pain_diagram_selection_rightelbow_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12231,7 +12231,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righte_pc_5</name>
+				<name>pc_pain_diagram_selection_rightelbow_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12265,7 +12265,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righte_pc_6</name>
+				<name>pc_pain_diagram_selection_rightelbow_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12351,7 +12351,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righte_pc_7</name>
+				<name>pc_pain_diagram_selection_rightelbow_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12468,7 +12468,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftel_pc_1</name>
+				<name>pc_pain_diagram_selection_leftelbow_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12806,7 +12806,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftel_pc_2</name>
+				<name>pc_pain_diagram_selection_leftelbow_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12873,7 +12873,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftel_pc_3</name>
+				<name>pc_pain_diagram_selection_leftelbow_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13016,7 +13016,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftel_pc_4</name>
+				<name>pc_pain_diagram_selection_leftelbow_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13050,7 +13050,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftel_pc_5</name>
+				<name>pc_pain_diagram_selection_leftelbow_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13084,7 +13084,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftel_pc_6</name>
+				<name>pc_pain_diagram_selection_leftelbow_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13170,7 +13170,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftel_pc_7</name>
+				<name>pc_pain_diagram_selection_leftelbow_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13287,7 +13287,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl_pc_1</name>
+				<name>pc_pain_diagram_selection_rightlowerarm_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13625,7 +13625,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl_pc_2</name>
+				<name>pc_pain_diagram_selection_rightlowerarm_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13692,7 +13692,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl_pc_3</name>
+				<name>pc_pain_diagram_selection_rightlowerarm_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13835,7 +13835,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl_pc_4</name>
+				<name>pc_pain_diagram_selection_rightlowerarm_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13869,7 +13869,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl_pc_5</name>
+				<name>pc_pain_diagram_selection_rightlowerarm_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13903,7 +13903,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl_pc_6</name>
+				<name>pc_pain_diagram_selection_rightlowerarm_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13989,7 +13989,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl_pc_7</name>
+				<name>pc_pain_diagram_selection_rightlowerarm_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14106,7 +14106,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo_pc_1</name>
+				<name>pc_pain_diagram_selection_leftlowerarm_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14444,7 +14444,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo_pc_2</name>
+				<name>pc_pain_diagram_selection_leftlowerarm_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14511,7 +14511,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo_pc_3</name>
+				<name>pc_pain_diagram_selection_leftlowerarm_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14654,7 +14654,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo_pc_4</name>
+				<name>pc_pain_diagram_selection_leftlowerarm_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14688,7 +14688,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo_pc_5</name>
+				<name>pc_pain_diagram_selection_leftlowerarm_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14722,7 +14722,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo_pc_6</name>
+				<name>pc_pain_diagram_selection_leftlowerarm_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14808,7 +14808,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo_pc_7</name>
+				<name>pc_pain_diagram_selection_leftlowerarm_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14925,7 +14925,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightw_pc_1</name>
+				<name>pc_pain_diagram_selection_rightwrist_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -15263,7 +15263,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightw_pc_2</name>
+				<name>pc_pain_diagram_selection_rightwrist_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -15330,7 +15330,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightw_pc_3</name>
+				<name>pc_pain_diagram_selection_rightwrist_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -15473,7 +15473,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightw_pc_4</name>
+				<name>pc_pain_diagram_selection_rightwrist_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -15507,7 +15507,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightw_pc_5</name>
+				<name>pc_pain_diagram_selection_rightwrist_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -15541,7 +15541,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightw_pc_6</name>
+				<name>pc_pain_diagram_selection_rightwrist_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -15627,7 +15627,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightw_pc_7</name>
+				<name>pc_pain_diagram_selection_rightwrist_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -15744,7 +15744,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftwr_pc_1</name>
+				<name>pc_pain_diagram_selection_leftwrist_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -16082,7 +16082,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftwr_pc_2</name>
+				<name>pc_pain_diagram_selection_leftwrist_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -16149,7 +16149,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftwr_pc_3</name>
+				<name>pc_pain_diagram_selection_leftwrist_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -16292,7 +16292,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftwr_pc_4</name>
+				<name>pc_pain_diagram_selection_leftwrist_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -16326,7 +16326,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftwr_pc_5</name>
+				<name>pc_pain_diagram_selection_leftwrist_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -16360,7 +16360,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftwr_pc_6</name>
+				<name>pc_pain_diagram_selection_leftwrist_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -16446,7 +16446,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftwr_pc_7</name>
+				<name>pc_pain_diagram_selection_leftwrist_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -16563,7 +16563,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth_pc_1</name>
+				<name>pc_pain_diagram_selection_righthand_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -16901,7 +16901,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth_pc_2</name>
+				<name>pc_pain_diagram_selection_righthand_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -16968,7 +16968,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth_pc_3</name>
+				<name>pc_pain_diagram_selection_righthand_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17111,7 +17111,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth_pc_4</name>
+				<name>pc_pain_diagram_selection_righthand_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17145,7 +17145,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth_pc_5</name>
+				<name>pc_pain_diagram_selection_righthand_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17179,7 +17179,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth_pc_6</name>
+				<name>pc_pain_diagram_selection_righthand_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17265,7 +17265,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth_pc_7</name>
+				<name>pc_pain_diagram_selection_righthand_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17382,7 +17382,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftha_pc_1</name>
+				<name>pc_pain_diagram_selection_lefthand_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17720,7 +17720,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftha_pc_2</name>
+				<name>pc_pain_diagram_selection_lefthand_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17787,7 +17787,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftha_pc_3</name>
+				<name>pc_pain_diagram_selection_lefthand_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17930,7 +17930,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftha_pc_4</name>
+				<name>pc_pain_diagram_selection_lefthand_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17964,7 +17964,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftha_pc_5</name>
+				<name>pc_pain_diagram_selection_lefthand_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -17998,7 +17998,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftha_pc_6</name>
+				<name>pc_pain_diagram_selection_lefthand_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -18084,7 +18084,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftha_pc_7</name>
+				<name>pc_pain_diagram_selection_lefthand_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -18201,7 +18201,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_upperb_pc_1</name>
+				<name>pc_pain_diagram_selection_upperback_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -18539,7 +18539,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_upperb_pc_2</name>
+				<name>pc_pain_diagram_selection_upperback_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -18606,7 +18606,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_upperb_pc_3</name>
+				<name>pc_pain_diagram_selection_upperback_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -18749,7 +18749,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_upperb_pc_4</name>
+				<name>pc_pain_diagram_selection_upperback_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -18783,7 +18783,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_upperb_pc_5</name>
+				<name>pc_pain_diagram_selection_upperback_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -18817,7 +18817,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_upperb_pc_6</name>
+				<name>pc_pain_diagram_selection_upperback_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -18903,7 +18903,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_upperb_pc_7</name>
+				<name>pc_pain_diagram_selection_upperback_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -19020,7 +19020,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lowerb_pc_1</name>
+				<name>pc_pain_diagram_selection_lowerback_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -19358,7 +19358,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lowerb_pc_2</name>
+				<name>pc_pain_diagram_selection_lowerback_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -19425,7 +19425,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lowerb_pc_3</name>
+				<name>pc_pain_diagram_selection_lowerback_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -19568,7 +19568,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lowerb_pc_4</name>
+				<name>pc_pain_diagram_selection_lowerback_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -19602,7 +19602,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lowerb_pc_5</name>
+				<name>pc_pain_diagram_selection_lowerback_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -19636,7 +19636,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lowerb_pc_6</name>
+				<name>pc_pain_diagram_selection_lowerback_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -19722,7 +19722,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lowerb_pc_7</name>
+				<name>pc_pain_diagram_selection_lowerback_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -19839,7 +19839,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_abdome_pc_1</name>
+				<name>pc_pain_diagram_selection_abdomen_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20177,7 +20177,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_abdome_pc_2</name>
+				<name>pc_pain_diagram_selection_abdomen_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20244,7 +20244,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_abdome_pc_3</name>
+				<name>pc_pain_diagram_selection_abdomen_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20387,7 +20387,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_abdome_pc_4</name>
+				<name>pc_pain_diagram_selection_abdomen_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20421,7 +20421,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_abdome_pc_5</name>
+				<name>pc_pain_diagram_selection_abdomen_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20455,7 +20455,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_abdome_pc_6</name>
+				<name>pc_pain_diagram_selection_abdomen_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20541,7 +20541,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_abdome_pc_7</name>
+				<name>pc_pain_diagram_selection_abdomen_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20658,7 +20658,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_pelvis_pc_1</name>
+				<name>pc_pain_diagram_selection_pelvis_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20996,7 +20996,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_pelvis_pc_2</name>
+				<name>pc_pain_diagram_selection_pelvis_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21063,7 +21063,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_pelvis_pc_3</name>
+				<name>pc_pain_diagram_selection_pelvis_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21206,7 +21206,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_pelvis_pc_4</name>
+				<name>pc_pain_diagram_selection_pelvis_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21240,7 +21240,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_pelvis_pc_5</name>
+				<name>pc_pain_diagram_selection_pelvis_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21274,7 +21274,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_pelvis_pc_6</name>
+				<name>pc_pain_diagram_selection_pelvis_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21360,7 +21360,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_pelvis_pc_7</name>
+				<name>pc_pain_diagram_selection_pelvis_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21477,7 +21477,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth 2_pc_1</name>
+				<name>pc_pain_diagram_selection_righthip_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21815,7 +21815,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth 2_pc_2</name>
+				<name>pc_pain_diagram_selection_righthip_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21882,7 +21882,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth 2_pc_3</name>
+				<name>pc_pain_diagram_selection_righthip_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22025,7 +22025,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth 2_pc_4</name>
+				<name>pc_pain_diagram_selection_righthip_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22059,7 +22059,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth 2_pc_5</name>
+				<name>pc_pain_diagram_selection_righthip_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22093,7 +22093,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth 2_pc_6</name>
+				<name>pc_pain_diagram_selection_righthip_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22179,7 +22179,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righth 2_pc_7</name>
+				<name>pc_pain_diagram_selection_righthip_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22296,7 +22296,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lefthi_pc_1</name>
+				<name>pc_pain_diagram_selection_lefthip_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22634,7 +22634,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lefthi_pc_2</name>
+				<name>pc_pain_diagram_selection_lefthip_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22701,7 +22701,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lefthi_pc_3</name>
+				<name>pc_pain_diagram_selection_lefthip_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22844,7 +22844,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lefthi_pc_4</name>
+				<name>pc_pain_diagram_selection_lefthip_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22878,7 +22878,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lefthi_pc_5</name>
+				<name>pc_pain_diagram_selection_lefthip_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22912,7 +22912,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lefthi_pc_6</name>
+				<name>pc_pain_diagram_selection_lefthip_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -22998,7 +22998,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_lefthi_pc_7</name>
+				<name>pc_pain_diagram_selection_lefthip_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -23115,7 +23115,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightg_pc_1</name>
+				<name>pc_pain_diagram_selection_rightgroin_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -23453,7 +23453,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightg_pc_2</name>
+				<name>pc_pain_diagram_selection_rightgroin_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -23520,7 +23520,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightg_pc_3</name>
+				<name>pc_pain_diagram_selection_rightgroin_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -23663,7 +23663,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightg_pc_4</name>
+				<name>pc_pain_diagram_selection_rightgroin_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -23697,7 +23697,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightg_pc_5</name>
+				<name>pc_pain_diagram_selection_rightgroin_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -23731,7 +23731,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightg_pc_6</name>
+				<name>pc_pain_diagram_selection_rightgroin_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -23817,7 +23817,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightg_pc_7</name>
+				<name>pc_pain_diagram_selection_rightgroin_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -23934,7 +23934,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftgr_pc_1</name>
+				<name>pc_pain_diagram_selection_leftgroin_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -24272,7 +24272,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftgr_pc_2</name>
+				<name>pc_pain_diagram_selection_leftgroin_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -24339,7 +24339,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftgr_pc_3</name>
+				<name>pc_pain_diagram_selection_leftgroin_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -24482,7 +24482,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftgr_pc_4</name>
+				<name>pc_pain_diagram_selection_leftgroin_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -24516,7 +24516,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftgr_pc_5</name>
+				<name>pc_pain_diagram_selection_leftgroin_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -24550,7 +24550,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftgr_pc_6</name>
+				<name>pc_pain_diagram_selection_leftgroin_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -24636,7 +24636,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftgr_pc_7</name>
+				<name>pc_pain_diagram_selection_leftgroin_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -24753,7 +24753,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb 2_pc_1</name>
+				<name>pc_pain_diagram_selection_rightbuttocks_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -25091,7 +25091,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb 2_pc_2</name>
+				<name>pc_pain_diagram_selection_rightbuttocks_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -25158,7 +25158,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb 2_pc_3</name>
+				<name>pc_pain_diagram_selection_rightbuttocks_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -25301,7 +25301,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb 2_pc_4</name>
+				<name>pc_pain_diagram_selection_rightbuttocks_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -25335,7 +25335,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb 2_pc_5</name>
+				<name>pc_pain_diagram_selection_rightbuttocks_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -25369,7 +25369,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb 2_pc_6</name>
+				<name>pc_pain_diagram_selection_rightbuttocks_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -25455,7 +25455,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightb 2_pc_7</name>
+				<name>pc_pain_diagram_selection_rightbuttocks_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -25572,7 +25572,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbu_pc_1</name>
+				<name>pc_pain_diagram_selection_leftbuttocks_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -25910,7 +25910,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbu_pc_2</name>
+				<name>pc_pain_diagram_selection_leftbuttocks_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -25977,7 +25977,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbu_pc_3</name>
+				<name>pc_pain_diagram_selection_leftbuttocks_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -26120,7 +26120,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbu_pc_4</name>
+				<name>pc_pain_diagram_selection_leftbuttocks_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -26154,7 +26154,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbu_pc_5</name>
+				<name>pc_pain_diagram_selection_leftbuttocks_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -26188,7 +26188,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbu_pc_6</name>
+				<name>pc_pain_diagram_selection_leftbuttocks_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -26274,7 +26274,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftbu_pc_7</name>
+				<name>pc_pain_diagram_selection_leftbuttocks_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -26391,7 +26391,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu 2_pc_1</name>
+				<name>pc_pain_diagram_selection_rightupperleg_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -26729,7 +26729,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu 2_pc_2</name>
+				<name>pc_pain_diagram_selection_rightupperleg_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -26796,7 +26796,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu 2_pc_3</name>
+				<name>pc_pain_diagram_selection_rightupperleg_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -26939,7 +26939,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu 2_pc_4</name>
+				<name>pc_pain_diagram_selection_rightupperleg_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -26973,7 +26973,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu 2_pc_5</name>
+				<name>pc_pain_diagram_selection_rightupperleg_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -27007,7 +27007,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu 2_pc_6</name>
+				<name>pc_pain_diagram_selection_rightupperleg_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -27093,7 +27093,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightu 2_pc_7</name>
+				<name>pc_pain_diagram_selection_rightupperleg_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -27210,7 +27210,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup 2_pc_1</name>
+				<name>pc_pain_diagram_selection_leftupperleg_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -27548,7 +27548,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup 2_pc_2</name>
+				<name>pc_pain_diagram_selection_leftupperleg_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -27615,7 +27615,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup 2_pc_3</name>
+				<name>pc_pain_diagram_selection_leftupperleg_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -27758,7 +27758,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup 2_pc_4</name>
+				<name>pc_pain_diagram_selection_leftupperleg_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -27792,7 +27792,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup 2_pc_5</name>
+				<name>pc_pain_diagram_selection_leftupperleg_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -27826,7 +27826,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup 2_pc_6</name>
+				<name>pc_pain_diagram_selection_leftupperleg_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -27912,7 +27912,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftup 2_pc_7</name>
+				<name>pc_pain_diagram_selection_leftupperleg_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -28029,7 +28029,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightk_pc_1</name>
+				<name>pc_pain_diagram_selection_rightknee_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -28367,7 +28367,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightk_pc_2</name>
+				<name>pc_pain_diagram_selection_rightknee_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -28434,7 +28434,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightk_pc_3</name>
+				<name>pc_pain_diagram_selection_rightknee_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -28577,7 +28577,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightk_pc_4</name>
+				<name>pc_pain_diagram_selection_rightknee_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -28611,7 +28611,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightk_pc_5</name>
+				<name>pc_pain_diagram_selection_rightknee_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -28645,7 +28645,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightk_pc_6</name>
+				<name>pc_pain_diagram_selection_rightknee_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -28731,7 +28731,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightk_pc_7</name>
+				<name>pc_pain_diagram_selection_rightknee_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -28848,7 +28848,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftkn_pc_1</name>
+				<name>pc_pain_diagram_selection_leftknee_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -29186,7 +29186,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftkn_pc_2</name>
+				<name>pc_pain_diagram_selection_leftknee_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -29253,7 +29253,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftkn_pc_3</name>
+				<name>pc_pain_diagram_selection_leftknee_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -29396,7 +29396,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftkn_pc_4</name>
+				<name>pc_pain_diagram_selection_leftknee_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -29430,7 +29430,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftkn_pc_5</name>
+				<name>pc_pain_diagram_selection_leftknee_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -29464,7 +29464,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftkn_pc_6</name>
+				<name>pc_pain_diagram_selection_leftknee_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -29550,7 +29550,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftkn_pc_7</name>
+				<name>pc_pain_diagram_selection_leftknee_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -29667,7 +29667,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl 2_pc_1</name>
+				<name>pc_pain_diagram_selection_rightlowerleg_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -30005,7 +30005,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl 2_pc_2</name>
+				<name>pc_pain_diagram_selection_rightlowerleg_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -30072,7 +30072,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl 2_pc_3</name>
+				<name>pc_pain_diagram_selection_rightlowerleg_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -30215,7 +30215,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl 2_pc_4</name>
+				<name>pc_pain_diagram_selection_rightlowerleg_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -30249,7 +30249,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl 2_pc_5</name>
+				<name>pc_pain_diagram_selection_rightlowerleg_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -30283,7 +30283,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl 2_pc_6</name>
+				<name>pc_pain_diagram_selection_rightlowerleg_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -30369,7 +30369,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightl 2_pc_7</name>
+				<name>pc_pain_diagram_selection_rightlowerleg_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -30486,7 +30486,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo 2_pc_1</name>
+				<name>pc_pain_diagram_selection_leftlowerleg_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -30824,7 +30824,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo 2_pc_2</name>
+				<name>pc_pain_diagram_selection_leftlowerleg_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -30891,7 +30891,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo 2_pc_3</name>
+				<name>pc_pain_diagram_selection_leftlowerleg_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31034,7 +31034,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo 2_pc_4</name>
+				<name>pc_pain_diagram_selection_leftlowerleg_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31068,7 +31068,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo 2_pc_5</name>
+				<name>pc_pain_diagram_selection_leftlowerleg_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31102,7 +31102,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo 2_pc_6</name>
+				<name>pc_pain_diagram_selection_leftlowerleg_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31188,7 +31188,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftlo 2_pc_7</name>
+				<name>pc_pain_diagram_selection_leftlowerleg_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31305,7 +31305,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righta_pc_1</name>
+				<name>pc_pain_diagram_selection_rightankle_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31643,7 +31643,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righta_pc_2</name>
+				<name>pc_pain_diagram_selection_rightankle_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31710,7 +31710,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righta_pc_3</name>
+				<name>pc_pain_diagram_selection_rightankle_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31853,7 +31853,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righta_pc_4</name>
+				<name>pc_pain_diagram_selection_rightankle_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31887,7 +31887,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righta_pc_5</name>
+				<name>pc_pain_diagram_selection_rightankle_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -31921,7 +31921,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righta_pc_6</name>
+				<name>pc_pain_diagram_selection_rightankle_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -32007,7 +32007,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_righta_pc_7</name>
+				<name>pc_pain_diagram_selection_rightankle_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -32124,7 +32124,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftan_pc_1</name>
+				<name>pc_pain_diagram_selection_leftankle_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -32462,7 +32462,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftan_pc_2</name>
+				<name>pc_pain_diagram_selection_leftankle_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -32529,7 +32529,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftan_pc_3</name>
+				<name>pc_pain_diagram_selection_leftankle_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -32672,7 +32672,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftan_pc_4</name>
+				<name>pc_pain_diagram_selection_leftankle_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -32706,7 +32706,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftan_pc_5</name>
+				<name>pc_pain_diagram_selection_leftankle_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -32740,7 +32740,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftan_pc_6</name>
+				<name>pc_pain_diagram_selection_leftankle_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -32826,7 +32826,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftan_pc_7</name>
+				<name>pc_pain_diagram_selection_leftankle_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -32943,7 +32943,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightf_pc_1</name>
+				<name>pc_pain_diagram_selection_rightfoot_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -33281,7 +33281,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightf_pc_2</name>
+				<name>pc_pain_diagram_selection_rightfoot_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -33348,7 +33348,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightf_pc_3</name>
+				<name>pc_pain_diagram_selection_rightfoot_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -33491,7 +33491,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightf_pc_4</name>
+				<name>pc_pain_diagram_selection_rightfoot_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -33525,7 +33525,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightf_pc_5</name>
+				<name>pc_pain_diagram_selection_rightfoot_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -33559,7 +33559,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightf_pc_6</name>
+				<name>pc_pain_diagram_selection_rightfoot_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -33645,7 +33645,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_rightf_pc_7</name>
+				<name>pc_pain_diagram_selection_rightfoot_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -33762,7 +33762,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftfo_pc_1</name>
+				<name>pc_pain_diagram_selection_leftfoot_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -34100,7 +34100,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftfo_pc_2</name>
+				<name>pc_pain_diagram_selection_leftfoot_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -34167,7 +34167,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftfo_pc_3</name>
+				<name>pc_pain_diagram_selection_leftfoot_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -34310,7 +34310,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftfo_pc_4</name>
+				<name>pc_pain_diagram_selection_leftfoot_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -34344,7 +34344,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftfo_pc_5</name>
+				<name>pc_pain_diagram_selection_leftfoot_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -34378,7 +34378,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftfo_pc_6</name>
+				<name>pc_pain_diagram_selection_leftfoot_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -34464,7 +34464,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_leftfo_pc_7</name>
+				<name>pc_pain_diagram_selection_leftfoot_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -34581,7 +34581,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_noneof_pc_1</name>
+				<name>pc_pain_diagram_selection_noneoftheabove_pc_1</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -34919,7 +34919,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_noneof_pc_2</name>
+				<name>pc_pain_diagram_selection_noneoftheabove_pc_2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -34986,7 +34986,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_noneof_pc_3</name>
+				<name>pc_pain_diagram_selection_noneoftheabove_pc_3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -35129,7 +35129,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_noneof_pc_4</name>
+				<name>pc_pain_diagram_selection_noneoftheabove_pc_4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -35163,7 +35163,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_noneof_pc_5</name>
+				<name>pc_pain_diagram_selection_noneoftheabove_pc_5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -35197,7 +35197,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_noneof_pc_6</name>
+				<name>pc_pain_diagram_selection_noneoftheabove_pc_6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -35283,7 +35283,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_pc_pain_diagram_selection_noneof_pc_7</name>
+				<name>pc_pain_diagram_selection_noneoftheabove_pc_7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
