@@ -737,6 +737,11 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
+    lockDialogInput: {
+      marginTop: theme.spacing(3),
+      marginRight: theme.spacing(3),
+      marginBottom: theme.spacing(3),
+    }
 });
 
 export default questionnaireStyle;

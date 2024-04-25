@@ -29,9 +29,16 @@ import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy, getHomepageLink } from "./SubjectIdentifier";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+import EditButton from "../dataHomepage/EditButton.jsx";
+import PrintButton from "../dataHomepage/PrintButton.jsx";
+import ResourceHeader from "./ResourceHeader.jsx"
+import SubjectTimeline from "./SubjectTimeline.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import SubjectActions from "./SubjectActions.jsx";
+
 import MaterialReactTable from 'material-react-table';
 import { Box } from '@mui/material';
-
 import {
   Avatar,
   CircularProgress,
@@ -51,13 +58,6 @@ import CollapsedIcon from "@mui/icons-material/ChevronRight";
 import ExpandedIcon from "@mui/icons-material/ExpandMore";
 import FormIcon from "@mui/icons-material/Description";
 import SubjectIcon from "@mui/icons-material/AssignmentInd";
-import DeleteButton from "../dataHomepage/DeleteButton.jsx";
-import EditButton from "../dataHomepage/EditButton.jsx";
-import PrintButton from "../dataHomepage/PrintButton.jsx";
-import ResourceHeader from "./ResourceHeader.jsx"
-import SubjectTimeline from "./SubjectTimeline.jsx";
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import LockButton from "../dataHomepage/LockButton.jsx";
 
 /***
  * Create a URL that checks for the existence of a subject
@@ -326,12 +326,9 @@ function SubjectHeader(props) {
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let subjectMenu = (
             <div className={classes.actionsMenu}>
-              <LockButton
-                entryPath={path}
-                entryName={identifier}
-                entryType={label}
-                statusFlags={statusFlags}
-                onComplete={fetchSubjectData}
+              <SubjectActions
+                subject={subject?.data}
+                reloadSubject={fetchSubjectData}
               />
               <PrintButton
                 resourcePath={path}
@@ -426,8 +423,10 @@ function SubjectMemberInternal (props) {
 
   // Fetch table data for all forms related to a Subject
   useEffect(() => {
-    fetchTableData();
-  }, [data['jcr:uuid']]);
+    if (data['jcr:uuid']) {
+      fetchTableData();
+    }
+  }, [data]);
 
   // If the subjectGroups data has not yet been fetched, return an in-progress symbol
   if (!subjectGroups) {
@@ -463,13 +462,10 @@ function SubjectMemberInternal (props) {
     </Tooltip>
   )
   let action = <>
-                <LockButton
-                  entryPath={path}
-                  entryType={label}
-                  entryName={identifier}
-                  statusFlags={statusFlags}
+                <SubjectActions
+                  subject={data}
+                  reloadSubject={fetchSubjectData}
                   className={classes.childSubjectHeaderButton}
-                  onComplete={fetchSubjectData}
                 />
                 <PrintButton
                   resourcePath={path}

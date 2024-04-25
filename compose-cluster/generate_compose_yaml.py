@@ -103,6 +103,7 @@ argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SA
 argparser.add_argument('--saml_cloud_iam_demo', help='Enable SAML authentication with CARDS via the Cloud-IAM.com demo', action='store_true')
 argparser.add_argument('--server_address', help='Domain name (or Domain name:port) that the public will use for accessing this CARDS deployment')
 argparser.add_argument('--slack_notifications', help='Enable the periodic sending of performance metrics to a Slack channel', action='store_true')
+argparser.add_argument('--locking', help='Enable the ability to lock and unlock resources', action='store_true')
 argparser.add_argument('--smtps', help='Enable SMTPS emailing functionality', action='store_true')
 argparser.add_argument('--smtps_localhost_proxy', help='Run an SSL termination proxy so that the CARDS container may connect to the host\'s SMTP server at localhost:25', action='store_true')
 argparser.add_argument('--smtps_test_container', help='Enable the mock SMTPS (cards/postfix-docker) container for viewing CARDS-sent emails.', action='store_true')
@@ -777,6 +778,9 @@ if args.slack_notifications:
   # If a NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE environment variable is set, pass it. Otherwise, CARDS will use its default value
   if 'NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE' in os.environ:
     yaml_obj['services']['cardsinitial']['environment'].append("NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE={}".format(os.environ['NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE']))
+
+if args.locking:
+  yaml_obj['services']['cardsinitial']['environment'].append("LOCKING_ENABLED=true")
 
 if ENABLE_BACKUP_SERVER:
   print("Configuring service: backup_recorder")
