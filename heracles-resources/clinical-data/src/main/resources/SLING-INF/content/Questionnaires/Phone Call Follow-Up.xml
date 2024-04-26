@@ -6080,7 +6080,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_provider_hospital</name>
+			<name>section_hospital</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -6129,7 +6129,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_provider_hospital_section_provider_info</name>
+				<name>section_hospital_info</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6221,7 +6221,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_provider_emergency</name>
+			<name>section_emergency</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -6270,7 +6270,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_provider_emergency_section_provider_info</name>
+				<name>section_emergency_info</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6362,7 +6362,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_provider_walkin</name>
+			<name>section_walkin</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -6411,7 +6411,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_provider_walkin_section_provider_info</name>
+				<name>section_walkin_info</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6424,7 +6424,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					<type>Boolean</type>
 				</property>
 				<node>
-					<name>walkin_name</name>
+					<name>provider_walkin_name</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6448,7 +6448,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</property>
 				</node>
 				<node>
-					<name>walkin_location</name>
+					<name>provider_walkin_location</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6472,7 +6472,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</property>
 				</node>
 				<node>
-					<name>walkin_records_consent</name>
+					<name>provider_walkin_records_consent</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6503,7 +6503,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_provider_familydoctor</name>
+			<name>section_familydoctor</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -6552,7 +6552,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_provider_familydoctor_section_provider_info</name>
+				<name>section_familydoctor_info</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6644,7 +6644,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_provider_specialist</name>
+			<name>section_specialist</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -6693,7 +6693,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_provider_specialist_section_provider_info</name>
+				<name>section_specialist_info</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7527,7 +7527,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>ablation_date</name>
+				<name>procedure_ablation_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7546,7 +7546,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>ablation_outcome</name>
+				<name>procedure_ablation_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7739,7 +7739,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>angioplastystent_date</name>
+				<name>procedure_angioplastystent_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7758,7 +7758,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>angioplastystent_outcome</name>
+				<name>procedure_angioplastystent_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7951,7 +7951,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>catheteriation_date</name>
+				<name>procedure_catheteriation_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -7970,7 +7970,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>catheteriation_outcome</name>
+				<name>procedure_catheteriation_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8163,7 +8163,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>bypasscabg_date</name>
+				<name>procedure_bypasscabg_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8182,7 +8182,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>bypasscabg_outcome</name>
+				<name>procedure_bypasscabg_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8375,7 +8375,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>heartvalvereplacement_date</name>
+				<name>procedure_heartvalvereplacement_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8394,7 +8394,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>heartvalvereplacement_outcome</name>
+				<name>procedure_heartvalvereplacement_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8587,7 +8587,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>hearttransplant_date</name>
+				<name>procedure_hearttransplant_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8606,7 +8606,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>hearttransplant_outcome</name>
+				<name>procedure_hearttransplant_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8799,7 +8799,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>pacemaker_date</name>
+				<name>procedure_pacemaker_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8818,7 +8818,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>pacemaker_outcome</name>
+				<name>procedure_pacemaker_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9011,7 +9011,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>aorticvalvereplacement_date</name>
+				<name>procedure_aorticvalvereplacement_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9030,7 +9030,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>aorticvalvereplacement_outcome</name>
+				<name>procedure_aorticvalvereplacement_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9223,7 +9223,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>ventricularassistdevice_date</name>
+				<name>procedure_ventricularassistdevice_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9242,7 +9242,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>ventricularassistdevice_outcome</name>
+				<name>procedure_ventricularassistdevice_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9435,7 +9435,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>hipreplacement_date</name>
+				<name>procedure_hipreplacement_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9454,7 +9454,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>hipreplacement_outcome</name>
+				<name>procedure_hipreplacement_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9647,7 +9647,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>kneereplacement_date</name>
+				<name>procedure_kneereplacement_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9666,7 +9666,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>kneereplacement_outcome</name>
+				<name>procedure_kneereplacement_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9859,7 +9859,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>otherbonejointmuscle_date</name>
+				<name>procedure_otherbonejointmuscle_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9878,7 +9878,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>otherbonejointmuscle_outcome</name>
+				<name>procedure_otherbonejointmuscle_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10022,7 +10022,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_other_2</name>
+			<name>section_procedure_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -10110,7 +10110,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>other_2_date</name>
+				<name>procedure_other_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10129,7 +10129,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>other_2_outcome</name>
+				<name>procedure_other_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10876,7 +10876,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>bloodwork_date</name>
+				<name>clinical_test_bloodwork_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10945,7 +10945,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>cardiacct_date</name>
+				<name>clinical_test_cardiacct_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11014,7 +11014,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>angiographydiagnosticonly_date</name>
+				<name>clinical_test_angiographydiagnosticonly_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11083,7 +11083,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>cpet_date</name>
+				<name>clinical_test_cpet_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11152,7 +11152,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>ecg-holter_date</name>
+				<name>clinical_test_ecg-holter_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11221,7 +11221,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>nuclearstress_date</name>
+				<name>clinical_test_nuclearstress_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11290,7 +11290,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>pharmacologicalstress_date</name>
+				<name>clinical_test_pharmacologicalstress_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11359,7 +11359,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>stressecho_date</name>
+				<name>clinical_test_stressecho_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11428,7 +11428,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>transthoracicecho_date</name>
+				<name>clinical_test_transthoracicecho_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11497,7 +11497,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>transesophagealecho_date</name>
+				<name>clinical_test_transesophagealecho_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11566,7 +11566,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>brainct_date</name>
+				<name>clinical_test_brainct_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11635,7 +11635,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>brainmri_date</name>
+				<name>clinical_test_brainmri_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11704,7 +11704,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>ctpa_date</name>
+				<name>clinical_test_ctpa_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11773,7 +11773,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>cardiacmri_date</name>
+				<name>clinical_test_cardiacmri_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11842,7 +11842,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>othertests-qualifiers_date</name>
+				<name>clinical_test_othertests-qualifiers_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11987,7 +11987,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_list_chestpain_2</name>
+			<name>section_symptoms_present_existing_chestpain</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12036,7 +12036,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>chestpain_2_symptoms_present_existing_bool</name>
+				<name>symptoms_present_existing_chestpain_bool</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12065,7 +12065,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>chestpain_2_section_symptoms_present_existing_info</name>
+				<name>section_symptoms_present_existing_chestpain_yes</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -12081,7 +12081,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 						<property>
 							<name>value</name>
 							<values>
-								<value>chestpain_2_symptoms_present_existing_bool</value>
+								<value>symptoms_present_existing_chestpain_bool</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -12109,7 +12109,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>chestpain_2_rating</name>
+					<name>symptoms_present_existing_chestpain_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -12233,7 +12233,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>chestpain_2_frequency</name>
+					<name>symptoms_present_existing_chestpain_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -12402,7 +12402,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_list_nauseaindigestion_2</name>
+			<name>section_symptoms_present_existing_nauseaindigest</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12451,7 +12451,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>nauseaindigestion_2_symptoms_present_existing_bool</name>
+				<name>symptoms_present_existing_nauseaindigestion_bool</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12480,7 +12480,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>nauseaindigestion_2_section_symptoms_present_existing_info</name>
+				<name>section_symptoms_present_existing_nauseaindigestion_yes</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -12496,7 +12496,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 						<property>
 							<name>value</name>
 							<values>
-								<value>nauseaindigestion_2_symptoms_present_existing_bool</value>
+								<value>symptoms_present_existing_nauseaindigestion_bool</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -12524,7 +12524,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>nauseaindigestion_2_rating</name>
+					<name>symptoms_present_existing_nauseaindigestion_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -12648,7 +12648,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>nauseaindigestion_2_frequency</name>
+					<name>symptoms_present_existing_nauseaindigestion_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -12817,7 +12817,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_list_heartrhythmproblem_2</name>
+			<name>section_symptoms_present_existing_heartrhythmproblem</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12866,7 +12866,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>heartrhythmproblem_2_symptoms_present_existing_bool</name>
+				<name>symptoms_present_existing_heartrhythmproblem_bool</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12895,7 +12895,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>section_symptoms_present_existing_list_h_section_symptoms_present_existing_info</name>
+				<name>section_symptoms_present_existing_heartrhythmproblem_yes</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -12911,7 +12911,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 						<property>
 							<name>value</name>
 							<values>
-								<value>heartrhythmproblem_2_symptoms_present_existing_bool</value>
+								<value>symptoms_present_existing_heartrhythmproblem_bool</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -12939,7 +12939,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>heartrhythmproblem_2_rating</name>
+					<name>symptoms_present_existing_heartrhythmproblem_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -13063,7 +13063,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>heartrhythmproblem_2_frequency</name>
+					<name>symptoms_present_existing_heartrhythmproblem_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -13232,7 +13232,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_list_shortnessofbreath_2</name>
+			<name>section_symptoms_present_existing_shortnessofbreath</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -13281,7 +13281,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>shortnessofbreath_2_symptoms_present_existing_bool</name>
+				<name>symptoms_present_existing_shortnessofbreath_bool</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13310,7 +13310,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>shortnessofbreath_2_section_symptoms_present_existing_info</name>
+				<name>section_symptoms_present_existing_shortnessofbreath_yes</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -13326,7 +13326,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 						<property>
 							<name>value</name>
 							<values>
-								<value>shortnessofbreath_2_symptoms_present_existing_bool</value>
+								<value>symptoms_present_existing_shortnessofbreath_bool</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -13354,7 +13354,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>shortnessofbreath_2_rating</name>
+					<name>symptoms_present_existing_shortnessofbreath_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -13478,7 +13478,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>shortnessofbreath_2_frequency</name>
+					<name>symptoms_present_existing_shortnessofbreath_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -13647,7 +13647,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_list_weightchange_2</name>
+			<name>section_symptoms_present_existing_weightchange</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -13696,7 +13696,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>weightchange_2_symptoms_present_existing_bool</name>
+				<name>symptoms_present_existing_weightchange_bool</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13725,7 +13725,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>section_symptoms_present_existing_list_w_section_symptoms_present_existing_info</name>
+				<name>section_symptoms_present_existing_weightchange_yes</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -13741,7 +13741,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 						<property>
 							<name>value</name>
 							<values>
-								<value>weightchange_2_symptoms_present_existing_bool</value>
+								<value>symptoms_present_existing_weightchange_bool</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -13769,7 +13769,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>weightchange_2_rating</name>
+					<name>symptoms_present_existing_weightchange_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -13893,7 +13893,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>weightchange_2_frequency</name>
+					<name>symptoms_present_existing_weightchange_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -14062,7 +14062,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_list_lowerbodyswelling_2</name>
+			<name>section_symptoms_present_existing_lowerbodyswelling</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -14111,7 +14111,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>lowerbodyswelling_2_symptoms_present_existing_bool</name>
+				<name>symptoms_present_existing_lowerbodyswelling_bool</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14140,7 +14140,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>lowerbodyswelling_2_section_symptoms_present_existing_info</name>
+				<name>section_symptoms_present_existing_lowerbodyswelling_yes</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -14156,7 +14156,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 						<property>
 							<name>value</name>
 							<values>
-								<value>lowerbodyswelling_2_symptoms_present_existing_bool</value>
+								<value>symptoms_present_existing_lowerbodyswelling_bool</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -14184,7 +14184,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lowerbodyswelling_2_rating</name>
+					<name>symptoms_present_existing_lowerbodyswelling_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -14308,7 +14308,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lowerbodyswelling_2_frequency</name>
+					<name>symptoms_present_existing_lowerbodyswelling_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -14477,7 +14477,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_list_lowerbodypain_2</name>
+			<name>section_symptoms_present_existing_lowerbodypain</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -14526,7 +14526,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>lowerbodypain_2_symptoms_present_existing_bool</name>
+				<name>symptoms_present_existing_lowerbodypain_bool</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14555,7 +14555,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>section_symptoms_present_existing_list_l_2_section_symptoms_present_existing_info</name>
+				<name>section_symptoms_present_existing_lowerbodypain_yes</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -14571,7 +14571,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 						<property>
 							<name>value</name>
 							<values>
-								<value>lowerbodypain_2_symptoms_present_existing_bool</value>
+								<value>symptoms_present_existing_lowerbodypain_bool</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -14599,7 +14599,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lowerbodypain_2_rating</name>
+					<name>symptoms_present_existing_lowerbodypain_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -14723,7 +14723,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lowerbodypain_2_frequency</name>
+					<name>symptoms_present_existing_lowerbodypain_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -14892,7 +14892,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_list_lightheadeddizziness_2</name>
+			<name>section_symptoms_present_existing_lightheadeddizziness</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -14941,7 +14941,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>lightheadeddizziness_2_symptoms_present_existing_bool</name>
+				<name>symptoms_present_existing_lightheadeddizziness_bool</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -14970,7 +14970,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>section_symptoms_present_existing_list_l_3_section_symptoms_present_existing_info</name>
+				<name>section_symptoms_present_existing_lightheadeddizziness_yes</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -14986,7 +14986,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 						<property>
 							<name>value</name>
 							<values>
-								<value>lightheadeddizziness_2_symptoms_present_existing_bool</value>
+								<value>symptoms_present_existing_lightheadeddizziness_bool</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -15014,7 +15014,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lightheadeddizziness_2_rating</name>
+					<name>symptoms_present_existing_lightheadeddizziness_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -15138,7 +15138,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lightheadeddizziness_2_frequency</name>
+					<name>symptoms_present_existing_lightheadeddizziness_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -15307,7 +15307,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_list_other_3</name>
+			<name>section_symptoms_present_existing_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -15356,7 +15356,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>other_3_symptoms_present_existing_bool</name>
+				<name>symptoms_present_existing_other_bool</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -15385,7 +15385,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>section_symptoms_present_existing_list_o_section_symptoms_present_existing_info</name>
+				<name>section_symptoms_present_existing_other_yes</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -15401,7 +15401,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 						<property>
 							<name>value</name>
 							<values>
-								<value>other_3_symptoms_present_existing_bool</value>
+								<value>symptoms_present_existing_other_bool</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -15429,7 +15429,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>other_3_rating</name>
+					<name>symptoms_present_existing_other_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -15553,7 +15553,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>other_3_frequency</name>
+					<name>symptoms_present_existing_other_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -16069,7 +16069,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_present_new_list_severity_chestpain_3</name>
+				<name>section_symptoms_present_new_chestpain</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -16118,7 +16118,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>chestpain_3_rating</name>
+					<name>symptoms_present_new_chestpain_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -16242,7 +16242,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>chestpain_3_frequency</name>
+					<name>symptoms_present_new_chestpain_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -16410,7 +16410,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_present_new_list_severity_nauseaindigestion_3</name>
+				<name>section_symptoms_present_new_nauseaindigestion</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -16459,7 +16459,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>nauseaindigestion_3_rating</name>
+					<name>symptoms_present_new_nauseaindigestion_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -16583,7 +16583,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>nauseaindigestion_3_frequency</name>
+					<name>symptoms_present_new_nauseaindigestion_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -16751,7 +16751,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_present_new_list_severity_heartrhythmproblem_3</name>
+				<name>section_symptoms_present_new_heartrhythmproblem</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -16800,7 +16800,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>heartrhythmproblem_3_rating</name>
+					<name>symptoms_present_new_heartrhythmproblem_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -16924,7 +16924,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>heartrhythmproblem_3_frequency</name>
+					<name>symptoms_present_new_heartrhythmproblem_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -17092,7 +17092,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_present_new_list_severity_shortnessofbreath_3</name>
+				<name>section_symptoms_present_new_shortnessofbreath</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -17141,7 +17141,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>shortnessofbreath_3_rating</name>
+					<name>symptoms_present_new_shortnessofbreath_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -17265,7 +17265,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>shortnessofbreath_3_frequency</name>
+					<name>symptoms_present_new_shortnessofbreath_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -17433,7 +17433,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_present_new_list_severity_weightchange_3</name>
+				<name>section_symptoms_present_new_weightchange</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -17482,7 +17482,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>weightchange_3_rating</name>
+					<name>symptoms_present_new_weightchange_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -17606,7 +17606,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>weightchange_3_frequency</name>
+					<name>symptoms_present_new_weightchange_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -17774,7 +17774,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_present_new_list_severity_lowerbodyswelling_3</name>
+				<name>section_symptoms_present_new_lowerbodyswelling</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -17823,7 +17823,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lowerbodyswelling_3_rating</name>
+					<name>symptoms_present_new_lowerbodyswelling_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -17947,7 +17947,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lowerbodyswelling_3_frequency</name>
+					<name>symptoms_present_new_lowerbodyswelling_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -18115,7 +18115,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_present_new_list_severity_lowerbodypain_3</name>
+				<name>section_symptoms_present_new_lowerbodypain</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -18164,7 +18164,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lowerbodypain_3_rating</name>
+					<name>symptoms_present_new_lowerbodypain_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -18288,7 +18288,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lowerbodypain_3_frequency</name>
+					<name>symptoms_present_new_lowerbodypain_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -18456,7 +18456,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_present_new_list_severity_lightheadeddizziness_3</name>
+				<name>section_symptoms_present_new_lightheadeddizziness</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -18505,7 +18505,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lightheadeddizziness_3_rating</name>
+					<name>symptoms_present_new_lightheadeddizziness_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -18629,7 +18629,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>lightheadeddizziness_3_frequency</name>
+					<name>symptoms_present_new_lightheadeddizziness_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -18797,7 +18797,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_present_new_list_severity_other_4</name>
+				<name>section_symptoms_present_new_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -18846,7 +18846,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>other_4_rating</name>
+					<name>symptoms_present_new_other_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -18970,7 +18970,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					</node>
 				</node>
 				<node>
-					<name>other_4_frequency</name>
+					<name>symptoms_present_new_other_frequency</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -20055,7 +20055,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_ablation_2</name>
+			<name>section_procedure_upcoming_ablation</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -20104,7 +20104,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>ablation_2_date</name>
+				<name>procedure_upcoming_ablation_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20123,7 +20123,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>ablation_2_reason</name>
+				<name>procedure_upcoming_ablation_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20215,7 +20215,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_angioplastystent_2</name>
+			<name>section_procedure_upcoming_angioplastystent</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -20264,7 +20264,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>angioplastystent_2_date</name>
+				<name>procedure_upcoming_angioplastystent_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20283,7 +20283,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>angioplastystent_2_reason</name>
+				<name>procedure_upcoming_angioplastystent_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20375,7 +20375,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_catheteriation_2</name>
+			<name>section_procedure_upcoming_catheteriation</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -20424,7 +20424,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>catheteriation_2_date</name>
+				<name>procedure_upcoming_catheteriation_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20443,7 +20443,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>catheteriation_2_reason</name>
+				<name>procedure_upcoming_catheteriation_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20535,7 +20535,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_bypasscabg_2</name>
+			<name>section_procedure_upcoming_bypasscabg</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -20584,7 +20584,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>bypasscabg_2_date</name>
+				<name>procedure_upcoming_bypasscabg_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20603,7 +20603,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>bypasscabg_2_reason</name>
+				<name>procedure_upcoming_bypasscabg_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20695,7 +20695,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_heartvalvereplacement_2</name>
+			<name>section_procedure_upcoming_heartvalvereplacement</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -20744,7 +20744,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>heartvalvereplacement_2_date</name>
+				<name>procedure_upcoming_heartvalvereplacement_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20763,7 +20763,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>heartvalvereplacement_2_reason</name>
+				<name>procedure_upcoming_heartvalvereplacement_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20855,7 +20855,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_hearttransplant_2</name>
+			<name>section_procedure_upcoming_hearttransplant</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -20904,7 +20904,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>hearttransplant_2_date</name>
+				<name>procedure_upcoming_hearttransplant_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -20923,7 +20923,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>hearttransplant_2_reason</name>
+				<name>procedure_upcoming_hearttransplant_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21015,7 +21015,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_pacemaker_2</name>
+			<name>section_procedure_upcoming_pacemaker</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -21064,7 +21064,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>pacemaker_2_date</name>
+				<name>procedure_upcoming_pacemaker_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21083,7 +21083,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>pacemaker_2_reason</name>
+				<name>procedure_upcoming_pacemaker_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21175,7 +21175,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_aorticvalvereplacement_2</name>
+			<name>section_procedure_upcoming_aorticvalvereplacement</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -21224,7 +21224,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>aorticvalvereplacement_2_date</name>
+				<name>procedure_upcoming_aorticvalvereplacement_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21243,7 +21243,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>aorticvalvereplacement_2_reason</name>
+				<name>procedure_upcoming_aorticvalvereplacement_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21335,7 +21335,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_ventricularassistdevice_2</name>
+			<name>section_procedure_upcoming_ventricularassistdevice</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -21384,7 +21384,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>ventricularassistdevice_2_date</name>
+				<name>procedure_upcoming_ventricularassistdevice_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21403,7 +21403,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>ventricularassistdevice_2_reason</name>
+				<name>procedure_upcoming_ventricularassistdevice_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21495,7 +21495,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_procedure_upcoming_other_5</name>
+			<name>section_procedure_upcoming_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -21544,7 +21544,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</node>
 			</node>
 			<node>
-				<name>other_5_date</name>
+				<name>procedure_upcoming_other_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -21563,7 +21563,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>other_5_reason</name>
+				<name>procedure_upcoming_other_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
