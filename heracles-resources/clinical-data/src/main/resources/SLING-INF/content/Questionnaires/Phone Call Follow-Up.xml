@@ -239,7 +239,7 @@
 			</node>
 		</node>
 		<node>
-			<name>monthly_health</name>
+			<name>section_monthly_health</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -3831,7 +3831,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_onset_list_info_chestpain</name>
+				<name>section_symptoms_onset_chestpain</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -3880,7 +3880,7 @@
 					</node>
 				</node>
 				<node>
-					<name>chestpain_date</name>
+					<name>symptoms_onset_chestpain_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -3904,7 +3904,7 @@
 					</property>
 				</node>
 				<node>
-					<name>chestpain_rating</name>
+					<name>symptoms_onset_chestpain_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4029,7 +4029,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_onset_list_info_nauseaindigestion</name>
+				<name>section_symptoms_onset_nauseaindigestion</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -4078,7 +4078,7 @@
 					</node>
 				</node>
 				<node>
-					<name>nauseaindigestion_date</name>
+					<name>symptoms_onset_nauseaindigestion_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4102,7 +4102,7 @@
 					</property>
 				</node>
 				<node>
-					<name>nauseaindigestion_rating</name>
+					<name>symptoms_onset_nauseaindigestion_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4227,7 +4227,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_onset_list_info_heartrhythmproblem</name>
+				<name>section_symptoms_onset_heartrhythmproblem</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -4276,7 +4276,7 @@
 					</node>
 				</node>
 				<node>
-					<name>heartrhythmproblem_date</name>
+					<name>symptoms_onset_heartrhythmproblem_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4300,7 +4300,7 @@
 					</property>
 				</node>
 				<node>
-					<name>heartrhythmproblem_rating</name>
+					<name>symptoms_onset_heartrhythmproblem_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4425,7 +4425,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_onset_list_info_shortnessofbreath</name>
+				<name>section_symptoms_onset_shortnessofbreath</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -4474,7 +4474,7 @@
 					</node>
 				</node>
 				<node>
-					<name>shortnessofbreath_date</name>
+					<name>symptoms_onset_shortnessofbreath_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4498,7 +4498,7 @@
 					</property>
 				</node>
 				<node>
-					<name>shortnessofbreath_rating</name>
+					<name>symptoms_onset_shortnessofbreath_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4623,7 +4623,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_onset_list_info_weightchange</name>
+				<name>section_symptoms_onset_weightchange</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -4672,7 +4672,7 @@
 					</node>
 				</node>
 				<node>
-					<name>weightchange_date</name>
+					<name>symptoms_onset_weightchange_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4696,7 +4696,7 @@
 					</property>
 				</node>
 				<node>
-					<name>weightchange_rating</name>
+					<name>symptoms_onset_weightchange_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4821,7 +4821,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_onset_list_info_lowerbodyswelling</name>
+				<name>section_symptoms_onset_lowerbodyswelling</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -4870,7 +4870,7 @@
 					</node>
 				</node>
 				<node>
-					<name>lowerbodyswelling_date</name>
+					<name>symptoms_onset_lowerbodyswelling_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4894,7 +4894,7 @@
 					</property>
 				</node>
 				<node>
-					<name>lowerbodyswelling_rating</name>
+					<name>symptoms_onset_lowerbodyswelling_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5019,7 +5019,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_onset_list_info_lowerbodypain</name>
+				<name>section_symptoms_onset_lowerbodypain</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5068,7 +5068,7 @@
 					</node>
 				</node>
 				<node>
-					<name>lowerbodypain_date</name>
+					<name>symptoms_onset_lowerbodypain_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5092,7 +5092,7 @@
 					</property>
 				</node>
 				<node>
-					<name>lowerbodypain_rating</name>
+					<name>symptoms_onset_lowerbodypain_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5217,7 +5217,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_onset_list_info_lightheadeddizziness</name>
+				<name>section_symptoms_onset_lightheadeddizziness</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5266,7 +5266,7 @@
 					</node>
 				</node>
 				<node>
-					<name>lightheadeddizziness_date</name>
+					<name>symptoms_onset_lightheadeddizziness_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5290,7 +5290,7 @@
 					</property>
 				</node>
 				<node>
-					<name>lightheadeddizziness_rating</name>
+					<name>symptoms_onset_lightheadeddizziness_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5415,7 +5415,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_symptoms_onset_list_info_other</name>
+				<name>section_symptoms_onset_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5464,7 +5464,7 @@
 					</node>
 				</node>
 				<node>
-					<name>other_date</name>
+					<name>symptoms_onset_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5488,7 +5488,7 @@
 					</property>
 				</node>
 				<node>
-					<name>other_rating</name>
+					<name>symptoms_onset_other_rating</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6063,7 +6063,7 @@
 				</property>
 				<property>
 					<name>expression</name>
-					<value><![CDATA[let values = ["hospital visit", "emergency clinic", "walk in", "family doctor", "specialist"];
+					<value><![CDATA[let values = ["hospital", "emergency", "walkin", "familydoctor", "specialist"];
 return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					<type>String</type>
 				</property>
