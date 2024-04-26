@@ -2837,7 +2837,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>When was the participant admitted to the hospital? </value>
+					<value>When was the participant admitted to the hospital?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3680,7 +3680,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>List out the relevant diagnostic test(s) performed for Valvular Heart Disease </value>
+					<value>List out the relevant diagnostic test(s) performed for Valvular Heart Disease</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4926,7 +4926,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_test_bloodwork_date</name>
+					<name>cad_test_bloodwork_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4950,7 +4950,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_bloodwork_system</name>
+					<name>cad_test_bloodwork_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4974,7 +4974,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_bloodwork_code</name>
+					<name>cad_test_bloodwork_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5043,7 +5043,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_test_cardiacct_date</name>
+					<name>cad_test_cardiacct_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5067,7 +5067,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_cardiacct_system</name>
+					<name>cad_test_cardiacct_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5091,7 +5091,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_cardiacct_code</name>
+					<name>cad_test_cardiacct_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5111,7 +5111,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_test_angiographydiagnosticon</name>
+				<name>section_cad_test_angiographydiagnosticonly</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5160,7 +5160,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_test_angiographydiagnosticon_date</name>
+					<name>cad_test_angiographydiagnosticonly_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5184,7 +5184,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_angiographydiagnosticon_system</name>
+					<name>cad_test_angiographydiagnosticonly_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5208,7 +5208,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_angiographydiagnosticon_code</name>
+					<name>cad_test_angiographydiagnosticonly_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5277,7 +5277,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_test_cpet_date</name>
+					<name>cad_test_cpet_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5301,7 +5301,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_cpet_system</name>
+					<name>cad_test_cpet_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5325,7 +5325,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_cpet_code</name>
+					<name>cad_test_cpet_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5394,7 +5394,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_test_ecg_date</name>
+					<name>cad_test_ecg_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5418,7 +5418,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_ecg_system</name>
+					<name>cad_test_ecg_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5442,7 +5442,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_ecg_code</name>
+					<name>cad_test_ecg_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5511,7 +5511,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_test_nuclearstress_date</name>
+					<name>cad_test_nuclearstress_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5535,7 +5535,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_nuclearstress_system</name>
+					<name>cad_test_nuclearstress_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5559,7 +5559,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_nuclearstress_code</name>
+					<name>cad_test_nuclearstress_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5628,7 +5628,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_test_pharmacologicalstress_date</name>
+					<name>cad_test_pharmacologicalstress_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5652,7 +5652,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_pharmacologicalstress_system</name>
+					<name>cad_test_pharmacologicalstress_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5676,7 +5676,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_pharmacologicalstress_code</name>
+					<name>cad_test_pharmacologicalstress_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5745,7 +5745,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_test_stressecho_date</name>
+					<name>cad_test_stressecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5769,7 +5769,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_stressecho_system</name>
+					<name>cad_test_stressecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5793,7 +5793,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_stressecho_code</name>
+					<name>cad_test_stressecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5862,7 +5862,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_test_otherdiagnostictest_date</name>
+					<name>cad_test_otherdiagnostictest_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5886,7 +5886,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_otherdiagnostictest_system</name>
+					<name>cad_test_otherdiagnostictest_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5910,7 +5910,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_test_otherdiagnostictest_code</name>
+					<name>cad_test_otherdiagnostictest_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6024,7 +6024,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_hf_test_transthoracicecho_date</name>
+					<name>hf_test_transthoracicecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6048,7 +6048,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_test_transthoracicecho_system</name>
+					<name>hf_test_transthoracicecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6072,7 +6072,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_test_transthoracicecho_code</name>
+					<name>hf_test_transthoracicecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6141,7 +6141,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_hf_test_transesophagealecho_date</name>
+					<name>hf_test_transesophagealecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6165,7 +6165,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_test_transesophagealecho_system</name>
+					<name>hf_test_transesophagealecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6189,7 +6189,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_test_transesophagealecho_code</name>
+					<name>hf_test_transesophagealecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6258,7 +6258,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_hf_test_stressecho_date</name>
+					<name>hf_test_stressecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6282,7 +6282,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_test_stressecho_system</name>
+					<name>hf_test_stressecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6306,7 +6306,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_test_stressecho_code</name>
+					<name>hf_test_stressecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6375,7 +6375,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_hf_test_otherdiagnostictest_date</name>
+					<name>hf_test_otherdiagnostictest_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6399,7 +6399,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_test_otherdiagnostictest_system</name>
+					<name>hf_test_otherdiagnostictest_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6423,7 +6423,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_test_otherdiagnostictest_code</name>
+					<name>hf_test_otherdiagnostictest_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6537,7 +6537,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_vhd_test_transthoracicecho_date</name>
+					<name>vhd_test_transthoracicecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6561,7 +6561,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_test_transthoracicecho_system</name>
+					<name>vhd_test_transthoracicecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6585,7 +6585,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_test_transthoracicecho_code</name>
+					<name>vhd_test_transthoracicecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6654,7 +6654,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_vhd_test_transesophagealecho_date</name>
+					<name>vhd_test_transesophagealecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6678,7 +6678,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_test_transesophagealecho_system</name>
+					<name>vhd_test_transesophagealecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6702,7 +6702,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_test_transesophagealecho_code</name>
+					<name>vhd_test_transesophagealecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6771,7 +6771,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_vhd_test_stressecho_date</name>
+					<name>vhd_test_stressecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6795,7 +6795,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_test_stressecho_system</name>
+					<name>vhd_test_stressecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6819,7 +6819,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_test_stressecho_code</name>
+					<name>vhd_test_stressecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6888,7 +6888,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_vhd_test_otherdiagnostictest_date</name>
+					<name>vhd_test_otherdiagnostictest_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6912,7 +6912,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_test_otherdiagnostictest_system</name>
+					<name>vhd_test_otherdiagnostictest_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6936,7 +6936,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_test_otherdiagnostictest_code</name>
+					<name>vhd_test_otherdiagnostictest_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7050,7 +7050,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_stroke_test_brainct_date</name>
+					<name>stroke_test_brainct_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7074,7 +7074,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_test_brainct_system</name>
+					<name>stroke_test_brainct_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7098,7 +7098,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_test_brainct_code</name>
+					<name>stroke_test_brainct_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7167,7 +7167,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_stroke_test_brainmri_date</name>
+					<name>stroke_test_brainmri_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7191,7 +7191,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_test_brainmri_system</name>
+					<name>stroke_test_brainmri_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7215,7 +7215,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_test_brainmri_code</name>
+					<name>stroke_test_brainmri_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7284,7 +7284,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_stroke_test_otherdiagnostictest_date</name>
+					<name>stroke_test_otherdiagnostictest_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7308,7 +7308,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_test_otherdiagnostictest_system</name>
+					<name>stroke_test_otherdiagnostictest_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7332,7 +7332,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_test_otherdiagnostictest_code</name>
+					<name>stroke_test_otherdiagnostictest_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7446,7 +7446,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_test_bloodwork_date</name>
+					<name>cvother_test_bloodwork_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7470,7 +7470,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_bloodwork_system</name>
+					<name>cvother_test_bloodwork_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7494,7 +7494,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_bloodwork_code</name>
+					<name>cvother_test_bloodwork_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7563,7 +7563,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_test_cardiacct_date</name>
+					<name>cvother_test_cardiacct_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7587,7 +7587,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_cardiacct_system</name>
+					<name>cvother_test_cardiacct_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7611,7 +7611,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_cardiacct_code</name>
+					<name>cvother_test_cardiacct_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7680,7 +7680,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_test_ctpa_date</name>
+					<name>cvother_test_ctpa_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7704,7 +7704,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_ctpa_system</name>
+					<name>cvother_test_ctpa_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7728,7 +7728,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_ctpa_code</name>
+					<name>cvother_test_ctpa_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7797,7 +7797,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_test_cardiacmri_date</name>
+					<name>cvother_test_cardiacmri_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7821,7 +7821,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_cardiacmri_system</name>
+					<name>cvother_test_cardiacmri_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7845,7 +7845,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_cardiacmri_code</name>
+					<name>cvother_test_cardiacmri_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7865,7 +7865,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_test_angiographydiagnost</name>
+				<name>section_cvother_test_angiographydiagnosticonly</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7914,7 +7914,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_test_angiographydiagnost_date</name>
+					<name>cvother_test_angiographydiagnosticonly_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7938,7 +7938,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_angiographydiagnost_system</name>
+					<name>cvother_test_angiographydiagnosticonly_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7962,7 +7962,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_angiographydiagnost_code</name>
+					<name>cvother_test_angiographydiagnosticonly_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8031,7 +8031,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_test_ecg-holter_date</name>
+					<name>cvother_test_ecg-holter_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8055,7 +8055,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_ecg-holter_system</name>
+					<name>cvother_test_ecg-holter_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8079,7 +8079,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_ecg-holter_code</name>
+					<name>cvother_test_ecg-holter_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8148,7 +8148,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_test_transthoracicecho_date</name>
+					<name>cvother_test_transthoracicecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8172,7 +8172,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_transthoracicecho_system</name>
+					<name>cvother_test_transthoracicecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8196,7 +8196,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_transthoracicecho_code</name>
+					<name>cvother_test_transthoracicecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8265,7 +8265,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_test_transesophagealecho_date</name>
+					<name>cvother_test_transesophagealecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8289,7 +8289,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_transesophagealecho_system</name>
+					<name>cvother_test_transesophagealecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8313,7 +8313,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_transesophagealecho_code</name>
+					<name>cvother_test_transesophagealecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8382,7 +8382,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_test_otherdiagnostictest_date</name>
+					<name>cvother_test_otherdiagnostictest_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8406,7 +8406,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_otherdiagnostictest_system</name>
+					<name>cvother_test_otherdiagnostictest_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8430,7 +8430,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_test_otherdiagnostictest_code</name>
+					<name>cvother_test_otherdiagnostictest_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -9132,7 +9132,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Outcome of diagnostic test(s) performed for Valvular Heart Disease </value>
+					<value>Outcome of diagnostic test(s) performed for Valvular Heart Disease</value>
 					<type>String</type>
 				</property>
 				<property>
