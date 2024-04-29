@@ -22,6 +22,14 @@
       "start-order":"26"
     },
     {
+      "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
+      "start-order": "20"
+    },
+    {
+      "id":"${project.groupId}:cards-visit-subject-type:${project.version}",
+      "start-order": "21"
+    },
+    {
       "id":"commons-beanutils:commons-beanutils:1.9.4",
       "start-order":"25"
     },
