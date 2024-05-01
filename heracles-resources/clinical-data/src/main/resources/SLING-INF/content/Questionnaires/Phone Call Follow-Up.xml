@@ -2855,7 +2855,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_cancer_neuropathy_details</name>
+				<name>section_cancer_neuropathy</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -12402,7 +12402,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_symptoms_present_existing_nauseaindigest</name>
+			<name>section_symptoms_present_existing_nauseaindigestion</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
