@@ -3199,7 +3199,7 @@
 					</property>
 				</node>
 				<node>
-					<name>angiographydiagnosticonly</name>
+					<name>angiography</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3208,7 +3208,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>angiography (diagnostic only)</value>
+						<value>angiography</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3313,7 +3313,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3322,7 +3322,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3532,7 +3532,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3541,7 +3541,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3553,7 +3553,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_hr_tests_other</name>
+			<name>section_hf_tests_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -3597,7 +3597,7 @@
 				</node>
 			</node>
 			<node>
-				<name>hr_tests_other</name>
+				<name>hf_tests_other</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3751,7 +3751,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3760,7 +3760,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3951,7 +3951,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3960,7 +3960,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4189,7 +4189,7 @@
 					</property>
 				</node>
 				<node>
-					<name>angiographydiagnosticonly</name>
+					<name>angiography</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4198,7 +4198,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>angiography (diagnostic only)</value>
+						<value>angiography</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4208,7 +4208,7 @@
 					</property>
 				</node>
 				<node>
-					<name>ecg-holter</name>
+					<name>ecg</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4217,7 +4217,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>ecg/holter</value>
+						<value>ecg</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4265,7 +4265,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4274,7 +4274,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4515,7 +4515,7 @@
 					</property>
 				</node>
 				<node>
-					<name>angiographydiagnosticonly</name>
+					<name>angiography</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4524,7 +4524,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>angiography (diagnostic only)</value>
+						<value>angiography</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4553,7 +4553,7 @@
 					</property>
 				</node>
 				<node>
-					<name>ecg-holter</name>
+					<name>ecg</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4562,7 +4562,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>ecg/holter</value>
+						<value>ecg</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4743,7 +4743,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4752,7 +4752,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4833,7 +4833,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_cad_diagnostic_test_info</name>
+			<name>section_cad_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -5111,7 +5111,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_test_angiographydiagnosticonly</name>
+				<name>section_cad_test_angiography</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5148,7 +5148,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>angiography (diagnostic only)</value>
+								<value>angiography</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5160,7 +5160,7 @@
 					</node>
 				</node>
 				<node>
-					<name>cad_test_angiographydiagnosticonly_date</name>
+					<name>cad_test_angiography_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5184,7 +5184,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cad_test_angiographydiagnosticonly_system</name>
+					<name>cad_test_angiography_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5208,7 +5208,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cad_test_angiographydiagnosticonly_code</name>
+					<name>cad_test_angiography_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5813,7 +5813,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_test_otherdiagnostictest</name>
+				<name>section_cad_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5850,7 +5850,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5862,7 +5862,7 @@
 					</node>
 				</node>
 				<node>
-					<name>cad_test_otherdiagnostictest_date</name>
+					<name>cad_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5886,7 +5886,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cad_test_otherdiagnostictest_system</name>
+					<name>cad_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5910,7 +5910,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cad_test_otherdiagnostictest_code</name>
+					<name>cad_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5931,7 +5931,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_hf_diagnostic_test_info</name>
+			<name>section_hf_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -6326,7 +6326,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_hf_test_otherdiagnostictest</name>
+				<name>section_hf_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6363,7 +6363,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6375,7 +6375,7 @@
 					</node>
 				</node>
 				<node>
-					<name>hf_test_otherdiagnostictest_date</name>
+					<name>hf_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6399,7 +6399,7 @@
 					</property>
 				</node>
 				<node>
-					<name>hf_test_otherdiagnostictest_system</name>
+					<name>hf_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6423,7 +6423,7 @@
 					</property>
 				</node>
 				<node>
-					<name>hf_test_otherdiagnostictest_code</name>
+					<name>hf_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6444,7 +6444,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_vhd_diagnostic_test_info</name>
+			<name>section_vhd_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -6839,7 +6839,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_vhd_test_otherdiagnostictest</name>
+				<name>section_vhd_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6876,7 +6876,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6888,7 +6888,7 @@
 					</node>
 				</node>
 				<node>
-					<name>vhd_test_otherdiagnostictest_date</name>
+					<name>vhd_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6912,7 +6912,7 @@
 					</property>
 				</node>
 				<node>
-					<name>vhd_test_otherdiagnostictest_system</name>
+					<name>vhd_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6936,7 +6936,7 @@
 					</property>
 				</node>
 				<node>
-					<name>vhd_test_otherdiagnostictest_code</name>
+					<name>vhd_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6957,7 +6957,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_stroke_diagnostic_test_info</name>
+			<name>section_stroke_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -7235,7 +7235,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_stroke_test_otherdiagnostictest</name>
+				<name>section_stroke_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7272,7 +7272,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7284,7 +7284,7 @@
 					</node>
 				</node>
 				<node>
-					<name>stroke_test_otherdiagnostictest_date</name>
+					<name>stroke_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7308,7 +7308,7 @@
 					</property>
 				</node>
 				<node>
-					<name>stroke_test_otherdiagnostictest_system</name>
+					<name>stroke_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7332,7 +7332,7 @@
 					</property>
 				</node>
 				<node>
-					<name>stroke_test_otherdiagnostictest_code</name>
+					<name>stroke_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7353,7 +7353,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_cvother_diagnostic_test_info</name>
+			<name>section_cvother_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -7865,7 +7865,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_test_angiographydiagnosticonly</name>
+				<name>section_cvother_test_angiography</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7902,7 +7902,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>angiography (diagnostic only)</value>
+								<value>angiography</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7914,7 +7914,7 @@
 					</node>
 				</node>
 				<node>
-					<name>cvother_test_angiographydiagnosticonly_date</name>
+					<name>cvother_test_angiography_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7938,7 +7938,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cvother_test_angiographydiagnosticonly_system</name>
+					<name>cvother_test_angiography_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7962,7 +7962,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cvother_test_angiographydiagnosticonly_code</name>
+					<name>cvother_test_angiography_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7982,7 +7982,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_test_ecg-holter</name>
+				<name>section_cvother_test_ecg</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -8019,7 +8019,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ecg/holter</value>
+								<value>ecg</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -8031,7 +8031,7 @@
 					</node>
 				</node>
 				<node>
-					<name>cvother_test_ecg-holter_date</name>
+					<name>cvother_test_ecg_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8055,7 +8055,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cvother_test_ecg-holter_system</name>
+					<name>cvother_test_ecg_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8079,7 +8079,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cvother_test_ecg-holter_code</name>
+					<name>cvother_test_ecg_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8333,7 +8333,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_test_otherdiagnostictest</name>
+				<name>section_cvother_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -8370,7 +8370,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -8382,7 +8382,7 @@
 					</node>
 				</node>
 				<node>
-					<name>cvother_test_otherdiagnostictest_date</name>
+					<name>cvother_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8406,7 +8406,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cvother_test_otherdiagnostictest_system</name>
+					<name>cvother_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8430,7 +8430,7 @@
 					</property>
 				</node>
 				<node>
-					<name>cvother_test_otherdiagnostictest_code</name>
+					<name>cvother_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -10883,7 +10883,7 @@
 					</property>
 				</node>
 				<node>
-					<name>anotherprocedurenotonthislist</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -10892,7 +10892,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>another procedure not on this list</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -10978,7 +10978,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_ablation</name>
+			<name>section_procedures_ablation</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11027,7 +11027,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_ablation_date</name>
+				<name>procedures_ablation_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11051,7 +11051,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_ablation_system</name>
+				<name>procedures_ablation_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11075,7 +11075,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_ablation_code</name>
+				<name>procedures_ablation_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11095,7 +11095,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_angioplastystent</name>
+			<name>section_procedures_angioplastystent</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11144,7 +11144,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_angioplastystent_date</name>
+				<name>procedures_angioplastystent_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11168,7 +11168,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_angioplastystent_system</name>
+				<name>procedures_angioplastystent_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11192,7 +11192,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_angioplastystent_code</name>
+				<name>procedures_angioplastystent_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11212,7 +11212,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_angioplastynostent</name>
+			<name>section_procedures_angioplastynostent</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11261,7 +11261,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_angioplastynostent_date</name>
+				<name>procedures_angioplastynostent_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11285,7 +11285,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_angioplastynostent_system</name>
+				<name>procedures_angioplastynostent_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11309,7 +11309,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_angioplastynostent_code</name>
+				<name>procedures_angioplastynostent_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11329,7 +11329,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_aorticprocedures</name>
+			<name>section_procedures_aorticprocedures</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11378,7 +11378,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_aorticprocedures_date</name>
+				<name>procedures_aorticprocedures_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11402,7 +11402,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_aorticprocedures_system</name>
+				<name>procedures_aorticprocedures_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11426,7 +11426,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_aorticprocedures_code</name>
+				<name>procedures_aorticprocedures_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11446,7 +11446,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_cardioversion</name>
+			<name>section_procedures_cardioversion</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11495,7 +11495,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_cardioversion_date</name>
+				<name>procedures_cardioversion_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11519,7 +11519,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_cardioversion_system</name>
+				<name>procedures_cardioversion_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11543,7 +11543,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_cardioversion_code</name>
+				<name>procedures_cardioversion_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11563,7 +11563,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_coronarybypassgraft</name>
+			<name>section_procedures_coronarybypassgraft</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11612,7 +11612,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_coronarybypassgraft_date</name>
+				<name>procedures_coronarybypassgraft_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11636,7 +11636,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_coronarybypassgraft_system</name>
+				<name>procedures_coronarybypassgraft_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11660,7 +11660,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_coronarybypassgraft_code</name>
+				<name>procedures_coronarybypassgraft_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11680,7 +11680,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_hearttransplant</name>
+			<name>section_procedures_hearttransplant</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11729,7 +11729,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_hearttransplant_date</name>
+				<name>procedures_hearttransplant_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11753,7 +11753,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_hearttransplant_system</name>
+				<name>procedures_hearttransplant_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11777,7 +11777,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_hearttransplant_code</name>
+				<name>procedures_hearttransplant_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11797,7 +11797,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_implantheartassistdevice</name>
+			<name>section_procedures_implantheartassistdevice</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11846,7 +11846,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_implantheartassistdevice_date</name>
+				<name>procedures_implantheartassistdevice_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11870,7 +11870,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_implantheartassistdevice_system</name>
+				<name>procedures_implantheartassistdevice_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11894,7 +11894,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_implantheartassistdevice_code</name>
+				<name>procedures_implantheartassistdevice_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11914,7 +11914,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_pacemakerorimplanteddefi</name>
+			<name>section_procedures_pacemakerorimplanteddefibrill</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11963,7 +11963,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_pacemakerorimplanteddefi_date</name>
+				<name>procedures_pacemakerorimplanteddefibrill_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11987,7 +11987,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_pacemakerorimplanteddefi_system</name>
+				<name>procedures_pacemakerorimplanteddefibrill_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12011,7 +12011,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_pacemakerorimplanteddefi_code</name>
+				<name>procedures_pacemakerorimplanteddefibrill_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12031,7 +12031,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_strokereperfusion</name>
+			<name>section_procedures_strokereperfusion</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12080,7 +12080,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_strokereperfusion_date</name>
+				<name>procedures_strokereperfusion_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12104,7 +12104,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_strokereperfusion_system</name>
+				<name>procedures_strokereperfusion_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12128,7 +12128,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_strokereperfusion_code</name>
+				<name>procedures_strokereperfusion_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12148,7 +12148,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_valvereplacementorrepair</name>
+			<name>section_procedures_valvereplacementorrepair</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12197,7 +12197,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_valvereplacementorrepair_date</name>
+				<name>procedures_valvereplacementorrepair_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12221,7 +12221,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_valvereplacementorrepair_system</name>
+				<name>procedures_valvereplacementorrepair_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12245,7 +12245,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_valvereplacementorrepair_code</name>
+				<name>procedures_valvereplacementorrepair_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12265,7 +12265,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_anotherprocedurenotonthi</name>
+			<name>section_procedures_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12302,7 +12302,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>another procedure not on this list</value>
+							<value>other</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -12314,7 +12314,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_anotherprocedurenotonthi_date</name>
+				<name>procedures_other_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12338,7 +12338,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_anotherprocedurenotonthi_system</name>
+				<name>procedures_other_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12362,7 +12362,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_anotherprocedurenotonthi_code</name>
+				<name>procedures_other_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
