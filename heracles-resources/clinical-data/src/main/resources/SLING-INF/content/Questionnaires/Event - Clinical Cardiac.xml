@@ -2876,7 +2876,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_hospital_stay_length</name>
+				<name>section_hospital_stay</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -2960,7 +2960,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_outpatient_date</name>
+				<name>section_clinical_service_outpatient</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -3024,7 +3024,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_er_date</name>
+				<name>section_clinical_service_er</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -13052,7 +13052,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_cad_ejection_fraction_percentage</name>
+			<name>section_cad_ejection_fraction</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -13659,7 +13659,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_hf_ejection_fraction_percentage</name>
+			<name>section_hf_ejection_fraction</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
