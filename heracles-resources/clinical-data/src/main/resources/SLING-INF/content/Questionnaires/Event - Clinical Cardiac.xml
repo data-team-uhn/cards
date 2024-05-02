@@ -2959,133 +2959,133 @@
 					</property>
 				</node>
 			</node>
+		</node>
+		<node>
+			<name>section_clinical_service_outpatient</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>section_clinical_service_outpatient</name>
-				<primaryNodeType>cards:Section</primaryNodeType>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>includes</value>
+					<type>String</type>
+				</property>
 				<node>
-					<name>condition0</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>includes</value>
+						<name>value</name>
+						<values>
+							<value>place_of_service</value>
+						</values>
 						<type>String</type>
 					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>place_of_service</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>outpatient</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 				<node>
-					<name>outpatient_date</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
+					<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
+						<name>value</name>
+						<values>
+							<value>outpatient</value>
+						</values>
 						<type>String</type>
 					</property>
 					<property>
-						<name>text</name>
-						<value>When did the participant visit the hospital as an outpatient?</value>
-						<type>String</type>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
 			<node>
-				<name>section_clinical_service_er</name>
-				<primaryNodeType>cards:Section</primaryNodeType>
+				<name>outpatient_date</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>When did the participant visit the hospital as an outpatient?</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>section_clinical_service_er</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>includes</value>
+					<type>String</type>
+				</property>
 				<node>
-					<name>condition0</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>includes</value>
+						<name>value</name>
+						<values>
+							<value>place_of_service</value>
+						</values>
 						<type>String</type>
 					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>place_of_service</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>er</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 				<node>
-					<name>er_date</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
+						<name>value</name>
+						<values>
+							<value>er</value>
+						</values>
 						<type>String</type>
 					</property>
 					<property>
-						<name>text</name>
-						<value>When did the participant visit the ER?</value>
-						<type>String</type>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
 					</property>
 				</node>
+			</node>
+			<node>
+				<name>er_date</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>When did the participant visit the ER?</value>
+					<type>String</type>
+				</property>
 			</node>
 		</node>
 		<node>
