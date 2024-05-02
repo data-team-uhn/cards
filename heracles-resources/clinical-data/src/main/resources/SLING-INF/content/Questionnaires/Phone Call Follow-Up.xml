@@ -467,7 +467,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_triggered_assessment_call_status</name>
+			<name>section_triggered_assessment</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -897,7 +897,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_condition_not_correct_reason</name>
+			<name>section_condition_not_correct</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -19450,7 +19450,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 			</node>
 		</node>
 		<node>
-			<name>section_recovery_info</name>
+			<name>section_recovery_expectedduration</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -19568,7 +19568,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				</property>
 			</node>
 			<node>
-				<name>recovery_exxpecteddischarge</name>
+				<name>recovery_expecteddischarge</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
