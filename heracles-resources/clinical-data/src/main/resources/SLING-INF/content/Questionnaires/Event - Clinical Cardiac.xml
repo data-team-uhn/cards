@@ -14013,7 +14013,7 @@
 			</property>
 		</node>
 		<node>
-			<name>section_medication_change_reminder</name>
+			<name>section_medication_change</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
