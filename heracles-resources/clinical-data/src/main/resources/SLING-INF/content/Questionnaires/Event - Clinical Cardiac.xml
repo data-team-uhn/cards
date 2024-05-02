@@ -11914,7 +11914,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_procedures_pacemakerorimplanteddefibrill</name>
+			<name>section_procedures_pacemakerorimplanteddefib</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11963,7 +11963,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_pacemakerorimplanteddefibrill_date</name>
+				<name>procedures_pacemakerorimplanteddefib_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11987,7 +11987,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_pacemakerorimplanteddefibrill_system</name>
+				<name>procedures_pacemakerorimplanteddefib_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12011,7 +12011,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_pacemakerorimplanteddefibrill_code</name>
+				<name>procedures_pacemakerorimplanteddefib_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
