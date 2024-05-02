@@ -22457,7 +22457,7 @@ Have you experienced a change in the time you are active as a result of recent e
 		</node>
 	</node>
 	<node>
-		<name>section_medication_changes</name>
+		<name>section_medication_change</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
