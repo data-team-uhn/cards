@@ -3366,7 +3366,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>other diagnostic test</value>
+							<value>other</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3585,7 +3585,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>other diagnostic test</value>
+							<value>other</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3804,7 +3804,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>other diagnostic test</value>
+							<value>other</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -4004,7 +4004,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>other diagnostic test</value>
+							<value>other</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -4318,7 +4318,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>other diagnostic test</value>
+							<value>other</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -4796,7 +4796,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>other diagnostic test</value>
+							<value>other</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -12960,7 +12960,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>angiography (diagnostic only)</value>
+									<value>angiography</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13543,7 +13543,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>angiography (diagnostic only)</value>
+									<value>angiography</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13625,7 +13625,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>angiography (diagnostic only)</value>
+									<value>angiography</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13998,7 +13998,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Clinical event comments</value>
+				<value>Event clinical comments</value>
 				<type>String</type>
 			</property>
 			<property>
