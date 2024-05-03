@@ -1081,44 +1081,94 @@
 			<name>section_condition_specific_confirmation</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>condition_general_confirmation</value>
-						</values>
+						<name>comparator</name>
+						<value><![CDATA[<>]]></value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>condition_general_confirmation</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>none</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>none</value>
-						</values>
+						<name>comparator</name>
+						<value><![CDATA[<>]]></value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>condition_general_confirmation</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value></value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
