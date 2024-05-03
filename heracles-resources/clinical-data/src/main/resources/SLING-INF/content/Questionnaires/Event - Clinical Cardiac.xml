@@ -2493,7 +2493,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_cadha_event_subtype</name>
+			<name>section_cad_heartattack_event_subtype</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -2587,7 +2587,7 @@
 				</node>
 			</node>
 			<node>
-				<name>cadha_event_subtype</name>
+				<name>cad_heartattack_event_subtype</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
