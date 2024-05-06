@@ -23176,11 +23176,6 @@ return result;]]></value>
 					<name>medication_change_reported_false</name>
 					<primaryNodeType>cards:Information</primaryNodeType>
 					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
 						<name>dataType</name>
 						<value>info</value>
 						<type>String</type>
@@ -23190,16 +23185,16 @@ return result;]]></value>
 						<value>### Gently remind participant to complete the survey.</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>type</name>
+						<value>info</value>
+						<type>String</type>
+					</property>
 				</node>
 			</node>
 			<node>
 				<name>medication_change_true</name>
 				<primaryNodeType>cards:Information</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
 				<property>
 					<name>dataType</name>
 					<value>info</value>
