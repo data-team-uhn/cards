@@ -546,6 +546,10 @@ public class EmailTemplate
          */
         public Builder withInlineAttachment(final String name, final String mimeType, final byte[] value)
         {
+            // Clean up any old version of the attachment to allow overriding a common attachment with an
+            // instance-specific one
+            this.instance.inlineAttachments.removeIf(attachment -> attachment.getLeft().equals(name));
+
             this.instance.inlineAttachments.add(new ImmutableTriple<>(name, mimeType, value));
             return this;
         }
