@@ -6233,7 +6233,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Hospital visit</value>
+					<value>### Hospital visit</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -6374,7 +6374,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Emergency clinic</value>
+					<value>### Emergency clinic</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -6515,7 +6515,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Walk in</value>
+					<value>### Walk in</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -6656,7 +6656,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Family doctor</value>
+					<value>### Family doctor</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -6797,7 +6797,7 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Specialist</value>
+					<value>### Specialist</value>
 					<type>String</type>
 				</property>
 				<node>
