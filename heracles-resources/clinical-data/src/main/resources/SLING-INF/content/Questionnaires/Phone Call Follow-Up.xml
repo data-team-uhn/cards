@@ -6228,709 +6228,709 @@ return (@{[medical_care_type]}.some(e => values.includes(e)) ? 1 : 0)]]></value>
 					<type>String</type>
 				</property>
 			</node>
-		</node>
-		<node>
-			<name>section_hospital</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Hospital visit</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>includes</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>medical_care_type</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>hospital</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>section_hospital_info</name>
+				<name>section_hospital</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Medical care provider</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>recurrent</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<node>
-					<name>hospital_name</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Can you confirm the name of the provider?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>hospital_location</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Location of the provider</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>hospital_records_consent</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>boolean</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Do we have permission to request additional medical notes tied to this procedure?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>compact</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_emergency</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Emergency clinic</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>includes</value>
+					<value>Hospital visit</value>
 					<type>String</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>medical_care_type</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>medical_care_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>hospital</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>section_hospital_info</name>
+					<primaryNodeType>cards:Section</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Medical care provider</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
+						<name>recurrent</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>emergency</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>hospital_name</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Can you confirm the name of the provider?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>hospital_location</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Location of the provider</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>hospital_records_consent</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>boolean</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Do we have permission to request additional medical notes tied to this procedure?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>compact</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>section_emergency_info</name>
+				<name>section_emergency</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Medical care provider</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>recurrent</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<node>
-					<name>emergency_name</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Can you confirm the name of the provider?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>emergency_location</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Location of the provider</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>emergency_records_consent</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>boolean</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Do we have permission to request additional medical notes tied to this procedure?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>compact</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_walkin</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Walk in</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>includes</value>
+					<value>Emergency clinic</value>
 					<type>String</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>medical_care_type</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>medical_care_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>emergency</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>section_emergency_info</name>
+					<primaryNodeType>cards:Section</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Medical care provider</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
+						<name>recurrent</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>walkin</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>emergency_name</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Can you confirm the name of the provider?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>emergency_location</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Location of the provider</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>emergency_records_consent</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>boolean</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Do we have permission to request additional medical notes tied to this procedure?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>compact</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>section_walkin_info</name>
+				<name>section_walkin</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Medical care provider</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>recurrent</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<node>
-					<name>provider_walkin_name</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Can you confirm the name of the provider?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>provider_walkin_location</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Location of the provider</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>provider_walkin_records_consent</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>boolean</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Do we have permission to request additional medical notes tied to this procedure?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>compact</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_familydoctor</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Family doctor</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>includes</value>
+					<value>Walk in</value>
 					<type>String</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>medical_care_type</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>medical_care_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>walkin</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>section_walkin_info</name>
+					<primaryNodeType>cards:Section</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Medical care provider</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
+						<name>recurrent</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>familydoctor</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>provider_walkin_name</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Can you confirm the name of the provider?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>provider_walkin_location</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Location of the provider</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>provider_walkin_records_consent</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>boolean</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Do we have permission to request additional medical notes tied to this procedure?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>compact</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>section_familydoctor_info</name>
+				<name>section_familydoctor</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Medical care provider</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>recurrent</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<node>
-					<name>familydoctor_name</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Can you confirm the name of the provider?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>familydoctor_location</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Location of the provider</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>familydoctor_records_consent</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>boolean</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Do we have permission to request additional medical notes tied to this procedure?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>compact</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>section_specialist</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Specialist</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>includes</value>
+					<value>Family doctor</value>
 					<type>String</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>medical_care_type</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>medical_care_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>familydoctor</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>section_familydoctor_info</name>
+					<primaryNodeType>cards:Section</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Medical care provider</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
+						<name>recurrent</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>specialist</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>familydoctor_name</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Can you confirm the name of the provider?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>familydoctor_location</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Location of the provider</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>familydoctor_records_consent</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>boolean</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Do we have permission to request additional medical notes tied to this procedure?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>compact</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>section_specialist_info</name>
+				<name>section_specialist</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Medical care provider</value>
+					<value>Specialist</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>recurrent</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
 				<node>
-					<name>specialist_name</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
+						<name>comparator</name>
+						<value>includes</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>text</name>
-						<value>Can you confirm the name of the provider?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>medical_care_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>specialist</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>specialist_location</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
+					<name>section_specialist_info</name>
+					<primaryNodeType>cards:Section</primaryNodeType>
 					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
+						<name>label</name>
+						<value>Medical care provider</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>text</name>
-						<value>Location of the provider</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>specialist_records_consent</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>boolean</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>Do we have permission to request additional medical notes tied to this procedure?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>compact</name>
+						<name>recurrent</name>
 						<value>True</value>
 						<type>Boolean</type>
 					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
+					<node>
+						<name>specialist_name</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Can you confirm the name of the provider?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>specialist_location</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>text</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Location of the provider</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
+					<node>
+						<name>specialist_records_consent</name>
+						<primaryNodeType>cards:Question</primaryNodeType>
+						<property>
+							<name>maxAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+						<property>
+							<name>dataType</name>
+							<value>boolean</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>text</name>
+							<value>Do we have permission to request additional medical notes tied to this procedure?</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>compact</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+						<property>
+							<name>minAnswers</name>
+							<value>1</value>
+							<type>Long</type>
+						</property>
+					</node>
 				</node>
 			</node>
 		</node>
