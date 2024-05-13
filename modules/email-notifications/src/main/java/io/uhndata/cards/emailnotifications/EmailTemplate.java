@@ -611,7 +611,8 @@ public class EmailTemplate
             final NodeIterator children = commonAttachmentsResource.adaptTo(Node.class).getNodes();
             while (children.hasNext()) {
                 Node child = children.nextNode();
-                if (child.isNodeType("nt:file")) {
+                if (child.isNodeType("nt:file")
+                    && !this.instance.properties.containsKey("skipAttachment_" + child.getName())) {
                     withInlineAttachment(child.getName(), getMimeType(child, resolver), readFileAsBytes(child));
                 }
             }
