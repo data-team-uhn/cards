@@ -51,7 +51,7 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>ec_1</name>
+			<name>case_number</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -90,7 +90,7 @@
 			</property>
 		</node>
 		<node>
-			<name>ec_ecc_source</name>
+			<name>event_source</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -118,7 +118,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>pi</name>
+				<name>participant_initiated</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -127,7 +127,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>pi</value>
+					<value>participant_initiated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -137,7 +137,7 @@
 				</property>
 			</node>
 			<node>
-				<name>mh</name>
+				<name>monthly_health_initiated</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -146,7 +146,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>mh</value>
+					<value>monthly_health_initiated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -156,7 +156,7 @@
 				</property>
 			</node>
 			<node>
-				<name>ta</name>
+				<name>triggered_assessment_initiated</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -165,7 +165,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>ta</value>
+					<value>triggered_assessment_initiated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -175,7 +175,7 @@
 				</property>
 			</node>
 			<node>
-				<name>si</name>
+				<name>study_initiated</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -184,7 +184,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>si</value>
+					<value>study_initiated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -195,7 +195,7 @@
 			</node>
 		</node>
 		<node>
-			<name>ec_ecc_diff</name>
+			<name>pre_post_ta</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -292,7 +292,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_ecc_source</value>
+							<value>event_source</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -308,7 +308,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ta</value>
+							<value>triggered_assessment_initiated</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -320,7 +320,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_year_nb</name>
+				<name>ta_year_number</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -348,7 +348,7 @@
 					<type>Long</type>
 				</property>
 				<node>
-					<name>y1</name>
+					<name>Y1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -357,7 +357,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>y1</value>
+						<value>Y1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -367,7 +367,7 @@
 					</property>
 				</node>
 				<node>
-					<name>y2</name>
+					<name>Y2</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -376,7 +376,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>y2</value>
+						<value>Y2</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -386,7 +386,7 @@
 					</property>
 				</node>
 				<node>
-					<name>y3</name>
+					<name>Y3</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -395,7 +395,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>y3</value>
+						<value>Y3</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -405,7 +405,7 @@
 					</property>
 				</node>
 				<node>
-					<name>y4</name>
+					<name>Y4</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -414,7 +414,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>y4</value>
+						<value>Y4</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -424,7 +424,7 @@
 					</property>
 				</node>
 				<node>
-					<name>y5</name>
+					<name>Y5</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -433,7 +433,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>y5</value>
+						<value>Y5</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -444,7 +444,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_ta_nb</name>
+				<name>ta_assessment_number</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -472,7 +472,7 @@
 					<type>Long</type>
 				</property>
 				<node>
-					<name>t1</name>
+					<name>T1</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -481,7 +481,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>t1</value>
+						<value>T1</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -491,7 +491,7 @@
 					</property>
 				</node>
 				<node>
-					<name>t2</name>
+					<name>T2</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -500,7 +500,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>t2</value>
+						<value>T2</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -510,7 +510,7 @@
 					</property>
 				</node>
 				<node>
-					<name>t3</name>
+					<name>T3</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -519,7 +519,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>t3</value>
+						<value>T3</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -531,7 +531,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_visit_nb</name>
+			<name>section_si_visit_number</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -547,7 +547,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_ecc_source</value>
+							<value>event_source</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -563,7 +563,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>si</value>
+							<value>study_initiated</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -575,7 +575,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_visit_nb</name>
+				<name>si_visit_number</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -719,7 +719,7 @@
 			</node>
 		</node>
 		<node>
-			<name>ec_2</name>
+			<name>open_date</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -748,7 +748,7 @@
 			</property>
 		</node>
 		<node>
-			<name>ec_4</name>
+			<name>close_date</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -772,7 +772,7 @@
 			</property>
 		</node>
 		<node>
-			<name>ec_5</name>
+			<name>checksum</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -806,7 +806,7 @@
 			</property>
 		</node>
 		<node>
-			<name>ec_12</name>
+			<name>consent</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -830,7 +830,7 @@
 			</property>
 		</node>
 		<node>
-			<name>section_ec_13</name>
+			<name>section_non_consent_reason</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -846,7 +846,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_12</value>
+							<value>consent</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -874,7 +874,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_13</name>
+				<name>non_consent_reason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -942,7 +942,7 @@
 			</node>
 		</node>
 		<node>
-			<name>ec_6</name>
+			<name>records_status</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1028,7 +1028,7 @@
 			</node>
 		</node>
 		<node>
-			<name>ec_7</name>
+			<name>form_start</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1052,7 +1052,7 @@
 			</property>
 		</node>
 		<node>
-			<name>ec_8</name>
+			<name>completed_by</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1080,7 +1080,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>pr111111</name>
+				<name>PR111111</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1089,7 +1089,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>pr111111</value>
+					<value>PR111111</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1099,7 +1099,7 @@
 				</property>
 			</node>
 			<node>
-				<name>pr222222</name>
+				<name>PR222222</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1108,7 +1108,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>pr222222</value>
+					<value>PR222222</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1118,7 +1118,7 @@
 				</property>
 			</node>
 			<node>
-				<name>pr333333</name>
+				<name>PR333333</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1127,7 +1127,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>pr333333</value>
+					<value>PR333333</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1137,7 +1137,7 @@
 				</property>
 			</node>
 			<node>
-				<name>pr444444</name>
+				<name>PR444444</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1146,7 +1146,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>pr444444</value>
+					<value>PR444444</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1156,7 +1156,7 @@
 				</property>
 			</node>
 			<node>
-				<name>pr555555</name>
+				<name>PR555555</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1165,7 +1165,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>pr555555</value>
+					<value>PR555555</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1175,7 +1175,7 @@
 				</property>
 			</node>
 			<node>
-				<name>pr666666</name>
+				<name>PR666666</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -1184,7 +1184,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>pr666666</value>
+					<value>PR666666</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1225,7 +1225,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_12</value>
+							<value>consent</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1266,7 +1266,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_6</value>
+							<value>records_status</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1295,7 +1295,7 @@
 			</node>
 		</node>
 		<node>
-			<name>ec_10</name>
+			<name>event_type</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1467,7 +1467,7 @@
 			</node>
 		</node>
 		<node>
-			<name>ec_11</name>
+			<name>event_record_date</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1496,7 +1496,7 @@
 			</property>
 		</node>
 		<node>
-			<name>section_ec_14</name>
+			<name>section_cad_event_subtype</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -1512,7 +1512,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1540,7 +1540,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_14</name>
+				<name>cad_event_subtype</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -1703,7 +1703,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_15</name>
+			<name>section_hf_event_subtype</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -1719,7 +1719,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1747,7 +1747,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_15</name>
+				<name>hf_event_subtype</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -1872,7 +1872,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_16</name>
+			<name>section_vhd_event_subtype</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -1888,7 +1888,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1916,7 +1916,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_16</name>
+				<name>vhd_event_subtype</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2060,7 +2060,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_17</name>
+			<name>section_stroke_event_subtype</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -2076,7 +2076,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -2104,7 +2104,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_17</name>
+				<name>stroke_event_subtype</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2248,7 +2248,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_18</name>
+			<name>section_cvother_event_subtype</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -2264,7 +2264,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -2292,7 +2292,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_18</name>
+				<name>cvother_event_subtype</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2396,6 +2396,25 @@
 					</property>
 				</node>
 				<node>
+					<name>medicationchange</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Medication change</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>medication change</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>5</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
 					<name>myocarditis</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
@@ -2410,7 +2429,7 @@
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>5</value>
+						<value>6</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -2429,7 +2448,7 @@
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>6</value>
+						<value>7</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -2448,7 +2467,7 @@
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>7</value>
+						<value>8</value>
 						<type>Long</type>
 					</property>
 				</node>
@@ -2467,14 +2486,14 @@
 					</property>
 					<property>
 						<name>defaultOrder</name>
-						<value>8</value>
+						<value>9</value>
 						<type>Long</type>
 					</property>
 				</node>
 			</node>
 		</node>
 		<node>
-			<name>section_ec_19</name>
+			<name>section_cad_heartattack_event_subtype</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -2498,7 +2517,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_14</value>
+								<value>cad_event_subtype</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -2539,7 +2558,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -2568,7 +2587,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_19</name>
+				<name>cad_heartattack_event_subtype</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2674,7 +2693,7 @@
 			</node>
 		</node>
 		<node>
-			<name>ec_20</name>
+			<name>place_of_service</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -2776,7 +2795,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_20</value>
+							<value>place_of_service</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -2804,7 +2823,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_21_inpatient</name>
+				<name>inpatient_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2818,7 +2837,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>When was the participant admitted to the hospital? </value>
+					<value>When was the participant admitted to the hospital?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2828,7 +2847,7 @@
 				</property>
 			</node>
 			<node>
-				<name>ec_22</name>
+				<name>inpatient_discharge</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -2857,7 +2876,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_ec_23</name>
+				<name>section_hospital_stay</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -2873,7 +2892,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_22</value>
+								<value>inpatient_discharge</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -2901,7 +2920,7 @@
 					</node>
 				</node>
 				<node>
-					<name>ec_23</name>
+					<name>hospital_stay_length</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -2940,137 +2959,137 @@
 					</property>
 				</node>
 			</node>
+		</node>
+		<node>
+			<name>section_clinical_service_outpatient</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>section_ec_21_outpatient</name>
-				<primaryNodeType>cards:Section</primaryNodeType>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>includes</value>
+					<type>String</type>
+				</property>
 				<node>
-					<name>condition0</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>includes</value>
+						<name>value</name>
+						<values>
+							<value>place_of_service</value>
+						</values>
 						<type>String</type>
 					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>ec_20</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>outpatient</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 				<node>
-					<name>ec_21_outpatient</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
+					<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
+						<name>value</name>
+						<values>
+							<value>outpatient</value>
+						</values>
 						<type>String</type>
 					</property>
 					<property>
-						<name>text</name>
-						<value>When did the participant visit the hospital as an outpatient?</value>
-						<type>String</type>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
 			<node>
-				<name>section_ec_21_er</name>
-				<primaryNodeType>cards:Section</primaryNodeType>
-				<node>
-					<name>condition0</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>includes</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>ec_20</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>er</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-				</node>
-				<node>
-					<name>ec_21_er</name>
-					<primaryNodeType>cards:Question</primaryNodeType>
-					<property>
-						<name>maxAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>text</name>
-						<value>When did the participant visit the ER?</value>
-						<type>String</type>
-					</property>
-				</node>
+				<name>outpatient_date</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>When did the participant visit the hospital as an outpatient?</value>
+					<type>String</type>
+				</property>
 			</node>
 		</node>
 		<node>
-			<name>section_ec_24</name>
+			<name>section_clinical_service_er</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>includes</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>place_of_service</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>er</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>er_date</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>When did the participant visit the ER?</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>section_cad_tests</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -3086,7 +3105,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3114,7 +3133,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_24</name>
+				<name>cad_tests</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3180,7 +3199,7 @@
 					</property>
 				</node>
 				<node>
-					<name>angiographydiagnosticonly</name>
+					<name>angiography</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3189,7 +3208,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>angiography (diagnostic only)</value>
+						<value>angiography</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3294,7 +3313,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3303,7 +3322,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3315,51 +3334,101 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_24_other</name>
+			<name>section_cad_tests_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>includes</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>ec_24</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>event_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cad</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>other diagnostic test</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cad_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>other</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>ec_24_other</name>
+				<name>cad_tests_other</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3384,7 +3453,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_25</name>
+			<name>section_hf_tests</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -3400,7 +3469,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3428,7 +3497,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_25</name>
+				<name>hf_tests</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3513,7 +3582,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3522,7 +3591,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3534,51 +3603,101 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_25_other</name>
+			<name>section_hf_tests_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>includes</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>ec_25</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>event_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>hf</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>other diagnostic test</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>hf_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>other</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>ec_25_other</name>
+				<name>hf_tests_other</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3603,7 +3722,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_26</name>
+			<name>section_vhd_tests</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -3619,7 +3738,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3647,7 +3766,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_26</name>
+				<name>vhd_tests</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3661,7 +3780,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>List out the relevant diagnostic test(s) performed for Valvular Heart Disease </value>
+					<value>List out the relevant diagnostic test(s) performed for Valvular Heart Disease</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3732,7 +3851,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3741,7 +3860,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3753,51 +3872,101 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_26_other</name>
+			<name>section_vhd_tests_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>includes</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>ec_26</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>event_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>vhd</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>other diagnostic test</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>vhd_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>other</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>ec_26_other</name>
+				<name>vhd_tests_other</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3822,7 +3991,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_27</name>
+			<name>section_stroke_tests</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -3838,7 +4007,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3866,7 +4035,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_27</name>
+				<name>stroke_tests</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -3932,7 +4101,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -3941,7 +4110,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3953,51 +4122,101 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_27_other</name>
+			<name>section_stroke_tests_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>includes</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>ec_27</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>event_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>stroke</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>other diagnostic test</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>stroke_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>other</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>ec_27_other</name>
+				<name>stroke_tests_other</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4022,7 +4241,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_28</name>
+			<name>section_cvother_tests</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -4038,7 +4257,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -4066,7 +4285,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_28</name>
+				<name>cvother_tests</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4170,7 +4389,7 @@
 					</property>
 				</node>
 				<node>
-					<name>angiographydiagnosticonly</name>
+					<name>angiography</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4179,7 +4398,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>angiography (diagnostic only)</value>
+						<value>angiography</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4189,7 +4408,7 @@
 					</property>
 				</node>
 				<node>
-					<name>ecg-holter</name>
+					<name>ecg</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4198,7 +4417,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>ecg/holter</value>
+						<value>ecg</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4246,7 +4465,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4255,7 +4474,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4267,51 +4486,101 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_28_other</name>
+			<name>section_cvother_tests_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>includes</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>ec_28</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>event_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cvother</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>other diagnostic test</value>
-						</values>
+						<name>comparator</name>
+						<value>includes</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cvother_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>other</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>ec_28_other</name>
+				<name>cvother_tests_other</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4336,7 +4605,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_28_noncv</name>
+			<name>section_noncv_tests</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -4360,7 +4629,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -4401,7 +4670,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -4430,7 +4699,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_28_noncv</name>
+				<name>noncv_tests</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4496,7 +4765,7 @@
 					</property>
 				</node>
 				<node>
-					<name>angiographydiagnosticonly</name>
+					<name>angiography</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4505,7 +4774,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>angiography (diagnostic only)</value>
+						<value>angiography</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4534,7 +4803,7 @@
 					</property>
 				</node>
 				<node>
-					<name>ecg-holter</name>
+					<name>ecg</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4543,7 +4812,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>ecg/holter</value>
+						<value>ecg</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4724,7 +4993,7 @@
 					</property>
 				</node>
 				<node>
-					<name>otherdiagnostictest</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -4733,7 +5002,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>other diagnostic test</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4745,51 +5014,151 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_28_noncv_other</name>
+			<name>section_noncv_tests_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>condition0</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>includes</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>conditionalGroup0</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>ec_28_noncv</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>other diagnostic test</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
+						<name>requireAll</name>
 						<value>False</value>
 						<type>Boolean</type>
 					</property>
+					<node>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>event_type</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>noncv</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+					<node>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>event_type</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>none of the above</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+				</node>
+				<node>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>other</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
-				<name>ec_28_noncv_other</name>
+				<name>noncv_tests_other</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -4814,7 +5183,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_cad_diagnostic_tests</name>
+			<name>section_cad_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -4830,7 +5199,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -4858,7 +5227,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_diagnostic_test_info_bloodwo</name>
+				<name>section_cad_test_bloodwork</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -4879,7 +5248,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_24</value>
+								<value>cad_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -4907,7 +5276,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_bloodwo_ec_29</name>
+					<name>cad_test_bloodwork_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4931,7 +5300,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_bloodwo_ec_30</name>
+					<name>cad_test_bloodwork_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4955,7 +5324,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_bloodwo_ec_31</name>
+					<name>cad_test_bloodwork_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -4975,7 +5344,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_diagnostic_test_info_cardiac</name>
+				<name>section_cad_test_cardiacct</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -4996,7 +5365,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_24</value>
+								<value>cad_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5024,7 +5393,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_cardiac_ec_29</name>
+					<name>cad_test_cardiacct_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5048,7 +5417,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_cardiac_ec_30</name>
+					<name>cad_test_cardiacct_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5072,7 +5441,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_cardiac_ec_31</name>
+					<name>cad_test_cardiacct_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5092,7 +5461,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_diagnostic_test_info_angiogr</name>
+				<name>section_cad_test_angiography</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5113,7 +5482,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_24</value>
+								<value>cad_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5129,7 +5498,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>angiography (diagnostic only)</value>
+								<value>angiography</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5141,7 +5510,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_angiogr_ec_29</name>
+					<name>cad_test_angiography_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5165,7 +5534,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_angiogr_ec_30</name>
+					<name>cad_test_angiography_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5189,7 +5558,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_angiogr_ec_31</name>
+					<name>cad_test_angiography_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5209,7 +5578,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_diagnostic_test_info_cpet</name>
+				<name>section_cad_test_cpet</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5230,7 +5599,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_24</value>
+								<value>cad_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5258,7 +5627,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_cpet_ec_29</name>
+					<name>cad_test_cpet_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5282,7 +5651,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_cpet_ec_30</name>
+					<name>cad_test_cpet_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5306,7 +5675,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_cpet_ec_31</name>
+					<name>cad_test_cpet_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5326,7 +5695,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_diagnostic_test_info_ecg</name>
+				<name>section_cad_test_ecg</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5347,7 +5716,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_24</value>
+								<value>cad_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5375,7 +5744,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_ecg_ec_29</name>
+					<name>cad_test_ecg_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5399,7 +5768,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_ecg_ec_30</name>
+					<name>cad_test_ecg_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5423,7 +5792,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_ecg_ec_31</name>
+					<name>cad_test_ecg_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5443,7 +5812,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_diagnostic_test_info_nuclear</name>
+				<name>section_cad_test_nuclearstress</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5464,7 +5833,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_24</value>
+								<value>cad_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5492,7 +5861,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_nuclear_ec_29</name>
+					<name>cad_test_nuclearstress_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5516,7 +5885,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_nuclear_ec_30</name>
+					<name>cad_test_nuclearstress_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5540,7 +5909,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_nuclear_ec_31</name>
+					<name>cad_test_nuclearstress_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5560,7 +5929,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_diagnostic_test_info_pharmac</name>
+				<name>section_cad_test_pharmacologicalstress</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5581,7 +5950,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_24</value>
+								<value>cad_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5609,7 +5978,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_pharmac_ec_29</name>
+					<name>cad_test_pharmacologicalstress_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5633,7 +6002,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_pharmac_ec_30</name>
+					<name>cad_test_pharmacologicalstress_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5657,7 +6026,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_pharmac_ec_31</name>
+					<name>cad_test_pharmacologicalstress_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5677,7 +6046,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_diagnostic_test_info_stresse</name>
+				<name>section_cad_test_stressecho</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5698,7 +6067,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_24</value>
+								<value>cad_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5726,7 +6095,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_stresse_ec_29</name>
+					<name>cad_test_stressecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5750,7 +6119,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_stresse_ec_30</name>
+					<name>cad_test_stressecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5774,7 +6143,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_stresse_ec_31</name>
+					<name>cad_test_stressecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5794,7 +6163,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cad_diagnostic_test_info_otherdi</name>
+				<name>section_cad_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5815,7 +6184,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_24</value>
+								<value>cad_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5831,7 +6200,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -5843,7 +6212,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_otherdi_ec_29</name>
+					<name>cad_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5867,7 +6236,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_otherdi_ec_30</name>
+					<name>cad_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5891,7 +6260,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cad_diagnostic_test_info_otherdi_ec_31</name>
+					<name>cad_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -5912,7 +6281,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_hf_diagnostic_tests</name>
+			<name>section_hf_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -5928,7 +6297,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -5956,7 +6325,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_hf_diagnostic_test_info_transtho</name>
+				<name>section_hf_test_transthoracicecho</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5977,7 +6346,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_25</value>
+								<value>hf_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6005,7 +6374,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_transtho_ec_29</name>
+					<name>hf_test_transthoracicecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6029,7 +6398,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_transtho_ec_30</name>
+					<name>hf_test_transthoracicecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6053,7 +6422,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_transtho_ec_31</name>
+					<name>hf_test_transthoracicecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6073,7 +6442,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_hf_diagnostic_test_info_transeso</name>
+				<name>section_hf_test_transesophagealecho</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6094,7 +6463,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_25</value>
+								<value>hf_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6122,7 +6491,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_transeso_ec_29</name>
+					<name>hf_test_transesophagealecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6146,7 +6515,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_transeso_ec_30</name>
+					<name>hf_test_transesophagealecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6170,7 +6539,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_transeso_ec_31</name>
+					<name>hf_test_transesophagealecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6190,7 +6559,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_hf_diagnostic_test_info_stressec</name>
+				<name>section_hf_test_stressecho</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6211,7 +6580,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_25</value>
+								<value>hf_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6239,7 +6608,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_stressec_ec_29</name>
+					<name>hf_test_stressecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6263,7 +6632,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_stressec_ec_30</name>
+					<name>hf_test_stressecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6287,7 +6656,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_stressec_ec_31</name>
+					<name>hf_test_stressecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6307,7 +6676,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_hf_diagnostic_test_info_otherdia</name>
+				<name>section_hf_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6328,7 +6697,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_25</value>
+								<value>hf_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6344,7 +6713,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6356,7 +6725,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_otherdia_ec_29</name>
+					<name>hf_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6380,7 +6749,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_otherdia_ec_30</name>
+					<name>hf_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6404,7 +6773,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_hf_diagnostic_test_info_otherdia_ec_31</name>
+					<name>hf_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6425,7 +6794,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_vhd_diagnostic_tests</name>
+			<name>section_vhd_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -6441,7 +6810,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -6469,7 +6838,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_vhd_diagnostic_test_info_transth</name>
+				<name>section_vhd_test_transthoracicecho</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6490,7 +6859,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_26</value>
+								<value>vhd_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6518,7 +6887,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_transth_ec_29</name>
+					<name>vhd_test_transthoracicecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6542,7 +6911,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_transth_ec_30</name>
+					<name>vhd_test_transthoracicecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6566,7 +6935,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_transth_ec_31</name>
+					<name>vhd_test_transthoracicecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6586,7 +6955,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_vhd_diagnostic_test_info_transes</name>
+				<name>section_vhd_test_transesophagealecho</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6607,7 +6976,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_26</value>
+								<value>vhd_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6635,7 +7004,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_transes_ec_29</name>
+					<name>vhd_test_transesophagealecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6659,7 +7028,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_transes_ec_30</name>
+					<name>vhd_test_transesophagealecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6683,7 +7052,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_transes_ec_31</name>
+					<name>vhd_test_transesophagealecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6703,7 +7072,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_vhd_diagnostic_test_info_stresse</name>
+				<name>section_vhd_test_stressecho</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6724,7 +7093,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_26</value>
+								<value>vhd_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6752,7 +7121,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_stresse_ec_29</name>
+					<name>vhd_test_stressecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6776,7 +7145,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_stresse_ec_30</name>
+					<name>vhd_test_stressecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6800,7 +7169,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_stresse_ec_31</name>
+					<name>vhd_test_stressecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6820,7 +7189,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_vhd_diagnostic_test_info_otherdi</name>
+				<name>section_vhd_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -6841,7 +7210,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_26</value>
+								<value>vhd_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6857,7 +7226,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -6869,7 +7238,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_otherdi_ec_29</name>
+					<name>vhd_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6893,7 +7262,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_otherdi_ec_30</name>
+					<name>vhd_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6917,7 +7286,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_vhd_diagnostic_test_info_otherdi_ec_31</name>
+					<name>vhd_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -6938,7 +7307,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_stroke_diagnostic_tests</name>
+			<name>section_stroke_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -6954,7 +7323,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -6982,7 +7351,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_stroke_diagnostic_test_info_brai</name>
+				<name>section_stroke_test_brainct</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7003,7 +7372,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_27</value>
+								<value>stroke_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7031,7 +7400,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_stroke_diagnostic_test_info_brai_ec_29</name>
+					<name>stroke_test_brainct_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7055,7 +7424,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_diagnostic_test_info_brai_ec_30</name>
+					<name>stroke_test_brainct_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7079,7 +7448,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_diagnostic_test_info_brai_ec_31</name>
+					<name>stroke_test_brainct_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7099,7 +7468,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_stroke_diagnostic_test_info_brai 2</name>
+				<name>section_stroke_test_brainmri</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7120,7 +7489,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_27</value>
+								<value>stroke_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7148,7 +7517,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_stroke_diagnostic_test_info_brai 2_ec_29</name>
+					<name>stroke_test_brainmri_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7172,7 +7541,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_diagnostic_test_info_brai 2_ec_30</name>
+					<name>stroke_test_brainmri_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7196,7 +7565,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_diagnostic_test_info_brai 2_ec_31</name>
+					<name>stroke_test_brainmri_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7216,7 +7585,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_stroke_diagnostic_test_info_othe</name>
+				<name>section_stroke_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7237,7 +7606,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_27</value>
+								<value>stroke_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7253,7 +7622,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7265,7 +7634,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_stroke_diagnostic_test_info_othe_ec_29</name>
+					<name>stroke_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7289,7 +7658,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_diagnostic_test_info_othe_ec_30</name>
+					<name>stroke_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7313,7 +7682,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_stroke_diagnostic_test_info_othe_ec_31</name>
+					<name>stroke_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7334,7 +7703,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_cvother_diagnostic_tests</name>
+			<name>section_cvother_test</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -7350,7 +7719,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -7378,7 +7747,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_diagnostic_test_info_blo</name>
+				<name>section_cvother_test_bloodwork</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7399,7 +7768,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_28</value>
+								<value>cvother_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7427,7 +7796,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_blo_ec_29</name>
+					<name>cvother_test_bloodwork_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7451,7 +7820,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_blo_ec_30</name>
+					<name>cvother_test_bloodwork_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7475,7 +7844,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_blo_ec_31</name>
+					<name>cvother_test_bloodwork_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7495,7 +7864,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_diagnostic_test_info_car</name>
+				<name>section_cvother_test_cardiacct</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7516,7 +7885,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_28</value>
+								<value>cvother_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7544,7 +7913,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_car_ec_29</name>
+					<name>cvother_test_cardiacct_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7568,7 +7937,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_car_ec_30</name>
+					<name>cvother_test_cardiacct_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7592,7 +7961,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_car_ec_31</name>
+					<name>cvother_test_cardiacct_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7612,7 +7981,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_diagnostic_test_info_ctp</name>
+				<name>section_cvother_test_ctpa</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7633,7 +8002,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_28</value>
+								<value>cvother_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7661,7 +8030,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_ctp_ec_29</name>
+					<name>cvother_test_ctpa_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7685,7 +8054,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_ctp_ec_30</name>
+					<name>cvother_test_ctpa_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7709,7 +8078,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_ctp_ec_31</name>
+					<name>cvother_test_ctpa_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7729,7 +8098,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_diagnostic_test_info_car 2</name>
+				<name>section_cvother_test_cardiacmri</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7750,7 +8119,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_28</value>
+								<value>cvother_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7778,7 +8147,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_car 2_ec_29</name>
+					<name>cvother_test_cardiacmri_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7802,7 +8171,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_car 2_ec_30</name>
+					<name>cvother_test_cardiacmri_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7826,7 +8195,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_car 2_ec_31</name>
+					<name>cvother_test_cardiacmri_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7846,7 +8215,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_diagnostic_test_info_ang</name>
+				<name>section_cvother_test_angiography</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7867,7 +8236,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_28</value>
+								<value>cvother_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7883,7 +8252,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>angiography (diagnostic only)</value>
+								<value>angiography</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -7895,7 +8264,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_ang_ec_29</name>
+					<name>cvother_test_angiography_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7919,7 +8288,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_ang_ec_30</name>
+					<name>cvother_test_angiography_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7943,7 +8312,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_ang_ec_31</name>
+					<name>cvother_test_angiography_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -7963,7 +8332,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_diagnostic_test_info_ecg</name>
+				<name>section_cvother_test_ecg</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -7984,7 +8353,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_28</value>
+								<value>cvother_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -8000,7 +8369,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ecg/holter</value>
+								<value>ecg</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -8012,7 +8381,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_ecg_ec_29</name>
+					<name>cvother_test_ecg_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8036,7 +8405,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_ecg_ec_30</name>
+					<name>cvother_test_ecg_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8060,7 +8429,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_ecg_ec_31</name>
+					<name>cvother_test_ecg_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8080,7 +8449,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_diagnostic_test_info_tra</name>
+				<name>section_cvother_test_transthoracicecho</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -8101,7 +8470,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_28</value>
+								<value>cvother_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -8129,7 +8498,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_tra_ec_29</name>
+					<name>cvother_test_transthoracicecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8153,7 +8522,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_tra_ec_30</name>
+					<name>cvother_test_transthoracicecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8177,7 +8546,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_tra_ec_31</name>
+					<name>cvother_test_transthoracicecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8197,7 +8566,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_diagnostic_test_info_tra 2</name>
+				<name>section_cvother_test_transesophagealecho</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -8218,7 +8587,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_28</value>
+								<value>cvother_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -8246,7 +8615,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_tra 2_ec_29</name>
+					<name>cvother_test_transesophagealecho_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8270,7 +8639,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_tra 2_ec_30</name>
+					<name>cvother_test_transesophagealecho_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8294,7 +8663,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_tra 2_ec_31</name>
+					<name>cvother_test_transesophagealecho_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8314,7 +8683,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_cvother_diagnostic_test_info_oth</name>
+				<name>section_cvother_test_other</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -8335,7 +8704,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_28</value>
+								<value>cvother_tests</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -8351,7 +8720,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>other diagnostic test</value>
+								<value>other</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -8363,7 +8732,7 @@
 					</node>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_oth_ec_29</name>
+					<name>cvother_test_other_date</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8387,7 +8756,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_oth_ec_30</name>
+					<name>cvother_test_other_system</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8411,7 +8780,7 @@
 					</property>
 				</node>
 				<node>
-					<name>section_cvother_diagnostic_test_info_oth_ec_31</name>
+					<name>cvother_test_other_code</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -8432,7 +8801,1857 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_32</name>
+			<name>section_noncv_test</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
+				<property>
+					<name>requireAll</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>event_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>event_type</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>none of the above</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_bloodwork</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Blood work</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>blood work</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_bloodwork_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_bloodwork_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_bloodwork_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_cardiacct</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Cardiac CT</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cardiac ct</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_cardiacct_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_cardiacct_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_cardiacct_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_angiography</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Angiography (diagnostic only)</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>angiography</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_angiography_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_angiography_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_angiography_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_cpet</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>CPET</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cpet</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_cpet_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_cpet_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_cpet_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_ecg</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>ECG/Holter</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ecg</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_ecg_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_ecg_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_ecg_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_nuclearstress</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Nuclear stress</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>nuclear stress</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_nuclearstress_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_nuclearstress_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_nuclearstress_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_pharmacologicalstress</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Pharmacological stress</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>pharmacological stress</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_pharmacologicalstress_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_pharmacologicalstress_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_pharmacologicalstress_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_stressecho</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Stress echo</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>stress echo</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_stressecho_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_stressecho_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_stressecho_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_transthoracicecho</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Transthoracic echo</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>transthoracic echo</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_transthoracicecho_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_transthoracicecho_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_transthoracicecho_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_transesophagealecho</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Transesophageal echo</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>transesophageal echo</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_transesophagealecho_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_transesophagealecho_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_transesophagealecho_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_brainct</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Brain CT</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>brain ct</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_brainct_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_brainct_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_brainct_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_brainmri</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Brain MRI</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>brain mri</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_brainmri_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_brainmri_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_brainmri_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_ctpa</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>CTPA</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ctpa</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_ctpa_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_ctpa_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_ctpa_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_cardiacmri</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Cardiac MRI</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cardiac mri</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_cardiacmri_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_cardiacmri_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_cardiacmri_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>section_noncv_test_other</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Other diagnostic test</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>noncv_tests</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>other</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>noncv_test_other_date</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic Test Date</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_other_system</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test coding system/source</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(ICD-10/9 DX+PCS, DRG, LOINC, SNOMED, CPT, HCPCS, EPIC etc.)</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>noncv_test_other_code</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>0</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Diagnostic test codes from EHR</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>section_cad_tests_outcome</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -8448,7 +10667,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -8476,7 +10695,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_32</name>
+				<name>cad_tests_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -8658,7 +10877,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_33</name>
+			<name>section_hf_tests_outcome</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -8674,7 +10893,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -8702,7 +10921,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_33</name>
+				<name>hf_tests_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9055,7 +11274,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_34</name>
+			<name>section_vhd_tests_outcome</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -9071,7 +11290,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -9099,7 +11318,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_34</name>
+				<name>vhd_tests_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9113,7 +11332,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Outcome of diagnostic test(s) performed for Valvular Heart Disease </value>
+					<value>Outcome of diagnostic test(s) performed for Valvular Heart Disease</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9490,7 +11709,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_35</name>
+			<name>section_stroke_tests_outcome</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -9506,7 +11725,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -9534,7 +11753,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_35</name>
+				<name>stroke_tests_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9602,7 +11821,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_36</name>
+			<name>section_cvother_tests_outcome</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -9618,7 +11837,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_10</value>
+							<value>event_type</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -9646,7 +11865,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_36</name>
+				<name>cvother_tests_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -9999,7 +12218,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_36_noncv</name>
+			<name>section_noncv_tests_outcome</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -10023,7 +12242,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -10064,7 +12283,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -10093,7 +12312,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_36_noncv</name>
+				<name>noncv_tests_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10112,7 +12331,7 @@
 				</property>
 				<property>
 					<name>displayMode</name>
-					<value>list</value>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10427,7 +12646,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_37</name>
+			<name>section_procedures</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -10451,7 +12670,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -10492,7 +12711,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -10533,7 +12752,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -10574,7 +12793,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -10603,7 +12822,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_37</name>
+				<name>procedures</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10864,7 +13083,7 @@
 					</property>
 				</node>
 				<node>
-					<name>anotherprocedurenotonthislist</name>
+					<name>other</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -10873,7 +13092,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>another procedure not on this list</value>
+						<value>other</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -10885,7 +13104,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_37_other</name>
+			<name>section_procedures_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -10901,7 +13120,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -10929,7 +13148,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_37_other</name>
+				<name>procedures_other</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -10959,7 +13178,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_ablation</name>
+			<name>section_procedures_ablation</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -10980,7 +13199,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11008,7 +13227,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_ablation_ec_38</name>
+				<name>procedures_ablation_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11032,7 +13251,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_ablation_ec_39</name>
+				<name>procedures_ablation_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11056,7 +13275,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_ablation_ec_40</name>
+				<name>procedures_ablation_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11076,7 +13295,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_angioplastystent</name>
+			<name>section_procedures_angioplastystent</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11097,7 +13316,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11125,7 +13344,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_angioplastystent_ec_38</name>
+				<name>procedures_angioplastystent_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11149,7 +13368,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_angioplastystent_ec_39</name>
+				<name>procedures_angioplastystent_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11173,7 +13392,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_angioplastystent_ec_40</name>
+				<name>procedures_angioplastystent_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11193,7 +13412,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_angioplastynostent</name>
+			<name>section_procedures_angioplastynostent</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11214,7 +13433,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11242,7 +13461,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_angioplastynostent_ec_38</name>
+				<name>procedures_angioplastynostent_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11266,7 +13485,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_angioplastynostent_ec_39</name>
+				<name>procedures_angioplastynostent_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11290,7 +13509,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_angioplastynostent_ec_40</name>
+				<name>procedures_angioplastynostent_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11310,7 +13529,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_aorticprocedures</name>
+			<name>section_procedures_aorticprocedures</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11331,7 +13550,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11359,7 +13578,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_aorticprocedures_ec_38</name>
+				<name>procedures_aorticprocedures_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11383,7 +13602,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_aorticprocedures_ec_39</name>
+				<name>procedures_aorticprocedures_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11407,7 +13626,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_aorticprocedures_ec_40</name>
+				<name>procedures_aorticprocedures_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11427,7 +13646,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_cardioversion</name>
+			<name>section_procedures_cardioversion</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11448,7 +13667,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11476,7 +13695,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_cardioversion_ec_38</name>
+				<name>procedures_cardioversion_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11500,7 +13719,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_cardioversion_ec_39</name>
+				<name>procedures_cardioversion_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11524,7 +13743,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_cardioversion_ec_40</name>
+				<name>procedures_cardioversion_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11544,7 +13763,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_coronarybypassgraft</name>
+			<name>section_procedures_coronarybypassgraft</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11565,7 +13784,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11593,7 +13812,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_coronarybypassgraft_ec_38</name>
+				<name>procedures_coronarybypassgraft_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11617,7 +13836,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_coronarybypassgraft_ec_39</name>
+				<name>procedures_coronarybypassgraft_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11641,7 +13860,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_coronarybypassgraft_ec_40</name>
+				<name>procedures_coronarybypassgraft_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11661,7 +13880,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_hearttransplant</name>
+			<name>section_procedures_hearttransplant</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11682,7 +13901,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11710,7 +13929,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_hearttransplant_ec_38</name>
+				<name>procedures_hearttransplant_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11734,7 +13953,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_hearttransplant_ec_39</name>
+				<name>procedures_hearttransplant_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11758,7 +13977,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_hearttransplant_ec_40</name>
+				<name>procedures_hearttransplant_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11778,7 +13997,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_implantheartassistdevice</name>
+			<name>section_procedures_implantheartassistdevice</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11799,7 +14018,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11827,7 +14046,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_implantheartassistdevice_ec_38</name>
+				<name>procedures_implantheartassistdevice_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11851,7 +14070,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_implantheartassistdevice_ec_39</name>
+				<name>procedures_implantheartassistdevice_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11875,7 +14094,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_implantheartassistdevice_ec_40</name>
+				<name>procedures_implantheartassistdevice_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11895,7 +14114,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_pacemakerorimplanteddefi</name>
+			<name>section_procedures_pacemakerorimplanteddefib</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -11916,7 +14135,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -11944,7 +14163,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_pacemakerorimplanteddefi_ec_38</name>
+				<name>procedures_pacemakerorimplanteddefib_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11968,7 +14187,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_pacemakerorimplanteddefi_ec_39</name>
+				<name>procedures_pacemakerorimplanteddefib_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -11992,7 +14211,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_pacemakerorimplanteddefi_ec_40</name>
+				<name>procedures_pacemakerorimplanteddefib_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12012,7 +14231,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_strokereperfusion</name>
+			<name>section_procedures_strokereperfusion</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12033,7 +14252,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -12061,7 +14280,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_strokereperfusion_ec_38</name>
+				<name>procedures_strokereperfusion_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12085,7 +14304,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_strokereperfusion_ec_39</name>
+				<name>procedures_strokereperfusion_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12109,7 +14328,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_strokereperfusion_ec_40</name>
+				<name>procedures_strokereperfusion_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12129,7 +14348,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_valvereplacementorrepair</name>
+			<name>section_procedures_valvereplacementorrepair</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12150,7 +14369,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -12178,7 +14397,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_valvereplacementorrepair_ec_38</name>
+				<name>procedures_valvereplacementorrepair_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12202,7 +14421,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_valvereplacementorrepair_ec_39</name>
+				<name>procedures_valvereplacementorrepair_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12226,7 +14445,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_valvereplacementorrepair_ec_40</name>
+				<name>procedures_valvereplacementorrepair_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12246,7 +14465,7 @@
 			</node>
 		</node>
 		<node>
-			<name>procedures_info_anotherprocedurenotonthi</name>
+			<name>section_procedures_other</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12267,7 +14486,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -12283,7 +14502,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>another procedure not on this list</value>
+							<value>other</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -12295,7 +14514,7 @@
 				</node>
 			</node>
 			<node>
-				<name>procedures_info_anotherprocedurenotonthi_ec_38</name>
+				<name>procedures_other_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12319,7 +14538,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_anotherprocedurenotonthi_ec_39</name>
+				<name>procedures_other_system</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12343,7 +14562,7 @@
 				</property>
 			</node>
 			<node>
-				<name>procedures_info_anotherprocedurenotonthi_ec_40</name>
+				<name>procedures_other_code</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12363,7 +14582,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_41</name>
+			<name>section_procedures_outcome</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -12379,7 +14598,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>ec_37</value>
+							<value>procedures</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -12391,7 +14610,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_41</name>
+				<name>procedures_outcome</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -12806,7 +15025,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_arteries</name>
+			<name>section_coronary_artery_stenosis</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -12835,7 +15054,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -12884,7 +15103,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_24</value>
+									<value>cad_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -12925,7 +15144,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_24</value>
+									<value>cad_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -12941,7 +15160,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>angiography (diagnostic only)</value>
+									<value>angiography</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -12968,7 +15187,7 @@
 					<type>Boolean</type>
 				</property>
 				<node>
-					<name>ec_artery_name</name>
+					<name>artery_name</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -12987,7 +15206,7 @@
 					</property>
 				</node>
 				<node>
-					<name>ec_artery_percentage</name>
+					<name>bound_values</name>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>maxAnswers</name>
@@ -13033,7 +15252,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_42</name>
+			<name>section_cad_ejection_fraction</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -13065,7 +15284,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_10</value>
+									<value>event_type</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13106,7 +15325,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_10</value>
+									<value>event_type</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13147,7 +15366,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_10</value>
+									<value>event_type</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13197,7 +15416,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_24</value>
+									<value>cad_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13238,7 +15457,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_28_noncv</value>
+									<value>noncv_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13268,7 +15487,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_42</name>
+				<name>cad_ejection_fraction_percentage</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13303,7 +15522,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_43</name>
+			<name>section_cac_score</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -13335,7 +15554,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_10</value>
+									<value>event_type</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13376,7 +15595,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_10</value>
+									<value>event_type</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13417,7 +15636,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_10</value>
+									<value>event_type</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13467,7 +15686,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_24</value>
+									<value>cad_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13508,7 +15727,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_24</value>
+									<value>cad_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13524,7 +15743,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>angiography (diagnostic only)</value>
+									<value>angiography</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13549,7 +15768,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_28_noncv</value>
+									<value>noncv_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13590,7 +15809,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_28_noncv</value>
+									<value>noncv_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13606,7 +15825,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>angiography (diagnostic only)</value>
+									<value>angiography</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13620,7 +15839,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_43</name>
+				<name>cac_score</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13640,7 +15859,7 @@
 			</node>
 		</node>
 		<node>
-			<name>section_ec_44</name>
+			<name>section_hf_ejection_fraction</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -13664,7 +15883,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ec_10</value>
+								<value>event_type</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -13713,7 +15932,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_25</value>
+									<value>hf_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13754,7 +15973,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_25</value>
+									<value>hf_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13795,7 +16014,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ec_25</value>
+									<value>hf_tests</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -13825,7 +16044,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ec_44</name>
+				<name>hf_ejection_fraction_percentage</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -13860,7 +16079,7 @@
 			</node>
 		</node>
 		<node>
-			<name>ec_45</name>
+			<name>change_in_status</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -13965,7 +16184,7 @@
 			</node>
 		</node>
 		<node>
-			<name>ec_46</name>
+			<name>comments</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -13979,7 +16198,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Clinical event comments</value>
+				<value>Event clinical comments</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -13994,7 +16213,7 @@
 			</property>
 		</node>
 		<node>
-			<name>section_ec_47</name>
+			<name>section_medication_change</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>conditionalGroup0</name>
@@ -14005,172 +16224,463 @@
 					<type>Boolean</type>
 				</property>
 				<node>
-					<name>condition0</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>conditionalGroup0</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>includes</value>
-						<type>String</type>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>ec_14</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>event_type</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>cad</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>medication change</value>
-							</values>
+							<name>comparator</name>
+							<value>includes</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>cad_event_subtype</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>medication change</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 				<node>
-					<name>condition1</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>conditionalGroup1</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>includes</value>
-						<type>String</type>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>ec_15</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>event_type</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>hf</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>medication change</value>
-							</values>
+							<name>comparator</name>
+							<value>includes</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>hf_event_subtype</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>medication change</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 				<node>
-					<name>condition2</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>conditionalGroup2</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>includes</value>
-						<type>String</type>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>ec_16</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>event_type</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>vhd</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>medication change</value>
-							</values>
+							<name>comparator</name>
+							<value>includes</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>vhd_event_subtype</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>medication change</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 				<node>
-					<name>condition3</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>conditionalGroup3</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>includes</value>
-						<type>String</type>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>ec_17</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>event_type</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>stroke</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>medication change</value>
-							</values>
+							<name>comparator</name>
+							<value>includes</value>
 							<type>String</type>
 						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>stroke_event_subtype</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>medication change</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+				</node>
+				<node>
+					<name>conditionalGroup4</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
+					<property>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+					<node>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
 						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>event_type</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>cvother</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+					<node>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>includes</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>cvother_event_subtype</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>medication change</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 			</node>
 			<node>
-				<name>ec_47</name>
+				<name>medication_change_reminder</name>
 				<primaryNodeType>cards:Information</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
