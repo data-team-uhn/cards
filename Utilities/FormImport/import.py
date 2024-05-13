@@ -152,7 +152,11 @@ def repeated_section_handler(self, questionnaire, row):
                         and entry['jcr:primaryType'] == 'cards:AnswerOption'
                         and ('noneOfTheAbove' not in entry.keys() or not entry['noneOfTheAbove'])
                         and ('notApplicable' not in entry.keys() or not entry['notApplicable'])):
-                    section_title = parent_label + "_" + clean_name(entry['value'])
+
+                    section_title = parent_label
+                    if (section_title.startswith("section_")):
+                        section_title = section_title[len("section_"):]
+                    section_title = section_title + "_" + clean_name(entry['value'])
                     new_section = create_new_section(section_title)
                     new_section['label'] = clean_title(entry['label'])
                     new_section['repeated_parent'] = parent_label
@@ -180,7 +184,12 @@ def process_repeated_child_section(section, repeated_key):
         child = section[key]
         if type(child) == dict:
             if is_section(child):
-                section[repeated_key + "_" + key] = process_repeated_child_section(section.pop(key), repeated_key)
+                new_key = key
+                if (new_key.startswith("section_")):
+                    new_key = "section_" + repeated_key + new_key[len("section"):]
+                else:
+                    new_key = repeated_key + "_" + new_key
+                section[new_key] = process_repeated_child_section(section.pop(key), repeated_key)
             elif is_question(child):
                 section[repeated_key + "_" + key] = section.pop(key)
     return section
@@ -188,7 +197,11 @@ def process_repeated_child_section(section, repeated_key):
 
 def process_repeated(self, questionnaire, child, repeated_conditionals, non_repeated_key):
     for repeated_key in repeated_conditionals:
-        repeated_child_name = repeated_key + "_" + non_repeated_key
+        repeated_child_name = non_repeated_key
+        if (repeated_child_name.startswith("section_")):
+            repeated_child_name = "section_" + repeated_key + repeated_child_name[len("section"):]
+        else:
+            repeated_child_name = repeated_key + "_" + repeated_child_name
         new_child = copy.deepcopy(child)
 
         if type(new_child) == dict and is_section(new_child):
