@@ -68,9 +68,7 @@ function Answer (props) {
 
   // When the answers change, we inform the FormContext
   useEffect(() => {
-    if (answers && answers.length > 0) {
-      changeFormContext((oldContext) => ({...oldContext, [questionName]: answers}));
-    }
+    changeFormContext((oldContext) => ({...oldContext, [questionName]: answers}));
   }, [answers]);
 
   return (
