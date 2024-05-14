@@ -380,7 +380,7 @@ do
       mvn --quiet --non-recursive dependency:copy -Dartifact=io.uhndata.cards:${PROJECT#cards4}-docker-packaging:${PROJECT_VERSION}:dependencies -DoutputDirectory=${TEMPDEPDIR} 2>&1 > /dev/null
       if [[ -f ${TEMPDEPDIR}/${PROJECT#cards4}-docker-packaging-${PROJECT_VERSION}.dependencies ]]
       then
-        ARGS[$i]=${ARGS[$i]}$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py ${TEMPDEPDIR}/*.dependencies)
+        ARGS[$i]=${ARGS[$i]%,},$(CARDS_VERSION=${CARDS_VERSION} PROJECT_NAME=${PROJECT} PROJECT_VERSION=${PROJECT_VERSION} PERMISSIONS=${PERMISSIONS} python3 distribution/get_project_dependency_features.py ${TEMPDEPDIR}/*.dependencies)
       fi
       rm -rf ${TEMPDEPDIR}
       PROJECT_SPECIFIED=true
