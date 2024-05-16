@@ -195,84 +195,179 @@
 			</node>
 		</node>
 		<node>
-			<name>pre_post_ta</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Differentiate the ECC for events and care prior to TA or post TA</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
+			<name>section_ta_si</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>preta</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>conditionalGroup0</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Pre TA</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>False</value>
+					<type>Boolean</type>
 				</property>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>event_source</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>triggered_assessment_initiated</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>event_source</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>study_initiated</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+			</node>
+			<node>
+				<name>pre_post_ta</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>value</name>
-					<value>pre ta</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
+					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
 				</property>
-			</node>
-			<node>
-				<name>postta</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Post TA</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>post ta</value>
+					<name>text</name>
+					<value>Differentiate the ECC for events and care prior to TA or post TA</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>post-annualassessments-postenrollmentass</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Post-Annual Assessments / Post Enrollment Assessments</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>post-annual assessments / post enrollment assessments</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
+				<node>
+					<name>preta</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Pre TA</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>pre ta</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>postta</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Post TA</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>post ta</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>2</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>post-annualassessments-postenrollmentass</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Post-Annual Assessments / Post Enrollment Assessments</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>post-annual assessments / post enrollment assessments</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>3</value>
+						<type>Long</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
