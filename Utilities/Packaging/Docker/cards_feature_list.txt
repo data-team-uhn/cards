@@ -37,3 +37,4 @@ mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permiss
 mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_trusted
 mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_ownership
 mvn:io.uhndata.cards/cards-s3-export/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-slack-notifications/${PROJECT_VERSION}/slingosgifeature
