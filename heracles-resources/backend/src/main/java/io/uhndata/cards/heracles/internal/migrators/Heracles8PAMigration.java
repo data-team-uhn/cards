@@ -146,6 +146,7 @@ public class Heracles8PAMigration implements DataMigrator
         final String formId = questionnaire.getIdentifier();
         final String visitQuestionId = session.getNode(NEW_VISIT_NUMBER_QUESTION_PATH).getIdentifier();
         final Node paQuestion = session.getNode(PA_REASON_QUESTION_PATH);
+        final String paQuestionId = paQuestion.getIdentifier();
         final Node visitSection = session.getNode(NEW_VISIT_NUMBER_SECTION_PATH);
 
         final NodeIterator forms = session.getWorkspace().getQueryManager().createQuery(
@@ -159,6 +160,7 @@ public class Heracles8PAMigration implements DataMigrator
 
             // Move visit_number answer
             Node visitAnswerNode = null;
+            Node paAnswerNode = null;
 
             final NodeIterator answers = form.getNodes();
             while (answers.hasNext()) {
@@ -166,7 +168,10 @@ public class Heracles8PAMigration implements DataMigrator
                 if (answer.hasProperty(FormUtils.QUESTION_PROPERTY)
                     && visitQuestionId.equals(answer.getProperty(FormUtils.QUESTION_PROPERTY).getString())) {
                     visitAnswerNode = answer;
-                    break;
+                }
+                if (answer.hasProperty(FormUtils.QUESTION_PROPERTY)
+                    && paQuestionId.equals(answer.getProperty(FormUtils.QUESTION_PROPERTY).getString())) {
+                    paAnswerNode = answer;
                 }
             }
 
@@ -177,9 +182,13 @@ public class Heracles8PAMigration implements DataMigrator
             }
 
             // Create pa_reason answer
-            Node paAnswer = form.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
-            paAnswer.setProperty(FormUtils.QUESTION_PROPERTY, paQuestion);
-            paAnswer.setProperty("value", "Study");
+            if (paAnswerNode == null) {
+                paAnswerNode = form.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
+                paAnswerNode.setProperty(FormUtils.QUESTION_PROPERTY, paQuestion);
+            }
+            if (!paAnswerNode.hasProperty(FormUtils.VALUE_PROPERTY)) {
+                paAnswerNode.setProperty("value", "Study");
+            }
 
             session.save();
         }
