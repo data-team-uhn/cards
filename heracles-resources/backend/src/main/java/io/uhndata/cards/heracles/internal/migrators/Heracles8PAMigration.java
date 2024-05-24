@@ -85,6 +85,7 @@ public class Heracles8PAMigration implements DataMigrator
             if (!session.nodeExists(NEW_VISIT_NUMBER_QUESTION_PATH)) {
                 migrateVisitNumberQuestion(session, versionManager, questionnaire, nodesToCheckin);
             }
+            session.save();
 
             // Modify Physical Assessment forms
             migratePaForms(session, versionManager, questionnaire, nodesToCheckin);
@@ -180,6 +181,7 @@ public class Heracles8PAMigration implements DataMigrator
             paAnswer.setProperty(FormUtils.QUESTION_PROPERTY, paQuestion);
             paAnswer.setProperty("value", "Study");
 
+            session.save();
         }
     }
 
