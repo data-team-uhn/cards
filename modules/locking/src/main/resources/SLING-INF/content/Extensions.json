@@ -3,7 +3,7 @@
         "jcr:primaryType": "sling:Folder",
         "SubjectLockAction": {
             "jcr:primaryType": "cards:Extension",
-            "cards:extensionPointId": "cards/coreUI/subjectActions",
+            "cards:extensionPointId": "cards/subject/chart/actions",
             "cards:extensionName": "Subject Lock Action",
             "cards:extensionRenderURL": "asset:cards-locking.SubjectLockAction.js"
         }
