@@ -451,7 +451,7 @@ function SubjectMemberInternal (props) {
       <Chip
         label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
         variant="outlined"
-        className={`${[classes[item + "Chip"] || classes.DefaultChip, classes.subjectChartChip].join(" ")}`}
+        className={`${[classes[item + "Chip"] || classes.DefaultChip, classes.childSubjectFlag].join(" ")}`}
         size="small"
       />
     ))
@@ -464,13 +464,13 @@ function SubjectMemberInternal (props) {
           <Grid container direction="row" spacing={1} justifyContent="flex-start">
             <Grid item xs={false}>{expandAction}</Grid>
             <Grid item xs={false}>{avatar}</Grid>
-            <Grid item>
+            <Grid item xs={true}>
               <Typography variant="overline">
-                 {label} <Link to={"/content.html" + path} underline="hover" className={classes.subjectChartLink}>{identifier}</Link>
-                 {tags}
-                 {action}
+                 {label} <Link to={"/content.html" + path} underline="hover">{identifier}</Link>
               </Typography>
             </Grid>
+            <Grid item xs="3.5">{tags}</Grid>
+            <Grid item className={classes.childSubjectActions}>{action}</Grid>
           </Grid>
         </Grid>
       }
@@ -585,7 +585,7 @@ function SubjectMemberInternal (props) {
                                              key={status}
                                              label={wordToTitleCase(status)}
                                              variant="outlined"
-                                             className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
+                                             className={`${classes.childFormFlag} ${classes[status + "Flag"] || classes.DefaultFlag}`}
                                              size="small"
                                            />
                                          })}
