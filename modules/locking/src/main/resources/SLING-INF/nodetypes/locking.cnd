@@ -27,18 +27,18 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// Simple nodetype for identifying the login page.
+// Simple nodetype for holding information about a locked node.
 [cards:Lock] > sling:Folder
   // No attributes
 
   // Properties:
-  // Hardcode the resource type
+  // Hardcode the resource type and supertype
+  // TODO: Update to cards:Item
   - sling:resourceType (STRING) = "cards/Lock" mandatory autocreated protected
-  // Hardcode the resource supertype: the login page is a resource
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The time that the parent node was locked
-  - time (date) mandatory
+  - time (DATE) mandatory
 
   // The author who locked the parent node
   - author (STRING) mandatory

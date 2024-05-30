@@ -29,7 +29,7 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
 
 /**
- * A restriction that makes a permissions entry only be valid on nodes created by the accessing user.
+ * A restriction that makes locked nodes and forms not editable.
  *
  * @version $Id$
  */

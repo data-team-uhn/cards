@@ -579,7 +579,7 @@ const questionnaireStyle = theme => ({
     },
     LOCKEDFlag:{
       backgroundColor: theme.palette.primary.main,
-      color: "#FFF"
+      color: theme.palette.background.paper
     },
     DefaultFlag: {
     },

@@ -120,14 +120,14 @@ function SubjectLockAction(props) {
         setDialogContent(
           <>
             <TextField
-              disabled
+              inputProps={{readonly:true}}
               id="user"
               label="Signing User"
               defaultValue={json["userID"]}
               className={classes.lockDialogInput}
               />
             <TextField
-              disabled
+              inputProps={{readonly:true}}
               id="date"
               label="Date"
               defaultValue={new Date().toDateString()}
