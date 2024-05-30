@@ -1,7 +1,0 @@
-{
-    "jcr:primaryType": "cards:Extension",
-    "cards:extensionPointId": "cards/coreUI/actions/subject",
-    "cards:extensionName": "Lock Action",
-    "cards:extensionRenderURL": "asset:cards-locking.SubjectLockAction.js",
-    "cards:defaultOrder": 1
-  }
