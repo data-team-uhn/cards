@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Triggered Assessment - Physician interpretation</value>
+		<value>Triggered Assessment - Physician Interpretation</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -737,16 +737,16 @@
 					</property>
 				</node>
 				<node>
-					<name>ihadcardiacrelatedtesting</name>
+					<name>ihadacardiacrelatedtesting</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>I had cardiac related testing</value>
+						<value>I had a cardiac related testing</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>i had cardiac related testing</value>
+						<value>i had a cardiac related testing</value>
 						<type>String</type>
 					</property>
 					<property>
