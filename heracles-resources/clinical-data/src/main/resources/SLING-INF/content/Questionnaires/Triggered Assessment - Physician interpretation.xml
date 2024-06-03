@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>TriggeredAssessment-Physicianinterpretat</name>
+	<name>Triggered Assessment - Physician interpretation</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Triggered Assessment  - Physician interpretation</value>
+		<value>Triggered Assessment - Physician interpretation</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -49,499 +49,503 @@
 	</property>
 	<property>
 		<name>maxPerSubject</name>
-		<value>1</value>
+		<value>0</value>
 		<type>Long</type>
 	</property>
 	<node>
-		<name>section_triggered_assessmentdetails</name>
+		<name>section_details_eligibility</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>Triggered Assessment Details</value>
-			<type>String</type>
-		</property>
 		<node>
-			<name>case_number</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>section_triggered_assessmentdetails</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>label</name>
+				<value>Triggered Assessment Details</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Case Number</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>TR#######</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>validationRegexp</name>
-				<value>^(TR)[0-9A-Fa-f]{6}$</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>validationErrorText</name>
-				<value>The value must consist of "TR" followed by 6 hexadecimal digits, for example "TR1234EF"</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>study_stream</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Study stream</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>entryMode</name>
-				<value>reference</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>question</name>
-				<value>/Questionnaires/Study Stream/study_stream</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>triggered_yearnumber</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Year number</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Triggered</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 			<node>
-				<name>y1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>case_number</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Y1</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>y1</value>
+					<name>text</name>
+					<value>Case Number</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>defaultOrder</name>
+					<name>description</name>
+					<value>TR#######</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>validationRegexp</name>
+					<value>^(TR)[0-9A-Fa-f]{6}$</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>validationErrorText</name>
+					<value>The value must consist of "TR" followed by 6 hexadecimal digits, for example "TR1234EF"</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>study_stream</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>Study stream</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>entryMode</name>
+					<value>reference</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>question</name>
+					<value>/Questionnaires/Study Stream/study_stream</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>triggered_yearnumber</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>Year number</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Triggered</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Y1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>Y2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>2</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>Y3</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>3</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>Y4</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y4</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y4</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>4</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>Y5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>5</value>
+						<type>Long</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>triggered_assessmentnumber</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>Triggered assessment number</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>T1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>T1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>T1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>T2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>T2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>T2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>2</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>T3</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>T3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>T3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>3</value>
+						<type>Long</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>triggered_outreachdate</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>Date of initial reach out</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
 				</property>
 			</node>
 			<node>
-				<name>y2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>triggered_reason</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Y2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>y2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
+					<name>maxAnswers</name>
+					<value>0</value>
 					<type>Long</type>
 				</property>
-			</node>
-			<node>
-				<name>y3</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Y3</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>y3</value>
+					<name>text</name>
+					<value>Reason for triggered assessment</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>y4</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Y4</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>y4</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>y5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Y5</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>y5</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>5</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>triggered_assessmentnumber</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Triggered assessment number</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>t1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>T1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>t1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
+					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
 				</property>
+				<node>
+					<name>applegeneratedlist</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Apple generated list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>apple generated list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>uhngeneratedlist</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>UHN generated list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>uhn generated list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>2</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>matchedcontrolsubject</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Matched control subject</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>matched control subject</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>3</value>
+						<type>Long</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>t2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>triggered_subreason</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>T2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>t2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
+					<name>maxAnswers</name>
+					<value>0</value>
 					<type>Long</type>
 				</property>
-			</node>
-			<node>
-				<name>t3</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>T3</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>t3</value>
+					<name>text</name>
+					<value>Sub reason for triggered assessment</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>triggered_outreachdate</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>date</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Date of initial reach out</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>triggered_reason</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Reason for triggered assessment</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>applegeneratedlist</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Apple Generated List</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>apple generated list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
+					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
 				</property>
-			</node>
-			<node>
-				<name>uhngeneratedlist</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>UHN Generated List</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>uhn generated list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>matchedcontrolsubject</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Matched Control Subject</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>matched control subject</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>triggered_subreason</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Sub reason for triggered assessment</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>sensedmetrics</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Sensed Metrics</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>sensed metrics</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>changeinparticipant'shealthstatus</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Change in participant's health status</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>change in participant's health status</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>changeinclinicreferences</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Change in clinic references</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>change in clinic references</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
+				<node>
+					<name>sensedmetrics</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Sensed metrics</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>sensed metrics</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>changeinparticipant'shealthstatus</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Change in participant's health status</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>change in participant's health status</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>2</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>changeinclinicreferences</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Change in clinic references</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>change in clinic references</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>3</value>
+						<type>Long</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -853,7 +857,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Monthly Health Update (in Research App)</value>
+							<value>Monthly health update (in Research App)</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -872,7 +876,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Reported Directly to Study Team</value>
+							<value>Reported directly to Study Team</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -891,7 +895,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Haven't Yet Reported</value>
+							<value>Haven't yet reported</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1051,7 +1055,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Shortness of Breath</value>
+							<value>Shortness of breath</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1165,7 +1169,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Chest Pain</value>
+							<value>Chest pain</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1184,7 +1188,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Symptoms of Asthma</value>
+							<value>Symptoms of asthma</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1241,7 +1245,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>None of the Above</value>
+							<value>None of the above</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1363,7 +1367,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Experiencing Symptoms</value>
+							<value>Experiencing symptoms</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1382,7 +1386,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Planned Procedure</value>
+							<value>Planned procedure</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1401,7 +1405,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Participant Declined to Participate</value>
+							<value>Participant declined to participate</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1490,16 +1494,16 @@
 						<type>Long</type>
 					</property>
 					<node>
-						<name>cardiopulmonaryexercisetest</name>
+						<name>cpet</name>
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Cardiopulmonary Exercise Test</value>
+							<value>CPET</value>
 							<type>String</type>
 						</property>
 						<property>
 							<name>value</name>
-							<value>cardiopulmonary exercise test</value>
+							<value>cpet</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1509,16 +1513,16 @@
 						</property>
 					</node>
 					<node>
-						<name>holtermonitor</name>
+						<name>6mwt</name>
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Holter Monitor</value>
+							<value>6MWT</value>
 							<type>String</type>
 						</property>
 						<property>
 							<name>value</name>
-							<value>holter monitor</value>
+							<value>6mwt</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1528,16 +1532,16 @@
 						</property>
 					</node>
 					<node>
-						<name>6-minutewalktest</name>
+						<name>holtermonitor</name>
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>6-Minute Walk Test</value>
+							<value>Holter monitor</value>
 							<type>String</type>
 						</property>
 						<property>
 							<name>value</name>
-							<value>6-minute walk test</value>
+							<value>holter monitor</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -1771,17 +1775,22 @@
 					<value>list+input</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>tightnesspressurepainordiscomfortinthech</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Tightness, pressure, pain or discomfort in the chest?</value>
+						<value>Tightness, pressure, pain or discomfort in the chest</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>tightness, pressure, pain or discomfort in the chest?</value>
+						<value>tightness, pressure, pain or discomfort in the chest</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1791,16 +1800,16 @@
 					</property>
 				</node>
 				<node>
-					<name>nauseaorindigestion?</name>
+					<name>nauseaorindigestion</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Nausea or indigestion?</value>
+						<value>Nausea or indigestion</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>nausea or indigestion?</value>
+						<value>nausea or indigestion</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1814,12 +1823,12 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat?</value>
+						<value>Heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat?</value>
+						<value>heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1829,16 +1838,16 @@
 					</property>
 				</node>
 				<node>
-					<name>shortnessofbreathand-coughfeverchills?</name>
+					<name>shortnessofbreathand-coughfeverchills</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Shortness of breath and/, cough, fever, chills?</value>
+						<value>Shortness of breath and/, cough, fever, chills</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>shortness of breath and/, cough, fever, chills?</value>
+						<value>shortness of breath and/, cough, fever, chills</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1848,16 +1857,16 @@
 					</property>
 				</node>
 				<node>
-					<name>fatigue?</name>
+					<name>fatigue</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Fatigue?</value>
+						<value>Fatigue</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>fatigue?</value>
+						<value>fatigue</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1867,16 +1876,16 @@
 					</property>
 				</node>
 				<node>
-					<name>rapidunexplainedchangeinweight?</name>
+					<name>rapidunexplainedchangeinweight</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Rapid unexplained change in weight?</value>
+						<value>Rapid unexplained change in weight</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>rapid unexplained change in weight?</value>
+						<value>rapid unexplained change in weight</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1886,16 +1895,16 @@
 					</property>
 				</node>
 				<node>
-					<name>swellinginlegsanklesorfeet?</name>
+					<name>swellinginlegsanklesorfeet</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Swelling in legs, ankles or feet?</value>
+						<value>Swelling in legs, ankles or feet</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>swelling in legs, ankles or feet?</value>
+						<value>swelling in legs, ankles or feet</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1909,12 +1918,12 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Discomfort and pain in the legs and/ or buttocks?</value>
+						<value>Discomfort and pain in the legs and/ or buttocks</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>discomfort and pain in the legs and/ or buttocks?</value>
+						<value>discomfort and pain in the legs and/ or buttocks</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1928,18 +1937,42 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Light headedness, dizziness, or sweating more than usual?</value>
+						<value>Light headedness, dizziness, or sweating more than usual</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>light headedness, dizziness, or sweating more than usual?</value>
+						<value>light headedness, dizziness, or sweating more than usual</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>defaultOrder</name>
 						<value>9</value>
 						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noneoftheabove</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None of the above</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>none of the above</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>10</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>noneOfTheAbove</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -1951,6 +1984,11 @@
 				<name>label</name>
 				<value>Post-CPET</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<node>
 				<name>condition0</name>
@@ -2016,17 +2054,22 @@
 					<value>list+input</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 				<node>
 					<name>tightnesspressurepainordiscomfortinthech</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Tightness, pressure, pain or discomfort in the chest?</value>
+						<value>Tightness, pressure, pain or discomfort in the chest</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>tightness, pressure, pain or discomfort in the chest?</value>
+						<value>tightness, pressure, pain or discomfort in the chest</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2036,16 +2079,16 @@
 					</property>
 				</node>
 				<node>
-					<name>nauseaorindigestion?</name>
+					<name>nauseaorindigestion</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Nausea or indigestion?</value>
+						<value>Nausea or indigestion</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>nausea or indigestion?</value>
+						<value>nausea or indigestion</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2059,12 +2102,12 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat?</value>
+						<value>Heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat?</value>
+						<value>heart rhythm problems, fluttering in the chest, rapid or irregular heartbeat</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2074,16 +2117,16 @@
 					</property>
 				</node>
 				<node>
-					<name>shortnessofbreathand-coughfeverchills?</name>
+					<name>shortnessofbreathand-coughfeverchills</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Shortness of breath and/, cough, fever, chills?</value>
+						<value>Shortness of breath and/, cough, fever, chills</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>shortness of breath and/, cough, fever, chills?</value>
+						<value>shortness of breath and/, cough, fever, chills</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2093,16 +2136,16 @@
 					</property>
 				</node>
 				<node>
-					<name>fatigue?</name>
+					<name>fatigue</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Fatigue?</value>
+						<value>Fatigue</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>fatigue?</value>
+						<value>fatigue</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2112,16 +2155,16 @@
 					</property>
 				</node>
 				<node>
-					<name>rapidunexplainedchangeinweight?</name>
+					<name>rapidunexplainedchangeinweight</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Rapid unexplained change in weight?</value>
+						<value>Rapid unexplained change in weight</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>rapid unexplained change in weight?</value>
+						<value>rapid unexplained change in weight</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2131,16 +2174,16 @@
 					</property>
 				</node>
 				<node>
-					<name>swellinginlegsanklesorfeet?</name>
+					<name>swellinginlegsanklesorfeet</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Swelling in legs, ankles or feet?</value>
+						<value>Swelling in legs, ankles or feet</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>swelling in legs, ankles or feet?</value>
+						<value>swelling in legs, ankles or feet</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2154,12 +2197,12 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Discomfort and pain in the legs and/ or buttocks?</value>
+						<value>Discomfort and pain in the legs and/ or buttocks</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>discomfort and pain in the legs and/ or buttocks?</value>
+						<value>discomfort and pain in the legs and/ or buttocks</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2173,18 +2216,42 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Light headedness, dizziness, or sweating more than usual?</value>
+						<value>Light headedness, dizziness, or sweating more than usual</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>light headedness, dizziness, or sweating more than usual?</value>
+						<value>light headedness, dizziness, or sweating more than usual</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>defaultOrder</name>
 						<value>9</value>
 						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noneoftheabove</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None of the above</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>none of the above</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>10</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>noneOfTheAbove</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -2262,7 +2329,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date of Physician Follow-Up
+					<value>Date of physician follow-up
 </value>
 					<type>String</type>
 				</property>
@@ -2310,7 +2377,7 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value><![CDATA[CPET & Symptom Screener]]></value>
+						<value><![CDATA[CPET & Symptom screener]]></value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2348,7 +2415,7 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Holter Monitor</value>
+						<value>Holter monitor</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2360,6 +2427,30 @@
 						<name>defaultOrder</name>
 						<value>3</value>
 						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>noneoftheabove</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None of the above</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>none of the above</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>4</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>noneOfTheAbove</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -2422,13 +2513,18 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>CPET results?</value>
+						<value>CPET results</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>displayMode</name>
 						<value>list</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>compact</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<property>
 						<name>minAnswers</name>
@@ -2470,25 +2566,6 @@
 						<property>
 							<name>defaultOrder</name>
 							<value>2</value>
-							<type>Long</type>
-						</property>
-					</node>
-					<node>
-						<name>notprescribed</name>
-						<primaryNodeType>cards:AnswerOption</primaryNodeType>
-						<property>
-							<name>label</name>
-							<value>Not Prescribed</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>value</name>
-							<value>not prescribed</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>defaultOrder</name>
-							<value>3</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2553,13 +2630,18 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>6MWT results?</value>
+						<value>6MWT results</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>displayMode</name>
 						<value>list</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>compact</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<property>
 						<name>minAnswers</name>
@@ -2601,25 +2683,6 @@
 						<property>
 							<name>defaultOrder</name>
 							<value>2</value>
-							<type>Long</type>
-						</property>
-					</node>
-					<node>
-						<name>notprescribed</name>
-						<primaryNodeType>cards:AnswerOption</primaryNodeType>
-						<property>
-							<name>label</name>
-							<value>Not Prescribed</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>value</name>
-							<value>not prescribed</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>defaultOrder</name>
-							<value>3</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2684,13 +2747,18 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Holter results?</value>
+						<value>Holter results</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>displayMode</name>
 						<value>list</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>compact</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<property>
 						<name>minAnswers</name>
@@ -2732,25 +2800,6 @@
 						<property>
 							<name>defaultOrder</name>
 							<value>2</value>
-							<type>Long</type>
-						</property>
-					</node>
-					<node>
-						<name>notprescribed</name>
-						<primaryNodeType>cards:AnswerOption</primaryNodeType>
-						<property>
-							<name>label</name>
-							<value>Not Prescribed</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>value</name>
-							<value>not prescribed</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>defaultOrder</name>
-							<value>3</value>
 							<type>Long</type>
 						</property>
 					</node>
@@ -2906,7 +2955,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value> List additional assessment(s) recommended</value>
+						<value>List additional assessment(s) recommended</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2957,7 +3006,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Holter Monitor</value>
+							<value>Holter monitor</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -3071,7 +3120,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Blood Work</value>
+							<value>Blood work</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -3109,7 +3158,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Nuclear Stress</value>
+							<value>Nuclear stress</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -3128,7 +3177,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Pharmacological Stress</value>
+							<value>Pharmacological stress</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -3147,7 +3196,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Stress Echo</value>
+							<value>Stress echo</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -3166,7 +3215,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Transthoracic Echo</value>
+							<value>Transthoracic echo</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -3185,7 +3234,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>Transesophageal Echo</value>
+							<value>Transesophageal echo</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -3287,6 +3336,31 @@
 				<type>String</type>
 			</property>
 			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>is not empty</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>triggered_assessments_completed</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
 				<name>section_reminder_biannual_phonecall</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
@@ -3302,7 +3376,7 @@
 						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
 							<name>comparator</name>
-							<value>is not empty</value>
+							<value><![CDATA[<>]]></value>
 							<type>String</type>
 						</property>
 						<node>
@@ -3311,13 +3385,29 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>triggered_assessments_completed</value>
+									<value>assessments_findings_cpet</value>
 								</values>
 								<type>String</type>
 							</property>
 							<property>
 								<name>isReference</name>
 								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>abnormal</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
 								<type>Boolean</type>
 							</property>
 						</node>
@@ -3336,7 +3426,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>assessments_findings_cpet</value>
+									<value>assessments_findings_6mwt</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -3377,47 +3467,6 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>assessments_findings_6mwt</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>abnormal</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition3</name>
-						<primaryNodeType>cards:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value><![CDATA[<>]]></value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
 									<value>assessments_findings_holter</value>
 								</values>
 								<type>String</type>
@@ -3441,81 +3490,6 @@
 							<property>
 								<name>isReference</name>
 								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition4</name>
-						<primaryNodeType>cards:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>is not empty</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>assessments_findings_cpet</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition5</name>
-						<primaryNodeType>cards:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>is not empty</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>assessments_findings_6mwt</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition6</name>
-						<primaryNodeType>cards:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>is not empty</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>assessments_findings_holter</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
 								<type>Boolean</type>
 							</property>
 						</node>
@@ -3558,276 +3532,126 @@
 						<type>Boolean</type>
 					</property>
 					<node>
-						<name>conditionalGroup0</name>
-						<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>requireAll</name>
-							<value>True</value>
-							<type>Boolean</type>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
 						</property>
 						<node>
-							<name>condition0</name>
-							<primaryNodeType>cards:Conditional</primaryNodeType>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 							<property>
-								<name>comparator</name>
-								<value>includes</value>
+								<name>value</name>
+								<values>
+									<value>assessments_findings_cpet</value>
+								</values>
 								<type>String</type>
 							</property>
-							<node>
-								<name>operandA</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>triggered_assessments_completed</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>True</value>
-									<type>Boolean</type>
-								</property>
-							</node>
-							<node>
-								<name>operandB</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value><![CDATA[cpet & symptom screener]]></value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>False</value>
-									<type>Boolean</type>
-								</property>
-							</node>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
 						</node>
 						<node>
-							<name>condition1</name>
-							<primaryNodeType>cards:Conditional</primaryNodeType>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 							<property>
-								<name>comparator</name>
-								<value>=</value>
+								<name>value</name>
+								<values>
+									<value>abnormal</value>
+								</values>
 								<type>String</type>
 							</property>
-							<node>
-								<name>operandA</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>assessments_findings_cpet</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>True</value>
-									<type>Boolean</type>
-								</property>
-							</node>
-							<node>
-								<name>operandB</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>abnormal</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>False</value>
-									<type>Boolean</type>
-								</property>
-							</node>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
 						</node>
 					</node>
 					<node>
-						<name>conditionalGroup1</name>
-						<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>requireAll</name>
-							<value>True</value>
-							<type>Boolean</type>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
 						</property>
 						<node>
-							<name>condition0</name>
-							<primaryNodeType>cards:Conditional</primaryNodeType>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 							<property>
-								<name>comparator</name>
-								<value>includes</value>
+								<name>value</name>
+								<values>
+									<value>assessments_findings_6mwt</value>
+								</values>
 								<type>String</type>
 							</property>
-							<node>
-								<name>operandA</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>triggered_assessments_completed</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>True</value>
-									<type>Boolean</type>
-								</property>
-							</node>
-							<node>
-								<name>operandB</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>6mwt</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>False</value>
-									<type>Boolean</type>
-								</property>
-							</node>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
 						</node>
 						<node>
-							<name>condition1</name>
-							<primaryNodeType>cards:Conditional</primaryNodeType>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 							<property>
-								<name>comparator</name>
-								<value>=</value>
+								<name>value</name>
+								<values>
+									<value>abnormal</value>
+								</values>
 								<type>String</type>
 							</property>
-							<node>
-								<name>operandA</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>assessments_findings_6mwt</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>True</value>
-									<type>Boolean</type>
-								</property>
-							</node>
-							<node>
-								<name>operandB</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>abnormal</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>False</value>
-									<type>Boolean</type>
-								</property>
-							</node>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
 						</node>
 					</node>
 					<node>
-						<name>conditionalGroup2</name>
-						<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
+						<name>condition2</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>requireAll</name>
-							<value>True</value>
-							<type>Boolean</type>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
 						</property>
 						<node>
-							<name>condition0</name>
-							<primaryNodeType>cards:Conditional</primaryNodeType>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 							<property>
-								<name>comparator</name>
-								<value>includes</value>
+								<name>value</name>
+								<values>
+									<value>assessments_findings_holter</value>
+								</values>
 								<type>String</type>
 							</property>
-							<node>
-								<name>operandA</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>triggered_assessments_completed</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>True</value>
-									<type>Boolean</type>
-								</property>
-							</node>
-							<node>
-								<name>operandB</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>holter monitor</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>False</value>
-									<type>Boolean</type>
-								</property>
-							</node>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
 						</node>
 						<node>
-							<name>condition1</name>
-							<primaryNodeType>cards:Conditional</primaryNodeType>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 							<property>
-								<name>comparator</name>
-								<value>=</value>
+								<name>value</name>
+								<values>
+									<value>abnormal</value>
+								</values>
 								<type>String</type>
 							</property>
-							<node>
-								<name>operandA</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>assessments_findings_holter</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>True</value>
-									<type>Boolean</type>
-								</property>
-							</node>
-							<node>
-								<name>operandB</name>
-								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>abnormal</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>False</value>
-									<type>Boolean</type>
-								</property>
-							</node>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
 						</node>
 					</node>
 				</node>
