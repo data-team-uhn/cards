@@ -20,8 +20,9 @@
       "true" : {
         "paginationVariant" : {
           "progress" : {},
-          "dots": {},
-          "text" : {}
+          "dots" : {},
+          "text" : {},
+          "navigable" : {}
         },
         "paginationMode" : {
            "back_next" : {},

@@ -55,7 +55,7 @@ import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
-import { getFirstIncompleteQuestionEl } from "./FormUtilities.jsx";
+import { getFirstIncompleteQuestionEl, hasWarningFlags } from "./FormUtilities.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
 
@@ -654,6 +654,12 @@ function Form (props) {
               navMode = {paginationProps?.navMode || data?.questionnaire?.paginationMode}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
+              isPageCompleted={keys => (
+               Object.values(data)
+                 .filter(e => Object.values(e).find(val => ENTRY_TYPES.includes(val["jcr:primaryType"])))
+                 .filter(e => keys.includes((e.section || e.question)?.["@name"] || ""))
+                 .every(p => !hasWarningFlags(p))
+              )}
               onDone={() => { setEndReached(true); }}
               onPageChange={() => { setDisableProgress(requireCompletion); setIncompleteQuestionEl(null); }}
               doneLabel={doneLabel}
