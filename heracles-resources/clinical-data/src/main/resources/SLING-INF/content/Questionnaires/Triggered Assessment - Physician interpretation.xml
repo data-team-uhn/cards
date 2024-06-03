@@ -1838,16 +1838,16 @@
 					</property>
 				</node>
 				<node>
-					<name>shortnessofbreathand-coughfeverchills</name>
+					<name>shortnessofbreathand-orcoughfeverchills</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Shortness of breath and/, cough, fever, chills</value>
+						<value>Shortness of breath and/or cough, fever, chills</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>shortness of breath and/, cough, fever, chills</value>
+						<value>shortness of breath and/or cough, fever, chills</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1918,12 +1918,12 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Discomfort and pain in the legs and/ or buttocks</value>
+						<value>Discomfort and pain in the legs and/or buttocks</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>discomfort and pain in the legs and/ or buttocks</value>
+						<value>discomfort and pain in the legs and/or buttocks</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2117,16 +2117,16 @@
 					</property>
 				</node>
 				<node>
-					<name>shortnessofbreathand-coughfeverchills</name>
+					<name>shortnessofbreathand-orcoughfeverchills</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Shortness of breath and/, cough, fever, chills</value>
+						<value>Shortness of breath and/or cough, fever, chills</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>shortness of breath and/, cough, fever, chills</value>
+						<value>shortness of breath and/or cough, fever, chills</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2197,12 +2197,12 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Discomfort and pain in the legs and/ or buttocks</value>
+						<value>Discomfort and pain in the legs and/or buttocks</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>discomfort and pain in the legs and/ or buttocks</value>
+						<value>discomfort and pain in the legs and/or buttocks</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2968,7 +2968,7 @@
 						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
 							<name>label</name>
-							<value>ECG (non-holter)</value>
+							<value>ECG (non-Holter)</value>
 							<type>String</type>
 						</property>
 						<property>
@@ -3545,6 +3545,47 @@
 							<property>
 								<name>value</name>
 								<values>
+									<value>triggered_assessments_completed</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>none of the above</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+					<node>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
 									<value>assessments_findings_cpet</value>
 								</values>
 								<type>String</type>
@@ -3573,7 +3614,7 @@
 						</node>
 					</node>
 					<node>
-						<name>condition1</name>
+						<name>condition2</name>
 						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
 							<name>comparator</name>
@@ -3614,7 +3655,7 @@
 						</node>
 					</node>
 					<node>
-						<name>condition2</name>
+						<name>condition3</name>
 						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
 							<name>comparator</name>
