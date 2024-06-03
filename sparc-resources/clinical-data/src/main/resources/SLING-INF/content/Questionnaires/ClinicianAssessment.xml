@@ -39,7 +39,7 @@
 	</property>
 	<property>
 		<name>paginationVariant</name>
-		<value>text</value>
+		<value>navigable</value>
 		<type>String</type>
 	</property>
 	<property>
