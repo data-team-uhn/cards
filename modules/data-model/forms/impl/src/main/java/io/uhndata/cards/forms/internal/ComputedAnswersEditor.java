@@ -182,21 +182,27 @@ public class ComputedAnswersEditor extends AnswersEditor
 
             ExpressionUtils.ExpressionResult expressionResult = this.expressionUtils.evaluate(question,
                 answersByQuestionName, resultType, changedQuestions);
-            // Do not compute the question if all the following are true
-            // - The expression depends on other questions
-            // - One of the other questions has changed
-            // - The computed question already has an answer
+
+            NodeState existingAnswer = this.formUtils.getAnswer(form, question);
+
+            // Do not recompute the question if:
+            // - The question depends on other answers(s)
+            // - AND none of the other answer(s) have changed
+            // - AND this question already has an answer
             if (
                 expressionResult.numberOfArguments() > 0
                     && !expressionResult.expressionUsedChangedValue()
-                    && this.formUtils.getAnswer(form, question) != null
+                    && existingAnswer != null
             ) {
                 return;
             }
 
             Object result = expressionResult.getResult();
+            if (result instanceof String && "null".equals(result)) {
+                result = null;
+            }
 
-            if (result == null || (result instanceof String && "null".equals(result))) {
+            if (result == null) {
                 answer.removeProperty(FormUtils.VALUE_PROPERTY);
             } else {
                 // Type erasure makes the actual type irrelevant, there's only one real implementation method
@@ -204,8 +210,9 @@ public class ComputedAnswersEditor extends AnswersEditor
                 @SuppressWarnings("unchecked")
                 Type<Object> untypedResultType = (Type<Object>) resultType;
                 answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
-                changedQuestions.add(question.getName());
             }
+            // Mark that this question has been updated
+            changedQuestions.add(question.getName());
             // Update the computed value in the map of existing answers
             String questionName = this.questionnaireUtils.getQuestionName(question);
             if (answersByQuestionName.containsKey(questionName)) {
