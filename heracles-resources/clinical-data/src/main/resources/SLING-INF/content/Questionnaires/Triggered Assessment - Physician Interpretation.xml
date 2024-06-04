@@ -3825,126 +3825,276 @@
 					</node>
 				</node>
 				<node>
-					<name>condition1</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>conditionalGroup1</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>assessments_findings_cpet</value>
-							</values>
+							<name>comparator</name>
+							<value>includes</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>triggered_assessments_completed</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value><![CDATA[cpet & symptom screener]]></value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>abnormal</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>assessments_findings_cpet</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>abnormal</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 				<node>
-					<name>condition2</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>conditionalGroup2</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>assessments_findings_6mwt</value>
-							</values>
+							<name>comparator</name>
+							<value>includes</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>triggered_assessments_completed</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>6mwt</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>abnormal</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>assessments_findings_6mwt</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>abnormal</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 				<node>
-					<name>condition3</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>conditionalGroup3</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
+						<name>requireAll</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>assessments_findings_holter</value>
-							</values>
+							<name>comparator</name>
+							<value>includes</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>triggered_assessments_completed</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>holter monitor</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>abnormal</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>assessments_findings_holter</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>abnormal</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 			</node>
