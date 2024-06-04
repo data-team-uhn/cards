@@ -40,7 +40,9 @@ const OPERATIONS = {
   "is empty": (a) => a.length == 0,
   "is not empty": (a) => a.length > 0,
   "includes": (a, b) => b.every(e => a.includes(e)),
-  "excludes": (a, b) => b.every(e => !a.includes(e))
+  "includes any": (a, b) => b.some(e => a.includes(e)),
+  "excludes": (a, b) => b.every(e => !a.includes(e)),
+  "excludes any": (a, b) => b.some(e => !a.includes(e))
 };
 
 
