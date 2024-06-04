@@ -18,7 +18,7 @@
 -->
 
 <node>
-	<name>Triggered Assessment - Physician interpretation</name>
+	<name>Triggered Assessment - Physician Interpretation</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
@@ -944,8 +944,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date of physician screening
-</value>
+					<value>Date of physician screening</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1762,7 +1761,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Are you currently experiencing any of the following symptoms? </value>
+					<value>Are you currently experiencing any of the following symptoms?</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2329,8 +2328,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Date of physician follow-up
-</value>
+					<value>Date of physician follow-up</value>
 					<type>String</type>
 				</property>
 				<property>
