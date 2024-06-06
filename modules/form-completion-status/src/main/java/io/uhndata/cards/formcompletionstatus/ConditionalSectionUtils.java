@@ -311,10 +311,11 @@ public final class ConditionalSectionUtils
             throws RepositoryException
         {
             this.values = new ArrayList<>();
-            this.reference = node.getProperty(PROP_IS_REFERENCE).getValue().getBoolean();
             if (node == null || !node.hasProperty(PROP_VALUE) || !node.hasProperty(PROP_IS_REFERENCE)) {
+                this.reference = false;
                 return;
             }
+            this.reference = node.getProperty(PROP_IS_REFERENCE).getValue().getBoolean();
             if (this.reference) {
                 PropertyState answerProperty = getPropertyStateFromRef(node, sectionNode, form);
 
