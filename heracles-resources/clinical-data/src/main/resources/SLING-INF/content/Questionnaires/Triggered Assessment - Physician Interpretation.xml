@@ -609,7 +609,7 @@
 					</property>
 				</node>
 				<node>
-					<name>iexperiencedachangeinmyexistingcardiacco</name>
+					<name>iexperiencedachangeinmyexistingcardiaccondition</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -628,7 +628,7 @@
 					</property>
 				</node>
 				<node>
-					<name>iexperiencedsymptomsrequiringclinicalfol</name>
+					<name>iexperiencedsymptomsrequiringclinicalfollow-up</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -647,7 +647,7 @@
 					</property>
 				</node>
 				<node>
-					<name>istartedtakingnewmedications-hadchangest</name>
+					<name>istartedtakingnewmedications-hadchangestomyexistingmedications</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -723,7 +723,7 @@
 					</property>
 				</node>
 				<node>
-					<name>iexperiencedaninjuryoraccidentthatlimite</name>
+					<name>iexperiencedaninjuryoraccidentthatlimitedmymobility</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -786,7 +786,7 @@
 				</node>
 			</node>
 			<node>
-				<name>section_triggered_preassessment_event_re</name>
+				<name>section_triggered_preassessment_event_reported</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -1295,7 +1295,7 @@
 				</property>
 			</node>
 			<node>
-				<name>section_triggered_disqualification_reaso</name>
+				<name>section_triggered_disqualification_reason</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
 					<name>condition0</name>
@@ -1785,7 +1785,7 @@
 					<type>Long</type>
 				</property>
 				<node>
-					<name>tightnesspressurepainordiscomfortinthech</name>
+					<name>tightnesspressurepainordiscomfortinthechest</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1823,7 +1823,7 @@
 					</property>
 				</node>
 				<node>
-					<name>heartrhythmproblemsflutteringinthechestr</name>
+					<name>heartrhythmproblemsflutteringinthechestrapidorirregularheartbeat</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -1937,7 +1937,7 @@
 					</property>
 				</node>
 				<node>
-					<name>lightheadednessdizzinessorsweatingmoreth</name>
+					<name>lightheadednessdizzinessorsweatingmorethanusual</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2064,7 +2064,7 @@
 					<type>Long</type>
 				</property>
 				<node>
-					<name>tightnesspressurepainordiscomfortinthech</name>
+					<name>tightnesspressurepainordiscomfortinthechest</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2102,7 +2102,7 @@
 					</property>
 				</node>
 				<node>
-					<name>heartrhythmproblemsflutteringinthechestr</name>
+					<name>heartrhythmproblemsflutteringinthechestrapidorirregularheartbeat</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2216,7 +2216,7 @@
 					</property>
 				</node>
 				<node>
-					<name>lightheadednessdizzinessorsweatingmoreth</name>
+					<name>lightheadednessdizzinessorsweatingmorethanusual</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
@@ -2837,7 +2837,7 @@
 					<type>Long</type>
 				</property>
 				<node>
-					<name>yesfollow-upandadditionalassessmentsreco</name>
+					<name>yesfollow-upandadditionalassessmentsrecommended</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
