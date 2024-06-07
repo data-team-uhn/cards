@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>Triggered Assessment - Physician Interpretation</name>
+	<name>Triggered Assessments</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Triggered Assessment - Physician Interpretation</value>
+		<value>Triggered Assessments</value>
 		<type>String</type>
 	</property>
 	<property>
