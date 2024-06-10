@@ -1,0 +1,218 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+	<name>UnaryConditionals</name>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
+	<property>
+		<name>title</name>
+		<value>Unary Conditionals</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>CARDS-2531. Test if unary conditionals without a conditionB node will break the backend condition evaluation.</value>
+		<type>Boolean</type>
+	</property>
+	<node>
+		<name>something</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Say something</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>no</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>1</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>No</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>why</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Why?</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>something</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Something</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>please</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>is empty</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>something</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>please</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Please say something!</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>no</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Still no</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>why</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Why?</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>something</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Something</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>nothing</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Nothing!</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+	</node>
+</node>
