@@ -1,0 +1,22 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Computed Questionnaire",
+  "description": "A test computed questionnaire",
+  "maxPerSubject": 1,
+  "from_long_to_computed_section": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section From Long",
+    "long_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Long Question",
+      "dataType": "long"
+    },
+    "computed_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Computed Question",
+      "dataType": "long",
+      "entryMode": "computed",
+      "expression": "return @{long_question}"
+    }
+  }
+}
