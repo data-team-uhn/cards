@@ -291,11 +291,11 @@
         </property>
     </node>
     <node>
-        <name>PMH-AC</name>
+        <name>PM-AC</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
-            <value>PMH-AC</value>
+            <value>PM-AC</value>
             <type>String</type>
         </property>
         <property>
@@ -305,21 +305,21 @@
         </property>
         <property>
             <name>displayName</name>
-            <value>PMH Acute Care</value>
+            <value>PM Acute Care</value>
             <type>String</type>
         </property>
         <property>
             <name>sidebarLabel</name>
-            <value>PMH AC</value>
+            <value>PM AC</value>
             <type>String</type>
         </property>
     </node>
     <node>
-        <name>PMH-AC-IP</name>
+        <name>PM-AC-IP</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
-            <value>PMH-AC-IP</value>
+            <value>PM-AC-IP</value>
             <type>String</type>
         </property>
         <property>
@@ -329,12 +329,12 @@
         </property>
         <property>
             <name>displayName</name>
-            <value>PMH Acute Care and Inpatient</value>
+            <value>PM Acute Care and Inpatient</value>
             <type>String</type>
         </property>
         <property>
             <name>sidebarLabel</name>
-            <value>PMH AC</value>
+            <value>PM AC IP</value>
             <type>String</type>
         </property>
     </node>

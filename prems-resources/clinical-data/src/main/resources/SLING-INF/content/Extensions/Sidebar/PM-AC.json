@@ -1,8 +1,8 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
-  "cards:extensionName": "PMH AC-IP",
-  "cards:targetURL": "/content.html/Dashboard/PMH-AC-IP",
+  "cards:extensionName": "PM AC",
+  "cards:targetURL": "/content.html/Dashboard/PM-AC",
   "cards:icon": "asset:patient-portal.clinicIcon.js",
-  "cards:defaultOrder": 9
+  "cards:defaultOrder": 8
 }
