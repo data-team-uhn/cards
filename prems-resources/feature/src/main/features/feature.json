@@ -370,6 +370,7 @@
       "export.schedule": "0 0 2 ? * SAT *",
       "questionnaires.to.be.exported": [
         "/Questionnaires/YVM",
+        "/Questionnaires/PMAC",
         "/Questionnaires/CPESIC",
         "/Questionnaires/IC",
         "/Questionnaires/OAIP",
@@ -387,6 +388,7 @@
       "export.schedule": "0 0 2 ? * SAT *",
       "questionnaires.to.be.exported": [
         "/Questionnaires/YVM",
+        "/Questionnaires/PMAC",
         "/Questionnaires/CPESIC",
         "/Questionnaires/IC",
         "/Questionnaires/OAIP",
