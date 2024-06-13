@@ -48,25 +48,20 @@
 		<type>Boolean</type>
 	</property>
 	<property>
-		<name>paginationVariant</name>
-		<value>text</value>
-		<type>String</type>
-	</property>
-	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
 		<type>Long</type>
 	</property>
 	<node>
-		<name>pma_module1</name>
+		<name>pmac_page_1</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>During this visit...</value>
+			<value>Before your visit</value>
 			<type>String</type>
 		</property>
 		<node>
-			<name>pma_hospital</name>
+			<name>pmac_hospital</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -100,7 +95,7 @@
 			</property>
 		</node>
 		<node>
-			<name>pma_department</name>
+			<name>pmac_department</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>dataType</name>
@@ -134,7 +129,112 @@
 			</property>
 		</node>
 		<node>
-			<name>pma_1</name>
+			<name>pmac_1</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>If you were transfered to or from another department, was the transfer well organized?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Not at all</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Partly</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Quite a bit</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Completely</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>pmac_2_ed_1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -257,8 +357,17 @@
 				</property>
 			</node>
 		</node>
+	</node>
+	<node>
+		<name>pmac_page_2</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>During this visit</value>
+			<type>String</type>
+		</property>
 		<node>
-			<name>pma_2</name>
+			<name>pmac_3_ed_2</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -363,7 +472,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pma_3</name>
+			<name>pmac_4_ed_3</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -468,7 +577,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pma_4</name>
+			<name>pmac_5_ed_4</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -591,8 +700,141 @@
 				</property>
 			</node>
 		</node>
+	</node>
+	<node>
+		<name>pmac_page_3</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>During this visit</value>
+			<type>String</type>
+		</property>
 		<node>
-			<name>pma_5</name>
+			<name>pmac_6_ed_11</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Do you feel that you were treated with kindness and compassion?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Never</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Sometimes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Usually</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Always</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>-1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Don’t know/Not sure</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>-1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>pmac_7_ed_5</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -721,7 +963,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pma_6</name>
+			<name>pmac_8_ed_6</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -850,388 +1092,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pma_7</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Not at all</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Partly</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Quite a bit</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>3</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Completely</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>pma_8</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Overall, how would you rate the care you received at your most recent cancer care appointment?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>4</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Very good</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>4</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>3</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Good</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Neutral</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Poor</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Very poor</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>5</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>pma_9</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>What else would you like to say about this experience?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>textbox</value>
-				<type>String</type>
-			</property>
-		</node>
-	</node>
-	<node>
-		<name>oed_module2</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<node>
-			<name>pma_10</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Do you feel that you were treated with kindness and compassion?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Never</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Sometimes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Usually</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>3</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Always</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>-1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Don’t know/Not sure</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>-1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>5</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>pma_11</name>
+			<name>pmac_9_yvm_10a</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1252,6 +1113,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<node>
 				<name>0</name>
@@ -1330,8 +1196,17 @@
 				</property>
 			</node>
 		</node>
+	</node>
+	<node>
+		<name>pmac_page_4</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>After your visit</value>
+			<type>String</type>
+		</property>
 		<node>
-			<name>pma_12</name>
+			<name>pmac_10_yvm_12</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1345,13 +1220,18 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>If you were transfered to or from another department, was the transfer well organized?</value>
+				<value>Did you have all the information you needed about the next steps in your care after your appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<node>
 				<name>0</name>
@@ -1431,7 +1311,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pma_13</name>
+			<name>pmac_11_yvm_14</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1445,7 +1325,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you have all the information you needed about the next steps in your cancer care after you left the hospital?</value>
+				<value>Overall, how would you rate the care you received at your most recent cancer care appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1453,12 +1333,17 @@
 				<value>list</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 			<node>
 				<name>0</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not at all</value>
+					<value>Very poor</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1477,7 +1362,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Partly</value>
+					<value>Poor</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1496,7 +1381,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Quite a bit</value>
+					<value>Neutral</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1515,7 +1400,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Completely</value>
+					<value>Good</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1529,9 +1414,57 @@
 					<type>Long</type>
 				</property>
 			</node>
+			<node>
+				<name>4</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Very good</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
 		</node>
 		<node>
-			<name>pma_14</name>
+			<name>pmac_12_yvm_15</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>What is one thing we could improve at Princess Margaret?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>textbox</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>pmac_13_yvm_16</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1545,8 +1478,13 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Sometimes it is helpful for us to speak with people who have completed this survey to help us improve care at Princess Margaret. Is it ok for us to contact you in the future?</value>
+				<value>Sometimes it is helpful for us to speak with people who have completed this survey to help us improve care at Princess Margaret. Is it OK for us to contact you in the future?</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 		</node>
 	</node>

@@ -80,7 +80,7 @@ Please do not include any other encounters or hospital stays in your answers.
       "link" : "dashboard+path"
     },
     {
-      "key": "pma_8",
+      "key": "pmac_overall",
       "label": "Overall experience",
       "link" : "string"
     }

@@ -1,6 +1,0 @@
-{
-  "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:pma_8": "/Questionnaires/PMAC/pma_module1/pma_8",
-  "jcr:reference:time": "/Questionnaires/Visit information/time",
-  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
-}
