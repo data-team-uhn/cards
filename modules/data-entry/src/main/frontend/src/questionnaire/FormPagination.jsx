@@ -133,7 +133,6 @@ function FormPagination (props) {
       setDirection(undefined);
     } else {
       // If saving is not enabled, we can call handlePageChange directly
-      // And call the onDone() if we're on the last page
       pages[pageIndex]?.canBeVisible && activatePage(pageIndex);
     }
   }
@@ -148,7 +147,12 @@ function FormPagination (props) {
       setNextActivePage(undefined);
     } else {
       // If saving is not enabled, we can call handlePageChange directly
+      // And call the onDone() if we're on the last page
       handlePageChange(changeDirection);
+      if (activePage === lastValidPage() && changeDirection === DIRECTION_NEXT) {
+        setSavedLastPage(true);
+        onDone && onDone();
+      }
     }
   }
 
@@ -169,11 +173,6 @@ function FormPagination (props) {
       window.scrollTo(0, 0);
       setActivePage(nextPage);
       onPageChange?.();
-      // Call the onDone() if we're on the last page
-      if (nextPage === lastValidPage()) {
-        setSavedLastPage(true);
-        onDone?.();
-      }
     }
   }
 

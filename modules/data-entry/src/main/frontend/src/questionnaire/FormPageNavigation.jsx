@@ -111,6 +111,7 @@ function FormPageNavigation (props) {
         anchorEl={pageSelectorAnchorEl}
         open={!!pageSelectorAnchorEl}
         onClose={() => setPageSelectorAnchorEl(null)}
+        disableScrollLock={true}
       >
         { pages.map((p, index) => (
           <MenuItem
