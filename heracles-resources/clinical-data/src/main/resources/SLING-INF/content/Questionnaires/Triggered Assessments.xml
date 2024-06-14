@@ -551,6 +551,30 @@
 						<type>Long</type>
 					</property>
 				</node>
+				<node>
+					<name>noneoftheabove</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None of the above</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>none of the above</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>4</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>noneOfTheAbove</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
