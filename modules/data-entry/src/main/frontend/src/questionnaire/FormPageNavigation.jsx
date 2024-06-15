@@ -51,6 +51,10 @@ function FormPageNavigation (props) {
   const theme = useTheme();
   const condensedPageList = useMediaQuery(theme.breakpoints.down('lg'));
 
+  useEffect(() => {
+    !condensedPageList && setPageSelectorAnchorEl(null);
+  }, [condensedPageList]);
+
   // -------------------------------------------------------------------------------
   // Rendering helpers
   //
