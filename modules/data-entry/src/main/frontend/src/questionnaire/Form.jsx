@@ -102,6 +102,8 @@ function Form (props) {
   let [ pages, setPages ] = useState(null);
   // Avoid rendering everything at once before we get all of the questionnaire details
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
+  let [ paginationVariant, setPaginationVariant ] = useState(paginationProps?.variant);
+  let [ paginationNavMode, setPaginationNavMode ] = useState(paginationProps?.navMode);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
@@ -236,9 +238,11 @@ function Form (props) {
 
     if (isEdit) {
       setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
+      typeof(paginationVariant) == "undefined" && setPaginationVariant(json?.questionnaire?.paginationVariant);
+      typeof(paginationNavMode) == "undefined" && setPaginationNavMode(json?.questionnaire?.paginationMode);
       // If the completion requirement has not already been set via Form prop,
       // grab it from the questionnaire definition
-      typeof(requireCompletion == "undefined") && setRequireCompletion(json?.['questionnaire']?.['requireCompletion']);
+      typeof(requireCompletion) == "undefined" && setRequireCompletion(json?.questionnaire?.requireCompletion);
       setIncompleteQuestionEl(null);
       // Take into account the option to hide answer instructions as specified in the questionnaire definition
       let hideInstructions = json?.['questionnaire']?.['hideAnswerInstructions'];
@@ -290,14 +294,17 @@ function Form (props) {
             .catch(err => console.log("The form status flags could not be updated after saving"));
         }
         onSuccess?.();
-        // If the form is required to be complete, re-fetch it after save to see if user can progress
+        // If the form is required to be complete or if we need to display the page completion status
+        // in nagivable pagination, re-fetch it after save to check the updated status flags
         // However, skip any completion checks if this is an autosave
-        if (requireCompletion && !autosaveOptions) {
+        if ((requireCompletion || paginationVariant == 'navigable') && !autosaveOptions) {
             // Disable progress until we figure out if it's ok to proceed
-            setDisableProgress(true);
+            requireCompletion && setDisableProgress(true);
             fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
               .then((response) => response.ok ? response.json() : Promise.reject(response))
               .then(json => {
+                  setData(json);
+                  if (!requireCompletion) return;
                   let incompleteEl = getFirstIncompleteQuestionEl(json);
                   if (!!incompleteEl) {
                     setIncompleteQuestionEl(incompleteEl);
@@ -650,8 +657,8 @@ function Form (props) {
               disableProgress={disableProgress}
               lastSaveStatus={lastSaveStatus}
               enabled={paginationEnabled}
-              variant={paginationProps?.variant || data?.questionnaire?.paginationVariant}
-              navMode = {paginationProps?.navMode || data?.questionnaire?.paginationMode}
+              variant={paginationVariant}
+              navMode={paginationNavMode}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
               isPageCompleted={keys => (
