@@ -1512,7 +1512,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>time</value>
+				<value>text</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1521,9 +1521,24 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>description</name>
+				<value>hh:mm</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>validationRegexp</name>
+				<value>^\d{2}:[0-5]\d$</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>validationErrorText</name>
+				<value>Enter the duration in hh:mm format</value>
+				<type>String</type>
 			</property>
 		</node>
 		<node>
