@@ -110,11 +110,6 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>Triggered</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
