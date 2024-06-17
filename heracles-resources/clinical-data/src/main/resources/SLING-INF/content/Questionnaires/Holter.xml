@@ -693,8 +693,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>enableNotes</name>
-			<value>Y</value>
+			<name>displayMode</name>
+			<value>textbox</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2012,8 +2012,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>enableNotes</name>
-			<value>Y</value>
+			<name>displayMode</name>
+			<value>textbox</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2245,7 +2245,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value>=</value>
+				<value>includes any</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -2270,6 +2270,7 @@
 				<property>
 					<name>value</name>
 					<values>
+						<value>partially</value>
 						<value>did not complete</value>
 					</values>
 					<type>String</type>
@@ -2314,7 +2315,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
+				<value>includes any</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -2339,7 +2340,8 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>did not complete</value>
+						<value>fully</value>
+						<value>partially</value>
 					</values>
 					<type>String</type>
 				</property>
