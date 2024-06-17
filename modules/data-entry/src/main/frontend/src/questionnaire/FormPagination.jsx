@@ -28,12 +28,16 @@ import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
 import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
+import FormPageNavigation from "./FormPageNavigation";
+
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 class Page {
-  constructor(visible) {
+  constructor(visible, title, key) {
     this.visible = visible;
     this.canBeVisible = true;
+    this.title = title;
+    this.keys = [ key ];
   }
   conditionalVisible = [];
 
@@ -47,13 +51,14 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, enabled, variant, navMode, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, doneIcon, questionnaireData, disableProgress, onPageChange } = props;
+  let { classes, enabled, variant, navMode, saveInProgress, lastSaveStatus, setPagesCallback, isPageCompleted, enableSave, onDone, doneLabel, doneIcon, questionnaireData, disableProgress, onPageChange } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
   let [ pages, setPages ] = useState([]);
   let [ activePage, setActivePage ] = useState(0);
   let [ direction, setDirection ] = useState(1);
+  let [ nextActivePage, setNextActivePage ] = useState();
   const DIRECTION_NEXT = 1, DIRECTION_PREV = -1;
 
   let previousEntryType;
@@ -78,9 +83,14 @@ function FormPagination (props) {
       let page;
       if (!SECTION_TYPES.includes(entryDefinition["jcr:primaryType"]) && previousEntryType && !SECTION_TYPES.includes(previousEntryType)) {
         page = pagesArray[pagesArray.length - 1];
+        page.keys?.push(entryDefinition["@name"]);
         questionIndex++;
       } else {
-        page = new Page(!enabled || activePage == pagesArray.length);
+        page = new Page(
+          !enabled || activePage == pagesArray.length,
+          entryDefinition.label || entryDefinition.text || "",
+          entryDefinition["@name"]
+        );
         pagesArray.push(page);
         questionIndex = 0;
       }
@@ -113,6 +123,20 @@ function FormPagination (props) {
   let handleBack = () => {
     initChangePage(DIRECTION_PREV);
   }
+
+  let handleNavigateTo = (pageIndex) => {
+    if (enableSave) {
+      // If we must save the page before going, we make sure to not move to the new page
+      // until the submission process is complete.
+      setPendingSubmission(true);
+      setNextActivePage(pageIndex);
+      setDirection(undefined);
+    } else {
+      // If saving is not enabled, we can call handlePageChange directly
+      pages[pageIndex]?.canBeVisible && activatePage(pageIndex);
+    }
+  }
+
   // Change the page in the given direction
   let initChangePage = (changeDirection) => {
     if (enableSave) {
@@ -120,6 +144,7 @@ function FormPagination (props) {
       // until the submission process is complete.
       setPendingSubmission(true);
       setDirection(changeDirection);
+      setNextActivePage(undefined);
     } else {
       // If saving is not enabled, we can call handlePageChange directly
       // And call the onDone() if we're on the last page
@@ -138,25 +163,31 @@ function FormPagination (props) {
       nextPage += change;
       if (pages[nextPage].canBeVisible) break;
     }
+    activatePage(nextPage);
+  }
+
+  let activatePage = (page) => {
+    let nextPage = page ?? nextActivePage;
+    // If the next page is not the one we're on already
     if (nextPage !== activePage) {
       window.scrollTo(0, 0);
+      setActivePage(nextPage);
+      onPageChange?.();
     }
-    setActivePage(nextPage);
-    onPageChange && onPageChange();
   }
 
   useEffect(() => {
-    if (!saveInProgress && pendingSubmission && !(disableProgress && direction === DIRECTION_NEXT)) {
+    if (!saveInProgress && pendingSubmission && !(disableProgress && (nextActivePage > activePage || direction === DIRECTION_NEXT))) {
       setPendingSubmission(false);
       if (activePage === lastValidPage() && direction === DIRECTION_NEXT) {
         setSavedLastPage(true);
         onDone && onDone();
       } else {
         setSavedLastPage(false);
-        handlePageChange();
+        typeof(nextActivePage) != 'undefined' ? activatePage() : handlePageChange();
       }
     }
-  }, [saveInProgress, pendingSubmission, disableProgress]);
+  }, [saveInProgress, pendingSubmission, disableProgress, nextActivePage, direction, activePage]);
 
   let saveButton =
     <Button
@@ -202,6 +233,16 @@ function FormPagination (props) {
   return (
     enabled
     ?
+      variant == "navigable" && pages?.length > 0 ?
+        <FormPageNavigation
+          pages={pages}
+          activePage={activePage}
+          saveButton={saveButton}
+          backButton={backButton}
+          isPageCompleted={isPageCompleted}
+          navigateTo={handleNavigateTo}
+        />
+      :
       lastValidPage() > 0
       ?
         <MobileStepper
@@ -233,10 +274,11 @@ function FormPagination (props) {
 FormPagination.propTypes = {
   enableSave: PropTypes.bool,
   enabled: PropTypes.bool,
-  variant: PropTypes.oneOf(['progress', 'dots', 'text']),
+  variant: PropTypes.oneOf(['progress', 'dots', 'text', "navigable"]),
   navMode: PropTypes.oneOf(['back_next', 'only_next']),
   questionnaireData: PropTypes.object.isRequired,
   setPagesCallback: PropTypes.func.isRequired,
+  isPageCompleted: PropTypes.func.isRequired,
   lastSaveStatus: PropTypes.bool,
   saveInProgress: PropTypes.bool
 };
