@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -155,15 +157,15 @@ public abstract class AnswersEditor extends DefaultEditor
     }
 
     // Returns a QuestionTree if any children of this node contains an unanswered matching question, else null
-    protected QuestionTree getUnansweredMatchingQuestions(final Node currentNode)
+    protected QuestionTree getUnmodifiedMatchingQuestions(final Node currentNode)
     {
         QuestionTree currentTree = null;
 
         try {
             if (isQuestionNodeMatchingType(currentNode)) {
                 // Ignore questions that do not match the question type this editor is looking for
-                // Skip already answered questions
-                if (!this.answerChangeTracker.getModifiedAnswers().contains(currentNode.getIdentifier())) {
+                // Skip questions that were modified in the most recent save
+                if (!this.answerChangeTracker.getMatchedModifiedAnswers().contains(currentNode.getIdentifier())) {
                     currentTree = new QuestionTree(currentNode, true, this.formUtils);
                 }
             } else if (this.questionnaireUtils.isQuestionnaire(currentNode)
@@ -172,7 +174,7 @@ public abstract class AnswersEditor extends DefaultEditor
                 QuestionTree newTree = new QuestionTree(currentNode, false, this.formUtils);
                 for (NodeIterator i = currentNode.getNodes(); i.hasNext();) {
                     Node child = i.nextNode();
-                    QuestionTree childTree = getUnansweredMatchingQuestions(child);
+                    QuestionTree childTree = getUnmodifiedMatchingQuestions(child);
                     if (childTree != null) {
                         // Child has data that should be stored
                         newTree.getChildren().put(child.getName(), childTree);
@@ -196,7 +198,8 @@ public abstract class AnswersEditor extends DefaultEditor
     {
         private final FormUtils formUtils;
 
-        private final Set<String> modifiedAnswers = new HashSet<>();
+        private final Set<String> matchedModifiedAnswers = new HashSet<>();
+        private final Set<String> unmatchedModifiedAnswers = new HashSet<>();
 
         private boolean inMatchedAnswer;
 
@@ -213,9 +216,9 @@ public abstract class AnswersEditor extends DefaultEditor
         public void enter(NodeState before, NodeState after)
         {
             String questionId = this.formUtils.getQuestionIdentifier(after);
+            this.currentAnswer = questionId;
             if (isMatchedAnswerNode(after, questionId)) {
                 this.inMatchedAnswer = true;
-                this.currentAnswer = questionId;
             }
         }
 
@@ -230,7 +233,9 @@ public abstract class AnswersEditor extends DefaultEditor
         public void propertyAdded(PropertyState after)
         {
             if (this.inMatchedAnswer) {
-                this.modifiedAnswers.add(this.currentAnswer);
+                this.matchedModifiedAnswers.add(this.currentAnswer);
+            } else {
+                this.unmatchedModifiedAnswers.add(this.currentAnswer);
             }
         }
 
@@ -264,9 +269,20 @@ public abstract class AnswersEditor extends DefaultEditor
             return this;
         }
 
-        public Set<String> getModifiedAnswers()
+        public Set<String> getMatchedModifiedAnswers()
         {
-            return this.modifiedAnswers;
+            return this.matchedModifiedAnswers;
+        }
+
+        public Set<String> getUnmatchedModifiedAnswers()
+        {
+            return this.unmatchedModifiedAnswers;
+        }
+
+        public Set<String> getAllModifiedAnswers()
+        {
+            return Stream.concat(this.matchedModifiedAnswers.stream(), this.unmatchedModifiedAnswers.stream())
+                .collect(Collectors.toSet());
         }
     }
 

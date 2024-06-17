@@ -284,6 +284,45 @@ which can then be verified for accuracy by opening the form in read mode with th
             </property>
         </node>
         <node>
+            <name>question3bcomputed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Sequential Computed Question. Should equal the previous computed question</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>long</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>displayMode</name>
+                <value>input</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+            <property>
+                <name>compact</name>
+                <value>True</value>
+                <type>Boolean</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value>return @{question3computed}</value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
             <name>question4a_computed</name>
             <primaryNodeType>cards:Question</primaryNodeType>
             <property>
@@ -363,6 +402,27 @@ return values.length == 0 ? "No values at Question 4" : values.join(", ");
                 <name>expression</name>
                 <value><![CDATA[
 return "The first value from Question 4 is " + @{question4_multi?};
+                ]]></value>
+                <type>String</type>
+            </property>
+        </node>
+        <node>
+            <name>question5_computed</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Question 5 Computed. Should have a value of "1"</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>computed</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>expression</name>
+                <value><![CDATA[
+return 1;
                 ]]></value>
                 <type>String</type>
             </property>

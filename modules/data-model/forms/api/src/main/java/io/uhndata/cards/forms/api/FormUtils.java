@@ -321,6 +321,15 @@ public interface FormUtils
     Node getAnswer(Node form, Node question);
 
     /**
+     * Get the first answer for a specific question, if any.
+     *
+     * @param form a Form node
+     * @param question a question node, part of the questionnaire that the form is answering
+     * @return an Answer node, may be {@code null}
+     */
+    NodeState getAnswer(NodeState form, Node question);
+
+    /**
      * Get all the answers for a specific question, if any.
      *
      * @param form a Form node

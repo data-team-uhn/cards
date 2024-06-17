@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -85,27 +86,34 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     }
 
     @Override
-    public Object evaluate(final Node question, final Map<String, Object> values, final Type<?> type)
+    public ExpressionResult evaluate(final Node question, final Map<String, Object> values, final Type<?> type,
+        Set<String> changedQuestions)
     {
         try {
             String expression = getExpressionFromQuestion(question);
             ExpressionUtilsImpl.ParsedExpression parsedExpression = parseExpressionInputs(expression, values);
             if (parsedExpression.hasMissingValue()) {
-                return null;
+                return new ExpressionResult(true, false, null, parsedExpression.getQuestions().size());
             }
 
             ScriptEngine engine = this.manager.getEngineByName("JavaScript");
 
             Bindings env = engine.createBindings();
-            parsedExpression.getQuestions().forEach((key, value) ->
-                env.put(value.getArgument(), toJavaScriptObject(engine, value.getValue())));
+            AtomicBoolean usedChangedValue = new AtomicBoolean(false);
+            parsedExpression.getQuestions().forEach((key, value) -> {
+                env.put(value.getArgument(), toJavaScriptObject(engine, value.getValue()));
+                if (changedQuestions.contains(value.getQuestionName())) {
+                    usedChangedValue.set(true);
+                }
+            });
             Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
-            return ValueFormatter.formatResult(result, type);
+            return new ExpressionResult(false, usedChangedValue.get(), ValueFormatter.formatResult(result, type),
+                parsedExpression.getQuestions().size());
         } catch (ScriptException e) {
             LOGGER.warn("Evaluating the expression for question {} failed: {}", question,
                 e.getMessage(), e);
         }
-        return null;
+        return new ExpressionResult(false, false, null, 0);
     }
 
     private ExpressionUtilsImpl.ParsedExpression parseExpressionInputs(final String expression,
@@ -206,7 +214,8 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
                     }
                 }
 
-                ExpressionArgument arg = new ExpressionArgument("arg" + this.questions.size(), questionValue);
+                ExpressionArgument arg = new ExpressionArgument("arg" + this.questions.size(), questionName,
+                    questionValue);
 
                 this.questions.put(questionName, arg);
             }
@@ -284,18 +293,24 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     private static final class ExpressionArgument
     {
         private final String argument;
-
+        private final String questionName;
         private final Object value;
 
-        ExpressionArgument(String argument, Object value)
+        ExpressionArgument(String argument, String questionName, Object value)
         {
             this.argument = argument;
+            this.questionName = questionName;
             this.value = value;
         }
 
         public String getArgument()
         {
             return this.argument;
+        }
+
+        public String getQuestionName()
+        {
+            return this.questionName;
         }
 
         public Object getValue()
@@ -327,6 +342,8 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         {
             if (rawResult instanceof String) {
                 return Long.valueOf((String) rawResult);
+            } else if (rawResult instanceof Integer) {
+                return Long.valueOf((Integer) rawResult);
             } else if (rawResult instanceof Long) {
                 return (Long) rawResult;
             } else if (rawResult instanceof Double) {

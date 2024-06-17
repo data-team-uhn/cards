@@ -44,6 +44,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
+import org.apache.jackrabbit.oak.spi.state.ChildNodeEntry;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.osgi.service.component.annotations.Component;
@@ -410,6 +411,19 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     }
 
     @Override
+    public NodeState getAnswer(final NodeState form, final Node question)
+    {
+        try {
+            if (isForm(form) && this.questionnaires.isQuestion(question)) {
+                return findNode(form, QUESTION_PROPERTY, Type.STRING, question.getIdentifier());
+            }
+        } catch (final RepositoryException e) {
+            // Should not happen
+        }
+        return null;
+    }
+
+    @Override
     public Collection<Node> getAllAnswers(final Node form, final Node question)
     {
         return findAllFormRelatedAnswers(form, question, EnumSet.of(SearchType.FORM));
@@ -517,6 +531,26 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
                 }
             }
         } catch (IllegalStateException | RepositoryException e) {
+            // Not found or not accessible, just return null
+        }
+        return null;
+    }
+
+    private NodeState findNode(final NodeState parent, final String property, final Type<?> propertyType,
+        final String value)
+    {
+        try {
+            if (parent.hasProperty(property)
+                && StringUtils.equals(parent.getProperty(property).getValue(propertyType).toString(), value)) {
+                return parent;
+            }
+            for (ChildNodeEntry child : parent.getChildNodeEntries()) {
+                final NodeState result = findNode(child.getNodeState(), property, propertyType, value);
+                if (result != null) {
+                    return result;
+                }
+            }
+        } catch (IllegalStateException e) {
             // Not found or not accessible, just return null
         }
         return null;

@@ -68,11 +68,12 @@ public interface ExpressionUtils
      *
      * @param question the question node
      * @param values the other values in the form
+     * @param changedQuestions a list of question identifiers that have changed leading up to this evaluation
      * @return a string representation of the result, may be {@code null} if the expression has unmet dependencies
      */
-    default String evaluate(Node question, Map<String, Object> values)
+    default String evaluate(Node question, Map<String, Object> values, Set<String> changedQuestions)
     {
-        return String.valueOf(evaluate(question, values, Type.STRING));
+        return String.valueOf(evaluate(question, values, Type.STRING, changedQuestions).getResult());
     }
 
     /**
@@ -81,8 +82,48 @@ public interface ExpressionUtils
      * @param question the question node
      * @param values the other values in the form
      * @param type the expected type of the result
+     * @param changedQuestions a list of question identifiers that have changed leading up to this evaluation
      * @return a representation of the evaluation result, forced into the desired data type; may be {@code null} if the
      *         expression has unmet dependencies or the actual evaluation result cannot be converted to the desired type
      */
-    Object evaluate(Node question, Map<String, Object> values, Type<?> type);
+    ExpressionResult evaluate(Node question, Map<String, Object> values, Type<?> type, Set<String> changedQuestions);
+
+    /**
+     *
+     */
+    final class ExpressionResult
+    {
+        private final boolean missingValue;
+        private final boolean usedChangedValue;
+        private final Object result;
+        private final int arguments;
+
+        public ExpressionResult(boolean missingValue, boolean usedChangedValue, Object result, int arguments)
+        {
+            this.missingValue = missingValue;
+            this.usedChangedValue = usedChangedValue;
+            this.result = result;
+            this.arguments = arguments;
+        }
+
+        public boolean hasMissingValue()
+        {
+            return this.missingValue;
+        }
+
+        public boolean expressionUsedChangedValue()
+        {
+            return this.usedChangedValue;
+        }
+
+        public Object getResult()
+        {
+            return this.result;
+        }
+
+        public int numberOfArguments()
+        {
+            return this.arguments;
+        }
+    }
 }
