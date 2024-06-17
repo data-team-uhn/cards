@@ -9,7 +9,9 @@
       ">"  : {"operandB" : "conditionalValue"},
       ">=" : {"operandB" : "conditionalValue"},
       "includes" : {"operandB" : "conditionalValue"},
+      "includes any" : {"operandB" : "conditionalValue"},
       "excludes" : {"operandB" : "conditionalValue"},
+      "excludes any" : {"operandB" : "conditionalValue"},
       "is empty" : {},
       "is not empty" : {}
     },

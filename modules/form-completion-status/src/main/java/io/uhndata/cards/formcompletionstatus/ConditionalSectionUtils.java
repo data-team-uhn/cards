@@ -382,9 +382,17 @@ public final class ConditionalSectionUtils
             (left, right) -> right.values.stream().allMatch(
                 vl -> left.getValues().stream().anyMatch(vr -> (vr.compareTo(vl) == 0))),
             true),
+        INCLUDES_ANY("includes any",
+            (left, right) -> right.values.stream().anyMatch(
+                vl -> left.getValues().stream().anyMatch(vr -> (vr.compareTo(vl) == 0))),
+            true),
         EXCLUDES("excludes",
             (left, right) -> right.values.stream().noneMatch(
                 vl -> left.getValues().stream().anyMatch(vr -> (vr.compareTo(vl) == 0))),
+            true),
+        EXCLUDES_ANY("excludes any",
+            (left, right) -> right.values.stream().anyMatch(
+                vl -> left.getValues().stream().noneMatch(vr -> (vr.compareTo(vl) == 0))),
             true);
 
         private final String operatorStr;
