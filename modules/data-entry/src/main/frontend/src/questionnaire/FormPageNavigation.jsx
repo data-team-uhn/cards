@@ -68,7 +68,7 @@ function FormPageNavigation (props) {
   )
 
   // Format the title
-  let pageTitle = (page) => (page ? <FormattedText variant="caption">{page.title}</FormattedText> : page)
+  let pageTitle = (page, index) => (<FormattedText variant="caption">{page?.title ? page.title : "Page " + (index + 1)}</FormattedText>)
 
   // Individual page buttons
   let pageButton = (page, index) => (
@@ -90,7 +90,7 @@ function FormPageNavigation (props) {
     { pages.map((p, index) => (
       <Grid item key={index}>
       { p.canBeVisible ?
-          <Tooltip title={pageTitle(p)}>
+          <Tooltip title={pageTitle(p, index)}>
           { pageButton(p, index) }
           </Tooltip>
         :
@@ -128,7 +128,7 @@ function FormPageNavigation (props) {
             onClick={() => {setPageSelectorAnchorEl(null); navigateTo(index) }}
           >
             <ListItemIcon>{pageIcon(p, index)}</ListItemIcon>
-            <ListItemText>{pageTitle(p)}</ListItemText>
+            <ListItemText>{pageTitle(p, index)}</ListItemText>
           </MenuItem>
         ))}
       </Menu>

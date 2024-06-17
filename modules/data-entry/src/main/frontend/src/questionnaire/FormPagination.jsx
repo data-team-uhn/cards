@@ -88,7 +88,7 @@ function FormPagination (props) {
       } else {
         page = new Page(
           !enabled || activePage == pagesArray.length,
-          entryDefinition.label || entryDefinition.text || entryDefinition["@name"],
+          entryDefinition.label || entryDefinition.text || "",
           entryDefinition["@name"]
         );
         pagesArray.push(page);
