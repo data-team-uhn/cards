@@ -818,6 +818,8 @@ def condition_handle_single(questionnaire, condition_parent, conditional_string,
     # `=` must be before '<=` and `>=`
     # `<>`, `<=`, and `>=` must be before `<` and `>`
     OPERATORS_PAIR = [
+        "includes any",
+        "excludes any",
         "includes",
         "excludes",
         "=",
@@ -841,39 +843,41 @@ def condition_handle_single(questionnaire, condition_parent, conditional_string,
             create_condition(questionnaire, condition_parent, index, terms[0], operator, terms[1])
 
 def create_condition(questionnaire, condition_parent, index, operand_a, operator, operand_b):
-    if operand_a[0] == "\"" and operand_a[-1] == "\"":
-        operand_a = operand_a[1:-1]
-
     result = {
         'jcr:primaryType': 'cards:Conditional',
         'operandA': {
             'jcr:primaryType': 'cards:ConditionalValue',
-            'value': [operand_a],
+            'value': process_operand_value(operand_a),
             'isReference': True
         },
         'comparator' : operator
     }
 
     if operand_b != None:
-        if operand_b[0] == "\"" and operand_b[-1] == "\"":
-            operand_b = operand_b[1:-1]
-
-        # TODO: Do conditionals support arrays of values in operandA or operand_b?
-        # If so, handle that case
-
         is_reference = operand_b in questionnaire.question_title_list
 
         result['operandB'] = {
             'jcr:primaryType': 'cards:ConditionalValue',
-            'value': [operand_b],
+            'value': process_operand_value(operand_b),
             'isReference': is_reference
         }
 
-    # TODO: Do conditionals support arrays of values in operandA or operand_b?
-    # If so, handle that case:
-
     condition_parent["condition" + str(index)] = result
 
+def process_operand_value(operand):
+    if operand[0] == "[" and operand[-1] == "]":
+        operand = operand[1:-1]
+        operand = split_ignore_strings(operand, [","])
+    else:
+        operand = [operand]
+
+    i = 0
+    while i < len(operand):
+        if operand[i][0] == "\"" and operand[i][-1] == "\"":
+            operand[i] = operand[i][1:-1]
+        i+=1
+
+    return operand
 
 
 #=================
