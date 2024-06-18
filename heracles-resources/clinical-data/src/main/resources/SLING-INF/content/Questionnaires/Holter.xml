@@ -2333,56 +2333,52 @@
 		</node>
 	</node>
 	<node>
-		<name>section_hotler_completed</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<node>
-			<name>completion_date</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>date</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Completed date</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>completion_time</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>time</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Completed time</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
+		<name>completion_date</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Completed date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>completion_time</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Completed time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>filepath_annotations</name>
