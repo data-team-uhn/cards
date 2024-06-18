@@ -27,8 +27,8 @@
       "service.ranking:Integer":300,
       "scripts": [
         // Locking and unlocking subjects and appropriate visits
-        "create service user locking \n set ACL for locking \n   allow jcr:all on /Forms, /Subjects \n end",
-        "set ACL for everyone \n deny rep:write on /Forms,/Subjects restriction(cards:locked) \n end"
+        "create service user locking \n set ACL for locking \n   allow jcr:all on /Forms, /Subjects \n end"
+        // "set ACL for everyone \n deny rep:write on /Forms,/Subjects restriction(cards:locked) \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~locking":{

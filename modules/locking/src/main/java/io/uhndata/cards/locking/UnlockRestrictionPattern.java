@@ -28,15 +28,14 @@ import org.apache.jackrabbit.oak.api.Tree;
  *
  * @version $Id$
  */
-public class LockedRestrictionPattern extends AbstractLockingPattern
+public class UnlockRestrictionPattern extends AbstractLockingPattern
 {
-
     /**
      * Constructor which receives the current session of the user activating this restriction.
      *
      * @param session the current session
      */
-    public LockedRestrictionPattern(final Session session)
+    public UnlockRestrictionPattern(final Session session)
     {
         super(session);
     }
@@ -45,9 +44,7 @@ public class LockedRestrictionPattern extends AbstractLockingPattern
     public boolean matches(final Tree tree, final PropertyState property)
     {
         if (isSubjectOrForm(tree)) {
-            boolean locked = isLocked(tree);
-            boolean parentLocked = isParentSubjectLocked(tree);
-            return locked || parentLocked;
+            // TODO: Check if change is unlock
         }
         return false;
     }
