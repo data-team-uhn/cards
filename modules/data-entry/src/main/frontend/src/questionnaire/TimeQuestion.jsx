@@ -134,7 +134,7 @@ function TimeQuestion(props) {
             variant="standard"
             /* time input is hh:mm or hh:mm:ss only */
             type={Time.timeQuestionFieldType(dateFormat)}
-            className={classes.textField + " " + classes.answerField}
+            className={classes.textField}
             InputLabelProps={{
               shrink: true,
             }}
