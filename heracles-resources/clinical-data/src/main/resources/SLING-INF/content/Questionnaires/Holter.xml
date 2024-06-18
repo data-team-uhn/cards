@@ -995,7 +995,7 @@
 		</property>
 		<property>
 			<name>text</name>
-			<value>SVE/PAC</value>
+			<value>SVE/PAC beats</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1024,7 +1024,7 @@
 		</property>
 		<property>
 			<name>text</name>
-			<value>SVE/PAC</value>
+			<value>SVE/PAC percentage</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1097,7 +1097,7 @@
 		</property>
 		<property>
 			<name>text</name>
-			<value>VE/PVC</value>
+			<value>VE/PVC beats</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1126,7 +1126,7 @@
 		</property>
 		<property>
 			<name>text</name>
-			<value>VE/PVC</value>
+			<value>VE/PVC percentage</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1185,6 +1185,30 @@
 		</property>
 	</node>
 	<node>
+		<name>holter_diary_meds</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Medications indicated</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
 		<name>holter_diary</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -1209,99 +1233,120 @@
 		</property>
 	</node>
 	<node>
-		<name>holter_diary_meds</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>boolean</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>Medications Indicated</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>n_participant_events</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>long</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>Number of participant reported events</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Number of times participant pressed the event button on the device</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>symptoms_indicated</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>boolean</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>Symptoms indicated?</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Experienced any symptoms during the monitoring period?</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+		<name>section_holter_diary</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>condition0</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>holter_diary</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>n_participant_events</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Number of participant reported events</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Number of times participant pressed the event button on the device</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>symptoms_indicated</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Symptoms indicated?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Experienced any symptoms during the monitoring period?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>section_symptoms_indicated</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>label</name>
+			<value>Symptom</value>
+			<type>String</type>
 		</property>
 		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>recurrent</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<node>
 			<name>condition0</name>
@@ -1831,7 +1876,7 @@
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<node>
@@ -2217,25 +2262,6 @@
 				<type>Long</type>
 			</property>
 		</node>
-		<node>
-			<name>didnotcomplete</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Did not complete</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>did not complete</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>3</value>
-				<type>Long</type>
-			</property>
-		</node>
 	</node>
 	<node>
 		<name>section_holter_incomplete_reason</name>
@@ -2245,7 +2271,7 @@
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value>includes any</value>
+				<value>=</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -2271,7 +2297,6 @@
 					<name>value</name>
 					<values>
 						<value>partially</value>
-						<value>did not complete</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -2310,48 +2335,6 @@
 	<node>
 		<name>section_hotler_completed</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
-		<node>
-			<name>condition0</name>
-			<primaryNodeType>cards:Conditional</primaryNodeType>
-			<property>
-				<name>comparator</name>
-				<value>includes any</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>operandA</name>
-				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>holter_completion_status</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>operandB</name>
-				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>fully</value>
-						<value>partially</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>False</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-		</node>
 		<node>
 			<name>completion_date</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
