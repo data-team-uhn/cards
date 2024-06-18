@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
@@ -108,7 +109,7 @@ public class LockManagerImpl implements LockManager
             if (reason != null) {
                 throw new LockError(reason);
             } else {
-                handleNode(node, this::lockNode);
+                lockNode(node);
             }
         } finally {
             closeResolverIfNeeded(mustCloseResolver);
@@ -129,7 +130,7 @@ public class LockManagerImpl implements LockManager
             if (reason != null) {
                 throw new LockError(reason);
             } else {
-                handleNode(node, this::lockNode);
+                lockNode(node);
             }
         } finally {
             closeResolverIfNeeded(mustCloseResolver);
@@ -159,7 +160,7 @@ public class LockManagerImpl implements LockManager
             if (reason != null) {
                 throw new LockError(reason);
             }
-            handleNode(node, this::unlockNode);
+            unlockNode(node);
         } finally {
             closeResolverIfNeeded(mustCloseResolver);
         }
@@ -208,7 +209,6 @@ public class LockManagerImpl implements LockManager
                 return "Only subjects can be locked";
             }
 
-            // TODO: check if user has rights to lock this node
             if (checkPreconditions) {
                 for (LockPrecondition precondition : this.lockPreconditions) {
                     if (!precondition.canLock(serviceNode)) {
@@ -243,8 +243,6 @@ public class LockManagerImpl implements LockManager
                 return "Parent is locked";
             }
 
-            // TODO: check if user has rights to unlock this node
-
             return null;
         } catch (RepositoryException e) {
             LOGGER.error("Unexpected error determining if node can be unlocked", e);
@@ -252,116 +250,143 @@ public class LockManagerImpl implements LockManager
         }
     }
 
-    private void handleNode(Node node, NodeLockHandler handler)
+    private void lockNode(Node node)
         throws LockError
     {
-        final Session session;
-        final VersionManager versionManager;
-        final Node serviceNode;
+        handleUser(node, this::userLockNode);
+        handleServiceUser(node, this::serviceLockNode);
+    }
+
+    private void unlockNode(Node node)
+        throws LockError
+    {
+        handleUser(node, this::userUnlockNode);
+        handleServiceUser(node, this::serviceUnlockNode);
+    }
+
+    private void handleUser(Node node, NodeLockHandler handler)
+        throws LockError
+    {
         try {
-            session = this.serviceResolver.adaptTo(Session.class);
-            versionManager = session.getWorkspace().getVersionManager();
-            serviceNode = getServiceNode(node);
+            VersionManager versionManager = node.getSession().getWorkspace().getVersionManager();
+            handleNode(node, handler, versionManager);
         } catch (RepositoryException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new LockError("Unexpected error");
+            throw new LockError("Unable to retrieve version manager");
         }
+    }
 
-        handler.handle(versionManager, serviceNode, true);
-
+    private void handleServiceUser(Node node, NodeLockHandler handler)
+        throws LockError
+    {
         try {
-            session.save();
-            for (String path : this.nodesToCheckin.get()) {
-                versionManager.checkin(path);
-            }
+            VersionManager versionManager
+                = this.serviceResolver.adaptTo(Session.class).getWorkspace().getVersionManager();
+            Node serviceNode = getServiceNode(node);
+            handleNode(serviceNode, handler, versionManager);
+        } catch (RepositoryException e) {
+            throw new LockError("Unable to retrieve version manager");
+        }
+    }
+
+    private void handleNode(Node node, NodeLockHandler handler, VersionManager versionManager)
+        throws LockError
+    {
+        try {
+            checkoutIfNeeded(node, versionManager);
+            handler.handle(versionManager, node);
+            node.getSession().save();
+            checkinIfNeeded(versionManager);
+        } catch (AccessDeniedException e) {
+            throw new LockError("Access denied");
         } catch (RepositoryException e) {
             LOGGER.error(e.getMessage(), e);
             throw new LockError("Unable to save changed nodes");
+        } finally {
+            try {
+                checkinIfNeeded(versionManager);
+            } catch (RepositoryException e) {
+                // Should not happen
+            }
         }
     }
 
-    private void lockNode(VersionManager versionManager, Node node, boolean isRoot)
-        throws LockError
+    private void userLockNode(VersionManager versionManager, Node node)
+        throws RepositoryException
     {
-        try {
-            checkoutIfNeeded(node, versionManager);
-
-            if (isRoot) {
-                // Create the lock node
-                String userID = getSession(this.rrp).getUserID();
-                Node lockNode = node.addNode(LOCK_NODE_PATH, LOCK_NODE_TYPE);
-                lockNode.setProperty("time", Calendar.getInstance());
-                lockNode.setProperty("author", userID);
-            }
-
-            final Set<String> statusFlags = getStatusFlags(node);
-            statusFlags.add(LOCKED_FLAG);
-            node.setProperty(STATUS_PROPERTY, statusFlags.toArray(new String[0]));
-
-            handleChildNodes(this::lockNode, versionManager, node);
-        } catch (RepositoryException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new LockError("Error adding lock to nodes");
-        }
+        String userID = getSession(this.rrp).getUserID();
+        Node lockNode = node.addNode(LOCK_NODE_PATH, LOCK_NODE_TYPE);
+        lockNode.setProperty("time", Calendar.getInstance());
+        lockNode.setProperty("author", userID);
     }
 
-    private void unlockNode(VersionManager versionManager, Node node, boolean isRoot)
-        throws LockError
+    private void serviceLockNode(VersionManager versionManager, Node node)
+        throws RepositoryException
     {
-        try {
-            if (node.hasNode(LOCK_NODE_PATH)) {
-                if (isRoot) {
-                    // Remove the lock node as this node is being directly unlocked
-                    node.getNode(LOCK_NODE_PATH).remove();
-                } else {
-                    // Do not indirectly unlock nodes that have lock nodes.
-                    // Halt traversal here but do not prevent other parent/sibling nodes from being processed.
-                    return;
-                }
-            }
+        final Set<String> statusFlags = getStatusFlags(node);
+        statusFlags.add(LOCKED_FLAG);
+        node.setProperty(STATUS_PROPERTY, statusFlags.toArray(new String[0]));
 
-            checkoutIfNeeded(node, versionManager);
+        handleChildNodes(this::serviceLockNode, versionManager, node);
+    }
+
+    private void userUnlockNode(VersionManager versionManager, Node node)
+        throws RepositoryException
+    {
+        // Remove the lock node.
+        // If there is no lock node, error out
+        node.getNode(LOCK_NODE_PATH).remove();
+    }
+
+    private void serviceUnlockNode(VersionManager versionManager, Node node)
+        throws RepositoryException
+    {
+        if (!containsLockNode(node)) {
             final Set<String> statusFlags = getStatusFlags(node);
             statusFlags.remove(LOCKED_FLAG);
             node.setProperty(STATUS_PROPERTY, statusFlags.toArray(new String[0]));
 
-            handleChildNodes(this::unlockNode, versionManager, node);
-        } catch (RepositoryException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new LockError("Error removing lock from nodes");
+            handleChildNodes(this::serviceUnlockNode, versionManager, node);
         }
+    }
+
+    private boolean containsLockNode(Node node)
+        throws RepositoryException
+    {
+        NodeIterator children = node.getNodes();
+        while (children.hasNext()) {
+            Node child = children.nextNode();
+            if (child.isNodeType(LOCK_NODE_TYPE)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void handleChildNodes(NodeLockHandler handler, VersionManager versionManager,
         Node node)
-        throws LockError
+        throws RepositoryException
     {
-        try {
-            if (!node.isNodeType(SUBJECT_NODE_TYPE)) {
-                // Only check for subject children
-                return;
-            }
+        if (!node.isNodeType(SUBJECT_NODE_TYPE)) {
+            // Only check for subject children
+            return;
+        }
 
-            // Handle child subjects
-            final NodeIterator childNodes = node.getNodes();
-            while (childNodes.hasNext()) {
-                Node childNode = childNodes.nextNode();
-                if (childNode.isNodeType(SUBJECT_NODE_TYPE)) {
-                    handler.handle(versionManager, childNode, false);
-                }
+        // Handle child subjects
+        final NodeIterator childNodes = node.getNodes();
+        while (childNodes.hasNext()) {
+            Node childNode = childNodes.nextNode();
+            if (childNode.isNodeType(SUBJECT_NODE_TYPE)) {
+                handler.handle(versionManager, childNode);
             }
+        }
 
-            // Handle forms
-            final PropertyIterator references = node.getReferences();
-            while (references.hasNext()) {
-                Node referenceNode = references.nextProperty().getParent();
-                if (referenceNode.isNodeType("cards:Form")) {
-                    handler.handle(versionManager, referenceNode, false);
-                }
+        // Handle forms
+        final PropertyIterator references = node.getReferences();
+        while (references.hasNext()) {
+            Node referenceNode = references.nextProperty().getParent();
+            if (referenceNode.isNodeType("cards:Form")) {
+                handler.handle(versionManager, referenceNode);
             }
-        } catch (RepositoryException e) {
-            LOGGER.error("Unexpected error determining node types", e);
-            throw new LockError("Could not determine node types");
         }
     }
 
@@ -394,6 +419,15 @@ public class LockManagerImpl implements LockManager
         }
     }
 
+    private void checkinIfNeeded(VersionManager versionManager)
+        throws RepositoryException
+    {
+        for (String path : this.nodesToCheckin.get()) {
+            versionManager.checkin(path);
+        }
+        this.nodesToCheckin.get().clear();
+    }
+
     /**
      * Obtain the current session from the resource resolver factory.
      *
@@ -421,7 +455,7 @@ public class LockManagerImpl implements LockManager
 
     private interface NodeLockHandler
     {
-        void handle(VersionManager versionManager, Node node, boolean isRoot)
-            throws LockError;
+        void handle(VersionManager versionManager, Node node)
+            throws RepositoryException;
     }
 }

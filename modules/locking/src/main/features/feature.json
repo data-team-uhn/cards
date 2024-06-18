@@ -28,7 +28,10 @@
       "scripts": [
         // Locking and unlocking subjects and appropriate visits
         "create service user locking \n set ACL for locking \n   allow jcr:all on /Forms, /Subjects \n end",
-        "set ACL for everyone \n deny rep:write on /Forms,/Subjects restriction(cards:locked) \n end"
+        // One of these restrictions needs a placeholder value otherwise repoinit falsely believes the restrictions are duplicates
+        "set ACL for everyone \n deny rep:write on /Forms,/Subjects restriction(cards:lock, placeholder) \n deny rep:write on /Forms,/Subjects restriction(cards:locked, placeholder2) \n end",
+        "create group LockUsers \n set ACL for LockUsers \n allow rep:addProperties,jcr:nodeTypeManagement on /Forms,/Subjects restriction(rep:ntNames,cards:Lock) restriction(cards:unlocked, placeholder) \n allow rep:addProperties,jcr:addChildNodes,jcr:nodeTypeManagement on /Forms,/Subjects restriction(cards:unlocked, placeholder2) \n allow rep:alterProperties on /Subjects,/Forms restriction(rep:itemNames,jcr:lastModified,jcr:lastModifiedBy,jcr:isCheckedOut,jcr:lastCheckedOut) restriction(cards:unlocked, placeholder3) \n end",
+        "create group UnlockUsers \n set ACL for UnlockUsers \n allow jcr:removeNode on /Forms,/Subjects restriction(cards:lock, placeholder) \n allow rep:alterProperties on /Subjects,/Forms restriction(rep:itemNames,jcr:lastModified,jcr:lastModifiedBy,jcr:isCheckedOut,jcr:lastCheckedOut) \n allow jcr:removeChildNodes on /Subjects,/Forms  \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~locking":{

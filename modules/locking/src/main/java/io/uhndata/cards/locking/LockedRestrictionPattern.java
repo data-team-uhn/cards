@@ -36,7 +36,7 @@ import org.apache.jackrabbit.oak.spi.security.authorization.restriction.Restrict
 public class LockedRestrictionPattern implements RestrictionPattern
 {
     /** A reference to the session that created this pattern. */
-    private final Session session;
+    protected final Session session;
 
     /**
      * Constructor which receives the current session of the user activating this restriction.
@@ -49,18 +49,9 @@ public class LockedRestrictionPattern implements RestrictionPattern
     }
 
     @Override
-    public boolean matches(final Tree tree, final PropertyState property)
-    {
-        if (isSubjectOrForm(tree)) {
-            return isLocked(tree) || isParentSubjectLocked(tree);
-        }
-        return false;
-    }
-
-    @Override
     public boolean matches(String path)
     {
-        // This method doesn't seem to be called, the one above is used instead
+        // This method doesn't seem to be called, instead matches(Tree tree) is used
         return false;
     }
 
@@ -71,7 +62,23 @@ public class LockedRestrictionPattern implements RestrictionPattern
         return false;
     }
 
-    private boolean isLocked(final Tree node)
+    @Override
+    public boolean matches(final Tree tree, final PropertyState property)
+    {
+        Tree currentTree = tree;
+        while (!currentTree.isRoot())
+        {
+            if (isSubjectOrForm(currentTree)) {
+                boolean locked = isLocked(currentTree);
+                boolean parentLocked = isParentSubjectLocked(currentTree);
+                return locked || parentLocked;
+            }
+            currentTree = currentTree.getParent();
+        }
+        return false;
+    }
+
+    protected static boolean isLocked(final Tree node)
     {
         PropertyState flags = node.getProperty("statusFlags");
         for (int i = 0; i < flags.count(); ++i) {
@@ -82,7 +89,7 @@ public class LockedRestrictionPattern implements RestrictionPattern
         return false;
     }
 
-    private boolean isLocked(final Node node)
+    protected static boolean isLocked(final Node node)
         throws RepositoryException
     {
         Value[] flags = node.getProperty("statusFlags").getValues();
@@ -94,8 +101,7 @@ public class LockedRestrictionPattern implements RestrictionPattern
         return false;
     }
 
-
-    private boolean isParentSubjectLocked(final Tree node)
+    protected boolean isParentSubjectLocked(final Tree node)
     {
         if (isForm(node)) {
             String subject = node.getProperty("subject").getValue(Type.REFERENCE);
@@ -113,18 +119,18 @@ public class LockedRestrictionPattern implements RestrictionPattern
         }
     }
 
-    private boolean isSubjectOrForm(final Tree node)
+    protected static boolean isSubjectOrForm(final Tree node)
     {
         return isForm(node) || isSubject(node);
     }
 
-    private boolean isForm(final Tree node)
+    protected static boolean isForm(final Tree node)
     {
         return node.hasProperty("jcr:primaryType")
             && "cards:Form".equals(node.getProperty("jcr:primaryType").getValue(Type.STRING));
     }
 
-    private boolean isSubject(final Tree node)
+    protected static boolean isSubject(final Tree node)
     {
         return node.hasProperty("jcr:primaryType")
             && "cards:Subject".equals(node.getProperty("jcr:primaryType").getValue(Type.STRING));

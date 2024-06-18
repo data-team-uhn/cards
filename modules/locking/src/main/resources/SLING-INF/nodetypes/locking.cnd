@@ -33,9 +33,8 @@
 
   // Properties:
   // Hardcode the resource type and supertype
-  // TODO: Update to cards:Item
   - sling:resourceType (STRING) = "cards/Lock" mandatory autocreated protected
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Item" mandatory autocreated protected
 
   // The time that the parent node was locked
   - time (DATE) mandatory
