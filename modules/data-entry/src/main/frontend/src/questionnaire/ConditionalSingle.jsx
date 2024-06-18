@@ -77,7 +77,7 @@ let getValue = function(operand, context) {
     // Otherwise use the value as is
     : operand?.value
   // Filter out blanks, default to empty array
-  )?.filter(v => typeof(v) != 'undefined') || [];
+  )?.filter(v => v !== "" && typeof(v) != 'undefined') || [];
   return value;
 }
 
