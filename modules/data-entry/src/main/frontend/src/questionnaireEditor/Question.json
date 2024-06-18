@@ -304,6 +304,7 @@
       "vocabulary": {
         "sourceVocabularies": {
           "type": "list",
+          "multiple": true,
           "primaryType": "cards:Vocabulary",
           "saveType": "String",
           "displayProperty": "identifier",
@@ -460,6 +461,28 @@
         "minAnswers": {"0":{}, "1":{}},
         "countries": "string",
         "searchPlacesAround": "string"
+      },
+      "selectableArea": {
+        "minAnswers": {"0":{}, "1":{}},
+        "maxAnswers": "long",
+        "variant": {
+          "type": "list",
+          "primaryType": "cards:SelectableAreaVariant",
+          "saveType": "Reference",
+          "displayProperty": "name",
+          "orderProperty": "cards:SelectableAreaVariant",
+          "identifierProperty": "jcr:uuid"
+        },
+        "answerOptions" : {
+          "type": "textOptions",
+          "childrenType": "cards:AnswerOption"
+        },
+        "unselectedColor": "string",
+        "selectedColor": "string",
+        "hoverColor": "string",
+        "selectedHoverColor": "string",
+        "strokeColor": "string",
+        "overrideMapColors": "boolean"
       }
     },
     "enableNotes": "boolean"
