@@ -1,0 +1,10 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Serializable Questionnaire",
+  "description": "A test serializable questionnaire",
+  "question_1": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Long Question",
+    "dataType": "long"
+  }
+}
