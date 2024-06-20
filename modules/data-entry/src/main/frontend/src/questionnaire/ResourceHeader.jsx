@@ -33,6 +33,8 @@ import makeStyles from '@mui/styles/makeStyles';
 import { grey } from '@mui/material/colors';
 
 import { GRID_SPACE_UNIT } from "./QuestionnaireStyle";
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 
 const useStyles = makeStyles(theme => ({
     resourceHeader: {
@@ -100,6 +102,8 @@ function ResourceHeader (props) {
   let { title, breadcrumbs, separator, tags, action, children } = props;
 
   const classes = useStyles();
+  const theme = useTheme();
+  const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
 
   // Scroll trigger for collapsing the Title and action into the breadcrumbs
   const fullBreadcrumbTrigger = useScrollTrigger({
@@ -110,7 +114,7 @@ function ResourceHeader (props) {
 
   return (
     <>
-    <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
+    <Grid item xs={12} className={classes.resourceHeader} style={ { top: appbarExpanded ? props.contentOffset: 0 }} id="cards-resource-header">
       <Grid container direction="row" justifyContent="space-between" alignItems="center" wrap="nowrap">
         <Grid item>
           <Breadcrumbs separator={separator}>

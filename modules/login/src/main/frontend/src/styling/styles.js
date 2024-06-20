@@ -33,7 +33,7 @@ const styles = theme => ({
     padding: theme.spacing(2, 3, 3),
   },
   selfContained: {
-    marginTop: theme.spacing(10),
+    marginTop: theme.spacing(14),
     marginBottom: theme.spacing(2),
   },
   form: {

@@ -25,6 +25,8 @@ import { portalTheme } from "./portalTheme.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import Footer from "./Footer.jsx";
+import ErrorPage from "../components/ErrorPage.jsx";
+import PageStartWrapper from '../PageStartWrapper';
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
@@ -74,19 +76,40 @@ function PatientPortalHomepage (props) {
     setSubject(p?.subject);
   }
 
+  if (unableToProceed) {
+    let appName = document.querySelector('meta[name="title"]')?.content;
+    let message = surveyInstructions?.welcomeMessage?.replaceAll("APP_NAME", appName) || '';
+    message = `${message}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
+    return (<>
+      <PageStartWrapper extensionsName="SurveyPageStart">
+        <ErrorPage
+          sx={{maxWidth: 500, margin: "0 auto"}}
+          title=""
+          message={message}
+          messageColor="textPrimary"
+        />
+        <Footer/>
+      </PageStartWrapper>
+    </>)
+  }
+
   if (!subject) {
     return (<>
-      <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
-      <Footer />
+      <PageStartWrapper extensionsName="SurveyPageStart">
+        <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
+        <Footer />
+      </PageStartWrapper>
     </>);
   }
 
   return (<>
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
-      ...accessConfig,
-      ...surveyInstructions
-    }} />
-    <Footer />
+    <PageStartWrapper extensionsName="SurveyPageStart">
+      <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
+        ...accessConfig,
+        ...surveyInstructions
+      }} />
+      <Footer />
+    </PageStartWrapper>
   </>);
 }
 

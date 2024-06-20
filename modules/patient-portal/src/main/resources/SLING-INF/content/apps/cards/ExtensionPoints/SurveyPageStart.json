@@ -1,0 +1,5 @@
+{
+  "jcr:primaryType": "cards:ExtensionPoint",
+  "cards:extensionPointId": "patient-portal/surveyPageStart",
+  "cards:extensionPointName": "Content to be displayed on the top of the Patient Portal"
+}
