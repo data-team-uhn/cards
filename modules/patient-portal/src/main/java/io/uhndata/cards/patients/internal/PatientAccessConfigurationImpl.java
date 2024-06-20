@@ -59,9 +59,6 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     /** Clinic property for the number of days a token is valid for. */
     private static final String TOKEN_LIFETIME_PROP = "daysRelativeToEventWhileSurveyIsValid";
 
-    /** Property on config node for the number of days draft responses from patients are kept. */
-    private static final String DRAFT_LIFETIME_PROP = "draftLifetime";
-
     /** Whether or not tokenless auth is enabled by default (used in case of errors). */
     private static final Boolean TOKENLESS_AUTH_ENABLED_DEFAULT = false;
 
@@ -70,9 +67,6 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
 
     /** The number of days a token is valid for by default (used in case of errors). */
     private static final int TOKEN_LIFETIME_DEFAULT = 0;
-
-    /** The number of days a patient's draft response is kept for by default (used in case of errors). */
-    private static final int DRAFT_LIFETIME_DEFAULT = -1;
 
     @Reference
     private FormUtils formUtils;
@@ -156,18 +150,5 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
             // TODO Auto-generated catch block
         }
         return defaultTokenLifetime;
-    }
-
-    @Override
-    public int getDraftLifetime()
-    {
-        try
-        {
-            Property lifetime = getConfig(DRAFT_LIFETIME_PROP);
-            int value = lifetime == null ? DRAFT_LIFETIME_DEFAULT : (int) lifetime.getLong();
-            return value < -1 ? DRAFT_LIFETIME_DEFAULT : value;
-        } catch (RepositoryException e) {
-            return DRAFT_LIFETIME_DEFAULT;
-        }
     }
 }

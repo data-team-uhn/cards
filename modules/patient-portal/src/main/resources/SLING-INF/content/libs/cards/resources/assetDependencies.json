@@ -4,6 +4,7 @@
   "patient-portal.ClinicVisits.js": ["asset:cards-dataentry.LiveTable.js"],
   "patient-portal.Clinics.js": ["asset:cards-dataentry.Questionnaires.js"],
   "patient-portal.PatientAccessConfiguration.js": ["asset:cards-login.loginDialogue.js"],
+  "patient-portal.DataRetentionConfiguration.js": ["asset:cards-login.loginDialogue.js"],
   "patient-portal.ToUConfiguration.js": ["asset:cards-login.loginDialogue.js"],
   "patient-portal.SurveyInstructionsConfiguration.js": ["asset:cards-login.loginDialogue.js"],
   "patient-portal.DashboardSettingsConfiguration.js": ["asset:cards-login.loginDialogue.js"]
