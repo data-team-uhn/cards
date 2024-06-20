@@ -212,6 +212,12 @@
       </dependency>
       <dependency>
         <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>oak-jcr</artifactId>
+        <version>${oak.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
         <artifactId>oak-api</artifactId>
         <version>${oak.version}</version>
       </dependency>
@@ -311,7 +317,10 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <compilerArgument>-Xlint:all</compilerArgument>
+          <compilerArgs>
+            <arg>-Werror</arg>
+            <arg>-Xlint:all</arg>
+          </compilerArgs>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
           <failOnWarning>true</failOnWarning>
