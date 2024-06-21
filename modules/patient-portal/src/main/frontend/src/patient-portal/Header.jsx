@@ -132,7 +132,7 @@ function Header (props) {
 
   return (
     <>
-    <AppBar position="sticky" className={classes.appbar}>
+    <AppBar position="sticky" className={classes.appbar} id="patient-portal-header">
       <Collapse in={!subtitle || !(scrollTrigger)}>
         <Toolbar variant="dense" className={toolbarClassNames.join(' ')}>
           <Logo className={classes.logo} maxWidth="160px" />
