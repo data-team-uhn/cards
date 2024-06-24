@@ -105,10 +105,6 @@ const useStyles = makeStyles(theme => ({
       maxWidth: "780px",
       margin: "auto",
     },
-    "& form .cards-horizontal-section" : {
-      flexFlow: "column !important",
-      flexWrap: "nowrap !important",
-    }
   },
 }));
 
