@@ -717,9 +717,10 @@ function QuestionnaireSet(props) {
       <Grid item key="review-loading"><CircularProgress/></Grid>
     </Grid>
   ] : [
+    <Typography variant="h4" key="review-title">Review and Submit</Typography>,
+    <Divider/>,
     submitButton("Submit now"),
     <Divider/>,
-    <Typography variant="h4" key="review-title">Review and Submit</Typography>,
     <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
       <Grid item key={q+"Review"}>
