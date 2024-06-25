@@ -467,6 +467,90 @@
 				</node>
 			</node>
 			<node>
+				<name>section_triggered_reason_applegeneratedlist</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
+				<node>
+					<name>condition0</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>includes</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>triggered_reason</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>apple generated list</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>triggered_cohort</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>long</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>text</name>
+						<value>Apple provided cohort number</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>minAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>minValue</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>maxValue</name>
+						<value>100</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>input</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
 				<name>triggered_subreason</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
