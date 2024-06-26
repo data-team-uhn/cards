@@ -115,6 +115,10 @@ const useStyles = makeStyles(theme => ({
 function QuestionnaireSet(props) {
   const { subject, username, displayText, contentOffset, config } = props;
 
+  // Form content offset, used for sticky elements
+  // Should be the contentOffset passed as a prop + the Header height
+  const [ formContentOffset, setFormContentOffset ] = useState(contentOffset || 0);
+
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
   // Questionnaire set title, intro text, and ending text, to display to the patient user
@@ -195,6 +199,11 @@ function QuestionnaireSet(props) {
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
     setScreenType(crtStep >= 0 && crtStep < questionnaireIds?.length ? "survey" : "screen");
+  }, [crtStep]);
+
+  // Once we start rendering forms, update the formContentOffset
+  useEffect(() => {
+    (crtStep == 1) && setFormContentOffset((contentOffset || 0) + (document?.getElementById('patient-portal-header')?.clientHeight || 0));
   }, [crtStep]);
 
   useEffect(() => {
@@ -670,7 +679,7 @@ function QuestionnaireSet(props) {
           doneLabel={nextQuestionnaire ? "Next survey" : enableReviewScreen ? "Review" : "Submit my answers"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
-          contentOffset={contentOffset || 0}
+          contentOffset={formContentOffset}
         />
   ];
 
@@ -740,7 +749,7 @@ function QuestionnaireSet(props) {
               questionnaireAddons={questionnaires?.[q]?.questionnaireAddons}
               disableHeader
               disableButton
-              contentOffset={contentOffset || 0}
+              contentOffset={formContentOffset}
             />
             :<></>
         }
