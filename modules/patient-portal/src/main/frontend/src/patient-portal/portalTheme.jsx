@@ -23,6 +23,15 @@ import { appTheme } from "../themePalette";
 
 const portalTheme = createTheme({
   palette: appTheme.palette,
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 540,
+      md: 720,
+      lg: 20000,
+      xl: 20001,
+    },
+  },
   typography: {
     caption: {
       fontSize: "1rem",
