@@ -29,6 +29,7 @@ import {
   FormControl,
   Icon,
   IconButton,
+  InputAdornment,
   List,
   ListItem,
   ListItemAvatar,
@@ -57,11 +58,11 @@ const useStyles = makeStyles()(theme => ({
   },
   optionText: {
     "& .MuiListItemText-secondary": {
-       wordBreak: "break-word",
-       "& > *": {
-         color: theme.palette.text.disabled,
-       },
-     },
+      wordBreak: "break-word",
+      "& > *": {
+        color: theme.palette.text.disabled,
+      },
+    },
   },
 }));
 
@@ -72,6 +73,9 @@ let entitySpecs = {
   Section: {
     icon: "view_stream",
     color: orange[800]
+  },
+  Questionnaire: {
+    icon: "assignment",
   }
 }
 
@@ -83,7 +87,7 @@ let entitySpecs = {
 // * entities: an array of objects describing questionnaire entries; the object shape is expected to be:
 //   { uuid: string, name: string, text: string, path: string, relativePath: string }
 // * selection: an array of strings representing the values of the selected option (according to getOptionValue)
-// * onValueChanged: handler for when selection changes; passed to the Autocomplete component's `onChange` handler
+// * onSelectionChanged: handler for when selection changes; passed to the Autocomplete component's `onChange` handler
 // * getOptionValue: a function that takes an option and retrieves its value; defaults to (option) => option.path
 // Any other props are passed directly to the Autocomplete component.
 
@@ -106,6 +110,7 @@ function QuestionnaireAutocomplete(props) {
   const { classes } = useStyles();
 
   let unselectEntity = (index) => {
+    console.log('unselectEntity', index);
     onSelectionChanged(oldValues => {
       let newValues = oldValues.slice();
       newValues.splice(index, 1);
@@ -118,13 +123,13 @@ function QuestionnaireAutocomplete(props) {
       <ListItemAvatar>
         <Tooltip title={type}>
           <Avatar
-            style={{color: entitySpecs[type].color, backgroundColor: selected ? "transparent" : undefined}}
+            style={{ color: entitySpecs[type]?.color, backgroundColor: selected ? "transparent" : undefined }}
             className={classes.avatar}
           >
-            { selected ?
+            {selected ?
               <Icon>check_box</Icon>
               :
-              entitySpecs[type].icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0)
+              entitySpecs[type]?.icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0)
             }
           </Avatar>
         </Tooltip>
@@ -138,13 +143,13 @@ function QuestionnaireAutocomplete(props) {
         className={classes.optionText}
         primary={
           <FormattedText variant="inherit">
-            { entry.text }
+            {entry.text}
           </FormattedText>
         }
-        secondary={ withPath &&
+        secondary={withPath &&
           <>
-            <span>{ entry.relativePath }</span>
-            { entry.name }
+            <span>{entry.relativePath}</span>
+            {entry.name}
           </>
         }
       />
@@ -157,7 +162,7 @@ function QuestionnaireAutocomplete(props) {
         multiple={!!multiple}
         disableCloseOnSelect={!!multiple}
         disableClearable
-        value={ multiple
+        value={multiple
           ? entities?.filter(v => selection.includes(getOptionValue(v))) ?? []
           : entities.find(v => selection.includes(getOptionValue(v))) ?? ""
         }
@@ -166,7 +171,7 @@ function QuestionnaireAutocomplete(props) {
           onSelectionChanged(multiple ? value?.map(item => getOptionValue(item)) : [getOptionValue(value)]);
         }}
         renderTags={() => null}
-        getOptionLabel={(option) => option?.name}
+        getOptionLabel={(option) => option?.name ?? ''}
         options={entities || []}
         renderOption={(props, option) =>
           <ListItemButton
@@ -175,41 +180,52 @@ function QuestionnaireAutocomplete(props) {
             dense
             {...props}
           >
-            { getAvatar(option.type, selection.includes(getOptionValue(option))) }
-            { getQuestionnaireEntryText(option) }
+            {getAvatar(option.type, selection.includes(getOptionValue(option)))}
+            {getQuestionnaireEntryText(option)}
           </ListItemButton>
         }
         renderInput={(params) =>
           <TextField
             variant="standard"
             placeholder={placeholderText}
+            
             {...params}
+            
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: !multiple && !!selection.length && <InputAdornment position="start">{getAvatar(entities.find(v => selection.includes(getOptionValue(v))).type)}</InputAdornment>,
+            }}
           />
         }
         {...rest}
       />
     </FormControl>
     {/* List the entered values */}
-    <List dense className={classes.selectionList}>
-      { entities?.filter(v => selection.includes(getOptionValue(v))).map((value, index) =>
-        <React.Fragment key={`selection-list-item-${index}`}>
-          { !!index && <Divider key={`divider-${index}`} variant="inset" component="li" /> }
-          <ListItem
-            key={`${value.name}-${index}`}
-            secondaryAction={
-              <Tooltip title="Delete entry">
-                <IconButton onClick={() => unselectEntity(index)}>
-                  <ClearIcon/>
-                </IconButton>
-              </Tooltip>
-            }
-          >
-            { getAvatar(value.type) }
-            { getQuestionnaireEntryText(value, multiple) }
-          </ListItem>
-        </React.Fragment>
-      )}
-    </List>
+    {
+      showSelection && (
+        <List dense className={classes.selectionList}>
+          {entities?.filter(v => selection.includes(getOptionValue(v))).map((value, index) =>
+            <React.Fragment key={`selection-list-item-${index}`}>
+              {!!index && <Divider key={`divider-${index}`} variant="inset" component="li" />}
+              <ListItem
+                key={`${value.name}-${index}`}
+                secondaryAction={
+                  <Tooltip title="Delete entry">
+                    <IconButton onClick={() => unselectEntity(index)}>
+                      <ClearIcon />
+                    </IconButton>
+                  </Tooltip>
+                }
+              >
+                {getAvatar(value.type)}
+                {getQuestionnaireEntryText(value, multiple)}
+              </ListItem>
+            </React.Fragment>
+          )}
+        </List>
+      )
+    }
+
   </>);
 }
 
@@ -219,6 +235,7 @@ QuestionnaireAutocomplete.propTypes = {
   selection: PropTypes.array,
   onSelectionChanged: PropTypes.func,
   getOptionValue: PropTypes.func,
+  placeholderText: PropTypes.string,
 }
 
 export default QuestionnaireAutocomplete;

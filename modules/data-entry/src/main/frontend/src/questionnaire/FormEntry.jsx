@@ -49,6 +49,9 @@ import IdentifierQuestion from "./IdentifierQuestion";
 
 import { hasWarningFlags } from "./FormUtilities";
 
+export const QUESTIONNAIRE_TYPES = ["cards:Questionnaire"];
+export const CONDITIONAL_TYPES = ["cards:Conditional", "cards:ConditionalGroup"];
+export const EXTLINK_TYPES = ["cards:ExternalLink"];
 export const QUESTION_TYPES = ["cards:Question"];
 export const SECTION_TYPES = ["cards:Section"];
 export const INFO_TYPES = ["cards:Information"];
@@ -225,19 +228,32 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
  export default function FormEntry(props) {
   let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps} = props;
   gridProps = gridProps || {};
+
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
+  let displayedComponent = null;
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId, gridProps);
+    displayedComponent = displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId, gridProps);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
     if ("matrix" === entryDefinition["displayMode"]) {
-      return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, contentOffset, gridProps);
+      displayedComponent = displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, contentOffset, gridProps);
     } else {
-      return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps);
+      displayedComponent = displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps);
     }
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit, gridProps);
+    displayedComponent = displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit, gridProps);
   }
+
+  if (!displayedComponent) {
+    console.warn("FormEntry: No component to display for entry", entryDefinition);
+    // return null;
+  }
+
+  return (
+    <React.Fragment>
+    {displayedComponent}
+    </React.Fragment>
+  )
 }
