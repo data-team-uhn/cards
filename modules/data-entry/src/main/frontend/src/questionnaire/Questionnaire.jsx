@@ -18,6 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Link, useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
@@ -39,6 +40,7 @@ import { DateTime } from "luxon";
 import EditIcon from '@mui/icons-material/Edit';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import PreviewIcon from '@mui/icons-material/FindInPage';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import ExportButton from "../dataHomepage/ExportButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -56,13 +58,47 @@ import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUt
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 
+const jcrActions = {
+  checkIn: (id) => {
+    let checkinForm = new FormData();
+    checkinForm.set(":operation", "checkin");
+    return fetch(`/Questionnaires/${id}`, {
+      method: "POST",
+      body: checkinForm
+    });
+  },
+  checkOut: (id) => {
+    let checkoutForm = new FormData();
+    checkoutForm.set(":operation", "checkout");
+    return fetch(`/Questionnaires/${id}`, {
+      method: "POST",
+      body: checkoutForm
+    });
+  },
+  questionnaireData: (id) => {
+    return fetch(`/Questionnaires/${id}.deep.json`)
+  },
+  // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
+  reorderEntry: // CALL SlingPostServlet
+    (entryPath, destinationIndex) => {
+      let reorderForm = new FormData();
+      reorderForm.set(":order", `${destinationIndex}`);
+      // fetch(`/Questionnaires/${draggableId}`, {
+      return fetch(entryPath, {
+        method: "POST",
+        body: reorderForm
+      });
+    }
+}
+
+
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
   let { id, classes } = props;
-  let [ data, setData ] = useState();
-  let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
-  let [ actionsMenu, setActionsMenu ] = useState(null);
-  let [ error, setError ] = useState();
+  let [data, setData] = useState();
+  let [questionnaireTitle, setQuestionnaireTitle] = useState();
+  let [actionsMenu, setActionsMenu] = useState(null);
+  let [error, setError] = useState();
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
   let isEdit = window.location.pathname.endsWith(".edit");
@@ -76,7 +112,8 @@ let Questionnaire = (props) => {
   }
 
   let fetchData = () => {
-    fetch(`/Questionnaires/${id}.deep.json`)
+    // fetch(`/Questionnaires/${id}.deep.json`)
+    jcrActions.questionnaireData(id)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(setData)
       .catch(handleError);
@@ -98,21 +135,24 @@ let Questionnaire = (props) => {
   useEffect(() => {
     if (!isEdit) return;
     //Perform a JCR check-out of the Questionnaire
-    let checkoutForm = new FormData();
-    checkoutForm.set(":operation", "checkout");
-    fetch(`/Questionnaires/${id}`, {
-      method: "POST",
-      body: checkoutForm
-    });
+    const checkout = jcrActions.checkOut(id)
+    // let checkoutForm = new FormData();
+    // checkoutForm.set(":operation", "checkout");
+    // fetch(`/Questionnaires/${id}`, {
+    //   method: "POST",
+    //   body: checkoutForm
+    // });
 
-    function performCheckIn() {
-      let checkinForm = new FormData();
-      checkinForm.set(":operation", "checkin");
-      fetch(`/Questionnaires/${id}`, {
-        method: "POST",
-        body: checkinForm
-      });
-    }
+
+    // function performCheckIn() {
+    //   let checkinForm = new FormData();
+    //   checkinForm.set(":operation", "checkin");
+    //   fetch(`/Questionnaires/${id}`, {
+    //     method: "POST",
+    //     body: checkinForm
+    //   });
+    // }
+    const performCheckIn = () => {jcrActions.checkIn(id)}
 
     window.addEventListener("beforeunload", performCheckIn);
     return (() => {
@@ -121,83 +161,94 @@ let Questionnaire = (props) => {
   }, []);
 
   let dropdownList = (
-      <List>
-        <ListItem className={classes.actionsMenuItem}>
-          <ExportButton
-              entityData={data}
-              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-              entryName={questionnaireTitle || id}
-              entryType="Questionnaire"
-              size="medium"
-              variant="text"
-              onClose={() => { setActionsMenu(null); }}
-          />
-        </ListItem>
-        <ListItem className={classes.actionsMenuItem}>
-          <DeleteButton
-              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-              entryName={questionnaireTitle}
-              entryType="Questionnaire"
-              onComplete={() => history.replace(baseUrl)}
-              size="medium"
-              variant="text"
-              onClose={() => { setActionsMenu(null); }}
-          />
-        </ListItem>
-      </List>
+    <List>
+      <ListItem className={classes.actionsMenuItem}>
+        <ExportButton
+          entityData={data}
+          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+          entryName={questionnaireTitle || id}
+          entryType="Questionnaire"
+          size="medium"
+          variant="text"
+          onClose={() => { setActionsMenu(null); }}
+        />
+      </ListItem>
+      <ListItem className={classes.actionsMenuItem}>
+        <DeleteButton
+          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+          entryName={questionnaireTitle}
+          entryType="Questionnaire"
+          onComplete={() => history.replace(baseUrl)}
+          size="medium"
+          variant="text"
+          onClose={() => { setActionsMenu(null); }}
+        />
+      </ListItem>
+    </List>
   )
 
   let questionnaireMenu = (
-      <div className={classes.actionsMenu}>
-        { isEdit ?
+    <div className={classes.actionsMenu}>
+      {isEdit ?
+        <>
           <Tooltip title="Preview" onClick={() => history.push(questionnaireUrl)}>
             <IconButton size="large">
               <PreviewIcon />
             </IconButton>
           </Tooltip>
-          :
+          <Tooltip title="Reorder"
+          // onClick={() => history.push(questionnaireUrl + ".edit")}
+          >
+            <IconButton color="primary" size="large">
+              <DragIndicatorIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+        :
+        <>
           <Tooltip title="Edit" onClick={() => history.push(questionnaireUrl + ".edit")}>
             <IconButton color="primary" size="large">
               <EditIcon />
             </IconButton>
           </Tooltip>
-        }
-        <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-          <IconButton size="large">
-            <MoreIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Popover
-            open={Boolean(actionsMenu)}
-            anchorEl={actionsMenu}
-            onClose={() => {setActionsMenu(null)}}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-        >
-          { dropdownList }
-        </Popover>
-      </div>
+        </>
+      }
+      <Tooltip title="More actions" onClick={(event) => { setActionsMenu(event.currentTarget) }}>
+        <IconButton size="large">
+          <MoreIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Popover
+        open={Boolean(actionsMenu)}
+        anchorEl={actionsMenu}
+        onClose={() => { setActionsMenu(null) }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        {dropdownList}
+      </Popover>
+    </div>
   )
 
   let questionnaireHeader = (
-        <ResourceHeader
-          title={questionnaireTitle || ""}
-          breadcrumbs={[<Link to={baseUrl} underline="hover">Questionnaires</Link>]}
-          action={questionnaireMenu}
-          contentOffset={props.contentOffset}
-          >
-          { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
-            <Typography variant="overline">
-              Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
-            </Typography>
-          }
-        </ResourceHeader>
+    <ResourceHeader
+      title={questionnaireTitle || ""}
+      breadcrumbs={[<Link to={baseUrl} underline="hover">Questionnaires</Link>]}
+      action={questionnaireMenu}
+      contentOffset={props.contentOffset}
+    >
+      {data?.['jcr:createdBy'] && data?.['jcr:created'] &&
+        <Typography variant="overline">
+          Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
+        </Typography>
+      }
+    </ResourceHeader>
   );
 
   return (
@@ -205,26 +256,26 @@ let Questionnaire = (props) => {
       <Typography variant="h2" color="error">
         Error obtaining questionnaire info: {error.status} {error.statusText}
       </Typography>
-    :
-      ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
+      :
+      (data?.["jcr:primaryType"] == "cards:Questionnaire" &&
         <Grid container direction="column" spacing={4} wrap="nowrap">
-          { questionnaireHeader }
+          {questionnaireHeader}
           <Grid item>
-            { !isEdit ?
+            {!isEdit ?
               <QuestionnairePreview
                 data={data}
                 title={questionnaireTitle}
                 contentOffset={props.contentOffset}
               />
-            :
+              :
               <QuestionnaireProvider>
                 <QuestionnaireContents
                   disableDelete
                   data={data}
                   classes={classes}
                   onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-                  onActionDone={()=>{}}
-                  menuProps={{isMainAction: true}}
+                  onActionDone={() => { }}
+                  menuProps={{ isMainAction: true }}
                 />
               </QuestionnaireProvider>
             }
@@ -240,6 +291,20 @@ Questionnaire.propTypes = {
 
 export default withStyles(QuestionnaireStyle)(Questionnaire);
 
+const itemSetDnD = {
+  // draggableEntryTypes: [], // import from FormEntry.jsx instead
+  // returns object for style prop
+  getItemStyle : (snapshot, provided) => {
+    const isDragging = snapshot.isDragging
+    return {
+      // change background colour if dragging
+      borderStyle: isDragging ? "dashed" : undefined,
+      borderWidth: isDragging ? "2px" : undefined,
+      backgroundColor: isDragging ? "lightblue" : undefined,
+      ... provided.draggableProps.style
+    }
+  }
+}
 
 let QuestionnaireItemSet = (props) => {
   let { children, models, onActionDone, data, classes } = props;
@@ -265,11 +330,11 @@ let QuestionnaireItemSet = (props) => {
     // => {g: "g.json", h: "h,json", d: "d.json", e: "e.json"}
     Object.values(models || {})
       // Filter in groups with entries and with defaultOrder specified
-      .filter(v => typeof(v) == "object" && typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) != "undefined")
+      .filter(v => typeof (v) == "object" && typeof (v?.entries) != "undefined" && typeof (v?.defaultOrder) != "undefined")
       // Sort by the specified order
       .sort((a, b) => a.defaultOrder - b.defaultOrder)
       // Record the sorted entries into the priority list
-      .forEach(v => prioritaryModels = {...prioritaryModels, ...v.entries});
+      .forEach(v => prioritaryModels = { ...prioritaryModels, ...v.entries });
 
     // If there are any entries with defaultOrder, we update the priorityEntryTypes
     if (Object.keys(prioritaryModels).length > 0) {
@@ -287,11 +352,11 @@ let QuestionnaireItemSet = (props) => {
     //   group3 : {entries: {g: "g,json", h: "h.json"}, defaultOrder: 1}
     // }
     // => {a: "a.json", b: "b,json", c: "c.json", f: "f.json"}
-    Object.entries(models).forEach(([k,v]) => {
-      if ( typeof(v) == "object") {
-        if (typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) == "undefined") {
+    Object.entries(models).forEach(([k, v]) => {
+      if (typeof (v) == "object") {
+        if (typeof (v?.entries) != "undefined" && typeof (v?.defaultOrder) == "undefined") {
           // Flatten groups with `entries` but without `defaultOrder` (the ones with defaultOrder are already in the "priority" list)
-          generalModels = {...generalModels, ...v.entries}
+          generalModels = { ...generalModels, ...v.entries }
         }
       } else {
         // also record groups without metadata
@@ -301,7 +366,7 @@ let QuestionnaireItemSet = (props) => {
     // If there are any entries without defaultOrder, we update the generalEntryTypes
     // Otherwise the original list is kept, i.e. ENTRY_TYPES
     if (Object.keys(generalModels).length > 0) {
-       generalEntryTypes = getEntryTypes(generalModels);
+      generalEntryTypes = getEntryTypes(generalModels);
     }
   }
 
@@ -325,26 +390,44 @@ let QuestionnaireItemSet = (props) => {
   //   the `typeModels` property restriction
   let listEntries = (typeModels, types) => (
     <>
-    { Object.entries(data)
-      .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
-      .map(([key, value]) => (
-        EntryType => <Grid item key={key}>
-                       <EntryType
-                         data={value}
-                         model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
-                         onActionDone={onActionDone}
-                         classes={classes}
-                       />
-                     </Grid>
+      {Object.entries(data)
+        .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
+        .map(([key, value], index) => (
+          EntryType =>
+            <Draggable key={key} draggableId={value['@path']} index={index}>
+              {(provided, snapshot) => (
+                <div ref={provided.innerRef} {...provided.draggableProps}>
+                  <Grid container item key={key} style={itemSetDnD.getItemStyle(snapshot, provided)}>
+                    
+                    <Grid item xs={2}>
+                        <div {...provided.dragHandleProps} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap',}} >
+                        <DragIndicatorIcon />
+                        </div>
+                    </Grid>
+                    
+                    <Grid item xs={10}>
+                      <EntryType
+                        data={value}
+                        model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
+                        onActionDone={onActionDone}
+                        classes={classes}
+                      />
+                    </Grid>
+                    {provided.placeholder}
+                  </Grid>
+                  
+                </div>
+              )}
+            </Draggable>
         )(eval(stripCardsNamespace(value['jcr:primaryType'])))
-      )
-    }
+        )
+      }
     </>
   )
 
   // There is no data to display, do not render an empty container
-  if ( !!!children &&
-       !Object.values(data).some(v => [...(generalEntryTypes ||[]), ...(prioritaryEntryTypes || [])].includes(v['jcr:primaryType'])) ) {
+  if (!!!children &&
+    !Object.values(data).some(v => [...(generalEntryTypes || []), ...(prioritaryEntryTypes || [])].includes(v['jcr:primaryType']))) {
     return null;
   }
 
@@ -353,11 +436,11 @@ let QuestionnaireItemSet = (props) => {
       {children}
       {
         data ?
-        <>
-        { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
-        { listEntries(generalModels, generalEntryTypes) }
-        </>
-        : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
+          <>
+            {prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes)}
+            {listEntries(generalModels, generalEntryTypes)}
+          </>
+          : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress /></Grid></Grid></Grid>
       }
     </Grid>
   );
@@ -528,9 +611,9 @@ ConditionalGroup.defaultProps = {
 
 let QuestionnaireEntry = (props) => {
   let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
-  let [ entryData, setEntryData ] = useState(data);
-  let [ menuItems, setMenuItems ] = useState([]);
-  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
+  let [entryData, setEntryData] = useState(data);
+  let [menuItems, setMenuItems] = useState([]);
+  let [doHighlight, setDoHighlight] = useState(data.doHighlight);
 
   // --------------------------------------------------------------
   // Questionnaire context manipulation
@@ -538,18 +621,18 @@ let QuestionnaireEntry = (props) => {
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
   let updateContext = (data) => {
-    let vars = findQuestions({data: data});
+    let vars = findQuestions({ data: data });
     changeQuestionnaireContext((oldContext) => {
-       let newContext = oldContext || [];
-       vars.forEach(v => {
-         const index = newContext.findIndex(x => x.id == v.id);
-         if (index >= 0) {
-           newContext.splice(index, 1, v);
-         } else {
-           newContext.push(v);
-         }
-       });
-       return newContext;
+      let newContext = oldContext || [];
+      vars.forEach(v => {
+        const index = newContext.findIndex(x => x.id == v.id);
+        if (index >= 0) {
+          newContext.splice(index, 1, v);
+        } else {
+          newContext.push(v);
+        }
+      });
+      return newContext;
     });
   }
 
@@ -579,9 +662,9 @@ let QuestionnaireEntry = (props) => {
       return true;
     }
     return (
-      typeof(entryData[key] != undefined) &&
-      typeof(value) == "object" &&
-      typeof(value[entryData[key]]) == "object" &&
+      typeof (entryData[key] != undefined) &&
+      typeof (value) == "object" &&
+      typeof (value[entryData[key]]) == "object" &&
       Object.entries(value[entryData[key]]).find(([k, v]) => findChildrenSpec(k, v))
     )
   };
@@ -600,7 +683,7 @@ let QuestionnaireEntry = (props) => {
 
   useEffect(() => {
     // Add the child types to the menu
-    setMenuItems(Object.keys(childModels || {}).filter(k => typeof(childModels[k]) != "object"));
+    setMenuItems(Object.keys(childModels || {}).filter(k => typeof (childModels[k]) != "object"));
 
     // Some child entries may be configured to have a maximum number of entries
     // (for example, only one conditional or conditional group per section)
@@ -609,7 +692,7 @@ let QuestionnaireEntry = (props) => {
     if (childModels) {
       Object.values(childModels)
         .filter(v => {
-          if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
+          if (typeof (v) != "object" || typeof (v?.entries) != "object") return false;
           if (!v.hasOwnProperty("max")) return true;
           let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
           return (Object.values(entryData).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
@@ -634,11 +717,11 @@ let QuestionnaireEntry = (props) => {
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(json => handleDataChange(json))
         .catch(() => {
-           // If it fails, it's because we deleted an item
-           // Update the context to remove the deleted item
-           removeFromContext(`${data['jcr:uuid']}`);
-           // Then pass it up to the parent
-           onActionDone();
+          // If it fails, it's because we deleted an item
+          // Update the context to remove the deleted item
+          removeFromContext(`${data['jcr:uuid']}`);
+          // Then pass it up to the parent
+          onActionDone();
         });
     }
   }
@@ -648,50 +731,103 @@ let QuestionnaireEntry = (props) => {
     updateContext(newData);
   }
 
+  // DETERMINE REORDERING AND CALL FETCH AS ABOVE
+  // MUST CHECK PARENTS FOR NESTED LISTS
+  let onDragEnd = (result) => {
+    const { draggableId, type, source, destination, reason, mode } = result
+    window.alert(`Dragged ${draggableId} from ${source.index} to ${destination.index} for ${type} because of ${reason} in ${mode}`)
+    // dropped outside the list
+
+
+    console.log('drag', result)
+    // // CALL SlingPostServlet
+    entryPath = draggableId
+    destinationIndex = destination.index
+    // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
+    function performReorder(entryPath, destinationIndex) {
+      let reorderForm = new FormData();
+      reorderForm.set(":order", `${destinationIndex}`);
+      // fetch(`/Questionnaires/${draggableId}`, {
+      fetch(entryPath, {
+        method: "POST",
+        body: reorderForm
+      });
+    }
+    performReorder()
+
+
+  }
+
   // -------------------------------------------------------------
   // Rendering
 
-  let renderFields = (options) => (<>
-    <LabeledField name={`${type}Id`} {...options}>{entryData["@name"]}</LabeledField>
-    <Fields data={entryData} JSON={spec} edit={false} {...options} />
-  </>);
+  let renderFields = (options) => (
+    <>
+      <LabeledField name={`${type}Id`} {...options}>{entryData["@name"]}</LabeledField>
+      <Fields data={entryData} JSON={spec} edit={false} {...options} />
+    </>);
   let FIELDS_CLASS_NAME = "cards-questionnaire-entry-props";
-
+  // console.log(entryData)
+  // console.log(childModels)
   return (
-    <QuestionnaireItemCard
-        titleField={titleField}
-        moreInfo={renderFields({condensed: true})}
-        data={entryData}
-        type={type}
-        classes={classes}
-        doHighlight={doHighlight}
-        action={
-            menuItems?.length > 0 ?
-            <CreationMenu
+    // TODO: disable if not editing, available in dataEntry (?)
+    <DragDropContext onDragEnd={onDragEnd}>
+      {/* TODO: unique ids if there are ever multiple dnd? */}
+      <Droppable droppableId={entryData['@path']}>
+        {(provided, snapshot) => {
+
+          return (
+            <QuestionnaireItemCard
+              titleField={titleField}
+              moreInfo={renderFields({ condensed: true })}
               data={entryData}
-              onCreated={onCreated}
-              menuItems={menuItems}
-              models={childModels}
-              {...menuProps}
-            />
-            : undefined
-        }
-        onActionDone={handleDataChange}
-        model={model}
-        {...rest}
-    >
-      { childModels ?
-        <QuestionnaireItemSet
-          data={entryData}
-          classes={classes}
-          onActionDone={handleDataChange}
-          models={childModels}
-        >
-          <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
-        </QuestionnaireItemSet>
-        : <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
-      }
-    </QuestionnaireItemCard>
+              type={type}
+              classes={classes}
+              doHighlight={doHighlight}
+              action={
+                menuItems?.length > 0 ?
+                  <CreationMenu
+                    data={entryData}
+                    onCreated={onCreated}
+                    menuItems={menuItems}
+                    models={childModels}
+                    {...menuProps}
+                  />
+                  : undefined
+              }
+              onActionDone={handleDataChange}
+              droppableProvided={provided}
+              model={model}
+              {...rest}
+            >
+              <div
+                ref={provided.innerRef}
+              // style={{ backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey' }}
+              >
+                {(childModels ?
+
+                  <QuestionnaireItemSet
+                    data={entryData}
+                    classes={classes}
+                    onActionDone={handleDataChange}
+                    models={childModels}
+                  >
+                    <Grid item className={FIELDS_CLASS_NAME}>
+                      {renderFields()}
+                    </Grid>
+                  </QuestionnaireItemSet>
+
+                  :
+                  <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
+                )}
+              </div>
+            </QuestionnaireItemCard>
+          )
+        }}
+
+      </Droppable>
+
+    </DragDropContext>
   );
 };
 
