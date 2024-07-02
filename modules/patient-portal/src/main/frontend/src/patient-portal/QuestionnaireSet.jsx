@@ -211,17 +211,17 @@ function QuestionnaireSet(props) {
 
   // Initialize the `canSubmitIncomplete` setting based on the config and the visit date
   useEffect(() => {
-    if (config?.daysPriorToEventWhenIncompleteSurveysCanBeSubmitted >= 0 && visitInformation) {
+    if (!Number.isNaN(+(config?.daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted)) && visitInformation) {
       let visitDate = getVisitDate();
-      let dateIncompleteSubmissionEnabled = visitDate.minus({
-        days: config.daysPriorToEventWhenIncompleteSurveysCanBeSubmitted
+      let dateIncompleteSubmissionEnabled = visitDate.plus({
+        days: config.daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted
       }).endOf('day');
       const diff = dateIncompleteSubmissionEnabled.diffNow(["days"]);
       if (Math.floor(diff["days"]) <= 0) {
         setCanSubmitIncomplete(true);
       }
     }
-  }, [config?.daysPriorToEventWhenIncompleteSurveysCanBeSubmitted, visitInformation]);
+  }, [config?.daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted, visitInformation]);
 
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
