@@ -31,6 +31,8 @@ import {
   Popover,
   Tooltip,
   Typography,
+  Snackbar,
+  Box
 } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
@@ -81,6 +83,7 @@ const jcrActions = {
   // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
   reorderEntry: // CALL SlingPostServlet
     (entryPath, destinationIndex) => {
+      // sibling level reordering
       let reorderForm = new FormData();
       reorderForm.set(":order", `${destinationIndex}`);
       // fetch(`/Questionnaires/${draggableId}`, {
@@ -96,6 +99,7 @@ const jcrActions = {
 let Questionnaire = (props) => {
   let { id, classes } = props;
   let [data, setData] = useState();
+  console.log(data)
   let [questionnaireTitle, setQuestionnaireTitle] = useState();
   let [actionsMenu, setActionsMenu] = useState(null);
   let [error, setError] = useState();
@@ -152,7 +156,7 @@ let Questionnaire = (props) => {
     //     body: checkinForm
     //   });
     // }
-    const performCheckIn = () => {jcrActions.checkIn(id)}
+    const performCheckIn = () => { jcrActions.checkIn(id) }
 
     window.addEventListener("beforeunload", performCheckIn);
     return (() => {
@@ -196,13 +200,13 @@ let Questionnaire = (props) => {
               <PreviewIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Reorder"
+          {/* <Tooltip title="Reorder"
           // onClick={() => history.push(questionnaireUrl + ".edit")}
           >
             <IconButton color="primary" size="large">
               <DragIndicatorIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
         </>
         :
         <>
@@ -294,19 +298,20 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 const itemSetDnD = {
   // draggableEntryTypes: [], // import from FormEntry.jsx instead
   // returns object for style prop
-  getItemStyle : (snapshot, provided) => {
+  getItemStyle: (snapshot, provided) => {
     const isDragging = snapshot.isDragging
     return {
       // change background colour if dragging
       borderStyle: isDragging ? "dashed" : undefined,
       borderWidth: isDragging ? "2px" : undefined,
       backgroundColor: isDragging ? "lightblue" : undefined,
-      ... provided.draggableProps.style
+      ...provided.draggableProps.style
     }
   }
 }
 
 let QuestionnaireItemSet = (props) => {
+
   let { children, models, onActionDone, data, classes } = props;
 
   let prioritaryModels = {};
@@ -315,6 +320,7 @@ let QuestionnaireItemSet = (props) => {
   let generalEntryTypes = ENTRY_TYPES;
 
   let getEntryTypes = entryModels => Object.keys(entryModels || {}).map(e => `cards:${e}`);
+
 
   if (models) {
     // Is defaultOrder specified for some entry types? Pull those into a flat "priority" list
@@ -388,24 +394,40 @@ let QuestionnaireItemSet = (props) => {
   //   prefix) to a json file specifying the "model", i.e. which properties to display
   // @return a React fragment rendering the entries from the `data` prop according to the `types` filter and
   //   the `typeModels` property restriction
+  const draggableTypes = ENTRY_TYPES
   let listEntries = (typeModels, types) => (
     <>
       {Object.entries(data)
         .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
         .map(([key, value], index) => (
           EntryType =>
-            <Draggable key={key} draggableId={value['@path']} index={index}>
+            <Draggable key={key} draggableId={value['@path']} index={index}
+              isDragDisabled={!draggableTypes.includes(value['jcr:primaryType'])}
+            >
               {(provided, snapshot) => (
-                <div ref={provided.innerRef} {...provided.draggableProps}>
-                  <Grid container item key={key} style={itemSetDnD.getItemStyle(snapshot, provided)}>
+                <div ref={provided.innerRef} {...provided.draggableProps} 
+                // style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap',}} 
+                >
+                  <Grid container item key={key}
+                    // justifyContent='center' alignItems='center'
+                    style={itemSetDnD.getItemStyle(snapshot, provided)}
+                  >
+                    <Grid item xs={1}
                     
-                    <Grid item xs={2}>
-                        <div {...provided.dragHandleProps} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap',}} >
-                        <DragIndicatorIcon />
-                        </div>
+                    >
+                      {draggableTypes.includes(value['jcr:primaryType']) &&
+                        <Box textAlign="center" width="100%">
+                          <Tooltip title="Drag and drop to reorder">
+                            <IconButton size="large" {...provided.dragHandleProps}>
+                              <DragIndicatorIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      }
+
                     </Grid>
-                    
-                    <Grid item xs={10}>
+
+                    <Grid item xs={11}>
                       <EntryType
                         data={value}
                         model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
@@ -413,9 +435,10 @@ let QuestionnaireItemSet = (props) => {
                         classes={classes}
                       />
                     </Grid>
-                    {provided.placeholder}
+
+
                   </Grid>
-                  
+                  {provided.placeholder}
                 </div>
               )}
             </Draggable>
@@ -614,6 +637,7 @@ let QuestionnaireEntry = (props) => {
   let [entryData, setEntryData] = useState(data);
   let [menuItems, setMenuItems] = useState([]);
   let [doHighlight, setDoHighlight] = useState(data.doHighlight);
+  let [snackbarState, setSnackbarState] = useState({ open: false, message: "", autoHideDuration: 5000 })
 
   // --------------------------------------------------------------
   // Questionnaire context manipulation
@@ -704,9 +728,17 @@ let QuestionnaireEntry = (props) => {
   // -------------------------------------------------------------
   // Handle data updates (field changes, child item creation or
   // deletion)
+  useEffect(() => {
+    if (snackbarState.open) {
+      setTimeout(() => {
+        setSnackbarState({ open: false, message: "", autoHideDuration: 5000})
+      }, snackbarState.autoHideDuration);
+    }
+  }, [snackbarState])
 
   let handleDataChange = (newData) => {
     // There's new data to load, display and highlight it:
+    setSnackbarState({open: true, message: "Data entry updated", autoHideDuration: 5000})
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
@@ -735,25 +767,24 @@ let QuestionnaireEntry = (props) => {
   // MUST CHECK PARENTS FOR NESTED LISTS
   let onDragEnd = (result) => {
     const { draggableId, type, source, destination, reason, mode } = result
-    window.alert(`Dragged ${draggableId} from ${source.index} to ${destination.index} for ${type} because of ${reason} in ${mode}`)
+    // window.alert(`Dragged ${draggableId} from ${source.index} to ${destination.index} for ${type} because of ${reason} in ${mode}`)
     // dropped outside the list
 
 
     console.log('drag', result)
     // // CALL SlingPostServlet
-    entryPath = draggableId
-    destinationIndex = destination.index
+    const entryPath = draggableId
+    const destinationIndex = destination.index
     // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
-    function performReorder(entryPath, destinationIndex) {
-      let reorderForm = new FormData();
-      reorderForm.set(":order", `${destinationIndex}`);
-      // fetch(`/Questionnaires/${draggableId}`, {
-      fetch(entryPath, {
-        method: "POST",
-        body: reorderForm
-      });
-    }
-    performReorder()
+    // function 
+    jcrActions.reorderEntry(entryPath, destinationIndex)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      // .then(r => console.log(r))
+      // .finally(() => window.location.reload())
+      .finally(() => {
+        handleDataChange()
+      })
+      .catch(handleError);
 
 
   }
@@ -777,51 +808,64 @@ let QuestionnaireEntry = (props) => {
         {(provided, snapshot) => {
 
           return (
-            <QuestionnaireItemCard
-              titleField={titleField}
-              moreInfo={renderFields({ condensed: true })}
-              data={entryData}
-              type={type}
-              classes={classes}
-              doHighlight={doHighlight}
-              action={
-                menuItems?.length > 0 ?
-                  <CreationMenu
-                    data={entryData}
-                    onCreated={onCreated}
-                    menuItems={menuItems}
-                    models={childModels}
-                    {...menuProps}
-                  />
-                  : undefined
-              }
-              onActionDone={handleDataChange}
-              droppableProvided={provided}
-              model={model}
-              {...rest}
-            >
-              <div
-                ref={provided.innerRef}
-              // style={{ backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey' }}
+            <>
+              <QuestionnaireItemCard
+                titleField={titleField}
+                moreInfo={renderFields({ condensed: true })}
+                data={entryData}
+                type={type}
+                classes={classes}
+                doHighlight={doHighlight}
+                action={
+                  menuItems?.length > 0 ?
+                    <CreationMenu
+                      data={entryData}
+                      onCreated={onCreated}
+                      menuItems={menuItems}
+                      models={childModels}
+                      {...menuProps}
+                    />
+                    : undefined
+                }
+                onActionDone={handleDataChange}
+                droppableProvided={provided}
+                model={model}
+                {...rest}
               >
-                {(childModels ?
+                <div
+                  ref={provided.innerRef}
+                // style={{ backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey' }}
+                >
+                  {(childModels ?
 
-                  <QuestionnaireItemSet
-                    data={entryData}
-                    classes={classes}
-                    onActionDone={handleDataChange}
-                    models={childModels}
-                  >
-                    <Grid item className={FIELDS_CLASS_NAME}>
-                      {renderFields()}
-                    </Grid>
-                  </QuestionnaireItemSet>
+                    <QuestionnaireItemSet
+                      data={entryData}
+                      classes={classes}
+                      onActionDone={handleDataChange}
+                      models={childModels}
+                    >
+                      <Grid item className={FIELDS_CLASS_NAME}>
+                        {renderFields()}
+                      </Grid>
+                    </QuestionnaireItemSet>
 
-                  :
-                  <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
-                )}
-              </div>
-            </QuestionnaireItemCard>
+                    :
+                    <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
+                  )}
+                  {provided.placeholder}
+                </div>
+              </QuestionnaireItemCard>
+              <Snackbar {...snackbarState} autoHideDuration={5000} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}} >
+              <Alert
+                severity="success"
+                variant="filled"
+                sx={{ width: '100%' }}
+              >
+                {snackbarState.message}
+              </Alert>
+              </Snackbar>
+              {/* {provided.placeholder} */}
+            </>
           )
         }}
 
