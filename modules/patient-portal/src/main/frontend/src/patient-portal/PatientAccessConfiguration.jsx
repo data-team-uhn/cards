@@ -35,6 +35,7 @@ export const DEFAULT_PATIENT_ACCESS_CONFIG = {
     tokenlessAuthEnabled: false,
     PIIAuthRequired: false,
     daysRelativeToEventWhileSurveyIsValid: "0",
+    daysPriorToEventWhenIncompleteSurveysCanBeSubmitted: "-1",
     draftLifetime: "-1"
 };
 
@@ -66,6 +67,11 @@ function PatientAccessConfiguration() {
       "Relatively to the associated event, patients can fill out surveys within:",
       "Use a negative number when patient responses are due a number of days before the event, 0 for the day of the event, and a positive number when their responses are expected after the event."
     ],
+    daysPriorToEventWhenIncompleteSurveysCanBeSubmitted: [
+      "Starting at how many days before the event are patients permitted to submit incomplete surveys?",
+      "-1 means incomplete submission is never allowed, 0 means incomplete submission is allowed on the day of the event, a number greater or equal to 1 means incomplete submission is allowed starting at that many days before the event.",
+      "Please use a value of at least 0, or -1 to disable incomplete survey submissions."
+    ],
     draftLifetime: [
       "Patients can edit unsubmitted responses for:",
       "-1 means that drafts are kept until the patient is no longer able to access their surveys, 0 means drafts are deleted daily at midnight, 1 means they are kept until the next day at midmight, etc.",
@@ -74,6 +80,7 @@ function PatientAccessConfiguration() {
   };
 
   const LIMITS = {
+    daysPriorToEventWhenIncompleteSurveysCanBeSubmitted: {min: -1},
     draftLifetime: {min: -1}
   }
 
@@ -142,6 +149,7 @@ function PatientAccessConfiguration() {
             { renderConfigCheckbox("tokenlessAuthEnabled") }
             { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
             { renderConfigInput("daysRelativeToEventWhileSurveyIsValid", "days") }
+            { renderConfigInput("daysPriorToEventWhenIncompleteSurveysCanBeSubmitted", "days") }
             { renderConfigInput("draftLifetime", "days") }
           </List>
       </AdminConfigScreen>

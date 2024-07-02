@@ -150,13 +150,19 @@ function QuestionnaireSet(props) {
   const [ enableReviewScreen, setEnableReviewScreen ] = useState();
   // Is the user reviewing an already complete form?
   const [ reviewMode, setReviewMode ] = useState(false);
+  // Has everything been filled out?
+  const [ isComplete, setComplete ] = useState();
+  // Flag for whether the user is permitted to submit incomplete forms
+  // based on configuration specifying how long in advance (if permitted)
+  // and on the event date. Defaults to false.
+  const [ canSubmitIncomplete, setCanSubmitIncomplete ] = useState(false);
+  // Flag for whether the user decided to submit incomplete surveys in the current session
+  const [ submittingIncomplete, setSubmittingIncomplete ] = useState(false);
   // Did the user just click on Submit and we're waiting
   // for the request to complete?
   const [ submissionInProgress, setSubmissionInProgress ] = useState(false);
   // Has the user submitted their answers?
   const [ isSubmitted, setSubmitted ] = useState(false);
-  // Has everything been filled out?
-  const [ isComplete, setComplete ] = useState();
 
   // Step -1: haven't started yet, welcome screen
   // Step i = 0 ... # of questionnaires-1 : filling out questionnaire #i
@@ -187,10 +193,35 @@ function QuestionnaireSet(props) {
     return subjectData?.[questionnaireId]?.statusFlags?.includes("SUBMITTED");
   }
 
+  const getVisitInformation = (questionName) => {
+    let question = visitInformation?.questionnaire?.[questionName]?.["jcr:uuid"];
+    let answer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == question)?.value || null;
+    return answer;
+  }
+
+  const getVisitDate = () => {
+    let dateAnswer = getVisitInformation("time");
+    return DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(dateAnswer));
+  }
+
   // If the `enableReviewScreen` state is not already defined, initialize it with the value passed via config
   useEffect(() => {
     typeof(enableReviewScreen) == "undefined" && setEnableReviewScreen(config?.enableReviewScreen);
   }, [config?.enableReviewScreen]);
+
+  // Initialize the `canSubmitIncomplete` setting based on the config and the visit date
+  useEffect(() => {
+    if (config?.daysPriorToEventWhenIncompleteSurveysCanBeSubmitted >= 0 && visitInformation) {
+      let visitDate = getVisitDate();
+      let dateIncompleteSubmissionEnabled = visitDate.minus({
+        days: config.daysPriorToEventWhenIncompleteSurveysCanBeSubmitted
+      }).endOf('day');
+      const diff = dateIncompleteSubmissionEnabled.diffNow(["days"]);
+      if (Math.floor(diff["days"]) <= 0) {
+        setCanSubmitIncomplete(true);
+      }
+    }
+  }, [config?.daysPriorToEventWhenIncompleteSurveysCanBeSubmitted, visitInformation]);
 
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
@@ -557,17 +588,6 @@ function QuestionnaireSet(props) {
     return `Good ${timeOfDay}` + (name ? `, ${name}` : '');
   }
 
-  const getVisitInformation = (questionName) => {
-    let question = visitInformation?.questionnaire?.[questionName]?.["jcr:uuid"];
-    let answer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == question)?.value || null;
-    return answer;
-  }
-
-  const getVisitDate = () => {
-    let dateAnswer = getVisitInformation("time");
-    return DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(dateAnswer));
-  }
-
   const appointmentDate = () => {
     let date = getVisitDate();
     return !date?.isValid ? "" : date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
@@ -669,6 +689,7 @@ function QuestionnaireSet(props) {
           key={crtStep}
           id={crtFormId}
           mode="edit"
+          requireCompletion={canSubmitIncomplete ? false : undefined}
           disableHeader
           questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
@@ -773,10 +794,26 @@ function QuestionnaireSet(props) {
         ))}
         </List>,
         <Typography color="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
-        <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
+        <Grid container spacing={2} direction="row">
+          <Grid item>
+            <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
+          </Grid>
+        { canSubmitIncomplete &&
+          <Grid item>
+            <Fab variant="extended" color="secondary" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Fab>
+          </Grid>
+        }
+        </Grid>
   ];
 
-  let exitScreen = (typeof(isComplete) == 'undefined') ? loadingScreen : (isComplete ? (isSubmitted ? summaryScreen : reviewScreen) : incompleteScreen);
+  let exitScreen = (
+    typeof(isComplete) == 'undefined'
+    ? loadingScreen
+    : ( isComplete || submittingIncomplete
+        ? (isSubmitted ? summaryScreen : reviewScreen)
+        : incompleteScreen
+      )
+  );
 
   const progress = 100.0 * (crtStep + 1) / ((questionnaireIds?.length || 0) + 1);
 
