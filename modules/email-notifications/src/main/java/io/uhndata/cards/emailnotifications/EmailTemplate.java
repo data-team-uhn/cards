@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -34,8 +35,10 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -324,34 +327,7 @@ public class EmailTemplate
         FormUtils formUtils)
     {
         final Email.Builder builder = getEmailBuilder();
-        final Map<String, String> actualProperties = new HashMap<>(extraProperties);
-        this.properties.forEach((name, path) -> {
-            try {
-                final Session session = subject.getSession();
-                if (!path.startsWith("/")) {
-                    actualProperties.put(name, path);
-                } else if (session.nodeExists(path)) {
-                    final Node questionNode = session.getNode(path);
-                    final Collection<Node> answers =
-                        formUtils.findAllSubjectRelatedAnswers(subject, questionNode,
-                            EnumSet.allOf(FormUtils.SearchType.class));
-                    if (!answers.isEmpty()) {
-                        Object answer = formUtils.getValue(answers.iterator().next());
-                        if (answer instanceof Calendar) {
-                            final DateFormat sdf = DateFormat.getDateInstance();
-                            sdf.setTimeZone(((Calendar) answer).getTimeZone());
-                            actualProperties.put(name, sdf.format(((Calendar) answer).getTime()));
-                        } else {
-                            actualProperties.put(name, answer.toString());
-                        }
-                    }
-                } else if (session.propertyExists(path)) {
-                    actualProperties.put(name, session.getProperty(path).getString());
-                }
-            } catch (RepositoryException e) {
-                //
-            }
-        });
+        final Map<String, String> actualProperties = getProperties(subject, extraProperties, formUtils);
 
         builder.withBody(
             EmailUtils.renderEmailTemplate(this.htmlTemplate, actualProperties),
@@ -384,6 +360,84 @@ public class EmailTemplate
         throws RepositoryException, IOException
     {
         return new Builder(template, resolver);
+    }
+
+    private Map<String, String> getProperties(final Node subject, final Map<String, String> extraProperties,
+        final FormUtils formUtils)
+    {
+        final Map<String, String> actualProperties = new HashMap<>(extraProperties);
+        this.properties.forEach((name, path) -> {
+            try {
+                final Session session = subject.getSession();
+                if (!path.startsWith("/")) {
+                    actualProperties.put(name, path);
+                } else if (session.nodeExists(path)) {
+                    final Node questionNode = session.getNode(path);
+                    final Collection<Node> answers =
+                        formUtils.findAllSubjectRelatedAnswers(subject, questionNode,
+                            EnumSet.allOf(FormUtils.SearchType.class));
+                    if (!answers.isEmpty()) {
+                        Object answer = formUtils.getValue(answers.iterator().next());
+                        actualProperties.put(name, getAnswerValue(answer));
+                    }
+                } else if (session.propertyExists(path)) {
+                    actualProperties.put(name, getPropertyValue(session.getProperty(path)));
+                }
+            } catch (RepositoryException e) {
+                //
+            }
+        });
+        return actualProperties;
+    }
+
+    private String getAnswerValue(final Object value)
+    {
+        if (value instanceof Object[]) {
+            final Object[] values = (Object[]) value;
+            final List<String> results = new ArrayList<>();
+            for (Object v : values) {
+                results.add(getSingleAnswerValue(v));
+            }
+            return StringUtils.join(results, ", ");
+        } else {
+            return getSingleAnswerValue(value);
+        }
+    }
+
+    private String getSingleAnswerValue(final Object value)
+    {
+        if (value instanceof Calendar) {
+            final DateFormat sdf = DateFormat.getDateInstance();
+            sdf.setTimeZone(((Calendar) value).getTimeZone());
+            return sdf.format(((Calendar) value).getTime());
+        } else {
+            return value.toString();
+        }
+    }
+
+    private String getPropertyValue(final Property property) throws RepositoryException
+    {
+        if (property.isMultiple()) {
+            final List<String> results = new ArrayList<>();
+            for (Value v : property.getValues()) {
+                results.add(getSinglePropertyValue(v));
+            }
+            return StringUtils.join(results, ", ");
+        } else {
+            return getSinglePropertyValue(property.getValue());
+        }
+    }
+
+    private String getSinglePropertyValue(final Value value) throws RepositoryException
+    {
+        if (value.getType() == PropertyType.DATE) {
+            Calendar date = value.getDate();
+            final DateFormat sdf = DateFormat.getDateInstance();
+            sdf.setTimeZone(date.getTimeZone());
+            return sdf.format(date.getTime());
+        } else {
+            return value.getString();
+        }
     }
 
     /**
