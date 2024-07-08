@@ -794,16 +794,20 @@ function QuestionnaireSet(props) {
         ))}
         </List>,
         <Typography color="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
-        <Grid container spacing={2} direction="row">
-          <Grid item>
-            <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
+        <>
+        { canSubmitIncomplete ?
+          <Grid container spacing={2} direction="row">
+            <Grid item>
+              <Button variant="contained" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
+            </Grid>
+            <Grid item>
+              <Button variant="outlined" color="primary" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
+            </Grid>
           </Grid>
-        { canSubmitIncomplete &&
-          <Grid item>
-            <Fab variant="extended" color="secondary" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Fab>
-          </Grid>
+          :
+          <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
         }
-        </Grid>
+        </>
   ];
 
   let exitScreen = (
