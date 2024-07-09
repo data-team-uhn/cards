@@ -66,6 +66,10 @@ function PatientAccessConfiguration() {
       "Relatively to the associated event, patients can fill out surveys within:",
       "Use a negative number when patient responses are due a number of days before the event, 0 for the day of the event, and a positive number when their responses are expected after the event."
     ],
+    daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted: [
+      "Relatively to the associated event, patients can start submitting incomplete surveys within:",
+      "An absent value means patients are never allowed to submit incomplete surveys. Use a negative number when incomplete surveys are permitted a number of days before the event and onward, 0 for the day of the event and onward, and a positive number if incomplete submission is permitted a number of days after the event and onward.",
+    ],
     draftLifetime: [
       "Patients can edit unsubmitted responses for:",
       "-1 means that drafts are kept until the patient is no longer able to access their surveys, 0 means drafts are deleted daily at midnight, 1 means they are kept until the next day at midmight, etc.",
@@ -116,7 +120,7 @@ function PatientAccessConfiguration() {
             onChange={event => onInputValueChanged(key, event.target.value)}
             onBlur={event => onInputValueChanged(key, event.target.value)}
             placeholder={DEFAULT_PATIENT_ACCESS_CONFIG[key] || ""}
-            value={patientAccessConfig?.[key]}
+            value={patientAccessConfig?.[key] || ""}
             error={error[key]}
             helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
             InputProps={{
@@ -142,6 +146,7 @@ function PatientAccessConfiguration() {
             { renderConfigCheckbox("tokenlessAuthEnabled") }
             { renderConfigCheckbox("PIIAuthRequired", patientAccessConfig?.tokenlessAuthEnabled) }
             { renderConfigInput("daysRelativeToEventWhileSurveyIsValid", "days") }
+            { renderConfigInput("daysRelativeToEventWhenIncompleteSurveysCanBeSubmitted", "days") }
             { renderConfigInput("draftLifetime", "days") }
           </List>
       </AdminConfigScreen>
