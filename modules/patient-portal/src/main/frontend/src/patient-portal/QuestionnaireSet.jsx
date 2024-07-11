@@ -78,6 +78,10 @@ const useStyles = makeStyles(theme => ({
   surveyPreviewComponent : {
     background: theme.palette.action.hover,
     padding: theme.spacing(2, 4),
+    "&.incomplete" : {
+      border: "1px solid " + theme.palette.error.main,
+      color: theme.palette.error.main,
+    },
     "& .wmde-markdown > h1" : {
       fontSize: "1.5em",
     },
@@ -721,7 +725,7 @@ function QuestionnaireSet(props) {
       {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
       <Grid item key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
-        <Paper elevation={0} className={classes.surveyPreviewComponent}>
+        <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
           <Grid container direction="column" alignItems="center" spacing={2}>
             <Grid item>
               <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
