@@ -76,14 +76,10 @@ const useStyles = makeStyles(theme => ({
     }
   },
   surveyPreviewComponent : {
-    background: theme.palette.action.selected,
-    padding: theme.spacing(2),
-    "& > .MuiTypography-root h1" : {
+    background: theme.palette.action.hover,
+    padding: theme.spacing(2, 4),
+    "& .wmde-markdown > h1" : {
       fontSize: "1.5em",
-    },
-    "& > .MuiButton-root" : {
-      display: "block",
-      margin: "auto",
     },
   },
   stepIndicator : {
@@ -725,23 +721,21 @@ function QuestionnaireSet(props) {
       {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
       <Grid item key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
-        <Grid container direction="column" alignItems="stretch" spacing={0}>
-        <Grid item>
-         <Paper elevation={0} className={classes.surveyPreviewComponent}>
-          <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
-         </Paper>
-        </Grid>
-        <Grid item>
-         <Paper elevation={0} className={classes.surveyPreviewComponent}>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
-              Change
-          </Button>
-         </Paper>
-        </Grid>
-        </Grid>
+        <Paper elevation={0} className={classes.surveyPreviewComponent}>
+          <Grid container direction="column" alignItems="center" spacing={2}>
+            <Grid item>
+              <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
+                  Change
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
         :
         <CircularProgress />
       }
