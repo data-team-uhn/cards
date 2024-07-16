@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Link, useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
@@ -32,7 +32,9 @@ import {
   Tooltip,
   Typography,
   Snackbar,
-  Box
+  Box,
+  Alert,
+  Button
 } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
@@ -58,6 +60,9 @@ import QuestionnairePreview from "./QuestionnairePreview";
 import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
 import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
 
+import { DragDropProvider, DndStateContext, DndDispatchContext, ReorderEntryModal } from "../questionnaireEditor/EntryDragDrop.jsx";
+
+
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 
 const jcrActions = {
@@ -80,6 +85,10 @@ const jcrActions = {
   questionnaireData: (id) => {
     return fetch(`/Questionnaires/${id}.deep.json`)
   },
+  fetchData: (data) => {
+    return fetch(`${data["@path"]}.deep.json`)
+  },
+
   // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
   reorderEntry: // CALL SlingPostServlet
     (entryPath, destinationIndex) => {
@@ -109,6 +118,8 @@ let Questionnaire = (props) => {
   let history = useHistory();
 
   let pageNameWriter = usePageNameWriterContext();
+
+
 
   let handleError = (response) => {
     setError(response);
@@ -201,7 +212,7 @@ let Questionnaire = (props) => {
             </IconButton>
           </Tooltip>
           {/* <Tooltip title="Reorder"
-          // onClick={() => history.push(questionnaireUrl + ".edit")}
+          // onClick={() => {})}
           >
             <IconButton color="primary" size="large">
               <DragIndicatorIcon />
@@ -254,7 +265,7 @@ let Questionnaire = (props) => {
       }
     </ResourceHeader>
   );
-
+  console.log(data)
   return (
     error ?
       <Typography variant="h2" color="error">
@@ -273,14 +284,18 @@ let Questionnaire = (props) => {
               />
               :
               <QuestionnaireProvider>
-                <QuestionnaireContents
-                  disableDelete
-                  data={data}
-                  classes={classes}
-                  onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-                  onActionDone={() => { }}
-                  menuProps={{ isMainAction: true }}
-                />
+                <DragDropProvider>
+
+                  <QuestionnaireContents
+                    disableDelete
+                    data={data}
+                    classes={classes}
+                    onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                    onActionDone={() => { }}
+                    menuProps={{ isMainAction: true }}
+                  />
+
+                </DragDropProvider>
               </QuestionnaireProvider>
             }
           </Grid>
@@ -321,6 +336,8 @@ let QuestionnaireItemSet = (props) => {
 
   let getEntryTypes = entryModels => Object.keys(entryModels || {}).map(e => `cards:${e}`);
 
+  // console.log(data, models)
+  const dndState = useContext(DndStateContext)
 
   if (models) {
     // Is defaultOrder specified for some entry types? Pull those into a flat "priority" list
@@ -401,47 +418,41 @@ let QuestionnaireItemSet = (props) => {
         .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
         .map(([key, value], index) => (
           EntryType =>
-            <Draggable key={key} draggableId={value['@path']} index={index}
-              isDragDisabled={!draggableTypes.includes(value['jcr:primaryType'])}
-            >
-              {(provided, snapshot) => (
-                <div ref={provided.innerRef} {...provided.draggableProps} 
-                // style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap',}} 
-                >
-                  <Grid container item key={key}
-                    // justifyContent='center' alignItems='center'
-                    style={itemSetDnD.getItemStyle(snapshot, provided)}
+            // Wrap only ENTRY_TYPES with draggable 
+            !draggableTypes.includes(value['jcr:primaryType']) ?
+              <EntryType
+                data={value}
+                model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
+                onActionDone={onActionDone}
+                classes={classes}
+              />
+              :
+              <Draggable key={key} draggableId={value['@path']} index={index}
+                isDragDisabled={!dndState.enabled
+                  // && !draggableTypes.includes(value['jcr:primaryType'])
+                }
+              >
+                {(provided, snapshot) => (
+                  <div ref={provided.innerRef} {...provided.draggableProps}
+                  // style={{ display: 'flex', position: 'absolute'}} 
                   >
-                    <Grid item xs={1}
-                    
-                    >
-                      {draggableTypes.includes(value['jcr:primaryType']) &&
-                        <Box textAlign="center" width="100%">
-                          <Tooltip title="Drag and drop to reorder">
-                            <IconButton size="large" {...provided.dragHandleProps}>
-                              <DragIndicatorIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
-                      }
-
-                    </Grid>
-
-                    <Grid item xs={11}>
-                      <EntryType
-                        data={value}
-                        model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
-                        onActionDone={onActionDone}
-                        classes={classes}
-                      />
-                    </Grid>
-
-
-                  </Grid>
-                  {provided.placeholder}
-                </div>
-              )}
-            </Draggable>
+                    <Box textAlign="center" style={{ display: dndState.enabled ? 'block' : 'none' }}>
+                      <Tooltip title="Drag and drop to reorder">
+                        <IconButton size="large" {...provided.dragHandleProps}>
+                          <DragIndicatorIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                    <EntryType
+                      data={value}
+                      model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
+                      onActionDone={onActionDone}
+                      classes={classes}
+                    />
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Draggable>
         )(eval(stripCardsNamespace(value['jcr:primaryType'])))
         )
       }
@@ -480,6 +491,7 @@ let QuestionnaireContents = (props) => {
   let { data } = props;
 
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
+
 
   useEffect(() => {
     // Load initial data
@@ -637,7 +649,8 @@ let QuestionnaireEntry = (props) => {
   let [entryData, setEntryData] = useState(data);
   let [menuItems, setMenuItems] = useState([]);
   let [doHighlight, setDoHighlight] = useState(data.doHighlight);
-  let [snackbarState, setSnackbarState] = useState({ open: false, message: "", autoHideDuration: 5000 })
+
+  const dndDispatch = useContext(DndDispatchContext)
 
   // --------------------------------------------------------------
   // Questionnaire context manipulation
@@ -726,26 +739,26 @@ let QuestionnaireEntry = (props) => {
   }, [entryData, childModels]);
 
   // -------------------------------------------------------------
-  // Handle data updates (field changes, child item creation or
-  // deletion)
-  useEffect(() => {
-    if (snackbarState.open) {
-      setTimeout(() => {
-        setSnackbarState({ open: false, message: "", autoHideDuration: 5000})
-      }, snackbarState.autoHideDuration);
-    }
-  }, [snackbarState])
+  // Handle data updates (field changes, child item creation or deletion)
+  // useEffect(() => {
+  //   if (snackbarState.open) {
+  //     setTimeout(() => {
+  //       setSnackbarState({ open: false, message: "", autoHideDuration: 5000 })
+  //     }, snackbarState.autoHideDuration);
+  //   }
+  // }, [snackbarState])
 
   let handleDataChange = (newData) => {
     // There's new data to load, display and highlight it:
-    setSnackbarState({open: true, message: "Data entry updated", autoHideDuration: 5000})
+    // setSnackbarState({ open: true, message: "Data entry updated", autoHideDuration: 5000 })
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
       onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
       // Try to reload the data from the server
-      fetch(`${data["@path"]}.deep.json`)
+      // fetch(`${data["@path"]}.deep.json`)
+      jcrActions.fetchData(data)
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(json => handleDataChange(json))
         .catch(() => {
@@ -769,23 +782,17 @@ let QuestionnaireEntry = (props) => {
     const { draggableId, type, source, destination, reason, mode } = result
     // window.alert(`Dragged ${draggableId} from ${source.index} to ${destination.index} for ${type} because of ${reason} in ${mode}`)
     // dropped outside the list
-
-
     console.log('drag', result)
-    // // CALL SlingPostServlet
     const entryPath = draggableId
     const destinationIndex = destination.index
-    // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
-    // function 
+    // call SlingPostServlet https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
     jcrActions.reorderEntry(entryPath, destinationIndex)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      // .then(r => console.log(r))
-      // .finally(() => window.location.reload())
+      // .catch(handleError)
       .finally(() => {
         handleDataChange()
+        dndDispatch({ type: 'setSnackbar', payload: { open: true, message: "Updated questionnaire" } })
       })
-      .catch(handleError);
-
 
   }
 
@@ -798,15 +805,14 @@ let QuestionnaireEntry = (props) => {
       <Fields data={entryData} JSON={spec} edit={false} {...options} />
     </>);
   let FIELDS_CLASS_NAME = "cards-questionnaire-entry-props";
-  // console.log(entryData)
+  console.log('ed', entryData)
   // console.log(childModels)
   return (
     // TODO: disable if not editing, available in dataEntry (?)
+    // TODO: move out into EntryDragDrop provider component?
     <DragDropContext onDragEnd={onDragEnd}>
-      {/* TODO: unique ids if there are ever multiple dnd? */}
       <Droppable droppableId={entryData['@path']}>
         {(provided, snapshot) => {
-
           return (
             <>
               <QuestionnaireItemCard
@@ -816,16 +822,28 @@ let QuestionnaireEntry = (props) => {
                 type={type}
                 classes={classes}
                 doHighlight={doHighlight}
+                // TODO: Add move button here for reordering
                 action={
-                  menuItems?.length > 0 ?
-                    <CreationMenu
-                      data={entryData}
-                      onCreated={onCreated}
-                      menuItems={menuItems}
-                      models={childModels}
-                      {...menuProps}
-                    />
-                    : undefined
+                  <>
+                    {menuItems?.length > 0 ?
+                      <CreationMenu
+                        data={entryData}
+                        onCreated={onCreated}
+                        menuItems={menuItems}
+                        models={childModels}
+                        {...menuProps}
+                      /> : undefined}
+
+                    {
+                      // TODO: check that entry is draggable and add move button for modal (move into EntryDragDrop file?)
+                      // ENTRY_TYPES.includes(value['jcr:primaryType']) ?
+                      // data?.["jcr:primaryType"] == "cards:Questionnaire"
+                      ENTRY_TYPES.includes(entryData['jcr:primaryType']) ?
+                        <ReorderEntryModal data={entryData} />
+                        : undefined
+                    }
+                  </>
+
                 }
                 onActionDone={handleDataChange}
                 droppableProvided={provided}
@@ -834,10 +852,10 @@ let QuestionnaireEntry = (props) => {
               >
                 <div
                   ref={provided.innerRef}
-                // style={{ backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey' }}
+                  // Change background when dragging to indicate to user
+                  style={{ backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey' }}
                 >
                   {(childModels ?
-
                     <QuestionnaireItemSet
                       data={entryData}
                       classes={classes}
@@ -848,29 +866,17 @@ let QuestionnaireEntry = (props) => {
                         {renderFields()}
                       </Grid>
                     </QuestionnaireItemSet>
-
                     :
                     <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
                   )}
-                  {provided.placeholder}
+
                 </div>
+                {provided.placeholder}
               </QuestionnaireItemCard>
-              <Snackbar {...snackbarState} autoHideDuration={5000} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}} >
-              <Alert
-                severity="success"
-                variant="filled"
-                sx={{ width: '100%' }}
-              >
-                {snackbarState.message}
-              </Alert>
-              </Snackbar>
-              {/* {provided.placeholder} */}
             </>
           )
         }}
-
       </Droppable>
-
     </DragDropContext>
   );
 };
