@@ -138,18 +138,39 @@ public class ReferenceAnswersEditor extends AnswersEditor
                     Type<?> resultType = getAnswerType(question);
                     ReferenceAnswer result = getAnswer(form, referencedQuestion);
 
-                    if (result == null) {
-                        answer.removeProperty(FormUtils.VALUE_PROPERTY);
-                    } else {
-                        // Type erasure makes the actual type irrelevant, there's only one real implementation method
-                        // The implementation can extract the right type from the type object
+                    setAnswer(answer, result, resultType, question);
+                });
+        }
+    }
+
+    private void setAnswer(NodeBuilder answer, ReferenceAnswer result, Type<?> resultType, Node question)
+    {
+        if (result == null) {
+            answer.removeProperty(FormUtils.VALUE_PROPERTY);
+        } else {
+            try {
+                if (ReferenceConditionUtils.referenceHasCondition(question)) {
+                    if (ReferenceConditionUtils.isReferenceConditionSatisfied(this.formUtils, question,
+                        this.serviceSession.getNode(result.getPath())))
+                    {
+                        // Type erasure makes the actual type irrelevant, there's only one real
+                        // implementation method. he implementation can extract the right type from the
+                        // type object
                         @SuppressWarnings("unchecked")
                         Type<Object> untypedResultType =
-                            (Type<Object>) (result.getValue() instanceof List ? resultType.getArrayType() : resultType);
+                            (Type<Object>) (result.getValue() instanceof List
+                                ? resultType.getArrayType()
+                                : resultType);
                         answer.setProperty(FormUtils.VALUE_PROPERTY, result.getValue(), untypedResultType);
                         answer.setProperty("copiedFrom", result.getPath());
+                    } else {
+                        ReferenceConditionUtils.setToFallback(answer, question);
+                        answer.setProperty("copiedFrom", result.getPath());
                     }
-                });
+                }
+            } catch (RepositoryException e) {
+                LOGGER.error("Could not set reference question", e);
+            }
         }
     }
 

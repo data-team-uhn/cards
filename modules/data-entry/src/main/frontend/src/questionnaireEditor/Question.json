@@ -51,6 +51,11 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -106,6 +111,11 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -168,6 +178,11 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -230,6 +245,11 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -278,6 +298,11 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -349,6 +374,11 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -399,6 +429,11 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -433,6 +468,11 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},

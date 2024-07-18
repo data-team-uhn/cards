@@ -81,7 +81,7 @@
         "io.uhndata.cards.data-model-links-impl=[cards-links-manager]",
         "io.uhndata.cards.data-model-forms-impl:createMissingAnswers=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:computedAnswers=[cards-answer-editor]",
-        "io.uhndata.cards.data-model-forms-impl:referenceAnswers=[cards-answer-editor]",
+        "io.uhndata.cards.data-model-forms-impl:referenceAnswers=[cards-reference-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:sortChildren=[cards-answer-editor]",
         "io.uhndata.cards.data-model-forms-impl:maxFormsOfTypePerSubjectValidator=[sling-readall]",
         "io.uhndata.cards.data-model-forms-impl:requiredSubjectTypesValidator=[sling-readall]",

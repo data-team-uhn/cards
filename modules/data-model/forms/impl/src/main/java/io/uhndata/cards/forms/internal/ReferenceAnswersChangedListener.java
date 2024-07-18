@@ -58,8 +58,8 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 })
 public class ReferenceAnswersChangedListener implements ResourceChangeListener
 {
-    /** Answer's property name. **/
-    public static final String VALUE = "value";
+    /** Property on an answer node that stores the a reference to the question. */
+    public static final String QUESTION = "question";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceAnswersChangedListener.class);
 
@@ -157,7 +157,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                             + "    a.value is null"
                             // The answer's question references this question
                             + "    AND q.question = '"
-                            + escape(node.getProperty("question").getNode().getPath()) + "'"
+                            + escape(node.getProperty(QUESTION).getNode().getPath()) + "'"
                             // The answer belongs to the same subject or one of its descendants
                             + "    AND f.relatedSubjects = '" + subject + "'"
                             // Use the fast index for the query
@@ -165,22 +165,16 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                         "JCR-SQL2")
                     .execute().getNodes();
                 final Property sourceAnswerValue =
-                    !node.hasProperty(VALUE) ? null : node.getProperty(VALUE);
+                    !node.hasProperty(FormUtils.VALUE_PROPERTY) ? null : node.getProperty(FormUtils.VALUE_PROPERTY);
                 while (resourceIteratorReferencingAnswers.hasNext()) {
                     final Node referenceAnswer = resourceIteratorReferencingAnswers.nextNode();
-                    if (isNotSame(sourceAnswerValue, referenceAnswer)) {
-                        final Node formNode = this.formUtils.getForm(referenceAnswer);
-                        final String referenceFormPath = formNode.getPath();
-                        versionManager.checkout(referenceFormPath);
-                        checkoutPaths.add(referenceFormPath);
-                        if (sourceAnswerValue == null) {
-                            referenceAnswer.setProperty(VALUE, (Value) null);
-                        } else if (sourceAnswerValue.isMultiple()) {
-                            referenceAnswer.setProperty(VALUE, sourceAnswerValue.getValues());
-                        } else {
-                            referenceAnswer.setProperty(VALUE, sourceAnswerValue.getValue());
-                        }
-                        referenceAnswer.setProperty("copiedFrom", node.getPath());
+                    final Node referenceQuestion = referenceAnswer.getProperty(QUESTION).getNode();
+                    if (ReferenceConditionUtils.referenceHasCondition(referenceQuestion)
+                        && !ReferenceConditionUtils.isReferenceConditionSatisfied(
+                            this.formUtils, referenceQuestion, node)) {
+                        updateValueWithFallback(versionManager, session, checkoutPaths, referenceAnswer, node);
+                    } else {
+                        updateValueFromSource(versionManager, checkoutPaths, sourceAnswerValue, referenceAnswer, node);
                     }
                 }
             }
@@ -191,31 +185,202 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         }
     }
 
-    private boolean isNotSame(final Property source, final Node reference) throws RepositoryException
+    /**
+     * Fill out a refernce answer with a value copied from the referenced question.
+     * @param versionManager A version manager to be used to checkout forms if needed
+     * @param checkoutPaths The list of forms that have been checkout out and need to be checked back in
+     * @param sourceAnswerValue The source answer value to copy the answer from
+     * @param referenceAnswer The reference answer to copy the value into
+     * @param sourceNode The source answer node that the value is being copied from
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private void updateValueFromSource(final VersionManager versionManager, final Set<String> checkoutPaths,
+        final Property sourceAnswerValue, final Node referenceAnswer, final Node sourceNode)
+        throws RepositoryException
     {
-        final Property referenceAnswerValue =
-            !reference.hasProperty(VALUE) ? null : reference.getProperty(VALUE);
+        if (isNotSame(sourceAnswerValue, referenceAnswer)) {
+            checkoutFormIfNeeded(versionManager, referenceAnswer, checkoutPaths);
+            if (sourceAnswerValue == null) {
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, (Value) null);
+            } else if (sourceAnswerValue.isMultiple()) {
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, sourceAnswerValue.getValues());
+            } else {
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, sourceAnswerValue.getValue());
+            }
+            referenceAnswer.setProperty("copiedFrom", sourceNode.getPath());
+        }
+    }
 
-        if (source == null && referenceAnswerValue != null || source != null && referenceAnswerValue == null) {
+
+    /**
+     * Fill out a refernce answer with a value copied from the referenced question.
+     * @param versionManager A version manager to be used to checkout forms if needed
+     * @param checkoutPaths The list of forms that have been checkout out and need to be checked back in
+     * @param sourceAnswerValue The source answer value to copy the answer from
+     * @param referenceAnswer The reference answer to copy the value into
+     * @param sourceNode The source answer node that the value is being copied from
+     * @throws RepositoryException if an unexpected error occurs
+     */
+
+    /**
+     * Fill out a refernce answer with the value specified as the fallback value.
+     * If no fallback value is present, fill out a null value.
+     * @param versionManager A version manager to be used to checkout forms if needed
+     * @param session A session that can be used to retrieve the reference question
+     * @param checkoutPaths The list of forms that have been checkout out and need to be checked back in
+     * @param referenceAnswer The reference answer to copy the value into
+     * @param sourceNode The source answer node that the value is being copied from
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private void updateValueWithFallback(final VersionManager versionManager, final Session session,
+        final Set<String> checkoutPaths, final Node referenceAnswer, final Node sourceNode)
+        throws RepositoryException
+    {
+        Object values = ReferenceConditionUtils.getFallbackValue(session,
+            referenceAnswer.getProperty(QUESTION).getNode());
+        Property referenceAnswerProperty = referenceAnswer.hasProperty(FormUtils.VALUE_PROPERTY)
+            ? referenceAnswer.getProperty(FormUtils.VALUE_PROPERTY)
+            : null;
+
+        if (values instanceof Value[]) {
+            if (isNotSame(referenceAnswerProperty, (Value[]) values)) {
+                checkoutFormIfNeeded(versionManager, referenceAnswer, checkoutPaths);
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, (Value[]) values);
+                referenceAnswer.setProperty("copiedFrom", sourceNode.getPath());
+            }
+        } else {
+            if (isNotSame(referenceAnswerProperty, (Value) values)) {
+                checkoutFormIfNeeded(versionManager, referenceAnswer, checkoutPaths);
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, (Value) values);
+                referenceAnswer.setProperty("copiedFrom", sourceNode.getPath());
+            }
+        }
+    }
+
+    /**
+     * Checkout the parent form of an answer if it is checked in.
+     * @param versionManager The version manager that should be used to check out the form
+     * @param answerNode The answer which should have it's parent form checked out
+     * @param checkoutPaths The list of forms that have been checked out and need to be checked in again
+     * @throws RepositoryException If an unexpected error occurs
+     */
+    private void checkoutFormIfNeeded(final VersionManager versionManager, final Node answerNode,
+        final Set<String> checkoutPaths)
+        throws RepositoryException
+    {
+        final String path = this.formUtils.getForm(answerNode).getPath();
+        final boolean wasCheckedOut = versionManager.isCheckedOut(path);
+        if (!wasCheckedOut) {
+            versionManager.checkout(path);
+            checkoutPaths.add(path);
+        }
+    }
+
+    /**
+     * Check if a property and an answer node have different values.
+     * Two null values count as the same, a null and a non-null are different
+     * @param property A property to compare
+     * @param answerNode An answer node to compare
+     * @return True if the values are different
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private boolean isNotSame(final Property property, final Node answerNode) throws RepositoryException
+    {
+        final Property nodeValue =
+            !answerNode.hasProperty(FormUtils.VALUE_PROPERTY) ? null : answerNode.getProperty(FormUtils.VALUE_PROPERTY);
+
+        if (!isNullStatusSame(property, nodeValue)) {
             return true;
         }
-        Set<String> sourceValues = new HashSet<>();
-        if (source.isMultiple()) {
-            for (Value v : source.getValues()) {
-                sourceValues.add(v.getString());
+        Set<String> propertyValues = propertyToStrings(property);
+        Set<String> nodeValues = propertyToStrings(nodeValue);
+        return isNotSame(propertyValues, nodeValues);
+    }
+
+    /**
+     * Check if a property and a value have different values.
+     * Two null values count as the same, a null and a non-null are different
+     * @param property A property to compare
+     * @param value A value to compare
+     * @return True if the values are different
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private boolean isNotSame(final Property property, final Value value)
+        throws RepositoryException
+    {
+        if (!isNullStatusSame(property, value)) {
+            return true;
+        }
+
+        Set<String> propertyStrings = propertyToStrings(property);
+        Set<String> valueStrings = new HashSet<>();
+        valueStrings.add(value.getString());
+        return isNotSame(propertyStrings, valueStrings);
+    }
+
+    /**
+     * Check if a property and a value array have different values.
+     * Two null values count as the same, a null and a non-null are different
+     * @param property A property to compare
+     * @param value A value array to compare
+     * @return True if the values are different
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private boolean isNotSame(final Property property, final Value[] values)
+        throws RepositoryException
+    {
+        if (!isNullStatusSame(property, values)) {
+            return true;
+        }
+
+        Set<String> propertyStrings = propertyToStrings(property);
+        Set<String> valueStrings = new HashSet<>();
+        for (Value v : values) {
+            valueStrings.add(v.getString());
+        }
+        return isNotSame(propertyStrings, valueStrings);
+    }
+
+    /**
+     * Check if two sets of strings contain diffferent values.
+     * @param left A set of strings to compare
+     * @param right A set of strings to compare
+     * @return True if the sets contain different values
+     */
+    private boolean isNotSame(Set<String> left, Set<String> right)
+    {
+        return !left.equals(right);
+    }
+
+    /**
+     * Check if two objects are either both null or both not null.
+     * @param left An object to check
+     * @param right An object to check
+     * @return True if both object are null or both are not null
+     */
+    private boolean isNullStatusSame(Object left, Object right)
+    {
+        return (left == null && right == null) || (left != null && right != null);
+    }
+
+    /**
+     * Etract the values of  property into a set of strings.
+     * @param property The values to extract the values from
+     * @return The set of strings representing the properties' values
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private Set<String> propertyToStrings(final Property property)
+        throws RepositoryException
+    {
+        Set<String> values = new HashSet<>();
+        if (property.isMultiple()) {
+            for (Value v : property.getValues()) {
+                values.add(v.getString());
             }
         } else {
-            sourceValues.add(source.getValue().getString());
+            values.add(property.getValue().getString());
         }
-        Set<String> referenceValues = new HashSet<>();
-        if (referenceAnswerValue.isMultiple()) {
-            for (Value v : referenceAnswerValue.getValues()) {
-                referenceValues.add(v.getString());
-            }
-        } else {
-            referenceValues.add(referenceAnswerValue.getValue().getString());
-        }
-        return !sourceValues.equals(referenceValues);
+        return values;
     }
 
     private String escape(final String value)
