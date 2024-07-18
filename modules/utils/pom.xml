@@ -98,5 +98,10 @@
       <artifactId>cards-data-model-forms-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+      <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>oak-api</artifactId>
+        <version>${oak.version}</version>
+      </dependency>
   </dependencies>
 </project>
