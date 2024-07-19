@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Forms",
+  "cards:targetURL": "/content.html/Forms/:formId",
+  "cards:defaultOrder": -100,
+  "cards:extensionRenderURL": "asset:patient-portal.ClinicianForm.js"
+}
