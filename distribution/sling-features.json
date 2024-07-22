@@ -7,6 +7,7 @@
   "cards4proms": [
     "mvn:io.uhndata.cards/cards-email-notifications/{$CARDS_VERSION}/slingosgifeature",
     "mvn:io.uhndata.cards/cards-clarity-integration/{$CARDS_VERSION}/slingosgifeature",
+    "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_unsubmitted",
     "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|trusted}"
   ],
   "cards4prems": [

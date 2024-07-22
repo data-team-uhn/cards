@@ -1,0 +1,41 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+{
+  "title": "CARDS - Data entry - Unsubmitted permissions scheme",
+  "description":"Configuration disallowing users access to forms belonging to an unsubmitted visit",
+  "bundles":[
+    {
+      "id":"io.uhndata.cards:cards-permissions-unsubmitted:${cards.version}",
+      "start-order":"15"
+    }
+  ],
+  "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~forms_unsubmitted":{
+      "service.ranking:Integer":200,
+      "scripts":[
+        // Users can only access forms submitted by their patients
+        "set ACL for everyone \n   deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end "
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~unsubmitted_permissions":{
+      "user.mapping":[
+        "io.uhndata.cards.cards-permissions-unsubmitted:UnsubmittedFormsRestriction=[sling-readall]"
+      ]
+    }
+  }
+}
