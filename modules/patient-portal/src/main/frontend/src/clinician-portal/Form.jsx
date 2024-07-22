@@ -18,19 +18,23 @@
 //
 import React, { useState, useEffect } from "react";
 
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-
-import {
-  Typography,
-} from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 
-function ClinicianForm(props) {
+import DefaultForm from "../questionnaire/Form.jsx";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+
+function Form(props) {
+
+  const actionSwitches = {
+    edit: data => (!["SUBMITTED", "LOCKED"].some(f => data.statusFlags.includes(f))),
+    save: () => true,
+    print: () => true,
+    lock: () => true,
+  }
+
   return (
-    <Typography>
-      Clinician form view! Looking at {props.match.params.formId}
-    </Typography>
+    <DefaultForm id={props.match.params.formId} XactionSwitches={actionSwitches} />
   );
 }
 
-export default withStyles(QuestionnaireStyle)(ClinicianForm);
+export default withStyles(QuestionnaireStyle)(Form);
