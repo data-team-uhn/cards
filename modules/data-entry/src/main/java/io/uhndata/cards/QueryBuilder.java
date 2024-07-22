@@ -136,6 +136,9 @@ public class QueryBuilder implements Use
     /** Whether to show the total number of results. */
     private boolean showTotalRows;
 
+    /** Selectors to use when serializing a resource. */
+    private String resourceSelectors;
+
     private boolean serializeChildren;
 
     /** Resource types allowed for a search. */
@@ -170,6 +173,7 @@ public class QueryBuilder implements Use
             this.limit = getLongValueOrDefault(request.getParameter("limit"), 10);
             this.resourceTypes = request.getParameterValues("allowedResourceTypes");
             final String doNotEscape = request.getParameter("doNotEscapeQuery");
+            this.resourceSelectors = StringUtils.defaultString(request.getParameter("resourceSelectors"));
             this.disableEscaping = "true".equals(doNotEscape);
             final String showTotalRowsParam = request.getParameter("showTotalRows");
             this.showTotalRows = StringUtils.isBlank(showTotalRowsParam) || "true".equals(showTotalRowsParam);
@@ -453,7 +457,7 @@ public class QueryBuilder implements Use
      */
     private JsonObject serializeNode(final String path)
     {
-        final Resource resource = this.resourceResolver.getResource(path);
+        final Resource resource = this.resourceResolver.resolve(path + this.resourceSelectors);
         // If there are children we can add, we'll add them as child properties of the JsonObject
         if (this.serializeChildren && resource.hasChildren()) {
             Iterator<Resource> children = resource.listChildren();
