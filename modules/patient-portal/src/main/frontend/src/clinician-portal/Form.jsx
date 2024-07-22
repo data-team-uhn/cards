@@ -33,7 +33,7 @@ function Form(props) {
   }
 
   return (
-    <DefaultForm id={props.match.params.formId} XactionSwitches={actionSwitches} />
+    <DefaultForm id={props.match.params.formId.replace(/\..*/, '')} XactionSwitches={actionSwitches} />
   );
 }
 
