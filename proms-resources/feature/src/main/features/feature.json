@@ -37,10 +37,6 @@
       "start-order":"26"
     },
     {
-      "id":"${project.groupId}:cards-permissions-unsubmitted:${project.version}",
-      "start-order":"15"
-    },
-    {
       "id":"${project.groupId}:proms-frontend:${project.version}",
       "start-order":"26"
     },
