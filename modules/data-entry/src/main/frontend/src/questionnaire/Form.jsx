@@ -469,14 +469,24 @@ function Form (props) {
     );
   }
 
+  let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]?.(data)));
+
+  let isDropdnEnabled = () => (
+    (isEdit && isActionEnabled("subject"))
+    || (!isEdit && isActionEnabled("text"))
+    || isActionEnabled("delete")
+  );
+
   let dropdownList = (
     <List>
       { isEdit ?
-        <ListItem className={classes.actionsMenuItem}>
-          <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
-            Change subject
-          </Button>
-        </ListItem>
+        ( isActionEnabled("subject") &&
+          <ListItem className={classes.actionsMenuItem}>
+            <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
+              Change subject
+            </Button>
+          </ListItem>
+        )
         : <>
           <ListItem className={classes.actionsMenuItem}>
             <PrintButton
@@ -489,17 +499,21 @@ function Form (props) {
               onClose={() => setActionsMenu(null)}
             />
           </ListItem>
-          <ListItem className={classes.actionsMenuItem}>
-            <Button
-              size="medium"
-              onClick={() => {
-                window.open(formURL + ".txt");
-                setActionsMenu(null);
-              }}>
-              Export as text
-            </Button>
-          </ListItem>
+          ( isActionEnabled("text") &&
+            <ListItem className={classes.actionsMenuItem}>
+              <Button
+                size="medium"
+                onClick={() => {
+                  window.open(formURL + ".txt");
+                  setActionsMenu(null);
+                }}>
+                Export as text
+              </Button>
+            </ListItem>
+          )
         </> }
+
+      { isActionEnabled("delete") &&
       <ListItem className={classes.actionsMenuItem}>
         <DeleteButton
           entryPath={data ? data["@path"] : formURL}
@@ -510,45 +524,54 @@ function Form (props) {
           size="medium"
         />
       </ListItem>
+      }
     </List>
   )
 
   let formMenu = (
     <div className={classes.actionsMenu}>
       {isEdit ?
-        <Tooltip title="Save and view" onClick={onClose}>
-          <IconButton color="primary" size="large">
-            <DoneIcon />
-          </IconButton>
-        </Tooltip>
+        ( isActionEnabled("save") &&
+          <Tooltip title="Save and view" onClick={onClose}>
+            <IconButton color="primary" size="large">
+              <DoneIcon />
+            </IconButton>
+          </Tooltip>
+        )
         :
-        <Tooltip title="Edit">
-          <IconButton color="primary" onClick={onEdit} size="large">
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
+        ( isActionEnabled("edit") &&
+          <Tooltip title="Edit">
+            <IconButton color="primary" onClick={onEdit} size="large">
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        )
       }
-      <Tooltip title="More actions" onClick={(event) => setActionsMenu(event.currentTarget)}>
-        <IconButton size="large">
-          <MoreIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      { !actionsMenu && <div style={{ display: "none" }}>{ dropdownList }</div> }
-      <Popover
-        open={Boolean(actionsMenu)}
-        anchorEl={actionsMenu}
-        onClose={() => setActionsMenu(null)}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        { dropdownList }
-      </Popover>
+      { isDropdnEnabled() &&
+        <>
+          <Tooltip title="More actions" onClick={(event) => setActionsMenu(event.currentTarget)}>
+            <IconButton size="large">
+              <MoreIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          { !actionsMenu && <div style={{ display: "none" }}>{ dropdownList }</div> }
+          <Popover
+            open={Boolean(actionsMenu)}
+            anchorEl={actionsMenu}
+            onClose={() => setActionsMenu(null)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            { dropdownList }
+          </Popover>
+        </>
+      }
     </div>
   )
 
