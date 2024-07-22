@@ -34,7 +34,7 @@
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~unsubmitted_permissions":{
       "user.mapping":[
-        "io.uhndata.cards.proms-permissions:UnsubmittedFormsRestriction=[sling-readall]"
+        "io.uhndata.cards.cards-permissions-unsubmitted:UnsubmittedFormsRestriction=[sling-readall]"
       ]
     }
   }
