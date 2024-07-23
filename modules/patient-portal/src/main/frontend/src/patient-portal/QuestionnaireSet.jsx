@@ -23,6 +23,7 @@ import {
   Avatar,
   Button,
   CircularProgress,
+  Divider,
   Fab,
   Grid,
   List,
@@ -74,10 +75,15 @@ const useStyles = makeStyles(theme => ({
       textAlign: "center",
     }
   },
-  reviewScreen : {
-    "& > .MuiGrid-item:last-child" : {
-      position: "sticky",
-      bottom: theme.spacing(1),
+  surveyPreviewComponent : {
+    background: theme.palette.action.hover,
+    padding: theme.spacing(2, 4),
+    "&.incomplete" : {
+      border: "1px solid " + theme.palette.error.main,
+      color: theme.palette.error.main,
+    },
+    "& .wmde-markdown > h1" : {
+      fontSize: "1.5em",
     },
   },
   stepIndicator : {
@@ -700,37 +706,47 @@ function QuestionnaireSet(props) {
         />
   ];
 
+  let submitButton = (label) => (
+    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key="review-submit">
+      {submissionInProgress ? "Submitting...." : (label ?? "Submit")}
+    </Fab>
+  );
+
   let reviewScreen = !enableReviewScreen ? [
     <Grid alignItems="center" justifyContent="center">
       <Grid item key="review-loading"><CircularProgress/></Grid>
     </Grid>
   ] : [
-    <Typography variant="h4" key="review-title">Please review and submit your answers</Typography>,
-    <FormattedText paragraph key="review-desc">You can update the response for each question in the survey by using the **Update this Survey** button below. After reviewing, please click on **Submit my answers** to send your responses.</FormattedText>,
+    <Typography variant="h4" key="review-title">Review and Submit</Typography>,
+    <Divider/>,
+    submitButton("Submit now"),
+    <Divider/>,
     <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
       <Grid item key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
-        <Grid container direction="column" spacing={4}>
-        <Grid item>
-          <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
-              Update this survey
-          </Button>
-        </Grid>
-        </Grid>
+        <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
+          <Grid container direction="column" alignItems="center" spacing={2}>
+            <Grid item>
+              <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
+                  Change
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
         :
         <CircularProgress />
       }
       </Grid>
       ))}
     </Grid>,
-    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key="review-submit">{submissionInProgress ? "Submitting...." : "Submit my answers"}</Fab>
+    submitButton("Submit survey")
   ];
 
   // Are there any response interpretations to display to the patient?
