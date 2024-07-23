@@ -16,12 +16,9 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from "react";
-
-import withStyles from '@mui/styles/withStyles';
+import React from "react";
 
 import DefaultForm from "../questionnaire/Form.jsx";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function Form(props) {
 
@@ -37,4 +34,4 @@ function Form(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(Form);
+export default Form;
