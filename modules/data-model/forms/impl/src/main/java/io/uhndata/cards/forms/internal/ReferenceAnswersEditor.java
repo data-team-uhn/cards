@@ -148,6 +148,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
     {
         if (result == null) {
             answer.removeProperty(FormUtils.VALUE_PROPERTY);
+            setInvalidSourceStatusFlag(answer);
         } else {
             try {
                 if (ReferenceConditionUtils.referenceHasCondition(question)
@@ -176,7 +177,6 @@ public class ReferenceAnswersEditor extends AnswersEditor
     }
 
     private void setInvalidSourceStatusFlag(NodeBuilder answer)
-        throws RepositoryException
     {
         if (answer.hasProperty(FormUtils.STATUS_FLAGS)) {
             Iterable<String> statusFlags = answer.getProperty(FormUtils.STATUS_FLAGS).getValue(Type.STRINGS);
