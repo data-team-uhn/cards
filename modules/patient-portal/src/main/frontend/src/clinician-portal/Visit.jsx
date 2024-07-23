@@ -36,12 +36,14 @@ import {
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
 import SurveyIcon from '@mui/icons-material/Assignment';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 
 import makeStyles from '@mui/styles/makeStyles';
 import withStyles from '@mui/styles/withStyles';
 
 import { DateTime } from "luxon";
 
+import SurveyLinkButton from "./SurveyLinkButton";
 import EditButton from "../dataHomepage/EditButton";
 import PrintButton from "../dataHomepage/PrintButton";
 import ResourceHeader from "../questionnaire/ResourceHeader";
@@ -238,7 +240,7 @@ function Visit(props) {
     let provider = getVisitField("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
     return (dateTime || location || provider) ?
-      <Alert severity="info" key="appointment-notification">
+      <Alert severity="info" icon={<EventNoteIcon/>}>
         {dateTime ? <> {dateTime} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
@@ -291,6 +293,7 @@ function Visit(props) {
               breadcrumb={getTextHierarchy(subjectData, true)}
               date={DateTime.fromISO(subjectData['jcr:created']).toLocaleString(DateTime.DATE_MED)}
             />
+            <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} />
           </div>
         }
       />
