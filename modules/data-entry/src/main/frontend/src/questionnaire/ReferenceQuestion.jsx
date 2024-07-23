@@ -17,11 +17,32 @@
 //  under the License.
 //
 
+import React from "react";
+
+import { Typography } from "@mui/material";
+
 import AnswerComponentManager from "./AnswerComponentManager";
 import AutocreatedQuestion from './AutocreatedQuestion';
 
+let ReferenceQuestion = (props) => {
+  const { existingAnswer, ...rest } = props;
+  const { conditionalInvalidSourceMessage } = {...props.questionDefinition, ...rest};
+
+  const INVALID_SOURCE_FLAG = "INVALID SOURCE";
+  let hasInvalidSourceMessage = (existingAnswer?.[1]?.["statusFlags"]?.includes(INVALID_SOURCE_FLAG)
+    && conditionalInvalidSourceMessage)
+
+  return <AutocreatedQuestion
+    {...props}
+    preventDefaultView={hasInvalidSourceMessage}>
+      {(hasInvalidSourceMessage)
+        ? <Typography color='error'>{conditionalInvalidSourceMessage}</Typography>
+        : <></>}
+    </AutocreatedQuestion>
+}
+
 AnswerComponentManager.registerAnswerComponent((definition) => {
   if (definition.entryMode === "reference") {
-    return [AutocreatedQuestion, 80];
+    return [ReferenceQuestion, 80];
   }
 });

@@ -42,7 +42,6 @@ Then, verify that all the answers have been copied over successfully</value>
             <type>String</type>
         </property>
     </node>
-
     <node>
         <name>textQuestion</name>
         <primaryNodeType>cards:Question</primaryNodeType>
@@ -334,7 +333,7 @@ Then, verify that all the answers have been copied over successfully</value>
             <primaryNodeType>cards:Question</primaryNodeType>
             <property>
                 <name>text</name>
-                <value>Text question. Only show when complete</value>
+                <value>Text question. No value when complete</value>
                 <type>String</type>
             </property>
             <property>
@@ -379,11 +378,70 @@ Then, verify that all the answers have been copied over successfully</value>
             </property>
         </node>
         <node>
-            <name>conditionalTextInvalidQuestion</name>
+            <name>conditionalTextInvalidMessageQuestion</name>
             <primaryNodeType>cards:Question</primaryNodeType>
             <property>
                 <name>text</name>
                 <value>Text question. Invalid message when incomplete</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>text</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>compact</name>
+                <value>True</value>
+                <type>Boolean</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>reference</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>question</name>
+                <value>/Questionnaires/ReferenceTestUser/textQuestion</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalProperty</name>
+                <value>statusFlags</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalOperator</name>
+                <value>excludes</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalValue</name>
+                <value>INCOMPLETE</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalInvalidSourceMessage</name>
+                <value>Invalid: User form is incomplete</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalType</name>
+                <value>text</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+        </node>
+        <node>
+            <name>conditionalTextInvalidQuestion</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Text question. Invalid value when incomplete</value>
                 <type>String</type>
             </property>
             <property>
@@ -497,6 +555,65 @@ Then, verify that all the answers have been copied over successfully</value>
             </property>
         </node>
         <node>
+            <name>conditionalDateMessageQuestion</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Date question. Invalid message when not complete</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>date</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>compact</name>
+                <value>True</value>
+                <type>Boolean</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>reference</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>question</name>
+                <value>/Questionnaires/ReferenceTestUser/dateQuestion</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalProperty</name>
+                <value>statusFlags</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalOperator</name>
+                <value>excludes</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalValue</name>
+                <value>INCOMPLETE</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalInvalidSourceMessage</name>
+                <value>Invalid: User form is not complete</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalType</name>
+                <value>text</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+        </node>
+        <node>
             <name>conditionalLongQuestion</name>
             <primaryNodeType>cards:Question</primaryNodeType>
             <property>
@@ -547,6 +664,70 @@ Then, verify that all the answers have been copied over successfully</value>
             <property>
                 <name>conditionalFallback</name>
                 <value>1.01</value>
+                <type>Double</type>
+            </property>
+            <property>
+                <name>conditionalType</name>
+                <value>text</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+        </node>
+        <node>
+            <name>conditionalLongMessageQuestion</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Double question. Invalid message when incomplete</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>double</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>compact</name>
+                <value>True</value>
+                <type>Boolean</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>reference</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>displayMode</name>
+                <value>plain</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>question</name>
+                <value>/Questionnaires/ReferenceTestUser/doubleQuestion</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalProperty</name>
+                <value>statusFlags</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalOperator</name>
+                <value>excludes</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalValue</name>
+                <value>INCOMPLETE</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>conditionalInvalidSourceMessage</name>
+                <value>Invalid: User form is incomplete</value>
                 <type>String</type>
             </property>
             <property>

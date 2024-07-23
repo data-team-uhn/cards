@@ -16,11 +16,13 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -209,6 +211,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             }
             referenceAnswer.setProperty("copiedFrom", sourceNode.getPath());
         }
+        removeInvalidSourceStatusFlag(versionManager, referenceAnswer, checkoutPaths);
     }
 
 
@@ -253,6 +256,37 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                 checkoutFormIfNeeded(versionManager, referenceAnswer, checkoutPaths);
                 referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, (Value) values);
                 referenceAnswer.setProperty("copiedFrom", sourceNode.getPath());
+            }
+        }
+        addInvalidSourceStatusFlag(versionManager, referenceAnswer, checkoutPaths);
+    }
+
+    private void addInvalidSourceStatusFlag(final VersionManager versionManager, Node answer,
+        final Set<String> checkoutPaths)
+        throws RepositoryException
+    {
+        if (answer.hasProperty(FormUtils.STATUS_FLAGS)) {
+            List<String> statusValues = Arrays.stream(answer.getProperty(FormUtils.STATUS_FLAGS).getValues())
+                .map(v -> v.toString()).collect(Collectors.toList());
+            if (!statusValues.contains(ReferenceConditionUtils.INVALID_SOURCE_FLAG)) {
+                checkoutFormIfNeeded(versionManager, answer, checkoutPaths);
+                statusValues.add(ReferenceConditionUtils.INVALID_SOURCE_FLAG);
+                answer.setProperty(FormUtils.STATUS_FLAGS, statusValues.toArray(new String[statusValues.size()]));
+            }
+        }
+    }
+
+    private void removeInvalidSourceStatusFlag(final VersionManager versionManager, Node answer,
+        final Set<String> checkoutPaths)
+        throws RepositoryException
+    {
+        if (answer.hasProperty(FormUtils.STATUS_FLAGS)) {
+            Value[] statusValues = answer.getProperty(FormUtils.STATUS_FLAGS).getValues();
+            Value[] filteredValues = Arrays.stream(statusValues)
+                .filter(v -> !ReferenceConditionUtils.INVALID_SOURCE_FLAG.equals(v.toString())).toArray(Value[]::new);
+            if (statusValues.length != filteredValues.length) {
+                checkoutFormIfNeeded(versionManager, answer, checkoutPaths);
+                answer.setProperty(FormUtils.STATUS_FLAGS, filteredValues);
             }
         }
     }
