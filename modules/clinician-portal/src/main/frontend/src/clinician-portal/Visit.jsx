@@ -389,6 +389,7 @@ function Visit(props) {
         action={
           <div className={props.classes.actionsMenu}>
             { !isLocked && <>
+              <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} size="medium"/>
               <SubjectLockAction subject={visit} reloadSubject={loadExistingData} size="medium"/>
             </>}
             <PrintButton
