@@ -60,6 +60,7 @@
             "conditionalValue": "string",
             "conditionalFallback": "string",
             "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -122,6 +123,7 @@
             "conditionalValue": "string",
             "conditionalFallback": "string",
             "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -191,6 +193,7 @@
             "conditionalValue": "string",
             "conditionalFallback": "string",
             "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -260,6 +263,7 @@
             "conditionalValue": "string",
             "conditionalFallback": "string",
             "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -315,6 +319,7 @@
             "conditionalValue": "string",
             "conditionalFallback": "string",
             "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -391,6 +396,7 @@
             "conditionalValue": "string",
             "conditionalFallback": "string",
             "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -446,6 +452,7 @@
             "conditionalValue": "string",
             "conditionalFallback": "string",
             "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -485,6 +492,7 @@
             "conditionalValue": "string",
             "conditionalFallback": "string",
             "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},

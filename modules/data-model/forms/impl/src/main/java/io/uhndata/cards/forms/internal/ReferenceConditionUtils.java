@@ -40,6 +40,8 @@ import io.uhndata.cards.utils.ConditionalUtils;
  */
 public final class ReferenceConditionUtils
 {
+    /** A status flag that should be applied to a reference answer when. */
+    public static final String INVALID_SOURCE_FLAG = "INVALID SOURCE";
     private static final String PROP_PROPERTY = "conditionalProperty";
     private static final String PROP_OPERATOR = "conditionalOperator";
     private static final String PROP_VALUE = "conditionalValue";
