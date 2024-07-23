@@ -28,6 +28,7 @@
     "@uiw/react-md-editor": "4.0.5",
     "@mui/lab": "7.0.0-beta.11",
     "@mui/x-date-pickers": "7.28.3",
+    "@mui/x-data-grid": "7.11.0",
     "cornerstone-core": "2.6.1",
     "cornerstone-wado-image-loader": "4.13.2",
     "dicom-parser": "1.8.21",
