@@ -36,6 +36,7 @@ import {
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
 import SurveyIcon from '@mui/icons-material/Assignment';
+import LockIcon from '@mui/icons-material/Lock';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 
 import makeStyles from '@mui/styles/makeStyles';
@@ -46,6 +47,7 @@ import { DateTime } from "luxon";
 import SurveyLinkButton from "./SurveyLinkButton";
 import EditButton from "../dataHomepage/EditButton";
 import PrintButton from "../dataHomepage/PrintButton";
+import SubjectLockAction from "../locking/SubjectLockAction";
 import ResourceHeader from "../questionnaire/ResourceHeader";
 import { getHierarchyAsList, getTextHierarchy } from "../questionnaire/SubjectIdentifier";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
@@ -256,6 +258,7 @@ function Visit(props) {
   const surveyIndicator = <Avatar className={styles.stepIndicator}><SurveyIcon /></Avatar>;
   const doneIndicator = <Avatar className={styles.doneIndicator}><DoneIcon /></Avatar>;
   const incompleteIndicator = <Avatar className={styles.incompleteIndicator}><WarningIcon /></Avatar>;
+  const lockedIndicator = <Avatar className={styles.stepIndicator}><LockIcon /></Avatar>;
 
   const isFormComplete = (questionnaireId) => {
     return surveyData?.[questionnaireId] && !surveyData[questionnaireId].statusFlags?.includes("INCOMPLETE");
@@ -290,6 +293,9 @@ function Visit(props) {
         action={
           <div className={classes.actionsMenu}>
             <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} />
+            { !visit?.statusFlags?.includes("LOCKED") &&
+              <SubjectLockAction subject={visit} reloadSubject={loadExistingData} />
+            }
             <PrintButton
               resourcePath={visitPath}
               resourceData={visit}
@@ -309,7 +315,14 @@ function Visit(props) {
             secondaryAction={!isFormSubmitted(q) && !isFormLocked(q) && <EditButton entryPath={surveyData?.[q]?.["@path"]}/>}
           >
             <ListItemButton onClick={() => history.push(`/content.html${surveyData?.[q]?.["@path"]}`)}>
-              <ListItemAvatar>{isFormComplete(q) ? doneIndicator : (isFormSubmitted(q) ? incompleteIndicator : surveyIndicator)}</ListItemAvatar>
+              <ListItemAvatar>
+              { isFormLocked(q) ? lockedIndicator : (
+                   isFormComplete(q) ? doneIndicator : (
+                     isFormSubmitted(q) ? incompleteIndicator : surveyIndicator
+                   )
+                 )
+              }
+              </ListItemAvatar>
               <ListItemText primary={questionnaires[q]?.title} secondary={displayFlags(q)} />
             </ListItemButton>
           </ListItem>
