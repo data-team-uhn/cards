@@ -86,8 +86,10 @@ function Visit(props) {
   const [ questionnaireSetIds, setQuestionnaireSetIds ] = useState();
   // The ids of the questionnaires displayed to the patient
   const [ questionnaireIds, setQuestionnaireIds ] = useState();
-  // Data already associated with the subject
-  const [ subjectData, setSubjectData ] = useState();
+  // All data already associated with this visit
+  const [ visit, setVisit ] = useState();
+  // Survey data already associated with the subject
+  const [ surveyData, setSurveyData ] = useState();
   // The visit subject identifier (which coincides with the visit number)
   const [ visitNumber, setVisitNumber ] = useState();
   // The visit subject node path
@@ -115,7 +117,7 @@ function Visit(props) {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         if (!questionnaires) {
-          setSubjectData(json);
+          setVisit(json);
           setVisitNumber(json["identifier"]);
           setVisitPath(json["@path"]);
           setParents(json["parents"]);
@@ -171,20 +173,20 @@ function Visit(props) {
       .map(value => value.questionnaire['@name'])
     setQuestionnaireSetIds(qids);
 
-    selectDataForQuestionnaireSet(subjectData, data, qids);
+    selectDataForQuestionnaireSet(visit, data, qids);
   };
 
-  const selectDataForQuestionnaireSet = (subjectData, questionnaireSet, questionnaireSetIds) => {
+  const selectDataForQuestionnaireSet = (visit, questionnaireSet, questionnaireSetIds) => {
     let ids = [];
     let data = {};
     questionnaireSetIds.forEach(q => {
-      if (subjectData[questionnaireSet?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
-        data[q] = subjectData[questionnaireSet?.[q]?.title][0];
+      if (visit[questionnaireSet?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
+        data[q] = visit[questionnaireSet?.[q]?.title][0];
         ids.push(q);
       }
     });
     !questionnaireIds && setQuestionnaireIds(ids);
-    setSubjectData(data);
+    setSurveyData(data);
   };
 
   // -----------------------------------------------------------------------------------------------------------
@@ -211,7 +213,7 @@ function Visit(props) {
     return displayMessageScreen(error, "error");
   }
 
-  if (!questionnaireSetId || !questionnaireIds || !questionnaires || !subjectData) {
+  if (!questionnaireSetId || !questionnaireIds || !questionnaires || !visit) {
     return displayMessageScreen(
       <AlertTitle>Loading...</AlertTitle>,
       "info",
@@ -256,19 +258,19 @@ function Visit(props) {
   const incompleteIndicator = <Avatar className={styles.incompleteIndicator}><WarningIcon /></Avatar>;
 
   const isFormComplete = (questionnaireId) => {
-    return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
+    return surveyData?.[questionnaireId] && !surveyData[questionnaireId].statusFlags?.includes("INCOMPLETE");
   }
 
   const isFormSubmitted = (questionnaireId) => {
-    return subjectData?.[questionnaireId]?.statusFlags?.includes("SUBMITTED");
+    return surveyData?.[questionnaireId]?.statusFlags?.includes("SUBMITTED");
   }
 
   const isFormLocked = (questionnaireId) => {
-    return subjectData?.[questionnaireId]?.statusFlags?.includes("LOCKED");
+    return surveyData?.[questionnaireId]?.statusFlags?.includes("LOCKED");
   }
 
   const displayFlags = q => (
-    (subjectData?.[q]?.statusFlags ?? [])
+    (surveyData?.[q]?.statusFlags ?? [])
       .filter(f => ["INCOMPLETE", "SUBMITTED", "LOCKED"].includes(f))
       .map(f => f.substring(0,1).toUpperCase() + f.substring(1).toLowerCase())
       .join(", ")
@@ -290,9 +292,9 @@ function Visit(props) {
             <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} />
             <PrintButton
               resourcePath={visitPath}
-              resourceData={subjectData}
-              breadcrumb={getTextHierarchy(subjectData, true)}
-              date={DateTime.fromISO(subjectData['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+              resourceData={visit}
+              breadcrumb={getTextHierarchy(visit, true)}
+              date={DateTime.fromISO(visit['jcr:created']).toLocaleString(DateTime.DATE_MED)}
             />
           </div>
         }
@@ -304,9 +306,9 @@ function Visit(props) {
           <ListItem
             key={q}
             disablePadding
-            secondaryAction={!isFormSubmitted(q) && !isFormLocked(q) && <EditButton entryPath={subjectData?.[q]?.["@path"]}/>}
+            secondaryAction={!isFormSubmitted(q) && !isFormLocked(q) && <EditButton entryPath={surveyData?.[q]?.["@path"]}/>}
           >
-            <ListItemButton onClick={() => history.push(`/content.html${subjectData?.[q]?.["@path"]}`)}>
+            <ListItemButton onClick={() => history.push(`/content.html${surveyData?.[q]?.["@path"]}`)}>
               <ListItemAvatar>{isFormComplete(q) ? doneIndicator : (isFormSubmitted(q) ? incompleteIndicator : surveyIndicator)}</ListItemAvatar>
               <ListItemText primary={questionnaires[q]?.title} secondary={displayFlags(q)} />
             </ListItemButton>
