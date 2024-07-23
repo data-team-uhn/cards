@@ -1,8 +1,8 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:date_of_birth": "/Questionnaires/Patient information/date_of_birth","
+  "jcr:reference:date_of_birth": "/Questionnaires/Patient information/date_of_birth",
   "jcr:reference:sex": "/Questionnaires/Patient information/sex",
   "jcr:reference:mrn": "/Questionnaires/Patient information/mrn",
   "jcr:reference:first_name": "/Questionnaires/Patient information/first_name",
-  "jcr:reference:last_name": "/Questionnaires/Patient information/last_name
+  "jcr:reference:last_name": "/Questionnaires/Patient information/last_name"
 }
