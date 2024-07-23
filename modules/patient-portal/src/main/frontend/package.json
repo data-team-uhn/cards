@@ -44,6 +44,7 @@
     "prop-types": "15.8.1",
     "history": "4.10.1",
     "luxon": "3.2.1",
+    "react-copy-to-clipboard": "5.1.0",
     "semantic-ui-css": "2.5.0",
     "semantic-ui-react": "2.1.4"
   },
