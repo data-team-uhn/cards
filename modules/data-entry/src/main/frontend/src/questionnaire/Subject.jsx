@@ -326,7 +326,7 @@ function SubjectHeader(props) {
           <Chip
             label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
             variant="outlined"
-            className={`${classes[item + "Chip"] || classes.DefaultChip}`}
+            className={`${classes[item + "Flag"] || classes.DefaultFlag}`}
             size="small"
           />
         ))}
@@ -449,7 +449,7 @@ function SubjectMemberInternal (props) {
       <Chip
         label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
         variant="outlined"
-        className={`${[classes[item + "Chip"] || classes.DefaultChip, classes.childSubjectFlag].join(" ")}`}
+        className={`${[classes[item + "Flag"] || classes.DefaultFlag, classes.childSubjectFlag].join(" ")}`}
         size="small"
       />
     ))
