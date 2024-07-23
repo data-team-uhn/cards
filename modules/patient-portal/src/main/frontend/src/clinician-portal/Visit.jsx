@@ -287,13 +287,13 @@ function Visit(props) {
         breadcrumbs={(parents && getHierarchyAsList(parents, true) || "")}
         action={
           <div className={classes.actionsMenu}>
+            <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} />
             <PrintButton
               resourcePath={visitPath}
               resourceData={subjectData}
               breadcrumb={getTextHierarchy(subjectData, true)}
               date={DateTime.fromISO(subjectData['jcr:created']).toLocaleString(DateTime.DATE_MED)}
             />
-            <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} />
           </div>
         }
       />
