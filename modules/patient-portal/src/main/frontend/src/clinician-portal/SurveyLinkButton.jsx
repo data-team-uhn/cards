@@ -74,7 +74,7 @@ function SurveyLinkButton(props) {
             <Badge
               color="default"
               badgeContent={<LinkIcon fontSize="small" sx={{zoom: .75}}/>}
-              anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
+              anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
             >
               { copied ? <SurveyCopiedIcon/> : <SurveyIcon /> }
             </Badge>
