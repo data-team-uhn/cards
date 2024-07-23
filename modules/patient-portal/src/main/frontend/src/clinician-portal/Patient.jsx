@@ -32,7 +32,6 @@ import {
 
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import EventNoteIcon from '@mui/icons-material/EventNote';
-import EventDoneIcon from '@mui/icons-material/EventAvailable';
 import LockIcon from '@mui/icons-material/Lock';
 
 import { DataGrid } from '@mui/x-data-grid';
@@ -41,28 +40,25 @@ import { DateTime } from "luxon";
 
 import ResourceHeader from "../questionnaire/ResourceHeader.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
-import { getHierarchyAsList, getTextHierarchy } from "../questionnaire/SubjectIdentifier";
+import { getHierarchyAsList } from "../questionnaire/SubjectIdentifier";
 import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle.jsx";
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
-const VISIT_INFORMATION_FORM_TITLE = "Visit information";
-
 const statusIcons = {
   "LOCKED" : <LockIcon sx={{mt: 1.5, ml: 1}} />,
-  "SUBMITTED" : <EventDoneIcon sx={{mt: 1.5, ml: 1}} />,
-  "DEFAULT" : <EventNoteIcon sx={{mt: 1.5, ml: 1}} />,
+  "Default" : <EventNoteIcon sx={{mt: 1.5, ml: 1}} />,
 }
 
 const visitGridColumns = [
   {
-    field: 'icon',
+    field: 'status',
     headerName: '',
     width: 50,
     renderCell: ({ value }) => (
       value && statusIcons[value]
       ? <Tooltip title={value}>{statusIcons[value]}</Tooltip>
-      : statusIcons["DEFAULT"]
+      : statusIcons["Default"]
     )
   },
   {
@@ -93,13 +89,12 @@ const visitGridColumns = [
     width: 250,
   },
 ];
+
 function Patient(props) {
   const patientUuid = props.match.params.patientId.replace(/\..*/, '');
 
   // Data already associated with the subject
   const [ patientData, setPatientData ] = useState();
-  // Visit information questionnaire definition, allowing to get data about the patient's visits
-  const [ visitInformationQuestionnaire, setVisitInformationQuestionnaire ] = useState();
   // List of visits on record for this patient
   const [ visits, setVisits ] = useState();
   // Visit data formatted for display in a DataGrid
@@ -122,20 +117,10 @@ function Patient(props) {
       })
       .catch(() => setError("The patient record could not be loaded. Please try again later or contact the administrator for further assistance."));
   };
-  const fetchVisitInformationQuestionnaire = () => {
-    fetchWithReLogin(globalLoginDisplay, `/Questionnaires/${VISIT_INFORMATION_FORM_TITLE}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setVisitInformationQuestionnaire(json);
-      })
-      .catch(() => setError("The visit configuration could not be loaded. Please try again later or contact the administrator for further assistance."));
-  };
-  const fetchVisitInformationForms = () => {
-    if (!visitInformationQuestionnaire || !patientData) {
-      return;
-    }
+
+  const fetchVisits = () => {
     let url = new URL("/query", window.location.origin);
-    url.searchParams.set("query", `SELECT * FROM [cards:Form] as f where f.questionnaire = '${visitInformationQuestionnaire['jcr:uuid']}' and f.relatedSubjects = '${patientData['jcr:uuid']}' option (index tag cards)`);
+    url.searchParams.set("query", `SELECT v.* from [cards:Subject] as v where ischildnode(v, '/Subjects/${patientUuid}')`);
     url.searchParams.set("limit", 1000);
     fetchWithReLogin(globalLoginDisplay, url)
       .then(response => response.json())
@@ -149,9 +134,9 @@ function Patient(props) {
     if (!visits) return;
     setVisitGridRows(
       visits?.map(visit => ({
-        icon: visit?.statusFlags?.[visit.statusFlags.length - 1], // Get the latest status flag
-        id: visit?.subject?.identifier,
-        path: visit?.subject?.["@path"],
+        status: visit?.statusFlags?.find(f => f == "LOCKED"),
+        id: visit?.identifier,
+        path: visit?.["@path"],
         time: visit?.time && new Date(visit?.time),
         location: visit?.location,
         provider: visit?.provider?.join(", "),
@@ -160,8 +145,7 @@ function Patient(props) {
   }
 
   useEffect(fetchPatientData, []);
-  useEffect(fetchVisitInformationQuestionnaire, []);
-  useEffect(fetchVisitInformationForms, [patientData, visitInformationQuestionnaire]);
+  useEffect(fetchVisits, [patientData]);
   useEffect(formatVisits, [visits]);
 
   // --------------------------------------------------------------------------------------------------------------
