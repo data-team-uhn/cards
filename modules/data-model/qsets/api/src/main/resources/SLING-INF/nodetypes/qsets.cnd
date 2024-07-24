@@ -70,6 +70,9 @@
   // Mandatory, the order must be specified
   - order (long) mandatory
 
+  // Who is this questionnaire for, the patient or the clinician
+  - targetUserType (string) = patient < patient, clinician
+
   // An optional estimate for the time it would take to fill out the questionnaire, in minutes
   - estimate (long)
 
