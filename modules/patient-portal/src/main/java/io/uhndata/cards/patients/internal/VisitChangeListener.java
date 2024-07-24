@@ -18,7 +18,7 @@ package io.uhndata.cards.patients.internal;
 
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -422,7 +422,7 @@ public class VisitChangeListener implements ResourceChangeListener
         // Iterate through all forms for this visit.
         // If there is a Visit Information form, record the visit date and clinic.
         // Otherwise, record a list of all unique questionnaires and if any instances of that questionnaire is complete.
-        final Set<String> questionnaires = new HashSet<>();
+        final Set<String> questionnaires = new LinkedHashSet<>();
         Calendar visitDate = null;
         for (final PropertyIterator forms = visitNode.getReferences("subject"); forms.hasNext();) {
             final Node form = forms.nextProperty().getParent();
