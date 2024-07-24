@@ -51,6 +51,12 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -106,6 +112,12 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -168,6 +180,12 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -230,6 +248,12 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -278,6 +302,12 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -349,6 +379,12 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -399,6 +435,12 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
@@ -433,6 +475,12 @@
           },
           "reference": {
             "question": "string",
+            "conditionalProperty": "string",
+            "conditionalOperator": "string",
+            "conditionalValue": "string",
+            "conditionalFallback": "string",
+            "conditionalType": "string",
+            "conditionalInvalidSourceMessage": "string",
             "displayMode" : {
               "plain" : {},
               "formatted" : {},
