@@ -101,13 +101,14 @@ public class UnsubmittedFormsRestrictionPattern implements RestrictionPattern
 
     private boolean isUnsubmitted(final Tree form)
     {
+        boolean isSubmitted = false;
+        boolean isPatientForm = false;
         PropertyState flags = form.getProperty("statusFlags");
         for (int i = 0; i < flags.count(); ++i) {
-            if ("SUBMITTED".equals(flags.getValue(Type.STRING, i))) {
-                return false;
-            }
+            isSubmitted |= "SUBMITTED".equals(flags.getValue(Type.STRING, i));
+            isPatientForm |= "PATIENT SURVEY".equals(flags.getValue(Type.STRING, i));
         }
-        return true;
+        return isPatientForm && !isSubmitted;
     }
 
     private boolean isForm(final Tree node)
