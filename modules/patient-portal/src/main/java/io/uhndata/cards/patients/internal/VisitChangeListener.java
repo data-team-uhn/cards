@@ -502,11 +502,14 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         final List<String> results = new LinkedList<>();
 
-        for (final String questionnaireIdentifier : questionnaireRefs.keySet()) {
+        for (final QuestionnaireRef questionnaireRef : questionnaireRefs.values()) {
             final String uuid = UUID.randomUUID().toString();
             final Node form = session.getNode("/Forms").addNode(uuid, FormUtils.FORM_NODETYPE);
-            final Node questionnaire = questionnaireRefs.get(questionnaireIdentifier).getQuestionnaire();
+            final Node questionnaire = questionnaireRef.getQuestionnaire();
             form.setProperty(FormUtils.QUESTIONNAIRE_PROPERTY, questionnaire);
+            if (questionnaireRef.isPatientFacing()) {
+                form.setProperty(STATUS_FLAGS, new String[] { "PATIENT SURVEY" });
+            }
             form.setProperty(FormUtils.SUBJECT_PROPERTY, visitSubject);
             results.add(form.getPath());
         }
