@@ -381,6 +381,7 @@ function QuestionnaireSet(props) {
     let data = {};
     Object.entries(json || {})
       .filter(([key, value]) => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
+      .filter(([key, value]) => (!value.targetUserType || value.targetUserType == 'patient'))
       .forEach(([key, value]) => {
         let addons = Object.values(value).filter(filterValue => ENTRY_TYPES.includes(filterValue['jcr:primaryType']));
         data[value.questionnaire['@name']] = {
