@@ -25,12 +25,14 @@ import {
   AlertTitle,
   Avatar,
   CircularProgress,
+  Divider,
   Grid,
   List,
   ListItem,
   ListItemAvatar,
   ListItemButton,
   ListItemText,
+  Typography,
 } from "@mui/material";
 
 import DoneIcon from '@mui/icons-material/Done';
@@ -163,7 +165,7 @@ function Visit(props) {
       .forEach(([key, value]) => {
         data[value.questionnaire['@name']] = {
           'title': value.questionnaire?.title || key,
-          'alias': key,
+          'targetUserType': value.targetUserType,
           '@path': value.questionnaire?.['@path'],
         }
        });
@@ -183,7 +185,7 @@ function Visit(props) {
     let data = {};
     questionnaireSetIds.forEach(q => {
       if (visit[questionnaireSet?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
-        data[q] = visit[questionnaireSet?.[q]?.title][0];
+        data[q] = {...visit[questionnaireSet?.[q]?.title][0], targetUserType: questionnaireSet?.[q]?.targetUserType};
         ids.push(q);
       }
     });
@@ -279,11 +281,44 @@ function Visit(props) {
       .join(", ")
   );
 
+  // ----------------------------------------------------------------------------------------------------------------_
+  // Prepare the display of the forms for this visit
+
+  const  clinicQIds = questionnaireIds.filter(q => surveyData[q].targetUserType == "clinician");
+  const patientQIds = questionnaireIds.filter(q => surveyData[q].targetUserType != "clinician");
+
+  const listForms = (qIds, title, withAction) => (qIds.length > 0 &&
+    <>
+      <Divider><Typography variant="h6">{title}</Typography></Divider>
+      <List>
+      { qIds.map((q, i) => (
+        <ListItem
+          key={q}
+          disablePadding
+          secondaryAction={withAction && !isFormLocked(q) && <EditButton entryPath={surveyData?.[q]?.["@path"]}/>}
+        >
+          <ListItemButton onClick={() => history.push(`/content.html${surveyData?.[q]?.["@path"]}`)}>
+            <ListItemAvatar>
+            { isFormLocked(q) ? lockedIndicator : (
+                 isFormComplete(q) ? doneIndicator : (
+                   isFormSubmitted(q) ? incompleteIndicator : surveyIndicator
+                 )
+               )
+            }
+            </ListItemAvatar>
+            <ListItemText primary={questionnaires[q]?.title} secondary={displayFlags(q)} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+      </List>
+    </>
+  );
+
   // -----------------------------------------------------------------------------------------------------------------
   // Render the visit:
   // * Resource header (sticky to the top) with a simplified menu
   // * Visit information
-  // * List of firms for this visit, as specified by the associated QuestionnaireSet
+  // * List of forms for this visit, as specified by the associated QuestionnaireSet
 
   return (
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
@@ -307,27 +342,8 @@ function Visit(props) {
       />
       <Grid item>{ displayVisitInfo() }</Grid>
       <Grid item>
-        <List>
-        { (questionnaireIds || []).map((q, i) => (
-          <ListItem
-            key={q}
-            disablePadding
-            secondaryAction={!isFormSubmitted(q) && !isFormLocked(q) && <EditButton entryPath={surveyData?.[q]?.["@path"]}/>}
-          >
-            <ListItemButton onClick={() => history.push(`/content.html${surveyData?.[q]?.["@path"]}`)}>
-              <ListItemAvatar>
-              { isFormLocked(q) ? lockedIndicator : (
-                   isFormComplete(q) ? doneIndicator : (
-                     isFormSubmitted(q) ? incompleteIndicator : surveyIndicator
-                   )
-                 )
-              }
-              </ListItemAvatar>
-              <ListItemText primary={questionnaires[q]?.title} secondary={displayFlags(q)} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-        </List>
+        { listForms(clinicQIds, "Clinical examination", true) }
+        { listForms(patientQIds, "Patient surveys") }
       </Grid>
     </Grid>
   );
