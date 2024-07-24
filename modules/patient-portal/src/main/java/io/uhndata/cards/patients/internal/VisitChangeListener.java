@@ -261,28 +261,31 @@ public class VisitChangeListener implements ResourceChangeListener
      */
     private void handleVisitDataForm(final Node visitSubject, final Session session) throws RepositoryException
     {
+        QuestionnaireSetInfo qset = null;
         Node visitInformationForm = null;
-        Node surveysCompleteQuestion = null;
+
+        // Get the visit information form for this subject
+        for (final PropertyIterator forms = visitSubject.getReferences("subject"); forms.hasNext();) {
+            final Node form = forms.nextProperty().getParent();
+            final Node questionnaire = this.formUtils.getQuestionnaire(form);
+            if (isVisitInformation(questionnaire)) {
+                visitInformationForm = form;
+                VisitInformation vi = new VisitInformation(questionnaire, form);
+                if (vi.isComplete()) {
+                    // Form is already complete: exit
+                    return;
+                }
+                qset = getQuestionnaireSetInformation(vi, session);
+            }
+        }
 
         // Get the visit information form for this subject and iterate through all other forms.
         // If any other forms are incomplete, terminate early without updating visit completion.
         for (final PropertyIterator forms = visitSubject.getReferences("subject"); forms.hasNext();) {
             final Node form = forms.nextProperty().getParent();
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
-            if (isVisitInformation(questionnaire)) {
-                visitInformationForm = form;
-                if (questionnaire.hasNode("surveys_complete")) {
-                    surveysCompleteQuestion =
-                        this.questionnaireUtils.getQuestion(questionnaire, "surveys_complete");
-                    final Long surveysCompleted =
-                        (Long) this.formUtils
-                            .getValue(this.formUtils.getAnswer(visitInformationForm, surveysCompleteQuestion));
-                    if (surveysCompleted != null && surveysCompleted == 1L) {
-                        // Form is already complete: exit
-                        return;
-                    }
-                }
-            } else if (isFormIncomplete(form)) {
+            if (qset.containsMember(questionnaire.getIdentifier())
+                && qset.getMember(questionnaire.getIdentifier()).isPatientFacing() && isFormIncomplete(form)) {
                 // Visit is not complete: stop checking without saving completion status
                 return;
             }
@@ -347,12 +350,14 @@ public class VisitChangeListener implements ResourceChangeListener
                 if (node.isNodeType("cards:QuestionnaireRef")
                     && node.hasProperty("questionnaire")) {
                     final Node questionnaire = node.getProperty("questionnaire").getNode();
+                    final boolean patientFacing = !node.hasProperty("targetUserType")
+                        || "patient".equals(node.getProperty("targetUserType").getString());
                     final String uuid = questionnaire.getIdentifier();
                     int frequency = 0;
                     if (node.hasProperty("frequency")) {
                         frequency = (int) node.getProperty("frequency").getLong();
                     }
-                    info.putMember(uuid, new QuestionnaireRef(questionnaire, frequency));
+                    info.putMember(uuid, new QuestionnaireRef(questionnaire, patientFacing, frequency));
                 } else if (node.isNodeType("cards:QuestionnaireConflict")) {
                     if (node.hasProperty("questionnaire")) {
                         final String uuid = node.getProperty("questionnaire").getString();
@@ -719,6 +724,8 @@ public class VisitChangeListener implements ResourceChangeListener
 
         private final Node questionnaire;
 
+        private final Node form;
+
         private final Node visitDateQuestion;
 
         private final Node clinicQuestion;
@@ -731,6 +738,7 @@ public class VisitChangeListener implements ResourceChangeListener
         {
             Session session = questionnaire.getSession();
             this.questionnaire = questionnaire;
+            this.form = form;
 
             this.visitDateQuestion = questionnaire.getNode("time");
             this.visitDate = (Calendar) VisitChangeListener.this.formUtils
@@ -757,6 +765,25 @@ public class VisitChangeListener implements ResourceChangeListener
         public boolean hasRequiredInformation()
         {
             return this.visitDate != null && StringUtils.isNotBlank(this.questionnaireSet);
+        }
+
+        public boolean isComplete()
+        {
+            try {
+                if (this.questionnaire.hasNode("surveys_complete")) {
+                    Node surveysCompleteQuestion =
+                        VisitChangeListener.this.questionnaireUtils.getQuestion(this.questionnaire, "surveys_complete");
+                    final Long surveysCompleted =
+                        (Long) VisitChangeListener.this.formUtils
+                            .getValue(VisitChangeListener.this.formUtils.getAnswer(this.form, surveysCompleteQuestion));
+                    if (surveysCompleted != null && surveysCompleted == 1L) {
+                        return true;
+                    }
+                }
+            } catch (RepositoryException e) {
+                // Ignore for now
+            }
+            return false;
         }
 
         public Calendar getVisitDate()
@@ -905,17 +932,25 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         private final Node questionnaire;
 
+        private boolean patientFacing;
+
         private final int frequency;
 
-        QuestionnaireRef(final Node questionnaire, final int frequency)
+        QuestionnaireRef(final Node questionnaire, final boolean patientFacing, final int frequency)
         {
             this.questionnaire = questionnaire;
+            this.patientFacing = patientFacing;
             this.frequency = frequency;
         }
 
         public Node getQuestionnaire()
         {
             return this.questionnaire;
+        }
+
+        public boolean isPatientFacing()
+        {
+            return this.patientFacing;
         }
 
         public int getFrequency()
