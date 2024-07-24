@@ -250,6 +250,9 @@ public class VisitChangeListener implements ResourceChangeListener
             final String uuid = UUID.randomUUID().toString();
             final Node form = visitSubject.getSession().getNode("/Forms").addNode(uuid, FormUtils.FORM_NODETYPE);
             form.setProperty(FormUtils.QUESTIONNAIRE_PROPERTY, questionnaire.getQuestionnaire());
+            if (questionnaire.isPatientFacing()) {
+                form.setProperty(STATUS_FLAGS, new String[] { "PATIENT SURVEY" });
+            }
             form.setProperty(FormUtils.SUBJECT_PROPERTY, visitSubject);
             results.add(form.getPath());
         }
