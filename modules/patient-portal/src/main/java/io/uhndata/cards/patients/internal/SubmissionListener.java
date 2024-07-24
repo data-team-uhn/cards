@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -146,15 +147,22 @@ public class SubmissionListener implements ResourceChangeListener
 
     private void updateFormFlags(final Node form) throws RepositoryException
     {
-        Set<String> flags = new TreeSet<>();
+        final Set<String> flags = new TreeSet<>();
+        AtomicBoolean isPatientSurvey = new AtomicBoolean();
         if (form.hasProperty(STATUS_FLAGS)) {
             Set.of(form.getProperty("statusFlags").getValues()).forEach(v -> {
                 try {
+                    if ("PATIENT SURVEY".equals(v.getString())) {
+                        isPatientSurvey.set(true);
+                    }
                     flags.add(v.getString());
                 } catch (RepositoryException e) {
                     LOGGER.warn("Failed to read flag: {}", e.getMessage());
                 }
             });
+        }
+        if (!isPatientSurvey.get()) {
+            return;
         }
         flags.add("SUBMITTED");
         form.setProperty("statusFlags", flags.toArray(STRING_ARRAY));
