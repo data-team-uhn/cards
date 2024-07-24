@@ -221,7 +221,7 @@ public class VisitChangeListener implements ResourceChangeListener
             final Node form = forms.nextProperty().getParent();
             final String questionnairePath = this.formUtils.getQuestionnaire(form).getPath();
             if (template.containsQuestionnaire(questionnairePath)
-                && isFormIncomplete(form)) {
+                && template.getQuestionnaire(questionnairePath).isPatientFacing() && isFormIncomplete(form)) {
                 // Visit is not complete: stop checking without saving completion status
                 return;
             }
