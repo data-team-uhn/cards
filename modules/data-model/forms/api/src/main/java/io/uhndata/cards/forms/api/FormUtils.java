@@ -50,6 +50,9 @@ public interface FormUtils
     /** The name of the property of a Form node that links to other Subjects the form relates to. */
     String RELATED_SUBJECTS_PROPERTY = "relatedSubjects";
 
+    /** The name of a property on an Answer, Section or Form node that holds the status flags for that node.*/
+    String STATUS_FLAGS = "statusFlags";
+
     /**
      * The primary node type for an Answer Section, a group of related answers and subsections in a Form, corresponding
      * to a Section in the answered Questionnaire.

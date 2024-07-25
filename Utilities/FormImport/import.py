@@ -586,6 +586,10 @@ DefaultHeaders["TYPE_PROPERTY"] = HeaderColumn("type", "type")
 DefaultHeaders["FORM_MODE_PROPERTY"] = HeaderColumn("formMode", "formMode")
 DefaultHeaders["VALIDATION_ERROR_TEXT"] = HeaderColumn("validationErrorText", "validationErrorText")
 DefaultHeaders["IS_RANGE"] = HeaderColumn("isRange", "isRange", boolean_handler)
+DefaultHeaders["CONDITIONAL_PROPERTY"] = HeaderColumn("conditionalProperty", "conditionalProperty")
+DefaultHeaders["CONDITIONAL_OPERATOR"] = HeaderColumn("conditionalOperator", "conditionalOperator")
+DefaultHeaders["CONDITIONAL_VALUE"] = HeaderColumn("conditionalValue", "conditionalValue")
+DefaultHeaders["CONDITIONAL_INVALID_SRC_MSG"] = HeaderColumn("conditionalInvalidSourceMessage", "conditionalInvalidSourceMessage")
 
 #==================
 # Utility functions
