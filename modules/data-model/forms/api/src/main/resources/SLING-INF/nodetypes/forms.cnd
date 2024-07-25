@@ -253,8 +253,8 @@
   + * (cards:ExternalLink) = cards:ExternalLink
 
 //-----------------------------------------------------------------------------
-// An informative formatted text (markdown) displayed in edit mode to guide
-// the user through filling out a form.
+// An informative formatted text (markdown). Can be displayed in edit mode to guide
+// the user through filling out a form, or in view mode to explain the data.
 [cards:Information] > sling:Folder, mix:referenceable
   // Attributes
 
@@ -276,6 +276,10 @@
   // One of: plain (normal text and background), info (blue), warning (orange), error (red),
   // success (green). Optional, defaults to plain styling when absent.
   - type (string)
+
+  // The form mode specifies when the Information is displayed: in "edit" mode, in "view" mode
+  // mode, or in "any" mode. Defaults to "edit" when absent.
+  - formMode (string)
 
 //-----------------------------------------------------------------------------
 // A section is a collection of questions.

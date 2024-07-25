@@ -142,8 +142,13 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
 }
 
 let displayInformation = (infoDefinition, key, classes, pageActive, isEdit, gridProps) => {
+  let isVisible = (
+    (!infoDefinition.formMode || infoDefinition.formMode == "edit") && isEdit
+    || infoDefinition.formMode == "view" && !isEdit
+    || infoDefinition.formMode == "any"
+  );
   return (
-    isEdit && pageActive && infoDefinition.text &&
+    isVisible && pageActive && infoDefinition.text &&
     <Grid item key={key} {...gridProps}>
       <Information infoDefinition={infoDefinition} />
     </Grid>
