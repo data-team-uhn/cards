@@ -583,6 +583,7 @@ DefaultHeaders["ONLY_COUNTRIES"] = HeaderColumn("onlyCountries", "onlyCountries"
 DefaultHeaders["REGIONS"] = HeaderColumn("regions", "regions")
 DefaultHeaders["SEARCH_PLACES_AROUND"] = HeaderColumn("searchPlacesAround", "searchPlacesAround")
 DefaultHeaders["TYPE_PROPERTY"] = HeaderColumn("type", "type")
+DefaultHeaders["FORM_MODE_PROPERTY"] = HeaderColumn("formMode", "formMode")
 DefaultHeaders["VALIDATION_ERROR_TEXT"] = HeaderColumn("validationErrorText", "validationErrorText")
 DefaultHeaders["IS_RANGE"] = HeaderColumn("isRange", "isRange", boolean_handler)
 
