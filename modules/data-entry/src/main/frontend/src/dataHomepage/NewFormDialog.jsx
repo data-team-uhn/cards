@@ -469,6 +469,7 @@ function NewFormDialog(props) {
         currentSubject={currentSubject}
         onSubmit={createForm}
         open={newSubjectPopperOpen}
+        disableRedirect
         />
       {
         mode === MODE_ACTION &&

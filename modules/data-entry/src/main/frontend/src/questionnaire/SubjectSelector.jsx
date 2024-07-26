@@ -399,11 +399,11 @@ export const parseToArray = (object) => {
  * @param {bool} disabled If true, all controls are disabled
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
- * @param {bool} openNewSubject whether to redirect to the newly created subject upon successful creation
+ * @param {bool} disableRedirect Whether to disable the default behavior of redirecting to the newly created subject upon successful creation
  * @param {bool} open If true, this dialog is open
  */
 export function NewSubjectDialog (props) {
-  const { allowedTypes, currentSubject, disabled, onClose, onSubmit, open, openNewSubject } = props;
+  const { allowedTypes, currentSubject, disabled, onClose, onSubmit, open, disableRedirect } = props;
   const [ error, setError ] = useState("");
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
@@ -432,7 +432,7 @@ export function NewSubjectDialog (props) {
       onClose();
       // redirect to the new just created subject page
       let subjectId = getSubjectIdFromPath(subject);
-      if (openNewSubject && subjectId) {
+      if (!disableRedirect && subjectId) {
         history.push({
           pathname: "/content.html/Subjects/" + subjectId
         });

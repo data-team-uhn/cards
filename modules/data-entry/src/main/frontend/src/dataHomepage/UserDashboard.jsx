@@ -169,8 +169,6 @@ function UserDashboard(props) {
             onSubmit={onClose}
             // NewFormDialog specific argument
             mode={MODE_DIALOG}
-            // NewSubjectDialog specific argument
-            openNewSubject={true}
             key={"extensionDialog-" + index}
             />
         })

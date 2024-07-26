@@ -171,7 +171,6 @@ function SubjectView(props) {
         <NewSubjectDialog
           onClose={() => { setNewSubjectPopperOpen(false);}}
           onSubmit={() => { setNewSubjectPopperOpen(false);}}
-          openNewSubject={true}
           open={newSubjectPopperOpen}
         />
       </>
