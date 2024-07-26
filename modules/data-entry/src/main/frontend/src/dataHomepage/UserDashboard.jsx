@@ -89,6 +89,7 @@ function UserDashboard(props) {
 
   return (
     <React.Fragment>
+    { dashboardExtensions.length > 0 &&
       <Grid container spacing={4} className={classes.dashboardContainer}>
         {
           dashboardExtensions.map((extension, index) => {
@@ -99,6 +100,8 @@ function UserDashboard(props) {
           })
         }
       </Grid>
+    }
+    { creationExtensions.length > 0 && <>
       <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
           <MaterialReactTable
@@ -175,6 +178,7 @@ function UserDashboard(props) {
             />
         })
       }
+    </>}
     </React.Fragment>
   );
 }
