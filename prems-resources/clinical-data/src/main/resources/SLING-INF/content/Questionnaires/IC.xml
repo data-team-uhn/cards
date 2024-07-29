@@ -399,6 +399,11 @@ We would like you to reflect on your experience with the Integrated Care Program
 				<value>4</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>notApplicable</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 	</node>
 	<node>
