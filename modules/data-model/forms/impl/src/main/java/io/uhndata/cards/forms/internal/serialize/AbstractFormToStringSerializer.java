@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.json.Json;
 import javax.json.JsonException;
@@ -33,6 +34,9 @@ import javax.json.JsonValue.ValueType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
+
+import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
  * Base class for adapting a Form resource to a text-based format.
@@ -143,10 +147,12 @@ public abstract class AbstractFormToStringSerializer
         final Map<String, Integer> sectionCounts)
     {
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_KEY);
-        if ("cards:AnswerSection".equals(nodeType)) {
+        if (FormUtils.ANSWER_SECTION_NODETYPE.equals(nodeType)) {
             processSection(nodeJson, result, sectionCounts);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
             processAnswer(nodeJson, nodeType, result);
+        } else if (QuestionnaireUtils.INFORMATION_NODETYPE.equals(nodeType)) {
+            processInformation(nodeJson, result);
         }
     }
 
@@ -184,10 +190,20 @@ public abstract class AbstractFormToStringSerializer
         if (StringUtils.isNotBlank(sectionTitle)) {
             formatSectionTitle(sectionTitle, result);
         }
-        answerSectionJson.values().stream()
-            .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
-            .map(JsonValue::asJsonObject)
-            .filter(value -> value.containsKey(PRIMARY_TYPE_KEY))
+        Stream.concat(
+            // Take the answers and answer sections from the form
+            answerSectionJson.values().stream()
+                .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
+                .map(JsonValue::asJsonObject)
+                .filter(value -> value.containsKey(PRIMARY_TYPE_KEY)),
+            // Take the printable information nodes from the questionnaire
+            definition.values().stream()
+                .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
+                .map(JsonValue::asJsonObject)
+                .filter(value -> value.containsKey(PRIMARY_TYPE_KEY))
+                .filter(value -> QuestionnaireUtils.INFORMATION_NODETYPE.equals(value.getString(PRIMARY_TYPE_KEY)))
+                .filter(value -> value.containsKey(QuestionnaireUtils.INFORMATION_DISPLAY_MODE_PROPERTY)
+                    && !"edit".equals(value.getString(QuestionnaireUtils.INFORMATION_DISPLAY_MODE_PROPERTY))))
             .sorted(new DefinitionComparator(definition))
             .forEach(value -> processElement(value, result, sectionCounts));
         if ("header".equals(displayMode)) {
@@ -234,8 +250,13 @@ public abstract class AbstractFormToStringSerializer
         }
     }
 
+    private void processInformation(final JsonObject informationDefinition, final StringBuilder result)
+    {
+        formatInformation(informationDefinition.getString("text"), result);
+    }
+
     /**
-     * Converts a JSON serialiization of a textual answer value to plain text.
+     * Converts a JSON serialization of a textual answer value to plain text.
      *
      * @param value the value to be displayed, can be either a single value or an array of values
      * @param result the string builder where the serialization must be appended
@@ -348,6 +369,11 @@ public abstract class AbstractFormToStringSerializer
 
     abstract void formatNote(String note, StringBuilder result);
 
+    void formatInformation(String text, StringBuilder result)
+    {
+        // By default we don't include Information blocks in text mode
+    }
+
     class DefinitionComparator implements Comparator<JsonObject>
     {
         private final List<String> definitionUuids;
@@ -384,6 +410,8 @@ public abstract class AbstractFormToStringSerializer
             } else if (json.containsKey(QUESTION_KEY)) {
                 uuid = json.get(QUESTION_KEY).getValueType() == ValueType.OBJECT
                     ? json.getJsonObject(QUESTION_KEY).getString(UUID_KEY) : json.getString(QUESTION_KEY);
+            } else if (QuestionnaireUtils.INFORMATION_NODETYPE.equals(json.getString(PRIMARY_TYPE_KEY))) {
+                uuid = json.getString(UUID_KEY);
             }
             return uuid;
         }

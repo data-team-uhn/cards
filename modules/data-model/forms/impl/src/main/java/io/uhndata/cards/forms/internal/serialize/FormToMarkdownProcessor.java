@@ -18,6 +18,9 @@
  */
 package io.uhndata.cards.forms.internal.serialize;
 
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
@@ -103,6 +106,14 @@ public class FormToMarkdownProcessor extends AbstractFormToStringSerializer impl
     void formatNote(final String note, final StringBuilder result)
     {
         result.append("\n**Notes**").append(MD_LINE_BREAK).append(note.replaceAll("\n", MD_LINE_BREAK)).append('\n');
+    }
+
+    @Override
+    void formatInformation(final String text, final StringBuilder result)
+    {
+        result.append("\n");
+        Stream.of(StringUtils.split(text, "\r\n"))
+            .forEachOrdered(line -> result.append("> ").append(line).append("\n"));
     }
 
     @Override

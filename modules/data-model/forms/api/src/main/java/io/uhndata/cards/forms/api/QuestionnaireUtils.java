@@ -46,6 +46,9 @@ public interface QuestionnaireUtils
     /** The Sling resource type for an Information. */
     String INFORMATION_RESOURCE = "cards/Information";
 
+    /** The property of an Information node specifying in which modes it should be displayed: view, edit, print... */
+    String INFORMATION_DISPLAY_MODE_PROPERTY = "formMode";
+
     /** The primary node type for a Question. */
     String QUESTION_NODETYPE = "cards:Question";
 

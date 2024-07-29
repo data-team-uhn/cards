@@ -1,4 +1,5 @@
 {
-  "type": "Enables rendering the information card with a different styling depending on the nature and purpose of the info displayed:\n* **plain** is a card with no distinct background,\n* **info** sets a blue background,\n* **warning** sets an orange background,\n* **error** sets a red background,\n* **success** sets a green background."
+  "type": "Enables rendering the information card with a different styling depending on the nature and purpose of the info displayed:\n* **plain** is a card with no distinct background,\n* **info** sets a blue background,\n* **warning** sets an orange background,\n* **error** sets a red background,\n* **success** sets a green background.",
+  "formMode": "Whether the information box gets displayed when the form is in **edit** mode (default), in **view** mode, or in **any** mode."
 }
 
