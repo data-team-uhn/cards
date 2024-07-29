@@ -381,6 +381,25 @@ We would like you to reflect on your experience with the Integrated Care Program
 				<type>Long</type>
 			</property>
 		</node>
+		<node>
+			<name>-1</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Not applicable, I did not require home and/or community services</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>-1</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>defaultOrder</name>
+				<value>4</value>
+				<type>Long</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>ic_5</name>
@@ -617,7 +636,7 @@ We would like you to reflect on your experience with the Integrated Care Program
 		</property>
 		<property>
 			<name>text</name>
-			<value>How would you rate the Integrated Care Program on a scale of 1-5 (lowest to highest rating)? </value>
+			<value>How would you rate the Integrated Care Program on a scale of 1 (poor) to 5 (excellent)?</value>
 			<type>String</type>
 		</property>
 		<property>
