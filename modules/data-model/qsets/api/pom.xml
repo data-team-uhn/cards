@@ -22,19 +22,37 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-modules</artifactId>
+    <artifactId>cards-data-model-qsets</artifactId>
     <version>0.9.25-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-data-model</artifactId>
-  <packaging>pom</packaging>
-  <name>CARDS Data Model elements</name>
+  <artifactId>cards-data-model-qsets-api</artifactId>
+  <packaging>bundle</packaging>
+  <name>CARDS - Data model - Questionnaire Sets - Definitions, APIs and SPIs</name>
 
-  <modules>
-    <module>links</module>
-    <module>forms</module>
-    <module>subjects</module>
-    <module>qsets</module>
-    <module>migrators</module>
-  </modules>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Sling-Nodetypes>SLING-INF/nodetypes/qsets.cnd</Sling-Nodetypes>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
 </project>
