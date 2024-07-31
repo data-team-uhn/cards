@@ -39,16 +39,14 @@ import FormattedText from "../components/FormattedText.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;
-export const MODE_ACTION = 0;
-export const MODE_DIALOG = 1;
 
 /**
- * A component that renders a FAB to open a dialog to create a new form.
+ * A component that renders a dialog to create a new form, and optionally a FAB to activate the dialog.
  *
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { children, classes, presetPath, currentSubject, theme, mode, open, onClose } = { mode: MODE_ACTION, open: false, ...props };
+  const { classes, presetPath, currentSubject, theme, open, onClose, withButton, buttonTitle } = {open: false, ...props };
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
@@ -224,7 +222,7 @@ function NewFormDialog(props) {
   const isFetching = numFetchRequests > 0;
   if (wasOpen !== open) {
     setWasOpen(open);
-    if (MODE_DIALOG) {
+    if (!withButton) {
       openDialog();
     }
   }
@@ -347,7 +345,7 @@ function NewFormDialog(props) {
     <React.Fragment>
       <ResponsiveDialog
         title={progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
-        open={mode === MODE_ACTION ? dialogOpen : open}
+        open={withButton ? dialogOpen : open}
         onClose={() => {
           resetDialogState();
           closeAllDialogs();
@@ -469,11 +467,12 @@ function NewFormDialog(props) {
         currentSubject={currentSubject}
         onSubmit={createForm}
         open={newSubjectPopperOpen}
+        disableRedirect
         />
       {
-        mode === MODE_ACTION &&
+        withButton &&
           <NewItemButton
-            title={children}
+            title={buttonTitle}
             onClick={openDialog}
             inProgress={!dialogOpen && isFetching}
           />

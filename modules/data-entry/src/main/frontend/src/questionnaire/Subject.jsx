@@ -118,9 +118,7 @@ function Subject(props) {
 
   return (
     <React.Fragment>
-      <NewFormDialog currentSubject={currentSubject}>
-        { "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
-      </NewFormDialog>
+      <NewFormDialog currentSubject={currentSubject} withButton buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") } />
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader id={currentSubjectId} key={"SubjectHeader"} pageTitle={pageTitle} classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
         <Grid item>

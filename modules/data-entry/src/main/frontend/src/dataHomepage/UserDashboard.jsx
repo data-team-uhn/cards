@@ -24,7 +24,6 @@ import { loadExtensions } from "../uiextension/extensionManager";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import { MODE_DIALOG } from "../dataHomepage/NewFormDialog.jsx";
 
 import {
   Button,
@@ -170,10 +169,6 @@ function UserDashboard(props) {
             open={index === selectedCreation}
             onClose={onClose}
             onSubmit={onClose}
-            // NewFormDialog specific argument
-            mode={MODE_DIALOG}
-            // NewSubjectDialog specific argument
-            openNewSubject={true}
             key={"extensionDialog-" + index}
             />
         })
