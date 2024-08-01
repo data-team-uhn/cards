@@ -43,7 +43,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "5.2.0",
-    "recharts": "2.2.0",
+    "recharts": "2.12.7",
     "semantic-ui-css": "2.5.0",
     "semantic-ui-react": "2.1.4",
     "set-blocking": "2.0.0"
