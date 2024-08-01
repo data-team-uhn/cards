@@ -233,18 +233,6 @@ public class VisitChangeListener implements ResourceChangeListener
     }
 
     /**
-     * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency. Iterate
-     * through a patient's visits looking for completed forms within the current questionnaire set. If this completed
-     * form is recent enough to fall within the current frequency range, remove that questionnaire from the current
-     * questionnaire set members.
-     *
-     * @param visitNode the visit Subject which should be checked for forms
-     * @param visitInformation the set of data about the visit that triggered this event
-     * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
-     * @throws RepositoryException if iterating the patient's visits fails
-     */
-
-    /**
      * Create a new form for each questionnaire in the questionnaireSet, with the visit as the parent subject.
      *
      * @param visitSubject the visit which should be the new form's subject
