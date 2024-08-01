@@ -564,7 +564,7 @@ function Form (props) {
             <Chip
               label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
               variant="outlined"
-              className={`${classes[item + "Chip"] || classes.DefaultChip}`}
+              className={`${classes[item + "Flag"] || classes.DefaultFlag}`}
               size="small"
             />
           ))}

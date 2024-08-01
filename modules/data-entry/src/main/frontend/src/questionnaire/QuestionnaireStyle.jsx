@@ -234,13 +234,13 @@ const questionnaireStyle = theme => ({
           padding: theme.spacing(0, GRID_SPACE_UNIT),
         }
     },
-    subjectAvatar : {
+    subjectAvatar: {
         backgroundColor: theme.palette.secondary.main,
         marginLeft: theme.spacing(-1),
         marginRight: theme.spacing(1.5),
         zoom: .75,
     },
-    subjectFormAvatar : {
+    subjectFormAvatar: {
         backgroundColor: theme.palette.primary.main,
         marginTop: theme.spacing(-.5),
         marginRight: theme.spacing(1.5),
@@ -560,17 +560,24 @@ const questionnaireStyle = theme => ({
         padding: theme.spacing(1),
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     },
-    subjectChip: {
+    childFormFlag: {
         marginBottom: theme.spacing(1),
         marginRight: theme.spacing(1),
     },
-    INCOMPLETEChip: {
+    childSubjectFlag: {
+      marginLeft: theme.spacing(1),
+      textTransform: "none"
     },
-    INVALIDChip: {
+    childSubjectActions: {
+      marginRight: theme.spacing(1),
+    },
+    INCOMPLETEFlag: {
+    },
+    INVALIDFlag: {
         borderColor: theme.palette.error.main,
         color: theme.palette.error.main,
     },
-    DefaultChip: {
+    DefaultFlag: {
     },
     formPreview: {
         padding: theme.spacing(1),
