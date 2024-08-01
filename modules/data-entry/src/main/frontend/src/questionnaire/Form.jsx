@@ -73,7 +73,7 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  */
 function Form (props) {
   let { classes, id, contentOffset } = props;
-  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
+  let { mode, className, actionSwitches, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
   // This holds the full form JSON, once it is received from the server
@@ -435,87 +435,108 @@ function Form (props) {
     );
   }
 
+  let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]?.(data)));
+
+  let isDropdnEnabled = () => (
+    (isEdit && isActionEnabled("subject"))
+    || (!isEdit && isActionEnabled("text"))
+    || isActionEnabled("delete")
+  );
+
   let dropdownList = (
-                  <List>
-                    { isEdit ?
-                    <ListItem className={classes.actionsMenuItem}>
-                      <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
-                        Change subject
-                      </Button>
-                    </ListItem>
-                    : <>
-                    <ListItem className={classes.actionsMenuItem}>
-                      <PrintButton
-                         variant="text"
-                         size="medium"
-                         resourcePath={formURL}
-                         resourceData={data}
-                         breadcrumb={getTextHierarchy(data?.subject, true)}
-                         date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-                         onClose={() => { setActionsMenu(null); }}
-                       />
-                    </ListItem>
-                    <ListItem className={classes.actionsMenuItem}>
-                      <Button
-                         size="medium"
-                         onClick={() => {
-                         window.open(formURL + ".txt");
-                         setActionsMenu(null);
-                        }}>
-                        Export as text
-                      </Button>
-                    </ListItem>
-                    </> }
-                    <ListItem className={classes.actionsMenuItem}>
-                      <DeleteButton
-                          entryPath={data ? data["@path"] : formURL}
-                          entryName={getEntityIdentifier(data)}
-                          entryType="Form"
-                          onComplete={onDelete}
-                          variant="text"
-                          size="medium"
-                        />
-                    </ListItem>
-                  </List>
+    <List>
+      { isEdit ?
+        ( isActionEnabled("subject") &&
+          <ListItem className={classes.actionsMenuItem}>
+            <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
+              Change subject
+            </Button>
+          </ListItem>
+        )
+      :
+        ( isActionEnabled("text") &&
+          <ListItem className={classes.actionsMenuItem}>
+            <Button
+              size="medium"
+              onClick={() => {
+                window.open(formURL + ".txt");
+                setActionsMenu(null);
+              }}>
+              Export as text
+            </Button>
+          </ListItem>
+        )
+      }
+      { isActionEnabled("delete") &&
+        <ListItem className={classes.actionsMenuItem}>
+          <DeleteButton
+            entryPath={data ? data["@path"] : formURL}
+            entryName={getEntityIdentifier(data)}
+            entryType="Form"
+            onComplete={onDelete}
+            variant="text"
+            size="medium"
+          />
+        </ListItem>
+      }
+    </List>
   )
 
   let formMenu = (
-            <div className={classes.actionsMenu}>
-                {isEdit ?
-                  <Tooltip title="Save and view" onClick={onClose}>
-                    <IconButton color="primary" size="large">
-                      <DoneIcon />
-                    </IconButton>
-                  </Tooltip>
-                  :
-                  <Tooltip title="Edit">
-                    <IconButton color="primary" onClick={onEdit} size="large">
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                }
-                <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-                  <IconButton size="large">
-                    <MoreIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                { !actionsMenu && <div style={{display: "none"}}>{ dropdownList }</div> }
-                <Popover
-                    open={Boolean(actionsMenu)}
-                    anchorEl={actionsMenu}
-                    onClose={() => {setActionsMenu(null)}}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                >
-                  { dropdownList }
-                </Popover>
-            </div>
+    <div className={classes.actionsMenu}>
+    { isEdit ?
+      ( isActionEnabled("save") &&
+        <Tooltip title="Save and view" onClick={onClose}>
+          <IconButton color="primary" size="large">
+            <DoneIcon />
+          </IconButton>
+        </Tooltip>
+      )
+      :
+      ( isActionEnabled("edit") &&
+        <Tooltip title="Edit">
+          <IconButton color="primary" onClick={onEdit} size="large">
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+      )
+    }
+    { !isEdit && isActionEnabled("print") &&
+      <PrintButton
+        variant="icon"
+        size="large"
+        resourcePath={formURL}
+        resourceData={data}
+        breadcrumb={getTextHierarchy(data?.subject, true)}
+        date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+      />
+    }
+    { isDropdnEnabled() &&
+      <>
+        <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+          <IconButton size="large">
+            <MoreIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        { !actionsMenu && <div style={{display: "none"}}>{ dropdownList }</div> }
+        <Popover
+          open={Boolean(actionsMenu)}
+          anchorEl={actionsMenu}
+          onClose={() => {setActionsMenu(null)}}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          { dropdownList }
+        </Popover>
+      </>
+    }
+    </div>
   )
 
   let getTimestampString  = (timestamp) => {

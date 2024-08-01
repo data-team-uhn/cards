@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Forms",
+  "cards:targetURL": "/content.html/Subjects/:patientId/:visitId",
+  "cards:defaultOrder": -200,
+  "cards:extensionRenderURL": "asset:patient-portal.Visit.js"
+}
