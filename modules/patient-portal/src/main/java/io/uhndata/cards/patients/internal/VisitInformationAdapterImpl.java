@@ -145,9 +145,9 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
 
         private volatile QuestionnaireSet existingForms;
 
-        private volatile QuestionnaireSet expectedForms;
+        private volatile QuestionnaireSet templateForms;
 
-        private volatile QuestionnaireSet neededForms;
+        private volatile QuestionnaireSet missingForms;
 
         private final String clinicPath;
 
@@ -256,16 +256,16 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
         @Override
         public QuestionnaireSet getTemplateForms()
         {
-            if (this.expectedForms == null) {
+            if (this.templateForms == null) {
                 try {
-                    this.expectedForms = VisitInformationAdapterImpl.this.questionnaireSetUtils.toQuestionnaireSet(
+                    this.templateForms = VisitInformationAdapterImpl.this.questionnaireSetUtils.toQuestionnaireSet(
                         this.questionnaire.getSession().getNode("/Survey/" + getQuestionnaireSetName()),
                         this.getVisitDate());
                 } catch (final RepositoryException e) {
                     LOGGER.warn("Failed to retrieve questionnaire set information: {}", e.getMessage(), e);
                 }
             }
-            return this.expectedForms;
+            return this.templateForms;
         }
 
         @Override
@@ -304,7 +304,7 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
         @Override
         public QuestionnaireSet getMissingForms()
         {
-            if (this.neededForms == null) {
+            if (this.missingForms == null) {
                 try {
                     final QuestionnaireSet result =
                         VisitInformationAdapterImpl.this.questionnaireSetUtils.copy(this.getTemplateForms());
@@ -327,12 +327,12 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
                             break;
                         }
                     }
-                    this.neededForms = result;
+                    this.missingForms = result;
                 } catch (final RepositoryException e) {
                     LOGGER.warn("Failed to compile list of needed forms: {}", e.getMessage(), e);
                 }
             }
-            return this.neededForms;
+            return this.missingForms;
         }
     }
 }
