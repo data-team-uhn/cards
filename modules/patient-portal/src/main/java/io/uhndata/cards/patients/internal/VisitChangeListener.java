@@ -177,14 +177,12 @@ public class VisitChangeListener implements ResourceChangeListener
 
         final QuestionnaireSet existingForms = visitInformation.getExistingForms();
         final QuestionnaireSet missingForms = visitInformation.getMissingForms();
-        final int existingFormsCount = existingForms.questionnairesCount();
-        final int missingFormsCount = missingForms.questionnairesCount();
 
-        if (missingFormsCount == 0) {
+        if (missingForms.isEmpty()) {
             // Ideally, has_surveys would already be set to true so this should not be needed.
             // However, if the visit information form is edited via the browser editor and saved twice,
             // `has_surveys` can be incorrectly deleted and may need to be set back to true.
-            changeVisitInformation(visitForm, "has_surveys", existingFormsCount > 0, true);
+            changeVisitInformation(visitForm, "has_surveys", !existingForms.isEmpty(), true);
             // No valid questionnaire set: skip
             return;
         }

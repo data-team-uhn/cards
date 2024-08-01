@@ -151,15 +151,9 @@ public class QuestionnaireSetUtilsImpl implements QuestionnaireSetUtils
         }
 
         @Override
-        public void removeQuestionnaire(final String questionnairePath)
+        public boolean removeQuestionnaire(final String questionnairePath)
         {
-            this.questionnaires.remove(questionnairePath);
-        }
-
-        @Override
-        public int questionnairesCount()
-        {
-            return this.questionnaires.size();
+            return this.questionnaires.remove(questionnairePath) != null;
         }
 
         @Override

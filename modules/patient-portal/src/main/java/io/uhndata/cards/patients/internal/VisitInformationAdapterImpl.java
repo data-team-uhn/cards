@@ -323,7 +323,7 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
                                 .getLabel(VisitInformationAdapterImpl.this.subjectUtils.getType(otherVisit)))) {
                             result.pruneConflicts(toVisitInformation(otherVisit).getExistingForms());
                         }
-                        if (result.questionnairesCount() == 0) {
+                        if (result.isEmpty()) {
                             break;
                         }
                     }

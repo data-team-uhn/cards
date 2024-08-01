@@ -19,6 +19,8 @@
 package io.uhndata.cards.qsets.api;
 
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -42,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  * @since 0.9.25
  */
-public interface QuestionnaireSet
+public interface QuestionnaireSet extends Collection<QuestionnaireRef>
 {
     // Constants for the QuestionnaireSet data type
 
@@ -118,7 +120,8 @@ public interface QuestionnaireSet
     /**
      * The JCR node defining this questionnaire set.
      *
-     * @return a JCR node of type {@code cards:QuestionnaireSet}
+     * @return a JCR node of type {@code cards:QuestionnaireSet}, may be {@code null} if no definition is associated
+     *         with this particular set
      */
     Node getDefinition();
 
@@ -160,13 +163,59 @@ public interface QuestionnaireSet
     List<QuestionnaireRef> getQuestionnaires();
 
     /**
+     * Get an iterator over all the questionnaires in this set.
+     *
+     * @return an iterator over the questionnaires in this set
+     * @see java.util.Collection#iterator()
+     */
+    @Override
+    default Iterator<QuestionnaireRef> iterator()
+    {
+        return getQuestionnaires().iterator();
+    }
+
+    /**
+     * Get an array with all the questionnaires in this set.
+     *
+     * @see java.util.Collection#toArray()
+     */
+    @Override
+    default Object[] toArray()
+    {
+        return getQuestionnaires().toArray();
+    }
+
+    /**
+     * Get an array with all the questionnaires in this set.
+     *
+     * @see java.util.Collection#toArray(java.lang.Object[])
+     */
+    @Override
+    default <T> T[] toArray(T[] a)
+    {
+        return getQuestionnaires().toArray(a);
+    }
+
+    /**
      * Retrieve the count of members in this questionnaire set.
      *
      * @return a positive number, may be 0
      */
-    default int questionnairesCount()
+    @Override
+    default int size()
     {
         return getQuestionnaires().size();
+    }
+
+    /**
+     * Check if the list of questionnaires is empty.
+     *
+     * @return {@code true} if there are no questionnaires in this set, {@code false} otherwise
+     */
+    @Override
+    default boolean isEmpty()
+    {
+        return size() == 0;
     }
 
     /**
@@ -176,6 +225,43 @@ public interface QuestionnaireSet
      * @return {@code true} if the questionnaire belongs to this set, {@code false} otherwise
      */
     boolean containsQuestionnaire(String questionnairePath);
+
+    /**
+     * Check if a questionnaire is part of this questionnaire set. This method accepts a {@link QuestionnaireRef}, a JCR
+     * {@code Node}, or a String with the path to the questionnaire.
+     *
+     * @param o a {@code QuestionnaireRef}, {@code Node} or just a path to a questionnaire node
+     * @return {@code true} if the questionnaire belongs to this set, {@code false} otherwise
+     */
+    @Override
+    default boolean contains(Object o)
+    {
+        if (o instanceof QuestionnaireRef) {
+            return containsQuestionnaire(((QuestionnaireRef) o).getQuestionnairePath());
+        } else if (o instanceof Node) {
+            try {
+                return containsQuestionnaire(((Node) o).getPath());
+            } catch (RepositoryException e) {
+                // Shouldn't happen
+            }
+        } else if (o instanceof String) {
+            return containsQuestionnaire((String) o);
+        }
+        return false;
+    }
+
+    /**
+     * Check if all of the questionnaires in the provided collection are part of this questionnaire set. This method
+     * accepts {@link QuestionnaireRef}, JCR {@code Node}, or String with the path to the questionnaire.
+     *
+     * @param c a collection of {@code QuestionnaireRef}s, {@code Node}s, or just paths to questionnaire nodes
+     * @return {@code true} if all of the questionnaires belongs to this set, {@code false} otherwise
+     */
+    @Override
+    default boolean containsAll(Collection<?> c)
+    {
+        return c.stream().allMatch(this::contains);
+    }
 
     /**
      * Retrieve the questionnaire reference definition for the given questionnaire.
@@ -194,11 +280,113 @@ public interface QuestionnaireSet
     void addQuestionnaire(QuestionnaireRef reference);
 
     /**
+     * Add a questionnaire to this questionnaire set.
+     *
+     * @param reference a {@code QuestionnaireRef}
+     * @return {@code true} if the questionnaire was added to the set, {@code false} otherwise
+     */
+    @Override
+    default boolean add(QuestionnaireRef reference)
+    {
+        addQuestionnaire(reference);
+        return true;
+    }
+
+    /**
+     * Add all of the questionnaires in the provided collection to this questionnaire set.
+     *
+     * @param questionnaires a collection of {@code QuestionnaireRef}s
+     * @return {@code true} if at least one of the questionnaires was added to the set, {@code false} otherwise
+     */
+    @Override
+    default boolean addAll(Collection<? extends QuestionnaireRef> questionnaires)
+    {
+        questionnaires.forEach(this::addQuestionnaire);
+        return true;
+    }
+
+    /**
      * Remove a questionnaire from this questionnaire set.
      *
      * @param questionnairePath a path to a JCR questionnaire node
+     * @return {@code true} if the questionnaire was part of the set and was removed, {@code false} otherwise
      */
-    void removeQuestionnaire(String questionnairePath);
+    boolean removeQuestionnaire(String questionnairePath);
+
+    /**
+     * Remove a questionnaire from this questionnaire set. This method accepts a {@link QuestionnaireRef}, a JCR
+     * {@code Node}, or a String with the path to the questionnaire.
+     *
+     * @param o a {@code QuestionnaireRef}, {@code Node} or just a path to a questionnaire node
+     * @return {@code true} if the questionnaire was part of the set and was removed, {@code false} otherwise
+     */
+    @Override
+    default boolean remove(Object o)
+    {
+        if (o instanceof QuestionnaireRef) {
+            return removeQuestionnaire(((QuestionnaireRef) o).getQuestionnairePath());
+        } else if (o instanceof Node) {
+            try {
+                return removeQuestionnaire(((Node) o).getPath());
+            } catch (RepositoryException e) {
+                // Shouldn't happen
+            }
+        } else if (o instanceof String) {
+            return removeQuestionnaire((String) o);
+        }
+        return false;
+    }
+
+    /**
+     * Remove all of the questionnaires in the provided collection from this questionnaire set. This method accepts
+     * {@link QuestionnaireRef}, JCR {@code Node}, or String with the path to the questionnaire.
+     *
+     * @param c a collection of {@code QuestionnaireRef}s, {@code Node}s, or just paths to questionnaire nodes
+     * @return {@code true} if at least one of the questionnaires were part of the set and were removed, {@code false}
+     *         otherwise
+     */
+    @Override
+    default boolean removeAll(Collection<?> c)
+    {
+        return c.stream().anyMatch(this::remove);
+    }
+
+    @Override
+    default boolean retainAll(Collection<?> c)
+    {
+        final Iterator<QuestionnaireRef> it = iterator();
+        while (it.hasNext()) {
+            final String path = it.next().getQuestionnairePath();
+            if (!c.stream().anyMatch(o -> {
+                if (o instanceof QuestionnaireRef) {
+                    return path.equals(((QuestionnaireRef) o).getQuestionnairePath());
+                } else if (o instanceof Node) {
+                    try {
+                        return path.equals(((Node) o).getPath());
+                    } catch (RepositoryException e) {
+                        // Shouldn't happen
+                    }
+                } else if (o instanceof String) {
+                    return path.equals(o);
+                }
+                return false;
+            })) {
+                it.remove();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Remove all the questionnaires from this set.
+     *
+     * @see java.util.Collection#clear()
+     */
+    @Override
+    default void clear()
+    {
+        getQuestionnaires().clear();
+    }
 
     /**
      * Retrieve the date associated with this set, if any.
