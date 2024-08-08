@@ -1,0 +1,138 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<cards = 'https://cards.uhndata.io/'>
+
+//-----------------------------------------------------------------------------
+//
+// Questionnaire Sets
+//
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// QuestionnaireConflict: a reference to a questionnaire that should prevent a QuestionnaireSet from being generated
+[cards:QuestionnaireConflict] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // We can use questionnaire references in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QuestionnaireConflict" mandatory autocreated protected
+
+  // A questionnaire path
+  // Mandatory, each QuestionnaireConflict must point to a questionnaire.
+  - questionnaire (reference) mandatory
+
+  // A frequency for how long the conflict should prevent the questionnaire set from being used for
+  - frequency (long) mandatory
+
+//-----------------------------------------------------------------------------
+// QuestionnaireRef: a reference to a questionnaire included in a QuestionnaireSet
+[cards:QuestionnaireRef] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // We can use questionnaire references in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QuestionnaireRef" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // A questionnaire path
+  // Mandatory, each QuestionnaireRef must point to a questionnaire.
+  - questionnaire (reference) mandatory
+
+  // An order number indicating the order of this questionnaire in the sequence
+  // Mandatory, the order must be specified
+  - order (long) mandatory
+
+  // An optional estimate for the time it would take to fill out the questionnaire, in minutes
+  - estimate (long)
+
+  // An optional frequency for re-taking the questionnaire, in weeks
+  - frequency (long)
+
+  //  An optional configuration describing the columns of the livetable that lists the forms corresponding to this questionnaire
+  - view (string)
+
+  //  Optional summary questions to be displayed after completing a QuestionnaireSet
+  + * (cards:Question) = cards:Question
+
+//-----------------------------------------------------------------------------
+// QuestionnaireSet: a sequence of questionnaires to be filled out
+[cards:QuestionnaireSet] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // The list of questionnaires needs to be ordered
+  orderable
+
+  // We can use questionnaire sets in a query.
+  query
+  // The main sub-item of a QuestionnaireSet is its name.
+  primaryitem name
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QuestionnaireSet" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // A name for this QuestionnaireSet
+  // Mandatory, each QuestionnaireSet must have a name.
+  - name (string) mandatory
+
+  // An optional intro text about the survey to guide the patient
+  - intro (string)
+
+  // An optional ending text display to the patient after they submit the survey
+  - ending (string)
+
+  // An optional setting whether to show a review screen after survey completion
+  // Optional, defaults to the global setting for the patient portal
+  - enableReviewScreen (boolean)
+
+  // An emergency contact for the clinic
+  - emergencyContact (string)
+
+  // If true, apply the questionnaire's frequency across all clinics for these questionnaires
+  - frequencyIgnoreClinic (boolean)
+
+  // How any questionnaires not included in this set should be checked for conflicts
+  // Supported values are:
+  // "anyListed" (default): Only conflict with questionnaires listed as a cards:QuestionnaireConflict
+  // "any": Conflict with any questionnaires
+  - conflictMode (STRING)
+
+  // Children
+
+  // Any forms which should prevent this questionnaire set from being created if present
+  + * (cards:QuestionnaireConflict) = cards:QuestionnaireConflict
+
+  // The questionnaire references that make up this questionnaire set.
+  + * (cards:QuestionnaireRef) = cards:QuestionnaireRef
