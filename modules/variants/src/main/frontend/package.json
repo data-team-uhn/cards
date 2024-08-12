@@ -35,7 +35,6 @@
     "babel-loader": "9.1.2",
     "clean-webpack-plugin": "4.0.0",
     "eslint-plugin-react": "7.32.0",
-    "eslint-plugin-auto-import": "0.1.1",
     "eslint": "8.32.0",
     "webpack": "5.77.0",
     "material-react-table": "1.10.0",
