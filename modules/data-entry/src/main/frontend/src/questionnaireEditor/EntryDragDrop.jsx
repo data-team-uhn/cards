@@ -63,7 +63,7 @@ function dndReducer(dndState, action) {
     }
 }
 
-export function ReorderEntryModal(props) {
+export function MoveEntryModal(props) {
     const {data} = props
     const [open, setOpen] = useState(false);
     const [reorderTarget, setReorderTarget] = useState({parent: '', position: ''})
@@ -84,12 +84,12 @@ export function ReorderEntryModal(props) {
     };
     return (
         <>
-            <Tooltip title="Click to reorder entry" // onClick={() => console.log('activate modal')}
+            {/* <Tooltip title="Click to reorder entry" // onClick={() => console.log('activate modal')}
             >
-                <Button onClick={handleClickOpen}>
-                    Move...
-                </Button>
-            </Tooltip>
+            </Tooltip> */}
+            <Button onClick={handleClickOpen}>
+                Move
+            </Button>
             <Dialog
                 open={open}
                 onClose={handleClose}

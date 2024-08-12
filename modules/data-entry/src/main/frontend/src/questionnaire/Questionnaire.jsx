@@ -41,6 +41,7 @@ import withStyles from '@mui/styles/withStyles';
 
 import { DateTime } from "luxon";
 
+import makeStyles from '@mui/styles/makeStyles';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import PreviewIcon from '@mui/icons-material/FindInPage';
@@ -60,8 +61,8 @@ import QuestionnairePreview from "./QuestionnairePreview";
 import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
 import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
 
-import { DragDropProvider, DndStateContext, DndDispatchContext, ReorderEntryModal } from "../questionnaireEditor/EntryDragDrop.jsx";
-
+import { DragDropProvider, DndStateContext, DndDispatchContext, MoveEntryModal } from "../questionnaireEditor/EntryDragDrop.jsx";
+import { useQuestionnaireTreeContext } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 
@@ -82,15 +83,15 @@ const jcrActions = {
       body: checkoutForm
     });
   },
-  questionnaireData: (id) => {
+  fetchQuestionnaireData: (id) => {
     return fetch(`/Questionnaires/${id}.deep.json`)
   },
-  fetchData: (data) => {
+  fetchResourceJSON: (data) => {
     return fetch(`${data["@path"]}.deep.json`)
   },
 
   // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
-  reorderEntry: // CALL SlingPostServlet
+  reorderForm: // CALL SlingPostServlet
     (entryPath, destinationIndex) => {
       // sibling level reordering
       let reorderForm = new FormData();
@@ -102,6 +103,13 @@ const jcrActions = {
       });
     }
 }
+
+// Mover into DnD context provider file?
+const useStyles = makeStyles(theme => ({
+  isDraggingOver: { backgroundColor: theme.palette.info.light },
+  isNotDraggingOver: { backgroundColor: theme.palette.primary.light }
+}))
+
 
 
 // GUI for displaying details about a questionnaire.
@@ -128,7 +136,7 @@ let Questionnaire = (props) => {
 
   let fetchData = () => {
     // fetch(`/Questionnaires/${id}.deep.json`)
-    jcrActions.questionnaireData(id)
+    jcrActions.fetchQuestionnaireData(id)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(setData)
       .catch(handleError);
@@ -310,20 +318,20 @@ Questionnaire.propTypes = {
 
 export default withStyles(QuestionnaireStyle)(Questionnaire);
 
-const itemSetDnD = {
-  // draggableEntryTypes: [], // import from FormEntry.jsx instead
-  // returns object for style prop
-  getItemStyle: (snapshot, provided) => {
-    const isDragging = snapshot.isDragging
-    return {
-      // change background colour if dragging
-      borderStyle: isDragging ? "dashed" : undefined,
-      borderWidth: isDragging ? "2px" : undefined,
-      backgroundColor: isDragging ? "lightblue" : undefined,
-      ...provided.draggableProps.style
-    }
-  }
-}
+// const itemSetDnD = {
+//   // draggableEntryTypes: [], // import from FormEntry.jsx instead
+//   // returns object for style prop
+//   getItemStyle: (snapshot, provided) => {
+//     const isDragging = snapshot.isDragging
+//     return {
+//       // change background colour if dragging
+//       borderStyle: isDragging ? "dashed" : undefined,
+//       borderWidth: isDragging ? "2px" : undefined,
+//       backgroundColor: isDragging ? "lightblue" : undefined,
+//       ...provided.draggableProps.style
+//     }
+//   }
+// }
 
 let QuestionnaireItemSet = (props) => {
 
@@ -651,9 +659,14 @@ let QuestionnaireEntry = (props) => {
   let [doHighlight, setDoHighlight] = useState(data.doHighlight);
 
   const dndDispatch = useContext(DndDispatchContext)
+  const dndClasses = useStyles()
+  const dndTreeContext = useQuestionnaireTreeContext()
+  console.log(dndTreeContext)
+  // todo: any manipulation into questionnaireWriter should be reflected in dndTree
 
   // --------------------------------------------------------------
   // Questionnaire context manipulation
+  
 
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
@@ -758,7 +771,7 @@ let QuestionnaireEntry = (props) => {
     } else {
       // Try to reload the data from the server
       // fetch(`${data["@path"]}.deep.json`)
-      jcrActions.fetchData(data)
+      jcrActions.fetchResourceJSON(data)
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(json => handleDataChange(json))
         .catch(() => {
@@ -779,20 +792,20 @@ let QuestionnaireEntry = (props) => {
   // DETERMINE REORDERING AND CALL FETCH AS ABOVE
   // MUST CHECK PARENTS FOR NESTED LISTS
   let onDragEnd = (result) => {
-    const { draggableId, type, source, destination, reason, mode } = result
+    const { draggableId, type, source, destination, reason, mode } = result;
     // window.alert(`Dragged ${draggableId} from ${source.index} to ${destination.index} for ${type} because of ${reason} in ${mode}`)
     // dropped outside the list
     console.log('drag', result)
-    const entryPath = draggableId
-    const destinationIndex = destination.index
+    const entryPath = draggableId;
+    const destinationIndex = destination.index;
     // call SlingPostServlet https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
-    jcrActions.reorderEntry(entryPath, destinationIndex)
+    jcrActions.reorderForm(entryPath, destinationIndex)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       // .catch(handleError)
       .finally(() => {
         handleDataChange()
-        dndDispatch({ type: 'setSnackbar', payload: { open: true, message: "Updated questionnaire" } })
-      })
+        dndDispatch({ type: 'setSnackbar', payload: { open: true, message: "Updated" } })
+      });
 
   }
 
@@ -839,7 +852,7 @@ let QuestionnaireEntry = (props) => {
                       // ENTRY_TYPES.includes(value['jcr:primaryType']) ?
                       // data?.["jcr:primaryType"] == "cards:Questionnaire"
                       ENTRY_TYPES.includes(entryData['jcr:primaryType']) ?
-                        <ReorderEntryModal data={entryData} />
+                        <MoveEntryModal data={entryData} />
                         : undefined
                     }
                   </>
@@ -853,7 +866,7 @@ let QuestionnaireEntry = (props) => {
                 <div
                   ref={provided.innerRef}
                   // Change background when dragging to indicate to user
-                  style={{ backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgrey' }}
+                  style={snapshot.isDraggingOver ? dndClasses.isDraggingOver : dndClasses.isNotDraggingOver}
                 >
                   {(childModels ?
                     <QuestionnaireItemSet
