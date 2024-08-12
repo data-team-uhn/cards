@@ -18,6 +18,9 @@
 //
 
 import React from "react";
+// For storing structure of questionnaire for reordering
+import { QuestionnaireTreeProvider } from "../questionnaireEditor/QuestionnaireTreeContext";
+
 
 const DEFAULT_STATE = [];
 
@@ -34,7 +37,9 @@ export function QuestionnaireProvider(props) {
 
   return (
     <QuestionnaireReaderContext.Provider value={questions}>
-      <QuestionnaireWriterContext.Provider value={setQuestions} {...props}/>
+      <QuestionnaireWriterContext.Provider value={setQuestions} >
+        <QuestionnaireTreeProvider {...props} />
+      </QuestionnaireWriterContext.Provider>
     </QuestionnaireReaderContext.Provider>
     );
 }
