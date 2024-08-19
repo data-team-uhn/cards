@@ -499,13 +499,20 @@ let QuestionnaireContents = (props) => {
   let { data } = props;
 
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
-
+  const dndTreeContext = useQuestionnaireTreeContext()
+  console.log(dndTreeContext)
+  // todo: any manipulation into questionnaireWriter should be reflected in dndTree
 
   useEffect(() => {
     // Load initial data
     changeQuestionnaireContext(findQuestionnaireEntries(data, ["cards:Question"]));
+    console.log('init', data)
+    dndTreeContext.dispatch({ type: 'INITIALIZE_ROOT', payload: { jcrData: data } })
     // Clear context when unmounting component
-    return (() => changeQuestionnaireContext([]));
+    return (() => {
+      changeQuestionnaireContext([])
+      dndTreeContext.dispatch({ type: 'CLEAR_TREE' })
+    });
   }, []);
 
   return <QuestionnaireEntry {...props} />;
@@ -658,17 +665,17 @@ let QuestionnaireEntry = (props) => {
   let [menuItems, setMenuItems] = useState([]);
   let [doHighlight, setDoHighlight] = useState(data.doHighlight);
 
-  const dndDispatch = useContext(DndDispatchContext)
-  const dndClasses = useStyles()
-  const dndTreeContext = useQuestionnaireTreeContext()
-  console.log(dndTreeContext)
-  // todo: any manipulation into questionnaireWriter should be reflected in dndTree
-
   // --------------------------------------------------------------
   // Questionnaire context manipulation
   
 
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
+  const dndDispatch = useContext(DndDispatchContext)
+  const dndClasses = useStyles()
+  const dndTreeContext = useQuestionnaireTreeContext()
+  console.log(dndTreeContext)
+  console.log(dndClasses)
+  // todo: any manipulation into questionnaireWriter should be reflected in dndTree
 
   let updateContext = (data) => {
     let vars = findQuestions({ data: data });
@@ -684,6 +691,7 @@ let QuestionnaireEntry = (props) => {
       });
       return newContext;
     });
+    // Update tree
   }
 
   let removeFromContext = (id) => {
@@ -818,7 +826,7 @@ let QuestionnaireEntry = (props) => {
       <Fields data={entryData} JSON={spec} edit={false} {...options} />
     </>);
   let FIELDS_CLASS_NAME = "cards-questionnaire-entry-props";
-  console.log('ed', entryData)
+  // console.log('ed', entryData)
   // console.log(childModels)
   return (
     // TODO: disable if not editing, available in dataEntry (?)
@@ -866,7 +874,7 @@ let QuestionnaireEntry = (props) => {
                 <div
                   ref={provided.innerRef}
                   // Change background when dragging to indicate to user
-                  style={snapshot.isDraggingOver ? dndClasses.isDraggingOver : dndClasses.isNotDraggingOver}
+                  // style={snapshot.isDraggingOver ? dndClasses.isDraggingOver : dndClasses.isNotDraggingOver}
                 >
                   {(childModels ?
                     <QuestionnaireItemSet

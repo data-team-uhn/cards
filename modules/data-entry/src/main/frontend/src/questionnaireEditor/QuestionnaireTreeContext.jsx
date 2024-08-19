@@ -18,13 +18,14 @@
 //
 
 import React, { useReducer } from "react";
+import { findQuestionnaireEntries } from "../questionnaire/QuestionnaireUtilities";
 
 // Action Types
 const MOVE_NODE = 'MOVE_NODE';
 const REORDER_NODE = 'REORDER_NODE';
 const INITIALIZE_ROOT = 'INITIALIZE_ROOT';
 const ADD_NODE = 'ADD_NODE'
-
+const CLEAR_TREE = 'CLEAR_TREE'
 // Initial State
 const initialState = {
     nodes: {
@@ -34,15 +35,83 @@ const initialState = {
     }
 };
 
+function jcrGetChildren(jcrData) {
+    if (!jcrData || typeof jcrData !== 'object' || !jcrData['jcr:primaryType']) {
+        throw new Error("jcrGetChildren called with invalid jcrData")
+        // return [];
+    }
+
+    const children = [];
+
+    for (const key in jcrData) {
+        if (jcrData.hasOwnProperty(key) && typeof jcrData[key] === 'object' && jcrData[key]['jcr:primaryType']) {
+            children.push(jcrData[key]);
+        }
+    }
+
+    return children;
+}
+
+function loadEntries(entries, rootNode) {
+    // Initialize nodes with the root node
+    let nodes = { 'root' : rootNode };
+
+    // Helper function to add children to a node
+    const addChildren = (node) => {
+        console.log('addChildren node', node)
+        const children = node.children.map(childId => {
+            const childIndex = entries.findIndex(entry => entry['jcr:uuid'] === childId);
+            if (childIndex !== -1) {
+                const childEntry = entries.splice(childIndex, 1)[0];
+                const { ['jcr:uuid']: id, ['jcr:primaryType']: jcrPrimaryType, ['@name']: name, ['@path']: path } = childEntry;
+                nodes[id] = { value: id, children: null, jcrPrimaryType };
+                return id;
+            }
+            return null;
+        }).filter(id => id !== null);
+        node.children = children;
+    };
+
+    // Initial population of root node's children
+    addChildren(rootNode);
+
+    // Iterate over nodes to populate children
+    let nodesToProcess = Object.values(nodes).filter(node => node.children === null);
+    while (nodesToProcess.length > 0) {
+        nodesToProcess.forEach(node => {
+            const children = jcrGetChildren(entries.find(entry => entry['jcr:uuid'] === node.value)).map(child => child['jcr:uuid']);
+            node.children = children;
+            addChildren(node);
+        });
+        nodesToProcess = Object.values(nodes).filter(node => node.children === null);
+    }
+
+    return nodes;
+}
+
 // Reducer Function
 const treeReducer = (state, action) => {
     // Need some kind of check that state is in the correct format?
     switch (action.type) {
+        case CLEAR_TREE: {
+            return initialState
+        }
         case INITIALIZE_ROOT: {
-            // const { rootQuestionnaireId } = action.payload
-            // const rootNode = {value: rootQuestionnaireId, children: [], jcr}
-            const { rootNode } = action.payload
-            return { nodes: { root: rootNode } }
+            // jcrData is questionnaire node
+            const { jcrData } = action.payload
+            if (jcrData['jcr:primaryType'] !== 'cards:Questionnaire') {
+                throw new Error("QuestionnaireTreeContext initialized with a node that is not a questionnaire")
+            };
+            // let children = jcrGetChildren(jcrData).map(jcrChild => jcrChild['@name']);
+            let entries = findQuestionnaireEntries(jcrData);
+            console.log('entries', entries)
+            // const rootNodeId = jcrData['jcr:uuid'];
+            const { ['jcr:uuid']: rootNodeId, ['jcr:primaryType']: jcrPrimaryType } = jcrData;
+            const rootChildren = jcrGetChildren(jcrData).map(jcrChild => jcrChild['jcr:uuid']);
+            const rootNode = {value: rootNodeId, children: rootChildren, jcrPrimaryType};
+            const nodes = loadEntries(entries, rootNode);
+            // Load the rest of the nodes
+            return { nodes };
         }
         case ADD_NODE: {
             const { node, parentId } = action.payload;
@@ -91,9 +160,9 @@ const treeReducer = (state, action) => {
 
             return state;
         }
-
         default:
-            return state;
+            throw new Error("Invalid action type in treeReducer");
+            // return state;
     }
 };
 
@@ -103,9 +172,9 @@ const treeReducer = (state, action) => {
 export const QuestionnaireTreeContext = React.createContext();
 
 export function QuestionnaireTreeProvider(props) {
-    const [ state , dispatch ] = useReducer(treeReducer, initialState)
+    const [state, dispatch] = useReducer(treeReducer, initialState)
     return (
-        <QuestionnaireTreeContext.Provider value={{ state, dispatch }} />
+        <QuestionnaireTreeContext.Provider value={{ state, dispatch }} {...props} />
     );
 }
 
@@ -116,11 +185,11 @@ export function QuestionnaireTreeProvider(props) {
  */
 export function useQuestionnaireTreeContext() {
     const context = React.useContext(QuestionnaireTreeContext);
-  
+
     if (context == undefined) {
-      throw new Error("useQuestionnaireTreeContext must be used within a QuestionnaireTreeProvider")
+        throw new Error("useQuestionnaireTreeContext must be used within a QuestionnaireTreeProvider")
     }
-  
+
     return context;
-  }
+}
 
