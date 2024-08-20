@@ -22,17 +22,27 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.jackrabbit.oak.api.PropertyState;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.Type;
+import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.jackrabbit.util.ISO8601;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,11 +56,25 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-public class ReferenceAnswersEditor extends AnswersEditor
+public class ReferenceAnswersEditor extends DefaultEditor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceAnswersEditor.class);
 
+    private final NodeBuilder currentNodeBuilder;
+
+    /** The current user session. */
+    private final Session currentSession;
+    private Session serviceSession;
+
+    private final ResourceResolverFactory rrf;
+
     private final SubjectUtils subjectUtils;
+    private final QuestionnaireUtils questionnaireUtils;
+    private final FormUtils formUtils;
+
+    private final boolean isFormNode;
+
+    private final String serviceName = "referenceAnswers";
 
     /**
      * Simple constructor.
@@ -66,81 +90,226 @@ public class ReferenceAnswersEditor extends AnswersEditor
         final ResourceResolverFactory rrf, final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils,
         final SubjectUtils subjectUtils)
     {
-        super(nodeBuilder, currentSession, rrf, questionnaireUtils, formUtils);
         this.subjectUtils = subjectUtils;
+        this.currentNodeBuilder = nodeBuilder;
+        this.questionnaireUtils = questionnaireUtils;
+        this.formUtils = formUtils;
+        this.currentSession = currentSession;
+        this.rrf = rrf;
+        this.isFormNode = this.formUtils.isForm(nodeBuilder);
     }
 
     @Override
-    protected Logger getLogger()
+    public Editor childNodeAdded(final String name, final NodeState after)
     {
-        return LOGGER;
+        if (this.isFormNode) {
+            // No need to descend further down, we already know that this is a form that has changes
+            return null;
+        } else {
+            return new ReferenceAnswersEditor(this.currentNodeBuilder.getChildNode(name), this.currentSession,
+                this.rrf, this.questionnaireUtils, this.formUtils, this.subjectUtils);
+        }
     }
 
     @Override
-    protected String getServiceName()
+    public Editor childNodeChanged(final String name, final NodeState before, final NodeState after)
     {
-        return "referenceAnswers";
+        return childNodeAdded(name, after);
     }
 
-    @Override
-    protected ReferenceAnswerChangeTracker getAnswerChangeTracker()
-    {
-        return new ReferenceAnswerChangeTracker();
-    }
-
-    @Override
-    protected ReferenceAnswersEditor getNewEditor(String name)
-    {
-        return new ReferenceAnswersEditor(this.currentNodeBuilder.getChildNode(name), this.currentSession,
-            this.rrf, this.questionnaireUtils, this.formUtils, this.subjectUtils);
-    }
-
-    @Override
-    protected boolean isQuestionNodeMatchingType(Node node)
+    protected boolean isReferenceQuestion(Node node)
     {
         return this.questionnaireUtils.isReferenceQuestion(node);
     }
 
     @Override
-    public void propertyAdded(final PropertyState after)
+    public void leave(final NodeState before, final NodeState after)
     {
-        if (this.isFormNode && "questionnaire".equals(after.getName())) {
-            // Only run on a newly created questionnaire
-            this.shouldRunOnLeave = true;
+        try (ResourceResolver serviceResolver =
+            this.rrf.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, this.serviceName))) {
+            if (serviceResolver != null) {
+                this.serviceSession = serviceResolver.adaptTo(Session.class);
+
+                if (!this.isFormNode) {
+                    // Only process forms
+                    return;
+                }
+
+                // Get a list of all reference questions
+                final Node questionnaireNode = this.formUtils.getQuestionnaire(this.currentNodeBuilder);
+                if (questionnaireNode == null) {
+                    return;
+                }
+                // A map of reference questions with the question path as the key
+                final Map<String, Node> referenceQuestions = new HashMap<>();
+                getChildReferenceQuestions(questionnaireNode, referenceQuestions);
+
+                // If the questionnaire has no reference questions, nothing to do
+                if (referenceQuestions.size() == 0) {
+                    return;
+                }
+
+                // A set of all the reference answers that do not currently reference a source answer
+                final Set<NodeBuilder> unlinkedReferenceAnswers = new HashSet<>();
+                // A map of all the answer sections in this form, keyed by section id
+                final Map<String, NodeBuilder> answerSections = new HashMap<>();
+                // A map of all the forms referenced by one of this form's reference answers
+                // Key is the questionnaire id, value is the form node
+                final Set<String> sourceForms = new HashSet<>();
+
+                // Iterate through all answers looking for unlinked reference answers, referenced forms and
+                // clearing reference questions that have been answered
+                iterateAnswers(this.currentNodeBuilder, unlinkedReferenceAnswers, sourceForms,
+                    referenceQuestions, answerSections);
+
+                createMissingReferenceAnswers(referenceQuestions, unlinkedReferenceAnswers, answerSections);
+
+                // There are missing reference questions, let's create them!
+                if (unlinkedReferenceAnswers.size() > 0) {
+                    unlinkedReferenceAnswers.stream().forEach(answer -> {
+                        processUnlinkedAnswer(answer, sourceForms);
+                    });
+                }
+            }
+        } catch (LoginException e) {
+            // Should not happen
+        } finally {
+            this.serviceSession = null;
         }
     }
 
-    @Override
-    protected void handleLeave(final NodeState form)
+    // Returns a map of reference questions as entries keyed by their path
+    @SuppressWarnings("unchecked")
+    private void getChildReferenceQuestions(Node node, Map<String, Node> referenceQuestions)
     {
-        // Get a list of all unanswered reference questions
-        final Node questionnaireNode = getQuestionnaire();
-        if (questionnaireNode == null) {
-            return;
+        try {
+            if (this.questionnaireUtils.isReferenceQuestion(node)) {
+                referenceQuestions.put(node.getPath(), node);
+            } else if (this.questionnaireUtils.isSection(node)
+                || this.questionnaireUtils.isQuestionnaire(node))
+            {
+                node.getNodes()
+                    .forEachRemaining(childNode -> getChildReferenceQuestions((Node) childNode, referenceQuestions));
+            }
+        } catch (RepositoryException e) {
+            // Could not process node - do nothing
         }
-        final QuestionTree unansweredQuestionsTree =
-            getUnmodifiedMatchingQuestions(questionnaireNode);
+    }
 
-        // There are missing reference questions, let's create them!
-        if (unansweredQuestionsTree != null) {
-            // Retrieve all the referenced answers
-            unansweredQuestionsTree.getQuestionAndAnswers(this.currentNodeBuilder)
-                .entrySet().stream().forEach(entry -> {
-                    Node question = entry.getKey();
-                    final String referencedQuestion;
-                    try {
-                        referencedQuestion = question.getProperty("question").getString();
-                    } catch (final RepositoryException e) {
-                        LOGGER.warn("Skipping referenced question due to missing property");
-                        return;
-                    }
+    // Traverse through all answers on this form.
+    // Record all:
+    // - Reference answers that do not link to a source answer
+    // - Forms that are linked to by a reference answer
+    // - answerSections
+    // Remove any reference questions from the set of questions that already have a reference answer
+    private void iterateAnswers(final NodeBuilder node, Set<NodeBuilder> unlinkedReferenceAnswers,
+        Set<String> sourceForms, Map<String, Node> referenceQuestions, Map<String, NodeBuilder> answerSections)
+    {
+        if (this.formUtils.isAnswer(node)
+            && this.questionnaireUtils.isReferenceQuestion(this.formUtils.getQuestion(node)))
+        {
+            try {
+                // Found a reference answer
+                String questionPath = this.formUtils.getQuestion(node).getPath();
+                // Remove the answers' question from the map of questions that will need to be processed later
+                referenceQuestions.remove(questionPath);
 
-                    NodeBuilder answer = entry.getValue();
-                    Type<?> resultType = getAnswerType(question);
-                    ReferenceAnswer result = getAnswer(form, referencedQuestion);
+                if (!node.hasProperty("copiedFrom")) {
+                    // Reference answer is not linked to a source yet
+                    unlinkedReferenceAnswers.add(node);
+                } else {
+                    // Reference answer is linked to a source: record the form
+                    Node sourceAnswer = this.serviceSession.getNode(
+                        node.getProperty("copiedFrom").getValue(Type.REFERENCE));
+                    Node form = this.formUtils.getForm(sourceAnswer);
+                    String questionnaireId = this.formUtils.getQuestionnaireIdentifier(form);
+                    sourceForms.add(questionnaireId);
+                }
+            } catch (RepositoryException e) {
+                // Unable to process answer - do nothing
+            }
+        } else if (this.formUtils.isAnswerSection(node)) {
+            // Record this section and traverse
+            answerSections.put(this.formUtils.getSectionIdentifier(node), node);
+            node.getChildNodeNames().forEach(name -> iterateAnswers(node.getChildNode(name),
+                unlinkedReferenceAnswers, sourceForms, referenceQuestions, answerSections));
+        } else if (this.formUtils.isForm(node)) {
+            // Traverse the base form
+            node.getChildNodeNames().forEach(name -> iterateAnswers(node.getChildNode(name),
+                unlinkedReferenceAnswers, sourceForms, referenceQuestions, answerSections));
+        }
+    }
 
-                    setAnswer(answer, result, resultType, question);
-                });
+    // If the parent section or form exists, create any missing reference answers and record it's existance
+    private void createMissingReferenceAnswers(Map<String, Node> referenceQuestions,
+        Set<NodeBuilder> unlinkedReferenceAnswers, Map<String, NodeBuilder> answerSections)
+    {
+        referenceQuestions.values().forEach(question -> createMissingReferenceAnswer(question,
+            unlinkedReferenceAnswers, answerSections));
+    }
+
+    // If the parent section or form exists, create the specified reference answer and record it's existance
+    private void createMissingReferenceAnswer(Node question, Set<NodeBuilder> unlinkedReferenceAnswers,
+        Map<String, NodeBuilder> answerSections)
+    {
+        try {
+            Node parent = question.getParent();
+            if (this.questionnaireUtils.isQuestionnaire(parent)) {
+                // Reference question is not in a section: can always be created
+                generateAnswer(this.currentNodeBuilder, question, unlinkedReferenceAnswers);
+            } else if (this.questionnaireUtils.isSection(parent)
+                && answerSections.containsKey(parent.getIdentifier())) {
+                generateAnswer(answerSections.get(parent.getIdentifier()), question, unlinkedReferenceAnswers);
+            }
+        } catch (RepositoryException e) {
+            // Should not happen
+        }
+    }
+
+    // Create an answer for the specified question as a child of the provided parent.
+    // Does not generate an answer value but does generate all other required properties.
+    // Record the new answer.
+    private void generateAnswer(NodeBuilder parentBuilder, Node question, Set<NodeBuilder> unlinkedReferenceAnswers)
+        throws RepositoryException
+    {
+        // Reference question should be in a section that exists: generate an anser for it
+        NodeBuilder answer = parentBuilder.setChildNode(UUID.randomUUID().toString());
+        // Set up answer properties
+        answer.setProperty(FormUtils.QUESTION_PROPERTY, question.getIdentifier(), Type.REFERENCE);
+        String type = question.getProperty("dataType").getString();
+        String primaryType = "cards:" + StringUtils.capitalize(type) + "Answer";
+        String resourceType = "cards/" + StringUtils.capitalize(type) + "Answer";
+        answer.setProperty("jcr:primaryType", primaryType, Type.NAME);
+        answer.setProperty("question", question.getIdentifier(), Type.REFERENCE);
+        answer.setProperty("sling:resourceType", resourceType, Type.STRING);
+
+        answer.setProperty("jcr:created", ISO8601.format(Calendar.getInstance()), Type.DATE);
+        answer.setProperty("jcr:createdBy", StringUtils.defaultString(this.serviceSession.getUserID()), Type.STRING);
+        answer.setProperty("sling:resourceSuperType", "cards/Answer", Type.STRING);
+
+        unlinkedReferenceAnswers.add(answer);
+    }
+
+    // Attempt to find a source answer for the provided reference answer node.
+    // Prioritize answers from forms that are in the provided set of forms
+    private void processUnlinkedAnswer(NodeBuilder answer, Set<String> sourceForms)
+    {
+        try {
+            Node question = this.serviceSession.getNodeByIdentifier(answer.getProperty("question")
+                .getValue(Type.STRING));
+            final String referencedQuestion;
+            try {
+                referencedQuestion = question.getProperty("question").getString();
+            } catch (final RepositoryException e) {
+                LOGGER.warn("Skipping referenced question due to missing property");
+                return;
+            }
+            Type<?> resultType = this.questionnaireUtils.getAnswerType(question);
+            ReferenceAnswer result = getAnswer(referencedQuestion, sourceForms);
+
+            setAnswer(answer, result, resultType, question);
+        } catch (RepositoryException e) {
+            // Could not set answer
         }
     }
 
@@ -199,15 +368,27 @@ public class ReferenceAnswersEditor extends AnswersEditor
         }
     }
 
-    private ReferenceAnswer getAnswer(NodeState form, String questionPath)
+    // Get any answer for the specified question in any form on the current subject.
+    // Prioritize answers in the provided set of forms if multiple exist.
+    private ReferenceAnswer getAnswer(String questionPath, Set<String> sourceForms)
     {
-        Node subject = this.formUtils.getSubject(form);
+
         try {
+            Node subject = this.formUtils.getSubject(this.currentNodeBuilder);
             Collection<Node> answers =
                 this.formUtils.findAllSubjectRelatedAnswers(subject, this.serviceSession.getNode(questionPath),
                     EnumSet.allOf(FormUtils.SearchType.class));
             if (!answers.isEmpty()) {
-                Node answer = answers.iterator().next();
+                Node answer;
+                // Prioritize answers in forms that are already referenced
+                Optional<Node> priorityAnswer = answers.stream().filter(a ->
+                    sourceForms.contains(this.formUtils.getQuestionnaireIdentifier(this.formUtils.getForm(a))))
+                    .findAny();
+                if (priorityAnswer.isPresent()) {
+                    answer = priorityAnswer.get();
+                } else {
+                    answer = answers.iterator().next();
+                }
                 Object value = this.formUtils.getValue(answer);
                 if (value != null) {
                     return new ReferenceAnswer(serializeValue(value), answer.getPath());
@@ -232,34 +413,6 @@ public class ReferenceAnswersEditor extends AnswersEditor
             return Arrays.asList((Object[]) rawValue);
         }
         return rawValue;
-    }
-
-    private final class ReferenceAnswerChangeTracker extends AbstractAnswerChangeTracker
-    {
-        ReferenceAnswerChangeTracker()
-        {
-            super(ReferenceAnswersEditor.this.formUtils);
-        }
-
-        @Override
-        public boolean isMatchedAnswerNode(NodeState after, String questionId)
-        {
-            if ("cards:ReferenceAnswer".equals(after.getName("jcr:primaryType"))) {
-                return true;
-            } else if (questionId != null) {
-                Node questionNode = ReferenceAnswersEditor.this.questionnaireUtils.getQuestion(questionId);
-                try {
-                    if (questionNode != null && questionNode.hasProperty("entryMode")
-                        && "reference".equals(questionNode.getProperty("entryMode").getString())) {
-                        return true;
-                    }
-                } catch (RepositoryException e) {
-                    // Can't access this answer's question. Ignore
-                    return false;
-                }
-            }
-            return false;
-        }
     }
 
     private static final class ReferenceAnswer
