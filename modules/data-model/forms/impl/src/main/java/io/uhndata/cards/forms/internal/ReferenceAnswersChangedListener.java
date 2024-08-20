@@ -214,19 +214,8 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         removeInvalidSourceStatusFlag(versionManager, referenceAnswer, checkoutPaths);
     }
 
-
     /**
-     * Fill out a refernce answer with a value copied from the referenced question.
-     * @param versionManager A version manager to be used to checkout forms if needed
-     * @param checkoutPaths The list of forms that have been checkout out and need to be checked back in
-     * @param sourceAnswerValue The source answer value to copy the answer from
-     * @param referenceAnswer The reference answer to copy the value into
-     * @param sourceNode The source answer node that the value is being copied from
-     * @throws RepositoryException if an unexpected error occurs
-     */
-
-    /**
-     * Fill out a refernce answer with the value specified as the fallback value.
+     * Fill out a reference answer with the value specified as the fallback value.
      * If no fallback value is present, fill out a null value.
      * @param versionManager A version manager to be used to checkout forms if needed
      * @param session A session that can be used to retrieve the reference question
@@ -325,6 +314,8 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
 
         if (!isNullStatusSame(property, nodeValue)) {
             return true;
+        } else if (property == null || nodeValue == null) {
+            return false;
         }
         Set<String> propertyValues = propertyToStrings(property);
         Set<String> nodeValues = propertyToStrings(nodeValue);
@@ -344,6 +335,8 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     {
         if (!isNullStatusSame(property, value)) {
             return true;
+        } else if (property == null || value == null) {
+            return false;
         }
 
         Set<String> propertyStrings = propertyToStrings(property);
@@ -365,6 +358,8 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     {
         if (!isNullStatusSame(property, values)) {
             return true;
+        } else if (property == null || values == null) {
+            return false;
         }
 
         Set<String> propertyStrings = propertyToStrings(property);

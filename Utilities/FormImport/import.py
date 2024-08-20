@@ -589,6 +589,8 @@ DefaultHeaders["CONDITIONAL_PROPERTY"] = HeaderColumn("conditionalProperty", "co
 DefaultHeaders["CONDITIONAL_OPERATOR"] = HeaderColumn("conditionalOperator", "conditionalOperator")
 DefaultHeaders["CONDITIONAL_VALUE"] = HeaderColumn("conditionalValue", "conditionalValue")
 DefaultHeaders["CONDITIONAL_INVALID_SRC_MSG"] = HeaderColumn("conditionalInvalidSourceMessage", "conditionalInvalidSourceMessage")
+DefaultHeaders["CONDITIONAL_FALLBACK"] = HeaderColumn("conditionalFallback", "conditionalFallback")
+DefaultHeaders["CONDITIONAL_TYPE"] = HeaderColumn("conditionalType", "conditionalType")
 
 #==================
 # Utility functions
