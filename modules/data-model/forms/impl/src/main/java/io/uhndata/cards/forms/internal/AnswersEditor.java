@@ -375,39 +375,4 @@ public abstract class AnswersEditor extends DefaultEditor
                 + (this.node == null ? "" : " node: " + this.node.toString()) + " }";
         }
     }
-
-    protected Type<?> getAnswerType(final Node questionNode)
-    {
-        Type<?> result = Type.STRING;
-        try {
-            final String dataTypeString = questionNode.getProperty("dataType").getString();
-            switch (dataTypeString) {
-                case "long":
-                    result = Type.LONG;
-                    break;
-                case "double":
-                    result = Type.DOUBLE;
-                    break;
-                case "decimal":
-                    result = Type.DECIMAL;
-                    break;
-                case "boolean":
-                    // Long, not boolean
-                    result = Type.LONG;
-                    break;
-                case "date":
-                    result = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
-                        questionNode.getProperty("dateFormat").getString().toLowerCase()))
-                            ? Type.LONG
-                            : Type.DATE;
-                    break;
-                default:
-                    result = Type.STRING;
-            }
-        } catch (RepositoryException e) {
-            getLogger().warn("Error typing value for question. " + e.getMessage());
-            // It's OK to assume String by default
-        }
-        return result;
-    }
 }

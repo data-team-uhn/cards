@@ -21,6 +21,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.oak.api.Type;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -180,5 +181,40 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     public String getQuestionDescription(final Node question)
     {
         return isQuestion(question) ? StringUtils.defaultString(getStringProperty(question, "description")) : "";
+    }
+
+    @Override
+    public Type<?> getAnswerType(final Node question)
+    {
+        Type<?> result = Type.STRING;
+        try {
+            final String dataTypeString = question.getProperty("dataType").getString();
+            switch (dataTypeString) {
+                case "long":
+                    result = Type.LONG;
+                    break;
+                case "double":
+                    result = Type.DOUBLE;
+                    break;
+                case "decimal":
+                    result = Type.DECIMAL;
+                    break;
+                case "boolean":
+                    // Long, not boolean
+                    result = Type.LONG;
+                    break;
+                case "date":
+                    result = (question.hasProperty("dateFormat") && "yyyy".equals(
+                        question.getProperty("dateFormat").getString().toLowerCase()))
+                            ? Type.LONG
+                            : Type.DATE;
+                    break;
+                default:
+                    result = Type.STRING;
+            }
+        } catch (RepositoryException e) {
+            // Default to STRING
+        }
+        return result;
     }
 }
