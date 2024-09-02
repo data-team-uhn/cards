@@ -990,6 +990,7 @@ if args.mssql:
   if args.cards_project == 'cards4prems':
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=PatientActivity_data_for_PtExpSurveyApp')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_YVM_SQL_TABLE=PatientActivity_Outpatient_PMCC_data_for_PtExpSurvey')
+    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_PMH_AC_SQL_TABLE=PatientActivity_PMCC_Acute_Care_for_PtExpSurvey')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=HOSP_DISCHARGE_DTTM')
   elif args.cards_project == 'cards4proms':
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=PatientVisitActivity_for_DATA-PRO')
