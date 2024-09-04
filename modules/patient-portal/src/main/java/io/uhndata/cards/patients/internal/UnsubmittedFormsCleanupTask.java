@@ -86,8 +86,6 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                 (String) resolver.getResource("/Questionnaires/Visit information").getValueMap().get("jcr:uuid");
             final String time =
                 (String) resolver.getResource("/Questionnaires/Visit information/time").getValueMap().get("jcr:uuid");
-            final String submitted = (String) resolver
-                .getResource("/Questionnaires/Visit information/surveys_submitted").getValueMap().get("jcr:uuid");
             final int patientTokenLifetime = this.patientAccessConfiguration.getDaysRelativeToEventWhileSurveyIsValid();
 
             // Find all clinics to iterate over
@@ -114,8 +112,6 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                         + "       on clinic.form = visitInformation.[jcr:uuid]"
                         + "    inner join [cards:DateAnswer] as visitDate"
                         + "       on visitDate.form=visitInformation.[jcr:uuid]"
-                        + "    inner join [cards:BooleanAnswer] as submitted"
-                        + "      on submitted.form = visitInformation.[jcr:uuid]"
                         + " where"
                         // link to the correct Visit Information questionnaire
                         + "  visitInformation.questionnaire = '%1$s'"
@@ -124,13 +120,12 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                         // the visit date is in the past
                         + "  and visitDate.question = '%2$s'"
                         + "  and visitDate.value < '%4$s'"
-                        // the visit is not submitted
-                        + "  and submitted.question = '%3$s'"
-                        + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
+                        // the form is not submitted
+                        + "  and not dataForm.statusFlags = 'SUBMITTED'"
                         // exclude the Visit Information form itself
                         + "  and dataForm.questionnaire <> '%1$s'"
                         + " option (index tag cards)",
-                    visitInformationQuestionnaire, time, submitted,
+                    visitInformationQuestionnaire, time,
                     ZonedDateTime.now().minusDays(delay)
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx")), clinicPath),
                     Query.JCR_SQL2);
