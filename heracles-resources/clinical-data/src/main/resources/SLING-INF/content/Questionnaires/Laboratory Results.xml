@@ -384,9 +384,26 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Desirable: &lt;5.18  
+Borderline high: 5.18 - 6.18  
+High: &gt;6.18</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>1.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>10.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -418,6 +435,22 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Excellent: &gt;1.55  
+Low: &lt;1.03</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.1</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
 			<value>mmol/L</value>
 			<type>String</type>
@@ -447,6 +480,24 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Normal: &lt;1.69  
+Borderline-high: 1.69 - 2.25  
+High: 2.26 - 5.64  
+Very high: &gt;5.65</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.1</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>10.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
 			<value>mmol/L</value>
 			<type>String</type>
@@ -471,9 +522,28 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Optimal: &lt;2.6  
+Above optimal: 2.6 - 3.3  
+Borderline high: 3.4 - 4.1  
+High: 4.14 - 4.9  
+Very high: &gt;4.92</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.1</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>10.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -500,9 +570,26 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Normal: &lt;5.6  
+Pre-diabetes: 5.6 - 6.9  
+Diabetes: &gt;7</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>20.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -530,13 +617,25 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>HgA1c</value>
+			<value>Normal: 4 - 5.6  
+Pre-diabetes: 5.7 - 6.4  
+Diabetes: &gt;6.5</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>15.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -563,13 +662,28 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>4,500 (4.5) to 11,000 (11.0)</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>minValue</name>
+			<value>1.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>20.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
-			<value>cells/mcL</value>
+			<value>thousand/µL</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -592,13 +706,29 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Male range: 4.7 - 6.1 million  
+Female range: 4.2 - 5.4 million</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>minValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>8.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
-			<value>cells/mcL</value>
+			<value>million/µL</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -621,9 +751,25 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Male range: 140 - 180 g/L  
+Female range: 120 - 160 g/L</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>50.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>200.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -650,9 +796,25 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Male range: 41% - 50%  
+Female range: 36% - 48%</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>30.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>60.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -679,13 +841,28 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Range: 80-100</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>minValue</name>
+			<value>70.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>120.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
-			<value>g/L</value>
+			<value>fL</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -708,9 +885,24 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Range: 0 - 3</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>200.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
