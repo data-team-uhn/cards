@@ -18,22 +18,20 @@ package io.uhndata.cards.formcompletionstatus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.utils.ConditionalUtils;
 
 public final class ConditionalSectionUtils
 {
@@ -49,8 +47,6 @@ public final class ConditionalSectionUtils
 
     private static final String PROP_REQUIRE_ALL = "requireAll";
 
-    private static final BiPredicate<Operand, Operand> SINGLE_LISTS =
-        (a, b) -> (a.getValues().size() == 1 && b.getValues().size() == 1);
 
     /**
      * Hide the utility class constructor.
@@ -207,93 +203,37 @@ public final class ConditionalSectionUtils
     }
 
     /**
-     * The data type of the operand values, as indicated in the {@code dataType} property of the
-     * {@code cards:Conditional} node.
+     * Get an operand of a specified type from the specified nodes.
+     * @param node The conditional operand node;
+     *             used to determine the operand value for non-reference operands
+     *             or where the operand value should be retrieved from for reference operands
+     * @param type The type of the operand value
+     * @param sectionNode the {@code cards:Section} node under which the conditional resides
+     * @param form the {@code cards:Form} node being evaluated
+     * @return a new operand containing the retrieved values
+     * @throws RepositoryException if an unexpected error occurs
      */
-    @SuppressWarnings("unchecked")
-    private enum OperandType
+    private static ConditionalUtils.Operand getOperand(final Node node, final ConditionalUtils.OperandType type,
+        final Node sectionNode, final NodeBuilder form)
+        throws RepositoryException
     {
-        TEXT(Type.STRINGS, v -> {
-            try {
-                return (Comparable<Object>) (Object) v.getString();
-            } catch (IllegalStateException | RepositoryException e) {
-                return (Comparable<Object>) (Object) v.toString();
-            }
-        }),
-        DATE(Type.DATES, v -> {
-            try {
-                return (Comparable<Object>) (Object) v.getDate();
-            } catch (IllegalStateException | RepositoryException e) {
-                return (Comparable<Object>) (Object) v.toString();
-            }
-        }),
-        LONG(Type.LONGS, v -> {
-            try {
-                return (Comparable<Object>) (Object) v.getLong();
-            } catch (IllegalStateException | RepositoryException e) {
-                return (Comparable<Object>) (Object) v.toString();
-            }
-        }),
-        DECIMAL(Type.DECIMALS, v -> {
-            try {
-                return (Comparable<Object>) (Object) v.getDecimal();
-            } catch (IllegalStateException | RepositoryException e) {
-                return (Comparable<Object>) (Object) v.toString();
-            }
-        }),
-        DOUBLE(Type.DOUBLES, v -> {
-            try {
-                return (Comparable<Object>) (Object) v.getDouble();
-            } catch (IllegalStateException | RepositoryException e) {
-                return (Comparable<Object>) (Object) v.toString();
-            }
-        });
-
-        private final Type<?> type;
-
-        private final Function<Value, Comparable<Object>> valueExtractor;
-
-        OperandType(Type<?> type, final Function<Value, Comparable<Object>> valueExtractor)
-        {
-            this.type = type;
-            this.valueExtractor = valueExtractor;
+        if (node == null || !node.hasProperty(PROP_VALUE) || !node.hasProperty(PROP_IS_REFERENCE)) {
+            return new ConditionalOperand(type, null, false);
         }
+        boolean reference = node.getProperty(PROP_IS_REFERENCE).getValue().getBoolean();
+        if (reference) {
+            PropertyState answerProperty = getPropertyStateFromRef(node, sectionNode, form);
 
-        /**
-         * The Oak type that should be used to extract the values with the correct type from the {@code PropertyState}
-         * object.
-         *
-         * @return an Oak multivalue type
-         */
-        public Type<?> getOakType()
-        {
-            return this.type;
-        }
-
-        /**
-         * Extract the value in the intended type from a JCR {@code Value} object.
-         *
-         * @param jcrValue a Value object
-         * @return the raw value stored in the object
-         */
-        public Comparable<Object> getValue(final Value jcrValue)
-        {
-            return this.valueExtractor.apply(jcrValue);
-        }
-
-        /**
-         * Convert the value of the {@code dataType} property into an enum item.
-         *
-         * @param label the value stored in the conditional node
-         * @return an enum instance, {@code TEXT} if the passed label isn't one of the known types
-         */
-        public static OperandType parse(final String label)
-        {
-            try {
-                return valueOf(label.toUpperCase(Locale.ROOT));
-            } catch (final IllegalArgumentException | NullPointerException ex) {
-                return TEXT;
+            if (answerProperty != null) {
+                @SuppressWarnings("unchecked")
+                Iterable<Comparable<Object>> answerValues =
+                    (Iterable<Comparable<Object>>) answerProperty.getValue(type.getOakType());
+                return new ConditionalOperand(answerValues, reference);
+            } else {
+                return new ConditionalOperand(reference);
             }
+        } else {
+            return new ConditionalOperand(type, node.getProperty(PROP_VALUE), reference);
         }
     }
 
@@ -301,144 +241,34 @@ public final class ConditionalSectionUtils
      * An operand of a conditional, either {@code operandA} or {@code operandB}, exposes either the actual values stored
      * in the form or the constants specified in the operand node.
      */
-    private static class Operand
+    private static class ConditionalOperand extends ConditionalUtils.Operand
     {
-        private final List<Comparable<Object>> values;
+        protected boolean reference;
 
-        private final boolean reference;
-
-        Operand(final Node node, final OperandType type, final Node sectionNode, final NodeBuilder form)
+        ConditionalOperand(final ConditionalUtils.OperandType type, final Property property, final boolean reference)
             throws RepositoryException
         {
-            this.values = new ArrayList<>();
-            if (node == null || !node.hasProperty(PROP_VALUE) || !node.hasProperty(PROP_IS_REFERENCE)) {
-                this.reference = false;
-                return;
-            }
-            this.reference = node.getProperty(PROP_IS_REFERENCE).getValue().getBoolean();
-            if (this.reference) {
-                PropertyState answerProperty = getPropertyStateFromRef(node, sectionNode, form);
-
-                if (answerProperty != null) {
-                    @SuppressWarnings("unchecked")
-                    Iterable<Comparable<Object>> answerValues =
-                        (Iterable<Comparable<Object>>) answerProperty.getValue(type.getOakType());
-                    answerValues.forEach(v -> this.values.add(v));
-                }
-            } else {
-                Property valueProp = node.getProperty(PROP_VALUE);
-                if (valueProp.isMultiple()) {
-                    for (Value v : valueProp.getValues()) {
-                        this.values.add(type.getValue(v));
-                    }
-                } else {
-                    this.values.add(type.getValue(valueProp.getValue()));
-                }
-            }
+            super(type, property);
+            this.reference = reference;
         }
 
-        /**
-         * Retrieve the values for this operand, either the answers from the form or the constants specified in the
-         * operand node.
-         *
-         * @return a list of values, empty if the operand doesn't actually exist or if there are no actual values in the
-         *         form
-         */
-        public List<Comparable<Object>> getValues()
+        ConditionalOperand(final Iterable<Comparable<Object>> values, final boolean reference)
+            throws RepositoryException
         {
-            return this.values;
+            super(values);
+            this.reference = reference;
+        }
+
+        ConditionalOperand(final boolean reference)
+        {
+            super();
+            this.reference = reference;
         }
 
         @Override
         public String toString()
         {
             return (this.reference ? "@" : "") + this.values.toString();
-        }
-    }
-
-    /**
-     * The operator of a conditional, includes a method to evaluate it on actual operand values.
-     */
-    private enum Operator
-    {
-        EQ("=", (left, right) -> left.getValues().stream()
-            .allMatch(vl -> right.getValues().stream().anyMatch(vr -> (vl.compareTo(vr) == 0)))
-            && right.getValues().stream()
-                .allMatch(vr -> left.getValues().stream().anyMatch(vl -> (vl.compareTo(vr) == 0))),
-            true),
-        NEQ("<>", (left, right) -> !EQ.evaluate(left, right), true),
-        LT("<", (left, right) -> SINGLE_LISTS.test(left, right)
-            && (left.getValues().get(0).compareTo(right.getValues().get(0)) < 0),
-            false),
-        LTE("<=", (left, right) -> SINGLE_LISTS.test(left, right)
-            && (left.getValues().get(0).compareTo(right.getValues().get(0)) <= 0), false),
-        GT(">", (left, right) -> SINGLE_LISTS.test(left, right)
-            && (left.getValues().get(0).compareTo(right.getValues().get(0)) > 0), false),
-        GTE(">=", (left, right) -> SINGLE_LISTS.test(left, right)
-            && (left.getValues().get(0).compareTo(right.getValues().get(0)) >= 0), false),
-        EMPTY("is empty", (left, right) -> left.getValues().size() == 0 && right.getValues().size() == 0, true),
-        NOT_EMPTY("is not empty", (left, right) -> !EMPTY.evaluate(left, right), true),
-        INCLUDES("includes",
-            (left, right) -> right.values.stream().allMatch(
-                vl -> left.getValues().stream().anyMatch(vr -> (vr.compareTo(vl) == 0))),
-            true),
-        INCLUDES_ANY("includes any",
-            (left, right) -> right.values.stream().anyMatch(
-                vl -> left.getValues().stream().anyMatch(vr -> (vr.compareTo(vl) == 0))),
-            true),
-        EXCLUDES("excludes",
-            (left, right) -> right.values.stream().noneMatch(
-                vl -> left.getValues().stream().anyMatch(vr -> (vr.compareTo(vl) == 0))),
-            true),
-        EXCLUDES_ANY("excludes any",
-            (left, right) -> right.values.stream().anyMatch(
-                vl -> left.getValues().stream().noneMatch(vr -> (vr.compareTo(vl) == 0))),
-            true);
-
-        private final String operatorStr;
-
-        private final boolean supportsMultivalue;
-
-        private final BiPredicate<Operand, Operand> evaluator;
-
-        Operator(final String operatorStr, final BiPredicate<Operand, Operand> evaluator,
-            final boolean supportsMultivalue)
-        {
-            this.operatorStr = operatorStr;
-            this.evaluator = evaluator;
-            this.supportsMultivalue = supportsMultivalue;
-        }
-
-        /**
-         * Evaluate the two operands according to the rules of this operator.
-         *
-         * @param left the left operand
-         * @param right the right operand, may be empty if this is an unary operator
-         * @return {@code true} if the two operands pass this operator, {@code false} otherwise
-         */
-        public boolean evaluate(final Operand left, final Operand right)
-        {
-            if (!this.supportsMultivalue && (left.getValues().size() > 1 || right.getValues().size() > 1)) {
-                return false;
-            }
-            return this.evaluator.test(left, right);
-        }
-
-        /**
-         * Convert the value of the {@code comparator} property of the conditional node into an enum item.
-         *
-         * @param operatorStr the value stored in the conditional node
-         * @return an enum instance
-         * @throws IllegalArgumentException if the value passed is not a known operator
-         */
-        public static Operator parse(final String operatorStr)
-        {
-            for (Operator o : Operator.values()) {
-                if (o.operatorStr.equals(operatorStr)) {
-                    return o;
-                }
-            }
-            throw new IllegalArgumentException("Unknown operator: " + operatorStr);
         }
     }
 
@@ -507,22 +337,23 @@ public final class ConditionalSectionUtils
      */
     private static class Condition implements Conditional
     {
-        private final Operand left;
+        private final ConditionalUtils.Operand left;
 
-        private final Operand right;
+        private final ConditionalUtils.Operand right;
 
-        private final Operator operator;
+        private final ConditionalUtils.Operator operator;
 
         Condition(final Node node, final Node sectionNode, final NodeBuilder form) throws RepositoryException
         {
-            this.operator = Operator.parse(node.getProperty("comparator").getString());
-            final OperandType type = node.hasProperty(PROP_TYPE)
-                ? OperandType.parse(node.getProperty(PROP_TYPE).getValue().getString()) : OperandType.TEXT;
+            this.operator = ConditionalUtils.Operator.parse(node.getProperty("comparator").getString());
+            final ConditionalUtils.OperandType type = node.hasProperty(PROP_TYPE)
+                ? ConditionalUtils.OperandType.parse(node.getProperty(PROP_TYPE).getValue().getString())
+                : ConditionalUtils.OperandType.TEXT;
             this.left =
-                new Operand(node.hasNode("operandA") ? node.getNode("operandA") : null, type, sectionNode,
+                getOperand(node.hasNode("operandA") ? node.getNode("operandA") : null, type, sectionNode,
                     form);
             this.right =
-                new Operand(node.hasNode("operandB") ? node.getNode("operandB") : null, type, sectionNode,
+                getOperand(node.hasNode("operandB") ? node.getNode("operandB") : null, type, sectionNode,
                     form);
         }
 

@@ -17,6 +17,7 @@
 package io.uhndata.cards.forms.internal;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -138,18 +139,63 @@ public class ReferenceAnswersEditor extends AnswersEditor
                     Type<?> resultType = getAnswerType(question);
                     ReferenceAnswer result = getAnswer(form, referencedQuestion);
 
-                    if (result == null) {
-                        answer.removeProperty(FormUtils.VALUE_PROPERTY);
-                    } else {
-                        // Type erasure makes the actual type irrelevant, there's only one real implementation method
-                        // The implementation can extract the right type from the type object
-                        @SuppressWarnings("unchecked")
-                        Type<Object> untypedResultType =
-                            (Type<Object>) (result.getValue() instanceof List ? resultType.getArrayType() : resultType);
-                        answer.setProperty(FormUtils.VALUE_PROPERTY, result.getValue(), untypedResultType);
-                        answer.setProperty("copiedFrom", result.getPath());
-                    }
+                    setAnswer(answer, result, resultType, question);
                 });
+        }
+    }
+
+    private void setAnswer(NodeBuilder answer, ReferenceAnswer result, Type<?> resultType, Node question)
+    {
+        if (result == null) {
+            answer.removeProperty(FormUtils.VALUE_PROPERTY);
+            setInvalidSourceStatusFlag(answer);
+        } else {
+            try {
+                if (ReferenceConditionUtils.referenceHasCondition(question)
+                    && !ReferenceConditionUtils.isReferenceConditionSatisfied(this.formUtils, question,
+                        this.serviceSession.getNode(result.getPath()))
+                ) {
+                    ReferenceConditionUtils.setToFallback(answer, question);
+                    answer.setProperty("copiedFrom", result.getPath());
+                    setInvalidSourceStatusFlag(answer);
+                } else {
+                    // Type erasure makes the actual type irrelevant, there's only one real
+                    // implementation method. he implementation can extract the right type from the
+                    // type object
+                    @SuppressWarnings("unchecked")
+                    Type<Object> untypedResultType =
+                        (Type<Object>) (result.getValue() instanceof List
+                            ? resultType.getArrayType()
+                            : resultType);
+                    answer.setProperty(FormUtils.VALUE_PROPERTY, result.getValue(), untypedResultType);
+                    answer.setProperty("copiedFrom", result.getPath());
+                }
+            } catch (RepositoryException e) {
+                LOGGER.error("Could not set reference question", e);
+            }
+        }
+    }
+
+    private void setInvalidSourceStatusFlag(NodeBuilder answer)
+    {
+        if (answer.hasProperty(FormUtils.STATUS_FLAGS)) {
+            Iterable<String> statusFlags = answer.getProperty(FormUtils.STATUS_FLAGS).getValue(Type.STRINGS);
+            final boolean[] containsInvalidSourceFlag = {false};
+            statusFlags.forEach(s -> {
+                if (ReferenceConditionUtils.INVALID_SOURCE_FLAG.equals(s)) {
+                    containsInvalidSourceFlag[0] = true;
+                }
+            });
+
+            if (!containsInvalidSourceFlag[0]) {
+                ArrayList<String> newFlags = new ArrayList<>();
+                statusFlags.forEach(s -> newFlags.add(s));
+                newFlags.add(ReferenceConditionUtils.INVALID_SOURCE_FLAG);
+                answer.setProperty(FormUtils.STATUS_FLAGS, newFlags, Type.STRINGS);
+            }
+        } else {
+            answer.setProperty(FormUtils.STATUS_FLAGS,
+                new String[]{ReferenceConditionUtils.INVALID_SOURCE_FLAG});
         }
     }
 
