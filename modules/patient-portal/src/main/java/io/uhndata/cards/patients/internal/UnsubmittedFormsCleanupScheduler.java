@@ -67,7 +67,7 @@ public class UnsubmittedFormsCleanupScheduler
     {
         try {
             // Every night at midnight
-            final ScheduleOptions options = this.scheduler.EXPR("0 0 0 * * ? *");
+            final ScheduleOptions options = this.scheduler.EXPR("0 0 1 * * ? *");
             options.name(SCHEDULER_JOB_NAME);
             options.canRunConcurrently(false);
 
