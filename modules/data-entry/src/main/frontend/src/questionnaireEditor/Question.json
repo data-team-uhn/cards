@@ -51,6 +51,10 @@
           },
           "reference": {
             "question": "string",
+            "updateMode" : {
+              "always" : {},
+              "initial_only" : {}
+            },
             "displayMode" : {
               "plain" : {},
               "formatted" : {},

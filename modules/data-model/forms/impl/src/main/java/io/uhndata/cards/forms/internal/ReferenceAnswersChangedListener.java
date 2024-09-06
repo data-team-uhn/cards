@@ -142,6 +142,8 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             } else if (node.isNodeType("cards:Answer")) {
                 final String answerNodeType = node.getPrimaryNodeType().getName();
                 final String subject = this.formUtils.getSubject(this.formUtils.getForm(node)).getIdentifier();
+                // TODO: is this query needed with the refactor in CARDS-2509/2571?
+                // May be possible to replace it with a loop on node.getReferences()
                 final NodeIterator resourceIteratorReferencingAnswers = session
                     .getWorkspace().getQueryManager().createQuery(
                         // Answers that were explicitly copied from this answer
@@ -168,7 +170,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                     !node.hasProperty(VALUE) ? null : node.getProperty(VALUE);
                 while (resourceIteratorReferencingAnswers.hasNext()) {
                     final Node referenceAnswer = resourceIteratorReferencingAnswers.nextNode();
-                    if (isNotSame(sourceAnswerValue, referenceAnswer)) {
+                    if (shouldUpdateValue(sourceAnswerValue, referenceAnswer)) {
                         final Node formNode = this.formUtils.getForm(referenceAnswer);
                         final String referenceFormPath = formNode.getPath();
                         versionManager.checkout(referenceFormPath);
@@ -191,6 +193,34 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         }
     }
 
+    private boolean shouldUpdateValue(final Property source, final Node reference) throws RepositoryException
+    {
+        String updateMode = "";
+        Node referenceQuestion = this.formUtils.getQuestion(reference);
+        if (referenceQuestion.hasProperty("updateMode")) {
+            updateMode = referenceQuestion.getProperty("updateMode").getString();
+        }
+        boolean updatePolicyMatches;
+        switch (updateMode) {
+            case "initial_only":
+                // This listener only runs on answers that are referenced by an existing reference answer.
+                // This means every time it runs the reference answer will already have copied the state of this answer
+                // and thus should not be overwritten
+                updatePolicyMatches = false;
+                break;
+            case "always":
+            default:
+                updatePolicyMatches = true;
+                break;
+        }
+        return updatePolicyMatches && isNotSame(source, reference);
+    }
+
+    // TODO: should be renamed to avoid negative
+    // Will handle while dealing with 2509/2571 merge
+    // TODO: Fix Cyclomatic Complexity
+    // Will handle while dealing with 2509/2571 merge
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
     private boolean isNotSame(final Property source, final Node reference) throws RepositoryException
     {
         final Property referenceAnswerValue =
@@ -198,6 +228,9 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
 
         if (source == null && referenceAnswerValue != null || source != null && referenceAnswerValue == null) {
             return true;
+        } else if (source == null) {
+            // Both must be null
+            return false;
         }
         Set<String> sourceValues = new HashSet<>();
         if (source.isMultiple()) {
