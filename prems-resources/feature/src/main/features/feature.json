@@ -430,6 +430,22 @@
       "dayToImport": -7
     },
 
+    // PMH-AC-trumps-YVM
+    // This isn't a proper import, it queries the Acute Care table,
+    // and if a patient has both an Acute Care and a regular PMH visit on the same day,
+    // we discard the YVM visit, even if it was already imported.
+    // This is necessary because we import the YVM events 5 days before the AC events,
+    // so we can't just use the Recent Visit Discard Filter.
+    "io.uhndata.cards.clarity.importer.ClarityImportConfig~pm-ac-trumps-yvm": {
+      "name": "PMH AC Trumps YVM",
+      "type": "pmh-ac-trumps-yvm",
+      "importSchedule": "0 45 8 * * ? *",
+      "tableName": "%ENV%CLARITY_PMH_AC_SQL_TABLE",
+      "dateColumn": "ENC_START_DTTM",
+      "mapping": "/apps/cards/clarityImport/PMH-AC",
+      "dayToImport": -2
+    },
+
     // Clarity import filters and mappers
 
     // Discard patients with invalid or non-consented emails
@@ -442,7 +458,7 @@
     // Only send surveys to patients once every 6 months
     "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~ye": {
       "enable": true,
-      "supportedTypes": ["inpatient-ed", "pmh-ac"],
+      "supportedTypes": ["inpatient-ed", "pmh-ac", "pmh-ac-trumps-yvm"],
       "minimum.visit.frequency": 183,
       "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242", "/Survey/ClinicMapping/PM-AC", "/Survey/ClinicMapping/PM-AC-IP"]
     },
@@ -455,7 +471,7 @@
     // Don't import visits for patients who have opted out of emails
     "io.uhndata.cards.clarity.importer.internal.UnsubscribedFilter": {
       "enable": true,
-      "supportedTypes": ["inpatient-ed", "yvm", "pmh-ac"]
+      "supportedTypes": ["inpatient-ed", "yvm", "pmh-ac", "pmh-ac-trumps-yvm"]
     },
     // Only look at events from the participating hospitals, discard everything else
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
@@ -480,7 +496,7 @@
       ]
     },
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-ACNonParticipatingHospitals":{
-      "supportedTypes": ["pmh-ac"],
+      "supportedTypes": ["pmh-ac", "pmh-ac-trumps-yvm"],
       "priority": 10,
       "conditions": [
         "LOCATION_NAME <> Princess Margaret Cancer Centre"
@@ -525,7 +541,7 @@
     },
     // PMH-AC: Only retain visits to certain clinics
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-ACNonParticipatingUnits":{
-      "supportedTypes": ["pmh-ac"],
+      "supportedTypes": ["pmh-ac", "pmh-ac-trumps-yvm"],
       "priority": 10,
       "conditions": [
         "DEPARTMENT_NAME <> PM-DAY ONCOLOGY/AWA",
@@ -560,7 +576,7 @@
     },
     // PMH-AC: Only look at actual completed events
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-AC-NotCompleted":{
-      "supportedTypes": ["pmh-ac"],
+      "supportedTypes": ["pmh-ac", "pmh-ac-trumps-yvm"],
       "priority": 10,
       "conditions": [
         "APPT_STATUS not in Completed; Arrived"
@@ -745,8 +761,16 @@
     // Discard duplicates if there's more than one event per patient
     "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
       "enable": true,
-      "supportedTypes": ["inpatient-ed", "yvm", "pmh-ac"],
+      "supportedTypes": ["inpatient-ed", "yvm", "pmh-ac", "pmh-ac-trumps-yvm"],
       "subjectType": "/SubjectTypes/Patient"
+    },
+    // Special filter, discard YVM visits happening on the same day as an AC visit
+    "io.uhndata.cards.clarity.importer.internal.DiscardExistingVisitsFilter":{
+      "enabled": true,
+      "supportedTypes": ["pmh-ac-trumps-yvm"],
+      "dateColumn": "ENC_START_DTTM",
+      "clinics": ["/Survey/ClinicMapping/PMH-YVM"],
+      "discardNew": true
     },
     // Submission event listener
     "io.uhndata.cards.patients.submissioncounter.SubmissionCounter~SurveysSubmitted":{
