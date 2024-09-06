@@ -116,10 +116,10 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                         // link to the correct Visit Information questionnaire
                         + "  visitInformation.questionnaire = '%1$s'"
                         // link to the exact clinic in Visit Information form
-                        + "  and clinic.value = '%5$s'"
+                        + "  and clinic.value = '%4$s'"
                         // the visit date is in the past
                         + "  and visitDate.question = '%2$s'"
-                        + "  and visitDate.value < '%4$s'"
+                        + "  and visitDate.value < '%3$s'"
                         // the form is not submitted
                         + "  and not dataForm.statusFlags = 'SUBMITTED'"
                         // exclude the Visit Information form itself
