@@ -26,11 +26,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.version.OnParentVersionAction;
+import javax.jcr.version.VersionManager;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -77,7 +80,8 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
 
     @ObjectClassDefinition(
         name = "Clarity import filter - Delete previously imported events",
-        description = "Configuration for the Clarity importer to delete existing visits on the same day as the newly imported event")
+        description = "Configuration for the Clarity importer to delete existing visits"
+            + " on the same day as the newly imported event")
     public @interface Config
     {
         @AttributeDefinition(name = "Enabled")
@@ -131,7 +135,7 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
         final Session session = this.rrp.getThreadResourceResolver().adaptTo(Session.class);
         final String patientUuid = findSubject(input, session);
         final String formQuery = String.format(
-            "SELECT * FROM [cards:Form] AS vi"
+            "SELECT vi.* FROM [cards:Form] AS vi"
                 + " INNER JOIN [cards:DateAnswer] AS time ON time.form = vi.[jcr:uuid]"
                 + " WHERE"
                 + " vi.questionnaire = '%s' AND vi.relatedSubjects ='%s'"
@@ -144,7 +148,6 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
             JCR_DATE_FORMAT.format(endTime.getTime()));
         final NodeIterator visits =
             session.getWorkspace().getQueryManager().createQuery(formQuery, "JCR-SQL2").execute().getNodes();
-        // Should only be 0 or 1 patient with that identifier. Process it if found.
         while (visits.hasNext()) {
             final Node visitInformation = visits.nextNode();
             final String clinic = (String) this.formUtils.getValue(this.formUtils.getAnswer(visitInformation,
@@ -178,8 +181,20 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
             if (visit.hasNodes()) {
                 visit.getNodes().forEachRemaining(o -> deleteNode((Node) o));
             }
+            final VersionManager versionManager = visit.getSession().getWorkspace().getVersionManager();
+            final Node versionableAncestor = findVersionableAncestor(visit);
+            boolean needsCheckin = false;
+            if (versionableAncestor != null && !versionableAncestor.isCheckedOut()) {
+                needsCheckin = true;
+                versionManager.checkout(versionableAncestor.getPath());
+            }
+            LOGGER.warn("Removed existing visit {} because a different visit will be imported instead",
+                visit.getPath());
             visit.remove();
             visit.getSession().save();
+            if (needsCheckin) {
+                versionManager.checkin(versionableAncestor.getPath());
+            }
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to delete subject: {}", e.getMessage(), e);
         }
@@ -200,5 +215,33 @@ public class DiscardExistingVisitsFilter extends AbstractClarityDataProcessor im
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
+    }
+
+    private Node findVersionableAncestor(final Node n) throws RepositoryException
+    {
+        // Abort early if no ancestor is accessible
+        if (n == null || n.getDepth() == 0 || isNonVersionable(n)) {
+            return null;
+        }
+
+        Node ancestor = n.getParent();
+        while (ancestor.getDepth() > 0 && !ancestor.isNodeType("mix:versionable")) {
+            try {
+                ancestor = ancestor.getParent();
+            } catch (AccessDeniedException e) {
+                // The parent is inaccessible to us
+                return null;
+            }
+        }
+
+        if (ancestor.isNodeType("mix:versionable")) {
+            return ancestor;
+        }
+        return null;
+    }
+
+    private boolean isNonVersionable(final Node n) throws RepositoryException
+    {
+        return n.getDefinition().getOnParentVersion() == OnParentVersionAction.IGNORE;
     }
 }

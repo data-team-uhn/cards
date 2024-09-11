@@ -79,6 +79,7 @@
               SLING-INF/content/apps/cards/clinics/PM-AC/mailTemplates;path:=/apps/cards/clinics/PM-AC/mailTemplates;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/YourExperience.xml;path:=/apps/cards/clarityImport/YourExperience;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/PMH-YVM.xml;path:=/apps/cards/clarityImport/PMH-YVM;overwrite:=true,
+              SLING-INF/content/apps/cards/clarityImport/PMH-AC.xml;path:=/apps/cards/clarityImport/PMH-AC;overwrite:=true,
               SLING-INF/content/Statistics/;path:=/Statistics/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
