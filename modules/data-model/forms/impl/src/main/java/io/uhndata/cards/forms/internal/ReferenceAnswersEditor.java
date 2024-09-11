@@ -52,7 +52,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
- * An {@link Editor} that fills out any reference answers for a new form.
+ * An {@link Editor} that fills out any reference answers for a new form or any newly created reference answers.
  *
  * @version $Id$
  */
@@ -222,8 +222,7 @@ public class ReferenceAnswersEditor extends DefaultEditor
                     Node sourceAnswer = this.serviceSession.getNode(
                         node.getProperty("copiedFrom").getValue(Type.REFERENCE));
                     Node form = this.formUtils.getForm(sourceAnswer);
-                    String questionnaireId = this.formUtils.getQuestionnaireIdentifier(form);
-                    sourceForms.add(questionnaireId);
+                    sourceForms.add(form.getIdentifier());
                 }
             } catch (RepositoryException e) {
                 // Unable to process answer - do nothing
@@ -381,8 +380,7 @@ public class ReferenceAnswersEditor extends DefaultEditor
             if (!answers.isEmpty()) {
                 Node answer;
                 // Prioritize answers in forms that are already referenced
-                Optional<Node> priorityAnswer = answers.stream().filter(a ->
-                    sourceForms.contains(this.formUtils.getQuestionnaireIdentifier(this.formUtils.getForm(a))))
+                Optional<Node> priorityAnswer = answers.stream().filter(a -> sourceFormsContains(a, sourceForms))
                     .findAny();
                 if (priorityAnswer.isPresent()) {
                     answer = priorityAnswer.get();
@@ -399,6 +397,19 @@ public class ReferenceAnswersEditor extends DefaultEditor
                 + e.getMessage());
         }
         return null;
+    }
+
+    private boolean sourceFormsContains(Node a, Set<String> sourceForms)
+    {
+        try {
+            Node form = this.formUtils.getForm(a);
+            if (form != null) {
+                return sourceForms.contains(form.getIdentifier());
+            }
+        } catch (RepositoryException e) {
+            // Should not happen, fall through to default result regardless
+        }
+        return false;
     }
 
     private Object serializeValue(final Object rawValue)

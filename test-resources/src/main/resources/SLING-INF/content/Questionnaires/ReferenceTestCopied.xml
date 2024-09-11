@@ -844,5 +844,44 @@ Then, verify that all the answers have been copied over successfully</value>
                 <type>Long</type>
             </property>
         </node>
+        <node>
+            <name>textQuestionFromDifferentForm</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Referenced Text question from a second form. Pulls value from Compact Sections Test, Hello there!</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>text</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>compact</name>
+                <value>True</value>
+                <type>Boolean</type>
+            </property>
+            <property>
+                <name>entryMode</name>
+                <value>reference</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>displayMode</name>
+                <value>plain</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>question</name>
+                <value>/Questionnaires/CompactSectionsTest/q1</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+        </node>
     </node>
 </node>
