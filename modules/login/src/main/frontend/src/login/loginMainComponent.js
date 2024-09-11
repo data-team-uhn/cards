@@ -26,6 +26,7 @@ import SignIn from './loginForm';
 import Logo from "../components/Logo";
 
 import styles from "../styling/styles";
+import { CardsTranslationProvider } from '../translation/CardsTranslationProvider';
 
 class MainLoginContainer extends React.Component {
   constructor(props, selfContained) {
@@ -50,38 +51,40 @@ class MainLoginContainer extends React.Component {
     const { classes, selfContained } = this.props;
 
     return (
-        <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
-          <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
-            <Logo maxWidth="200px" component={Grid} item />
-            <Grid item>
-            { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
-            </Grid>
-            { this.state.isLongForm && (!this.state.signInShown || this.state.signUpEnabled) &&
+        <CardsTranslationProvider>
+          <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
+            <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
+              <Logo maxWidth="200px" component={Grid} item />
               <Grid item>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  className={classes.main}
-                  onClick={this.handleSwap}
-                 >
-                  { this.state.signInShown ?  "Sign up" : "Sign In" }
-                </Button>
+              { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
               </Grid>
-            }
-            { this.state.isLongForm &&
-            <Grid item>
-              <Breadcrumbs separator="by" className={classes.appInfo}>
-                <Typography variant="subtitle2">{this.state.title}</Typography>
-                <Tooltip title="DATA Team @ UHN">
-                  <a href="https://uhndata.io/" target="_blank">
-                    <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
-                  </a>
-                </Tooltip>
-              </Breadcrumbs>
+              { this.state.isLongForm && (!this.state.signInShown || this.state.signUpEnabled) &&
+                <Grid item>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    className={classes.main}
+                    onClick={this.handleSwap}
+                  >
+                    { this.state.signInShown ?  "Sign up" : "Sign In" }
+                  </Button>
+                </Grid>
+              }
+              { this.state.isLongForm &&
+              <Grid item>
+                <Breadcrumbs separator="by" className={classes.appInfo}>
+                  <Typography variant="subtitle2">{this.state.title}</Typography>
+                  <Tooltip title="DATA Team @ UHN">
+                    <a href="https://uhndata.io/" target="_blank">
+                      <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
+                    </a>
+                  </Tooltip>
+                </Breadcrumbs>
+              </Grid>
+              }
             </Grid>
-            }
-          </Grid>
-        </Paper>
+          </Paper>
+        </CardsTranslationProvider>
     );
   }
 }
