@@ -18,6 +18,8 @@ package io.uhndata.cards.forms.api;
 
 import javax.jcr.Node;
 
+import org.apache.jackrabbit.oak.api.Type;
+
 /**
  * Basic utilities for working with Questionnaires.
  *
@@ -187,4 +189,12 @@ public interface QuestionnaireUtils
      * @return the question's description, or an empty string if no description is present
      */
     String getQuestionDescription(Node question);
+
+    /**
+     * Retrieve the Oak {@code Type} mapping for this question's answers.
+     *
+     * @param question a {@code cards:Question} node
+     * @return the Oak {@code Type} for this question's answer or {@code Type.STRING} if it could not be determined
+     */
+    Type<?> getAnswerType(Node question);
 }
