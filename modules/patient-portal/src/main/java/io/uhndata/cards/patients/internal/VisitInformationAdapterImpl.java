@@ -36,6 +36,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.patients.api.VisitInformation;
 import io.uhndata.cards.patients.api.VisitInformationAdapter;
 import io.uhndata.cards.qsets.api.QuestionnaireRef;
+import io.uhndata.cards.qsets.api.QuestionnaireRef.TargetUserType;
 import io.uhndata.cards.qsets.api.QuestionnaireSet;
 import io.uhndata.cards.qsets.api.QuestionnaireSetUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
@@ -289,7 +290,7 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
                                 result.addQuestionnaire(template.getQuestionnaire(questionnairePath));
                             } else {
                                 result.addQuestionnaire(VisitInformationAdapterImpl.this.questionnaireSetUtils
-                                    .toQuestionnaireRef(questionnaireNode, 0));
+                                    .toQuestionnaireRef(questionnaireNode, TargetUserType.ANY, 0));
                             }
                         }
                     }

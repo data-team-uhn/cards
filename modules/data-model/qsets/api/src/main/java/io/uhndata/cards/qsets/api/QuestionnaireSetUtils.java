@@ -22,6 +22,8 @@ import java.util.Calendar;
 
 import javax.jcr.Node;
 
+import io.uhndata.cards.qsets.api.QuestionnaireRef.TargetUserType;
+
 /**
  * Utility service for working with questionnaire sets.
  *
@@ -51,10 +53,11 @@ public interface QuestionnaireSetUtils
      * Return a {@link QuestionnaireRef} object explicitly referencing a target {@code cards:Questionnaire} node.
      *
      * @param questionnaire a JCR node of type {@code cards:Questionnaire}
+     * @param targetUserType the target user type to use
      * @param frequency the frequency to use
      * @return the requested object
      */
-    QuestionnaireRef toQuestionnaireRef(Node questionnaire, long frequency);
+    QuestionnaireRef toQuestionnaireRef(Node questionnaire, TargetUserType targetUserType, long frequency);
 
     /**
      * Return a {@link QuestionnaireSet} object reflecting the provided {@code cards:QuestionnaireSet} JCR node and the

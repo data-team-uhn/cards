@@ -221,7 +221,7 @@ public class VisitChangeListener implements ResourceChangeListener
             final Node form = forms.nextProperty().getParent();
             final String questionnairePath = this.formUtils.getQuestionnaire(form).getPath();
             if (template.containsQuestionnaire(questionnairePath)
-                && isFormIncomplete(form)) {
+                && template.getQuestionnaire(questionnairePath).isPatientFacing() && isFormIncomplete(form)) {
                 // Visit is not complete: stop checking without saving completion status
                 return;
             }
@@ -250,6 +250,9 @@ public class VisitChangeListener implements ResourceChangeListener
             final String uuid = UUID.randomUUID().toString();
             final Node form = visitSubject.getSession().getNode("/Forms").addNode(uuid, FormUtils.FORM_NODETYPE);
             form.setProperty(FormUtils.QUESTIONNAIRE_PROPERTY, questionnaire.getQuestionnaire());
+            if (questionnaire.isPatientFacing()) {
+                form.setProperty(STATUS_FLAGS, new String[] { "PATIENT SURVEY" });
+            }
             form.setProperty(FormUtils.SUBJECT_PROPERTY, visitSubject);
             results.add(form.getPath());
         }

@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.qsets.api.QuestionnaireConflict;
 import io.uhndata.cards.qsets.api.QuestionnaireRef;
+import io.uhndata.cards.qsets.api.QuestionnaireRef.TargetUserType;
 import io.uhndata.cards.qsets.api.QuestionnaireSet;
 import io.uhndata.cards.qsets.api.QuestionnaireSetUtils;
 
@@ -114,11 +115,13 @@ public class QuestionnaireSetUtilsImpl implements QuestionnaireSetUtils
                 if (node.isNodeType(QuestionnaireRef.NODETYPE)
                     && node.hasProperty(QuestionnaireRef.QUESTIONNAIRE_PROPERTY)) {
                     final Node questionnaire = node.getProperty(QuestionnaireRef.QUESTIONNAIRE_PROPERTY).getNode();
+                    final QuestionnaireRef.TargetUserType targetUserType =
+                        QuestionnaireRef.TargetUserType.valueOf(node);
                     long frequency = 0;
                     if (node.hasProperty(QuestionnaireRef.FREQUENCY_PROPERTY)) {
                         frequency = node.getProperty(QuestionnaireRef.FREQUENCY_PROPERTY).getLong();
                     }
-                    addQuestionnaire(new QuestionnaireRefImpl(questionnaire, frequency));
+                    addQuestionnaire(new QuestionnaireRefImpl(questionnaire, targetUserType, frequency));
                 } else if (node.isNodeType(QuestionnaireConflict.NODETYPE)
                     && node.hasProperty(QuestionnaireConflict.QUESTIONNAIRE_PROPERTY)) {
                     addConflict(new QuestionnaireConflictImpl(node));
@@ -290,18 +293,21 @@ public class QuestionnaireSetUtilsImpl implements QuestionnaireSetUtils
     {
         private final Node questionnaire;
 
+        private TargetUserType targetUserType;
+
         private final long frequency;
 
-        QuestionnaireRefImpl(final Node questionnaire, final long frequency)
+        QuestionnaireRefImpl(final Node questionnaire, final TargetUserType targetUserType, final long frequency)
         {
             this.questionnaire = questionnaire;
+            this.targetUserType = targetUserType;
             this.frequency = frequency;
         }
 
         QuestionnaireRefImpl(final Node definition)
             throws ItemNotFoundException, ValueFormatException, PathNotFoundException, RepositoryException
         {
-            this(definition.getProperty(QUESTIONNAIRE_PROPERTY).getNode(),
+            this(definition.getProperty(QUESTIONNAIRE_PROPERTY).getNode(), TargetUserType.valueOf(definition),
                 definition.hasProperty(FREQUENCY_PROPERTY) ? definition.getProperty(FREQUENCY_PROPERTY).getLong() : 0);
         }
 
@@ -309,6 +315,12 @@ public class QuestionnaireSetUtilsImpl implements QuestionnaireSetUtils
         public Node getQuestionnaire()
         {
             return this.questionnaire;
+        }
+
+        @Override
+        public TargetUserType getTargetUserType()
+        {
+            return this.targetUserType;
         }
 
         @Override
@@ -383,9 +395,9 @@ public class QuestionnaireSetUtilsImpl implements QuestionnaireSetUtils
     }
 
     @Override
-    public QuestionnaireRef toQuestionnaireRef(Node questionnaire, long frequency)
+    public QuestionnaireRef toQuestionnaireRef(Node questionnaire, TargetUserType targetUserType, long frequency)
     {
-        return new QuestionnaireRefImpl(questionnaire, frequency);
+        return new QuestionnaireRefImpl(questionnaire, targetUserType, frequency);
     }
 
     @Override
