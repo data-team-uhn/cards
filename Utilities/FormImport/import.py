@@ -473,25 +473,25 @@ def section_handler(self, questionnaire, row):
     questionnaire.push_section(create_new_section(label))
 
 def question_handler(self, questionnaire, row):
-    title = self.get_value(row).strip().lower()
+    title = self.get_value(row).strip()
     if get_row_type_map(row).row_type in (SECTION_TYPES + MATRIX_TYPES):
         if Headers["SECTION"].has_value(row):
             questionnaire.parent["title"] = clean_title(title)
         else:
             questionnaire.push_section(create_new_section(title, False))
     else:
-        create_question(questionnaire, self.get_value(row).strip().lower())
+        create_question(questionnaire, self.get_value(row).strip())
 
 def title_handler(self, questionnaire, row):
     if not Headers["QUESTION"].has_value(row):
-        create_question(questionnaire, self.get_value(row).strip().lower())
+        create_question(questionnaire, self.get_value(row).strip())
 
     self.default_column_handler(questionnaire, row)
     return
 
 def create_question(questionnaire, name):
     log(Logging.INFO, "Creating question " + name)
-    question_title = clean_name(name)
+    question_title = simple_clean_name(name)
 
     # Convert any duplicate IDs into sequential IDs
     if question_title in questionnaire.question_title_list:
@@ -647,8 +647,11 @@ def clean_title(title):
 # Clean a string for use in a node name
 # TODO: replace with white list
 def clean_name(name):
-    result = re.sub(':|\(|\)|\[|\]| |,', '', name.strip().replace("/", "-"))
+    result = re.sub(' ', '', simple_clean_name(name))
     return result[:40]
+
+def simple_clean_name(name):
+    return re.sub(':|\(|\)|\[|\]|,', '', name.strip().replace("/", "-"))
 
 # Create a questionnaire object containing a title and all the default quetionnaire properties
 def create_new_questionnaire(title):
@@ -726,11 +729,11 @@ def add_option(value, label, question, index = 0):
     option_details = {
         'jcr:primaryType': 'cards:AnswerOption',
         'label': label,
-        'value': clean_title(value).lower()
+        'value': clean_title(value)
     }
     if index:
         option_details.update({"defaultOrder": index})
-    answer_option = {clean_name(value).lower():
+    answer_option = {clean_name(value):
         add_option_properties(option_details, label)
     }
     question.update(answer_option)
@@ -816,6 +819,8 @@ def condition_handle_single(questionnaire, condition_parent, conditional_string,
     # `=` must be before '<=` and `>=`
     # `<>`, `<=`, and `>=` must be before `<` and `>`
     OPERATORS_PAIR = [
+        "includes any",
+        "excludes any",
         "includes",
         "excludes",
         "=",
@@ -839,39 +844,41 @@ def condition_handle_single(questionnaire, condition_parent, conditional_string,
             create_condition(questionnaire, condition_parent, index, terms[0], operator, terms[1])
 
 def create_condition(questionnaire, condition_parent, index, operand_a, operator, operand_b):
-    if operand_a[0] == "\"" and operand_a[-1] == "\"":
-        operand_a = operand_a[1:-1]
-
     result = {
         'jcr:primaryType': 'cards:Conditional',
         'operandA': {
             'jcr:primaryType': 'cards:ConditionalValue',
-            'value': [operand_a.lower()],
+            'value': process_operand_value(operand_a),
             'isReference': True
         },
         'comparator' : operator
     }
 
     if operand_b != None:
-        if operand_b[0] == "\"" and operand_b[-1] == "\"":
-            operand_b = operand_b[1:-1]
-
-        # TODO: Do conditionals support arrays of values in operandA or operand_b?
-        # If so, handle that case
-
         is_reference = operand_b in questionnaire.question_title_list
 
         result['operandB'] = {
             'jcr:primaryType': 'cards:ConditionalValue',
-            'value': [operand_b.lower()],
+            'value': process_operand_value(operand_b),
             'isReference': is_reference
         }
 
-    # TODO: Do conditionals support arrays of values in operandA or operand_b?
-    # If so, handle that case:
-
     condition_parent["condition" + str(index)] = result
 
+def process_operand_value(operand):
+    if operand[0] == "[" and operand[-1] == "]":
+        operand = operand[1:-1]
+        operand = split_ignore_strings(operand, [","])
+    else:
+        operand = [operand]
+
+    i = 0
+    while i < len(operand):
+        if operand[i][0] == "\"" and operand[i][-1] == "\"":
+            operand[i] = operand[i][1:-1]
+        i+=1
+
+    return operand
 
 
 #=================
@@ -899,7 +906,7 @@ def csv_to_json(title):
     questionnaireState.complete_questionnaire()
 
     for q in questionnaireState.questionnaires:
-        name = clean_name(q['title'])
+        name = simple_clean_name(q['title'])
         with open(name + '.json', 'w') as jsonFile:
             json.dump(q, jsonFile, indent='\t')
         os.system("python3 ../JSON-to-XML/json_to_xml.py '" + name + ".json' > '" + name + ".xml'")
