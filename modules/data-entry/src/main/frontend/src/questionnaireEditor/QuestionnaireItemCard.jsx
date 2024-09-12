@@ -45,7 +45,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 import { camelCaseToWords }  from "./LabeledField";
 
-import { DndDispatchContext } from './EntryDragDrop.jsx';
+import { DndDispatchContext } from './MoveEntry.jsx';
 
 const useStyles = makeStyles(theme => ({
   root : {

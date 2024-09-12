@@ -61,7 +61,7 @@ import QuestionnairePreview from "./QuestionnairePreview";
 import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
 import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
 
-import { DragDropProvider, DndStateContext, DndDispatchContext, MoveEntryModal } from "../questionnaireEditor/EntryDragDrop.jsx";
+import { DragDropProvider, DndStateContext, DndDispatchContext, MoveEntryModal } from "../questionnaireEditor/MoveEntry.jsx";
 import { useQuestionnaireTreeContext } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
@@ -105,7 +105,8 @@ const jcrActions = {
 }
 
 // Mover into DnD context provider file?
-const useStyles = makeStyles(theme => ({
+// TODO: sx to get access to theme
+const useDraggableStyles = makeStyles(theme => ({
   isDraggingOver: { backgroundColor: theme.palette.info.light },
   isNotDraggingOver: { backgroundColor: theme.palette.primary.light }
 }))
@@ -441,9 +442,10 @@ let QuestionnaireItemSet = (props) => {
                 }
               >
                 {(provided, snapshot) => (
-                  <div ref={provided.innerRef} {...provided.draggableProps}
-                  // style={{ display: 'flex', position: 'absolute'}} 
-                  >
+                  // <div ref={provided.innerRef} {...provided.draggableProps}
+                  // // style={{ display: 'flex', position: 'absolute'}} 
+                  // >
+                    <>
                     <Box textAlign="center" style={{ display: dndState.enabled ? 'block' : 'none' }}>
                       <Tooltip title="Drag and drop to reorder">
                         <IconButton size="large" {...provided.dragHandleProps}>
@@ -457,8 +459,9 @@ let QuestionnaireItemSet = (props) => {
                       onActionDone={onActionDone}
                       classes={classes}
                     />
-                    {provided.placeholder}
-                  </div>
+                    </>
+                  //   {provided.placeholder}
+                  // </div>
                 )}
               </Draggable>
         )(eval(stripCardsNamespace(value['jcr:primaryType'])))
@@ -501,17 +504,19 @@ let QuestionnaireContents = (props) => {
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
   const dndTreeContext = useQuestionnaireTreeContext()
   console.log(dndTreeContext)
-  // todo: any manipulation into questionnaireWriter should be reflected in dndTree
+
+
 
   useEffect(() => {
     // Load initial data
-    changeQuestionnaireContext(findQuestionnaireEntries(data, ["cards:Question"]));
     console.log('init', data)
     dndTreeContext.dispatch({ type: 'INITIALIZE_ROOT', payload: { jcrData: data } })
+    changeQuestionnaireContext(findQuestionnaireEntries(data, ["cards:Question"]));
     // Clear context when unmounting component
     return (() => {
-      changeQuestionnaireContext([])
+      console.log('clearing', data)
       dndTreeContext.dispatch({ type: 'CLEAR_TREE' })
+      changeQuestionnaireContext([])
     });
   }, []);
 
@@ -661,6 +666,7 @@ ConditionalGroup.defaultProps = {
 
 let QuestionnaireEntry = (props) => {
   let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
+  console.log('titleField', titleField)
   let [entryData, setEntryData] = useState(data);
   let [menuItems, setMenuItems] = useState([]);
   let [doHighlight, setDoHighlight] = useState(data.doHighlight);
@@ -671,14 +677,15 @@ let QuestionnaireEntry = (props) => {
 
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
   const dndDispatch = useContext(DndDispatchContext)
-  const dndClasses = useStyles()
+  const dndClasses = useDraggableStyles()
   const dndTreeContext = useQuestionnaireTreeContext()
-  console.log(dndTreeContext)
-  console.log(dndClasses)
+  // console.log(dndTreeContext)
+  // console.log(dndClasses)
   // todo: any manipulation into questionnaireWriter should be reflected in dndTree
 
   let updateContext = (data) => {
     let vars = findQuestions({ data: data });
+    console.log('updatingContext', data, vars)
     changeQuestionnaireContext((oldContext) => {
       let newContext = oldContext || [];
       vars.forEach(v => {
@@ -692,9 +699,13 @@ let QuestionnaireEntry = (props) => {
       return newContext;
     });
     // Update tree
+    // console.log(data)
+    // dndTreeContext.dispatch({ type: 'UPDATE_NODE', payload: { jcrData: data } })
   }
 
   let removeFromContext = (id) => {
+    console.log('removing id', id)
+    dndTreeContext.dispatch({ type: 'REMOVE_NODE', payload: { nodeId: id } })
     changeQuestionnaireContext((oldContext) => {
       let newContext = oldContext || [];
       const index = newContext.findIndex(x => x.id == id);
@@ -775,6 +786,7 @@ let QuestionnaireEntry = (props) => {
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
+      console.log('newData', newData)
       onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
       // Try to reload the data from the server
@@ -783,6 +795,7 @@ let QuestionnaireEntry = (props) => {
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(json => handleDataChange(json))
         .catch(() => {
+          console.log('failed to fetch', data)
           // If it fails, it's because we deleted an item
           // Update the context to remove the deleted item
           removeFromContext(`${data['jcr:uuid']}`);
@@ -793,6 +806,7 @@ let QuestionnaireEntry = (props) => {
   }
 
   let onCreated = (newData) => {
+    console.log('onCreated', newData)
     setEntryData(newData);
     updateContext(newData);
   }
@@ -809,7 +823,7 @@ let QuestionnaireEntry = (props) => {
     // call SlingPostServlet https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
     jcrActions.reorderForm(entryPath, destinationIndex)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      // .catch(handleError)
+      .catch(handleError)
       .finally(() => {
         handleDataChange()
         dndDispatch({ type: 'setSnackbar', payload: { open: true, message: "Updated" } })
@@ -826,8 +840,9 @@ let QuestionnaireEntry = (props) => {
       <Fields data={entryData} JSON={spec} edit={false} {...options} />
     </>);
   let FIELDS_CLASS_NAME = "cards-questionnaire-entry-props";
-  // console.log('ed', entryData)
-  // console.log(childModels)
+  
+  console.log('rest', rest)
+  console.log('menuProps', menuProps)
   return (
     // TODO: disable if not editing, available in dataEntry (?)
     // TODO: move out into EntryDragDrop provider component?
@@ -846,22 +861,24 @@ let QuestionnaireEntry = (props) => {
                 // TODO: Add move button here for reordering
                 action={
                   <>
-                    {menuItems?.length > 0 ?
+                    {menuItems?.length > 0 &&
                       <CreationMenu
                         data={entryData}
                         onCreated={onCreated}
                         menuItems={menuItems}
                         models={childModels}
                         {...menuProps}
-                      /> : undefined}
-
-                    {
-                      // TODO: check that entry is draggable and add move button for modal (move into EntryDragDrop file?)
-                      // ENTRY_TYPES.includes(value['jcr:primaryType']) ?
-                      // data?.["jcr:primaryType"] == "cards:Questionnaire"
-                      ENTRY_TYPES.includes(entryData['jcr:primaryType']) ?
-                        <MoveEntryModal data={entryData} />
-                        : undefined
+                      />
+                    }
+                    {!!menuProps?.isMainAction ?
+                      // If this is the main action, render MoveEntryModal without data to select reorder source
+                      // Otherwise render MoveEntryModal with data set
+                        <MoveEntryModal />
+                      : ENTRY_TYPES.includes(entryData['jcr:primaryType']) &&
+                        <MoveEntryModal data={entryData}
+                          // Can't use onActionDone because path may have changed
+                          // onActionDone={onActionDone}
+                        />
                     }
                   </>
 
@@ -871,11 +888,11 @@ let QuestionnaireEntry = (props) => {
                 model={model}
                 {...rest}
               >
-                <div
+                {/* <div
                   ref={provided.innerRef}
-                  // Change background when dragging to indicate to user
-                  // style={snapshot.isDraggingOver ? dndClasses.isDraggingOver : dndClasses.isNotDraggingOver}
-                >
+                  // TODO: Change background when dragging to indicate to user
+                  // className={snapshot.isDraggingOver ? dndClasses.isDraggingOver : dndClasses.isNotDraggingOver}
+                > */}
                   {(childModels ?
                     <QuestionnaireItemSet
                       data={entryData}
@@ -891,8 +908,8 @@ let QuestionnaireEntry = (props) => {
                     <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
                   )}
 
-                </div>
-                {provided.placeholder}
+                {/* </div>
+                {provided.placeholder} */}
               </QuestionnaireItemCard>
             </>
           )
