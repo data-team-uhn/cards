@@ -597,13 +597,7 @@
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DischargeToLocation":{
       "supportedTypes": ["inpatient-ed"],
       "priority": 20,
-      "conditions": ["DISCH_DISPOSITION in Not Arrived; Left Triage; Jail; Diverted; Shelter; Jail or half; Res Care; Inpatient Ac; Inpt Ac Diff; Inpt Ac Same; Inpatient Ps; IP Trnsfr; OP Transfer; RehabPsych"]
-    },
-    // YE: OP Discharge must also be discarded
-    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-Outpatients":{
-      "supportedTypes": ["inpatient-ed"],
-      "priority": 20,
-      "conditions": ["DISCH_DISPOSITION = OP Discharge"]
+      "conditions": ["DISCH_DISPOSITION in Not Arrived; Left Triage; Jail; Diverted; Shelter; Jail or half; Res Care; Inpatient Ac; Inpt Ac Diff; Inpt Ac Same; Inpatient Ps; IP Trnsfr; OP Discharge; OP Transfer; RehabPsych"]
     },
     // YE: Discard patients with special care
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-AlternativeLevelOfCare":{
@@ -720,7 +714,7 @@
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-IP-ShortStay":{
       "supportedTypes": ["inpatient-ed"],
       "priority": 100,
-      "conditions": ["CLINIC not in /Survey/ClinicMapping/-1792626799; /Survey/ClinicMapping/PM-AC", "LENGTH_OF_STAY_DAYS < 1"]
+      "conditions": ["CLINIC <> /Survey/ClinicMapping/-1792626799", "LENGTH_OF_STAY_DAYS < 1"]
     },
     // As a special filter, a small percentage of patients are assigned to the long-form CPESIC cohort
     "io.uhndata.cards.prems.internal.importer.SendCPESForDepartmentFrequency":{
