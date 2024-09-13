@@ -279,20 +279,53 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
     private Node findSurveyStatusForm(final Node surveyStatusQuestionnaire, final Node visitSubject,
         final Session session) throws RepositoryException
     {
+        String clinic = findVisitClinic(visitSubject, session);
+        Node assignedSurvey = surveyStatusQuestionnaire.getNode("assigned_survey");
         final String query = String.format(
             "SELECT surveyStatusForm.*"
                 + "  FROM [cards:Form] as surveyStatusForm"
+                + "  INNER JOIN [cards:Answer] AS surveyAnswer ON surveyStatusForm.[jcr:uuid] = surveyAnswer.form"
                 + " WHERE"
                 + "  surveyStatusForm.questionnaire = '%1$s'"
                 + "  AND surveyStatusForm.subject = '%2$s'"
+                + "  AND surveyAnswer.question = '%3$s'"
+                + "  AND surveyAnswer.value = '%4$s'"
                 + "OPTION (index tag property)",
-            surveyStatusQuestionnaire.getIdentifier(), visitSubject.getIdentifier());
+            surveyStatusQuestionnaire.getIdentifier(),
+            visitSubject.getIdentifier(),
+            assignedSurvey.getIdentifier(),
+            clinic);
         final NodeIterator queryResult =
             session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
         if (queryResult.hasNext()) {
             final Node result = queryResult.nextNode();
             result.getSession().getWorkspace().getVersionManager().checkout(result.getPath());
             return result;
+        }
+        return null;
+    }
+
+    private String findVisitClinic(final Node visitSubject, final Session session) throws RepositoryException
+    {
+        Node visitInformationQuestionnaire = session.getNode("/Questionnaires/Visit information");
+        Node clinicQuestion = visitInformationQuestionnaire.getNode("clinic");
+        final String query = String.format(
+            "SELECT clinicAnswer.*"
+                + "  FROM [cards:Form] as visitInformationForm"
+                + "  INNER JOIN [cards:Answer] AS clinicAnswer ON visitInformationForm.[jcr:uuid] = clinicAnswer.form"
+                + " WHERE"
+                + "  visitInformationForm.questionnaire = '%1$s'"
+                + "  AND visitInformationForm.subject = '%2$s'"
+                + "  AND clinicAnswer.question = '%3$s'"
+                + "OPTION (index tag property)",
+            visitInformationQuestionnaire.getIdentifier(),
+            visitSubject.getIdentifier(),
+            clinicQuestion.getIdentifier());
+        final NodeIterator queryResult =
+            session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
+        if (queryResult.hasNext()) {
+            final Node result = queryResult.nextNode();
+            return result.getProperty("value").getString();
         }
         return null;
     }
