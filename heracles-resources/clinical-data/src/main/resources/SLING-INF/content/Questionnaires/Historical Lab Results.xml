@@ -76,9 +76,9 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Desirable: &lt;5.18  
-Borderline high: 5.18 - 6.18  
-High: &gt;6.18</value>
+			<value>Desirable: <![CDATA[<]]>5.18
+Borderline high: 5.18 - 6.18
+High: <![CDATA[>]]>6.18</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -127,8 +127,8 @@ High: &gt;6.18</value>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Excellent: &gt;1.55  
-Low: &lt;1.03</value>
+			<value>Excellent: <![CDATA[>]]>1.55
+Low: <![CDATA[<]]>1.03</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -172,10 +172,10 @@ Low: &lt;1.03</value>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Normal: &lt;1.69  
-Borderline-high: 1.69 - 2.25  
-High: 2.26 - 5.64  
-Very high: &gt;5.65</value>
+			<value>Normal: <![CDATA[<]]>1.69
+Borderline-high: 1.69 - 2.25
+High: 2.26 - 5.64
+Very high: <![CDATA[>]]>5.65</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -214,11 +214,11 @@ Very high: &gt;5.65</value>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Optimal: &lt;2.6  
-Above optimal: 2.6 - 3.3  
-Borderline high: 3.4 - 4.1  
-High: 4.14 - 4.9  
-Very high: &gt;4.92</value>
+			<value>Optimal: <![CDATA[<]]>2.6
+Above optimal: 2.6 - 3.3
+Borderline high: 3.4 - 4.1
+High: 4.14 - 4.9
+Very high: <![CDATA[>]]>4.92</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -262,9 +262,9 @@ Very high: &gt;4.92</value>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Normal: &lt;5.6  
-Pre-diabetes: 5.6 - 6.9  
-Diabetes: &gt;7</value>
+			<value>Normal: <![CDATA[<]]>5.6
+Pre-diabetes: 5.6 - 6.9
+Diabetes: <![CDATA[>]]>7</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -308,9 +308,9 @@ Diabetes: &gt;7</value>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Normal: 4 - 5.6  
-Pre-diabetes: 5.7 - 6.4  
-Diabetes: &gt;6.5</value>
+			<value>Normal: 4 - 5.6
+Pre-diabetes: 5.7 - 6.4
+Diabetes: <![CDATA[>]]>6.5</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -354,7 +354,7 @@ Diabetes: &gt;6.5</value>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Abnormal: &gt;100</value>
+			<value>Abnormal: <![CDATA[<100]]></value>
 			<type>String</type>
 		</property>
 		<property>
