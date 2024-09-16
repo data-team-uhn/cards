@@ -424,7 +424,8 @@ public class ClarityImportTask implements Runnable
                 + (this.dayToQuery >= 0 ? "+" : "") + this.dayToQuery + " AS DATE)";
         }
         if (env(this.config.dateColumn()) != null) {
-            queryString += " ORDER BY " + env(this.config.dateColumn()) + ";";
+            queryString +=
+                " ORDER BY " + env(this.config.dateColumn()) + (this.config.prioritizeNewestEvents() ? " DESC;" : ";");
         }
 
         return queryString;

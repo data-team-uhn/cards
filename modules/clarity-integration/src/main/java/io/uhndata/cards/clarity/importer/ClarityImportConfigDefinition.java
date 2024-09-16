@@ -67,6 +67,11 @@ public @interface ClarityImportConfigDefinition
         required = false)
     String dateColumn() default "%ENV%CLARITY_EVENT_TIME_COLUMN";
 
+    @AttributeDefinition(name = "Prioritize most recent events",
+        description = "If true, import events in reverse order, newest first",
+        required = false)
+    boolean prioritizeNewestEvents() default false;
+
     @AttributeDefinition(name = "Column mapping", description = "Full path to the clarity mapping node")
     String mapping() default "/apps/cards/clarityImport";
 }

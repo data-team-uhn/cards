@@ -427,7 +427,8 @@
       "tableName": "%ENV%CLARITY_PMH_AC_SQL_TABLE",
       "dateColumn": "ENC_START_DTTM",
       "mapping": "/apps/cards/clarityImport/PMH-AC",
-      "dayToImport": -7
+      "dayToImport": -7,
+      "prioritizeNewestEvents": true
     },
 
     // PMH-AC-trumps-YVM
