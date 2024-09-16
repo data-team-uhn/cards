@@ -577,6 +577,10 @@ const questionnaireStyle = theme => ({
         borderColor: theme.palette.error.main,
         color: theme.palette.error.main,
     },
+    LOCKEDFlag:{
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.background.paper
+    },
     DefaultFlag: {
     },
     formPreview: {
@@ -733,6 +737,11 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
+    lockDialogInput: {
+      marginTop: theme.spacing(3),
+      marginRight: theme.spacing(3),
+      marginBottom: theme.spacing(3),
+    }
 });
 
 export default questionnaireStyle;

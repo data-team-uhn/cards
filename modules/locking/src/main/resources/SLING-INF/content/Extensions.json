@@ -1,0 +1,12 @@
+{
+    "SubjectActions": {
+        "jcr:primaryType": "sling:Folder",
+        "SubjectLockAction": {
+            "jcr:primaryType": "cards:Extension",
+            "cards:extensionPointId": "cards/subject/chart/actions",
+            "cards:extensionName": "Subject Lock Action",
+            "cards:extensionRenderURL": "asset:cards-locking.SubjectLockAction.js",
+            "cards:defaultOrder": 1
+        }
+    }
+}
