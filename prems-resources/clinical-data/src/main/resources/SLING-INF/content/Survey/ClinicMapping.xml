@@ -290,4 +290,52 @@
             <type>Double</type>
         </property>
     </node>
+    <node>
+        <name>PM-AC</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>PM-AC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>AC</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>PM Acute Care</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>PM AC</value>
+            <type>String</type>
+        </property>
+    </node>
+    <node>
+        <name>PM-AC-IP</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>PM-AC-IP</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>ACIP</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>PM Acute Care and Inpatient</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>PM AC IP</value>
+            <type>String</type>
+        </property>
+    </node>
 </node>

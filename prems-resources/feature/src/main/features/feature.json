@@ -312,6 +312,40 @@
       "daysToVisit": -5
     },
 
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~PM-AC-InitialInvitationTask":{
+      "name": "PM-AC-InitialInvitationsTask",
+      "notificationType": "Invitation",
+      "metricName": "{021} PM-AC Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/PM-AC",
+      "emailConfiguration": "/apps/cards/clinics/PM-AC/mailTemplates/InitialInvitation",
+      "daysToVisit": -7
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~PM-AC-Reminder1NotificationsTask":{
+      "name": "PM-AC-Reminder1NotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "{022} PM-AC 1st Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/PM-AC",
+      "emailConfiguration": "/apps/cards/clinics/PM-AC/mailTemplates/ReminderNotification",
+      "daysToVisit": -14
+    },
+
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~PM-AC-IP-InitialInvitationTask":{
+      "name": "PM-AC-IP-InitialInvitationsTask",
+      "notificationType": "Invitation",
+      "metricName": "{024} PM-AC-IP Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/PM-AC-IP",
+      "emailConfiguration": "/apps/cards/clinics/PM-AC-IP/mailTemplates/InitialInvitation",
+      "daysToVisit": -7
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~PM-AC-IP-Reminder1NotificationsTask":{
+      "name": "PM-AC-IP-Reminder1NotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "{025} PM-AC-IP 1st Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/PM-AC-IP",
+      "emailConfiguration": "/apps/cards/clinics/PM-AC-IP/mailTemplates/ReminderNotification",
+      "daysToVisit": -14
+    },
+
     // Periodic CSV exports of all new and updated data
 
     "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Labeled-Forms":{
@@ -320,6 +354,7 @@
       "export.schedule": "0 0 2 ? * SAT *",
       "questionnaires.to.be.exported": [
         "/Questionnaires/YVM",
+        "/Questionnaires/PMAC",
         "/Questionnaires/CPESIC",
         "/Questionnaires/IC",
         "/Questionnaires/OAIP",
@@ -337,6 +372,7 @@
       "export.schedule": "0 0 2 ? * SAT *",
       "questionnaires.to.be.exported": [
         "/Questionnaires/YVM",
+        "/Questionnaires/PMAC",
         "/Questionnaires/CPESIC",
         "/Questionnaires/IC",
         "/Questionnaires/OAIP",
@@ -372,14 +408,42 @@
       "dayToImport": -7
     },
 
-    // YVM
+    // PMH-YVM
     "io.uhndata.cards.clarity.importer.ClarityImportConfig~yvm-discharge-events": {
       "name": "Your Voice Matters - PMCC outpatient visits",
       "type": "yvm",
-      "importSchedule": "0 0 7 * * ? *",
+      "importSchedule": "0 0 8 * * ? *",
       "tableName": "%ENV%CLARITY_YVM_SQL_TABLE",
       "dateColumn": "ENC_START_DTTM",
       "mapping": "/apps/cards/clarityImport/PMH-YVM",
+      "dayToImport": -2
+    },
+
+    // PMH-AC
+    "io.uhndata.cards.clarity.importer.ClarityImportConfig~pm-acute-care-discharge-events": {
+      "name": "PMH Acute Care visits",
+      "type": "pmh-ac",
+      "importSchedule": "0 30 8 * * ? *",
+      "tableName": "%ENV%CLARITY_PMH_AC_SQL_TABLE",
+      "dateColumn": "ENC_START_DTTM",
+      "mapping": "/apps/cards/clarityImport/PMH-AC",
+      "dayToImport": -7,
+      "prioritizeNewestEvents": true
+    },
+
+    // PMH-AC-trumps-YVM
+    // This isn't a proper import, it queries the Acute Care table,
+    // and if a patient has both an Acute Care and a regular PMH visit on the same day,
+    // we discard the YVM visit, even if it was already imported.
+    // This is necessary because we import the YVM events 5 days before the AC events,
+    // so we can't just use the Recent Visit Discard Filter.
+    "io.uhndata.cards.clarity.importer.ClarityImportConfig~pm-ac-trumps-yvm": {
+      "name": "PMH AC Trumps YVM",
+      "type": "pmh-ac-trumps-yvm",
+      "importSchedule": "0 45 8 * * ? *",
+      "tableName": "%ENV%CLARITY_PMH_AC_SQL_TABLE",
+      "dateColumn": "ENC_START_DTTM",
+      "mapping": "/apps/cards/clarityImport/PMH-AC",
       "dayToImport": -2
     },
 
@@ -388,16 +452,16 @@
     // Discard patients with invalid or non-consented emails
     "io.uhndata.cards.clarity.importer.internal.EmailConsentFilter": {
       "enable": true,
-      "supportedTypes": ["inpatient-ed", "yvm"],
+      "supportedTypes": ["inpatient-ed", "yvm", "pmh-ac"],
       "emailColumn": "EMAIL_ADDRESS",
       "emailConsentColumn": "EMAIL_CONSENT_YN"
     },
     // Only send surveys to patients once every 6 months
     "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~ye": {
       "enable": true,
-      "supportedTypes": ["inpatient-ed"],
+      "supportedTypes": ["inpatient-ed", "pmh-ac", "pmh-ac-trumps-yvm"],
       "minimum.visit.frequency": 183,
-      "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242"]
+      "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242", "/Survey/ClinicMapping/PM-AC", "/Survey/ClinicMapping/PM-AC-IP"]
     },
     "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~yvm": {
       "enable": true,
@@ -408,7 +472,7 @@
     // Don't import visits for patients who have opted out of emails
     "io.uhndata.cards.clarity.importer.internal.UnsubscribedFilter": {
       "enable": true,
-      "supportedTypes": ["inpatient-ed", "yvm"]
+      "supportedTypes": ["inpatient-ed", "yvm", "pmh-ac", "pmh-ac-trumps-yvm"]
     },
     // Only look at events from the participating hospitals, discard everything else
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-NonParticipatingHospitals":{
@@ -427,6 +491,13 @@
     },
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVMNonParticipatingHospitals":{
       "supportedTypes": ["yvm"],
+      "priority": 10,
+      "conditions": [
+        "LOCATION_NAME <> Princess Margaret Cancer Centre"
+      ]
+    },
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-ACNonParticipatingHospitals":{
+      "supportedTypes": ["pmh-ac", "pmh-ac-trumps-yvm"],
       "priority": 10,
       "conditions": [
         "LOCATION_NAME <> Princess Margaret Cancer Centre"
@@ -469,6 +540,16 @@
         "DEPARTMENT_NAME <> PM-THORACIC ONCOLOGY CLINIC"
       ]
     },
+    // PMH-AC: Only retain visits to certain clinics
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-ACNonParticipatingUnits":{
+      "supportedTypes": ["pmh-ac", "pmh-ac-trumps-yvm"],
+      "priority": 10,
+      "conditions": [
+        "DEPARTMENT_NAME <> PM-DAY ONCOLOGY/AWA",
+        "DEPARTMENT_NAME <> PM-RADIATION NURSING CLINIC",
+        "DEPARTMENT_NAME <> PM-URGENT CARE"
+      ]
+    },
 
     // YE: Only look at actual Emergency or Inpatient events
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-OtherVisitTypes":{
@@ -478,7 +559,7 @@
         "PATIENT_CLASS not in Emergency; Inpatient; Inpatient Rehab"
       ]
     },
-    // PMH: Only look at actual Outpatient events
+    // YVM: Only look at actual Outpatient events
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVM-Nonpatients":{
       "supportedTypes": ["yvm"],
       "priority": 10,
@@ -486,7 +567,7 @@
         "PATIENT_CLASS not in Outpatient"
       ]
     },
-    // PMH: Only look at visits with a clinician, not technical/imaging ones
+    // YVM: Only look at visits with a clinician, not technical/imaging ones
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVM-NonClinicianAppointments":{
       "supportedTypes": ["yvm"],
       "priority": 10,
@@ -494,9 +575,17 @@
         "STAFF_RESOURCE not in Person"
       ]
     },
+    // PMH-AC: Only look at actual completed events
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-AC-NotCompleted":{
+      "supportedTypes": ["pmh-ac", "pmh-ac-trumps-yvm"],
+      "priority": 10,
+      "conditions": [
+        "APPT_STATUS not in Completed; Arrived"
+      ]
+    },
     // Discard deceased patients
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-DeathDate":{
-      "supportedTypes": ["inpatient-ed", "yvm"],
+      "supportedTypes": ["inpatient-ed", "yvm", "pmh-ac"],
       "priority": 20,
       "conditions": ["DEATH_DATE is not empty"]
     },
@@ -511,7 +600,7 @@
       "priority": 20,
       "conditions": ["DISCH_DISPOSITION in Not Arrived; Left Triage; Jail; Diverted; Shelter; Jail or half; Res Care; Inpatient Ac; Inpt Ac Diff; Inpt Ac Same; Inpatient Ps; IP Trnsfr; OP Discharge; OP Transfer; RehabPsych"]
     },
-    // Discard patients with special care
+    // YE: Discard patients with special care
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-AlternativeLevelOfCare":{
       "supportedTypes": ["inpatient-ed"],
       "priority": 20,
@@ -527,14 +616,14 @@
       "priority": 20,
       "conditions": ["DISCH_DEPT_NAME in PM-PALLIATIVE CARE ONCOLOGY CLINIC; TW-PALLIATIVE CARE CLINIC; TG-PALLIATIVE CARE; PM-16P PALLIATIVE CARE"]
     },
-    // Set the visit status to "discharged" for YE visits, which don't have a status in the database
+    // YE: Set the visit status to "discharged" for YE visits, which don't have a status column in the database
     "io.uhndata.cards.clarity.importer.internal.ConfiguredGenericMapper~VisitStatus":{
       "supportedTypes": ["inpatient-ed"],
       "priority": 30,
       "column": "STATUS",
       "value": "discharged"
     },
-    // Filter specific visit statuses for YVM. The visit status is not always correctly updated, so we also allow visits with Status=Scheduled
+    // YVM: Filter specific visit statuses for YVM. The visit status is not always correctly updated, so we also allow visits with Status=Scheduled
     "io.uhndata.cards.clarity.importer.internal.ConfiguredDiscardFilter~Discard-YVM-VisitStatus":{
       "supportedTypes": ["yvm"],
       "priority": 30,
@@ -651,17 +740,32 @@
       "clinic": "/Survey/ClinicMapping/-1792626663",
       "conditions": ["CLINIC is empty"]
     },
-    // Assign YVM patients to the only clinic, PMH
+    // YVM: Assign YVM patients to the only clinic, PMH
     "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-PMH-YVM":{
       "supportedTypes": ["yvm"],
       "priority": 40,
       "clinic": "/Survey/ClinicMapping/PMH-YVM"
     },
+    // AC: Assign patients that were at the PM Acute Care departments to the PM-AC clinic
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredCohortMapper~CohortMapper-PM-AC":{
+      "supportedTypes": ["pmh-ac"],
+      "priority": 40,
+      "clinic": "/Survey/ClinicMapping/PM-AC",
+      "conditions": ["DEPARTMENT_NAME in PM-DAY ONCOLOGY/AWA; PM-URGENT CARE; PM-RADIATION NURSING CLINIC"]
+    },
     // Discard duplicates if there's more than one event per patient
     "io.uhndata.cards.clarity.importer.internal.DiscardDuplicatesFilter":{
       "enable": true,
-      "supportedTypes": ["inpatient-ed", "yvm"],
+      "supportedTypes": ["inpatient-ed", "yvm", "pmh-ac", "pmh-ac-trumps-yvm"],
       "subjectType": "/SubjectTypes/Patient"
+    },
+    // Special filter, discard YVM visits happening on the same day as an AC visit
+    "io.uhndata.cards.clarity.importer.internal.DiscardExistingVisitsFilter":{
+      "enabled": true,
+      "supportedTypes": ["pmh-ac-trumps-yvm"],
+      "dateColumn": "ENC_START_DTTM",
+      "clinics": ["/Survey/ClinicMapping/PMH-YVM"],
+      "discardNew": true
     },
     // Submission event listener
     "io.uhndata.cards.patients.submissioncounter.SubmissionCounter~SurveysSubmitted":{

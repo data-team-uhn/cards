@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:reference:pmac_overall": "/Questionnaires/PMAC/pmac_page_4/pmac_11_yvm_14",
+  "jcr:reference:time": "/Questionnaires/Visit information/time",
+  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
+}

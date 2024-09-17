@@ -1,0 +1,10 @@
+{
+  "jcr:primaryType": "cards:EmailTemplate",
+  "senderAddress": "PMExperience@uhn.ca",
+  "senderName": "The Patient Experience Team",
+  "subject": "Princess Margaret Patient Experience Survey",
+  "skipAttachment_PE-Logo.png": true,
+  "unit": "/Questionnaires/Visit information/provider",
+  "first_name": "/Questionnaires/Patient information/first_name",
+  "last_name": "/Questionnaires/Patient information/last_name"
+}
