@@ -22,7 +22,7 @@
 
   <groupId>io.uhndata.cards</groupId>
   <artifactId>cards-parent</artifactId>
-  <version>0.9.25-SNAPSHOT</version>
+  <version>0.9.26-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>CARDS - Parent POM</name>
@@ -1146,9 +1146,7 @@
                       <!--module name="ClassDataAbstractionCoupling"/-->
 
                       <!--module name="ClassFanOutComplexity">
-                        <property name="excludedClasses" value="boolean, byte, char, double, float, int, long, short, void, Boolean, Byte, Character, Double, Float, Integer, Long, Short, Void, Object, Class, String, StringBuffer, StringBuilder,
-                          ArrayIndexOutOfBoundsException, Exception, RuntimeException, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, NullPointerException, Throwable, SecurityException, UnsupportedOperationException,
-                          List, ArrayList, Deque, Queue, LinkedList, Set, HashSet, SortedSet, TreeSet, Map, HashMap, LinkedHashMap, SortedMap, TreeMap, Collections, Collection, Iterator, Iterable, Arrays,
+                        <property name="excludedClasses" value="boolean, byte, char, double, float, int, long, short, void, Boolean, Byte, Character, Double, Float, Integer, Long, Short, Void, Object, Class, String, StringBuffer, StringBuilder, ArrayIndexOutOfBoundsException, Exception, RuntimeException, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, NullPointerException, Throwable, SecurityException, UnsupportedOperationException, List, ArrayList, Deque, Queue, LinkedList, Set, HashSet, SortedSet, TreeSet, Map, HashMap, LinkedHashMap, SortedMap, TreeMap, Collections, Collection, Iterator, Iterable, Arrays,
                           Logger, LoggerFactory, StringUtils, Inject, Named, Component, Role, Singleton" />
                       </module-->
 
