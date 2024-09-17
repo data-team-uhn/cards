@@ -354,7 +354,7 @@ Diabetes: <![CDATA[>]]>6.5</value>
 		</property>
 		<property>
 			<name>description</name>
-			<value>Abnormal: <![CDATA[<100]]></value>
+			<value>Abnormal: <![CDATA[>100]]></value>
 			<type>String</type>
 		</property>
 		<property>
@@ -415,6 +415,11 @@ Diabetes: <![CDATA[>]]>6.5</value>
 			<name>maxValue</name>
 			<value>200.0</value>
 			<type>Double</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mg/L</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>maxAnswers</name>

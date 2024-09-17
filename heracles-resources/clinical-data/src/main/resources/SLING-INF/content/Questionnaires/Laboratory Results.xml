@@ -906,7 +906,7 @@ Female range: 36% - 48%</value>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mg/L</value>
 			<type>String</type>
 		</property>
 		<property>
