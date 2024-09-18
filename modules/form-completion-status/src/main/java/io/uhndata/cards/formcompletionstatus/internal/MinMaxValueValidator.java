@@ -37,6 +37,14 @@ import io.uhndata.cards.formcompletionstatus.spi.AnswerValidator;
 @Component(immediate = true)
 public class MinMaxValueValidator implements AnswerValidator
 {
+    private static final String DATA_TYPE_PROP = "dataType";
+
+    private static final String MAX_VALUE_PROP = "maxValue";
+
+    private static final String MIN_VALUE_PROP = "minValue";
+
+    private static final String DISABLE_MIN_MAX_ENFORCEMENT_PROP = "disableMinMaxValueEnforcement";
+
     private static final Set<String> SUPPORTED_TYPES = Set.of("long", "double", "decimal");
 
     @Override
@@ -50,16 +58,15 @@ public class MinMaxValueValidator implements AnswerValidator
         final Map<String, Boolean> flags)
     {
         try {
-            final String type = question.getProperty("dataType").getString();
-            if (!SUPPORTED_TYPES.contains(type)) {
-                // This only works on numerical types, nothing to do if this is not one of them
+            if (!isMinMaxValidationApplicable(question)) {
+                // If this isn't a numeric value with required limits, don't validate
                 return;
             }
             if (answer.hasProperty(PROP_VALUE)) {
-                final double minValue =
-                    question.hasProperty("minValue") ? question.getProperty("minValue").getDouble() : Double.NaN;
-                final double maxValue =
-                    question.hasProperty("maxValue") ? question.getProperty("maxValue").getDouble() : Double.NaN;
+                final double minValue = question.hasProperty(MIN_VALUE_PROP)
+                    ? question.getProperty(MIN_VALUE_PROP).getDouble() : Double.NaN;
+                final double maxValue = question.hasProperty(MAX_VALUE_PROP)
+                    ? question.getProperty(MAX_VALUE_PROP).getDouble() : Double.NaN;
 
                 final PropertyState answerProp = answer.getProperty(PROP_VALUE);
                 // if any value is out of range, set FLAG_INVALID to true
@@ -76,5 +83,25 @@ public class MinMaxValueValidator implements AnswerValidator
         } catch (final RepositoryException ex) {
             // If something goes wrong do nothing
         }
+    }
+
+    private boolean isMinMaxValidationApplicable(final Node question)
+    {
+        try {
+            final String type = question.getProperty(DATA_TYPE_PROP).getString();
+            if (!SUPPORTED_TYPES.contains(type)) {
+                // This only works on numerical types, nothing to do if this is not one of them
+                return false;
+            }
+            final Boolean limitsNotEnforced = question.hasProperty(DISABLE_MIN_MAX_ENFORCEMENT_PROP)
+                ? question.getProperty(DISABLE_MIN_MAX_ENFORCEMENT_PROP).getBoolean() : Boolean.FALSE;
+            if (limitsNotEnforced) {
+                // Value limits are not enforced, only suggested. Do not add the INVALID flag
+                return false;
+            }
+        } catch (final RepositoryException ex) {
+            // If something goes wrong do nothing
+        }
+        return true;
     }
 }

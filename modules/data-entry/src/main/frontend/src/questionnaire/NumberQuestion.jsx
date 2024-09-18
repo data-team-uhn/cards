@@ -131,7 +131,7 @@ const useSliderStyles = makeStyles(theme => ({
 //    />
 function NumberQuestion(props) {
   const { existingAnswer, errorText, classes, pageActive, disableValueInstructions, ...rest} = props;
-  const { dataType,displayMode, minAnswers, minValue, maxValue, isRange,
+  const { dataType,displayMode, minAnswers, minValue, maxValue, disableMinMaxValueEnforcement, messageForValuesOutsideMinMax, isRange,
     sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel }
     = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
@@ -177,7 +177,7 @@ function NumberQuestion(props) {
     { height: Math.max(100, sliderMarks.length*30) + "px" } : undefined
 
   // Callback function for our min/max
-  let hasError = (text) => {
+  let hasMinMaxValueError = (text) => {
     let value = 0;
 
     if (typeof(text) === "undefined") {
@@ -210,17 +210,12 @@ function NumberQuestion(props) {
     return false;
   }
 
-  // Callback for a change of MultipleChoice input to check for errors on the input
-  let findError = (text) => {
-    setMinMaxError(text && hasError(text));
-  }
-
   React.useEffect(() => {
     if (!isRange) return;
     // Check for invalid range limits
     setMinMaxError(
-      lowerLimit && hasError(lowerLimit) ||
-      upperLimit && hasError(upperLimit)
+      lowerLimit && hasMinMaxValueError(lowerLimit) ||
+      upperLimit && hasMinMaxValueError(upperLimit)
     );
     setRangeError(
        typeof(lowerLimit) == 'undefined' && typeof(upperLimit) != 'undefined' ||
@@ -231,7 +226,7 @@ function NumberQuestion(props) {
   React.useEffect(() => {
     if (!isSlider || isRange) return;
     setMinMaxError(
-      sliderValue && hasError(sliderValue)
+      sliderValue && hasMinMaxValueError(sliderValue)
     );
   }, [sliderValue]);
 
@@ -266,17 +261,21 @@ function NumberQuestion(props) {
   // * minValue  = 0
   // * displayMode = slider
   let minMaxMessage = "";
-  if ((minValue || typeof maxValue !== "undefined") && !isSlider && !disableValueInstructions) {
-    minMaxMessage = "Please enter values ";
-    if (typeof minValue !== "undefined" && typeof maxValue !== "undefined") {
-      minMaxMessage = `${minMaxMessage} between ${minValue} and ${maxValue}`;
-    } else if (typeof minValue !== "undefined") {
-      minMaxMessage = `${minMaxMessage} of at least ${minValue}`;
+  if ((typeof minValue !== "undefined" || typeof maxValue !== "undefined") && !isSlider && !disableValueInstructions) {
+    if (typeof messageForValuesOutsideMinMax != "undefined") {
+      minMaxMessage = messageForValuesOutsideMinMax;
     } else {
-      minMaxMessage = `${minMaxMessage} of at most ${maxValue}`;
-    }
-    if (hasAnswerOptions) {
-      minMaxMessage = `${minMaxMessage} or select one of the options`;
+      minMaxMessage = "Please enter values ";
+      if (typeof minValue !== "undefined" && typeof maxValue !== "undefined") {
+        minMaxMessage = `${minMaxMessage} between ${minValue} and ${maxValue}`;
+      } else if (typeof minValue !== "undefined") {
+        minMaxMessage = `${minMaxMessage} of at least ${minValue}`;
+      } else {
+        minMaxMessage = `${minMaxMessage} of at most ${maxValue}`;
+      }
+      if (hasAnswerOptions) {
+        minMaxMessage = `${minMaxMessage} or select one of the options`;
+      }
     }
   }
 
@@ -343,7 +342,7 @@ function NumberQuestion(props) {
           { errorText }
         </Typography>
       }
-      { pageActive && minMaxMessage &&
+      { pageActive && minMaxMessage && !disableMinMaxValueEnforcement &&
         <Typography
           component="p"
           color={minMaxError ? 'error' : 'textSecondary'}
@@ -438,12 +437,14 @@ function NumberQuestion(props) {
             valueType={valueType}
             input={displayMode === "input" || displayMode === "list+input"}
             textbox={displayMode === "textbox"}
-            onUpdate={findError}
+            onUpdate={text => setMinMaxError(!!text && hasMinMaxValueError(text))}
             additionalInputProps={textFieldProps}
             muiInputProps={muiInputProps}
             error={minMaxError}
             existingAnswer={existingAnswer}
             pageActive={pageActive}
+            validate={disableMinMaxValueEnforcement ? value => !hasMinMaxValueError(value) : undefined}
+            validationErrorText={minMaxMessage}
             {...rest}
             />
         }
