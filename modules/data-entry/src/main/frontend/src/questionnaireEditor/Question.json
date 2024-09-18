@@ -17,7 +17,7 @@
             "minAnswers": "long",
             "maxAnswers": "long",
             "validationRegexp": "string",
-            "validationErrorText": "string",
+            "validationErrorText": "markdown",
             "liveValidation": "boolean",
             "enableSeparatorDetection": "boolean",
             "displayMode": {
@@ -134,7 +134,7 @@
             "minValue": "double",
             "maxValue": "double",
             "disableMinMaxValueEnforcement" : "boolean",
-            "messageForValuesOutsideMinMax" : "string",
+            "messageForValuesOutsideMinMax" : "markdown",
             "displayMode": {
               "input": {
                 "isRange" : "boolean"
@@ -198,7 +198,7 @@
             "minValue": "double",
             "maxValue": "double",
             "disableMinMaxValueEnforcement" : "boolean",
-            "messageForValuesOutsideMinMax" : "string",
+            "messageForValuesOutsideMinMax" : "markdown",
             "displayMode": {
               "input": {
                 "isRange" : "boolean"
@@ -262,7 +262,7 @@
             "minValue": "double",
             "maxValue": "double",
             "disableMinMaxValueEnforcement" : "boolean",
-            "messageForValuesOutsideMinMax" : "string",
+            "messageForValuesOutsideMinMax" : "markdown",
             "displayMode": {
               "input": {
                 "isRange" : "boolean"

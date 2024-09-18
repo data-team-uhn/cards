@@ -389,7 +389,11 @@ function MultipleChoice(props) {
           <TextField
             variant="standard"
             error={inputError}
-            helperText={inputError ? validationErrorText : maxAnswers !== 1 && "Press ENTER to add a new option"}
+            helperText={
+              inputError
+              ? <FormattedText variant="caption">{ validationErrorText }</FormattedText>
+              : maxAnswers !== 1 && "Press ENTER to add a new option"
+            }
             className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
             onChange={ghostUpdateEvent}
             disabled={disabled}

@@ -111,7 +111,8 @@
 		</property>
 		<property>
 			<name>messageForValuesOutsideMinMax</name>
-			<value>Please check that your entry is correct. Expected values are between 0 and 20.</value>
+			<value>Please check that your entry is correct.  
+Expected values are between 0 and 20.</value>
 			<type>String</type>
 		</property>
 	</node>
