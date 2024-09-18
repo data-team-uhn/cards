@@ -262,7 +262,7 @@ function NumberQuestion(props) {
   // * displayMode = slider
   let minMaxMessage = "";
   if ((typeof minValue !== "undefined" || typeof maxValue !== "undefined") && !isSlider && !disableValueInstructions) {
-    if (typeof messageForValuesOutsideMinMax != "undefined") {
+    if (disableMinMaxValueEnforcement && typeof messageForValuesOutsideMinMax != "undefined") {
       minMaxMessage = messageForValuesOutsideMinMax;
     } else {
       minMaxMessage = "Please enter values ";
