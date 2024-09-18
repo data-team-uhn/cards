@@ -97,6 +97,17 @@ High: <![CDATA[>]]>6.18</value>
 			<type>Double</type>
 		</property>
 		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
 			<value>mmol/L</value>
 			<type>String</type>
@@ -140,6 +151,17 @@ Low: <![CDATA[<]]>1.03</value>
 			<name>maxValue</name>
 			<value>3.0</value>
 			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -187,6 +209,17 @@ Very high: <![CDATA[>]]>5.65</value>
 			<name>maxValue</name>
 			<value>10.0</value>
 			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -237,6 +270,17 @@ Very high: <![CDATA[>]]>4.92</value>
 			<type>Double</type>
 		</property>
 		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
 			<value>mmol/L</value>
 			<type>String</type>
@@ -281,6 +325,17 @@ Diabetes: <![CDATA[>]]>7</value>
 			<name>maxValue</name>
 			<value>20.0</value>
 			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
@@ -329,6 +384,17 @@ Diabetes: <![CDATA[>]]>6.5</value>
 			<type>Double</type>
 		</property>
 		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
 			<value>%</value>
 			<type>String</type>
@@ -373,6 +439,17 @@ Diabetes: <![CDATA[>]]>6.5</value>
 			<type>Double</type>
 		</property>
 		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
 			<value>ng/L</value>
 			<type>String</type>
@@ -415,6 +492,17 @@ Diabetes: <![CDATA[>]]>6.5</value>
 			<name>maxValue</name>
 			<value>200.0</value>
 			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
