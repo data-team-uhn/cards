@@ -18,14 +18,45 @@
 //
 
 import React, { useReducer } from "react";
-import { stripCardsNamespace } from "../questionnaire/QuestionnaireUtilities";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry";
+
+/**
+ * Gets the title field of a jcr node
+ * 
+ * @param {Object} jcrData - The jcr data object to get the title field from.
+ * @returns {string} - Returns the title field of the jcr node.
+ */
+// From Questionnaire.jsx Entry defaultProps
+// (importing component to get defaultProp.titleField value is circular dependency)
+const getTitleField = (jcrData) => {
+    const possibleTitleFields = {
+        'cards:Questionnaire': 'title',
+        'cards:Section': 'label',
+        'cards:Question': 'text',
+    }
+    let titleField = possibleTitleFields[jcrData['jcr:primaryType']] ?? '@name';
+    const title = jcrData[titleField] ?? jcrData['@name'];
+    return title;
+}
 
 // Action Types
 const INITIALIZE_ROOT = 'INITIALIZE_ROOT';
 const CLEAR_TREE = 'CLEAR_TREE';
 const REMOVE_NODE = 'REMOVE_NODE';
-// Initial State
+
+/**
+ *  The initial state of the tree context
+ * @typedef {Object} Node
+ * @property {string} value - The ID of the node.
+ * @property {string} parent - The ID of the parent node.
+ * @property {Array} children - The IDs of the children nodes.
+ * @property {string} jcrPrimaryType - The jcr primary type of the node.
+ * @property {string} name - The name of the node.
+ * @property {string} title - The title of the node.
+ * @property {string} path - The path of the node.
+ * @property {string} relativePath - The relative path of the node.
+ * 
+ */
 const initialState = {
     nodes: {
         // Format: { id: { value: '...', parent: '...', children: [...], jcrPrimaryType: '...' } }
@@ -33,24 +64,91 @@ const initialState = {
     }
 };
 
+/**
+ * Gets the children of a jcr node
+ * 
+ * @param {Object} jcrData - The jcr data object to get children from.
+ * @returns {Array} - Returns an array of children nodes.
+ */
 function jcrGetChildren(jcrData) {
     if (!jcrData || typeof jcrData !== 'object' || !jcrData['jcr:primaryType']) {
         throw new Error("jcrGetChildren called with invalid jcrData")
-        // return [];
     }
-
     const children = [];
-
     for (const key in jcrData) {
-        if (jcrData.hasOwnProperty(key) && typeof jcrData[key] === 'object' && jcrData[key]['jcr:primaryType']) {
+        const isProperty = jcrData.hasOwnProperty(key)
+        const isObject = typeof jcrData[key] === 'object'
+        // This will filter out conditional groups and conditionals
+        // Don't need to add 'cards:Questionnaire' since its the root and no other entry will have that type
+        const isEntry = ENTRY_TYPES.includes(jcrData[key]['jcr:primaryType'])
+        if (isProperty && isObject && isEntry) {
+            console.log('jcrData', jcrData, key)
             children.push(jcrData[key]);
         }
-    }
-
+    };
     return children;
+};
+
+
+/**
+ * Converts a jcr node to a node object
+ *  
+ * @param {Object} jcrData - The jcr data object to convert to a node.
+ * @param {string} rootPath - The path of the root node.
+ * @param {string} nodeParent - The ID of the parent node.
+ * @returns {Object} - Returns a node object.
+ * 
+*/
+function jcrToNode(jcrData, rootPath, nodeParent) {
+    // Root node has itself as null
+    const {
+        ['jcr:uuid']: id,
+        ['jcr:primaryType']: jcrPrimaryType,
+        ['@name']: name,
+        ['@path']: path
+    } = jcrData;
+    const title = getTitleField(jcrData);
+    const nodeChildren = jcrGetChildren(jcrData).map(jcrChild => jcrChild['jcr:uuid'])
+    const isRootNode = !nodeParent && rootPath === path
+    if (isRootNode) {
+        const rootNode = {
+            value: id,
+            parent: null,
+            children: nodeChildren,
+            jcrPrimaryType,
+            name,
+            title,
+            path,
+            relativePath: ''
+        };
+        return rootNode
+    } else {
+        let relativePath = path?.replace(`${rootPath}/`, '') || ''
+        relativePath = relativePath.substring(0, relativePath.lastIndexOf("/") + 1);
+        const node = {
+            value: id,
+            parent: nodeParent,
+            children: nodeChildren,
+            jcrPrimaryType,
+            name,
+            title,
+            path,
+            relativePath
+        };
+        return node
+    }
 }
 
-function jcrFindEntries(jcrData, entryTypes = ENTRY_TYPES, nodes) {
+/**
+ * Recursively finds all entries in the jcrData object that match the entryTypes
+ * 
+ * @param {Object} jcrData - The jcr data object to search for entries.
+ * @param {Array} entryTypes - The list of entry types to search for.
+ * @param {string} rootPath - The path of the root node.
+ * @param {Object} nodes - The flat map representing the tree structure.
+ * @returns {Object} - Returns a flat map representing the tree structure. 
+*/
+function jcrFindEntries(jcrData, entryTypes = ENTRY_TYPES, rootPath = (jcrData['@path'] || ''), nodes) {
     if (!jcrData || typeof jcrData !== 'object' || !jcrData['jcr:primaryType']) {
         throw new Error("jcrFindEntries called with invalid jcrData")
         // return [];
@@ -59,65 +157,68 @@ function jcrFindEntries(jcrData, entryTypes = ENTRY_TYPES, nodes) {
     const nodeParent = jcrData['jcr:uuid'];
     for (const child of children) {
         if (entryTypes.includes(child['jcr:primaryType'])) {
-            console.log('child', child)
-            const {
-                ['jcr:uuid']: id,
-                ['jcr:primaryType']: jcrPrimaryType,
-                ['@name']: name,
-                ['@path']: path
-            } = child; 
-            const nodeChildren = jcrGetChildren(child).map(jcrChild => jcrChild['jcr:uuid']);
-            nodes[id] = {
-                value: id,
-                parent: nodeParent,
-                children: nodeChildren,
-                jcrPrimaryType,
-                name,
-                path
-            };
+            nodes[child['jcr:uuid']] = jcrToNode(child, rootPath, nodeParent)
         }
-        jcrFindEntries(child, entryTypes, nodes);
+        jcrFindEntries(child, entryTypes, rootPath, nodes);
     }
     return nodes
 }
 
+/**
+ * Checks if the target parent node is a descendant of the node to be moved.
+ * 
+ * @param {Object} nodes - The flat map representing the tree structure.
+ * @param {string} nodeId - The ID of the node to be moved.
+ * @param {string} targetParentId - The ID of the target parent node.
+ * @returns {boolean} - Returns true if the target parent node is a descendant of the node to be moved, otherwise false.
+ */
+export function isDescendant(nodes, nodeId, targetParentId) {
+    // A recursive helper function to traverse the tree and check descendants
+    function checkDescendants(currentId) {
+        // If the current node is the target parent, return true
+        if (currentId === targetParentId) {
+            return true;
+        }
+        // Get the children of the current node
+        const children = nodes[currentId]?.children || [];
+        // Recursively check each child node
+        for (const childId of children) {
+            if (checkDescendants(childId)) {
+                return true;
+            }
+        }
+        // If none of the descendants matched, return false
+        return false;
+    }
+    // Start checking from the node to be moved
+    return checkDescendants(nodeId);
+}
 
-// export function findParentInTree(nodes, nodeId) {
-//     for (const parentId in nodes) {
-//         if (nodes.hasOwnProperty(parentId) && nodes[parentId].children.includes(nodeId)) {
-//             return parentId;
-//         }
-//     }
-//     console.log(nodes, nodeId)
-//     throw Error('Node not found in tree')
-//     return null;
-// }
 
-// TODO use titleField in types
+/**
+ * Initializes tree using cards:Questionnaire jcr data as root node
+ * 
+ * @param {*} jcrData 
+ * @returns {Object} - Returns a flat map representing the tree structure.
+ */
 function initializeRoot(jcrData) {
     let nodes = {}
-    // Root node has itself as parent
-    const {
-        ['jcr:uuid']: rootNodeId,
-        ['jcr:primaryType']: jcrPrimaryType,
-        ['@name']: name,
-        ['@path']: path
-    } = jcrData;
-    const rootNode = {
-        value: rootNodeId,
-        parent: null,
-        children: jcrGetChildren(jcrData).map(jcrChild => jcrChild['jcr:uuid']),
-        jcrPrimaryType,
-        name,
-        path
-    };
-    nodes[rootNodeId] = rootNode
+    const rootPath = jcrData['@path'];
+    const rootNode = jcrToNode(jcrData, rootPath, null);
+    nodes[jcrData['jcr:uuid']] = rootNode
     // Entries
-    nodes = jcrFindEntries(jcrData, ENTRY_TYPES, nodes);
+    nodes = jcrFindEntries(jcrData, ENTRY_TYPES, rootPath, nodes);
     console.log('init nodes', nodes)
     return nodes
 }
 
+/**
+ * Removes a node from the tree
+ * 
+ * @param {string} nodeId - The ID of the node to be removed.
+ * @param {Object} nodes - The flat map representing the tree structure.
+ * @returns {Object} - Returns a new map with the node removed.
+*/
 function removeNode(nodeId, nodes) {
     const node = nodes[nodeId];
     // Remove node from parent's children array
@@ -157,54 +258,6 @@ const treeReducer = (state, action) => {
             const newNodes = removeNode(nodeId, state.nodes) 
             return { nodes: newNodes };
         }
-
-        // case ADD_NODE: {
-        //     const { node, parentId } = action.payload;
-        //     const nodes = { ...state.nodes };
-
-        //     // Add the new node to the nodes list
-        //     nodes[node.value] = node;
-
-        //     // If a parentId is provided, add the node to the parent's children
-        //     if (parentId) {
-        //         nodes[parentId].children.push(node.value);
-        //     }
-
-        //     return { ...state, nodes };
-        // }
-        // case MOVE_NODE: {
-        //     const { jcrId, newParentId } = action.payload;
-        //     const nodes = { ...state.nodes };
-        //     //   const node = nodes[nodeId];
-        //     const oldParentId = Object.keys(nodes).find(id => nodes[id].children.includes(nodeId));
-
-        //     if (oldParentId) {
-        //         nodes[oldParentId].children = nodes[oldParentId].children.filter(childId => childId !== nodeId);
-        //     }
-
-        //     if (newParentId) {
-        //         nodes[newParentId].children.push(nodeId);
-        //     }
-
-        //     return { ...state, nodes };
-        // }
-
-        // case REORDER_NODE: {
-        //     const { nodeId, newIndex } = action.payload;
-        //     const nodes = { ...state.nodes };
-        //     const parentId = Object.keys(nodes).find(id => nodes[id].children.includes(nodeId));
-
-        //     if (parentId) {
-        //         const children = nodes[parentId].children;
-        //         const nodeIndex = children.indexOf(nodeId);
-        //         if (nodeIndex === -1) return state;
-        //         children.splice(nodeIndex, 1);
-        //         children.splice(newIndex, 0, nodeId);
-        //         return { ...state, nodes };
-        //     }
-
-        //     return state;
-        // }
         default:
             throw new Error("Invalid action type in treeReducer");
             // return state;

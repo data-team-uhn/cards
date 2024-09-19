@@ -61,7 +61,7 @@ import QuestionnairePreview from "./QuestionnairePreview";
 import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
 import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
 
-import { DragDropProvider, DndStateContext, DndDispatchContext, MoveEntryModal } from "../questionnaireEditor/MoveEntry.jsx";
+import { MoveEntryModal } from "../questionnaireEditor/MoveEntry.jsx";
 import { useQuestionnaireTreeContext } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
@@ -293,18 +293,14 @@ let Questionnaire = (props) => {
               />
               :
               <QuestionnaireProvider>
-                <DragDropProvider>
-
-                  <QuestionnaireContents
-                    disableDelete
-                    data={data}
-                    classes={classes}
-                    onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-                    onActionDone={() => { }}
-                    menuProps={{ isMainAction: true }}
-                  />
-
-                </DragDropProvider>
+              <QuestionnaireContents
+                disableDelete
+                data={data}
+                classes={classes}
+                onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                onActionDone={() => { }}
+                menuProps={{ isMainAction: true }}
+              />
               </QuestionnaireProvider>
             }
           </Grid>
@@ -345,8 +341,7 @@ let QuestionnaireItemSet = (props) => {
 
   let getEntryTypes = entryModels => Object.keys(entryModels || {}).map(e => `cards:${e}`);
 
-  // console.log(data, models)
-  const dndState = useContext(DndStateContext)
+
 
   if (models) {
     // Is defaultOrder specified for some entry types? Pull those into a flat "priority" list
@@ -420,50 +415,50 @@ let QuestionnaireItemSet = (props) => {
   //   prefix) to a json file specifying the "model", i.e. which properties to display
   // @return a React fragment rendering the entries from the `data` prop according to the `types` filter and
   //   the `typeModels` property restriction
-  const draggableTypes = ENTRY_TYPES
   let listEntries = (typeModels, types) => (
     <>
       {Object.entries(data)
         .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
         .map(([key, value], index) => (
-          EntryType =>
-            // Wrap only ENTRY_TYPES with draggable 
-            !draggableTypes.includes(value['jcr:primaryType']) ?
-              <EntryType
-                data={value}
-                model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
-                onActionDone={onActionDone}
-                classes={classes}
-              />
-              :
-              <Draggable key={key} draggableId={value['@path']} index={index}
-                isDragDisabled={!dndState.enabled
-                  // && !draggableTypes.includes(value['jcr:primaryType'])
-                }
-              >
-                {(provided, snapshot) => (
-                  // <div ref={provided.innerRef} {...provided.draggableProps}
-                  // // style={{ display: 'flex', position: 'absolute'}} 
-                  // >
-                    <>
-                    <Box textAlign="center" style={{ display: dndState.enabled ? 'block' : 'none' }}>
-                      <Tooltip title="Drag and drop to reorder">
-                        <IconButton size="large" {...provided.dragHandleProps}>
-                          <DragIndicatorIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                    <EntryType
-                      data={value}
-                      model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
-                      onActionDone={onActionDone}
-                      classes={classes}
-                    />
-                    </>
-                  //   {provided.placeholder}
-                  // </div>
-                )}
-              </Draggable>
+          EntryType => (
+            <EntryType
+            data={value}
+            model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
+            onActionDone={onActionDone}
+            classes={classes}
+          />
+          )
+            // // Wrap only ENTRY_TYPES with draggable 
+            // !draggableTypes.includes(value['jcr:primaryType']) ?
+
+            //   :
+            //   <>
+            //   <EntryType
+            //     data={value}
+            //     model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
+            //     onActionDone={onActionDone}
+            //     classes={classes}
+            //   />
+            //   </>
+            //   // <Draggable key={key} draggableId={value['@path']} index={index}
+            //   //   isDragDisabled={!dndState.enabled
+            //   //     // && !draggableTypes.includes(value['jcr:primaryType'])
+            //   //   }
+            //   // >
+            //   //   {(provided, snapshot) => (
+            //   //     // <div ref={provided.innerRef} {...provided.draggableProps}
+            //   //     // // style={{ display: 'flex', position: 'absolute'}} 
+            //   //     // >
+            //   //   <Box textAlign="center" style={{ display: dndState.enabled ? 'block' : 'none' }}>
+            //   //   <Tooltip title="Drag and drop to reorder">
+            //   //     <IconButton size="large" {...provided.dragHandleProps}>
+            //   //       <DragIndicatorIcon />
+            //   //     </IconButton>
+            //   //   </Tooltip>
+            //   // </Box>
+
+            //   //   )}
+            //   // </Draggable>
         )(eval(stripCardsNamespace(value['jcr:primaryType'])))
         )
       }
@@ -626,6 +621,7 @@ Section.defaultProps = {
 };
 
 
+
 // Details about a simple condition for desplaying a section
 let Conditional = (props) => <QuestionnaireEntry {...props} />;
 
@@ -676,7 +672,6 @@ let QuestionnaireEntry = (props) => {
   
 
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
-  const dndDispatch = useContext(DndDispatchContext)
   const dndClasses = useDraggableStyles()
   const dndTreeContext = useQuestionnaireTreeContext()
   // console.log(dndTreeContext)
@@ -826,7 +821,6 @@ let QuestionnaireEntry = (props) => {
       .catch(handleError)
       .finally(() => {
         handleDataChange()
-        dndDispatch({ type: 'setSnackbar', payload: { open: true, message: "Updated" } })
       });
 
   }
