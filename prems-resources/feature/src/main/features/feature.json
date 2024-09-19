@@ -329,23 +329,6 @@
       "daysToVisit": -14
     },
 
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~PM-AC-IP-InitialInvitationTask":{
-      "name": "PM-AC-IP-InitialInvitationsTask",
-      "notificationType": "Invitation",
-      "metricName": "{024} PM-AC-IP Initial Emails Sent",
-      "clinicId": "/Survey/ClinicMapping/PM-AC-IP",
-      "emailConfiguration": "/apps/cards/clinics/PM-AC-IP/mailTemplates/InitialInvitation",
-      "daysToVisit": -7
-    },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~PM-AC-IP-Reminder1NotificationsTask":{
-      "name": "PM-AC-IP-Reminder1NotificationsTask",
-      "notificationType": "Reminder1",
-      "metricName": "{025} PM-AC-IP 1st Reminder Emails Sent",
-      "clinicId": "/Survey/ClinicMapping/PM-AC-IP",
-      "emailConfiguration": "/apps/cards/clinics/PM-AC-IP/mailTemplates/ReminderNotification",
-      "daysToVisit": -14
-    },
-
     // Periodic CSV exports of all new and updated data
 
     "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Labeled-Forms":{
