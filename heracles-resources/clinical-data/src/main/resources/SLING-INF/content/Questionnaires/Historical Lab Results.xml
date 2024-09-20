@@ -195,7 +195,7 @@ Please double check your entry prior to submitting this form.</value>
 		<property>
 			<name>description</name>
 			<value>Normal: <![CDATA[<]]>1.69  
-Borderline-high: 1.69 - 2.25  
+Borderline high: 1.69 - 2.25  
 High: 2.26 - 5.64  
 Very high: <![CDATA[>]]>5.65</value>
 			<type>String</type>
