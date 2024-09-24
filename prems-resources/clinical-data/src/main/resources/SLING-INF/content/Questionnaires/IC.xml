@@ -114,7 +114,7 @@ We would like you to reflect on your experience with the Integrated Care Program
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
