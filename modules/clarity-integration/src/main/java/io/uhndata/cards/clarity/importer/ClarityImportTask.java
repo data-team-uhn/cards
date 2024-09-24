@@ -419,11 +419,11 @@ public class ClarityImportTask implements Runnable
             }
         }
         queryString += " FROM " + env(this.config.schemaName()) + ".[" + env(this.config.tableName()) + "]";
-        if (this.dayToQuery != Integer.MAX_VALUE && env(this.config.dateColumn()) != null) {
+        if (this.dayToQuery != Integer.MAX_VALUE && StringUtils.isNotBlank(env(this.config.dateColumn()))) {
             queryString += " WHERE CAST(" + env(this.config.dateColumn()) + " AS DATE) = CAST(GETDATE()"
                 + (this.dayToQuery >= 0 ? "+" : "") + this.dayToQuery + " AS DATE)";
         }
-        if (env(this.config.dateColumn()) != null) {
+        if (StringUtils.isNotBlank(env(this.config.dateColumn()))) {
             queryString +=
                 " ORDER BY " + env(this.config.dateColumn()) + (this.config.prioritizeNewestEvents() ? " DESC;" : ";");
         }
