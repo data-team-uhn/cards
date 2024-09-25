@@ -388,7 +388,7 @@ function MultipleChoice(props) {
         :
           <TextField
             variant="standard"
-            error={inputError}
+            error={error || inputError}
             helperText={
               inputError
               ? <FormattedText variant="caption">{ validationErrorText }</FormattedText>

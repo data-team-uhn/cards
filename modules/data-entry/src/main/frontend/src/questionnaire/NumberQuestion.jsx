@@ -440,7 +440,7 @@ function NumberQuestion(props) {
             onUpdate={text => setMinMaxError(!!text && hasMinMaxValueError(text))}
             additionalInputProps={textFieldProps}
             muiInputProps={muiInputProps}
-            error={minMaxError}
+            error={!!minMaxError}
             existingAnswer={existingAnswer}
             pageActive={pageActive}
             validate={disableMinMaxValueEnforcement ? value => !hasMinMaxValueError(value) : undefined}
