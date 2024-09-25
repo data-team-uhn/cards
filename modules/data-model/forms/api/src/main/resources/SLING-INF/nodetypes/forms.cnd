@@ -32,22 +32,18 @@
 //-----------------------------------------------------------------------------
 // This defines predefined choices for answering a question.
 // Used only as children of a cards:Question node.
-[cards:AnswerOption] > sling:Folder, mix:referenceable
+[cards:AnswerOption] > cards:ResourcePart
   // Attributes
 
   // The list of suboptions is orderable.
   orderable
-  // We can use an option in a query.
-  query
   // The main sub-item of an answer option is its label.
   primaryitem label
+
   // Properties
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/AnswerOption" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each question is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The text of this option displayed to the user.
   // This is not the value that gets stored when it is selected for an aswer, the "value" property is.
@@ -77,18 +73,15 @@
   + * (cards:AnswerOption) = cards:AnswerOption
 
 //-----------------------------------------------------------------------------
-[cards:VocabularyFilterGroup] > sling:Folder, mix:referenceable
+[cards:VocabularyFilterGroup] > cards:ResourcePart
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/VocabularyFilterGroup" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each filter group is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   - value (string)
 
 //-----------------------------------------------------------------------------
 // This is the definition of a question.
-[cards:Question] > sling:Folder, mix:referenceable
+[cards:Question] > cards:ResourcePart, mix:referenceable
   // Attributes
 
   // The list of answer options is orderable.
@@ -102,9 +95,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/Question" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each question is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The text of the question.
   - text (string)
@@ -255,7 +245,7 @@
 //-----------------------------------------------------------------------------
 // An informative formatted text (markdown). Can be displayed in edit mode to guide
 // the user through filling out a form, or in view mode to explain the data.
-[cards:Information] > sling:Folder, mix:referenceable
+[cards:Information] > cards:ResourcePart
   // Attributes
 
   // The main sub-item of a section is its text.
@@ -265,9 +255,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/Information" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each info is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The text provided as information. Optional, it is possible not to have any text.
   - text (string)
@@ -283,7 +270,7 @@
 
 //-----------------------------------------------------------------------------
 // A section is a collection of questions.
-[cards:Section] > sling:Folder, mix:referenceable
+[cards:Section] > cards:ResourcePart, mix:referenceable
   // Attributes
 
   // The list of subsections and questions is orderable.
@@ -297,9 +284,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/Section" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each section is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A label for this section. Optional, it is possible not to have a label.
   // If present, it will be displayed to the user above the questions.
@@ -348,21 +332,16 @@
 // A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
 // The conditions are listed as children of this, and may be turned from an OR to an AND via the
 // `requireAll` property.
-[cards:ConditionalGroup] > sling:Folder
+[cards:ConditionalGroup] > cards:ResourcePart
   // Attributes
 
   // The list of conditions is orderable.
   orderable
-  // Conditionals are queryable
-  query
 
   // Properties
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/ConditionalGroup" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each section link is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   - requireAll (BOOLEAN) = false mandatory autocreated
 
@@ -372,21 +351,16 @@
 
 //-----------------------------------------------------------------------------
 // A conditional is a condition that can be imposed on e.g. the display of a section.
-[cards:Conditional] > sling:Folder
+[cards:Conditional] > cards:ResourcePart
   // Attributes
 
   // The list of operands and operator is orderable.
   orderable
-  // Conditionals are queryable
-  query
 
   // Properties
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/Conditional" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each section link is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A conditional will always have a child node called operandA of type ConditionalValue
   + operandA (cards:ConditionalValue) mandatory
@@ -402,23 +376,18 @@
 
 //-----------------------------------------------------------------------------
 // A conditional value is either a value or a method of getting a value.
-[cards:ConditionalValue] > sling:Resource
+[cards:ConditionalValue] > cards:ResourcePart
   // Attributes
 
   // We don't have children, but let's assume children might need to be ordered in the future.
   orderable
   // The main sub-item of an answer is its value.
   primaryitem value
-  // Conditional values are queryable
-  query
 
   // Properties
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/ConditionalValue" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each value is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The value which may be a reference to a field or a value (or multiple values)
   - value (undefined) multiple
@@ -433,7 +402,7 @@
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.
-[cards:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
+[cards:Questionnaire] > cards:Resource
   // Attributes
 
   // The list of sections and questions is orderable.
@@ -447,9 +416,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/Questionnaire" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each questionnaire is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A title for this questionnaire.
   // Mandatory, each questionnaire must have a title.
@@ -491,7 +457,7 @@
 
 //-----------------------------------------------------------------------------
 // The homepage for the questionnaires space.
-[cards:QuestionnairesHomepage] > sling:Folder
+[cards:QuestionnairesHomepage] > cards:ResourceHomepage
   // Attributes:
 
   // We can use this homepage in a query.
@@ -501,9 +467,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/QuestionnairesHomepage" mandatory autocreated protected
-
-  // Hardcode the resource supertype: the QuestionnairesHomepage is a resource homepage.
-  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Questionnaires" mandatory autocreated
@@ -531,7 +494,7 @@
 // The name of each answer node is not relevant and will be automatically generated, only the reference to the question matters.
 // The meaning of an answer is defined by the question, so most of the display properties are defined in the question, not in the answer.
 // In other words, an Answer node is just simple storage.
-[cards:Answer] > sling:Folder
+[cards:Answer] > cards:ResourcePart
   // Attributes
 
   // This is an abstract node type, specific answer types must be defined.
@@ -547,9 +510,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/Answer" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each answer is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A pseudo-link to the form this answer belongs to.
   // Normally this wouldn't be necessary, since the hierarchy of the two nodes makes it redundant,
@@ -785,7 +745,7 @@
 
 // Section object, which can contain multiple other answers and nested subsections.
 // The node structure of a form should reflect the structure of a questionnaire, with AnswerSection nodes corresponding to each Section node in the questionnaire.
-[cards:AnswerSection] > sling:Folder
+[cards:AnswerSection] > cards:ResourcePart
   // Attributes
   // The child answers will need to be orderable.
   orderable
@@ -798,9 +758,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/AnswerSection" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A potentially empty list of status flags for the section
   - statusFlags (STRING) = autocreated multiple IGNORE
@@ -818,7 +775,7 @@
 
 //-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
-[cards:Form] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
+[cards:Form] > cards:Resource
   // Attributes
 
   // The answers in a form must be orderable.
@@ -830,9 +787,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/Form" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each form is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A potentially empty list of status flags for the form
   - statusFlags (STRING) = "INCOMPLETE" mandatory autocreated multiple IGNORE
@@ -849,18 +803,13 @@
   // A list of references to the subject that this form is about, and all its ancestor subjects, if any.
   - relatedSubjects (weakreference) nofulltext
 
-  // Children
-
-  // Container for links to other resources
-  + cards:links (cards:Links) = cards:Links AUTOCREATED IGNORE
-
   // The answers and answer sections recorded in this form.
   + * (cards:Answer) = cards:Answer
   + * (cards:AnswerSection) = cards:AnswerSection
 
 //-----------------------------------------------------------------------------
 // The homepage for the Forms space.
-[cards:FormsHomepage] > sling:Folder
+[cards:FormsHomepage] > cards:ResourceHomepage
   // Attributes:
 
   // We can use this homepage in a query.
@@ -870,9 +819,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/FormsHomepage" mandatory autocreated protected
-
-  // Hardcode the resource supertype: the FormsHomepage is a resource homepage.
-  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Data" mandatory autocreated
@@ -885,7 +831,12 @@
   + * (cards:Form) = cards:Form
 
 // The mapping between local questionnaire / question IDs and the corresponsing IDs within EPIC.
-[cards:ExternalLink] > sling:Folder
+[cards:ExternalLink] > cards:Item
+  // Attributes:
+
+  // The main sub-item of a link is its value.
+  primaryitem value
+
   // Properties:
 
   // The type of the mapping, usually identifies the external system that we're mapping to.
@@ -902,7 +853,7 @@
 
 //-----------------------------------------------------------------------------
 // The configuration for a selectable area question variant
-[cards:SelectableAreaVariant] > sling:Folder, mix:referenceable
+[cards:SelectableAreaVariant] > cards:Resource
   // Attributes:
 
   // We can use this in a query.
@@ -912,9 +863,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/SelectableAreaVariant" mandatory autocreated protected
-
-  // Hardcode the resource supertype. Each variant is a resource
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The name of this variant used to select it when designing a form
   - name (STRING) mandatory

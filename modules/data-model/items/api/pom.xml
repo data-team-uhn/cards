@@ -22,13 +22,13 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-data-model-forms</artifactId>
-    <version>0.9.26-SNAPSHOT</version>
+    <artifactId>cards-data-model-items</artifactId>
+    <version>0.9.25-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-data-model-forms-api</artifactId>
+  <artifactId>cards-data-model-items-api</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Data model - Questionnaires and Forms - Definitions, APIs and SPIs</name>
+  <name>CARDS - Data model - Item nodetypes - Definitions, APIs and SPIs</name>
 
   <build>
     <plugins>
@@ -39,33 +39,13 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
-            <Sling-Nodetypes>SLING-INF/nodetypes/forms.cnd</Sling-Nodetypes>
+            <Sling-Nodetypes>SLING-INF/nodetypes/items.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/libs/cards/Answer/;path:=/libs/cards/Answer/;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true
+              SLING-INF/content/libs/cards/Item/;path:=/libs/cards/Item/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-store-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.json</groupId>
-      <artifactId>javax.json-api</artifactId>
-    </dependency>
-  </dependencies>
 </project>

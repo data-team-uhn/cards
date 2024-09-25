@@ -31,19 +31,19 @@
 
 //-----------------------------------------------------------------------------
 // Subjects: the description of a subject.
-[cards:Subject] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
+[cards:Subject] > cards:Resource
   // Attributes
 
   // We can use subjects in a query.
   query
 
+  // The main sub-item of a subject is its identifier.
+  primaryitem identifier
+
   // Properties
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/Subject" mandatory autocreated protected
-
-  // Hardcode the resource supertype: each subject is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A main identifier for the subject.
   // Each subject has an internal unique identifier, but most subjects should also have
@@ -62,7 +62,7 @@
 
 //-----------------------------------------------------------------------------
 // The homepage for the Subjects space.
-[cards:SubjectsHomepage] > sling:Folder
+[cards:SubjectsHomepage] > cards:ResourceHomepage
   // Attributes:
 
   // We can use this homepage in a query.
@@ -73,9 +73,6 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/SubjectsHomepage" mandatory autocreated protected
 
-  // Hardcode the resource supertype: the SubjectsHomepage is a resource homepage.
-  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
-
   // Set a default title.
   - title (String) = "Subjects" mandatory autocreated
 
@@ -83,19 +80,19 @@
 
 //-----------------------------------------------------------------------------
 // A type of subject
-[cards:SubjectType] > sling:Folder, mix:referenceable
+[cards:SubjectType] > cards:Resource
   // Attributes:
 
   // We can query subject types.
   query
 
+  // The main sub-item of a subject typeis its label.
+  primaryitem label
+
   // Properties:
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/SubjectType" mandatory autocreated protected
-
-  // Hardcode the resource supertype: the SubjectType is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The name of this subject type displayed to the user.
   - label (String) mandatory
@@ -112,7 +109,7 @@
 
 //-----------------------------------------------------------------------------
 // The homepage for any SubjectTypes.
-[cards:SubjectTypesHomepage] > sling:Folder
+[cards:SubjectTypesHomepage] > cards:ResourceHomepage
   // Attributes:
 
   // We can use this homepage in a query.
@@ -122,9 +119,6 @@
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/SubjectTypesHomepage" mandatory autocreated protected
-
-  // Hardcode the resource supertype: the SubjectTypesHomepage is a resource homepage.
-  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Subject Types" mandatory autocreated
