@@ -182,7 +182,7 @@ function NumberQuestion(props) {
 
     if (typeof(text) === "undefined") {
       // The custom input has been unset
-      return false;
+      return minAnswers == 0 ? true : false;
     }
 
     if (dataType === "long") {
