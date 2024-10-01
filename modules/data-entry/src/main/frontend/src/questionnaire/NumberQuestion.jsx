@@ -179,10 +179,9 @@ function NumberQuestion(props) {
   // Callback function for our min/max
   let hasMinMaxValueError = (text) => {
     let value = 0;
-
-    if (typeof(text) === "undefined") {
+    if (typeof(text) === "undefined" || text === "") {
       // The custom input has been unset
-      return minAnswers == 0 ? true : false;
+      return false;
     }
 
     if (dataType === "long") {
@@ -440,7 +439,6 @@ function NumberQuestion(props) {
             onUpdate={text => setMinMaxError(!!text && hasMinMaxValueError(text))}
             additionalInputProps={textFieldProps}
             muiInputProps={muiInputProps}
-            error={!!minMaxError}
             existingAnswer={existingAnswer}
             pageActive={pageActive}
             validate={disableMinMaxValueEnforcement ? value => !hasMinMaxValueError(value) : undefined}
