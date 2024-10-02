@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import { withRouter } from "react-router-dom";
 import PropTypes from 'prop-types';
 import {
@@ -44,6 +44,7 @@ import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
 import { camelCaseToWords }  from "./LabeledField";
+import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext.jsx';
 
 const useStyles = makeStyles(theme => ({
   root : {
@@ -123,10 +124,14 @@ let QuestionnaireItemCard = (props) => {
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
+
   let [ moreInfoAnchor, setMoreInfoAnchor ] = useState(null);
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
   const itemRef = useRef();
+
+  const treeContext = useQuestionnaireTreeContext();
+
   // if autofocus is needed and specified in the url
   // create a ref to store the question container DOM element
   useEffect(() => {

@@ -368,6 +368,7 @@ function ExportButton(props) {
                 entities={entities || []}
                 selection={selectedEntityIds}
                 onSelectionChanged={setSelectedEntityIds}
+                placeholderText="Select questions/sections from this questionnaire"
               />
             </Grid>
           </Grid>

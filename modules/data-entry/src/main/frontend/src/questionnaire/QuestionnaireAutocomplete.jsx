@@ -71,6 +71,9 @@ let entitySpecs = {
   Section: {
     icon: "view_stream",
     color: orange[800]
+  },
+  Questionnaire: {
+    icon: "assignment",
   }
 }
 
@@ -82,13 +85,14 @@ let entitySpecs = {
 // * entities: an array of objects describing questionnaire entries; the object shape is expected to be:
 //   { uuid: string, name: string, text: string, path: string, relativePath: string }
 // * selection: an array of strings representing the values of the selected option (according to getOptionValue)
-// * onValueChanged: handler for when selection changes; passed to the Autocomplete component's `onChange` handler
+// * onSelectionChanged: handler for when selection changes; passed to the Autocomplete component's `onChange` handler
 // * getOptionValue: a function that takes an option and retrieves its value; defaults to (option) => option.path
 // Any other props are passed directly to the Autocomplete component.
 
-function QuestionnaireAutocomplete(props) {
-  const { multiple, entities, selection, onSelectionChanged, getOptionValue, ...rest } = props;
+// TODO: Don't actually need entity.uuid ?
 
+function QuestionnaireAutocomplete(props) {
+  const { multiple, entities, selection, onSelectionChanged, getOptionValue, placeholderText, ...rest } = props;
   const filterOptions = createFilterOptions({
     stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
   });
@@ -96,6 +100,7 @@ function QuestionnaireAutocomplete(props) {
   const classes = useStyles();
 
   let unselectEntity = (index) => {
+    console.log('unselectEntity', index);
     onSelectionChanged(oldValues => {
       let newValues = oldValues.slice();
       newValues.splice(index, 1);
@@ -108,13 +113,13 @@ function QuestionnaireAutocomplete(props) {
       <ListItemAvatar>
         <Tooltip title={type}>
           <Avatar
-            style={{color: entitySpecs[type].color, backgroundColor: selected ? "transparent" : undefined}}
+            style={{color: entitySpecs[type]?.color, backgroundColor: selected ? "transparent" : undefined}}
             className={classes.avatar}
           >
             { selected ?
               <Icon>check_box</Icon>
               :
-              entitySpecs[type].icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0)
+              entitySpecs[type]?.icon ? <Icon>{entitySpecs[type].icon}</Icon> : type?.charAt(0)
             }
           </Avatar>
         </Tooltip>
@@ -156,7 +161,7 @@ function QuestionnaireAutocomplete(props) {
           onSelectionChanged(multiple ? value?.map(item => getOptionValue(item)) : [getOptionValue(value)]);
         }}
         renderTags={() => null}
-        getOptionLabel={(option) => option?.name}
+        getOptionLabel={(option) => option?.name ?? ''}
         options={entities || []}
         renderOption={(props, option) =>
           <ListItemButton
@@ -172,7 +177,7 @@ function QuestionnaireAutocomplete(props) {
         renderInput={(params) =>
           <TextField
             variant="standard"
-            placeholder="Select questions/sections from this questionnaire"
+            placeholder={placeholderText}
             {...params}
           />
         }
@@ -209,12 +214,14 @@ QuestionnaireAutocomplete.propTypes = {
   selection: PropTypes.array,
   onSelectionChanged: PropTypes.func,
   getOptionValue: PropTypes.func,
+  placeholderText: PropTypes.string,
 }
 QuestionnaireAutocomplete.defaultProps = {
   multiple: false,
   selection: [],
   onSelectionChanged: () => {},
   getOptionValue: (option) => option?.path,
+  placeholderText: "Select entries from this questionnaire",
 }
 
 export default QuestionnaireAutocomplete;

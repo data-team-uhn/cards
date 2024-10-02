@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
@@ -30,12 +30,17 @@ import {
   Popover,
   Tooltip,
   Typography,
+  Snackbar,
+  Box,
+  Alert,
+  Button
 } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
 import { DateTime } from "luxon";
 
+import makeStyles from '@mui/styles/makeStyles';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import PreviewIcon from '@mui/icons-material/FindInPage';
@@ -51,18 +56,40 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
-import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
+import { QuestionnaireProvider,
+  // useQuestionnaireWriterContext
+} from "./QuestionnaireContext";
 import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
+import { DragDropMoveEntryModal, MoveEntryModal } from "../questionnaireEditor/MoveEntry.jsx";
+import { useQuestionnaireTreeContext, jcrActions } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
+import _ from "lodash";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 
+// Mover into DnD context provider file?
+// TODO: sx to get access to theme
+const useDraggableStyles = makeStyles(theme => ({
+  isDraggingOver: { backgroundColor: theme.palette.info.light },
+  isNotDraggingOver: { backgroundColor: theme.palette.primary.light }
+}))
+
+
+
 // GUI for displaying details about a questionnaire.
+
+
 let Questionnaire = (props) => {
   let { id, classes } = props;
-  let [ data, setData ] = useState();
-  let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
-  let [ actionsMenu, setActionsMenu ] = useState(null);
-  let [ error, setError ] = useState();
+
+  const treeContext = useQuestionnaireTreeContext()
+  const { data } = treeContext.state
+  const questionnaireTitle = data?.title || decodeURI(id);
+
+  // let [data, setData] = useState();
+  // console.log(data)
+  // let [questionnaireTitle, setQuestionnaireTitle] = useState();
+  let [actionsMenu, setActionsMenu] = useState(null);
+  let [error, setError] = useState();
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
   let isEdit = window.location.pathname.endsWith(".edit");
@@ -70,26 +97,32 @@ let Questionnaire = (props) => {
 
   let pageNameWriter = usePageNameWriterContext();
 
-  let handleError = (response) => {
-    setError(response);
-    setData({});
-  }
 
-  let fetchData = () => {
-    fetch(`/Questionnaires/${id}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(setData)
-      .catch(handleError);
-  };
+
+  // let handleError = (response) => {
+  //   setError(response);
+  //   // TODO
+  //   // setData({});
+  // }
+
+  // let fetchData = () => {
+  //   // fetch(`/Questionnaires/${id}.deep.json`)
+  //   jcrActions.fetchQuestionnaireData(id)
+  //     .then((response) => response.ok ? response.json() : Promise.reject(response))
+  //     // TODO
+  //     // .then(setData)
+  //     .catch(handleError);
+  // };
 
   // First, fetch the questionnaire data
   useEffect(() => {
-    fetchData();
+    console.log(treeContext.actions)
+    treeContext.actions.fetchRootData().catch((error) => {setError(error)});
   }, []);
 
-  useEffect(() => {
-    setQuestionnaireTitle(data?.title || decodeURI(id));
-  }, [data?.title]);
+  // useEffect(() => {
+  //   setQuestionnaireTitle(data?.title || decodeURI(id));
+  // }, [data?.title]);
 
   useEffect(() => {
     pageNameWriter(questionnaireTitle);
@@ -98,21 +131,24 @@ let Questionnaire = (props) => {
   useEffect(() => {
     if (!isEdit) return;
     //Perform a JCR check-out of the Questionnaire
-    let checkoutForm = new FormData();
-    checkoutForm.set(":operation", "checkout");
-    fetch(`/Questionnaires/${id}`, {
-      method: "POST",
-      body: checkoutForm
-    });
+    const checkout = jcrActions.checkOut(id)
+    // let checkoutForm = new FormData();
+    // checkoutForm.set(":operation", "checkout");
+    // fetch(`/Questionnaires/${id}`, {
+    //   method: "POST",
+    //   body: checkoutForm
+    // });
 
-    function performCheckIn() {
-      let checkinForm = new FormData();
-      checkinForm.set(":operation", "checkin");
-      fetch(`/Questionnaires/${id}`, {
-        method: "POST",
-        body: checkinForm
-      });
-    }
+
+    // function performCheckIn() {
+    //   let checkinForm = new FormData();
+    //   checkinForm.set(":operation", "checkin");
+    //   fetch(`/Questionnaires/${id}`, {
+    //     method: "POST",
+    //     body: checkinForm
+    //   });
+    // }
+    const performCheckIn = () => { jcrActions.checkIn(id) }
 
     window.addEventListener("beforeunload", performCheckIn);
     return (() => {
@@ -121,110 +157,112 @@ let Questionnaire = (props) => {
   }, []);
 
   let dropdownList = (
-      <List>
-        <ListItem className={classes.actionsMenuItem}>
-          <ExportButton
-              entityData={data}
-              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-              entryName={questionnaireTitle || id}
-              entryType="Questionnaire"
-              size="medium"
-              variant="text"
-              onClose={() => { setActionsMenu(null); }}
-          />
-        </ListItem>
-        <ListItem className={classes.actionsMenuItem}>
-          <DeleteButton
-              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-              entryName={questionnaireTitle}
-              entryType="Questionnaire"
-              onComplete={() => history.replace(baseUrl)}
-              size="medium"
-              variant="text"
-              onClose={() => { setActionsMenu(null); }}
-          />
-        </ListItem>
-      </List>
+    <List>
+      <ListItem className={classes.actionsMenuItem}>
+        <ExportButton
+          entityData={data}
+          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+          entryName={questionnaireTitle || id}
+          entryType="Questionnaire"
+          size="medium"
+          variant="text"
+          onClose={() => { setActionsMenu(null); }}
+        />
+      </ListItem>
+      <ListItem className={classes.actionsMenuItem}>
+        <DeleteButton
+          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+          entryName={questionnaireTitle}
+          entryType="Questionnaire"
+          onComplete={() => history.replace(baseUrl)}
+          size="medium"
+          variant="text"
+          onClose={() => { setActionsMenu(null); }}
+        />
+      </ListItem>
+    </List>
   )
 
   let questionnaireMenu = (
-      <div className={classes.actionsMenu}>
-        { isEdit ?
+    <div className={classes.actionsMenu}>
+      {isEdit ?
+        <>
           <Tooltip title="Preview" onClick={() => history.push(questionnaireUrl)}>
             <IconButton size="large">
               <PreviewIcon />
             </IconButton>
           </Tooltip>
-          :
+        </>
+        :
+        <>
           <Tooltip title="Edit" onClick={() => history.push(questionnaireUrl + ".edit")}>
             <IconButton color="primary" size="large">
               <EditIcon />
             </IconButton>
           </Tooltip>
-        }
-        <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-          <IconButton size="large">
-            <MoreIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Popover
-            open={Boolean(actionsMenu)}
-            anchorEl={actionsMenu}
-            onClose={() => {setActionsMenu(null)}}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-        >
-          { dropdownList }
-        </Popover>
-      </div>
+        </>
+      }
+      <Tooltip title="More actions" onClick={(event) => { setActionsMenu(event.currentTarget) }}>
+        <IconButton size="large">
+          <MoreIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Popover
+        open={Boolean(actionsMenu)}
+        anchorEl={actionsMenu}
+        onClose={() => { setActionsMenu(null) }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        {dropdownList}
+      </Popover>
+    </div>
   )
 
   let questionnaireHeader = (
-        <ResourceHeader
-          title={questionnaireTitle || ""}
-          breadcrumbs={[<Link to={baseUrl} underline="hover">Questionnaires</Link>]}
-          action={questionnaireMenu}
-          contentOffset={props.contentOffset}
-          >
-          { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
-            <Typography variant="overline">
-              Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
-            </Typography>
-          }
-        </ResourceHeader>
+    <ResourceHeader
+      title={data?.title || ""}
+      breadcrumbs={[<Link to={baseUrl} underline="hover">Questionnaires</Link>]}
+      action={questionnaireMenu}
+      contentOffset={props.contentOffset}
+    >
+      {data?.['jcr:createdBy'] && data?.['jcr:created'] &&
+        <Typography variant="overline">
+          Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
+        </Typography>
+      }
+    </ResourceHeader>
   );
-
   return (
     error ?
       <Typography variant="h2" color="error">
         Error obtaining questionnaire info: {error.status} {error.statusText}
       </Typography>
-    :
-      ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
+      : data?.["jcr:primaryType"] === "cards:Questionnaire" && (
         <Grid container direction="column" spacing={4} wrap="nowrap">
-          { questionnaireHeader }
+          {questionnaireHeader}
           <Grid item>
-            { !isEdit ?
+            {!isEdit ?
               <QuestionnairePreview
                 data={data}
                 title={questionnaireTitle}
                 contentOffset={props.contentOffset}
               />
-            :
+              :
               <QuestionnaireProvider>
                 <QuestionnaireContents
                   disableDelete
                   data={data}
                   classes={classes}
-                  onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-                  onActionDone={()=>{}}
-                  menuProps={{isMainAction: true}}
+                  // onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                  onActionDone={() => { }}
+                  menuProps={{ isMainAction: true }}
                 />
               </QuestionnaireProvider>
             }
@@ -240,8 +278,23 @@ Questionnaire.propTypes = {
 
 export default withStyles(QuestionnaireStyle)(Questionnaire);
 
+// const itemSetDnD = {
+//   // draggableEntryTypes: [], // import from FormEntry.jsx instead
+//   // returns object for style prop
+//   getItemStyle: (snapshot, provided) => {
+//     const isDragging = snapshot.isDragging
+//     return {
+//       // change background colour if dragging
+//       borderStyle: isDragging ? "dashed" : undefined,
+//       borderWidth: isDragging ? "2px" : undefined,
+//       backgroundColor: isDragging ? "lightblue" : undefined,
+//       ...provided.draggableProps.style
+//     }
+//   }
+// }
 
 let QuestionnaireItemSet = (props) => {
+
   let { children, models, onActionDone, data, classes } = props;
 
   let prioritaryModels = {};
@@ -250,6 +303,8 @@ let QuestionnaireItemSet = (props) => {
   let generalEntryTypes = ENTRY_TYPES;
 
   let getEntryTypes = entryModels => Object.keys(entryModels || {}).map(e => `cards:${e}`);
+
+
 
   if (models) {
     // Is defaultOrder specified for some entry types? Pull those into a flat "priority" list
@@ -265,11 +320,11 @@ let QuestionnaireItemSet = (props) => {
     // => {g: "g.json", h: "h,json", d: "d.json", e: "e.json"}
     Object.values(models || {})
       // Filter in groups with entries and with defaultOrder specified
-      .filter(v => typeof(v) == "object" && typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) != "undefined")
+      .filter(v => typeof (v) == "object" && typeof (v?.entries) != "undefined" && typeof (v?.defaultOrder) != "undefined")
       // Sort by the specified order
       .sort((a, b) => a.defaultOrder - b.defaultOrder)
       // Record the sorted entries into the priority list
-      .forEach(v => prioritaryModels = {...prioritaryModels, ...v.entries});
+      .forEach(v => prioritaryModels = { ...prioritaryModels, ...v.entries });
 
     // If there are any entries with defaultOrder, we update the priorityEntryTypes
     if (Object.keys(prioritaryModels).length > 0) {
@@ -287,11 +342,11 @@ let QuestionnaireItemSet = (props) => {
     //   group3 : {entries: {g: "g,json", h: "h.json"}, defaultOrder: 1}
     // }
     // => {a: "a.json", b: "b,json", c: "c.json", f: "f.json"}
-    Object.entries(models).forEach(([k,v]) => {
-      if ( typeof(v) == "object") {
-        if (typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) == "undefined") {
+    Object.entries(models).forEach(([k, v]) => {
+      if (typeof (v) == "object") {
+        if (typeof (v?.entries) != "undefined" && typeof (v?.defaultOrder) == "undefined") {
           // Flatten groups with `entries` but without `defaultOrder` (the ones with defaultOrder are already in the "priority" list)
-          generalModels = {...generalModels, ...v.entries}
+          generalModels = { ...generalModels, ...v.entries }
         }
       } else {
         // also record groups without metadata
@@ -301,7 +356,7 @@ let QuestionnaireItemSet = (props) => {
     // If there are any entries without defaultOrder, we update the generalEntryTypes
     // Otherwise the original list is kept, i.e. ENTRY_TYPES
     if (Object.keys(generalModels).length > 0) {
-       generalEntryTypes = getEntryTypes(generalModels);
+      generalEntryTypes = getEntryTypes(generalModels);
     }
   }
 
@@ -325,40 +380,43 @@ let QuestionnaireItemSet = (props) => {
   //   the `typeModels` property restriction
   let listEntries = (typeModels, types) => (
     <>
-    { Object.entries(data)
-      .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
-      .map(([key, value]) => (
-        EntryType => <Grid item key={key}>
-                       <EntryType
-                         data={value}
-                         model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
-                         onActionDone={onActionDone}
-                         classes={classes}
-                       />
-                     </Grid>
+      {Object.entries(data)
+        .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
+        .map(([key, value], index) => (
+          EntryType => (
+            <EntryType
+              key={value['jcr:uuid'] ?? value['@path']}
+              data={value}
+              model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
+              onActionDone={onActionDone}
+              classes={classes}
+            />
+          )
         )(eval(stripCardsNamespace(value['jcr:primaryType'])))
-      )
-    }
+        )
+      }
     </>
   )
 
   // There is no data to display, do not render an empty container
-  if ( !!!children &&
-       !Object.values(data).some(v => [...(generalEntryTypes ||[]), ...(prioritaryEntryTypes || [])].includes(v['jcr:primaryType'])) ) {
+  if (!!!children &&
+    !Object.values(data).some(v => [...(generalEntryTypes || []), ...(prioritaryEntryTypes || [])].includes(v['jcr:primaryType']))) {
     return null;
   }
 
   return (
     <Grid container direction="column" spacing={4} wrap="nowrap">
       {children}
+      <Grid item>
       {
         data ?
-        <>
-        { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
-        { listEntries(generalModels, generalEntryTypes) }
-        </>
-        : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
+          <>
+            {prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes)}
+            {listEntries(generalModels, generalEntryTypes)}
+          </>
+          : <Grid container justifyContent="center"><Grid item><CircularProgress /></Grid></Grid>
       }
+      </Grid>
     </Grid>
   );
 }
@@ -373,21 +431,30 @@ QuestionnaireItemSet.propTypes = {
 let QuestionnaireContents = (props) => {
   let { data } = props;
 
-  let changeQuestionnaireContext = useQuestionnaireWriterContext();
+  // let changeQuestionnaireContext = useQuestionnaireWriterContext();
+  // const treeContext = useQuestionnaireTreeContext()
 
-  useEffect(() => {
-    // Load initial data
-    changeQuestionnaireContext(findQuestionnaireEntries(data, ["cards:Question"]));
-    // Clear context when unmounting component
-    return (() => changeQuestionnaireContext([]));
-  }, []);
+  // useEffect(() => {
+  //   // Load initial data
+  //   // console.log('init', data)
+  //   // treeContext.actions.fetchRootData()
+  //   // changeQuestionnaireContext(findQuestionnaireEntries(data, ["cards:Question"]));
+
+  //   // Clear context when unmounting component
+  //   return (() => {
+  //     // console.log('clearing', data)
+  //     // treeContext.dispatch({ type: 'CLEAR_TREE' })
+  //     // treeContext.actions.clearTree()
+  //     // changeQuestionnaireContext([])
+  //   });
+  // }, []);
 
   return <QuestionnaireEntry {...props} />;
 };
 
 QuestionnaireContents.propTypes = {
   onActionDone: PropTypes.func,
-  onFieldsChanged: PropTypes.func,
+  // onFieldsChanged: PropTypes.func,
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
@@ -488,6 +555,7 @@ Section.defaultProps = {
 };
 
 
+
 // Details about a simple condition for desplaying a section
 let Conditional = (props) => <QuestionnaireEntry {...props} />;
 
@@ -527,42 +595,61 @@ ConditionalGroup.defaultProps = {
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
 
 let QuestionnaireEntry = (props) => {
-  let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
-  let [ entryData, setEntryData ] = useState(data);
-  let [ menuItems, setMenuItems ] = useState([]);
-  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
+  let { onActionDone,
+    // onFieldsChanged,
+    data, type, titleField, model, classes, menuProps, ...rest } = props;
+  let [entryData, setEntryData] = useState(data);
+  let [menuItems, setMenuItems] = useState([]);
+  let [doHighlight, setDoHighlight] = useState(data.doHighlight);
 
   // --------------------------------------------------------------
   // Questionnaire context manipulation
 
-  let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
-  let updateContext = (data) => {
-    let vars = findQuestions({data: data});
-    changeQuestionnaireContext((oldContext) => {
-       let newContext = oldContext || [];
-       vars.forEach(v => {
-         const index = newContext.findIndex(x => x.id == v.id);
-         if (index >= 0) {
-           newContext.splice(index, 1, v);
-         } else {
-           newContext.push(v);
-         }
-       });
-       return newContext;
-    });
-  }
+  // let changeQuestionnaireContext = useQuestionnaireWriterContext();
+  const treeContext = useQuestionnaireTreeContext()
 
-  let removeFromContext = (id) => {
-    changeQuestionnaireContext((oldContext) => {
-      let newContext = oldContext || [];
-      const index = newContext.findIndex(x => x.id == id);
-      if (index >= 0) {
-        newContext.splice(index, 1);
-      }
-      return newContext;
-    });
-  }
+  useEffect(() => {
+    console.log('entryData useEffect', entryData, data)
+    
+    if (!_.isEqual(entryData, data)) {
+      console.log('new entryData value')
+      treeContext.actions.updateNodeData(entryData)
+      // treeContext.dispatch({ type: 'UPDATE_ONCREATED', payload: {jcrData: entryData} })
+    }
+  }, [entryData]);
+
+  // let updateContext = (data) => {
+  //   console.log('updateContext', data)
+  //   // treeContext.dispatch({ type: 'UPDATE_ONCREATED', payload: {jcrData: data} })
+  //   // let vars = findQuestions({ data: data });
+  //   // console.log('updatingContext', data, vars)
+  //   // changeQuestionnaireContext((oldContext) => {
+  //   //   let newContext = oldContext || [];
+  //   //   vars.forEach(v => {
+  //   //     const index = newContext.findIndex(x => x.id == v.id);
+  //   //     if (index >= 0) {
+  //   //       newContext.splice(index, 1, v);
+  //   //     } else {
+  //   //       newContext.push(v);
+  //   //     }
+  //   //   });
+  //   //   return newContext;
+  //   // });
+  // }
+
+  // let removeFromContext = (id) => {
+  //   treeContext.dispatch({ type: 'REMOVE_NODE', payload: {nodeId: id} })
+  //   console.log('removing id', id)
+  //   // changeQuestionnaireContext((oldContext) => {
+  //   //   let newContext = oldContext || [];
+  //   //   const index = newContext.findIndex(x => x.id == id);
+  //   //   if (index >= 0) {
+  //   //     newContext.splice(index, 1);
+  //   //   }
+  //   //   return newContext;
+  //   // });
+  // }
 
   // -------------------------------------------------------------
   // Find child item specifications
@@ -579,9 +666,9 @@ let QuestionnaireEntry = (props) => {
       return true;
     }
     return (
-      typeof(entryData[key] != undefined) &&
-      typeof(value) == "object" &&
-      typeof(value[entryData[key]]) == "object" &&
+      typeof (entryData[key] != undefined) &&
+      typeof (value) == "object" &&
+      typeof (value[entryData[key]]) == "object" &&
       Object.entries(value[entryData[key]]).find(([k, v]) => findChildrenSpec(k, v))
     )
   };
@@ -600,16 +687,16 @@ let QuestionnaireEntry = (props) => {
 
   useEffect(() => {
     // Add the child types to the menu
-    setMenuItems(Object.keys(childModels || {}).filter(k => typeof(childModels[k]) != "object"));
+    setMenuItems(Object.keys(childModels || {}).filter(k => typeof (childModels[k]) != "object"));
 
     // Some child entries may be configured to have a maximum number of entries
-    // (for example, only one conditional or conditional group per section)
+    // (for example, on^ly one conditional or conditional group per section)
     // Exclude from the creation menu any entries corresponding to child types
     // for which maximum of that type has been reached
     if (childModels) {
       Object.values(childModels)
         .filter(v => {
-          if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
+          if (typeof (v) != "object" || typeof (v?.entries) != "object") return false;
           if (!v.hasOwnProperty("max")) return true;
           let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
           return (Object.values(entryData).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
@@ -619,85 +706,115 @@ let QuestionnaireEntry = (props) => {
   }, [entryData, childModels]);
 
   // -------------------------------------------------------------
-  // Handle data updates (field changes, child item creation or
-  // deletion)
-
+  // Handle data updates (field changes, child item creation or deletion)
+  // TODO: treeContext.dispatch (delete, field change, create)
   let handleDataChange = (newData) => {
-    // There's new data to load, display and highlight it:
     if (newData) {
+      console.log('handleDataChange new data', newData)
       setEntryData(newData);
-      setDoHighlight(true);
-      onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
+      // setDoHighlight(true);
+      // TODO field changes not propagated?
+      // onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
+      console.log('handleDataChange no new data', data)
       // Try to reload the data from the server
-      fetch(`${data["@path"]}.deep.json`)
+      // fetch(`${data["@path"]}.deep.json`)
+      jcrActions.fetchResourceJSON(data)
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(json => handleDataChange(json))
         .catch(() => {
-           // If it fails, it's because we deleted an item
-           // Update the context to remove the deleted item
-           removeFromContext(`${data['jcr:uuid']}`);
-           // Then pass it up to the parent
-           onActionDone();
+          console.log('failed to fetch', data)
+          // If it fails, it's because we deleted an item
+          // Update the context to remove the deleted item
+          if (!!data['jcr:uuid']) {
+            treeContext.actions.removeNode(data['jcr:uuid'])
+            // TODO check conditionals linked to deleted questions
+            // treeContext.dispatch({ type: 'REMOVE_NODE', payload: {nodeId: `${data['jcr:uuid']}`} })
+            
+          }
+          // Then pass it up to the parent
+          onActionDone();
         });
     }
   }
 
   let onCreated = (newData) => {
+    console.log('onCreated', newData)
     setEntryData(newData);
-    updateContext(newData);
+    // updateContext(newData);
   }
 
   // -------------------------------------------------------------
   // Rendering
 
-  let renderFields = (options) => (<>
-    <LabeledField name={`${type}Id`} {...options}>{entryData["@name"]}</LabeledField>
-    <Fields data={entryData} JSON={spec} edit={false} {...options} />
-  </>);
+  let renderFields = (options) => (
+    <>
+      <LabeledField name={`${type}Id`} {...options}>{entryData["@name"]}</LabeledField>
+      <Fields data={entryData} JSON={spec} edit={false} {...options} />
+    </>);
   let FIELDS_CLASS_NAME = "cards-questionnaire-entry-props";
 
+  // console.log('rest', rest)
+  // console.log('entryData', entryData)
   return (
-    <QuestionnaireItemCard
+      <QuestionnaireItemCard
         titleField={titleField}
-        moreInfo={renderFields({condensed: true})}
+        moreInfo={renderFields({ condensed: true })}
         data={entryData}
         type={type}
         classes={classes}
         doHighlight={doHighlight}
         action={
-            menuItems?.length > 0 ?
-            <CreationMenu
-              data={entryData}
-              onCreated={onCreated}
-              menuItems={menuItems}
-              models={childModels}
-              {...menuProps}
-            />
-            : undefined
+          <>
+            {menuItems?.length > 0 &&
+              <CreationMenu
+                data={entryData}
+                onCreated={onCreated}
+                menuItems={menuItems}
+                models={childModels}
+                {...menuProps}
+              />
+            }
+            {!!menuProps?.isMainAction ?
+              // If this is the main action, render MoveEntryModal without data to select reorder source
+              // Otherwise render MoveEntryModal with data set
+              <>
+                <DragDropMoveEntryModal />
+                <MoveEntryModal />
+              </>
+              : ENTRY_TYPES.includes(entryData['jcr:primaryType']) &&
+              <>
+                <MoveEntryModal data={entryData} />
+              </>
+              
+            }
+          </>
+
         }
         onActionDone={handleDataChange}
         model={model}
         {...rest}
-    >
-      { childModels ?
-        <QuestionnaireItemSet
-          data={entryData}
-          classes={classes}
-          onActionDone={handleDataChange}
-          models={childModels}
-        >
-          <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
-        </QuestionnaireItemSet>
-        : <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
-      }
-    </QuestionnaireItemCard>
+      >
+        {(childModels ?
+          <QuestionnaireItemSet
+            key={entryData['jcr:uuid']}
+            data={entryData}
+            classes={classes}
+            onActionDone={handleDataChange}
+            models={childModels}
+          >
+            <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
+          </QuestionnaireItemSet>
+          :
+          <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
+        )}
+      </QuestionnaireItemCard>
   );
 };
 
 QuestionnaireEntry.propTypes = {
   onActionDone: PropTypes.func,
-  onFieldsChanged: PropTypes.func,
+  // onFieldsChanged: PropTypes.func,
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
