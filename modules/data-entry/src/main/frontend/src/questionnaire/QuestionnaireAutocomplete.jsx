@@ -71,6 +71,9 @@ let entitySpecs = {
   Section: {
     icon: "view_stream",
     color: orange[800]
+  },
+  Questionnaire: {
+    icon: "assignment",
   }
 }
 
@@ -89,8 +92,7 @@ let entitySpecs = {
 // TODO: Don't actually need entity.uuid ?
 
 function QuestionnaireAutocomplete(props) {
-  const { multiple, entities, selection, onSelectionChanged, getOptionValue, ...rest } = props;
-  console.log('selection', selection);
+  const { multiple, entities, selection, onSelectionChanged, getOptionValue, placeholderText, ...rest } = props;
   const filterOptions = createFilterOptions({
     stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
   });
@@ -175,7 +177,7 @@ function QuestionnaireAutocomplete(props) {
         renderInput={(params) =>
           <TextField
             variant="standard"
-            placeholder="Select questions/sections from this questionnaire"
+            placeholder={placeholderText}
             {...params}
           />
         }
@@ -212,12 +214,14 @@ QuestionnaireAutocomplete.propTypes = {
   selection: PropTypes.array,
   onSelectionChanged: PropTypes.func,
   getOptionValue: PropTypes.func,
+  placeholderText: PropTypes.string,
 }
 QuestionnaireAutocomplete.defaultProps = {
   multiple: false,
   selection: [],
   onSelectionChanged: () => {},
   getOptionValue: (option) => option?.path,
+  placeholderText: "Select entries from this questionnaire",
 }
 
 export default QuestionnaireAutocomplete;

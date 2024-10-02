@@ -86,6 +86,7 @@ let ConditionalValueInput = (props) => {
           selection={values}
           onSelectionChanged={setValues}
           getOptionValue={option => option.name}
+          placeholderText="Select questions from this questionnaire"
         />
         :
         <Autocomplete
