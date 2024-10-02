@@ -25,92 +25,46 @@ import {
     DialogActions,
     DialogContent, DialogContentText,
     DialogTitle,
-    ListItemText,
-    MenuItem,
     Snackbar,
-    TextField
-} from '@mui/material';
-import MoveDownIcon from '@mui/icons-material/MoveDown';
 
-import { useQuestionnaireTreeContext, isDescendant } from './QuestionnaireTreeContext';
+    ListSubheader,
+    List,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    ListItemAvatar,
+    Avatar,
+    Collapse,
+    Tooltip,
+    Icon,
+    Grid,
+    Typography
+} from '@mui/material';
+
+import MoveDownIcon from '@mui/icons-material/MoveDown';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import DraftsIcon from '@mui/icons-material/Drafts';
+import SendIcon from '@mui/icons-material/Send';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import StarBorder from '@mui/icons-material/StarBorder';
+
+import { useQuestionnaireTreeContext, isDescendant, findNodePosition, jcrActions } from './QuestionnaireTreeContext';
 import QuestionnaireAutocomplete from '../questionnaire/QuestionnaireAutocomplete';
 
 import { stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
 
-const jcrActions = {
-    // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
-    // :order index
-    reorderEntry: (reorderSourceNode, newPosition) => {
-        let reorderForm = new FormData();
-        const order = newPosition === -1 ? 'last' : `${newPosition}`
-        const path = reorderSourceNode.path
-        reorderForm.set(":order", order);
-        reorderForm.set(":http-equiv-accept", "application/json");
-        return fetch(path, {
-            method: "POST",
-            body: reorderForm
-        });
-    },
-    // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
-    // POST /content/oldParentNode/childNode
-    // :operation=move
-    // :dest=/content/newParentNode/childNode
-    // :order=before siblingNodeName || index
-    moveEntryNested: (reorderSourceNode, newParentNode, newPosition) => {
-        const reorderForm = new FormData();
-        console.log(reorderSourceNode, newParentNode, newPosition)
-        // Use numeric 'order' value to move to specific position
-        // If newPosition -1, then move to top of parent's children
-        const order = newPosition === -1 ? 'last' : `${newPosition}`
-        const dest = newParentNode.path.concat('/')
-        const path = reorderSourceNode.path
-        reorderForm.set(":operation", "move");
-        reorderForm.set(":order", order);
-        reorderForm.set(":dest", dest);
-        // For the case of reordering within same parent
-        // reorderForm.set(":replace", "true");
-        reorderForm.set(":http-equiv-accept", "application/json");
-        return fetch(path, {
-            method: "POST",
-            body: reorderForm,
-        });
-    },
-}
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
-const DEFAULT_STATE = {
-    enabled: false,
-    snackbar: { open: false, message: '' },
-};
-
-export const DndStateContext = React.createContext(DEFAULT_STATE);
-export const DndDispatchContext = React.createContext(null);
-
-function dndReducer(dndState, action) {
-    console.log('dispatch dnd', dndState, action)
-    switch (action.type) {
-        case 'setEnabled': {
-            return { ...dndState, enabled: action.payload.enabled }
-        }
-        case 'setSnackbar': {
-            const { snackbar } = dndState
-            return { ...dndState, snackbar: { ...snackbar, ...action.payload } }
-        }
-        case 'reset': {
-            return DEFAULT_STATE
-        }
-        default: {
-            throw Error('Unknown action: ' + action.type);
-        }
-    }
-}
-
-export function MoveEntryModal(props) {
+function MoveEntryModal(props) {
     const { data } = props
     const disableReorderSourceSelect = !!data
     const [open, setOpen] = useState(false);
     const [snackbar, setSnackbar] = useState({ open: false, error: false, message: '' });
-    const treeContext = useQuestionnaireTreeContext()
-    const nodes = treeContext.state.nodes
+    const treeContext = useQuestionnaireTreeContext();
+    const { state: { nodes } } = treeContext
+
     // Reorder source is the entry to be moved, array used for autocomplete
     const [reorderSourceSelection, setReorderSourceSelection] = useState([]);
     const reorderSource = useMemo(() => {
@@ -125,7 +79,8 @@ export function MoveEntryModal(props) {
         }
     }, [reorderSourceSelection]);
     const sourceOptions = useMemo(() => {
-        if (Object.keys(nodes).length !== 0) {
+        const nodes = treeContext.state.nodes
+        if (!!Object.keys(nodes).length) {
             const newSourceOptions = []
             for (const id in nodes) {
                 if (nodes.hasOwnProperty(id)) {
@@ -139,17 +94,17 @@ export function MoveEntryModal(props) {
         } else {
             return []
         }
-    }, [nodes])
+    }, [treeContext.state.nodes])
     // New parent is the entry to move the reorder source to
     const [newParentSelection, setNewParentSelection] = useState([]);
     const newParent = useMemo(() => (!!newParentSelection.length ? newParentSelection[0] : ''), [newParentSelection])
     // New position is the index of new parent's children to move the reorder source to
     const [newPositionSelection, setNewPositionSelection] = useState([]);
     const newPosition = useMemo(() => (!!newPositionSelection.length ? newPositionSelection[0] : ''), [newPositionSelection])
-    console.log('state', reorderSource, newParent, newPosition)
+    // console.log('state', nodes, reorderSource, newParent, newPosition, nodes.hasOwnProperty(reorderSource))
     // Parent options for a given source node is any section or the root questionnaire
     const parentOptions = useMemo(() => {
-        if (!!reorderSource) {
+        if (!!reorderSource && !!Object.keys(nodes).length) {
             const newParentOptions = []
             for (const id in nodes) {
                 if (nodes.hasOwnProperty(id)) {
@@ -160,7 +115,7 @@ export function MoveEntryModal(props) {
                     }
                 }
             }
-            console.log('parentOptions', newParentOptions)
+            // console.log('parentOptions', newParentOptions)
             return newParentOptions
         } else {
             return []
@@ -175,58 +130,45 @@ export function MoveEntryModal(props) {
         return disabled
     }, [nodes, reorderSource])
     const positionOptions = useMemo(() => {
-        if (!Object.keys(nodes).length) {
-            return []
-        }
-        if (!!newParent) {
+        if (!!newParent && !!Object.keys(nodes).length) {
             const parent = nodes[newParent]
             const newPositions = parent.children.map(id => (nodes[id]))
-            // Use reorderSourceNode as element for moving to the bottom
-            // const reorderSourceNode = nodes[reorderSource]
-            // .map((node, index) => {
-            //     const { value, jcrPrimaryType, name: label, path: sublabel } = node
-            //     const disabled = value === reorderSource;
-            //     return { value: index, label, sublabel, disabled };
-            // })
-            // const bottomPosition = newPositions.length === 0 ?
-            //     { value: -1, label: 'Beginning', sublabel: "No entries in parent, moved entry will be first" }
-            //     : { value: -1, label: 'Bottom', sublabel: "Moved entry will be last" };
-            // newPositions.push(reorderSourceNode);
-            console.log('positionOptions', newPositions, nodes)
             return newPositions
         } else {
             return []
         }
-    }, [nodes, reorderSource, newParent])
+    }, [nodes, newParent])
     useEffect(() => {
-        if (Object.keys(nodes).length === 0 || !reorderSource) {
-            console.log('reset all on empty nodes')
+        if (Object.keys(nodes).length === 0) {
+            // console.log('reset all on empty nodes')
             setNewParentSelection([])
-            // setNewPosition('')
+            setNewPositionSelection([])
+        } else if (!reorderSource && !disableReorderSourceSelect) {
+            // console.log('reset all on empty reorderSource')
+            setNewParentSelection([])
             setNewPositionSelection([])
         } else {
-            if (!open) {
+            if (open && disableReorderSourceSelect) {
+                const originalParent = nodes[reorderSource].parent
+                const originalPosition = nodes[originalParent].children.indexOf(reorderSource)
+                setNewParentSelection([originalParent])
+                setNewPositionSelection([originalPosition])
+            } else if (open && !disableReorderSourceSelect) {
+                // console.log('reset selectables')
+                setNewParentSelection([])
+                setNewPositionSelection([])
+            } else if (!open) {
                 if (!disableReorderSourceSelect) {
-                    console.log('reset selectable on closed')
+                    // console.log('reset all on close')
                     setReorderSourceSelection([])
-                    setNewParentSelection([])
-                    setNewPositionSelection([])
-                } else {
-                    console.log(nodes)
-                    const originalParent = nodes[reorderSource].parent
-                    const originalPosition = nodes[originalParent].children.indexOf(reorderSource)
-                    console.log('originalParent', originalParent, 'originalPosition', originalPosition)
-                    setNewParentSelection([originalParent])
-                    setNewPositionSelection([originalPosition])
                 }
-
+                setNewParentSelection([])
+                setNewPositionSelection([])
             }
         }
 
     }, [nodes, reorderSource, open])
     useEffect(() => {
-        console.log('reset newPosition from newParent')
-        // setNewPosition('')
         setNewPositionSelection([])
     }, [newParent])
 
@@ -247,7 +189,6 @@ export function MoveEntryModal(props) {
     const handleClickOpen = () => {
         setOpen(true);
     };
-
     const handleClose = () => {
         setOpen(false);
     };
@@ -257,22 +198,26 @@ export function MoveEntryModal(props) {
     }
     const handleSuccess = (data) => {
         console.log('reorder success', data)
+        treeContext.actions.refreshTree()
         setSnackbar({ open: true, error: false, message: 'Entry moved successfully' })
     }
 
     const handleSubmit = (e) => {
         console.log('reorder', reorderSource, newParent, newPosition)
         if (!reorderSource || !newParent || !newPosition) {
-
+            throw new Error('Missing required fields for entry reorder')
         }
         e.preventDefault();
-        let submit
-        if (nodes[reorderSource].parent === newParent) {
-            submit = jcrActions.reorderEntry(nodes[reorderSource], newPosition)
-        } else {
-            submit = jcrActions.moveEntryNested(nodes[reorderSource], nodes[newParent], newPosition)
-        }
-        submit.then(response => response.ok ? response.json() : Promise.reject(response))
+        // If reorderSource is child of newParent, just reorder
+        // const submit = treeContext.actions.reorderNode(reorderSource, newParent, newPosition)
+        // let submit
+        // if (nodes[reorderSource].parent === newParent) {
+        //     submit = jcrActions.reorderEntry(nodes[reorderSource], newPosition)
+        // } else {
+        //     submit = jcrActions.moveEntryNested(nodes[reorderSource], nodes[newParent], newPosition)
+        // }
+        // submit.then(response => response.ok ? response.json() : Promise.reject(response))
+        treeContext.actions.reorderNode(reorderSource, newParent, newPosition)
             .then(handleSuccess)
             .catch(handleError)
             .finally(handleClose);
@@ -281,67 +226,156 @@ export function MoveEntryModal(props) {
     const MoveEntryDialogText = (props) => {
         if (disableReorderSourceSelect) {
             const node = nodes[reorderSource]
-            console.log(node)
+            // console.log(node)
 
             return (
                 <DialogContentText>
                     To move entry with name <b>{node.name}</b>, please select a new parent and a new position.
-                    Positions selected beside 'Bottom' will move the entry to before the selected position entry.
+                    {/* Positions selected beside 'Bottom' will move the entry to before the selected position entry. */}
                 </DialogContentText>
             )
         } else {
             return (
                 <>
                     <DialogContentText>
-                        To move an entry, please select an entry to move, a new parent, and a new position.
+                        Select an entry to move, a new parent, and a new position.
                     </DialogContentText>
-                    <QuestionnaireAutocomplete
-                        multiple={false}
-                        entities={sourceOptions.map((node) => {
-                            //   { uuid: string, name: string, text: string, path: string, relativePath: string }
-                            const { value, name, title, path, relativePath, jcrPrimaryType } = node
-                            return {
-                                value: value,
-                                name: name,
-                                text: title,
-                                path: path,
-                                relativePath: relativePath,
-                                type: stripCardsNamespace(jcrPrimaryType)
-                            }
-                        })}
-                        // selection={!reorderSource ? [] : [reorderSource]}
-                        selection={reorderSourceSelection}
-                        onSelectionChanged={setReorderSourceSelection}
-                        getOptionValue={(option) => option.value}
-                        id="reorderSource"
-                    />
-                    {/* <TextField
-                    select
-                    disabled={disableReorderSourceSelect}
-                    value={reorderSource}
-                    onChange={handleReorderSourceChange}
-                    autoComplete='off'
-                    required
-                    margin="dense"
-                    id="reorderSource"
-                    name="reorderSource"
-                    label="Select an entry to move"
-                    fullWidth
-                    variant="standard"
-                >
-                    {sourceOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            <ListItemText primary={option.label} secondary={option.sublabel} />
-                        </MenuItem>
-                    ))}
-                </TextField> */}
+                    <Grid container alignItems='baseline' spacing={2} direction="row">
+                        <Grid item xs={4}>
+                            <Typography variant="subtitle2">Select an entry to move</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <QuestionnaireAutocomplete
+                                multiple={false}
+                                entities={sourceOptions.map((node) => {
+                                    //   { uuid: string, name: string, text: string, path: string, relativePath: string }
+                                    const { value, name, title, path, relativePath, jcrPrimaryType } = node
+                                    return {
+                                        value: value,
+                                        name: name,
+                                        text: title,
+                                        path: path,
+                                        relativePath: relativePath,
+                                        type: stripCardsNamespace(jcrPrimaryType)
+                                    }
+                                })}
+                                // selection={!reorderSource ? [] : [reorderSource]}
+                                selection={reorderSourceSelection}
+                                onSelectionChanged={setReorderSourceSelection}
+                                getOptionValue={(option) => option.value}
+                                id="reorderSource"
+                                placeholderText="Select questions/sections/information from this questionnaire"
+                            />
+                        </Grid>
+                    </Grid>
                 </>
             )
         }
     }
 
+    const ReorderForm = (props) => {
+        return (
+            <DialogContent>
+                <MoveEntryDialogText />
+                <Grid container alignItems='baseline' spacing={2} direction="row">
+                    <Grid item xs={4}>
+                        <Typography variant="subtitle2">Select a new parent</Typography>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <QuestionnaireAutocomplete
+                            multiple={false}
+                            entities={parentOptions.map((node) => {
+                                // console.log(node)
+                                const { value, name, title, path, relativePath, jcrPrimaryType } = node
+                                return {
+                                    value: value,
+                                    name: name,
+                                    text: title,
+                                    path: path,
+                                    relativePath: relativePath,
+                                    type: stripCardsNamespace(jcrPrimaryType),
+                                    ... (jcrPrimaryType === 'cards:Questionnaire' && {
+                                        // type: "!",
+                                        name: 'Move to top level',
+                                    })
+                                }
+                            })}
+                            getOptionDisabled={getParentOptionDisabled}
+                            selection={newParentSelection}
+                            onSelectionChanged={setNewParentSelection}
+                            getOptionValue={(option) => option.value}
+                            placeholderText="Select sections from this questionnaire"
+                            id="newParent"
+                            disabled={!reorderSource}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid container alignItems='baseline' spacing={2} direction="row">
+                    <Grid item xs={4}>
+                        <Typography variant="subtitle2">Select a new position</Typography>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <QuestionnaireAutocomplete
+                            multiple={false}
+                            entities={positionOptions.map((node, index) => {
+                                // console.log(positionOptions, node)
+                                const { value, name, title, path, relativePath, jcrPrimaryType } = node
+                                // console.log(nodes, newParent, nodes[newParent])
+                                return {
+                                    value: index,
+                                    name: name,
+                                    text: title,
+                                    path: path,
+                                    relativePath: relativePath,
+                                    type: stripCardsNamespace(jcrPrimaryType)
+                                }
+                            })
+                                .concat(
+                                    // !nodes[newParent] ? [] :
+                                    [{
+                                        value: -1,
+                                        path: nodes[newParent]?.path,
+                                        relativePath: nodes[newParent]?.relativePath,
+                                        // type: stripCardsNamespace(nodes[reorderSource]?.jcrPrimaryType),
+                                        type: "!",
+                                        ... (!!positionOptions.length ? {
+                                            name: 'Moved entry will be last',
+                                            text: 'Bottom',
+                                        } : {
+                                            name: 'No entries in parent, moved entry will be first',
+                                            text: 'Beginning',
+                                        })
+                                    }]
+                                )
+                            }
+                            getOptionDisabled={(option) => option.path === nodes[reorderSource]?.path}
+                            selection={newPositionSelection}
+                            onSelectionChanged={setNewPositionSelection}
+                            placeholderText="Select entries to move next to"
+                            getOptionValue={(option) => option.value}
+                            id="newPosition"
+                            disabled={!newParent}
+                        />
+                    </Grid>
+                </Grid>
+                {/* <DialogContentText>
+                {!!reorderSource && `Moving entry ${nodes[reorderSource].path} \n`}
+                {!!newParent && `to new parent ${newParent} \n`}
+                {!!`${newPosition}` && `with new position ${newPosition}`}
+            </DialogContentText> */}
+            </DialogContent>
+        )
+    }
+
+    const emptyNodes = !Object.keys(nodes).length
+    const nodeNotInTree = disableReorderSourceSelect && !nodes.hasOwnProperty(reorderSource)
     // Wait until nodes is loaded into context
-    if (Object.keys(nodes).length === 0) {
+    if (emptyNodes) {
+        console.log('No nodes, not rendering MoveEntryModal')
+        return null
+    }
+    if (nodeNotInTree) {
+        console.error('Node not in tree, not rendering MoveEntryModal', data)
         return null
     }
     return (
@@ -350,6 +384,8 @@ export function MoveEntryModal(props) {
                 {disableReorderSourceSelect ? 'Move' : <MoveDownIcon />}
             </Button >
             <Dialog
+                maxWidth="md"
+                fullWidth
                 open={open}
                 onClose={handleClose}
                 PaperProps={{
@@ -359,108 +395,7 @@ export function MoveEntryModal(props) {
             >
                 {/* TODO: put data entry info in title  */}
                 <DialogTitle>Reorder questionnaire entries</DialogTitle>
-                <DialogContent>
-                    <MoveEntryDialogText />
-                    <QuestionnaireAutocomplete
-                        multiple={false}
-                        entities={parentOptions.map((node) => {
-                            const {value, name, title, path, relativePath, jcrPrimaryType} = node
-                            return {
-                                value: value,
-                                name:  jcrPrimaryType === 'cards:Questionnaire' ? 'Move to top level' : name,
-                                text: title,
-                                path: path,
-                                relativePath: relativePath,
-                                type: stripCardsNamespace(jcrPrimaryType)
-                            }
-                        })}
-                        getOptionDisabled={getParentOptionDisabled}
-                        selection={newParentSelection}
-                        onSelectionChanged={setNewParentSelection}
-                        getOptionValue={(option) => option.value}
-                        id="newParent"
-                        disabled={!reorderSource}
-                    />
-                    <QuestionnaireAutocomplete
-                        multiple={false}
-                        entities={positionOptions.map((node, index) => {
-                            console.log(positionOptions)
-                            const {value, name, title, path, relativePath, jcrPrimaryType} = node
-                            return {
-                                value: index,
-                                name: name,
-                                text: title,
-                                path: path,
-                                relativePath: relativePath,
-                                type: stripCardsNamespace(jcrPrimaryType)
-                            }
-                        }).concat([
-                            {
-                                value: -1,
-                                path: nodes[newParent]?.path,
-                                relativePath: nodes[newParent]?.relativePath,
-                                type: stripCardsNamespace(nodes[reorderSource]?.jcrPrimaryType),
-                                ... (!!positionOptions.length ? {
-                                    name: 'Moved entry will be last',
-                                    text: 'Bottom',
-                                } : {
-                                    name: 'No entries in parent, moved entry will be first',
-                                    text: 'Beginning',
-                                })
-                            }
-                        ])}
-                        getOptionDisabled={(option) => option.path === nodes[reorderSource]?.path}
-                        selection={newPositionSelection}
-                        onSelectionChanged={setNewPositionSelection}
-                        getOptionValue={(option) => option.value}
-                        id="newPosition"
-                        disabled={!newParent}
-                    />
-                    {/* <TextField
-                        select
-                        value={newParent}
-                        onChange={handleNewParentChange}
-                        autoComplete='off'
-                        required
-                        margin="dense"
-                        id="parent"
-                        name="parent"
-                        label="Select a new parent for the entry"
-                        fullWidth
-                        variant="standard"
-                    >
-                        {parentOptions.map((option) => (
-                            <MenuItem key={option.value} value={option.value} disabled={option.disabled}>
-                                <ListItemText primary={option.label} secondary={option.sublabel} />
-                            </MenuItem>
-                        ))}
-                    </TextField> */}
-                    {/* <TextField
-                        value={newPosition}
-                        onChange={handleNewPositionChange}
-                        select
-                        // autoFocus
-                        required
-                        autoComplete='off'
-                        margin="dense"
-                        id="position"
-                        name="position"
-                        label="Select a new position for the entry"
-                        fullWidth
-                        variant="standard"
-                    >
-                        {positionOptions.map((option) => (
-                            <MenuItem key={option.value} value={option.value} disabled={option.disabled}>
-                                <ListItemText primary={option.label} secondary={option.sublabel} />
-                            </MenuItem>
-                        ))}
-                    </TextField> */}
-                    <DialogContentText>
-                        {!!reorderSource && `Moving entry ${reorderSource}`}
-                        {!!newParent && `to new parent ${newParent}`}
-                        {!!`${newPosition}` && `with new position ${newPosition}`}
-                    </DialogContentText>
-                </DialogContent>
+                <ReorderForm />
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button type="submit">Move entry</Button>
@@ -484,38 +419,319 @@ export function MoveEntryModal(props) {
     )
 }
 
-/**
- * A context provider for managing drag and drop
- * @param {Object} props the props to pass onwards to the child, generally its children
- * @returns {Object} a React component with the form provider
- */
-export function DragDropProvider(props) {
-    const { ...rest } = props
-    const [dndState, dndDispatch] = useReducer(dndReducer, DEFAULT_STATE);
-    // const questionnaireContext = useQuestionnaireReaderContext()
+import { deepPurple, orange } from '@mui/material/colors';
+import { makeStyles } from '@mui/styles';
+import { ENTRY_TYPES } from '../questionnaire/FormEntry';
+const entitySpecs = {
+    Question: {
+        color: deepPurple[700]
+    },
+    Section: {
+        icon: "view_stream",
+        color: orange[800]
+    }
+}
 
-    // console.log('dnd provider', dndState, questionnaireContext)
+const useStyles = makeStyles(theme => ({
+    selectionList: {
+        "& .MuiListItem-root": {
+            paddingLeft: 0,
+        },
+        "& .MuiDivider-root": {
+            marginLeft: theme.spacing(7),
+        },
+    },
+    avatar: {
+        backgroundColor: theme.palette.action.hover,
+        color: theme.palette.text.primary,
+        fontWeight: "bold",
+    },
+    optionText: {
+        "& .MuiListItemText-secondary": {
+            wordBreak: "break-word",
+            "& > *": {
+                color: theme.palette.text.disabled,
+            },
+        },
+    },
+}));
+
+function DragDropMoveEntryModal(props) {
+    const classes = useStyles();
+    const [open, setOpen] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, error: false, message: '' });
+
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleError = (e) => {
+        console.log(e)
+        setSnackbar({ open: true, error: true, message: 'Error moving entry' })
+    }
+    const handleSuccess = (data) => {
+        console.log('reorder success', data)
+        treeContext.actions.refreshTree()
+        setSnackbar({ open: true, error: false, message: 'Entry moved successfully' })
+    }
+
+    const treeContext = useQuestionnaireTreeContext();
+    const nodes = treeContext.state.nodes;
+    const rootNodeId = Object.entries(nodes).find(([, node]) => node.parent === null)?.[0];
+    
+    const [reorderState, setReorderState] = useState({
+        reorderSourceId: null,
+        newParenIdt: null,
+        newPosition: null,
+    })
+    const handleSelectReorderSource = (nodeId) => {
+        const alreadySelected = reorderState.reorderSourceId === nodeId
+        if (alreadySelected) {
+            setReorderState({ ...reorderState, reorderSourceId: null })
+        } else {
+            setReorderState({ ...reorderState, reorderSourceId: nodeId })
+        }
+    }
+    const handleSelectTarget = (nodeId) => {
+        // const 
+    }
+    const handleNodeClick = (nodeId) => {
+        console.log('click', nodeId)
+        const { reorderSourceId, newParentId, newPosition } = reorderState
+        if (!reorderSourceId) {
+            // Select node
+            setReorderState({ ...reorderState, reorderSourceId: nodeId })
+            return
+        } else if (reorderSourceId === nodeId) {
+            // Deselect node
+            setReorderState({ ...reorderState, reorderSourceId: null })
+            return
+        } else {
+            // Select target
+
+            console.log('reorder', reorderSourceId, newParentId, newPosition)
+        }
+    }
+
+    function RecursiveDragList(props) {
+        const { nodeId,
+            // level = 0
+        } = props
+        const treeContext = useQuestionnaireTreeContext();
+        const nodes = treeContext.state.nodes;
+        const node = nodes[nodeId];
+        const type = stripCardsNamespace(node.jcrPrimaryType)
+        const collapsible = ['cards:Section', 'cards:Questionnaire'].includes(node.jcrPrimaryType)
+        const enableCollapse = collapsible && node.children?.length > 0
+        const [collapsed, setCollapsed] = useState(false);
+
+        const handleClickCollapse = () => {
+            if (enableCollapse) {
+                setCollapsed(!collapsed);
+            }
+        }
+        const handleClickReorder = () => {
+            handleNodeClick(nodeId)
+        }
+
+
+
+        return (
+            <>
+                <Draggable
+                    draggableId={nodeId}
+                    index={node.parent ? nodes[node.parent].children.indexOf(nodeId) : 0}
+                    isDragDisabled={node.parent === null} // Don't allow root node to be dragged
+                >
+                    {(providedDraggable, snapshotDraggable) => (
+                        <div ref={providedDraggable.innerRef} {...providedDraggable.draggableProps}>
+                            <ListItemButton
+                                selected={reorderState.reorderSourceId === nodeId}
+                                // sx={{
+                                //     backgroundColor: snapshotDraggable.isDragging ? 'rgba(0, 0, 0, 0.1)' : 'inherit',
+                                // }}
+                            >
+                                <ListItemAvatar
+                                    onClick={handleClickReorder}
+                                >
+                                        {/* <div 
+                                            // ref={providedDroppable.innerRef}
+                                            // {...providedDroppable.droppableProps}
+                                            {...providedDraggable.dragHandleProps}
+                                        > */}
+                                            <Avatar
+                                                style={{ color: entitySpecs[type]?.color }}
+                                                className={classes.avatar}
+                                                // {...providedDraggable.dragHandleProps}
+                                                // sx={{ cursor: 'grab' }}
+                                            >
+                                                {
+                                                    reorderState.reorderSourceId === nodeId ? <Icon>check_box</Icon>
+                                                    : entitySpecs[type]?.icon ? <Icon>{entitySpecs[type].icon}</Icon>
+                                                    : type?.charAt(0)
+                                                }
+                                            </Avatar>
+                                        {/* </div> */}
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={node.title} secondary={node.name}
+                                />
+                                {collapsible && (
+                                    <ListItemAvatar onClick={handleClickCollapse} >
+                                        <Icon color={enableCollapse ? 'inherit' : 'disabled'}>
+                                        {collapsed ? 'expand_more' : 'expand_less'}
+                                        </Icon>
+                                        {/* {collapsed ? <ExpandMore /> : <ExpandLess />} */}
+                                    </ListItemAvatar>
+                                )}
+                            </ListItemButton>
+                            <Droppable droppableId={nodeId}>
+                                {(providedDroppable, snapshotDroppable) => (
+                                    <>
+                                        <div ref={providedDroppable.innerRef} {...providedDroppable.droppableProps}>
+                                        {/* If the node has children, render them recursively */}
+                                        {collapsible && !collapsed && (
+                                            <Collapse in={true} timeout="auto" unmountOnExit>
+                                                <List component="div" disablePadding
+                                                    sx={{
+                                                        pl: 4,
+                                                        backgroundColor: snapshotDroppable.isDraggingOver ? 'rgba(0, 0, 0, 0.1)' : 'inherit'
+                                                    }}
+                                                >
+                                                    {node.children.map((childId) => (
+                                                        <RecursiveDragList key={childId} nodeId={childId} />
+                                                    ))}
+                                                </List>
+                                            </Collapse>
+                                        )}
+                                        {providedDroppable.placeholder}
+                                        </div>
+                                    </>
+                                )}
+                            </Droppable>
+                        </div>
+                    )}
+                </Draggable>
+            </>
+        )
+    }
+
+
+    const onDragEnd = useCallback((result, provided) => {
+        console.log(result, provided)
+        // const { draggableId, type, source, destination, reason, mode } = result;
+        const { source, destination, draggableId } = result
+        // If no destination, do nothing
+        if (!destination) {
+            throw new Error('No destination for drag')
+        }
+        // If source and destination are the same, do nothing
+        if (source.droppableId === destination.droppableId && source.index === destination.index) {
+            throw new Error('Source and destination are the same')
+        }
+        // const reorderSourceNode = nodes[draggableId]
+        // const dropTargetNode = nodes[destination.droppableId]
+        // const newParentNode = nodes[dropTargetNode.parent]
+        // const newPosition = findNodePosition(nodes, dropTargetNode.value)
+        console.log('reorder', draggableId, source, destination)
+        console.log('reorder', nodes[draggableId].name, nodes[source.droppableId].name, nodes[destination.droppableId].name)
+        // TODO: process source, destination and draggableId to determine what kind of reorder
+
+        // console.log('reorder', reorderSourceNode.name, newParentNode.name, newPosition)
+        // console.log('reorder', reorderSourceNode.name, newParentNode.name, newPosition)
+        // let submit
+        // if (reorderSourceNode.parent === newParentNode.value) {
+        //     submit = jcrActions.reorderEntry(reorderSourceNode, newPosition)
+        // } else {
+        //     submit = jcrActions.moveEntryNested(reorderSourceNode, newParentNode, newPosition)
+        // }
+        // treeContext.actions.reorderNode(reorderSourceNode.value, newParentNode.value, newPosition)
+        //     .then(handleSuccess)
+        //     .catch(handleError)
+    }, [nodes])
     return (
-        // <DragDropContext onDragEnd={onDragEnd}>
         <>
-            <DndStateContext.Provider value={dndState}>
-                <DndDispatchContext.Provider value={dndDispatch} {...rest} />
-            </DndStateContext.Provider>
-            {/* <Snackbar
+            <Button onClick={handleClickOpen}>
+                <DragIndicatorIcon />
+            </Button>
+            <Dialog
+                maxWidth="md"
+                fullWidth
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                    component: 'form',
+                    // onSubmit: handleSubmit
+                }}
+            >
+                <DialogTitle>Reorder questionnaire entries</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        To move an entry, please drag and drop the entry to a new position.
+                    </DialogContentText>
+                    {/* List here */}
+                    <DragDropContext
+                        // onBeforeCapture={}
+                        // onBeforeDragStart={}
+                        // onDragStart={}
+                        // onDragUpdate={}
+                        onDragEnd={onDragEnd}
+                    >
+                        <Droppable droppableId={rootNodeId}>
+                            {(providedDroppable) => (
+                                <div ref={providedDroppable.innerRef} {...providedDroppable.droppableProps}>
+                                    <List dense className={classes.selectionList}>
+                                        <RecursiveDragList key={rootNodeId} nodeId={rootNodeId} />
+                                        {/* {nodes[rootNodeId].children.map((childId) => (
+                                            <RecursiveDragList key={childId} nodeId={childId}/>
+                                        ))} */}
+                                    </List>
+                                    {providedDroppable.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                        {/* <Droppable droppableId={rootNodeId}>
+                            {(provided) => (
+                                <List
+                                    sx={{ width: '100%', bgcolor: 'background.paper' }}
+                                    ref={provided.innerRef}
+                                // subheader={
+                                //     <ListSubheader component="div" id="nested-list-subheader">
+                                //         Nested List Items
+                                //     </ListSubheader>
+                                // }
+                                >
+                                    <RecursiveDragList nodeId={rootNodeId} />
+                                    {provided.placeholder}
+                                </List>
+                            )}
+                        </Droppable> */}
+                    </DragDropContext>
+                </DialogContent>
+            </Dialog>
+            <Snackbar
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                open={dndState.snackbar.open}
+                open={snackbar.open}
                 autoHideDuration={2000}
-                onClose={() => dndDispatch({ type: 'setSnackbar', payload: DEFAULT_STATE.snackbar })}
+                onClose={() => { setSnackbar({ open: false, error: false, message: '' }) }}
             >
                 <Alert
-                    severity="success"
+                    severity={snackbar.error ? "error" : "success"}
                     variant="filled"
                     sx={{ width: '100%' }}
                 >
-                    {dndState.snackbar.message}
+                    {snackbar.message}
                 </Alert>
-            </Snackbar> */}
+            </Snackbar>
         </>
-        // </DragDropContext>
-    );
+    )
+}
+
+export {
+    MoveEntryModal,
+    DragDropMoveEntryModal
 }

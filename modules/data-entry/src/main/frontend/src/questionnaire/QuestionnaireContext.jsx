@@ -17,9 +17,9 @@
 //  under the License.
 //
 
-import React from "react";
+import React, {useEffect, useMemo} from "react";
 // For storing structure of questionnaire for reordering
-import { QuestionnaireTreeProvider } from "../questionnaireEditor/QuestionnaireTreeContext";
+import { useQuestionnaireTreeContext, findTreeEntries } from "../questionnaireEditor/QuestionnaireTreeContext";
 
 
 const DEFAULT_STATE = [];
@@ -33,13 +33,24 @@ const QuestionnaireWriterContext = React.createContext();
  * @returns {Object} a React component with the questionnaire provider
  */
 export function QuestionnaireProvider(props) {
-  const [questions, setQuestions] = React.useState(DEFAULT_STATE);
+  const treeContext = useQuestionnaireTreeContext();
+  const { state: {nodes} } = treeContext;
+
+  // const [questions, setQuestions] = React.useState(DEFAULT_STATE);
+  // useEffect(() => {
+  //   const treeQuestions = findTreeEntries(nodes, ["cards:Question"])
+  //   console.log('setting questionnaireContext questions', questions, treeQuestions)
+  //   setQuestions(treeQuestions)
+  // }, [nodes]);
+
+  const questions = useMemo(() => {
+    return findTreeEntries(treeContext.state.nodes, ["cards:Question"])
+  }, [treeContext.state.nodes]);
+  console.log('setting questionnaireContext questions', questions)
 
   return (
     <QuestionnaireReaderContext.Provider value={questions}>
-      <QuestionnaireWriterContext.Provider value={setQuestions} >
-        <QuestionnaireTreeProvider {...props} />
-      </QuestionnaireWriterContext.Provider>
+      <QuestionnaireWriterContext.Provider value={(a) => {console.log('changeQuestionnaireContext', a)}} {...props} />
     </QuestionnaireReaderContext.Provider>
     );
 }

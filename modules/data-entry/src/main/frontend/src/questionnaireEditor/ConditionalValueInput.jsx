@@ -35,6 +35,7 @@ import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
 import QuestionnaireAutocomplete from "../questionnaire/QuestionnaireAutocomplete";
 import { useQuestionnaireReaderContext } from "../questionnaire/QuestionnaireContext";
+import { stripCardsNamespace } from "../questionnaire/QuestionnaireUtilities";
 
 const useStyles = makeStyles(theme => ({
   referenceToggle: {
@@ -82,7 +83,19 @@ let ConditionalValueInput = (props) => {
 
       { isReference && variables ?
         <QuestionnaireAutocomplete
-          entities={variables}
+          // entities={variables}
+          entities={variables.map((node) => {
+              const { value, name, title, path, relativePath, jcrPrimaryType } = node
+              return {
+                  value: value,
+                  name: name,
+                  text: title,
+                  path: path,
+                  relativePath: relativePath,
+                  type: stripCardsNamespace(jcrPrimaryType)
+              }
+          })
+          }
           selection={values}
           onSelectionChanged={setValues}
           getOptionValue={option => option.name}

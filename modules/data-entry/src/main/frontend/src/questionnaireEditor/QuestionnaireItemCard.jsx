@@ -44,8 +44,7 @@ import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
 import { camelCaseToWords }  from "./LabeledField";
-
-import { DndDispatchContext } from './MoveEntry.jsx';
+import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext.jsx';
 
 const useStyles = makeStyles(theme => ({
   root : {
@@ -125,17 +124,14 @@ let QuestionnaireItemCard = (props) => {
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
-  const dndDispatch = useContext(DndDispatchContext)
+
   let [ moreInfoAnchor, setMoreInfoAnchor ] = useState(null);
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
   const itemRef = useRef();
 
-  // if not collapsed, disable dnd (should not be able to drag open cards)
-  useEffect(() => {
-    // TODO: adding entry causes collapse without draggable prop
-    dndDispatch({type: 'setEnabled', payload: {enabled: isCollapsed}})
-  }, [isCollapsed, editDialogOpen])
+  const treeContext = useQuestionnaireTreeContext();
+
   // if autofocus is needed and specified in the url
   // create a ref to store the question container DOM element
   useEffect(() => {

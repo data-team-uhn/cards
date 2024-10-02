@@ -24,12 +24,20 @@ import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import ExportButton from "./ExportButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { QuestionnaireTreeProvider } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
+
 
 function Questionnaires(props) {
   const entry = /Questionnaires\/([^.]+)/.exec(location.pathname);
 
   if (entry) {
-    return <Questionnaire id={entry[1]} key={location.pathname} contentOffset={props.contentOffset}/>;
+    console.log('Questionnaires entry', entry)
+    const id = entry[1]
+    return (
+      <QuestionnaireTreeProvider questionnaireId={id}>
+        <Questionnaire id={id} key={location.pathname} contentOffset={props.contentOffset}/>
+      </QuestionnaireTreeProvider>
+    )
   }
 
   let columns = [
