@@ -241,7 +241,7 @@ function NumberQuestion(props) {
   const textFieldProps = {
     min: minValue,
     max: maxValue,
-    allowNegative: (typeof minValue === "undefined" || minValue < 0),
+    allowNegative: (typeof minValue === "undefined" || minValue < 0 || disableMinMaxValueEnforcement),
     decimalScale: dataType === "long" ? 0 : undefined
   };
   const muiInputProps = {
