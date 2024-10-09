@@ -322,7 +322,10 @@ public class VisitInformationAdapterImpl implements VisitInformationAdapter
                             && VisitInformationAdapterImpl.this.subjectUtils.isSubject(otherVisit)
                             && "Visit".equals(VisitInformationAdapterImpl.this.subjectTypeUtils
                                 .getLabel(VisitInformationAdapterImpl.this.subjectUtils.getType(otherVisit)))) {
-                            result.pruneConflicts(toVisitInformation(otherVisit).getExistingForms());
+                            final VisitInformation otherVI = toVisitInformation(otherVisit);
+                            if (otherVI != null) {
+                                result.pruneConflicts(otherVI.getExistingForms());
+                            }
                         }
                         if (result.isEmpty()) {
                             break;
