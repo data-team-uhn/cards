@@ -380,7 +380,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Total Cholesterol</value>
+			<value>Cholesterol</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -610,7 +610,7 @@ Please double check your entry prior to submitting this form.</value>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Fasting Blood Glucose</value>
+			<value>Glucose</value>
 			<type>String</type>
 		</property>
 		<property>
