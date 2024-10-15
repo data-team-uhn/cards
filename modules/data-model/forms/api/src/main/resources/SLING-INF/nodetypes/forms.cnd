@@ -166,6 +166,12 @@
   - minValue (double)
   - maxValue (double)
 
+  // For numeric answers with min/max values, specify if the limits are a hard or soft requirement.
+  // If they are a soft requirement, a value outside limits does NOT make the answer (and the form) invalid.
+  - disableMinMaxValueEnforcement (boolean)
+  // When the limits are a soft requirement and the value is outside limits, an optional custom message is displayed to the user entering the data
+  - messageForValuesOutsideMinMax (string)
+
   // For questions that have a list of options, whether all the options are displayed on a single line (compact), or one per line (default)
   - compact (boolean)
 

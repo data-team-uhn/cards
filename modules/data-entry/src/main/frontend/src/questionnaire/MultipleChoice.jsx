@@ -54,7 +54,7 @@ const GHOST_SENTINEL = "custom-input";
 function MultipleChoice(props) {
   let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
-  let { validate, validationErrorText, liveValidation } = {...props.questionDefinition, ...props};
+  let { validate, validationErrorText, liveValidation, softValidation } = {...props.questionDefinition, ...props};
   // pageActive should be passed to the Answer component, so we make sure to include it in the `rest` variable above
   let { instanceId, pageActive } = props;
 
@@ -388,8 +388,12 @@ function MultipleChoice(props) {
         :
           <TextField
             variant="standard"
-            error={inputError}
-            helperText={inputError ? validationErrorText : maxAnswers !== 1 && "Press ENTER to add a new option"}
+            error={error || inputError}
+            helperText={
+              inputError
+              ? <FormattedText variant="caption">{ validationErrorText }</FormattedText>
+              : maxAnswers !== 1 && !error && "Press ENTER to add a new option"
+            }
             className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
             onChange={ghostUpdateEvent}
             disabled={disabled}
@@ -401,7 +405,7 @@ function MultipleChoice(props) {
                   // We need to stop the event so that it doesn't trigger a form submission
                   event.preventDefault();
                   event.stopPropagation();
-                  acceptEnteredOption(true);
+                  acceptEnteredOption(!softValidation);
                 }
               },
               tabIndex: isRadio ? -1 : undefined
