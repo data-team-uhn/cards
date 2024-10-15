@@ -54,14 +54,16 @@
         "set properties on /Metrics/S3ExportedSubjects/prevTotal \n   default value{Long} to 0 \n end",
         "set properties on /Metrics/S3ExportFailures/name \n   default value{String} to \"{003} Number Of Failed S3 export jobs\" \n end",
         "set properties on /Metrics/S3ExportFailures/prevTotal \n   default value{Long} to 0 \n end",
-        "create service user cards-exporter with path system/cards \n set ACL for cards-exporter \n   allow jcr:read on / \n end"
+        "create service user cards-exporter with path system/cards \n set ACL for cards-exporter \n   allow jcr:read on / \n end",
+        "create service user visit-number-editor \n set ACL for visit-number-editor \n allow jcr:read on /Questionnaires,/Subjects \n allow jcr:read,rep:write on /Forms \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~heracles":{
       "user.mapping":[
         "io.uhndata.cards.heracles-backend:S3Export=[cards-exporter]",
         "io.uhndata.cards.heracles-backend:PauseResumeEditor=[sling-readall]",
-        "io.uhndata.cards.heracles-backend:MetricLogger=[cards-metrics]"
+        "io.uhndata.cards.heracles-backend:MetricLogger=[cards-metrics]",
+        "io.uhndata.cards.heracles-backend:VisitNumberEditor=[visit-number-editor]"
       ]
     },
     "io.uhndata.cards.s3export.ExportConfig~heracles":{
@@ -69,6 +71,38 @@
       "exportSchedule": "0 0 0 * * ? *",
       "fileNameFormat": "{subject}_formData_{yesterday(yyyyMMdd)}",
       "selectors": ".bare.-labels.-identify.relativeDates.nolinks.answerFilter.answerFilter:exclude=/Questionnaires/PhoneCallFollow-Up/section_medical_care/section_provider_emergencyclinic.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_hospitalvisit.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_walkin.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_familydoctor.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_specialist.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medication_changes/pc_conditions_summary.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_admin/pc_call_initiated.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medication_changes/pc_22_1section/pc_22_1"
+    },
+    "io.uhndata.cards.heracles.internal.VisitNumberConfiguration~CPET-external": {
+      "questionnairePath": "/Questionnaires/CPET - External File",
+      "visitsLow": [0, 2],
+      "visitsHigh": [0, 2, 4, 6, 8, 10],
+      "visitPathLow": "externalfile_visit_lowSection/externalfile_visit_low",
+      "visitPathHigh": "externalfile_visit_highSection/externalfile_visit_high",
+      "studyStreamPath": "study_stream"
+    },
+    "io.uhndata.cards.heracles.internal.VisitNumberConfiguration~CPET-interpretation": {
+      "questionnairePath": "/Questionnaires/CPET Interpretation",
+      "visitsLow": [0, 2],
+      "visitsHigh": [0, 2, 4, 6, 8, 10],
+      "visitPathLow": "CardiacStressTestType/cpet_visit_lowSection/cpet_visit_low",
+      "visitPathHigh": "CardiacStressTestType/cpet_visit_highSection/cpet_visit_high",
+      "studyStreamPath": "CardiacStressTestType/study_stream"
+    },
+    "io.uhndata.cards.heracles.internal.VisitNumberConfiguration~6MWT": {
+      "questionnairePath": "/Questionnaires/6MWT",
+      "visitsLow": [1, 3],
+      "visitsHigh": [1, 3, 5, 7, 9, 11],
+      "visitPathLow": "6MWTType/6mwt-visit_lowSection/6mwt-visit_low",
+      "visitPathHigh": "6MWTType/6mwt-visit_highSection/6mwt-visit_high",
+      "studyStreamPath": "6MWTType/study_stream"
+    },
+    "io.uhndata.cards.heracles.internal.VisitNumberConfiguration~laboratoryResults": {
+      "questionnairePath": "/Questionnaires/Laboratory Results",
+      "visitsLow": [1, 3],
+      "visitsHigh": [1, 3, 5, 7, 9, 11],
+      "visitPathLow": "lab_results_lowSection/lab_results_low",
+      "visitPathHigh": "lab_results_highSection/lab_results_high",
+      "studyStreamPath": "study_stream"
     }
   }
 }
