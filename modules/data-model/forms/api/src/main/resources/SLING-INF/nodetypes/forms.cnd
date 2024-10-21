@@ -129,6 +129,8 @@
   // - textbox: a large textbox for longer strings
   // - list: a list of options that the user can choose from
   // - list+input: a list of options, plus an "other" input where the user can add a non-standard answer
+  // - plain a simple text display
+  // - plain+copy a simple text display with a button to copy the displayed text to clipboard
   - displayMode (string) = 'input' autocreated
 
   // Which type of data is being recorded?
@@ -145,6 +147,7 @@
   // - phone: a phone or fax number
   // - address: a postal address
   // - selectableArea: a area selected from an image
+  // - identifier: an automatically generated identifier string
   // The answer type can be further refined with the following properties
   - dataType (string) = 'text' mandatory autocreated
 
@@ -232,6 +235,10 @@
 
   // For computed answers, the expression used to calculate the value
   - expression (string)
+
+  // For identifier questions, the format of identifier that should be generated
+  // - uuid: a random UUID
+  - identifierType
 
   // Since not all properties are mandatory, customizing a question requires defining only
   // the properties of interest.
@@ -738,6 +745,17 @@
 //-----------------------------------------------------------------------------
 // Selectable area answers, stored as strings
 [cards:SelectableAreaAnswer] > cards:Answer
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/SelectableAreaAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
+// Identifier answers, stored as strings
+[cards:IdentifierAnswer] > cards:Answer
   - value (string)
 
   // Hardcode the resource type.

@@ -59,6 +59,9 @@ public interface FormUtils
     /** The Sling resource type of an AnswerSection. */
     String ANSWER_SECTION_RESOURCE = "cards/AnswerSection";
 
+    /** The Sling resource super type of an AnswerSection. */
+    String ANSWER_SECTION_SUPERTYPE = "cards/Resource";
+
     /** The name of the property of an AnswerSection node that links to the Section being answered. */
     String SECTION_PROPERTY = "section";
 

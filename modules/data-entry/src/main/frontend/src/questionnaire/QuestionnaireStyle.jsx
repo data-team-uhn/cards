@@ -733,6 +733,14 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
+    identifierQuestionText : {
+      float: "left",
+    },
+    identifierQuestionButton : {
+      float: "right",
+      position: "relative",
+      top: theme.spacing(-1),
+    },
 });
 
 export default questionnaireStyle;

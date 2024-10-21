@@ -45,6 +45,7 @@ import ReferenceQuestion from "./ReferenceQuestion";
 import PhoneQuestion from "./PhoneQuestion";
 import AddressQuestion from "./AddressQuestion";
 import SelectableArea from "./SelectableAreaQuestion";
+import IdentifierQuestion from "./IdentifierQuestion";
 
 import { hasWarningFlags } from "./FormUtilities";
 

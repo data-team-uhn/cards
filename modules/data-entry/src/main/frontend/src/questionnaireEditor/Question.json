@@ -495,6 +495,15 @@
         "selectedHoverColor": "string",
         "strokeColor": "string",
         "overrideMapColors": "boolean"
+      },
+      "identifier": {
+        "displayMode": {
+          "plain": {},
+          "plain+copy": {}
+        },
+        "identifierType": {
+          "uuid": {}
+        }
       }
     },
     "enableNotes": "boolean"
