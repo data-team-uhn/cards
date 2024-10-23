@@ -71,12 +71,40 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Total Cholesterol</value>
+			<value>Cholesterol</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Desirable: <![CDATA[<]]>5.18  
+Borderline high: 5.18 - 6.18  
+High: <![CDATA[>]]>6.18</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>1.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>10.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -109,6 +137,33 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Excellent: <![CDATA[>]]>1.55  
+Low: <![CDATA[<]]>1.03</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.1</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
 			<value>mmol/L</value>
 			<type>String</type>
@@ -138,6 +193,35 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Normal: <![CDATA[<]]>1.69  
+Borderline high: 1.69 - 2.25  
+High: 2.26 - 5.64  
+Very high: <![CDATA[>]]>5.65</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.1</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>10.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>unitOfMeasurement</name>
 			<value>mmol/L</value>
 			<type>String</type>
@@ -162,8 +246,38 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Optimal: <![CDATA[<]]>2.6  
+Above optimal: 2.6 - 3.3  
+Borderline high: 3.4 - 4.1  
+High: 4.14 - 4.9  
+Very high: <![CDATA[>]]>4.92</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.1</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>10.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -187,12 +301,40 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Fasting Blood Glucose</value>
+			<value>Glucose</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Normal: <![CDATA[<]]>5.6  
+Pre-diabetes: 5.6 - 6.9  
+Diabetes: <![CDATA[>]]>7</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>20.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -221,12 +363,35 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>HgA1c</value>
+			<value>Normal: 4 - 5.6  
+Pre-diabetes: 5.7 - 6.4  
+Diabetes: <![CDATA[>]]>6.5</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>15.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -254,8 +419,39 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Abnormal: <![CDATA[>100]]></value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>3000.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>ng/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -278,8 +474,39 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Range: 0 - 3</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>200.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mg/L</value>
 			<type>String</type>
 		</property>
 		<property>
