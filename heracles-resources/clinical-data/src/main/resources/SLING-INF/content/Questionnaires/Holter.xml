@@ -39,7 +39,7 @@
 	</property>
 	<property>
 		<name>requireCompletion</name>
-		<value>True</value>
+		<value>False</value>
 		<type>Boolean</type>
 	</property>
 	<property>
