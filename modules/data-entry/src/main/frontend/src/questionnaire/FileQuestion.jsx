@@ -112,7 +112,7 @@ function FileQuestion(props) {
     setUploadInProgress(true);
     setError("");
 
-    let savePromise = saveForm();
+    let savePromise = saveForm(new Event("autosave"));
     if (savePromise) {
       // When this function returns, the "files selected" event is cleared, along with the files list. Make a copy to preserve the data.
       let filesCopy = [];

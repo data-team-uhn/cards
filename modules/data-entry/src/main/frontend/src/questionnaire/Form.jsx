@@ -297,7 +297,7 @@ function Form (props) {
         // If the form is required to be complete or if we need to display the page completion status
         // in nagivable pagination, re-fetch it after save to check the updated status flags
         // However, skip any completion checks if this is an autosave
-        if ((requireCompletion || paginationVariant == 'navigable') && !autosaveOptions) {
+        if ((requireCompletion || paginationVariant == 'navigable') && !autosaveOptions && !(event?.type == "autosave")) {
             // Disable progress until we figure out if it's ok to proceed
             requireCompletion && setDisableProgress(true);
             fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
