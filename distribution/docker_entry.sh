@@ -146,12 +146,6 @@ then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${CARDS_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL -f mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${CARDS_VERSION}/slingosgifeature"
 fi
 
-#Should the scheduled-csv-export module be loaded?
-if [[ "$CSV_EXPORT_ENABLED" == "true" ]]
-then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-scheduled-csv-export/${CARDS_VERSION}/slingosgifeature"
-fi
-
 #Should the clarity-integration module be loaded?
 if [[ "$CLARITY_IMPORT_ENABLED" == "true" ]]
 then

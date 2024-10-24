@@ -26,3 +26,7 @@ set ACL for cards-metrics
     allow    jcr:read,jcr:write,jcr:addChildNodes,jcr:nodeTypeManagement    on /Metrics/
     allow    jcr:read    on /LoggedEvents/
 end
+
+set principal ACL for sling-readall
+    allow    jcr:read,jcr:write,jcr:addChildNodes,jcr:nodeTypeManagement    on /Metrics/
+end

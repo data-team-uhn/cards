@@ -16,27 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.scheduledcsvexport;
+package io.uhndata.cards.export.spi;
 
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.metatype.annotations.Designate;
+import java.io.IOException;
+import java.io.InputStream;
 
-@Component(immediate = true, service = ExportConfig.class)
-@Designate(ocd = ExportConfigDefinition.class, factory = true)
-public class ExportConfig
+import io.uhndata.cards.export.ExportConfigDefinition;
+
+public interface DataStore extends DataPipelineStep
 {
-    private ExportConfigDefinition config;
-
-    @Activate
-    protected void activate(final ExportConfigDefinition config, final ComponentContext componentContext)
-    {
-        this.config = config;
-    }
-
-    public ExportConfigDefinition getConfig()
-    {
-        return this.config;
-    }
+    void store(InputStream contents, String filename, String mimetype, ExportConfigDefinition config)
+        throws IOException;
 }

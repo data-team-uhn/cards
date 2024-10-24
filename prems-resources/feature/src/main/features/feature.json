@@ -50,9 +50,7 @@
         // Access rights for the special "patient" user: do not allow access to PII
         "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,provider) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/provider) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Survey*events) \n end",
         // Deny access to the patient's name to the validation servlet, which would otherwise return it to the patient portal
-        "create service user patient-validation \n set ACL for patient-validation \n   deny jcr:all on /Questionnaires restriction(rep:itemNames,last_name,first_name) \n     deny jcr:all on /Forms restriction(cards:question,/Questionnaires/Patient*information/last_name,/Questionnaires/Patient*information/first_name) \n end",
-        // Allow the CSV export of Survey Events to include the proper label for the assigned survey
-        "create service user csv-export \n set ACL on /Survey \n   allow jcr:read for csv-export \n end"
+        "create service user patient-validation \n set ACL for patient-validation \n   deny jcr:all on /Questionnaires restriction(rep:itemNames,last_name,first_name) \n     deny jcr:all on /Forms restriction(cards:question,/Questionnaires/Patient*information/last_name,/Questionnaires/Patient*information/first_name) \n end"
       ]
     },
 
@@ -331,53 +329,59 @@
 
     // Periodic CSV exports of all new and updated data
 
-    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Labeled-Forms":{
+    "io.uhndata.cards.export.ExportConfig~UHN-Labeled-Forms":{
       "name": "UHN-Labeled-Forms",
-      "frequency.in.days": 7,
+      "frequencyInDays": 7,
       "export.schedule": "0 0 2 ? * SAT *",
-      "questionnaires.to.be.exported": [
-        "/Questionnaires/YVM",
-        "/Questionnaires/PMAC",
-        "/Questionnaires/CPESIC",
-        "/Questionnaires/IC",
-        "/Questionnaires/OAIP",
-        "/Questionnaires/OED",
-        "/Questionnaires/Rehab"
+      "retriever": "Questionnaires with modified forms",
+      "retrieverParameters": [
+        "questionnaire=/Questionnaires/YVM",
+        "questionnaire=/Questionnaires/PMAC",
+        "questionnaire=/Questionnaires/CPESIC",
+        "questionnaire=/Questionnaires/IC",
+        "questionnaire=/Questionnaires/OAIP",
+        "questionnaire=/Questionnaires/OED",
+        "questionnaire=/Questionnaires/Rehab",
+        "selectors=.labels.dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall"
       ],
-      "selectors": ".labels.dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
-      "save.path": "/csv-export",
-      "file.name.format": "{questionnaire}_labels.csv",
-      "export.format": "csv"
+      "formatter": "csv",
+      "fileNameFormat": "{resourcePath}_labels.csv",
+      "storage": "filesystem",
+      "storageParameters": "savePath=/csv-export"
     },
-    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Raw-Forms":{
+    "io.uhndata.cards.export.ExportConfig~UHN-Raw-Forms":{
       "name": "UHN-Raw-Forms",
-      "frequency.in.days": 7,
+      "frequencyInDays": 7,
       "export.schedule": "0 0 2 ? * SAT *",
-      "questionnaires.to.be.exported": [
-        "/Questionnaires/YVM",
-        "/Questionnaires/PMAC",
-        "/Questionnaires/CPESIC",
-        "/Questionnaires/IC",
-        "/Questionnaires/OAIP",
-        "/Questionnaires/OED",
-        "/Questionnaires/Rehab"
+      "retriever": "Questionnaires with modified forms",
+      "retrieverParameters": [
+        "questionnaire=/Questionnaires/YVM",
+        "questionnaire=/Questionnaires/PMAC",
+        "questionnaire=/Questionnaires/CPESIC",
+        "questionnaire=/Questionnaires/IC",
+        "questionnaire=/Questionnaires/OAIP",
+        "questionnaire=/Questionnaires/OED",
+        "questionnaire=/Questionnaires/Rehab",
+        "selectors=.dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall"
       ],
-      "selectors": ".dataFilter:status=SUBMITTED.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall",
-      "save.path": "/csv-export",
-      "file.name.format": "{questionnaire}.csv",
-      "export.format": "csv"
+      "formatter": "csv",
+      "fileNameFormat": "{resourcePath}.csv",
+      "storage": "filesystem",
+      "storageParameters": "savePath=/csv-export"
     },
-    "io.uhndata.cards.scheduledcsvexport.ExportConfig~UHN-Survey-Events":{
+    "io.uhndata.cards.export.ExportConfig~UHN-Survey-Events":{
       "name": "UHN-Survey-Events",
-      "frequency.in.days": 7,
+      "frequencyInDays": 7,
       "export.schedule": "0 0 2 ? * SAT *",
-      "questionnaires.to.be.exported": [
-        "/Questionnaires/Survey events"
+      "retriever": "Questionnaires with modified forms",
+      "retrieverParameters": [
+        "questionnaire=/Questionnaires/Survey events",
+        "selectors=.dataFilter:statusNot=INCOMPLETE.labels"
       ],
-      "selectors": ".dataFilter:statusNot=INCOMPLETE.labels",
-      "save.path": "/csv-export",
-      "file.name.format": "{questionnaire}.csv",
-      "export.format": "csv"
+      "formatter": "csv",
+      "fileNameFormat": "{resourcePath}.csv",
+      "storage": "filesystem",
+      "storageParameters": "savePath=/csv-export"
     },
 
     // Clarity import scheduling

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.s3export;
+package io.uhndata.cards.export;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -38,16 +38,19 @@ import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.export.spi.DataFormatter;
+import io.uhndata.cards.export.spi.DataRetriever;
+import io.uhndata.cards.export.spi.DataStore;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-    resourceTypes = { "cards/SubjectsHomepage" },
+    resourceTypes = { "cards/ResourceHomepage" },
     methods = { "GET" },
-    selectors = { "s3push" })
-public class ExportEndpoint extends SlingSafeMethodsServlet
+    selectors = { "export" })
+public class TriggeredExportEndpoint extends SlingSafeMethodsServlet
 {
-    private static final long serialVersionUID = -1615592669184694095L;
+    private static final long serialVersionUID = -1615592669184694092L;
 
     private static final String ADMIN = "admin";
 
@@ -59,6 +62,15 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
 
     @Reference
     private volatile List<ExportConfig> configs;
+
+    @Reference
+    private volatile List<DataRetriever> retrievers;
+
+    @Reference
+    private volatile List<DataFormatter> formatters;
+
+    @Reference
+    private volatile List<DataStore> stores;
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -75,7 +87,7 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
         if (StringUtils.isBlank(configName)) {
             if (this.configs.size() != 1) {
                 writeError(400, this.configs.size() > 1 ? "Configuration name must be specified"
-                    : "No S3 export is configured", response);
+                    : "No export is configured", response);
                 return;
             }
             config = this.configs.get(0).getConfig();
@@ -85,7 +97,7 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
                 .map(ExportConfig::getConfig)
                 .findFirst().orElse(null);
             if (config == null) {
-                writeError(400, "Unknown S3 export configuration", response);
+                writeError(400, "Unknown export configuration", response);
                 return;
             }
         }
@@ -93,12 +105,43 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
         final LocalDate dateLowerBound = this.strToDate(request.getParameter("dateLowerBound"));
         final LocalDate dateUpperBound = this.strToDate(request.getParameter("dateUpperBound"));
         final String exportRunMode = (dateLowerBound != null) ? "manual" : "today";
+        final DataPipeline pipeline = buildPipeline(config, response);
+        if (pipeline == null) {
+            return;
+        }
 
-        final Runnable exportJob =
-            new ExportTask(this.resolverFactory, this.rrp, config, exportRunMode, dateLowerBound, dateUpperBound);
+        final Runnable exportJob = new ExportTask(this.resolverFactory, this.rrp, config, pipeline, exportRunMode,
+            dateLowerBound, dateUpperBound);
         final Thread thread = new Thread(exportJob);
         thread.start();
         writeSuccess("S3 export started", response);
+    }
+
+    private DataPipeline buildPipeline(final ExportConfigDefinition config, final SlingHttpServletResponse response)
+        throws IOException
+    {
+        final DataRetriever retriever =
+            this.retrievers.stream().filter(r -> StringUtils.equals(config.retriever(), r.getName())).findFirst()
+                .orElse(null);
+        if (retriever == null) {
+            writeError(400, "Invalid export configuration, unknown data retriever specified", response);
+            return null;
+        }
+        final DataFormatter formatter =
+            this.formatters.stream().filter(f -> StringUtils.equals(config.formatter(), f.getName())).findFirst()
+                .orElse(null);
+        if (formatter == null) {
+            writeError(400, "Invalid export configuration, unknown data formatter specified", response);
+            return null;
+        }
+        final DataStore store =
+            this.stores.stream().filter(s -> StringUtils.equals(config.storage(), s.getName())).findFirst()
+                .orElse(null);
+        if (store == null) {
+            writeError(400, "Invalid export configuration, unknown data store specified", response);
+            return null;
+        }
+        return new DataPipeline(retriever, formatter, store);
     }
 
     private LocalDate strToDate(final String date)

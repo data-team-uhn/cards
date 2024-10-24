@@ -31,7 +31,7 @@ mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${PROJECT_VERSION}/slingo
 mvn:io.uhndata.cards/cards-email-notifications/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-saml-support/${PROJECT_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL
 mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${PROJECT_VERSION}/slingosgifeature
-mvn:io.uhndata.cards/cards-scheduled-csv-export/${PROJECT_VERSION}/slingosgifeature
+mvn:io.uhndata.cards/cards-export/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-clarity-integration/${PROJECT_VERSION}/slingosgifeature
 mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_open
 mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_trusted
