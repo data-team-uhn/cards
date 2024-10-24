@@ -260,6 +260,13 @@ function Form (props) {
     }
   };
 
+  let onFormDataChanged = () => {
+    incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
+    setIncompleteQuestionEl(null);
+    setDisableProgress(paginationEnabled && requireCompletion);
+    setLastSaveStatus(undefined);
+  }
+
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let saveData = (event, performCheckin, onSuccess) => {
     // This stops the normal browser form submission
@@ -543,13 +550,7 @@ function Form (props) {
     <form action={data?.["@path"]}
           method="POST"
           onSubmit={handleSubmit}
-          onChange={() => {
-                             incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
-                             setIncompleteQuestionEl(null);
-                             setDisableProgress(paginationEnabled && requireCompletion);
-                             setLastSaveStatus(undefined);
-                          }
-                   }
+          onChange={onFormDataChanged}
           key={id}
           ref={formNode}
           className={classNames?.join(' ')}
@@ -603,7 +604,7 @@ function Form (props) {
         <FormProvider additionalFormData={{
           ['/Save']: saveData,
           ['/URL']: formURL,
-          ['/AllowResave']: ()=>setLastSaveStatus(undefined)
+          ['/OnFormDataChanged']: onFormDataChanged
           }}>
           <FormUpdateProvider>
             {!disableHeader &&

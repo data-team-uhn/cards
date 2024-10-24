@@ -93,7 +93,7 @@ function FileQuestion(props) {
   let disableUploads = !!reader['/DisableUploads'];
   // Since adding new entries doesn't trigger the form's onChange, we need to force
   // the form to allow saving after we finish updating
-  let allowResave = reader['/AllowResave'];
+  let onChange = reader['/OnFormDataChanged'];
   let outURL = reader["/URL"] + "/" + answerPath;
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -249,7 +249,7 @@ function FileQuestion(props) {
         setUploadedFiles({[file["name"]]: fileURL});
         setAnswers([[file["name"], fileURL]]);
       }
-      allowResave();
+      onChange?.();
       onAfterUpload && onAfterUpload(file);
     }).catch((errorObj) => {
       // Backend did not allow this file to be uploaded
@@ -279,7 +279,7 @@ function FileQuestion(props) {
       newAnswers.splice(index, 1);
       return newAnswers;
     });
-    allowResave();
+    onChange?.();
   }
 
   let fixFileURL = (path, name) => {
