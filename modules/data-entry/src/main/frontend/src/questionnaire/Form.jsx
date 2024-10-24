@@ -260,6 +260,7 @@ function Form (props) {
     }
   };
 
+  // The form's onChange event handler
   let onFormDataChanged = () => {
     incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
     setIncompleteQuestionEl(null);
