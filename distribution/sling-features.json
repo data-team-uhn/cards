@@ -13,7 +13,6 @@
   "cards4prems": [
     "mvn:io.uhndata.cards/cards-email-notifications/{$CARDS_VERSION}/slingosgifeature",
     "mvn:io.uhndata.cards/cards-clarity-integration/{$CARDS_VERSION}/slingosgifeature",
-    "mvn:io.uhndata.cards/cards-scheduled-csv-export/{$CARDS_VERSION}/slingosgifeature",
     "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|trusted}"
   ],
   "cards4lfs": [

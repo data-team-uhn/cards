@@ -39,6 +39,7 @@
     <module>login</module>
     <module>homepage</module>
     <module>pedigree</module>
+    <module>export</module>
     <module>data-entry</module>
     <module>data-model</module>
     <module>patient-portal</module>
@@ -68,7 +69,6 @@
     <module>page-start-header</module>
     <module>webhook-backup</module>
     <module>saml</module>
-    <module>scheduled-csv-export</module>
     <module>s3-export</module>
     <module>clarity-integration</module>
     <module>torch-import</module>

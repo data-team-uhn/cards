@@ -26,9 +26,9 @@
     <version>0.9.26-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-scheduled-csv-export</artifactId>
+  <artifactId>cards-export</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Scheduled CSV Export</name>
+  <name>CARDS - Periodic and Triggered Data Exports</name>
 
   <build>
     <plugins>
@@ -48,12 +48,24 @@
 
   <dependencies>
     <dependency>
+      <groupId>javax.json</groupId>
+      <artifactId>javax.json-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
@@ -85,12 +97,22 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>cards-utils</artifactId>
+      <artifactId>cards-resolver-provider</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-resolver-provider</artifactId>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-error-tracking</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-metrics</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-utils</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

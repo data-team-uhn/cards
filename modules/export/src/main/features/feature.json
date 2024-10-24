@@ -23,18 +23,9 @@
     }
   ],
   "configurations":{
-    "org.apache.sling.jcr.repoinit.RepositoryInitializer~scheduledCSVexport":{
-      "service.ranking:Integer":300,
-      "scripts": [
-        // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
-        "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes",
-        // Exporting forms in csv format
-        "create service user csv-export \n set ACL on /Questionnaires,/Forms,/Subjects,/SubjectTypes \n   allow jcr:read for csv-export \n end"
-      ]
-    },
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~scheduledCSVexport":{
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~export":{
       "user.mapping":[
-        "io.uhndata.cards.scheduled-csv-export=[csv-export]"
+        "io.uhndata.cards.export=[sling-readall]"
       ]
     }
   }

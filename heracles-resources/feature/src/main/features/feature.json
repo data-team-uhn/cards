@@ -64,11 +64,29 @@
         "io.uhndata.cards.heracles-backend:MetricLogger=[cards-metrics]"
       ]
     },
-    "io.uhndata.cards.s3export.ExportConfig~heracles":{
-      "name": "heracles",
-      "exportSchedule": "0 0 0 * * ? *",
-      "fileNameFormat": "{subject}_formData_{yesterday(yyyyMMdd)}",
-      "selectors": ".bare.-labels.-identify.relativeDates.nolinks.answerFilter.answerFilter:exclude=/Questionnaires/PhoneCallFollow-Up/section_medical_care/section_provider_emergencyclinic.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_hospitalvisit.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_walkin.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_familydoctor.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_specialist.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medication_changes/pc_conditions_summary.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_admin/pc_call_initiated.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medication_changes/pc_22_1section/pc_22_1"
+    "io.uhndata.cards.export.ExportConfig~Heracles-subjects-data":{
+      "name": "Heracles - Subjects with Data",
+      "frequencyInDays": 1,
+      "export.schedule": "0 0 0 * * ? *",
+      "retriever": "Subjects with modified forms",
+      "retrieverParameters": [
+        "selectors=.bare.-labels.-identify.relativeDates.nolinks.excludeFiles.excludeFiles:exclude=/Questionnaires/Holter/filepath_annotations.excludeFiles:exclude=/Questionnaires/Holter/filepath_ecg.excludeFiles:exclude=/Questionnaires/Holter/filepath_hourly.excludeFiles:exclude=/Questionnaires/Holter/filepath_ahr_episodes.excludeFiles:exclude=/Questionnaires/Holter/filepath_arrhythmic_episodes.excludeFiles:exclude=/Questionnaires/Holter/filepath_report.answerFilter.answerFilter:exclude=/Questionnaires/PhoneCallFollow-Up/section_medical_care/section_provider_emergencyclinic.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_hospitalvisit.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_walkin.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_familydoctor.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medical_care/section_provider_specialist.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medication_changes/pc_conditions_summary.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_admin/pc_call_initiated.answerFilter:exclude=/Questionnaires/Phone Call Follow-Up/section_medication_changes/pc_22_1section/pc_22_1"
+      ],
+      "formatter": "json",
+      "fileNameFormat": "{resourceIdentifier}_formData_{yesterday(yyyyMMdd)}.json",
+      "storage": "s3"
+    },
+    "io.uhndata.cards.export.ExportConfig~Heracles-big-files":{
+      "name": "Heracles - Big Files",
+      "frequencyInDays": 1,
+      "export.schedule": "0 0 0 * * ? *",
+      "retriever": "Modified file answers",
+      "retrieverParameters": [
+        "questionnaire=/Questionnaires/Holter"
+      ],
+      "formatter": "rawFile",
+      "fileNameFormat": "{resourcePath}",
+      "storage": "s3"
     }
   }
 }

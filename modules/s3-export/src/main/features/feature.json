@@ -69,21 +69,5 @@
       "id":"software.amazon.ion:ion-java:1.5.1",
       "start-order":"26"
     }
-  ],
-  "configurations":{
-    "org.apache.sling.jcr.repoinit.RepositoryInitializer~scheduledS3export":{
-      "service.ranking:Integer":300,
-      "scripts": [
-        // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
-        "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes",
-        // Exporting data requires being able to read it
-        "create service user s3-export \n set ACL on /Questionnaires,/Forms,/Subjects,/SubjectTypes \n   allow jcr:read for s3-export \n end"
-      ]
-    },
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~scheduledS3export":{
-      "user.mapping":[
-        "io.uhndata.cards.s3-export=[s3-export]"
-      ]
-    }
-  }
+  ]
 }
