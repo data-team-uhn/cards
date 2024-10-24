@@ -132,8 +132,8 @@ function Form (props) {
   // When autosave options are defined, trigger a background save
   useEffect(() => {
     if (typeof(autosaveOptions) == "object") {
-      let { event, performCheckin, onSuccess } = autosaveOptions;
-      saveData(event, performCheckin, onSuccess);
+      let { performCheckin, onSuccess } = autosaveOptions;
+      saveData(new Event("autosave"), performCheckin, onSuccess);
     }
   }, [autosaveOptions]);
   // When the save is completed (successfully or not), clear the autosave options
@@ -260,6 +260,14 @@ function Form (props) {
     }
   };
 
+  // The form's onChange event handler
+  let onFormDataChanged = () => {
+    incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
+    setIncompleteQuestionEl(null);
+    setDisableProgress(paginationEnabled && requireCompletion);
+    setLastSaveStatus(undefined);
+  }
+
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
   let saveData = (event, performCheckin, onSuccess) => {
     // This stops the normal browser form submission
@@ -297,7 +305,7 @@ function Form (props) {
         // If the form is required to be complete or if we need to display the page completion status
         // in nagivable pagination, re-fetch it after save to check the updated status flags
         // However, skip any completion checks if this is an autosave
-        if ((requireCompletion || paginationVariant == 'navigable') && !autosaveOptions) {
+        if ((requireCompletion || paginationVariant == 'navigable') && !(event?.type == "autosave")) {
             // Disable progress until we figure out if it's ok to proceed
             requireCompletion && setDisableProgress(true);
             fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
@@ -543,13 +551,7 @@ function Form (props) {
     <form action={data?.["@path"]}
           method="POST"
           onSubmit={handleSubmit}
-          onChange={() => {
-                             incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
-                             setIncompleteQuestionEl(null);
-                             setDisableProgress(paginationEnabled && requireCompletion);
-                             setLastSaveStatus(undefined);
-                          }
-                   }
+          onChange={onFormDataChanged}
           key={id}
           ref={formNode}
           className={classNames?.join(' ')}
@@ -603,7 +605,7 @@ function Form (props) {
         <FormProvider additionalFormData={{
           ['/Save']: saveData,
           ['/URL']: formURL,
-          ['/AllowResave']: ()=>setLastSaveStatus(undefined)
+          ['/OnFormDataChanged']: onFormDataChanged
           }}>
           <FormUpdateProvider>
             {!disableHeader &&
