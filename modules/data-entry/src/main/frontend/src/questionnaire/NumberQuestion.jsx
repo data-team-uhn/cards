@@ -111,7 +111,7 @@ const useSliderStyles = makeStyles(theme => ({
 //             are not met (minValue or maxValue missing), "input" is used by default.
 //  maxValue: The maximum allowed input value
 //  minValue: The minimum allowed input value
-//  type: One of "integer" or "float" (default: "float")
+//  dataType: One of "integer" or "float" (default: "float")
 //  errorText: String to display when the input is not valid (default: "")
 //  isRange: Whether or not to display a range instead of a single value
 //  sliderStep: The increment between selectable slider values
@@ -126,7 +126,7 @@ const useSliderStyles = makeStyles(theme => ({
 //    ]}
 //    maxAnswers={1}
 //    minValue={18}
-//    type="long"
+//    dataType="long"
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
