@@ -135,10 +135,20 @@ function Section(props) {
 
   let hasAnswers = isEdit || detectAnswers(existingAnswer[0]?.[1]);
 
+  // Determine if the section has any other content that should be displayed
+  let determineContent = (entryDefinition) => (
+    Object.values(entryDefinition)
+      .filter(childEntry => ENTRY_TYPES.includes(childEntry['jcr:primaryType']))
+      .some(childEntry => ["view", "any"].includes(childEntry.formMode) || determineContent(childEntry))
+  )
+
+  let hasContent = !isEdit && determineContent(sectionDefinition);
+
   // Display the section in view mode if it has answers or is marked as incomplete.
   // Do not display summary questions outside of summary mode, or regular questions in summary mode.
-  const isDisplayed = (isEdit && conditionIsMet || !isEdit && (hasAnswers || isFlagged))
+  const isDisplayed = (conditionIsMet && (isEdit || isFlagged || hasAnswers || hasContent))
     && (isSummary && "summary" === displayMode || !isSummary && displayMode !== "summary");
+
 
   if (visibleCallback) visibleCallback(conditionIsMet);
 
@@ -150,8 +160,8 @@ function Section(props) {
     collapseClasses.push("cards-edit-section");
   }
   // Hide the section if it is conditioned to be hidden in edit mode
-  // Or if we're in view mode and do not have any answers and the section is not marked as incomplete
-  if (isEdit && !conditionIsMet || !isEdit && !hasAnswers && !isFlagged) {
+  // Or if we're in view mode and do not have any answers or other content, and the section is not marked as incomplete
+  if (!(conditionIsMet && (isEdit || isFlagged || hasAnswers || hasContent))) {
     collapseClasses.push(classes.collapsedSection);
   }
   if (hasHeader) {
