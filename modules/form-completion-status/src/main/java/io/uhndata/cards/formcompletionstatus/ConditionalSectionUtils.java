@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -32,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.conditions.ConditionalUtils;
+import io.uhndata.cards.conditions.ConditionalUtils.Operand;
 
 public final class ConditionalSectionUtils
 {
@@ -218,7 +218,7 @@ public final class ConditionalSectionUtils
         throws RepositoryException
     {
         if (node == null || !node.hasProperty(PROP_VALUE) || !node.hasProperty(PROP_IS_REFERENCE)) {
-            return new ConditionalOperand(type, null, false);
+            return new Operand(type, null, false);
         }
         boolean reference = node.getProperty(PROP_IS_REFERENCE).getValue().getBoolean();
         if (reference) {
@@ -228,50 +228,14 @@ public final class ConditionalSectionUtils
                 @SuppressWarnings("unchecked")
                 Iterable<Comparable<Object>> answerValues =
                     (Iterable<Comparable<Object>>) answerProperty.getValue(type.getOakType());
-                return new ConditionalOperand(answerValues, reference);
+                return new Operand(answerValues, reference);
             } else {
-                return new ConditionalOperand(reference);
+                return new Operand(reference);
             }
         } else {
-            return new ConditionalOperand(type, node.getProperty(PROP_VALUE), reference);
+            return new Operand(type, node.getProperty(PROP_VALUE), reference);
         }
     }
-
-    /**
-     * An operand of a conditional, either {@code operandA} or {@code operandB}, exposes either the actual values stored
-     * in the form or the constants specified in the operand node.
-     */
-    private static class ConditionalOperand extends ConditionalUtils.Operand
-    {
-        protected boolean reference;
-
-        ConditionalOperand(final ConditionalUtils.OperandType type, final Property property, final boolean reference)
-            throws RepositoryException
-        {
-            super(type, property);
-            this.reference = reference;
-        }
-
-        ConditionalOperand(final Iterable<Comparable<Object>> values, final boolean reference)
-            throws RepositoryException
-        {
-            super(values);
-            this.reference = reference;
-        }
-
-        ConditionalOperand(final boolean reference)
-        {
-            super();
-            this.reference = reference;
-        }
-
-        @Override
-        public String toString()
-        {
-            return (this.reference ? "@" : "") + this.values.toString();
-        }
-    }
-
     /**
      * Generic interface for both single conditionals and conditional groups.
      */

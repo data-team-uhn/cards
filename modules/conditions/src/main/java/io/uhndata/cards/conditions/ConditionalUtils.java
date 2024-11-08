@@ -147,12 +147,20 @@ public final class ConditionalUtils
      */
     public static class Operand
     {
+        protected boolean reference;
         protected final List<Comparable<Object>> values;
 
         public Operand(final Property property)
             throws RepositoryException
         {
             this(OperandType.TEXT, property);
+        }
+
+        public Operand(final Property property, final boolean reference)
+            throws RepositoryException
+        {
+            this(property);
+            this.reference = reference;
         }
 
         public Operand(final OperandType type, final Property property)
@@ -168,15 +176,35 @@ public final class ConditionalUtils
             }
         }
 
+        public Operand(final ConditionalUtils.OperandType type, final Property property, final boolean reference)
+            throws RepositoryException
+        {
+            this(type, property);
+            this.reference = reference;
+        }
+
         public Operand(Iterable<Comparable<Object>> values)
         {
             this.values = new ArrayList<>();
             values.forEach(v -> this.values.add(v));
         }
 
+        public Operand(final Iterable<Comparable<Object>> values, final boolean reference)
+            throws RepositoryException
+        {
+            this(values);
+            this.reference = reference;
+        }
+
         public Operand()
         {
             this.values = new ArrayList<>();
+        }
+
+        public Operand(final boolean reference)
+        {
+            this();
+            this.reference = reference;
         }
 
         public Stream<Comparable<Object>> stream()
@@ -192,6 +220,12 @@ public final class ConditionalUtils
         public int size()
         {
             return this.values.size();
+        }
+
+        @Override
+        public String toString()
+        {
+            return (this.reference ? "@" : "") + this.values.toString();
         }
     }
 
