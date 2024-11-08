@@ -60,9 +60,6 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 })
 public class ReferenceAnswersChangedListener implements ResourceChangeListener
 {
-    /** Property on an answer node that stores the a reference to the question. */
-    public static final String QUESTION = "question";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceAnswersChangedListener.class);
 
     /** Provides access to resources. */
@@ -125,11 +122,10 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
 
     /**
      * This method reads through a NodeIterator of changed Nodes. If a given changed Node is a cards/Answer node all
-     * other cards/Answer nodes that make reference to it are updated so that the value property of the referenced Node
-     * matches the value property of the changed node.
+     * other cards/Answer nodes that make reference to it are updated if appropriate so that the value property of the
+     * referenced Node matches the value property of the changed node.
      *
      * @param nodeIterator an iterator of nodes of which have changed due to an update made to a Form
-     * @param serviceResolver a ResourceResolver that can be used for querying the JCR
      * @param session a service session providing access to the repository
      */
     private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final Session session)
@@ -145,6 +141,17 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             }
         }
     }
+
+    /**
+     * This method reads through a NodeIterator of changed Nodes. If a given changed Node is a cards/Answer node all
+     * other cards/Answer nodes that make reference to it are updated if appropriate so that the value property of the
+     * referenced Node matches the value property of the changed node.
+     * @param nodeIterator an iterator of nodes of which have changed due to an update made to a Form
+     * @param session a service session providing access to the repository
+     * @param checkoutPaths the list of forms that were checked out which will need to be checked back in
+     * @param versionManager the version manager that should be used to checkout any needed forms
+     * @throws RepositoryException if the node could not be processed
+     */
     private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final Session session,
         Set<String> checkoutPaths, VersionManager versionManager)
         throws RepositoryException
@@ -159,15 +166,27 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         }
     }
 
+    /**
+     * Process a changed cards/Answer node and check if there are any other cards/Answer nodes that reference the
+     * changed node or should reference the changed node. If there are any referencing cards/Answer nodes, update
+     * their values to the newly changed value if appropriate.
+     * @param versionManager the version manager that should be used to checkout any needed forms
+     * @param session a service session providing access to the repository
+     * @param checkoutPaths the list of forms that were checked out which will need to be checked back in
+     * @param answerNode the cards/Answer node to check for any (potential) referencing nodes
+     * @throws RepositoryException if the node could not be processed
+     */
     private void processAnswer(final VersionManager versionManager, final Session session,
         final Set<String> checkoutPaths, final Node answerNode)
         throws RepositoryException
     {
-
         final String answerNodeType = answerNode.getPrimaryNodeType().getName();
         final String subject = this.formUtils.getSubject(this.formUtils.getForm(answerNode)).getIdentifier();
-        // TODO: is this query needed with the refactor in CARDS-2509/2571?
-        // May be possible to replace it with a loop on node.getReferences()
+        // Query for two different types of answers:
+        // 1. Reference answers that are referencing the current changed answer
+        //    (Reference answers already copying from the current answer)
+        // 2. Reference answers that have no value and who's question references the current answer's question
+        //    (Unanswered reference answers that could potentially be copied from the current answer)
         final NodeIterator resourceIteratorReferencingAnswers = session
             .getWorkspace().getQueryManager().createQuery(
                 // Answers that were explicitly copied from this answer
@@ -183,7 +202,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                     + "    a.value is null"
                     // The answer's question references this question
                     + "    AND q.question = '"
-                    + escape(answerNode.getProperty(QUESTION).getNode().getPath()) + "'"
+                    + escape(answerNode.getProperty(FormUtils.QUESTION_PROPERTY).getNode().getPath()) + "'"
                     // The answer belongs to the same subject or one of its descendants
                     + "    AND f.relatedSubjects = '" + subject + "'"
                     // Use the fast index for the query
@@ -194,7 +213,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             !answerNode.hasProperty(FormUtils.VALUE_PROPERTY) ? null : answerNode.getProperty(FormUtils.VALUE_PROPERTY);
         while (resourceIteratorReferencingAnswers.hasNext()) {
             final Node referenceAnswer = resourceIteratorReferencingAnswers.nextNode();
-            final Node referenceQuestion = referenceAnswer.getProperty(QUESTION).getNode();
+            final Node referenceQuestion = referenceAnswer.getProperty(FormUtils.QUESTION_PROPERTY).getNode();
             if (updatePolicyApplies(sourceAnswerValue, referenceAnswer)) {
                 if (ReferenceConditionUtils.referenceHasCondition(referenceQuestion)
                     && !ReferenceConditionUtils.isReferenceConditionSatisfied(
@@ -208,6 +227,13 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         }
     }
 
+    /**
+     * Check if the reference question's update policy allows for updating the reference answer.
+     * @param source The source answer that may be copied from
+     * @param reference The reference answer that may be updated
+     * @return True if the policy allows for updating, false otherwise
+     * @throws RepositoryException if an unexpected error occurs determining if the policy allows for changes
+     */
     private boolean updatePolicyApplies(final Property source, final Node reference) throws RepositoryException
     {
         String updateMode = "";
@@ -232,7 +258,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     }
 
     /**
-     * Fill out a refernce answer with a value copied from the referenced question.
+     * Fill out a reference answer with a value copied from the referenced question.
      * @param versionManager A version manager to be used to checkout forms if needed
      * @param checkoutPaths The list of forms that have been checkout out and need to be checked back in
      * @param sourceAnswerValue The source answer value to copy the answer from
@@ -273,7 +299,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         throws RepositoryException
     {
         Object values = ReferenceConditionUtils.getFallbackValue(session,
-            referenceAnswer.getProperty(QUESTION).getNode());
+            referenceAnswer.getProperty(FormUtils.QUESTION_PROPERTY).getNode());
         Property referenceAnswerProperty = referenceAnswer.hasProperty(FormUtils.VALUE_PROPERTY)
             ? referenceAnswer.getProperty(FormUtils.VALUE_PROPERTY)
             : null;
@@ -298,13 +324,14 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         final Set<String> checkoutPaths)
         throws RepositoryException
     {
-        if (answer.hasProperty(FormUtils.STATUS_FLAGS)) {
-            List<String> statusValues = Arrays.stream(answer.getProperty(FormUtils.STATUS_FLAGS).getValues())
+        if (answer.hasProperty(FormUtils.STATUS_FLAGS_PROPERTY)) {
+            List<String> statusValues = Arrays.stream(answer.getProperty(FormUtils.STATUS_FLAGS_PROPERTY).getValues())
                 .map(v -> v.toString()).collect(Collectors.toList());
             if (!statusValues.contains(ReferenceConditionUtils.INVALID_SOURCE_FLAG)) {
                 checkoutFormIfNeeded(versionManager, answer, checkoutPaths);
                 statusValues.add(ReferenceConditionUtils.INVALID_SOURCE_FLAG);
-                answer.setProperty(FormUtils.STATUS_FLAGS, statusValues.toArray(new String[statusValues.size()]));
+                answer.setProperty(FormUtils.STATUS_FLAGS_PROPERTY,
+                    statusValues.toArray(new String[statusValues.size()]));
             }
         }
     }
@@ -313,13 +340,13 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         final Set<String> checkoutPaths)
         throws RepositoryException
     {
-        if (answer.hasProperty(FormUtils.STATUS_FLAGS)) {
-            Value[] statusValues = answer.getProperty(FormUtils.STATUS_FLAGS).getValues();
+        if (answer.hasProperty(FormUtils.STATUS_FLAGS_PROPERTY)) {
+            Value[] statusValues = answer.getProperty(FormUtils.STATUS_FLAGS_PROPERTY).getValues();
             Value[] filteredValues = Arrays.stream(statusValues)
                 .filter(v -> !ReferenceConditionUtils.INVALID_SOURCE_FLAG.equals(v.toString())).toArray(Value[]::new);
             if (statusValues.length != filteredValues.length) {
                 checkoutFormIfNeeded(versionManager, answer, checkoutPaths);
-                answer.setProperty(FormUtils.STATUS_FLAGS, filteredValues);
+                answer.setProperty(FormUtils.STATUS_FLAGS_PROPERTY, filteredValues);
             }
         }
     }
@@ -356,14 +383,15 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         final Property nodeValue =
             !answerNode.hasProperty(FormUtils.VALUE_PROPERTY) ? null : answerNode.getProperty(FormUtils.VALUE_PROPERTY);
 
-        if (isNullStatusSame(property, nodeValue)) {
-            return true;
-        } else if (property == null || nodeValue == null) {
-            return false;
+        if (property != null && nodeValue != null) {
+            // Both values are not null: check if the values are the same
+            Set<String> propertyValues = propertyToStrings(property);
+            Set<String> nodeValues = propertyToStrings(nodeValue);
+            return isSame(propertyValues, nodeValues);
+        } else {
+            // Same if both are null, otherwise not the same
+            return property == null && nodeValue == null;
         }
-        Set<String> propertyValues = propertyToStrings(property);
-        Set<String> nodeValues = propertyToStrings(nodeValue);
-        return isSame(propertyValues, nodeValues);
     }
 
     /**
@@ -377,16 +405,15 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     private boolean isSame(final Property property, final Value value)
         throws RepositoryException
     {
-        if (isNullStatusSame(property, value)) {
-            return true;
-        } else if (property == null || value == null) {
-            return false;
+        if (property != null && value != null) {
+            Set<String> propertyStrings = propertyToStrings(property);
+            Set<String> valueStrings = new HashSet<>();
+            valueStrings.add(value.getString());
+            return isSame(propertyStrings, valueStrings);
+        } else {
+            return property == null && value == null;
         }
 
-        Set<String> propertyStrings = propertyToStrings(property);
-        Set<String> valueStrings = new HashSet<>();
-        valueStrings.add(value.getString());
-        return isSame(propertyStrings, valueStrings);
     }
 
     /**
@@ -400,18 +427,17 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     private boolean isSame(final Property property, final Value[] values)
         throws RepositoryException
     {
-        if (isNullStatusSame(property, values)) {
-            return true;
-        } else if (property == null || values == null) {
-            return false;
+        if (property != null && values != null) {
+            Set<String> propertyStrings = propertyToStrings(property);
+            Set<String> valueStrings = new HashSet<>();
+            for (Value v : values) {
+                valueStrings.add(v.getString());
+            }
+            return isSame(propertyStrings, valueStrings);
+        } else {
+            return property == null && values == null;
         }
 
-        Set<String> propertyStrings = propertyToStrings(property);
-        Set<String> valueStrings = new HashSet<>();
-        for (Value v : values) {
-            valueStrings.add(v.getString());
-        }
-        return isSame(propertyStrings, valueStrings);
     }
 
     /**
@@ -423,17 +449,6 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     private boolean isSame(Set<String> left, Set<String> right)
     {
         return left.equals(right);
-    }
-
-    /**
-     * Check if two objects are either both null or both not null.
-     * @param left An object to check
-     * @param right An object to check
-     * @return True if both object are null or both are not null
-     */
-    private boolean isNullStatusSame(Object left, Object right)
-    {
-        return (left == null && right == null) || (left != null && right != null);
     }
 
     /**

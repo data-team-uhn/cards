@@ -31,8 +31,8 @@ import javax.jcr.ValueFormatException;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 
+import io.uhndata.cards.conditions.ConditionalUtils;
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.utils.ConditionalUtils;
 
 /**
  * A set of utility functions to help evaluate and apply conditional reference questions.

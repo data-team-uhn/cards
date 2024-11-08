@@ -377,7 +377,7 @@ Then, verify that all the answers have been copied over successfully</value>
             <primaryNodeType>cards:Question</primaryNodeType>
             <property>
                 <name>text</name>
-                <value>Text question. No value when complete</value>
+                <value>Text question. No value when incomplete</value>
                 <type>String</type>
             </property>
             <property>
@@ -584,7 +584,7 @@ Then, verify that all the answers have been copied over successfully</value>
             </property>
             <property>
                 <name>conditionalFallback</name>
-                <value>2020-01-01T00:00:00.000+00:00</value>
+                <value>2000-01-01T00:00:00.000+00:00</value>
                 <type>Date</type>
             </property>
             <property>
@@ -603,7 +603,7 @@ Then, verify that all the answers have been copied over successfully</value>
             <primaryNodeType>cards:Question</primaryNodeType>
             <property>
                 <name>text</name>
-                <value>Date question. Invalid message when not complete</value>
+                <value>Date question. Invalid message when incomplete</value>
                 <type>String</type>
             </property>
             <property>
@@ -658,7 +658,7 @@ Then, verify that all the answers have been copied over successfully</value>
             </property>
         </node>
         <node>
-            <name>conditionalLongQuestion</name>
+            <name>conditionalDoubleQuestion</name>
             <primaryNodeType>cards:Question</primaryNodeType>
             <property>
                 <name>text</name>
@@ -722,7 +722,7 @@ Then, verify that all the answers have been copied over successfully</value>
             </property>
         </node>
         <node>
-            <name>conditionalLongMessageQuestion</name>
+            <name>conditionalDoubleMessageQuestion</name>
             <primaryNodeType>cards:Question</primaryNodeType>
             <property>
                 <name>text</name>

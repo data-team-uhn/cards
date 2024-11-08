@@ -51,7 +51,7 @@ public interface FormUtils
     String RELATED_SUBJECTS_PROPERTY = "relatedSubjects";
 
     /** The name of a property on an Answer, Section or Form node that holds the status flags for that node.*/
-    String STATUS_FLAGS = "statusFlags";
+    String STATUS_FLAGS_PROPERTY = "statusFlags";
 
     /**
      * The primary node type for an Answer Section, a group of related answers and subsections in a Form, corresponding

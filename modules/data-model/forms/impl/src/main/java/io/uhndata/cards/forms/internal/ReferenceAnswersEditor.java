@@ -178,8 +178,8 @@ public class ReferenceAnswersEditor extends AnswersEditor
 
     private void setInvalidSourceStatusFlag(NodeBuilder answer)
     {
-        if (answer.hasProperty(FormUtils.STATUS_FLAGS)) {
-            Iterable<String> statusFlags = answer.getProperty(FormUtils.STATUS_FLAGS).getValue(Type.STRINGS);
+        if (answer.hasProperty(FormUtils.STATUS_FLAGS_PROPERTY)) {
+            Iterable<String> statusFlags = answer.getProperty(FormUtils.STATUS_FLAGS_PROPERTY).getValue(Type.STRINGS);
             final boolean[] containsInvalidSourceFlag = {false};
             statusFlags.forEach(s -> {
                 if (ReferenceConditionUtils.INVALID_SOURCE_FLAG.equals(s)) {
@@ -191,10 +191,10 @@ public class ReferenceAnswersEditor extends AnswersEditor
                 ArrayList<String> newFlags = new ArrayList<>();
                 statusFlags.forEach(s -> newFlags.add(s));
                 newFlags.add(ReferenceConditionUtils.INVALID_SOURCE_FLAG);
-                answer.setProperty(FormUtils.STATUS_FLAGS, newFlags, Type.STRINGS);
+                answer.setProperty(FormUtils.STATUS_FLAGS_PROPERTY, newFlags, Type.STRINGS);
             }
         } else {
-            answer.setProperty(FormUtils.STATUS_FLAGS,
+            answer.setProperty(FormUtils.STATUS_FLAGS_PROPERTY,
                 new String[]{ReferenceConditionUtils.INVALID_SOURCE_FLAG});
         }
     }
