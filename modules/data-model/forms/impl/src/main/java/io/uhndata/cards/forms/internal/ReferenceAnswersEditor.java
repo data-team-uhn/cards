@@ -222,8 +222,7 @@ public class ReferenceAnswersEditor extends DefaultEditor
                     Node sourceAnswer = this.serviceSession.getNode(
                         node.getProperty("copiedFrom").getValue(Type.REFERENCE));
                     Node form = this.formUtils.getForm(sourceAnswer);
-                    String questionnaireId = this.formUtils.getQuestionnaireIdentifier(form);
-                    sourceForms.add(questionnaireId);
+                    sourceForms.add(form.getIdentifier());
                 }
             } catch (RepositoryException e) {
                 // Unable to process answer - do nothing
@@ -382,7 +381,7 @@ public class ReferenceAnswersEditor extends DefaultEditor
                 Node answer;
                 // Prioritize answers in forms that are already referenced
                 Optional<Node> priorityAnswer = answers.stream().filter(a ->
-                    sourceForms.contains(this.formUtils.getQuestionnaireIdentifier(this.formUtils.getForm(a))))
+                    sourceForms.contains(getIdentifierOrNull(this.formUtils.getForm(a))))
                     .findAny();
                 if (priorityAnswer.isPresent()) {
                     answer = priorityAnswer.get();
@@ -399,6 +398,15 @@ public class ReferenceAnswersEditor extends DefaultEditor
                 + e.getMessage());
         }
         return null;
+    }
+
+    private String getIdentifierOrNull(Node node)
+    {
+        try {
+            return node.getIdentifier();
+        } catch (RepositoryException e) {
+            return null;
+        }
     }
 
     private Object serializeValue(final Object rawValue)
