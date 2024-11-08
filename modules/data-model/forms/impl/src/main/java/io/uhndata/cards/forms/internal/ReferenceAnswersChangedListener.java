@@ -199,7 +199,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                     + "  INNER JOIN [cards:Question] AS q ON a.question = q.[jcr:uuid]"
                     + "  WHERE"
                     // The answer doesn't have a value
-                    + "    a.value is null"
+                    + "    a.copiedFrom is null"
                     // The answer's question references this question
                     + "    AND q.question = '"
                     + escape(answerNode.getProperty(FormUtils.QUESTION_PROPERTY).getNode().getPath()) + "'"
