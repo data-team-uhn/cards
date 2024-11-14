@@ -261,7 +261,7 @@ function Form (props) {
   };
 
   // The form's onChange event handler
-  let onFormDataChanged = () => {
+  let handleFormDataChange = () => {
     incompleteQuestionEl?.classList.remove(classes.questionnaireItemWithError);
     setIncompleteQuestionEl(null);
     setDisableProgress(paginationEnabled && requireCompletion);
@@ -551,7 +551,7 @@ function Form (props) {
     <form action={data?.["@path"]}
           method="POST"
           onSubmit={handleSubmit}
-          onChange={onFormDataChanged}
+          onChange={handleFormDataChange}
           key={id}
           ref={formNode}
           className={classNames?.join(' ')}
@@ -605,7 +605,7 @@ function Form (props) {
         <FormProvider additionalFormData={{
           ['/Save']: saveData,
           ['/URL']: formURL,
-          ['/OnFormDataChanged']: onFormDataChanged
+          ['/OnFormDataChanged']: handleFormDataChange
           }}>
           <FormUpdateProvider>
             {!disableHeader &&
