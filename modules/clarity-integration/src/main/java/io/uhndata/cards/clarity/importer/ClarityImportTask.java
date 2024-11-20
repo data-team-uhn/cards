@@ -163,18 +163,25 @@ public class ClarityImportTask implements Runnable
         }
     }
 
+    private enum UpdatePolicy
+    {
+        createNew,
+        updateExisting,
+        cancelImport
+    }
+
     private static final class ClarityQuestionnaireMapping
     {
         private final String name;
 
-        private final boolean updatesExisting;
+        private final UpdatePolicy updatePolicy;
 
         private final List<ClarityQuestionMapping> questions;
 
-        ClarityQuestionnaireMapping(final String name, final boolean updatesExisting)
+        ClarityQuestionnaireMapping(final String name, final UpdatePolicy updatePolicy)
         {
             this.name = name;
-            this.updatesExisting = updatesExisting;
+            this.updatePolicy = updatePolicy;
             this.questions = new LinkedList<>();
         }
 
@@ -345,9 +352,10 @@ public class ClarityImportTask implements Runnable
                 if (questionnaires != null) {
                     // Add the questionnaires associated with this subject to the local Java data structures
                     for (Resource questionnaire : questionnaires.getChildren()) {
-                        boolean updatesExisting = questionnaire.getValueMap().get("updatesExisting", false);
+                        UpdatePolicy updatePolicy = UpdatePolicy.valueOf(
+                            questionnaire.getValueMap().get("updatePolicy", UpdatePolicy.updateExisting.toString()));
                         ClarityQuestionnaireMapping clarityQuestionnaireMapping = new ClarityQuestionnaireMapping(
-                            questionnaire.getName(), updatesExisting);
+                            questionnaire.getName(), updatePolicy);
 
                         for (Resource questionMapping : questionnaire.getChildren()) {
                             // Add the questions associated with this questionnaire to the local Java data structures
@@ -477,13 +485,15 @@ public class ClarityImportTask implements Runnable
             }
 
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
-                boolean updatesExisting = questionnaireMapping.updatesExisting;
+                UpdatePolicy updatePolicy = questionnaireMapping.updatePolicy;
                 Resource formNode = getFormForSubject(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
                     newSubjectParent);
 
-                if (updatesExisting && (formNode != null)) {
-                    // Update the answers to an existing Form
-                    updateExistingForm(resolver, formNode, questionnaireMapping, row);
+                if (formNode != null) {
+                    if (updatePolicy == UpdatePolicy.updateExisting) {
+                        // Update the answers to an existing Form
+                        updateExistingForm(resolver, formNode, questionnaireMapping, row);
+                    }
                 } else {
                     // Create a new Form
                     formNode = createForm(resolver, questionnaireMapping.getQuestionnaireResource(resolver),

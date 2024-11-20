@@ -42,7 +42,7 @@
   // Attributes:
   query
 
-  - updatesExisting (BOOLEAN) = false mandatory autocreated
+  - updatePolicy (STRING) = "updateExisting"
 
   // Properties:
   // Hardcode the resource type
