@@ -23,6 +23,9 @@ import java.util.function.Function;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonValue;
 
 import org.osgi.service.component.annotations.Component;
@@ -41,6 +44,8 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class ImportableProcessor implements ResourceJsonProcessor
 {
+    private static final String SUBJECT_TYPES_PROPERTY = "requiredSubjectTypes";
+
     @Override
     public String getName()
     {
@@ -69,8 +74,14 @@ public class ImportableProcessor implements ResourceJsonProcessor
             } else if (propertyName.startsWith("sling:")) {
                 // Remove all sling properties
                 result = null;
+            } else if (SUBJECT_TYPES_PROPERTY.equals(propertyName)) {
+                final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                for (Value value : property.getValues()) {
+                    Node subjectTypeNode = property.getSession().getNodeByIdentifier(value.getString());
+                    arrayBuilder.add(subjectTypeNode.getPath());
+                }
+                result = arrayBuilder.build();
             }
-            // TODO: Add in better handling for requiredSubjectTypes
 
             return result;
         } catch (RepositoryException e) {
@@ -88,6 +99,19 @@ public class ImportableProcessor implements ResourceJsonProcessor
             // TODO: If inter-processor dependencies are added, add a dependency to .nolinks instead
             if (child.isNodeType("cards:Links")) {
                 return null;
+            }
+        } catch (RepositoryException e) {
+            // Really shouldn't happen
+        }
+        return input;
+    }
+
+    @Override
+    public String processPropertyName(final Node node, final Property property, final String input)
+    {
+        try {
+            if (SUBJECT_TYPES_PROPERTY.equals(property.getName())) {
+                return "jcr:reference:" + SUBJECT_TYPES_PROPERTY;
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen
