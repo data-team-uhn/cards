@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.json.Json;
@@ -44,8 +45,6 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class ImportableProcessor implements ResourceJsonProcessor
 {
-    private static final String SUBJECT_TYPES_PROPERTY = "requiredSubjectTypes";
-
     @Override
     public String getName()
     {
@@ -74,13 +73,19 @@ public class ImportableProcessor implements ResourceJsonProcessor
             } else if (propertyName.startsWith("sling:")) {
                 // Remove all sling properties
                 result = null;
-            } else if (SUBJECT_TYPES_PROPERTY.equals(propertyName)) {
-                final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-                for (Value value : property.getValues()) {
-                    Node subjectTypeNode = property.getSession().getNodeByIdentifier(value.getString());
-                    arrayBuilder.add(subjectTypeNode.getPath());
+            } else if (isReference(property)) {
+                // Convert all reference properties to the path being referenced
+                if (property.isMultiple()) {
+                    final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                    for (Value value : property.getValues()) {
+                        Node referencedNode = property.getSession().getNodeByIdentifier(value.getString());
+                        arrayBuilder.add(referencedNode.getPath());
+                    }
+                    result = arrayBuilder.build();
+                } else {
+                    Node referencedNode = property.getSession().getNodeByIdentifier(property.getValue().getString());
+                    result = Json.createValue(referencedNode.getPath());
                 }
-                result = arrayBuilder.build();
             }
 
             return result;
@@ -110,12 +115,20 @@ public class ImportableProcessor implements ResourceJsonProcessor
     public String processPropertyName(final Node node, final Property property, final String input)
     {
         try {
-            if (SUBJECT_TYPES_PROPERTY.equals(property.getName())) {
-                return "jcr:reference:" + SUBJECT_TYPES_PROPERTY;
+            if (isReference(property)) {
+                // Prefix all reference property names so the json to xml script recognizes they should
+                // be references and not strings
+                return "jcr:reference:" + property.getName();
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
         return input;
+    }
+
+    private boolean isReference(Property property)
+        throws RepositoryException
+    {
+        return PropertyType.REFERENCE == property.getType() || PropertyType.WEAKREFERENCE == property.getType();
     }
 }
