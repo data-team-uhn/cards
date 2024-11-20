@@ -109,6 +109,11 @@ public final class AppointmentEmailNotificationsFactory
                 + "If empty, the environment variable NIGHTLY_NOTIFICATIONS_SCHEDULE is used. "
                 + "If that one isn't set either, a default schedule of 6 AM daily is used.")
         String schedule();
+
+        @AttributeDefinition(name = "Patient name in header",
+            description = "If true, the patients' name will be included in the email headers 'To:' field"
+        )
+        boolean includePatientName() default false;
     }
 
     @Activate
@@ -129,7 +134,7 @@ public final class AppointmentEmailNotificationsFactory
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.resolverProvider,
             this.eventAdmin, this.tokenManager, this.mailService, this.formUtils, this.patientAccessConfiguration,
             config.name(), config.notificationType(), config.clinicId(), config.emailConfiguration(),
-            config.daysToVisit());
+            config.daysToVisit(), config.includePatientName());
 
         try {
             this.scheduler.schedule(notificationsJob, notificationsOptions);

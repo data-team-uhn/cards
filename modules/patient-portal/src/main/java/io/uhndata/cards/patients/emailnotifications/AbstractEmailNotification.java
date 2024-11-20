@@ -74,10 +74,14 @@ abstract class AbstractEmailNotification
 
     private final PatientAccessConfiguration patientAccessConfiguration;
 
+    private final boolean includePatientName;
+
+    @SuppressWarnings("checkstyle:ParameterNumber")
     AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
         final ThreadResourceResolverProvider resolverProvider,
         final TokenManager tokenManager, final MailService mailService, final FormUtils formUtils,
-        final PatientAccessConfiguration patientAccessConfiguration, final EventAdmin eventAdmin)
+        final PatientAccessConfiguration patientAccessConfiguration, final EventAdmin eventAdmin,
+        final boolean includePatientName)
     {
         this.resolverFactory = resolverFactory;
         this.resolverProvider = resolverProvider;
@@ -86,6 +90,7 @@ abstract class AbstractEmailNotification
         this.formUtils = formUtils;
         this.patientAccessConfiguration = patientAccessConfiguration;
         this.eventAdmin = eventAdmin;
+        this.includePatientName = includePatientName;
     }
 
     /*
@@ -164,7 +169,10 @@ abstract class AbstractEmailNotification
             return null;
         }
 
-        String patientFullName = AppointmentUtils.getPatientFullName(this.formUtils, patientSubject);
+        String patientFullName = this.includePatientName
+            ? AppointmentUtils.getPatientFullName(this.formUtils, patientSubject)
+            : null;
+
         Calendar visitDate = (Calendar) this.formUtils.getValue(appointmentDate);
         Calendar tokenExpiryDate = (Calendar) visitDate.clone();
         final int tokenLifetime =
