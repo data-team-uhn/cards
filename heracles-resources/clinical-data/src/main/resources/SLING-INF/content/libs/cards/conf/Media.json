@@ -1,6 +1,6 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "logoDark": "/libs/cards/resources/media/heracles/Heracles_logo.png",
-  "logoLight": "/libs/cards/resources/media/heracles/Heracles_logo.png",
+  "logoDark": "/libs/cards/resources/media/heracles/CorPath_Dark_Logo.png",
+  "logoLight": "/libs/cards/resources/media/heracles/CorPath_Light_Logo.png",
   "sidebarBackground": "/libs/cards/resources/media/default/background.jpg"
 }
