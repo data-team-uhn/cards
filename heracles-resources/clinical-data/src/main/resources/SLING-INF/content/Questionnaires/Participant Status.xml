@@ -21,14 +21,19 @@
 	<name>Participant Status</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
-		<name>maxPerSubject</name>
-		<value>0</value>
-		<type>Long</type>
-	</property>
-	<property>
 		<name>title</name>
 		<value>Participant Status</value>
 		<type>String</type>
+	</property>
+	<property>
+		<name>paginate</name>
+		<value>False</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>0</value>
+		<type>Long</type>
 	</property>
 	<property>
 		<name>requiredSubjectTypes</name>
@@ -45,22 +50,32 @@
 			<value>Status</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>recurrent</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>default</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>enrollment_status</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>user</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>text</name>
 				<value>Participant status</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -69,9 +84,14 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
 			</property>
 			<node>
 				<name>enrolled</name>
@@ -162,13 +182,18 @@
 			<name>enrollment_date</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Date enrolled</value>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>user</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>date</value>
+				<name>text</name>
+				<value>Date enrolled</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -182,25 +207,45 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
+				<name>displayMode</name>
+				<value>input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
 			</property>
 		</node>
 		<node>
 			<name>withdrawn_dateSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
+			<property>
+				<name>recurrent</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>default</value>
+				<type>String</type>
+			</property>
 			<node>
 				<name>withdrawn_date</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Date withdrawn</value>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>entryMode</name>
+					<value>user</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>date</value>
+					<name>text</name>
+					<value>Date withdrawn</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -214,9 +259,14 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
+					<name>displayMode</name>
+					<value>input</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
 				</property>
 			</node>
 			<node>
@@ -227,22 +277,11 @@
 					<value>includes any</value>
 					<type>String</type>
 				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>enrollment_status</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
 				<node>
 					<name>operandB</name>
 					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
@@ -262,48 +301,6 @@
 						<type>Boolean</type>
 					</property>
 				</node>
-			</node>
-		</node>
-		<node>
-			<name>exit_dateSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>exit_date</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Date exited</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dateFormat</name>
-					<value>MM/dd/yyyy</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
 				<node>
 					<name>operandA</name>
 					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
@@ -320,6 +317,73 @@
 						<type>Boolean</type>
 					</property>
 				</node>
+			</node>
+		</node>
+		<node>
+			<name>exit_dateSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<property>
+				<name>recurrent</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>default</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>exit_date</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>entryMode</name>
+					<value>user</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>Date exited</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dateFormat</name>
+					<value>MM/dd/yyyy</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>input</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
 				<node>
 					<name>operandB</name>
 					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
@@ -336,6 +400,301 @@
 						<type>Boolean</type>
 					</property>
 				</node>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>enrollment_status</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>study_stream</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>liveValidation</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>user</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Cohort</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableSeparatorDetection</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>AnswerOption-678679834</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Cohort 1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isDefault</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption-678679833</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Cohort 2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isDefault</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>cohort_reason</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>liveValidation</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>user</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Point of entry</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableSeparatorDetection</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list+input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>AnswerOption-417831042</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Diabetes mellitus</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isDefault</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption-697922426</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Hypertension</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isDefault</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption-994998398</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Hypercholesterolemia</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isDefault</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption-1147430091</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Current tobacco smoker</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isDefault</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption-1360142303</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Advanced age</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isDefault</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption2096973700</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Family</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isDefault</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption-1703379852</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>7</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>History</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isDefault</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 	</node>
@@ -347,17 +706,32 @@
 			<value>Device</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>recurrent</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>default</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>watch_id</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Watch ID</value>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>user</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>text</name>
+				<value>Watch ID</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -366,9 +740,14 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
+				<name>displayMode</name>
+				<value>input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
 			</property>
 		</node>
 	</node>

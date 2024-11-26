@@ -21,14 +21,24 @@
 	<name>Historical Lab Results</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
-		<name>maxPerSubject</name>
-		<value>1</value>
-		<type>Long</type>
+		<name>description</name>
+		<value>Visits 1, 3, 5, 7, 9, 11</value>
+		<type>String</type>
 	</property>
 	<property>
 		<name>title</name>
-		<value>Historical Lab Results</value>
+		<value>Historical Laboratory Results</value>
 		<type>String</type>
+	</property>
+	<property>
+		<name>paginate</name>
+		<value>False</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>0</value>
+		<type>Long</type>
 	</property>
 	<property>
 		<name>requiredSubjectTypes</name>
@@ -41,13 +51,18 @@
 		<name>labs_date</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Date of test</value>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>date</value>
+			<name>text</name>
+			<value>Date of test</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -65,26 +80,41 @@
 			<value>True</value>
 			<type>Boolean</type>
 		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
 	</node>
 	<node>
 		<name>chol</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Total Cholesterol</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>description</name>
-			<value>Desirable: <![CDATA[<]]>5.18  
+			<value><![CDATA[Desirable: <5.18  
 Borderline high: 5.18 - 6.18  
-High: <![CDATA[>]]>6.18</value>
+High: >6.18]]></value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>decimal</value>
+			<name>unitOfMeasurement</name>
+			<value>mmol/L</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>minValue</name>
@@ -92,14 +122,14 @@ High: <![CDATA[>]]>6.18</value>
 			<type>Double</type>
 		</property>
 		<property>
-			<name>maxValue</name>
-			<value>10.0</value>
-			<type>Double</type>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
 		</property>
 		<property>
-			<name>disableMinMaxValueEnforcement</name>
-			<value>True</value>
-			<type>Boolean</type>
+			<name>text</name>
+			<value>Total Cholesterol</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>messageForValuesOutsideMinMax</name>
@@ -108,18 +138,38 @@ Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>unitOfMeasurement</name>
-			<value>mmol/L</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
 		<property>
+			<name>maxValue</name>
+			<value>10.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>compact</name>
 			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
 			<type>Boolean</type>
 		</property>
 	</node>
@@ -127,40 +177,9 @@ Please double check your entry prior to submitting this form.</value>
 		<name>hdl</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>HDL cholesterol</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>description</name>
-			<value>Excellent: <![CDATA[>]]>1.55  
-Low: <![CDATA[<]]>1.03</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minValue</name>
-			<value>0.1</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>maxValue</name>
-			<value>3.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>disableMinMaxValueEnforcement</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>messageForValuesOutsideMinMax</name>
-			<value>The value entered is outside of the expected range for this field.  
-Please double check your entry prior to submitting this form.</value>
+			<value><![CDATA[Excellent: >1.55  
+Low: <1.03]]></value>
 			<type>String</type>
 		</property>
 		<property>
@@ -169,13 +188,69 @@ Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.1</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>HDL cholesterol</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
 		<property>
+			<name>maxValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>compact</name>
 			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
 			<type>Boolean</type>
 		</property>
 	</node>
@@ -183,42 +258,11 @@ Please double check your entry prior to submitting this form.</value>
 		<name>trigly</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Triglycerides</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>description</name>
-			<value>Normal: <![CDATA[<]]>1.69  
+			<value><![CDATA[Normal: <1.69  
 Borderline high: 1.69 - 2.25  
 High: 2.26 - 5.64  
-Very high: <![CDATA[>]]>5.65</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minValue</name>
-			<value>0.1</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>maxValue</name>
-			<value>10.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>disableMinMaxValueEnforcement</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>messageForValuesOutsideMinMax</name>
-			<value>The value entered is outside of the expected range for this field.  
-Please double check your entry prior to submitting this form.</value>
+Very high: >5.65]]></value>
 			<type>String</type>
 		</property>
 		<property>
@@ -227,13 +271,69 @@ Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.1</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Triglycerides</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
 		<property>
+			<name>maxValue</name>
+			<value>10.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>compact</name>
 			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
 			<type>Boolean</type>
 		</property>
 	</node>
@@ -241,23 +341,28 @@ Please double check your entry prior to submitting this form.</value>
 		<name>ldl</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>LDL cholesterol</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>description</name>
-			<value>Optimal: <![CDATA[<]]>2.6  
+			<value><![CDATA[Optimal: <2.6  
 Above optimal: 2.6 - 3.3  
 Borderline high: 3.4 - 4.1  
 High: 4.14 - 4.9  
-Very high: <![CDATA[>]]>4.92</value>
+Very high: >4.92]]></value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>decimal</value>
+			<name>unitOfMeasurement</name>
+			<value>mmol/L</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>minValue</name>
@@ -265,14 +370,14 @@ Very high: <![CDATA[>]]>4.92</value>
 			<type>Double</type>
 		</property>
 		<property>
-			<name>maxValue</name>
-			<value>10.0</value>
-			<type>Double</type>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
 		</property>
 		<property>
-			<name>disableMinMaxValueEnforcement</name>
-			<value>True</value>
-			<type>Boolean</type>
+			<name>text</name>
+			<value>LDL cholesterol</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>messageForValuesOutsideMinMax</name>
@@ -281,18 +386,38 @@ Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>unitOfMeasurement</name>
-			<value>mmol/L</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
 		<property>
+			<name>maxValue</name>
+			<value>10.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>compact</name>
 			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
 			<type>Boolean</type>
 		</property>
 	</node>
@@ -300,41 +425,10 @@ Please double check your entry prior to submitting this form.</value>
 		<name>glucose</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Fasting Blood Glucose</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>description</name>
-			<value>Normal: <![CDATA[<]]>5.6  
+			<value><![CDATA[Normal: <5.6  
 Pre-diabetes: 5.6 - 6.9  
-Diabetes: <![CDATA[>]]>7</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minValue</name>
-			<value>3.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>maxValue</name>
-			<value>20.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>disableMinMaxValueEnforcement</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>messageForValuesOutsideMinMax</name>
-			<value>The value entered is outside of the expected range for this field.  
-Please double check your entry prior to submitting this form.</value>
+Diabetes: >7]]></value>
 			<type>String</type>
 		</property>
 		<property>
@@ -343,29 +437,54 @@ Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Fasting Blood Glucose</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>20.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>compact</name>
 			<value>True</value>
 			<type>Boolean</type>
 		</property>
-	</node>
-	<node>
-		<name>hga1c</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Hemoglobin A1c</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Normal: 4 - 5.6  
-Pre-diabetes: 5.7 - 6.4  
-Diabetes: <![CDATA[>]]>6.5</value>
+			<name>displayMode</name>
+			<value>input</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -374,24 +493,24 @@ Diabetes: <![CDATA[>]]>6.5</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>minValue</name>
-			<value>3.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>maxValue</name>
-			<value>15.0</value>
-			<type>Double</type>
-		</property>
-		<property>
 			<name>disableMinMaxValueEnforcement</name>
 			<value>True</value>
 			<type>Boolean</type>
 		</property>
 		<property>
-			<name>messageForValuesOutsideMinMax</name>
-			<value>The value entered is outside of the expected range for this field.  
-Please double check your entry prior to submitting this form.</value>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>hga1c</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Normal: 4 - 5.6  
+Pre-diabetes: 5.7 - 6.4  
+Diabetes: >6.5]]></value>
 			<type>String</type>
 		</property>
 		<property>
@@ -400,48 +519,29 @@ Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
+			<name>minAnswers</name>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>compact</name>
-			<value>True</value>
+			<name>enableNotes</name>
+			<value>False</value>
 			<type>Boolean</type>
-		</property>
-	</node>
-	<node>
-		<name>pro-bnp</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>pro-BNP</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Abnormal: <![CDATA[>100]]></value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>decimal</value>
-			<type>String</type>
 		</property>
 		<property>
 			<name>minValue</name>
-			<value>0.0</value>
+			<value>3.0</value>
 			<type>Double</type>
 		</property>
 		<property>
-			<name>maxValue</name>
-			<value>3000.0</value>
-			<type>Double</type>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
 		</property>
 		<property>
-			<name>disableMinMaxValueEnforcement</name>
-			<value>True</value>
-			<type>Boolean</type>
+			<name>text</name>
+			<value>Hemoglobin A1c</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>messageForValuesOutsideMinMax</name>
@@ -450,32 +550,23 @@ Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>unitOfMeasurement</name>
-			<value>ng/L</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>15.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>compact</name>
 			<value>True</value>
 			<type>Boolean</type>
 		</property>
-	</node>
-	<node>
-		<name>crp</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>CRP</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Range: 0 - 3</value>
+			<name>displayMode</name>
+			<value>input</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -484,9 +575,226 @@ Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>wbc</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value>4.5 to 11.0</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>thousand/µL</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
 			<name>minValue</name>
-			<value>0.0</value>
+			<value>1.0</value>
 			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>White blood cells</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>20.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>rbc</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value>Male range: 4.7 - 6.1  
+Female range: 4.2 - 5.4</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>million/µL</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>3.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Red blood cells</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>8.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>hemoglobin</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value>Male range: 140 - 180  
+Female range: 120 - 160</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>g/L</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>50.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Hemoglobin</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<property>
 			<name>maxValue</name>
@@ -494,14 +802,198 @@ Please double check your entry prior to submitting this form.</value>
 			<type>Double</type>
 		</property>
 		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>disableMinMaxValueEnforcement</name>
 			<value>True</value>
 			<type>Boolean</type>
 		</property>
 		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>hematocrit</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value>Male range: 41% - 50%  
+Female range: 36% - 48%</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>%</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>30.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Hematocrit</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>messageForValuesOutsideMinMax</name>
 			<value>The value entered is outside of the expected range for this field.  
 Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>60.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>mcv</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value>Range: 80-100</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>fL</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>70.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Mean corpuscular volume</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>120.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>crp</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value>Range: 0 - 3</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -510,13 +1002,660 @@ Please double check your entry prior to submitting this form.</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>CRP</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
 		<property>
+			<name>maxValue</name>
+			<value>200.0</value>
+			<type>Double</type>
+		</property>
+		<property>
 			<name>compact</name>
 			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>pro-bnp</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>ng/L</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>pro-BNP</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>3000.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>hscrp</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mg/L</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>HSCRP</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>200.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>egfr</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Normal or High: >89  
+Mildly Decreased: 60 - 89  
+Mildly-Moderate Decreased: 45 - 59  
+Mod-Severely Decreased: 30 - 44  
+Severely Decreased: 15-29  
+Kidney failure: <15
+]]></value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mL/min/1.73</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>15.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Estimated Glomerular Filtration rate</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>lipoprotein</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>nmol/L</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Lipoprotein (a)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>75.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>apolipoprotein</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Desirable: < 90  
+Borderline High: 90 - 99  
+High: 100 - 130  
+Very High: >130]]></value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mg/dL</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>89.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Apolipoprotein B</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>130.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>albumin</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Normal: <30 mg/g  
+Moderately increased: 30 - 299 mg/g  
+Severely increased: >300 mg/g]]></value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>ug/L</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>30.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Albumin, Urine</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>300.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>creatinine</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value>Male range: 0.74 to 1.35 mg/dL (65.4 to 119.3 micromoles/L)  
+Female range 0.59 to 1.04 mg/dL (52.2 to 91.9 micromoles/L)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mg/dL</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.59</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Creatinine, Urine</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>1.35</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>albumin_creatinine_ratio</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Male range: <17  
+Female range: 25  
+Microalbuminaria : 30-300  
+Macroalbuminaria: >300
+]]></value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mg/g</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>17.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Creatinine-Albumin, Urine</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>300.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
 			<type>Boolean</type>
 		</property>
 	</node>

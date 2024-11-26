@@ -21,14 +21,19 @@
 	<name>Legacy Data</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
-		<name>maxPerSubject</name>
-		<value>1</value>
-		<type>Long</type>
-	</property>
-	<property>
 		<name>title</name>
 		<value>Legacy Data</value>
 		<type>String</type>
+	</property>
+	<property>
+		<name>paginate</name>
+		<value>False</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>1</value>
+		<type>Long</type>
 	</property>
 	<property>
 		<name>requiredSubjectTypes</name>
@@ -41,19 +46,64 @@
 		<name>legacy_id</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
+			<name>description</name>
+			<value>PL######</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>validationErrorText</name>
+			<value>The value must consist of "PL" followed by 6 hexadecimal digits, for example "MH1234EF"</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>liveValidation</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>text</name>
 			<value>Legacy Study ID</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>enableSeparatorDetection</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>validationRegexp</name>
+			<value>^(PL)[0-9A-Fa-f]{6}$</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
 		</property>
 	</node>
 </node>

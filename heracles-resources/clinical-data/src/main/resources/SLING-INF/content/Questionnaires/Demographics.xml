@@ -21,14 +21,19 @@
 	<name>Demographics</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
-		<name>maxPerSubject</name>
-		<value>1</value>
-		<type>Long</type>
-	</property>
-	<property>
 		<name>title</name>
 		<value>Demographics</value>
 		<type>String</type>
+	</property>
+	<property>
+		<name>paginate</name>
+		<value>False</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>1</value>
+		<type>Long</type>
 	</property>
 	<property>
 		<name>requiredSubjectTypes</name>
@@ -41,18 +46,23 @@
 		<name>year_of_birth</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Year of birth</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>description</name>
 			<value>Format: YYYY</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>date</value>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Year of birth</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -66,27 +76,32 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
 		</property>
 	</node>
 	<node>
 		<name>sex</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>text</name>
 			<value>Sex</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>list</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -95,9 +110,14 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
 		</property>
 		<node>
 			<name>Male</name>
@@ -132,14 +152,44 @@
 		<name>ethnicity</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>liveValidation</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>text</name>
 			<value>Ethnicity</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
+			<name>enableSeparatorDetection</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>False</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -147,33 +197,19 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
 		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<node>
-			<name>American Indian - Alaskan Native - Native Canadian</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>American Indian / Alaskan Native / Native Canadian</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>American Indian / Alaskan Native / Native Canadian</value>
-				<type>String</type>
-			</property>
-		</node>
 		<node>
 			<name>Asian</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
+				<name>defaultOrder</name>
+				<value>1</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>label</name>
 				<value>Asian</value>
 				<type>String</type>
@@ -182,12 +218,22 @@
 				<name>value</name>
 				<value>Asian</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>isDefault</name>
+				<value>False</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
 			<name>Black - African American - African</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
+				<name>defaultOrder</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>label</name>
 				<value>Black / African American / African</value>
 				<type>String</type>
@@ -196,12 +242,22 @@
 				<name>value</name>
 				<value>Black / African American / African</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>isDefault</name>
+				<value>False</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
 			<name>Hispanic - Latino - Spanish</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>label</name>
 				<value>Hispanic / Latino / Spanish</value>
 				<type>String</type>
@@ -210,12 +266,22 @@
 				<name>value</name>
 				<value>Hispanic / Latino / Spanish</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>isDefault</name>
+				<value>False</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
 			<name>Middle Eastern - North African</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
+				<name>defaultOrder</name>
+				<value>4</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>label</name>
 				<value>Middle Eastern / North African</value>
 				<type>String</type>
@@ -224,12 +290,22 @@
 				<name>value</name>
 				<value>Middle Eastern / North African</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>isDefault</name>
+				<value>False</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
 			<name>Pacific Islander</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
+				<name>defaultOrder</name>
+				<value>5</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>label</name>
 				<value>Pacific Islander</value>
 				<type>String</type>
@@ -238,12 +314,22 @@
 				<name>value</name>
 				<value>Pacific Islander</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>isDefault</name>
+				<value>False</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
 			<name>White</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
+				<name>defaultOrder</name>
+				<value>6</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>label</name>
 				<value>White</value>
 				<type>String</type>
@@ -252,12 +338,22 @@
 				<name>value</name>
 				<value>White</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>isDefault</name>
+				<value>False</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
 			<name>None of these fully describe me</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
+				<name>defaultOrder</name>
+				<value>7</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>label</name>
 				<value>None of these fully describe me</value>
 				<type>String</type>
@@ -266,6 +362,11 @@
 				<name>value</name>
 				<value>None of these fully describe me</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>isDefault</name>
+				<value>False</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>
@@ -273,18 +374,18 @@
 		<name>primary_device_os</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>text</name>
 			<value>Primary device OS</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>list+input</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -293,9 +394,14 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
+			<name>displayMode</name>
+			<value>list+input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
 		</property>
 		<node>
 			<name>iOS</name>
