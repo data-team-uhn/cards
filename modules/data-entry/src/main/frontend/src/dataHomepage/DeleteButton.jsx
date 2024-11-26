@@ -47,7 +47,7 @@ function DeleteButton(props) {
   const buttonText = label || ("Delete " + (entryType?.toLowerCase() || '')).trim();
   const defaultDialogMessage = `Are you sure you want to delete the following ${entryType}:`;
   const defaultDialogAction = entryName;
-  const defaultErrorMessage = `${entryName || "The item"} could not be removed.`;
+  const defaultErrorMessage = `The ${entryType?.toLowerCase() || "item"} could not be removed.`;
   const history = useHistory();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
