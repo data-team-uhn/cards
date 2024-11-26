@@ -83,8 +83,7 @@ public class ImportableProcessor implements ResourceJsonProcessor
                     }
                     result = arrayBuilder.build();
                 } else {
-                    Node referencedNode = property.getSession().getNodeByIdentifier(property.getValue().getString());
-                    result = Json.createValue(referencedNode.getPath());
+                    result = Json.createValue(property.getNode().getPath());
                 }
             }
 
