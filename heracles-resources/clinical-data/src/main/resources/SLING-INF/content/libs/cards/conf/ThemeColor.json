@@ -1,4 +1,5 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "themeColor": "bronze"
+  "primaryColor": "#106DB5",
+  "themeColor": "blue"
 }
