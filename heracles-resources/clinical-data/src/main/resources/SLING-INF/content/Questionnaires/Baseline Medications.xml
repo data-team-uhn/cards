@@ -76,16 +76,16 @@
 			<type>Long</type>
 		</property>
 		<node>
-			<name>AntiarrhythmicegAmiodaroneSotalolMexilet</name>
+			<name>Antiarrhythmice.g.AmiodaroneSotalolMexil</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Antiarrhythmic (eg Amiodarone, Sotalol, Mexiletene)</value>
+				<value>Antiarrhythmic (e.g. Amiodarone, Sotalol, Mexiletene)</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Antiarrhythmic (eg Amiodarone, Sotalol, Mexiletene)</value>
+				<value>Antiarrhythmic (e.g. Amiodarone, Sotalol, Mexiletene)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -95,16 +95,16 @@
 			</property>
 		</node>
 		<node>
-			<name>AnticoagulantegWarfarin-coumadinPradaxa-</name>
+			<name>Anticoagulante.g.Warfarin-coumadinPradax</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Anticoagulant (eg Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
+				<value>Anticoagulant (e.g. Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Anticoagulant (eg Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
+				<value>Anticoagulant (e.g. Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -133,16 +133,16 @@
 			</property>
 		</node>
 		<node>
-			<name>OtherAntiplateletegPlavix-clopidogrelBri</name>
+			<name>OtherAntiplatelete.g.Plavix-clopidogrelB</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Other Antiplatelet (eg Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
+				<value>Other Antiplatelet (e.g. Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Other Antiplatelet (eg Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
+				<value>Other Antiplatelet (e.g. Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -209,16 +209,16 @@
 			</property>
 		</node>
 		<node>
-			<name>Diuretic-Lasix-forusemidetorsemidemetalo</name>
+			<name>DiureticLasix-forusemidetorsemidemetaloz</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Diuretic - Lasix/forusemide, torsemide, metalozone</value>
+				<value>Diuretic (Lasix/forusemide, torsemide, metalozone)</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Diuretic - Lasix/forusemide, torsemide, metalozone</value>
+				<value>Diuretic (Lasix/forusemide, torsemide, metalozone)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -247,16 +247,16 @@
 			</property>
 		</node>
 		<node>
-			<name>Otherlipid-lowering-Zetia-ezetimibe</name>
+			<name>Otherlipid-loweringZetia-ezetimibe</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>Other lipid-lowering - Zetia/ezetimibe</value>
+				<value>Other lipid-lowering  (Zetia/ezetimibe)</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Other lipid-lowering - Zetia/ezetimibe</value>
+				<value>Other lipid-lowering  (Zetia/ezetimibe)</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -456,25 +456,6 @@
 			</property>
 		</node>
 		<node>
-			<name>Diabetesmedications</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Diabetes medications</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Diabetes medications</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>21</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
 			<name>Immunosuppressantsand-oranti-inflamatori</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
@@ -489,7 +470,7 @@
 			</property>
 			<property>
 				<name>defaultOrder</name>
-				<value>22</value>
+				<value>21</value>
 				<type>Long</type>
 			</property>
 		</node>
@@ -508,7 +489,7 @@
 			</property>
 			<property>
 				<name>defaultOrder</name>
-				<value>23</value>
+				<value>22</value>
 				<type>Long</type>
 			</property>
 		</node>
@@ -527,7 +508,7 @@
 			</property>
 			<property>
 				<name>defaultOrder</name>
-				<value>24</value>
+				<value>23</value>
 				<type>Long</type>
 			</property>
 		</node>
@@ -546,7 +527,7 @@
 			</property>
 			<property>
 				<name>defaultOrder</name>
-				<value>25</value>
+				<value>24</value>
 				<type>Long</type>
 			</property>
 		</node>
@@ -565,7 +546,7 @@
 			</property>
 			<property>
 				<name>defaultOrder</name>
-				<value>26</value>
+				<value>25</value>
 				<type>Long</type>
 			</property>
 		</node>
@@ -584,7 +565,7 @@
 			</property>
 			<property>
 				<name>defaultOrder</name>
-				<value>27</value>
+				<value>26</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -595,11 +576,11 @@
 		</node>
 	</node>
 	<node>
-		<name>medications_AntiarrhythmicegAmiodaroneSo</name>
+		<name>medications_Antiarrhythmice.g.Amiodarone</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Antiarrhythmic (eg Amiodarone, Sotalol, Mexiletene)</value>
+			<value>Antiarrhythmic (e.g. Amiodarone, Sotalol, Mexiletene)</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -632,7 +613,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>Antiarrhythmic (eg Amiodarone, Sotalol, Mexiletene)</value>
+						<value>Antiarrhythmic (e.g. Amiodarone, Sotalol, Mexiletene)</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -644,7 +625,7 @@
 			</node>
 		</node>
 		<node>
-			<name>medications_AntiarrhythmicegAmiodaroneSo_bl_med_number</name>
+			<name>medications_Antiarrhythmice.g.Amiodarone_bl_med_number</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -673,7 +654,7 @@
 			</property>
 		</node>
 		<node>
-			<name>medications_AntiarrhythmicegAmiodaroneSo_bl_med_name</name>
+			<name>medications_Antiarrhythmice.g.Amiodarone_bl_med_name</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -707,7 +688,7 @@
 			</property>
 		</node>
 		<node>
-			<name>medications_AntiarrhythmicegAmiodaroneSo_bl_med_dose_value</name>
+			<name>medications_Antiarrhythmice.g.Amiodarone_bl_med_dose_value</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -736,7 +717,7 @@
 			</property>
 		</node>
 		<node>
-			<name>medications_AntiarrhythmicegAmiodaroneSo_bl_med_dose_units</name>
+			<name>medications_Antiarrhythmice.g.Amiodarone_bl_med_dose_units</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -879,7 +860,7 @@
 			</node>
 		</node>
 		<node>
-			<name>medications_AntiarrhythmicegAmiodaroneSo_bl_med_frequency</name>
+			<name>medications_Antiarrhythmice.g.Amiodarone_bl_med_frequency</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -984,7 +965,7 @@
 			</node>
 		</node>
 		<node>
-			<name>medications_AntiarrhythmicegAmiodaroneSo_bl_med_name_med_st</name>
+			<name>medications_Antiarrhythmice.g.Amiodarone_bl_med_name_med_st</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1019,7 +1000,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_AntiarrhythmicegAmiodaroneSo_bl_{med_name}_med_nt</name>
+			<name>medications_Antiarrhythmice.g.Amiodarone_bl_{med_name}_med_nt</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1068,11 +1049,11 @@ If only year is known, code the month and day as 01.</value>
 		</node>
 	</node>
 	<node>
-		<name>medications_AnticoagulantegWarfarin-coum</name>
+		<name>medications_Anticoagulante.g.Warfarin-co</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Anticoagulant (eg Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
+			<value>Anticoagulant (e.g. Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1105,7 +1086,7 @@ If only year is known, code the month and day as 01.</value>
 				<property>
 					<name>value</name>
 					<values>
-						<value>Anticoagulant (eg Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
+						<value>Anticoagulant (e.g. Warfarin/coumadin, Pradaxa/dabigatran, rivaroxaban, apixaban, enoxaparin/Lovenox)</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -1117,7 +1098,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_AnticoagulantegWarfarin-coum_bl_med_number</name>
+			<name>medications_Anticoagulante.g.Warfarin-co_bl_med_number</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1146,7 +1127,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_AnticoagulantegWarfarin-coum_bl_med_name</name>
+			<name>medications_Anticoagulante.g.Warfarin-co_bl_med_name</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1180,7 +1161,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_AnticoagulantegWarfarin-coum_bl_med_dose_value</name>
+			<name>medications_Anticoagulante.g.Warfarin-co_bl_med_dose_value</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1209,7 +1190,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_AnticoagulantegWarfarin-coum_bl_med_dose_units</name>
+			<name>medications_Anticoagulante.g.Warfarin-co_bl_med_dose_units</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1352,7 +1333,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_AnticoagulantegWarfarin-coum_bl_med_frequency</name>
+			<name>medications_Anticoagulante.g.Warfarin-co_bl_med_frequency</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1457,7 +1438,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_AnticoagulantegWarfarin-coum_bl_med_name_med_st</name>
+			<name>medications_Anticoagulante.g.Warfarin-co_bl_med_name_med_st</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1492,7 +1473,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_AnticoagulantegWarfarin-coum_bl_{med_name}_med_nt</name>
+			<name>medications_Anticoagulante.g.Warfarin-co_bl_{med_name}_med_nt</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -2014,11 +1995,11 @@ If only year is known, code the month and day as 01.</value>
 		</node>
 	</node>
 	<node>
-		<name>medications_OtherAntiplateletegPlavix-cl</name>
+		<name>medications_OtherAntiplatelete.g.Plavix-</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Other Antiplatelet (eg Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
+			<value>Other Antiplatelet (e.g. Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2051,7 +2032,7 @@ If only year is known, code the month and day as 01.</value>
 				<property>
 					<name>value</name>
 					<values>
-						<value>Other Antiplatelet (eg Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
+						<value>Other Antiplatelet (e.g. Plavix/clopidogrel, Brilinta/ticagrelor, Effient/prasugrel)</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -2063,7 +2044,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_OtherAntiplateletegPlavix-cl_bl_med_number</name>
+			<name>medications_OtherAntiplatelete.g.Plavix-_bl_med_number</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -2092,7 +2073,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_OtherAntiplateletegPlavix-cl_bl_med_name</name>
+			<name>medications_OtherAntiplatelete.g.Plavix-_bl_med_name</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -2126,7 +2107,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_OtherAntiplateletegPlavix-cl_bl_med_dose_value</name>
+			<name>medications_OtherAntiplatelete.g.Plavix-_bl_med_dose_value</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -2155,7 +2136,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_OtherAntiplateletegPlavix-cl_bl_med_dose_units</name>
+			<name>medications_OtherAntiplatelete.g.Plavix-_bl_med_dose_units</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -2298,7 +2279,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_OtherAntiplateletegPlavix-cl_bl_med_frequency</name>
+			<name>medications_OtherAntiplatelete.g.Plavix-_bl_med_frequency</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -2403,7 +2384,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_OtherAntiplateletegPlavix-cl_bl_med_name_med_st</name>
+			<name>medications_OtherAntiplatelete.g.Plavix-_bl_med_name_med_st</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -2438,7 +2419,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_OtherAntiplateletegPlavix-cl_bl_{med_name}_med_nt</name>
+			<name>medications_OtherAntiplatelete.g.Plavix-_bl_{med_name}_med_nt</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -3906,11 +3887,11 @@ If only year is known, code the month and day as 01.</value>
 		</node>
 	</node>
 	<node>
-		<name>medications_Diuretic-Lasix-forusemidetor</name>
+		<name>medications_DiureticLasix-forusemidetors</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Diuretic - Lasix/forusemide, torsemide, metalozone</value>
+			<value>Diuretic (Lasix/forusemide, torsemide, metalozone)</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3943,7 +3924,7 @@ If only year is known, code the month and day as 01.</value>
 				<property>
 					<name>value</name>
 					<values>
-						<value>Diuretic - Lasix/forusemide, torsemide, metalozone</value>
+						<value>Diuretic (Lasix/forusemide, torsemide, metalozone)</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -3955,7 +3936,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_Diuretic-Lasix-forusemidetor_bl_med_number</name>
+			<name>medications_DiureticLasix-forusemidetors_bl_med_number</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -3984,7 +3965,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Diuretic-Lasix-forusemidetor_bl_med_name</name>
+			<name>medications_DiureticLasix-forusemidetors_bl_med_name</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -4018,7 +3999,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Diuretic-Lasix-forusemidetor_bl_med_dose_value</name>
+			<name>medications_DiureticLasix-forusemidetors_bl_med_dose_value</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -4047,7 +4028,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Diuretic-Lasix-forusemidetor_bl_med_dose_units</name>
+			<name>medications_DiureticLasix-forusemidetors_bl_med_dose_units</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -4190,7 +4171,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_Diuretic-Lasix-forusemidetor_bl_med_frequency</name>
+			<name>medications_DiureticLasix-forusemidetors_bl_med_frequency</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -4295,7 +4276,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_Diuretic-Lasix-forusemidetor_bl_med_name_med_st</name>
+			<name>medications_DiureticLasix-forusemidetors_bl_med_name_med_st</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -4330,7 +4311,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Diuretic-Lasix-forusemidetor_bl_{med_name}_med_nt</name>
+			<name>medications_DiureticLasix-forusemidetors_bl_{med_name}_med_nt</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -4852,11 +4833,11 @@ If only year is known, code the month and day as 01.</value>
 		</node>
 	</node>
 	<node>
-		<name>medications_Otherlipid-lowering-Zetia-ez</name>
+		<name>medications_Otherlipid-loweringZetia-eze</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Other lipid-lowering - Zetia/ezetimibe</value>
+			<value>Other lipid-lowering  (Zetia/ezetimibe)</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4889,7 +4870,7 @@ If only year is known, code the month and day as 01.</value>
 				<property>
 					<name>value</name>
 					<values>
-						<value>Other lipid-lowering - Zetia/ezetimibe</value>
+						<value>Other lipid-lowering  (Zetia/ezetimibe)</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -4901,7 +4882,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_Otherlipid-lowering-Zetia-ez_bl_med_number</name>
+			<name>medications_Otherlipid-loweringZetia-eze_bl_med_number</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -4930,7 +4911,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Otherlipid-lowering-Zetia-ez_bl_med_name</name>
+			<name>medications_Otherlipid-loweringZetia-eze_bl_med_name</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -4964,7 +4945,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Otherlipid-lowering-Zetia-ez_bl_med_dose_value</name>
+			<name>medications_Otherlipid-loweringZetia-eze_bl_med_dose_value</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -4993,7 +4974,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Otherlipid-lowering-Zetia-ez_bl_med_dose_units</name>
+			<name>medications_Otherlipid-loweringZetia-eze_bl_med_dose_units</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -5136,7 +5117,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_Otherlipid-lowering-Zetia-ez_bl_med_frequency</name>
+			<name>medications_Otherlipid-loweringZetia-eze_bl_med_frequency</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -5241,7 +5222,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_Otherlipid-lowering-Zetia-ez_bl_med_name_med_st</name>
+			<name>medications_Otherlipid-loweringZetia-eze_bl_med_name_med_st</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -5276,7 +5257,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Otherlipid-lowering-Zetia-ez_bl_{med_name}_med_nt</name>
+			<name>medications_Otherlipid-loweringZetia-eze_bl_{med_name}_med_nt</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -10007,479 +9988,6 @@ If only year is known, code the month and day as 01.</value>
 		</node>
 		<node>
 			<name>medications_Certaintypesofchemotherapy_bl_{med_name}_med_nt</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Click this box if the patient is not taking the prescribed medication</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>Patient-reportednottaking</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Patient-reported not taking</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Patient-reported not taking</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-	</node>
-	<node>
-		<name>medications_Diabetesmedications</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>Diabetes medications</value>
-			<type>String</type>
-		</property>
-		<node>
-			<name>condition0</name>
-			<primaryNodeType>cards:Conditional</primaryNodeType>
-			<property>
-				<name>comparator</name>
-				<value>includes</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>operandA</name>
-				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>bl_med_types</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>operandB</name>
-				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>Diabetes medications</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>False</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>medications_Diabetesmedications_bl_med_number</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Number of medications of this type prescribed</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>input</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>medications_Diabetesmedications_bl_med_name</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Name of medication</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Use generic name, all lowercase</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>input</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>medications_Diabetesmedications_bl_med_dose_value</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Dose of medication</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>input</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>medications_Diabetesmedications_bl_med_dose_units</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Dose units of medication</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list+input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>g</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>g</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>g</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>mg</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>mg</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>mg</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>mcg</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>mcg</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>mcg</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>units</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>units</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>units</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>inhalations</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>inhalations</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>inhalations</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>5</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>mEq</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>mEq</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>mEq</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>6</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>medications_Diabetesmedications_bl_med_frequency</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Dose frequency</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list+input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>QD1xdaily</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>QD (1x daily)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>QD (1x daily)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>BID2xdaily</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>BID (2x daily)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>BID (2x daily)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>TID3xdaily</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>TID (3x daily)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>TID (3x daily)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>PRNasneeded</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>PRN (as needed)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>PRN (as needed)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>medications_Diabetesmedications_bl_med_name_med_st</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>date</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Start date of medication</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Leave blank if unknown or N/A.
-If only year is known, code the month and day as 01.</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>input</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>medications_Diabetesmedications_bl_{med_name}_med_nt</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
