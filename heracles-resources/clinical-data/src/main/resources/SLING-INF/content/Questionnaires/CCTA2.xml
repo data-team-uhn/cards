@@ -77,11 +77,11 @@
 		</property>
 	</node>
 	<node>
-		<name>section_ccta_indicators</name>
+		<name>section_ccta_indication</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>CLINICAL INDICATION</value>
+			<value>Clinical Indication</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -109,7 +109,7 @@
 			</property>
 		</node>
 		<node>
-			<name>section_ccta_indicators_list</name>
+			<name>section_ccta_indicators</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -153,7 +153,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ccta_indicators_list</name>
+				<name>ccta_indicators</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -313,10 +313,10 @@
 						<type>Long</type>
 					</property>
 					<property>
-					<name>notApplicable</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
 				</node>
 			</node>
 		</node>
@@ -386,7 +386,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ccta_indicators_list</value>
+								<value>ccta_indicators</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -510,7 +510,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ccta_indicators_list</value>
+								<value>ccta_indicators</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -574,7 +574,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>TECHNIQUE</value>
+			<value>Technique</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -602,7 +602,7 @@
 			</property>
 		</node>
 		<node>
-			<name>section_ccta_medications_list</name>
+			<name>section_ccta_medications</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition0</name>
@@ -646,7 +646,7 @@
 				</node>
 			</node>
 			<node>
-				<name>ccta_medications_list</name>
+				<name>ccta_medications</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>maxAnswers</name>
@@ -738,7 +738,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>CALCIUM SCORE</value>
+			<value>Calcium Score</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -776,7 +776,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>LEFT MAIN CORONARY ARTERY</value>
+			<value>Left Main Coronary Artery</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -795,6 +795,12 @@
 			<property>
 				<name>text</name>
 				<value>Left Main Coronary Artery Stenosis Location</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Unspecified = Stenosis value reported, but location is not specified  
+Not Reported = No stenosis value reported</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2053,7 +2059,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>LEFT ANTERIOR DESCENDING CORONARY ARTERY</value>
+			<value>Left Anterior Descending Coronary Artery</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2076,7 +2082,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>Unspecified = Stenosis value reported but location in not specified 
+				<value>Unspecified = Stenosis value reported, but location is not specified  
 Not Reported = No stenosis value reported</value>
 				<type>String</type>
 			</property>
@@ -3336,7 +3342,7 @@ Not Reported = No stenosis value reported</value>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>LEFT CIRCUMFLEX CORONARY ARTERY</value>
+			<value>Left Circumflex Coronary Artery</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3359,8 +3365,8 @@ Not Reported = No stenosis value reported</value>
 			</property>
 			<property>
 				<name>description</name>
-				<value>Unspecified = stenosis value reported but location in not specified 
-Not Reported = no stenosis value reported</value>
+				<value>Unspecified = Stenosis value reported, but location is not specified  
+Not Reported = No stenosis value reported</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4619,7 +4625,7 @@ Not Reported = no stenosis value reported</value>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>RIGHT CORONARY ARTERY</value>
+			<value>Right Coronary Artery</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4642,8 +4648,8 @@ Not Reported = no stenosis value reported</value>
 			</property>
 			<property>
 				<name>description</name>
-				<value>Unspecified = stenosis value reported but location in not specified 
-Not Reported = no stenosis value reported</value>
+				<value>Unspecified = Stenosis value reported, but location is not specified  
+Not Reported = No stenosis value reported</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5907,7 +5913,7 @@ Not Reported = no stenosis value reported</value>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>OTHER ARTERIES</value>
+			<value>Other Arteries</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7494,7 +7500,7 @@ Not Reported = no stenosis value reported</value>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>DOMINANCE</value>
+			<value>Dominance</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -7711,7 +7717,7 @@ Not Reported = no stenosis value reported</value>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>IMPRESSION</value>
+			<value>Impression</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -8217,7 +8223,7 @@ Not Reported = no stenosis value reported</value>
 		</property>
 		<property>
 			<name>text</name>
-			<value>Attach ccta report file</value>
+			<value>Attach CCTA report file</value>
 			<type>String</type>
 		</property>
 		<property>
