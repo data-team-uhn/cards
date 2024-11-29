@@ -794,12 +794,6 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>Unspecified = Stenosis value reported, but location is not specified  
-Not Reported = No stenosis value reported</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
@@ -880,6 +874,11 @@ Not Reported = No stenosis value reported</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>description</name>
+					<value> Stenosis value reported, but location is not specified</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
 					<type>Long</type>
@@ -896,6 +895,11 @@ Not Reported = No stenosis value reported</value>
 				<property>
 					<name>value</name>
 					<value>Not Reported</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>No stenosis value reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1699,12 +1703,6 @@ Not Reported = No stenosis value reported</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>Unspecified = Stenosis value reported, but location is not specified  
-Not Reported = No stenosis value reported</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
@@ -1785,6 +1783,11 @@ Not Reported = No stenosis value reported</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>description</name>
+					<value> Stenosis value reported, but location is not specified</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
 					<type>Long</type>
@@ -1801,6 +1804,11 @@ Not Reported = No stenosis value reported</value>
 				<property>
 					<name>value</name>
 					<value>Not Reported</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>No stenosis value reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2604,12 +2612,6 @@ Not Reported = No stenosis value reported</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>Unspecified = Stenosis value reported, but location is not specified  
-Not Reported = No stenosis value reported</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
@@ -2690,6 +2692,11 @@ Not Reported = No stenosis value reported</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>description</name>
+					<value> Stenosis value reported, but location is not specified</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
 					<type>Long</type>
@@ -2706,6 +2713,11 @@ Not Reported = No stenosis value reported</value>
 				<property>
 					<name>value</name>
 					<value>Not Reported</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>No stenosis value reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3509,12 +3521,6 @@ Not Reported = No stenosis value reported</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>Unspecified = Stenosis value reported, but location is not specified  
-Not Reported = No stenosis value reported</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
@@ -3595,6 +3601,11 @@ Not Reported = No stenosis value reported</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>description</name>
+					<value> Stenosis value reported, but location is not specified</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
 					<type>Long</type>
@@ -3611,6 +3622,11 @@ Not Reported = No stenosis value reported</value>
 				<property>
 					<name>value</name>
 					<value>Not Reported</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>No stenosis value reported</value>
 					<type>String</type>
 				</property>
 				<property>
