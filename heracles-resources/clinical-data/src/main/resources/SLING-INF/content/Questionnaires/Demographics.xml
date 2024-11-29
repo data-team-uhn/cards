@@ -46,11 +46,6 @@
 		<name>year_of_birth</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>description</name>
-			<value>Format: YYYY</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>minAnswers</name>
 			<value>1</value>
 			<type>Long</type>
