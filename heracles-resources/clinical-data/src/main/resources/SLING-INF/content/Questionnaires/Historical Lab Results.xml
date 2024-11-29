@@ -590,7 +590,7 @@ Please double check your entry prior to submitting this form.</value>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value>4.5 to 11.0</value>
+			<value>4,500 (4.5) to 11,000 (11.0)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -670,8 +670,8 @@ Please double check your entry prior to submitting this form.</value>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value>Male range: 4.7 - 6.1  
-Female range: 4.2 - 5.4</value>
+			<value>Male range: 4.7 - 6.1 million  
+Female range: 4.2 - 5.4 million</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -751,8 +751,8 @@ Please double check your entry prior to submitting this form.</value>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value>Male range: 140 - 180  
-Female range: 120 - 160</value>
+			<value>Male range: 140 - 180 g/L  
+Female range: 120 - 160 g/L</value>
 			<type>String</type>
 		</property>
 		<property>
