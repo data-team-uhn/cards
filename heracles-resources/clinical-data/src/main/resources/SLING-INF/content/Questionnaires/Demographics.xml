@@ -66,11 +66,6 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>dateFormat</name>
-			<value>yyyy</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -82,8 +77,18 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>date</value>
+			<value>long</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>1943</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>1993</value>
+			<type>Double</type>
 		</property>
 	</node>
 	<node>
