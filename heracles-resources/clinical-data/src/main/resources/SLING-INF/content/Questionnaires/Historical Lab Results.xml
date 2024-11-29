@@ -1381,7 +1381,7 @@ Very High: >130]]></value>
 			<type>Double</type>
 		</property>
 		<property>
-			<name>minValue</name>
+			<name>maxValue</name>
 			<value>40.0</value>
 			<type>Double</type>
 		</property>
@@ -1405,11 +1405,6 @@ Please double check your entry prior to submitting this form.</value>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
-		</property>
-		<property>
-			<name>maxValue</name>
-			<value>130.0</value>
-			<type>Double</type>
 		</property>
 		<property>
 			<name>displayMode</name>

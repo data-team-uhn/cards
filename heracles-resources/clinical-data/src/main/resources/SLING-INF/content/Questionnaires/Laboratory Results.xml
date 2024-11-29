@@ -1407,11 +1407,6 @@ Please double check your entry prior to submitting this form.</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>maxValue</name>
-			<value>130.0</value>
-			<type>Double</type>
-		</property>
-		<property>
 			<name>displayMode</name>
 			<value>input</value>
 			<type>String</type>
