@@ -1377,7 +1377,12 @@ Very High: >130]]></value>
 		</property>
 		<property>
 			<name>minValue</name>
-			<value>89.0</value>
+			<value>12.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>40.0</value>
 			<type>Double</type>
 		</property>
 		<property>
