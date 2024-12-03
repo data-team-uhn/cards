@@ -1586,7 +1586,7 @@ Please double check your entry prior to submitting this form.</value>
 		<property>
 			<name>description</name>
 			<value><![CDATA[Normal for adult male: <17 mg/g  
-Normal for adult female: 25 mg/g  
+Normal for adult female: <25 mg/g  
 Microalbuminaria : 30-300  
 Macroalbuminaria: >300
 ]]></value>
