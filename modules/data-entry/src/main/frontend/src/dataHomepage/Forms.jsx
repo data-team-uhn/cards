@@ -34,6 +34,7 @@ function Forms(props) {
 
   const entry = /Forms\/([^.\/]+)/.exec(location.pathname);
   const disableActions = extension?.["cards:disableActions"]
+  const disableCreation = extension?.["cards:disableCreation"]
   const disableDeletion = extension?.["cards:disableDeletion"]
   const disableMoving = extension?.["cards:disableMoving"]
   const admin = extension?.["cards:admin"]
@@ -93,6 +94,7 @@ function Forms(props) {
           columns={columns}
           questionnaire={questionnaire}
           disableActions={disableActions}
+          disableCreation={disableCreation}
           admin={admin}
         />
       </Grid>

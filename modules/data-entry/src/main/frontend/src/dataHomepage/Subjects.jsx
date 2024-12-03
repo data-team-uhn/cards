@@ -91,6 +91,7 @@ function Subjects(props) {
           expanded
           columns={columns}
           disableActions={disableActions}
+          disableCreation={disableCreation}
           admin={admin}
         />
       </Grid>
