@@ -28,11 +28,15 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Forms(props) {
-  const { location, classes } = props;
+  const { location, extension, classes } = props;
   const questionnaire = /questionnaire=([^&]+)/.exec(location.search)?.[1];
   const pageNameWriter = usePageNameWriterContext();
 
   const entry = /Forms\/([^.\/]+)/.exec(location.pathname);
+  const disableActions = extension?.["cards:disableActions"]
+  const disableDeletion = extension?.["cards:disableDeletion"]
+  const disableMoving = extension?.["cards:disableMoving"]
+  const admin = extension?.["cards:admin"]
 
   // When moving from a specific form to the "Forms" page, ensure that the title properly changes
   useEffect(() => {
@@ -42,7 +46,14 @@ function Forms(props) {
   }, [entry]);
 
   if (entry) {
-    return <Form id={entry[1]} key={location.pathname} contentOffset={props.contentOffset} />;
+    return <Form
+      id={entry[1]}
+      key={location.pathname}
+      contentOffset={props.contentOffset}
+      disableDeletion={disableDeletion}
+      disableMoving={disableMoving}
+      admin={admin}
+      />;
   }
 
   const columns = [
@@ -55,7 +66,7 @@ function Forms(props) {
     {
       "key": "",
       "label": "Subject",
-      "format": (row) => (row.subject ? getHierarchy(row.subject) : ''),
+      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, admin) : ''),
     },
     {
       "key": "questionnaire/title",
@@ -81,6 +92,8 @@ function Forms(props) {
           expanded
           columns={columns}
           questionnaire={questionnaire}
+          disableActions={disableActions}
+          admin={admin}
         />
       </Grid>
     </Grid>

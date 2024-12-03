@@ -79,7 +79,7 @@ let createQueryURL = (query, type) => {
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed, pageSize, history } = props;
+  let { id, classes, maxDisplayed, pageSize, history, disableDeletion, disableCreation, admin } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
@@ -89,6 +89,8 @@ function Subject(props) {
   // handleDisplay() to a utility file for SubjectContainer and SubjectTimeline.
   const tabs = ["Chart", "Timeline"]
   const location = useLocation();
+
+  const baseURL = "/content.html" + (admin ? "/admin" : "");
 
   useEffect(() => {
     let newId = getSubjectIdFromPath(location.pathname);
@@ -118,9 +120,26 @@ function Subject(props) {
 
   return (
     <React.Fragment>
-      <NewFormDialog currentSubject={currentSubject} withButton buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") } />
+      {!disableCreation &&
+        <NewFormDialog
+          currentSubject={currentSubject}
+          withButton
+          buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
+          admin={admin}
+        />
+      }
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"} pageTitle={pageTitle} classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
+        <SubjectHeader
+          id={currentSubjectId}
+          key={"SubjectHeader"}
+          pageTitle={pageTitle}
+          classes={classes}
+          getSubject={handleSubject}
+          history={history}
+          contentOffset={props.contentOffset}
+          disableDeletion={disableDeletion}
+          admin={admin}
+        />
         <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
@@ -140,6 +159,8 @@ function Subject(props) {
               maxDisplayed={maxDisplayed}
               pageSize={pageSize}
               subject={currentSubject}
+              disableDeletion={disableDeletion}
+              baseURL={baseURL}
             />
           : <Grid item>
             <SubjectTimeline
@@ -161,7 +182,7 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { id, classes, level, maxDisplayed, pageSize, subject } = props;
+  let { id, classes, level, maxDisplayed, pageSize, subject, disableDeletion, baseURL } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // hold related subjects
@@ -220,7 +241,18 @@ function SubjectContainer(props) {
 
   return (
     subject && <React.Fragment>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}} childSubjects={relatedSubjects}/>
+      <SubjectMember
+        classes={classes}
+        id={id}
+        level={currentLevel}
+        data={subject}
+        maxDisplayed={maxDisplayed}
+        pageSize={pageSize}
+        onDelete={() => {setDeleted(true)}}
+        childSubjects={relatedSubjects}
+        disableDeletion={disableDeletion}
+        baseURL={baseURL}
+      />
     </React.Fragment>
   );
 }
@@ -229,7 +261,7 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject, history, pageTitle } = props;
+  let { id, classes, getSubject, history, pageTitle, disableDeletion, admin } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
@@ -296,24 +328,26 @@ function SubjectHeader(props) {
   let title = `${label || "Subject"} ${identifier}`;
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let subjectMenu = (
-            <div className={classes.actionsMenu}>
-               <PrintButton
-                 resourcePath={path}
-                 resourceData={subject?.data}
-                 breadcrumb={pageTitle}
-                 date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-               />
-               <DeleteButton
-                 entryPath={path}
-                 entryName={getEntityIdentifier(subject?.data)}
-                 entryType="Subject"
-                 entryLabel={label}
-                 onComplete={handleDeletion}
-                 size="large"
-               />
-            </div>
+    <div className={classes.actionsMenu}>
+      <PrintButton
+        resourcePath={path}
+        resourceData={subject?.data}
+        breadcrumb={pageTitle}
+        date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+      />
+      {!disableDeletion &&
+        <DeleteButton
+          entryPath={path}
+          entryName={getEntityIdentifier(subject?.data)}
+          entryType="Subject"
+          entryLabel={label}
+          onComplete={handleDeletion}
+          size="large"
+        />
+      }
+    </div>
   );
-  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true) || [getHomepageLink(subject?.data)]);;
+  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true, admin) || [getHomepageLink(subject?.data, admin)]);;
 
   return (
     subject?.data &&
@@ -348,7 +382,7 @@ function SubjectHeader(props) {
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
 function SubjectMemberInternal (props) {
-  let { classes, data, id, level, maxDisplayed, onDelete, pageSize, childSubjects } = props;
+  let { classes, data, id, level, maxDisplayed, onDelete, pageSize, childSubjects, disableDeletion, baseURL } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // Whether a subject is expanded and displaying its forms
@@ -426,24 +460,27 @@ function SubjectMemberInternal (props) {
       </IconButton>
     </Tooltip>
   )
-  let action = <>
-                 <PrintButton
-                   resourcePath={path}
-                   resourceData={data}
-                   breadcrumb={getTextHierarchy(data, true)}
-                   date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-                   className={classes.childSubjectHeaderButton}
-                   disableShortcut
-                 />
-                 <DeleteButton
-                   entryPath={path}
-                   entryName={getEntityIdentifier(data)}
-                   entryType="Subject"
-                   entryLabel={label}
-                   onComplete={onDelete}
-                   className={classes.childSubjectHeaderButton}
-                 />
-               </>
+  let action =
+    <>
+      <PrintButton
+        resourcePath={path}
+        resourceData={data}
+        breadcrumb={getTextHierarchy(data, true)}
+        date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+        className={classes.childSubjectHeaderButton}
+        disableShortcut
+      />
+      {!disableDeletion &&
+        <DeleteButton
+          entryPath={path}
+          entryName={getEntityIdentifier(data)}
+          entryType="Subject"
+          entryLabel={label}
+          onComplete={onDelete}
+          className={classes.childSubjectHeaderButton}
+        />
+      }
+    </>
 
   let tags = statusFlags?.map( item => (
       <Chip
@@ -464,7 +501,7 @@ function SubjectMemberInternal (props) {
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item xs={true}>
               <Typography variant="overline">
-                 {label} <Link to={"/content.html" + path} underline="hover">{identifier}</Link>
+                 {label} <Link to={baseURL + path} underline="hover">{identifier}</Link>
               </Typography>
             </Grid>
             <Grid item xs="3.5">{tags}</Grid>
@@ -557,7 +594,7 @@ function SubjectMemberInternal (props) {
                                        <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
                                      </Grid>
                                      <Grid item xs={false}>
-                                       <Link to={"/content.html" + row.original["@path"]} underline="hover">
+                                       <Link to={baseURL + row.original["@path"]} underline="hover">
                                          {questionnaireTitle}
                                        </Link>
                                        <Typography variant="caption" component="div" color="textSecondary">
@@ -592,18 +629,20 @@ function SubjectMemberInternal (props) {
                 enableRowActions
                 positionActionsColumn="last"
                 renderRowActions={({ row }) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
-                      <EditButton
-                        entryPath={row.original["@path"]}
-                        entryType="Form"
-                      />
+                  <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
+                    <EditButton
+                      entryPath={row.original["@path"]}
+                      entryType="Form"
+                    />
+                    {!disableDeletion &&
                       <DeleteButton
                         entryPath={row.original["@path"]}
                         entryName={getEntityIdentifier(row.original)}
                         entryType="Form"
                         onComplete={fetchTableData}
                       />
-                    </Box>
+                    }
+                  </Box>
                 )}
               />
             </Grid>
@@ -617,7 +656,17 @@ function SubjectMemberInternal (props) {
           {childSubjects.map( (subject, i) => {
             // Render the container again for each child subject
             return(
-              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={level+1} maxDisplayed={maxDisplayed} pageSize={pageSize} subject={subject}/>
+              <SubjectContainer
+                key={i}
+                classes={classes}
+                path={subject["@path"]}
+                level={level+1}
+                maxDisplayed={maxDisplayed}
+                pageSize={pageSize}
+                subject={subject}
+                disableDeletion={disableDeletion}
+                baseURL={baseURL}
+              />
             )
           })}
         </Grid>

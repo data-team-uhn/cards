@@ -72,7 +72,7 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  * @param {string} id the identifier of a form; this is the JCR node name
  */
 function Form (props) {
-  let { classes, id, contentOffset } = props;
+  let { classes, id, contentOffset, disableDeletion, disableMoving, admin } = props;
   let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -157,7 +157,7 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
-  const urlBase = "/content.html";
+  const baseURL = "/content.html" + (admin ? "/admin" : "");
   const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
   const isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
   let globalLoginDisplay = useContext(GlobalLoginContext);
@@ -387,23 +387,23 @@ function Form (props) {
     saveData(event);
   }
 
-  let onEdit = (event) => {
+  let onEdit = (url) => {
     // Redirect the user to the edit form mode
-    props.history.push(urlBase + formURL + '.edit' + window.location.hash);
+    props.history.push(url + '.edit' + window.location.hash);
   }
 
-  let onClose = (event) => {
+  let onClose = (url) => {
     // Redirect the user to the view form mode
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        props.history.push(urlBase + formURL);
+        props.history.push(url);
     });
   }
 
-  let onDelete = () => {
+  let onDelete = (baseURL, data) => {
     removeWindowHandlers && removeWindowHandlers();
-    props.history.push(urlBase + (data?.subject?.['@path'] || ''));
+    props.history.push(baseURL + (data?.subject?.['@path'] || ''));
   }
 
   let title = data?.questionnaire?.title || id || "";
@@ -443,86 +443,97 @@ function Form (props) {
     );
   }
 
-  let dropdownList = (
-                  <List>
-                    { isEdit ?
-                    <ListItem className={classes.actionsMenuItem}>
-                      <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
-                        Change subject
-                      </Button>
-                    </ListItem>
-                    : <>
-                    <ListItem className={classes.actionsMenuItem}>
-                      <PrintButton
-                         variant="text"
-                         size="medium"
-                         resourcePath={formURL}
-                         resourceData={data}
-                         breadcrumb={getTextHierarchy(data?.subject, true)}
-                         date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-                         onClose={() => { setActionsMenu(null); }}
-                       />
-                    </ListItem>
-                    <ListItem className={classes.actionsMenuItem}>
-                      <Button
-                         size="medium"
-                         onClick={() => {
-                         window.open(formURL + ".txt");
-                         setActionsMenu(null);
-                        }}>
-                        Export as text
-                      </Button>
-                    </ListItem>
-                    </> }
-                    <ListItem className={classes.actionsMenuItem}>
-                      <DeleteButton
-                          entryPath={data ? data["@path"] : formURL}
-                          entryName={getEntityIdentifier(data)}
-                          entryType="Form"
-                          onComplete={onDelete}
-                          variant="text"
-                          size="medium"
-                        />
-                    </ListItem>
-                  </List>
-  )
+  let dropdownEntries = []
+  if (!isEdit) {
+    dropdownEntries.push(
+      <ListItem className={classes.actionsMenuItem}>
+        <PrintButton
+          variant="text"
+          size="medium"
+          resourcePath={formURL}
+          resourceData={data}
+          breadcrumb={getTextHierarchy(data?.subject, true)}
+          date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+          onClose={() => { setActionsMenu(null); }}
+        />
+      </ListItem>
+    )
+    dropdownEntries.push(
+      <ListItem className={classes.actionsMenuItem}>
+        <Button
+          size="medium"
+          onClick={() => {
+          window.open(formURL + ".txt");
+          setActionsMenu(null);
+          }}>
+          Export as text
+        </Button>
+      </ListItem>
+    )
+  } else if (!disableMoving) {
+    dropdownEntries.push(
+      <ListItem className={classes.actionsMenuItem}>
+        <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
+          Change subject
+        </Button>
+      </ListItem>
+    )
+  }
+  if (!disableDeletion) {
+    dropdownEntries.push(
+      <ListItem className={classes.actionsMenuItem}>
+        <DeleteButton
+            entryPath={data ? data["@path"] : formURL}
+            entryName={getEntityIdentifier(data)}
+            entryType="Form"
+            onComplete={(event) => onDelete(baseURL, data)}
+            variant="text"
+            size="medium"
+          />
+      </ListItem>
+    )
+  }
 
   let formMenu = (
             <div className={classes.actionsMenu}>
                 {isEdit ?
-                  <Tooltip title="Save and view" onClick={onClose}>
+                  <Tooltip title="Save and view" onClick={() => onClose(baseURL + formURL)}>
                     <IconButton color="primary" size="large">
                       <DoneIcon />
                     </IconButton>
                   </Tooltip>
                   :
                   <Tooltip title="Edit">
-                    <IconButton color="primary" onClick={onEdit} size="large">
+                    <IconButton color="primary" onClick={() => onEdit(baseURL + formURL)} size="large">
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
                 }
-                <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-                  <IconButton size="large">
-                    <MoreIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                { !actionsMenu && <div style={{display: "none"}}>{ dropdownList }</div> }
-                <Popover
-                    open={Boolean(actionsMenu)}
-                    anchorEl={actionsMenu}
-                    onClose={() => {setActionsMenu(null)}}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                >
-                  { dropdownList }
-                </Popover>
+                {dropdownEntries.length > 0 &&
+                  <>
+                    <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+                      <IconButton size="large">
+                        <MoreIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    { !actionsMenu && <div style={{display: "none"}}><List>{dropdownEntries}</List></div> }
+                    <Popover
+                        open={Boolean(actionsMenu)}
+                        anchorEl={actionsMenu}
+                        onClose={() => {setActionsMenu(null)}}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                    >
+                      <List>{dropdownEntries}</List>
+                    </Popover>
+                  </>
+                }
             </div>
   )
 
@@ -537,10 +548,10 @@ function Form (props) {
         <Typography variant="overline">
           {"Related: "}
           {validLinks.length == 1 ?
-              validLinks.map(link => <Link key={link["@name"]} to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
+              validLinks.map(link => <Link key={link["@name"]} to={baseURL + link["to"]}>{link["resourceLabel"]}</Link>)
               :
               <List dense disablePadding>
-              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
+              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={baseURL + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
               </List>
           }
         </Typography>
@@ -561,7 +572,7 @@ function Form (props) {
         { !disableHeader &&
         <ResourceHeader
           title={title}
-          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
+          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject, undefined, admin).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
           tags={ statusFlags?.map( item => (
             <Chip
               label={item[0].toUpperCase() + item.slice(1).toLowerCase()}

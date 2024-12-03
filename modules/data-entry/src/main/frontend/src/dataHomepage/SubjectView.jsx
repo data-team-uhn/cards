@@ -45,7 +45,7 @@ import NewItemButton from "../components/NewItemButton.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 
 function SubjectView(props) {
-  const { expanded, disableHeader, disableAvatar, topPagination, classes } = props;
+  const { expanded, disableHeader, disableAvatar, topPagination, extension, classes } = props;
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ activeTab, setActiveTab ] = useState(0);
   const [ subjectTypes, setSubjectTypes] = useState([])
@@ -53,6 +53,12 @@ function SubjectView(props) {
   const [ columns, setColumns ] = React.useState(props.columns || null);
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("subjects:filters"));
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
+
+  const disableExpansion = extension?.["cards:disableExpansion"] || props.disableExpansion
+  const disableActions = extension?.["cards:disableActions"] || props.disableActions
+  const disableCreation = extension?.["cards:disableCreation"] || props.disableCreation
+  const admin = extension?.["cards:admin"] || props.admin
+  const baseURL = "/content.html" + admin ? "/admin" : ""
 
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("subjects:activeTab");
 
@@ -134,9 +140,9 @@ function SubjectView(props) {
             </Tabs>
         }
         action={
-          !expanded &&
+          !expanded && !disableExpansion &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()} underline="hover">
+            <Link to={baseURL + "/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()} underline="hover">
               <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
@@ -154,16 +160,17 @@ function SubjectView(props) {
               customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
               defaultLimit={10}
               entryType="Subject"
-              actions={actions}
+              actions={ disableActions ? undefined : actions}
               disableTopPagination={!topPagination}
               filters
               onFiltersChange={(str) => setFiltersJsonString(str)}
               filtersJsonString={filtersJsonString}
+              admin={admin}
             />
           : <Typography>No results</Typography>
       }
       </CardContent>
-      {expanded &&
+      {expanded && !disableCreation &&
       <>
         <NewItemButton
            onClick={() => {setNewSubjectPopperOpen(true)}}
@@ -172,6 +179,7 @@ function SubjectView(props) {
           onClose={() => { setNewSubjectPopperOpen(false);}}
           onSubmit={() => { setNewSubjectPopperOpen(false);}}
           open={newSubjectPopperOpen}
+          admin={admin}
         />
       </>
       }
