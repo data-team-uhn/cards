@@ -122,6 +122,11 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
     .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
+  // If there is no existing answer / answerSection, and we're not in edit mode, don't display this
+  if (!isEdit && existingQuestionAnswer.length == 0) {
+    return null;
+  }
+
   return (
     <Section
       key={key}

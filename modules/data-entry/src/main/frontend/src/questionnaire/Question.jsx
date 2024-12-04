@@ -25,7 +25,6 @@ import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/
 
 import withStyles from '@mui/styles/withStyles';
 
-import { useFormWriterContext } from "./FormContext";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerInstructions from "./AnswerInstructions";
 import FormattedText from "../components/FormattedText.jsx";
@@ -40,16 +39,6 @@ function Question (props) {
   const [ anchor, setAnchor ] = useState();
 
   const location = useLocation();
-
-  const changeFormContext = useFormWriterContext();
-
-  // In view mode, load the existing answers into the form context to enable the computation of conditions
-  useEffect(() => {
-    let answer = existingAnswer?.[1] ?? {};
-    !isEdit && changeFormContext(oldContext => ({...(oldContext ?? {}),
-      [questionDefinition["@name"]]: Array.of(answer.value ?? []).flat().map(v => [v, v])
-    }));
-  }, [isEdit, existingAnswer]);
 
   // if autofocus is needed and specified in the url
   useEffect(() => {

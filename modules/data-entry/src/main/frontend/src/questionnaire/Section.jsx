@@ -142,13 +142,12 @@ function Section(props) {
       .some(childEntry => ["view", "any"].includes(childEntry.formMode) || determineContent(childEntry))
   )
 
-  let hasContent = !isEdit && determineContent(sectionDefinition);
+  let hasContent = isEdit || determineContent(sectionDefinition);
 
   // Display the section in view mode if it has answers or is marked as incomplete.
   // Do not display summary questions outside of summary mode, or regular questions in summary mode.
-  const isDisplayed = (conditionIsMet && (isEdit || isFlagged || hasAnswers || hasContent))
+  const isDisplayed = (isEdit && conditionIsMet || !isEdit && (isFlagged || hasAnswers || hasContent))
     && (isSummary && "summary" === displayMode || !isSummary && displayMode !== "summary");
-
 
   if (visibleCallback) visibleCallback(conditionIsMet);
 
@@ -161,7 +160,7 @@ function Section(props) {
   }
   // Hide the section if it is conditioned to be hidden in edit mode
   // Or if we're in view mode and do not have any answers or other content, and the section is not marked as incomplete
-  if (!(conditionIsMet && (isEdit || isFlagged || hasAnswers || hasContent))) {
+  if (!isDisplayed) {
     collapseClasses.push(classes.collapsedSection);
   }
   if (hasHeader) {
