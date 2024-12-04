@@ -188,7 +188,7 @@ function LiveTable(props) {
 
   let makeRow = (entry, i) => {
     return (
-      <TableRow key={entry["@path"] + i}>
+      <TableRow key={entry["@path"] + i} className={classes.dataRow}>
         { columns ?
           (
             columns.map((column, index) => makeCell(entry, column, index))
