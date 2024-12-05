@@ -33,16 +33,6 @@
 		<type>Reference</type>
 	</property>
 	<property>
-		<name>requireCompletion</name>
-		<value>True</value>
-		<type>Boolean</type>
-	</property>
-	<property>
-		<name>hideAnswerInstructions</name>
-		<value>True</value>
-		<type>Boolean</type>
-	</property>
-	<property>
 		<name>paginate</name>
 		<value>True</value>
 		<type>Boolean</type>
@@ -53,6 +43,16 @@
 		<type>String</type>
 	</property>
 	<property>
+		<name>requireCompletion</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
+		<name>hideAnswerInstructions</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
 		<type>Long</type>
@@ -60,11 +60,6 @@
 	<node>
 		<name>oaip_module1</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value></value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>oaip_hospital</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -83,25 +78,15 @@
 				<value>Hospital</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>displayMode</name>
-				<value>hidden</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>entryMode</name>
-				<value>reference</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>question</name>
-				<value>/Questionnaires/Visit information/location</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>oaip_department</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 			<property>
 				<name>dataType</name>
 				<value>text</value>
@@ -112,29 +97,9 @@
 				<value>Department</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>displayMode</name>
-				<value>hidden</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>entryMode</name>
-				<value>reference</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>question</name>
-				<value>/Questionnaires/Visit information/provider</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
-			<name>oaip_1</name>
+			<name>oaip_m1_1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -149,11 +114,6 @@
 			<property>
 				<name>text</name>
 				<value>Did you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Examples of other hospital staff include: Dietitians, Personal Support Workers, Pharmacists, Physiotherapists, Occupational Therapists, Social Workers, Speech Language Pathologists, etc.</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -263,7 +223,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_2</name>
+			<name>oaip_m1_2</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -368,7 +328,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_3</name>
+			<name>oaip_m1_3</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -473,7 +433,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_4</name>
+			<name>oaip_m1_4</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -578,7 +538,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_5</name>
+			<name>oaip_m1_5</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -683,7 +643,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_6</name>
+			<name>oaip_m1_6</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -812,7 +772,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_7</name>
+			<name>oaip_m1_7</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -917,7 +877,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_8</name>
+			<name>oaip_m1_8</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1155,7 +1115,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_9</name>
+			<name>oaip_m1_9</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1393,7 +1353,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_10</name>
+			<name>oaip_m1_10</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1410,11 +1370,6 @@
 				<value>What else would you like to say about this experience?</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>displayMode</name>
-				<value>textbox</value>
-				<type>String</type>
-			</property>
 		</node>
 	</node>
 	<node>
@@ -1422,11 +1377,11 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Additional questions about your recent stay at the hospital</value>
+			<value>In addition to the questions you just answered, UHN would like to know the following about your recent stay at the hospital.</value>
 			<type>String</type>
 		</property>
 		<node>
-			<name>oaip_11</name>
+			<name>oaip_m2_1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1534,7 +1489,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Don’t know/not sure</value>
+					<value>Don’t Know/Not sure</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1550,7 +1505,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_12</name>
+			<name>oaip_m2_2</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1658,7 +1613,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Don’t know/not sure</value>
+					<value>Don’t Know/Not sure</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1674,7 +1629,7 @@
 			</node>
 		</node>
 		<node>
-			<name>oaip_13</name>
+			<name>oaip_m2_3</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1799,6 +1754,857 @@
 					<name>notApplicable</name>
 					<value>True</value>
 					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>oaip_m2_4</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>During this hospital stay, did you feel that you could tell a member of your care team about worrying changes in your health condition?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>-1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>2</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Never</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Usually</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Always</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>-1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Don’t Know/Not sure</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>-1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>oaip_m2_5</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>During this hospital stay, did you tell a member of your care team about a worrying change in your health condition?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1-Yes</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>1-Yes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1-Yes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>-1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I did not need to</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>-1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>section_oaip_m2_5a</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>oaip_m2_5</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>oaip_m2_5a</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>When you raised a concern about worrying changes in your health condition, did team members listen to you and provide you with information on what the next steps would be?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minValue</name>
+					<value>-1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>maxValue</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes, always</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Sometimes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>2</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No, never</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>3</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>-1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Don’t know / Not sure</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>-1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>4</value>
+						<type>Long</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>oaip_m2_6</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>When Nurses changed shift during your stay, did they include you in the discussion about your care at your bedside?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>-1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>-1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Don’t know / Not sure</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>-1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>section_oaip_m2_6a</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>condition0</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>oaip_m2_6</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>oaip_m2_6a</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>text</name>
+					<value>When Nurses changed shift during your stay, were you satisfied with the opportunity you were given to participate in the care conversation at the bedside?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minValue</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>maxValue</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Never</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Sometimes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>2</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Usually</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>3</value>
+						<type>Long</type>
+					</property>
+				</node>
+				<node>
+					<name>3</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Always</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>defaultOrder</name>
+						<value>4</value>
+						<type>Long</type>
+					</property>
+				</node>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>oaip_module3</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>The following questions ask you about UHN’s infection control practices.</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>oaip_m3_1</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Did you see your team members washing their hands or using hand sanitizer before providing your care?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>-1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>2</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Yes, always</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Sometimes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>No, never</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>-1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Don’t know / Not sure</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>-1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>oaip_m3_2</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>How confident do you feel in how UHN prevents the spread of infections during your stay?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Not at all</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Partly</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Quite a bit</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Completely</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
 				</property>
 			</node>
 		</node>
