@@ -85,6 +85,9 @@ const useStyles = makeStyles(theme => ({
     "& .wmde-markdown > h1" : {
       fontSize: "1.5em",
     },
+    "& .MuiGrid-item:last-of-type" : {
+      alignSelf: "center",
+    },
   },
   stepIndicator : {
     border: "1px solid " + theme.palette.action.disabled,
@@ -727,12 +730,13 @@ function QuestionnaireSet(props) {
       <Grid item key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
         <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
-          <Grid container direction="column" alignItems="center" spacing={2}>
+          <Grid container direction="column" spacing={2}>
             <Grid item>
               <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
             </Grid>
             <Grid item>
               <Button
+                className={classes.changeButton}
                 variant="outlined"
                 color="primary"
                 onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
