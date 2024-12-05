@@ -39,7 +39,6 @@ class Main extends React.Component {
 
     this.state = {
       image: document.querySelector('meta[name="sidebarBackground"]').content,
-      color: "blue",
       hasImage: true,
       fixedClasses: "dropdown show",
       mobileOpen: false,
