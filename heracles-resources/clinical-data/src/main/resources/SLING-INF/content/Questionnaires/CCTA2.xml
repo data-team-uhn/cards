@@ -8247,12 +8247,5 @@
 			<value>Filename: CP######_ccta_report.pdf</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>minValueLabel</name>
-			<value>Must be pdf file extension
-ID must match database profile ID
-Filename must match: CP######_ccta_report.pdf</value>
-			<type>String</type>
-		</property>
 	</node>
 </node>
