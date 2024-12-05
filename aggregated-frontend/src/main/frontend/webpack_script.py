@@ -22,7 +22,6 @@ import re
 import sys
 import shutil
 import os
-import os.path
 from os import path
 
 package_name = 'cards-aggregated-frontend'
@@ -38,7 +37,7 @@ def update_dependency_version_map(dependencies, new_dependencies):
                 raise Exception("Conflicting versions of package {}".format(key))
 
 def merge_package_json_files(root, dir_name, project_to_name_map, package_merged):
-    fl = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'package.json')
+    fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'package.json')
     if path.exists(fl):
         with open(fl, "r") as f:
             json_text = f.read()
@@ -64,7 +63,7 @@ def merge_package_json_files(root, dir_name, project_to_name_map, package_merged
 
 
 def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name_map, webpack_config_entries):
-    fl = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'webpack.config.js')
+    fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'webpack.config.js')
     if path.exists(fl):
 
         with open(fl, 'rt') as ins:
@@ -85,8 +84,8 @@ def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name
             line = lines[i].replace('module_name + \'', '\'' + module_name)
             webpack_config_entries.append(line)
 
-        path_to_source = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
-        path_to_base_source = os.path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'src')
+        path_to_source = path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
+        path_to_base_source = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'src')
         shutil.copytree(path_to_source, path_to_base_source, dirs_exist_ok=True)
 
 
@@ -94,22 +93,21 @@ def main(args=sys.argv[1:]):
     # "aggregated-frontend" dir
     aggregated_frontend_dir = args[0]
     # root cards project dir
-    root_dir = os.path.dirname(aggregated_frontend_dir)
+    root_dir = path.dirname(aggregated_frontend_dir)
 
-    webpack_merged_template_file = os.path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'webpack.config-template.js')
-    webpack_merged_file = os.path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'webpack.config.js')
+    webpack_merged_template_file = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'webpack.config-template.js')
+    webpack_merged_file = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'webpack.config.js')
     shutil.copy2(webpack_merged_template_file, webpack_merged_file)
     webpack_config_entries = []
 
-    package_json_file = os.path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'package.json')
-    maven_var_file = os.path.join(aggregated_frontend_dir, 'src', 'main', 'resources', 'maven.json')
+    package_json_file = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'package.json')
 
     project_to_name_map = {}
     package_merged = {}
 
     for root, dirs, files in os.walk(root_dir):
         # Exclude our own directory
-        if not os.path.samefile(root, aggregated_frontend_dir):
+        if not path.samefile(root, aggregated_frontend_dir):
 
             for name in dirs:
                 if not name == "aggregated-frontend":
