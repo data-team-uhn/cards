@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 
 import { useHistory } from 'react-router-dom';
 
-import { Alert, Button, CardActions, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
+import { Alert, Button, CardActions, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 
 import AdminScreen from "./AdminScreen.jsx";

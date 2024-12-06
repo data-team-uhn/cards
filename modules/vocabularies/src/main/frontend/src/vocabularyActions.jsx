@@ -55,7 +55,6 @@ export default function VocabularyActions(props) {
 
   function install() {
     const oldPhase = phase;
-    var badResponse = false;
     setPhase(Phase["Installing"]);
     props.setPhase(Phase["Installing"]);
 
@@ -86,7 +85,6 @@ export default function VocabularyActions(props) {
 
   function uninstall() {
     const oldPhase = phase;
-    var badResponse = false;
     props.setPhase(Phase["Uninstalling"]);
 
     fetchWithReLogin(globalLoginDisplay, vocabLinks["uninstall"]["base"] + vocabulary.acronym, {method: "DELETE"})

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Subject from "../questionnaire/Subject.jsx";
 import SubjectView from "./SubjectView.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/SubjectIdentifier.jsx";

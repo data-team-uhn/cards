@@ -17,7 +17,7 @@
 //  under the License.
 //
 import classNames from "classnames";
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useRef, useState, useContext } from "react";
 import PropTypes from "prop-types";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@mui/material";

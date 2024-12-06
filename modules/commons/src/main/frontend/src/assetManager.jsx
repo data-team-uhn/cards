@@ -36,8 +36,6 @@ let assetDependenciesJsonRequest = null;
 let modules = {};
 // A cache, mapping between asset URLs to React components loaded from the sources
 let assets = {};
-// A cache, mapping between asser URLs to ongoing fetch requests for the sources, to only have one request for each asset source
-let assetRequests = {};
 
 // Retrieves the JSON containing the mapping between a simple asset name and its actual node name, including a content hash.
 // This is an asynchronous function, it will return a Promise that resolves to the actual JSON.

@@ -43,7 +43,7 @@ import FormattedText from "../components/FormattedText.jsx";
 //  minAnswers: Integer denoting minimum number of areas that may be selected
 //  text: String containing the question to ask
 //  variant: The path to the variant which defines the image and area map
-//  maxWidth: The max width that the image should be displayed in
+//  variant.maxWidth: The max width that the image should be displayed in
 //
 // sample usage:
 // <SelectableAreasQuestion
@@ -53,7 +53,6 @@ import FormattedText from "../components/FormattedText.jsx";
 function SelectableAreaQuestion(props) {
   let { classes, errorText, existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
   let { variant, maxAnswers } = {...props.questionDefinition, ...props};
-  const [ error, setError ] = useState(false);
   const [ map, setMap ] = useState(null);
   const [ initialized, setInitialized ] = useState(false);
 
@@ -337,7 +336,6 @@ function SelectableAreaQuestion(props) {
       {...props}
       preventDefaultView
       >
-      {error && <Typography color='error'>{errorText}</Typography>}
       {notApplicableOption != null ?
         (isEdit ?
           <>
@@ -402,9 +400,7 @@ SelectableAreaQuestion.propTypes = {
   }).isRequired,
   text: PropTypes.string,
   minAnswers: PropTypes.number,
-  maxAnswers: PropTypes.number,
-  defaults: PropTypes.array,
-  errorText: PropTypes.string
+  maxAnswers: PropTypes.number
 };
 
 const StyledSelectableAreaQuestion = withStyles(QuestionnaireStyle)(SelectableAreaQuestion)

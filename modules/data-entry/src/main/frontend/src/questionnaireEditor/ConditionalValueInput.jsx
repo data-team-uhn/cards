@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let ConditionalValueInput = (props) => {
-  let { objectKey, data, saveButtonRef, hint } = props;
+  let { objectKey, data, hint } = props;
 
   let [ values, setValues ] = useState(data[objectKey]?.value || []);
   let [ isReference, setReference ] = useState(data[objectKey] ? data[objectKey].isReference : (objectKey == 'operandA'));

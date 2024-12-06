@@ -41,7 +41,7 @@ import statisticsStyle from "./statisticsStyle.jsx";
 
 // A single statistic, displayed as a chart
 function Statistic(props) {
-  const { classes, theme, definition, disableClick } = props;
+  const { classes, definition, disableClick } = props;
   // Colours to be used before relying on the google palette
   const DEFAULT_PALETTE = [
     "#f94900",
@@ -54,7 +54,6 @@ function Statistic(props) {
   ];
 
   const groupNullAndFalseAnswersForXVar = definition.meta.groupNullAndFalseAnswersForXVar && definition.xVar?.dataType == "boolean";
-  const groupNullAndFalseAnswersForSplitVar = definition.meta.groupNullAndFalseAnswersForSplitVar && definition.splitVar?.dataType == "boolean";
 
   // Transform our input data from the statistics servlet into something recharts can understand
   // Note that keys is transformed in this process

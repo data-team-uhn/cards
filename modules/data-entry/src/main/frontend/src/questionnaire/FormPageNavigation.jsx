@@ -38,7 +38,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import PropTypes from "prop-types";
 
 import FormattedText from "../components/FormattedText";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 
 /**
  * Component that enables the navigation between different pages of a Form. Used in FormPagination when the paginationVariant is "navigable".
