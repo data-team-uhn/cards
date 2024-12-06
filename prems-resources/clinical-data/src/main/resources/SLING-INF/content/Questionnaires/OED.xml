@@ -1756,7 +1756,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>oaip_sqp_2</value>
+							<value>oed_sqp_2</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1992,7 +1992,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>oaip_sqp_4</value>
+							<value>oed_sqp_4</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -2127,7 +2127,7 @@
 		</node>
 	</node>
 	<node>
-		<name>oaip_module3</name>
+		<name>oed_module3</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
