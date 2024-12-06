@@ -62,7 +62,7 @@ export default function googleApiKeyAdminPage() {
     fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
       .then((response) => response.ok ? response : Promise.reject(response))
       .then((data) => {
-	      // The AddressQuestion won't fetch new key untill the page is reloaded
+          // The AddressQuestion won't fetch new key untill the page is reloaded
           location.reload();
       })
       .catch((error) => {
