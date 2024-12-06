@@ -17,7 +17,6 @@
 # under the License.
 #
 
-from optparse import Option
 import argparse
 import os
 import enum

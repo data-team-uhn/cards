@@ -20,11 +20,7 @@
 
 import os
 import sys
-import jwt
-import time
-import string
 import argparse
-import requests
 
 from GitHubRepoHandler import GitHubRepoHandler
 
