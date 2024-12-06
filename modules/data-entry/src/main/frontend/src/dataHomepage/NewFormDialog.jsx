@@ -461,7 +461,6 @@ function NewFormDialog(props) {
           closeAllDialogs();
           onClose && onClose();
         }}
-        onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         currentSubject={currentSubject}
         onSubmit={createForm}
         open={newSubjectPopperOpen}
