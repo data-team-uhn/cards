@@ -71,7 +71,7 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
         try {
             final String sqlQuery = getQuery(query.getQuery());
             final RowIterator queryResults = resourceResolver.adaptTo(Session.class).getWorkspace().getQueryManager()
-                .createQuery(sqlQuery.toString(), Query.JCR_SQL2).execute().getRows();
+                .createQuery(sqlQuery, Query.JCR_SQL2).execute().getRows();
             return new FormsResults(query.getQuery(), queryResults, resourceResolver);
         } catch (final RepositoryException e) {
             LOGGER.warn("Failed to search for subjects: {}", e.getMessage(), e);

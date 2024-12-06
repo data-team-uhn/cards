@@ -364,8 +364,8 @@ public class OboParser implements SourceParser
             StringBuilder concatenatedLine = new StringBuilder();
             boolean firstLineIsNull = true;
             while (line != null
-                && line.toString().matches(".*((?<!\\\\)(?:\\\\\\\\)*)\\\\")
-                && !line.toString().matches(".*(?<!\\\\)(?:\\\\\\\\)*!.*")) {
+                && line.matches(".*((?<!\\\\)(?:\\\\\\\\)*)\\\\")
+                && !line.matches(".*(?<!\\\\)(?:\\\\\\\\)*!.*")) {
                 concatenatedLine.append(line, 0, line.length() - 1);
                 firstLineIsNull = false;
                 line = super.readLine();
