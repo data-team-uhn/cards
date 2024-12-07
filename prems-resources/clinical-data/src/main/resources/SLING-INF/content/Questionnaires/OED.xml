@@ -2136,7 +2136,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>The following questions ask you about UHN’s infection control practices.</value>
+			<value>The following questions ask you about UHN’s infection control practices</value>
 			<type>String</type>
 		</property>
 		<node>
