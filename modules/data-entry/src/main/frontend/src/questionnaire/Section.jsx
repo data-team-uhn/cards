@@ -136,13 +136,13 @@ function Section(props) {
   let hasAnswers = isEdit || detectAnswers(existingAnswer[0]?.[1]);
 
   // Determine if the section has any other content that should be displayed
-  let determineContent = (entryDefinition) => (
+  let detectOtherContent = (entryDefinition) => (
     Object.values(entryDefinition)
       .filter(childEntry => ENTRY_TYPES.includes(childEntry['jcr:primaryType']))
-      .some(childEntry => ["view", "any"].includes(childEntry.formMode) || determineContent(childEntry))
+      .some(childEntry => ["view", "any"].includes(childEntry.formMode) || detectOtherContent(childEntry))
   )
 
-  let hasContent = isEdit || determineContent(sectionDefinition);
+  let hasContent = isEdit || detectOtherContent(sectionDefinition);
 
   // Display the section in view mode if it has answers or is marked as incomplete.
   // Do not display summary questions outside of summary mode, or regular questions in summary mode.
