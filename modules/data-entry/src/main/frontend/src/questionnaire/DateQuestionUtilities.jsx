@@ -45,8 +45,8 @@ export default class DateQuestionUtilities {
       text: PropTypes.string,
       dateFormat: PropTypes.string,
       type: PropTypes.oneOf([DateQuestionUtilities.TIMESTAMP_TYPE, DateQuestionUtilities.INTERVAL_TYPE]),
-      lowerLimit: PropTypes.object,
-      upperLimit: PropTypes.object,
+      lowerLimit: PropTypes.string,
+      upperLimit: PropTypes.string,
     })
   };
 
@@ -224,5 +224,33 @@ export default class DateQuestionUtilities {
 
   static formatIsMeridiem(dateFormat) {
     return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
+  }
+
+  static processRelativeDate(dateString, toFormat = "yyyy-MM-dd") {
+    if (typeof dateString == "undefined") return dateString;
+
+    let relativeDate = dateString?.trim().toLowerCase();
+    let absoluteDate = DateTime.now();
+
+    // Is it a number of days relative to today?
+    let differenceInDays = relativeDate.match(/^today\s*([\+-])\s*(\d+)$/)?.slice(1,3).join("");
+    if (typeof differenceInDays == "string") {
+      absoluteDate = absoluteDate.plus({days: +differenceInDays});
+      return absoluteDate.toFormat(toFormat);
+    }
+
+    // Is it a human readable word?
+    if (["yesterday", "today", "now", "tomorrow"].includes(relativeDate)) {
+      if (relativeDate == "yesterday") {
+        absoluteDate = absoluteDate.minus({days: 1});
+      }
+      if (relativeDate == "tomorrow") {
+        absoluteDate = absoluteDate.plus({days: 1});
+      }
+      return absoluteDate.toFormat(toFormat);
+    }
+
+    // Otherwise assume date and return as is
+    return dateString;
   }
 }

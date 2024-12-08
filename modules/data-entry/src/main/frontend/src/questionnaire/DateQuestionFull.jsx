@@ -46,8 +46,8 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //<DateQuestion
 //  text="Please enter a date-time in 2019"
 //  dateFormat="yyyy-MM-dd HH:mm:ss"
-//  lowerLimit={new Date("01-01-2019")}
-//  upperLimit={new Date("12-31-2019")}
+//  lowerLimit="2019-01-01"
+//  upperLimit="today"
 //  type="timestamp"
 //  />
 function DateQuestionFull(props) {
@@ -62,8 +62,9 @@ function DateQuestionFull(props) {
   const [ endDate, setEndDate ] = useState(
     typeof(startValues) === "object" ? DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(startValues[1])) : null
   );
-  const upperLimitMoment = DateQuestionUtilities.toPrecision(upperLimit);
-  const lowerLimitMoment = DateQuestionUtilities.toPrecision(lowerLimit);
+
+  const upperLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(upperLimit));
+  const lowerLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(lowerLimit));
 
   let setDate = (value, isEnd) => {
     if (isEnd) {
@@ -135,8 +136,8 @@ function DateQuestionFull(props) {
           className: classes.textField
         }}
         inputProps={{
-          max: upperLimit,
-          min: lowerLimit
+          max: DateQuestionUtilities.processRelativeDate(upperLimit),
+          min: DateQuestionUtilities.processRelativeDate(lowerLimit)
         }}
         onChange={(event) => processChange(event.target.value, isEnd)}
         onBlur={(event) => processBlur(event.target.value, isEnd)}

@@ -46,8 +46,8 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //<DateQuestion
 //  text="Please enter a date-time in 2019"
 //  dateFormat="yyyy-MM"
-//  lowerLimit={new Date("01-01-2019")}
-//  upperLimit={new Date("12-31-2019")}
+//  lowerLimit="2019-01-01"
+//  upperLimit="today"
 //  type="timestamp"
 //  />
 function DateQuestionMonth(props) {
@@ -62,8 +62,8 @@ function DateQuestionMonth(props) {
   const [ displayedEndDate, setDisplayedEndDate ] = useState(DateQuestionUtilities.formatDateAnswer(
     dateFormat,
     DateQuestionUtilities.stripTimeZone(typeof(startValues) === "object" ? startValues[1] : "")));
-  const upperLimitMoment = DateQuestionUtilities.toPrecision(upperLimit);
-  const lowerLimitMoment = DateQuestionUtilities.toPrecision(lowerLimit);
+  const upperLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(upperLimit));
+  const lowerLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(lowerLimit));
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
@@ -178,8 +178,8 @@ function DateQuestionMonth(props) {
           className: classes.textField
         }}
         inputProps={{
-          max: upperLimit,
-          min: lowerLimit
+          max: DateQuestionUtilities.processRelativeDate(upperLimit),
+          min: DateQuestionUtilities.processRelativeDate(lowerLimit)
         }}
         onChange={(event) => setDate(event.target.value, isEnd)}
         onBlur={() => onBlur(value, isEnd)}

@@ -43,8 +43,8 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //<DateQuestionYear
 //  text="Please enter a date-time in 2019"
 //  dateFormat="yyyy-MM-dd HH:mm:ss"
-//  lowerLimit={new Date("01-01-2019")}
-//  upperLimit={new Date("12-31-2019")}
+//  lowerLimit="2019"
+//  upperLimit="today"
 //  type="timestamp"
 //  />
 function DateQuestionYear(props) {
@@ -60,8 +60,8 @@ function DateQuestionYear(props) {
       answerNodeType="cards:DateAnswer"
       valueType="Long"
       existingAnswer={existingAnswer}
-      maxValue={upperLimit || 9999}
-      minValue={lowerLimit || 1000}
+      maxValue={DateQuestionUtilities.processRelativeDate(upperLimit, DateQuestionUtilities.yearTag) || 9999}
+      minValue={DateQuestionUtilities.processRelativeDate(lowerLimit, DateQuestionUtilities.yearTag) || 1000}
       disableValueInstructions={typeof(upperLimit) == 'undefined' && typeof(lowerLimit) == 'undefined'}
       {...rest}
       />
