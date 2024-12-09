@@ -86,9 +86,6 @@ const useStyles = makeStyles(theme => ({
       fontSize: "1.5em",
     },
   },
-  changeButton : {
-    alignSelf: "center",
-  },
   stepIndicator : {
     border: "1px solid " + theme.palette.action.disabled,
     background: "transparent",
@@ -734,7 +731,7 @@ function QuestionnaireSet(props) {
             <Grid item>
               <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
             </Grid>
-            <Grid className={classes.changeButton} item>
+            <Grid style={{alignSelf: "center"}} item>
               <Button
                 variant="outlined"
                 color="primary"
