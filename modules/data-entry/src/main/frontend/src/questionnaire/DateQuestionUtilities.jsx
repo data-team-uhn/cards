@@ -227,9 +227,10 @@ export default class DateQuestionUtilities {
   }
 
   static processRelativeDate(dateString, toFormat = "yyyy-MM-dd") {
-    if (typeof dateString == "undefined") return dateString;
+    // Any input other than a string is not supported
+    if (typeof dateString != "string") return undefined;
 
-    let relativeDate = dateString?.trim().toLowerCase();
+    let relativeDate = dateString.trim().toLowerCase();
     let absoluteDate = DateTime.now();
 
     // Is it a number of days relative to today?
@@ -250,7 +251,14 @@ export default class DateQuestionUtilities {
       return absoluteDate.toFormat(toFormat);
     }
 
-    // Otherwise assume date and return as is
-    return dateString;
+    // Is it a valid date in ISO format?
+    absoluteDate = DateTime.fromISO(dateString.trim());
+
+    if (absoluteDate.isValid) {
+      return absoluteDate.toFormat(toFormat);
+    }
+
+    // Otherwise it's an unsuported string - return nothing
+    return undefined;
   }
 }
