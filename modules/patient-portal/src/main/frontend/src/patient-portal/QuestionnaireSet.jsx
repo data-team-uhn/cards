@@ -731,7 +731,7 @@ function QuestionnaireSet(props) {
             <Grid item>
               <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
             </Grid>
-            <Grid style={{alignSelf: "center"}} item>
+            <Grid item alignSelf="center">
               <Button
                 variant="outlined"
                 color="primary"
