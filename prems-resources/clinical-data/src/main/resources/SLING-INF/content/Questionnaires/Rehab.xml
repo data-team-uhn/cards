@@ -2340,7 +2340,7 @@
 		</node>
 	</node>
 	<node>
-		<name>section_rs_sqp_5</name>
+		<name>Section_sqp_5</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition0</name>
