@@ -551,6 +551,25 @@
 			</property>
 		</node>
 		<node>
+			<name>Phosphodiesterasenumber5inhibitors</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Phosphodiesterase number 5 inhibitors</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Phosphodiesterase number 5 inhibitors</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>defaultOrder</name>
+				<value>26</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
 			<name>Noneoftheabove</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
@@ -565,7 +584,7 @@
 			</property>
 			<property>
 				<name>defaultOrder</name>
-				<value>26</value>
+				<value>27</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -992,6 +1011,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -1467,6 +1491,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -1938,6 +1967,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -2413,6 +2447,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -2884,6 +2923,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -3359,6 +3403,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -3830,6 +3879,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -4305,6 +4359,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -4776,6 +4835,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -5251,6 +5315,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -5722,6 +5791,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -6197,6 +6271,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -6668,6 +6747,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -7143,6 +7227,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -7614,6 +7703,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -8089,6 +8183,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -8560,6 +8659,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -9035,6 +9139,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -9506,6 +9615,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -9981,6 +10095,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -10452,6 +10571,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -10927,6 +11051,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -11398,6 +11527,11 @@ If only year is known, code the month and day as 01.</value>
 				<name>minAnswers</name>
 				<value>0</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
@@ -11873,6 +12007,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -12346,6 +12485,11 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -12353,6 +12497,484 @@ If only year is known, code the month and day as 01.</value>
 		</node>
 		<node>
 			<name>medications_Vasodilatorsforchestpainorbl_bl_{med_name}_med_nt</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Click this box if the patient is not taking the prescribed medication</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Patient-reportednottaking</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Patient-reported not taking</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Patient-reported not taking</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>medications_Phosphodiesterasenumber5inhi</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Phosphodiesterase number 5 inhibitors</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>condition0</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>includes</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>bl_med_types</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>Phosphodiesterase number 5 inhibitors</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>medications_Phosphodiesterasenumber5inhi_bl_med_number</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Number of medications of this type prescribed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>input</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>medications_Phosphodiesterasenumber5inhi_bl_med_name</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Name of medication</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Use generic name, all lowercase</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>input</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>medications_Phosphodiesterasenumber5inhi_bl_med_dose_value</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Dose of medication</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>input</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>medications_Phosphodiesterasenumber5inhi_bl_med_dose_units</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Dose units of medication</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list+input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>g</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>g</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>g</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>mg</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>mg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>mg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>mcg</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>mcg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>mcg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>units</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>inhalations</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>inhalations</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>inhalations</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>mEq</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>mEq</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>mEq</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>6</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>medications_Phosphodiesterasenumber5inhi_bl_med_frequency</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Dose frequency</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list+input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>QD1xdaily</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>QD (1x daily)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>QD (1x daily)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>BID2xdaily</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>BID (2x daily)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>BID (2x daily)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>TID3xdaily</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>TID (3x daily)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>TID (3x daily)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>PRNasneeded</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>PRN (as needed)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>PRN (as needed)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>medications_Phosphodiesterasenumber5inhi_bl_med_name_med_st</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Start date of medication</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Leave blank if unknown or N/A.
+If only year is known, code the month and day as 01.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>input</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>medications_Phosphodiesterasenumber5inhi_bl_{med_name}_med_nt</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>

@@ -75,13 +75,18 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>upperLimit</name>
+			<value>today</value>
+			<type>String</type>
+		</property>
 	</node>
 	<node>
 		<name>section_ccta_indication</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Clinical Indication</value>
+			<value>Report Section Header:CLINICAL INDICATION</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -574,7 +579,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Technique</value>
+			<value>Report Section Header: TECHNIQUE</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -738,7 +743,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Calcium Score</value>
+			<value>Report Section Header: CALCIUM SCORE</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -776,7 +781,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Left Main Coronary Artery</value>
+			<value>Report Section Header: LEFT MAIN CORONARY ARTERY</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -794,7 +799,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Left Main Coronary Artery Stenosis Location</value>
+				<value>Left main coronary artery stenosis location</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -982,7 +987,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Main Coronary Artery Proximal Value</value>
+					<value>Left main coronary artery proximal value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1188,7 +1193,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Main Coronary Artery Proximal Value Other</value>
+						<value>Left main coronary artery proximal other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1268,7 +1273,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Main Cornary Artery Middle Value</value>
+					<value>Left main coronary artery middle value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1474,7 +1479,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Main Cornary Artery Middle Other</value>
+						<value>Left main coronary artery middle other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1554,7 +1559,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Main Cornary Artery Distal Value</value>
+					<value>Left main coronary artery distal value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1760,7 +1765,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Main Cornary Artery Distal Other Value</value>
+						<value>Left main coronary artery distal other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1840,7 +1845,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Main Coronary Artery Unspecificed Value</value>
+					<value>Left main coronary artery unspecificed value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2046,7 +2051,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Main Coronary Artery Unspecificed Value Other</value>
+						<value>Left main coronary artery unspecificed other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2063,7 +2068,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Left Anterior Descending Coronary Artery</value>
+			<value>Report Section Header: LEFT ANTERIOR DESCENDING CORONARY ARTERY</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2081,7 +2086,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Left Anterior Descending Coronary Artery Stenosis Location</value>
+				<value>Left anterior descending coronary artery stenosis location</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2269,7 +2274,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Anterior Descending Coronary Artery Proximal Value</value>
+					<value>Left anterior descending coronary artery proximal value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2475,7 +2480,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Anterior Descending Coronary Artery Proximal Value Other</value>
+						<value>Left Anterior descending coronary artery proximal other Value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2555,7 +2560,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Anterior Descending Coronary Artery Middle Value</value>
+					<value>Left anterior descending coronary artery middle value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2761,7 +2766,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Anterior Descending Coronary Artery Middle Value Other</value>
+						<value>Left anterior descending coronary artery middle other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -2841,7 +2846,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Anterior Descending Coronary Artery Descending Value</value>
+					<value>Left anterior descending coronary artery distal value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3047,7 +3052,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Anterior Descending Coronary Artery Descending Value Other</value>
+						<value>Left anterior descending coronary artery distal other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3127,7 +3132,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Anterior Descending Coronary Artery Unspecified Value</value>
+					<value>Left anterior descending coronary artery unspecified value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3333,7 +3338,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Anterior Descending Coronary Artery Unspecified Value Other</value>
+						<value>Left anterior descending coronary artery unspecified other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3350,7 +3355,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Left Circumflex Coronary Artery</value>
+			<value>Report Section Header: LEFT CIRCUMFLEX CORONARY ARTERY</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3368,7 +3373,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Left Circumflex Coronary Artery Stenosis Location</value>
+				<value>Left circumflex coronary artery stenosis location</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3556,7 +3561,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Circumflex Coronary Artery Proximal Value</value>
+					<value>Left circumflex coronary artery proximal value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3762,7 +3767,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Circumflex Coronary Artery Proximal Value Other</value>
+						<value>Left circumflex coronary artery proximal other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3842,7 +3847,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Circumflex Coronary Artery Middle Value</value>
+					<value>Left circumflex coronary artery middle value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4048,7 +4053,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Circumflex Coronary Artery Middle Value Other</value>
+						<value>Left circumflex coronary artery middle other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4128,7 +4133,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Circumflex Coronary Artery Distal Value</value>
+					<value>Left circumflex coronary artery distal value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4334,7 +4339,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Circumflex Coronary Artery Distal Value Other</value>
+						<value>Left circumflex coronary artery distal other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4414,7 +4419,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left Circumflex Coronary Artery Unspecified Value</value>
+					<value>Left circumflex coronary artery unspecified value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4620,7 +4625,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Circumflex Coronary Artery Unspecified Value Other</value>
+						<value>Left circumflex coronary artery unspecified other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -4637,7 +4642,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Right Coronary Artery</value>
+			<value>Report Section Header: RIGHT CORONARY ARTERY</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4655,7 +4660,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Right Coronary Artery Stenosis Location</value>
+				<value>Right coronary artery stenosis location</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4843,7 +4848,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Right Coronary Artery Proximal Value</value>
+					<value>Right coronary artery proximal value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5049,7 +5054,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Right Coronary Artery Proximal Value Other</value>
+						<value>Right coronary artery proximal other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -5129,7 +5134,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Right Coronary Artery Middle Value</value>
+					<value>Right coronary artery middle value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5335,7 +5340,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Right Coronary Artery Middle Value Other</value>
+						<value>Right coronary artery middle other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -5415,7 +5420,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Right Coronary Artery Distal Value</value>
+					<value>Right coronary artery distal value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5621,7 +5626,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Right Coronary Artery Distal Value Other</value>
+						<value>Right coronary artery distal other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -5701,7 +5706,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Right Coronary Artery Unspecified Value</value>
+					<value>Right coronary artery unspecified value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5907,7 +5912,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Right Coronary Artery Unspecified Value Other</value>
+						<value>Right coronary artery unspecified other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -6350,7 +6355,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Obtuse marginal 1 value other</value>
+						<value>Obtuse marginal 1 other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -6636,7 +6641,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Obtuse marginal 2 value other</value>
+						<value>Obtuse marginal 2 other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -6922,7 +6927,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Diagonal 1 value other</value>
+						<value>Diagonal 1 other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7208,7 +7213,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Diagonal 2 value other</value>
+						<value>Diagonal 2 other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7494,7 +7499,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Ramus intermedius value other</value>
+						<value>Ramus intermedius other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7516,7 +7521,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Dominance</value>
+			<value>Report Section Header: DOMINANCE</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -7733,7 +7738,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Impression</value>
+			<value>Report Section Header: IMPRESSION</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -7956,16 +7961,16 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>N</name>
+				<name>Nnon-diagnostic</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Non-diagnostic</value>
+					<value>N (non-diagnostic)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>N</value>
+					<value>N (non-diagnostic)</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7975,16 +7980,16 @@
 				</property>
 			</node>
 			<node>
-				<name>HRP</name>
+				<name>HRPhigh-riskplaque</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>High-risk plaque</value>
+					<value>HRP (high-risk plaque)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>HRP</value>
+					<value>HRP (high-risk plaque)</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7994,16 +7999,16 @@
 				</property>
 			</node>
 			<node>
-				<name>I</name>
+				<name>Iischemia</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Ischemia</value>
+					<value>I (ischemia)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>I</value>
+					<value>I (ischemia)</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8013,16 +8018,16 @@
 				</property>
 			</node>
 			<node>
-				<name>S</name>
+				<name>Sstent</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Stent</value>
+					<value>S (stent)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>S</value>
+					<value>S (stent)</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8032,16 +8037,16 @@
 				</property>
 			</node>
 			<node>
-				<name>G</name>
+				<name>Ggraft</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Graft</value>
+					<value>G (graft)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>G</value>
+					<value>G (graft)</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8051,16 +8056,16 @@
 				</property>
 			</node>
 			<node>
-				<name>E</name>
+				<name>Eexceptions</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Exceptions</value>
+					<value>E (exceptions)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>E</value>
+					<value>E (exceptions)</value>
 					<type>String</type>
 				</property>
 				<property>
