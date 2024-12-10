@@ -551,6 +551,11 @@
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -601,6 +606,11 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>upperLimit</name>
+					<value>today</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>displayMode</name>
@@ -703,6 +713,11 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>upperLimit</name>
+					<value>today</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>displayMode</name>

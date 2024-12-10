@@ -412,16 +412,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Insufficiently physical active</name>
+				<name>Physically inactive</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Insufficiently physical active</value>
+					<value>Physically inactive</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Insufficiently physical active</value>
+					<value>Physically inactive</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -1492,6 +1492,11 @@
 				<type>Long</type>
 			</property>
 			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>input</value>
 				<type>String</type>
@@ -1641,6 +1646,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxValue</name>
+				<value>80.0</value>
+				<type>Double</type>
+			</property>
+			<property>
 				<name>disableMinMaxValueEnforcement</name>
 				<value>False</value>
 				<type>Boolean</type>
@@ -1688,6 +1698,11 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>compact</name>
@@ -1742,6 +1757,11 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>upperLimit</name>
+				<value>today</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>compact</name>
