@@ -202,11 +202,35 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>Asian</name>
+			<name>Indigenous</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
 				<value>1</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Indigenous</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Indigenous</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>isDefault</name>
+				<value>False</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>Asian</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -230,7 +254,7 @@
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
-				<value>2</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -254,7 +278,7 @@
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
-				<value>3</value>
+				<value>4</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -278,7 +302,7 @@
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
-				<value>4</value>
+				<value>5</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -302,7 +326,7 @@
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
-				<value>5</value>
+				<value>6</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -326,7 +350,7 @@
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
-				<value>6</value>
+				<value>7</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -350,7 +374,7 @@
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
-				<value>7</value>
+				<value>8</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -367,6 +391,30 @@
 				<name>isDefault</name>
 				<value>False</value>
 				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>None</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>notApplicable</name>
+				<value>true</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>defaultOrder</name>
+				<value>0</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Prefer not to answer</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>N/A</value>
+				<type>String</type>
 			</property>
 		</node>
 	</node>

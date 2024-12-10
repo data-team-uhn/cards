@@ -314,65 +314,6 @@
 		</node>
 	</node>
 	<node>
-		<name>diastolic_blood_pressure</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>enableNotes</name>
-			<value>False</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>minValue</name>
-			<value>40.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>entryMode</name>
-			<value>user</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>Diastolic Blood Pressure</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxValue</name>
-			<value>300.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>input</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>long</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>disableMinMaxValueEnforcement</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>isRange</name>
-			<value>False</value>
-			<type>Boolean</type>
-		</property>
-	</node>
-	<node>
 		<name>systolic_blood_pressure</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -407,7 +348,66 @@
 		</property>
 		<property>
 			<name>maxValue</name>
-			<value>200.0</value>
+			<value>250.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>diastolic_blood_pressure</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>35.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Diastolic Blood Pressure</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>150.0</value>
 			<type>Double</type>
 		</property>
 		<property>
