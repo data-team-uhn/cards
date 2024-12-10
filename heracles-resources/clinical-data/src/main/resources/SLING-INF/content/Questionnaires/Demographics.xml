@@ -183,7 +183,7 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -370,11 +370,11 @@
 			</property>
 		</node>
 		<node>
-			<name>None of these fully describe me</name>
+			<name>NoneOfTheAbove</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
-				<value>8</value>
+				<value>99999</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -384,13 +384,13 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>None of these fully describe me</value>
+				<value>N/A</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>isDefault</name>
-				<value>False</value>
-				<type>Boolean</type>
+				<name>noneOfTheAbove</name>
+				<value>true</value>
+				<type>String</type>
 			</property>
 		</node>
 		<node>
@@ -413,7 +413,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>N/A</value>
+				<value>None</value>
 				<type>String</type>
 			</property>
 		</node>
