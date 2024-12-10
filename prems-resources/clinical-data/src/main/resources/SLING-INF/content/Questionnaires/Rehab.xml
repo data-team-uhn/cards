@@ -3105,7 +3105,7 @@
 		</node>
 	</node>
 	<node>
-		<name>Section_ic_1</name>
+		<name>Section_ic_2</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition0</name>
