@@ -86,7 +86,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Report Section Header:CLINICAL INDICATION</value>
+			<value>Report Section Header: CLINICAL INDICATION</value>
 			<type>String</type>
 		</property>
 		<node>

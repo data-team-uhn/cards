@@ -76,11 +76,6 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>lowerLimit</name>
-			<value>today</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>upperLimit</name>
 			<value>today</value>
 			<type>String</type>

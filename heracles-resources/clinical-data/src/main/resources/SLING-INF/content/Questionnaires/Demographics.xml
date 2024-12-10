@@ -443,7 +443,7 @@
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>list+input</value>
+			<value>list</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -491,6 +491,25 @@
 				<name>value</name>
 				<value>Windows</value>
 				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>None</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>None</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>None</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>noneOfTheAbove</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>

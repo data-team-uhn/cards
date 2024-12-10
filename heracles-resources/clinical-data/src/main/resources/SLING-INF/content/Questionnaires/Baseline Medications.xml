@@ -12545,7 +12545,7 @@ If only year is known, code the month and day as 01.</value>
 		</node>
 	</node>
 	<node>
-		<name>medications_Phosphodiesterasenumber5inhi</name>
+		<name>medications_Phosphodiesterasenumber5inhibitors</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
@@ -12594,7 +12594,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_Phosphodiesterasenumber5inhi_bl_med_number</name>
+			<name>medications_Phosphodiesterasenumber5inhibitors_bl_med_number</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -12623,7 +12623,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Phosphodiesterasenumber5inhi_bl_med_name</name>
+			<name>medications_Phosphodiesterasenumber5inhibitors_bl_med_name</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -12657,7 +12657,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Phosphodiesterasenumber5inhi_bl_med_dose_value</name>
+			<name>medications_Phosphodiesterasenumber5inhibitors_bl_med_dose_value</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -12686,7 +12686,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Phosphodiesterasenumber5inhi_bl_med_dose_units</name>
+			<name>medications_Phosphodiesterasenumber5inhibitors_bl_med_dose_units</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -12829,7 +12829,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_Phosphodiesterasenumber5inhi_bl_med_frequency</name>
+			<name>medications_Phosphodiesterasenumber5inhibitors_bl_med_frequency</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -12934,7 +12934,7 @@ If only year is known, code the month and day as 01.</value>
 			</node>
 		</node>
 		<node>
-			<name>medications_Phosphodiesterasenumber5inhi_bl_med_name_med_st</name>
+			<name>medications_Phosphodiesterasenumber5inhibitors_bl_med_name_med_st</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -12974,7 +12974,7 @@ If only year is known, code the month and day as 01.</value>
 			</property>
 		</node>
 		<node>
-			<name>medications_Phosphodiesterasenumber5inhi_bl_{med_name}_med_nt</name>
+			<name>medications_Phosphodiesterasenumber5inhibitors_bl_{med_name}_med_nt</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
