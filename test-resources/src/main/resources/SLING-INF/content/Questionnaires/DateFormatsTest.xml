@@ -408,4 +408,140 @@
 			<type>String</type>
 		</property>
 	</node>
+	<node>
+		<name>relativeyear</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Relative Year</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>lowerLimit</name>
+			<value>today - 30</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>upperLimit</name>
+			<value>today + 30</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+		<node>
+		<name>relativeyearmonth</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Relative Year Month</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy/MM</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>lowerLimit</name>
+			<value>today</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>upperLimit</name>
+			<value>today + 30</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>relativeyearmonthday</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Relative Year Month Day</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy-MM-dd</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>lowerLimit</name>
+			<value>today</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>upperLimit</name>
+			<value>today + 30</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>relativeyearmonthdayhourminute</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Relative Year Month Day Hour Minute</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy-MM-dd HH:mm</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>lowerLimit</name>
+			<value>today</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>upperLimit</name>
+			<value>today + 30</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
 </node>
