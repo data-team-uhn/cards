@@ -76,6 +76,16 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>lowerLimit</name>
+			<value>today</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>upperLimit</name>
+			<value>today</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>compact</name>
 			<value>True</value>
 			<type>Boolean</type>
@@ -1046,76 +1056,6 @@ Please double check your entry prior to submitting this form.</value>
 			<name>compact</name>
 			<value>True</value>
 			<type>Boolean</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>input</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>disableMinMaxValueEnforcement</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>isRange</name>
-			<value>False</value>
-			<type>Boolean</type>
-		</property>
-	</node>
-	<node>
-		<name>pro-bnp</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>unitOfMeasurement</name>
-			<value>ng/L</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>enableNotes</name>
-			<value>False</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>minValue</name>
-			<value>0.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>entryMode</name>
-			<value>user</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>pro-BNP</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>messageForValuesOutsideMinMax</name>
-			<value>The value entered is outside of the expected range for this field.  
-Please double check your entry prior to submitting this form.</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxValue</name>
-			<value>3000.0</value>
-			<type>Double</type>
 		</property>
 		<property>
 			<name>displayMode</name>
