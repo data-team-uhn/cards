@@ -413,7 +413,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Relative Year</value>
+			<value>Year with relative lower and upper limits</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -447,7 +447,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Relative Year Month</value>
+			<value>Year and month with relative lower and upper limits</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -481,7 +481,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Relative Year Month Day</value>
+			<value>Full date with relative lower and upper limits</value>
 			<type>String</type>
 		</property>
 		<property>
