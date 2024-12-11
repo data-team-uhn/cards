@@ -1164,7 +1164,7 @@ Kidney failure: <15
 		</property>
 		<property>
 			<name>minAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -1234,7 +1234,7 @@ Please double check your entry prior to submitting this form.</value>
 		</property>
 		<property>
 			<name>minAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -1312,7 +1312,7 @@ Very High: >130]]></value>
 		</property>
 		<property>
 			<name>minAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -1389,7 +1389,7 @@ Severely increased: 300 mg/g or higher]]></value>
 		</property>
 		<property>
 			<name>minAnswers</name>
-			<value>1</value>
+			<value>0</value>
 			<type>Long</type>
 		</property>
 		<property>
