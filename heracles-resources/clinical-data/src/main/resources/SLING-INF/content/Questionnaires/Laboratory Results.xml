@@ -600,7 +600,7 @@ Please double check your entry prior to submitting this form.</value>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>thousand/µL</value>
+			<value>thousand/uL</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -675,13 +675,13 @@ Please double check your entry prior to submitting this form.</value>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value>Male range: 4.7 - 6.1 million    
+			<value>Male range: 4.7 - 6.1 million
 Female range: 4.2 - 5.4 million</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>million/µL</value>
+			<value>million/uL</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1103,7 +1103,88 @@ Please double check your entry prior to submitting this form.</value>
 		</property>
 		<property>
 			<name>text</name>
-			<value>HSCRP</value>
+			<value>High sensitivity CRP</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>messageForValuesOutsideMinMax</name>
+			<value>The value entered is outside of the expected range for this field.  
+Please double check your entry prior to submitting this form.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>15.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>disableMinMaxValueEnforcement</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>isRange</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+	</node>
+	<node>
+		<name>egfr</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value><![CDATA[Normal or High: >=90
+Mildly Decreased: 60 - 89  
+Mildly-Moderate Decreased: 45 - 59  
+Mod-Severely Decreased: 30 - 44  
+Severely Decreased: 15-29  
+Kidney failure: <15
+]]></value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mL/min/1.73m2</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>1.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>user</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Estimated Glomerular Filtration rate</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1144,93 +1225,22 @@ Please double check your entry prior to submitting this form.</value>
 		</property>
 	</node>
 	<node>
-		<name>egfr</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>description</name>
-			<value><![CDATA[Normal or High: >89  
-Mildly Decreased: 60 - 89  
-Mildly-Moderate Decreased: 45 - 59  
-Mod-Severely Decreased: 30 - 44  
-Severely Decreased: 15-29  
-Kidney failure: <15
-]]></value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>unitOfMeasurement</name>
-			<value>mL/min/1.73</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>enableNotes</name>
-			<value>False</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>minValue</name>
-			<value>15.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>entryMode</name>
-			<value>user</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>Estimated Glomerular Filtration rate</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>messageForValuesOutsideMinMax</name>
-			<value>The value entered is outside of the expected range for this field.  
-Please double check your entry prior to submitting this form.</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>input</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>disableMinMaxValueEnforcement</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>isRange</name>
-			<value>False</value>
-			<type>Boolean</type>
-		</property>
-	</node>
-	<node>
 		<name>lipoprotein</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>nmol/L</value>
+			<value>mg/dL</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>minAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>10.0</value>
+			<type>Double</type>
 		</property>
 		<property>
 			<name>enableNotes</name>
@@ -1260,7 +1270,7 @@ Please double check your entry prior to submitting this form.</value>
 		</property>
 		<property>
 			<name>maxValue</name>
-			<value>75.0</value>
+			<value>100.0</value>
 			<type>Double</type>
 		</property>
 		<property>
@@ -1297,7 +1307,7 @@ Very High: >130]]></value>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>g/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1312,12 +1322,12 @@ Very High: >130]]></value>
 		</property>
 		<property>
 			<name>minValue</name>
-			<value>12.0</value>
+			<value>0.0</value>
 			<type>Double</type>
 		</property>
 		<property>
 			<name>maxValue</name>
-			<value>40.0</value>
+			<value>2.0</value>
 			<type>Double</type>
 		</property>
 		<property>
@@ -1374,7 +1384,7 @@ Severely increased: 300 mg/g or higher]]></value>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>ug/L</value>
+			<value>mg/mmol</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1389,7 +1399,7 @@ Severely increased: 300 mg/g or higher]]></value>
 		</property>
 		<property>
 			<name>minValue</name>
-			<value>30.0</value>
+			<value>0.0</value>
 			<type>Double</type>
 		</property>
 		<property>
@@ -1399,7 +1409,7 @@ Severely increased: 300 mg/g or higher]]></value>
 		</property>
 		<property>
 			<name>text</name>
-			<value>Albumin, Urine</value>
+			<value>Microalbumin</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1415,7 +1425,7 @@ Please double check your entry prior to submitting this form.</value>
 		</property>
 		<property>
 			<name>maxValue</name>
-			<value>300.0</value>
+			<value>100.0</value>
 			<type>Double</type>
 		</property>
 		<property>
@@ -1450,7 +1460,7 @@ Normal for adult female: 0.59 to 1.04 mg/dL (52.2 to 91.9 micromoles/L)</value>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1465,7 +1475,7 @@ Normal for adult female: 0.59 to 1.04 mg/dL (52.2 to 91.9 micromoles/L)</value>
 		</property>
 		<property>
 			<name>minValue</name>
-			<value>0.59</value>
+			<value>0.0</value>
 			<type>Double</type>
 		</property>
 		<property>
@@ -1475,7 +1485,7 @@ Normal for adult female: 0.59 to 1.04 mg/dL (52.2 to 91.9 micromoles/L)</value>
 		</property>
 		<property>
 			<name>text</name>
-			<value>Creatinine, Urine</value>
+			<value>Creatinine</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1491,7 +1501,7 @@ Please double check your entry prior to submitting this form.</value>
 		</property>
 		<property>
 			<name>maxValue</name>
-			<value>1.35</value>
+			<value>25.0</value>
 			<type>Double</type>
 		</property>
 		<property>
@@ -1529,7 +1539,7 @@ Macroalbuminaria: >300
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/g</value>
+			<value>mg/mmol Cr</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1544,7 +1554,7 @@ Macroalbuminaria: >300
 		</property>
 		<property>
 			<name>minValue</name>
-			<value>17.0</value>
+			<value>0.0</value>
 			<type>Double</type>
 		</property>
 		<property>
@@ -1554,7 +1564,7 @@ Macroalbuminaria: >300
 		</property>
 		<property>
 			<name>text</name>
-			<value>Creatinine-Albumin, Urine</value>
+			<value>Albumin:Creatinine ratio</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1570,7 +1580,7 @@ Please double check your entry prior to submitting this form.</value>
 		</property>
 		<property>
 			<name>maxValue</name>
-			<value>300.0</value>
+			<value>400.0</value>
 			<type>Double</type>
 		</property>
 		<property>
