@@ -1845,7 +1845,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Left main coronary artery unspecificed value</value>
+					<value>Left main coronary artery unspecified value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2051,7 +2051,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left main coronary artery unspecificed other value</value>
+						<value>Left main coronary artery unspecified other value</value>
 						<type>String</type>
 					</property>
 					<property>
