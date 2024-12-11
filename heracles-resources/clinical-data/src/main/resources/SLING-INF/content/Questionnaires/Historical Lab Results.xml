@@ -1460,7 +1460,7 @@ Normal for adult female: 0.59 to 1.04 mg/dL (52.2 to 91.9 micromoles/L)</value>
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1539,7 +1539,7 @@ Macroalbuminaria: >300
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/g</value>
+			<value>mg/mmol Cr</value>
 			<type>String</type>
 		</property>
 		<property>

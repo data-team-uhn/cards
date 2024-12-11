@@ -2480,7 +2480,7 @@
 					</property>
 					<property>
 						<name>text</name>
-						<value>Left Anterior descending coronary artery proximal other Value</value>
+						<value>Left anterior descending coronary artery proximal other value</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7544,7 +7544,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Artery Dominance</value>
+				<value>Artery dominance</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -7558,16 +7558,16 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>RightDominance</name>
+				<name>Rightdominance</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Right Dominance</value>
+					<value>Right dominance</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Right Dominance</value>
+					<value>Right dominance</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7577,16 +7577,16 @@
 				</property>
 			</node>
 			<node>
-				<name>LeftDominance</name>
+				<name>Leftdominance</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Left Dominance</value>
+					<value>Left dominance</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Left Dominance</value>
+					<value>Left dominance</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7596,16 +7596,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Co-Dominance</name>
+				<name>Co-dominance</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Co-Dominance</value>
+					<value>Co-dominance</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Co-Dominance</value>
+					<value>Co-dominance</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7615,16 +7615,16 @@
 				</property>
 			</node>
 			<node>
-				<name>NotReported</name>
+				<name>Notreported</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7717,7 +7717,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Artery Dominance Other</value>
+					<value>Artery dominance other</value>
 					<type>String</type>
 				</property>
 				<property>
