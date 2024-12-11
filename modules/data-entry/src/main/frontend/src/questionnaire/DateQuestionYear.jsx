@@ -60,8 +60,8 @@ function DateQuestionYear(props) {
       answerNodeType="cards:DateAnswer"
       valueType="Long"
       existingAnswer={existingAnswer}
-      maxValue={DateQuestionUtilities.processRelativeDate(upperLimit, DateQuestionUtilities.yearTag) || 9999}
-      minValue={DateQuestionUtilities.processRelativeDate(lowerLimit, DateQuestionUtilities.yearTag) || 1000}
+      maxValue={+DateQuestionUtilities.processRelativeDate(upperLimit, DateQuestionUtilities.yearTag) || 9999}
+      minValue={+DateQuestionUtilities.processRelativeDate(lowerLimit, DateQuestionUtilities.yearTag) || 1000}
       disableValueInstructions={typeof(upperLimit) == 'undefined' && typeof(lowerLimit) == 'undefined'}
       {...rest}
       />
