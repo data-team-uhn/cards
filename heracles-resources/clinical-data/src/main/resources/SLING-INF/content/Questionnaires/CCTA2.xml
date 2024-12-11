@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>CCTA2</name>
+	<name>CCTA</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>CCTA2</value>
+		<value>CCTA</value>
 		<type>String</type>
 	</property>
 	<property>
