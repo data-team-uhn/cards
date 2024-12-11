@@ -1377,9 +1377,9 @@ Please double check your entry prior to submitting this form.</value>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value><![CDATA[Normal: <30 mg/g  
-Moderately increased: 30 - 299 mg/g  
-Severely increased: 300 mg/g or higher]]></value>
+			<value><![CDATA[Normal: <3 mg/mmol  
+Microalbuminuria: 3-30 mg/mmol  
+Macroalbuminuria: >30 mg/mmol]]></value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1454,8 +1454,9 @@ Please double check your entry prior to submitting this form.</value>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value>Normal for adult male: 0.74 to 1.35 mg/dL (65.4 to 119.3 micromoles/L)  
-Normal for adult female: 0.59 to 1.04 mg/dL (52.2 to 91.9 micromoles/L)</value>
+			<value>Normal: Male 3.54-24.6 mmol/L, Female 2.55-20.0 mmol/L  
+Anything greater than these values could suggest kidney disease
+</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1530,10 +1531,10 @@ Please double check your entry prior to submitting this form.</value>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value><![CDATA[Normal for adult male: <17 mg/g  
-Normal for adult female: <25 mg/g  
-Microalbuminaria : 30-300  
-Macroalbuminaria: >300
+			<value><![CDATA[Normal: Male <2.5 mg/mmol, Female <3.5 mg/mmol  
+Microalbuminaria: Male 2.5-25 mg/mmol, Female 3.5-35 mg/mmol  
+Macroalbuminaria: Male 25-299 mg/mmol, Female 35-299 mg/mmol  
+Nephrotic Syndrome: >300 mg/mmol
 ]]></value>
 			<type>String</type>
 		</property>
