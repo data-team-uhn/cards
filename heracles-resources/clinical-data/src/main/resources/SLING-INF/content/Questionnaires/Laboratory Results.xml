@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>description</name>
-		<value>Visits 1, 3, 5, 7, 9, 11</value>
+		<value></value>
 		<type>String</type>
 	</property>
 	<property>
