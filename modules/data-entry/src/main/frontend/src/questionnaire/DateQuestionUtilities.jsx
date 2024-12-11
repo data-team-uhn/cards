@@ -233,25 +233,14 @@ export default class DateQuestionUtilities {
     let relativeDate = dateString.trim().toLowerCase();
     let absoluteDate = DateTime.now();
 
-    // Is it a number of days relative to today?
-    let differenceInDays = relativeDate.match(/^today\s*([\+-])\s*(\d+)$/)?.slice(1,3).join("");
-    if (typeof differenceInDays == "string") {
+    // Is it "today" or a number of days relative to today ("today + N", "today - N")?
+    if (relativeDate.startsWith("today")) {
+      let differenceInDays = relativeDate.match(/^today(\s*([\+-])\s*(\d+))?$/)?.slice(2,4).join("");
       absoluteDate = absoluteDate.plus({days: +differenceInDays});
       return absoluteDate.toFormat(toFormat);
     }
 
-    // Is it a human readable word?
-    if (["yesterday", "today", "now", "tomorrow"].includes(relativeDate)) {
-      if (relativeDate == "yesterday") {
-        absoluteDate = absoluteDate.minus({days: 1});
-      }
-      if (relativeDate == "tomorrow") {
-        absoluteDate = absoluteDate.plus({days: 1});
-      }
-      return absoluteDate.toFormat(toFormat);
-    }
-
-    // Is it a valid date in ISO format?
+    // If not, is it a valid date in ISO format?
     absoluteDate = DateTime.fromISO(dateString.trim());
 
     if (absoluteDate.isValid) {
