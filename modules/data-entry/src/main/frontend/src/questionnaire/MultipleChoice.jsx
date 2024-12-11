@@ -55,8 +55,8 @@ function MultipleChoice(props) {
   let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let { validate, validationErrorText, liveValidation, softValidation } = {...props.questionDefinition, ...props};
-  // pageActive should be passed to the Answer component, so we make sure to include it in the `rest` variable above
-  let { instanceId, pageActive } = props;
+  // pageActive and answerNodeType should be passed to the Answer component, so we make sure to include them in the `rest` variable above
+  let { instanceId, pageActive, answerNodeType } = props;
 
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
@@ -74,6 +74,8 @@ function MultipleChoice(props) {
   const isBare = defaults.length === 0 && maxAnswers === 1;
   const isRadio = defaults.length > 0 && maxAnswers === 1;
   const isSelect = displayMode === "select";
+  const isNumeric = ["cards:LongAnswer", "cards:DecimalAnswer", "cards:DoubleAnswer"].includes(answerNodeType);
+
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
@@ -107,7 +109,8 @@ function MultipleChoice(props) {
 
   // If this is a bare input or radio input, we need to pre-populate the blank input with the custom answer (if available)
   let inputPrefill = (isBare || (isRadio && default_values.indexOf(String(initialSelection[0]?.[VALUE_POS])) < 0)) && existingAnswer?.[1] || '';
-  const [ghostName, setGhostName] = useState(inputPrefill?.displayedValue);
+  // Prefill the input with the displayed value, unless the answer type is numeric, which means the displayed value may contain a unit of measurement
+  const [ghostName, setGhostName] = useState(isNumeric ? inputPrefill?.value : inputPrefill?.displayedValue);
   const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
   const ghostSelected = selection.some(element => {return String(element[VALUE_POS]) === ghostValue || element[LABEL_POS] === ghostName});
   const disabled = maxAnswers > 1 && selection.length >= maxAnswers;
