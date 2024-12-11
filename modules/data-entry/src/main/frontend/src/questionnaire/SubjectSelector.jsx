@@ -65,6 +65,9 @@ function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value, subjectType } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
 
+  const [ regexp, setRegexp ] = useState();
+  const [ isValid, setIsValid ] = useState(true);
+
   const [ data, setData ] = useState([]);
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isRefetching, setIsRefetching ] = useState(false);
@@ -79,9 +82,23 @@ function UnstyledNewSubjectDialog (props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  // Validation against the regular expression if one is provided
+  // Empty inputs are considered valid
+  // If no regexp is provided, all inputs are valid
+  let validateSubjectId = (type, text) => {
+    if (!text || !type?.idPattern) {
+        setIsValid(true);
+        return;
+    }
+    let pattern = regexp || new RegExp(type.idPattern);
+    setIsValid(pattern.test(text));
+  }
+
   let changeType = (type) => {
     onChangeType && onChangeType(type);
     setNewSubjectType(type);
+    type?.idPattern && setRegexp(new RegExp(type.idPattern));
+    validateSubjectId(type, value);
   }
 
   // Auto-select on each dialog open if there's only one valid SubjectType given in allowedTypes
@@ -128,18 +145,6 @@ function UnstyledNewSubjectDialog (props) {
     <React.Fragment>
       <ResponsiveDialog title="Create new subject" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
-          { error && <Alert severity="error">{error}</Alert>}
-          <div className={classes.newSubjectInput}>
-            <TextField
-              label="Enter subject identifier"
-              variant="outlined"
-              fullWidth
-              autoFocus
-              disabled={disabled}
-              value={value}
-              onChange={onChangeSubject}
-            />
-          </div>
           <MaterialReactTable
             enableTableHead={false}
             enableToolbarInternalActions={false}
@@ -183,6 +188,20 @@ function UnstyledNewSubjectDialog (props) {
               },
             })}
           />
+          <div className={classes.newSubjectInput}>
+            <TextField
+              label={!isValid ? "Id does not match the pattern" : "Enter subject identifier"}
+              variant="outlined"
+              fullWidth
+              disabled={disabled}
+              value={value}
+              onFocus={() => {setIsValid(true)}}
+              onChange={onChangeSubject}
+              onBlur={(event) => { validateSubjectId(newSubjectType, event?.target?.value); }}
+              error={!!error || !isValid}
+              helperText={error || newSubjectType?.["idPatternHint"] || ""}
+            />
+          </div>
         </DialogContent>
         <DialogActions>
           <Button
@@ -196,7 +215,7 @@ function UnstyledNewSubjectDialog (props) {
             onClick={() => {setNewSubjectType(""); onSubmit()}}
             variant="contained"
             color="primary"
-            disabled={disabled || continueDisabled}
+            disabled={disabled || continueDisabled || !isValid}
             >
             {requiresParents ? "Continue" : "Create"}
           </Button>
