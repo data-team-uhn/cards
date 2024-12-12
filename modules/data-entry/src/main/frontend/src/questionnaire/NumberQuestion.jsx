@@ -283,13 +283,12 @@ function NumberQuestion(props) {
   let rangeErrorMessage = "The range is invalid: the lower limit must be less than or equal to the upper limit";
 
   let rangeDisplayFormatter = function(label, idx) {
-    if (idx > 0 || !(initialValue?.length)) return '';
-    let limits = initialValue.slice(0, 2);
-    // In case of invalid data (only one limit of the range is available)
-    if (limits.length == 1) {
-      limits.push("");
-    }
-    return limits.join(' - ');
+    if (idx != 1) return '';
+    return (
+      <FormattedText>
+        { `${initialValue?.[0]} &mdash; ${label}` }
+      </FormattedText>
+    );
   }
 
   let markdownFormatter = function(label, idx) {
