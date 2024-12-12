@@ -95,7 +95,10 @@ function LiveTable(props) {
   // When new data is added, trigger a new fetch
   useEffect(() => {
     if (updateData){
-      refresh();
+      const timer = setTimeout(() => {
+        refresh();
+      }, 1500);
+      return () => clearTimeout(timer);
     }
   }, [updateData]);
 
