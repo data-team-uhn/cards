@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -63,8 +63,13 @@ function DateQuestionFull(props) {
     typeof(startValues) === "object" ? DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(startValues[1])) : null
   );
 
-  const upperLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(upperLimit));
-  const lowerLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(lowerLimit));
+  const absoluteUpperLimit = DateQuestionUtilities.processRelativeDate(upperLimit, true);
+  const absoluteLowerLimit = DateQuestionUtilities.processRelativeDate(lowerLimit, false);
+
+  const upperLimitMoment = DateQuestionUtilities.toPrecision(absoluteUpperLimit);
+  const lowerLimitMoment = DateQuestionUtilities.toPrecision(absoluteLowerLimit);
+
+  const instructions = DateQuestionUtilities.getAnswerValueInstructions(lowerLimitMoment, upperLimitMoment, dateFormat);
 
   let setDate = (value, isEnd) => {
     if (isEnd) {
@@ -136,8 +141,8 @@ function DateQuestionFull(props) {
           className: classes.textField
         }}
         inputProps={{
-          max: DateQuestionUtilities.processRelativeDate(upperLimit),
-          min: DateQuestionUtilities.processRelativeDate(lowerLimit)
+          max: absoluteUpperLimit?.substring(0,10), // discard the Time part
+          min: absoluteLowerLimit?.substring(0,10)
         }}
         onChange={(event) => processChange(event.target.value, isEnd)}
         onBlur={(event) => processBlur(event.target.value, isEnd)}
@@ -154,6 +159,16 @@ function DateQuestionFull(props) {
       >
       {
         pageActive && <>
+          { instructions &&
+            <Typography
+              component="p"
+              color="textSecondary"
+              className="cards-answerInstructions"
+              variant="caption"
+            >
+              { instructions }
+            </Typography>
+          }
           {getTextField(false, DateQuestionUtilities.dateToFormattedString(startDate, textFieldType))}
           { /* If this is an interval, allow the user to select a second date */
           type === DateQuestionUtilities.INTERVAL_TYPE &&

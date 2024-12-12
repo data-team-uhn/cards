@@ -175,6 +175,21 @@ export default class DateQuestionUtilities {
     return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
   }
 
+  static getAnswerValueInstructions(lowerLimit, upperLimit, format) {
+    if (lowerLimit || upperLimit) {
+      let min = lowerLimit?.toFormat(format);
+      let max = upperLimit?.toFormat(format);
+      if (min && max) {
+        return `Between ${min} and ${max}`;
+      } else if (min) {
+        return `${min} or later`;
+      } else {
+        return `At most ${max}`;
+      }
+    }
+    return null;
+  }
+
   static dateDifference = (startDateInput, endDateInput) => {
     // Compute the displayed difference
     let result = {long:""}
@@ -226,28 +241,40 @@ export default class DateQuestionUtilities {
     return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
   }
 
-  static processRelativeDate(dateString, toFormat = "yyyy-MM-dd") {
+  static processRelativeDate(dateString, endOfDay = false, toFormat) {
     // Any input other than a string is not supported
     if (typeof dateString != "string") return undefined;
 
-    let relativeDate = dateString.trim().toLowerCase();
-    let absoluteDate = DateTime.now();
+    let absoluteDate;
+    let adjustTime = true;
 
-    // Is it "today" or a number of days relative to today ("today + N", "today - N")?
+    // Is the dateString "today" or a number of days relative to today ("today + N", "today - N")?
+    let relativeDate = dateString.trim().toLowerCase();
+
     if (relativeDate.startsWith("today")) {
+      absoluteDate = DateTime.now();
       let differenceInDays = relativeDate.match(/^today(\s*([\+-])\s*(\d+))?$/)?.slice(2,4).join("");
       absoluteDate = absoluteDate.plus({days: +differenceInDays});
-      return absoluteDate.toFormat(toFormat);
+
+    } else {
+
+      // If not, is it a valid date in ISO format?
+      let isoDate = DateTime.fromISO(dateString.trim());
+
+      if (isoDate.isValid){
+        absoluteDate = isoDate;
+        // If the provided date has a time specified, don't adjust the time to start/end of day
+        adjustTime = !dateString.includes("T");
+      }
     }
+    // Otherwise it's an unsuported string, absoluteDate stays undefined and we end up returning undefined
 
-    // If not, is it a valid date in ISO format?
-    absoluteDate = DateTime.fromISO(dateString.trim());
-
-    if (absoluteDate.isValid) {
-      return absoluteDate.toFormat(toFormat);
+    if (absoluteDate) {
+      if (adjustTime) {
+        absoluteDate = endOfDay ? absoluteDate?.endOf('day') : absoluteDate?.startOf('day');
+      }
+      return toFormat ? absoluteDate?.toFormat(toFormat) : absoluteDate.toISO();
     }
-
-    // Otherwise it's an unsuported string - return nothing
     return undefined;
   }
 }

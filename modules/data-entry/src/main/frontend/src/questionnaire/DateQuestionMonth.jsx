@@ -65,6 +65,8 @@ function DateQuestionMonth(props) {
   const upperLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(upperLimit));
   const lowerLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(lowerLimit));
 
+  const instructions = DateQuestionUtilities.getAnswerValueInstructions(lowerLimitMoment, upperLimitMoment, dateFormat);
+
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
 
@@ -181,6 +183,8 @@ function DateQuestionMonth(props) {
           max: DateQuestionUtilities.processRelativeDate(upperLimit),
           min: DateQuestionUtilities.processRelativeDate(lowerLimit)
         }}
+        error={error}
+        helperText={error && errorMessage}
         onChange={(event) => setDate(event.target.value, isEnd)}
         onBlur={() => onBlur(value, isEnd)}
         placeholder={dateFormat.toLowerCase()}
@@ -195,7 +199,16 @@ function DateQuestionMonth(props) {
       {...props}
       >
       {pageActive && <>
-        {error && <Typography color='error'>{errorMessage}</Typography>}
+        { instructions &&
+          <Typography
+            component="p"
+            color="textSecondary"
+            className="cards-answerInstructions"
+            variant="caption"
+          >
+            { instructions }
+          </Typography>
+        }
         {getTextField(false, displayedDate)}
         { /* If this is an interval, allow the user to select a second date */
         type === DateQuestionUtilities.INTERVAL_TYPE &&
