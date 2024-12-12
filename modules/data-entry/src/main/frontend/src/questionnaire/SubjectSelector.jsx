@@ -64,6 +64,7 @@ let createQueryURL = (query, type, order) => {
 function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value, subjectType } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
+  const [ inputError, setInputError ] = useState(error);
 
   const [ regexp, setRegexp ] = useState();
   const [ isValid, setIsValid ] = useState(true);
@@ -141,6 +142,10 @@ function UnstyledNewSubjectDialog (props) {
     pagination.pageSize
   ]);
 
+  useEffect(() => {
+    setInputError(error);
+  }, [error]);
+
   return(
     <React.Fragment>
       <ResponsiveDialog title="Create new subject" open={open} onClose={onClose}>
@@ -195,17 +200,17 @@ function UnstyledNewSubjectDialog (props) {
               fullWidth
               disabled={disabled}
               value={value}
-              onFocus={() => {setIsValid(true)}}
+              onFocus={() => {setIsValid(true); setInputError("")}}
               onChange={onChangeSubject}
               onBlur={(event) => { validateSubjectId(newSubjectType, event?.target?.value); }}
-              error={!!error || !isValid}
-              helperText={error || newSubjectType?.["idPatternHint"] || ""}
+              error={!!inputError || !isValid}
+              helperText={inputError || newSubjectType?.["idPatternHint"] || ""}
             />
           </div>
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {setNewSubjectType(""); onClose()}}
+            onClick={() => {setNewSubjectType(""); setIsValid(true); onClose();}}
             variant="outlined"
             disabled={disabled}
             >
@@ -490,14 +495,8 @@ export function NewSubjectDialog (props) {
 
   // Called when creating a new subject
   let createNewSubject = () => {
-    if (newSubjectName[newSubjectIndex] == "") {
-      setError("Please enter a name for this subject.");
-    } else if (newSubjectType[newSubjectIndex] == "") {
-      setError("Please select a subject type.");
-    } else if (selectParentPopperOpen && newSubjectParent.length < newSubjectIndex) {
-      // They haven't selected a parent for the current type yet
-      setError("Please select a valid parent.");
-    } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
+    setError();
+    if (newSubjectPopperOpen && curSubjectRequiresParents) {
       // If we were given a subject whose parent we must be a child of, we can just look there instead
       // Find everything after the first /
       let newSubjectParentPath = /(.+)\/.+?/g.exec(newSubjectType[newSubjectIndex]?.["@path"])[1];
@@ -509,7 +508,6 @@ export function NewSubjectDialog (props) {
         createNewSubjectRecursive(null, newSubjectIndex, newParentList);
       } else {
         // Display the parent type to select
-        setError();
         setNewSubjectPopperOpen(false);
         setSelectParentPopperOpen(true);
       }
@@ -628,7 +626,7 @@ export function NewSubjectDialog (props) {
     // if there are no new subjects...
     if (newSubjectIndex == 0) {
       // Close the entire dialog
-      closeDialog();
+      closeDialog(clearError);
     } else {
       // Go back a stage, and reopen the select parent dialog
       if (clearError) {
@@ -668,9 +666,9 @@ export function NewSubjectDialog (props) {
     setSelectParentPopperOpen(false);
   }
 
-  let closeDialog = () => {
-    clearDialog();
-    onClose();
+  let closeDialog = (clearError=true) => {
+    clearDialog(clearError);
+    clearError && onClose();
   }
 
   return (
