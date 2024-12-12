@@ -72,7 +72,6 @@ public class SubjectHierarchyValidator extends DefaultValidator
     @Override
     public Validator childNodeAdded(final String name, final NodeState after) throws CommitFailedException
     {
-        this.subjectUtils.isSubject(after);
         // Get the type of this node. Return immediately if it's not a cards:Subject node
         final String childNodeType = after.getName("jcr:primaryType");
         if (SubjectUtils.SUBJECT_NODETYPE.equals(childNodeType)) {
