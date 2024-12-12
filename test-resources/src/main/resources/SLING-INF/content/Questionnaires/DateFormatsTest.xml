@@ -413,7 +413,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Year with absolute upper limit</value>
+			<value>Year with absolute upper limit (`2010`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -442,7 +442,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Year and month with absolute lower and upper limits</value>
+			<value>Year and month with absolute lower and upper limits (`2005-01` - `2005-02`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -457,12 +457,12 @@
 		</property>
 		<property>
 			<name>lowerLimit</name>
-			<value>2005/01</value>
+			<value>2005-01</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>upperLimit</name>
-			<value>2025/02</value>
+			<value>2025-02</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -476,7 +476,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Full date with absolute lower and upper limits</value>
+			<value>Full date with absolute lower and upper limits (`2022-08-02` - `2023-08-02`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -510,7 +510,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Full date and time with absolute lower and upper limits</value>
+			<value>Full date and time with absolute lower and upper limits (`2022-08-02T11:10` - `2023-08-02T11:10`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -525,12 +525,12 @@
 		</property>
 		<property>
 			<name>lowerLimit</name>
-			<value>2022-08-02 11:10</value>
+			<value>2022-08-02T11:10</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>upperLimit</name>
-			<value>2023-08-02 11:10</value>
+			<value>2023-08-02T11:10</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -544,7 +544,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Year with relative upper limit</value>
+			<value>Year with relative upper limit (`today`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -573,7 +573,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Year with relative lower and upper limits</value>
+			<value>Year with relative lower and upper limits (`today - 30` - `today + 30`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -607,7 +607,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Year and month with relative lower limits</value>
+			<value>Year and month with relative lower limit (`today + 1`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -622,7 +622,7 @@
 		</property>
 		<property>
 			<name>lowerLimit</name>
-			<value>today + 30</value>
+			<value>today + 1</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -636,7 +636,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Year and month with relative lower and upper limits</value>
+			<value>Year and month with relative lower and upper limits (`today` - `today + 30`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -670,7 +670,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Full date with relative lower limits</value>
+			<value>Full date with relative lower limit (`today - 5`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -699,7 +699,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Full date with relative lower and upper limits</value>
+			<value>Full date with relative lower and upper limits (`today` - `today + 90`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -719,7 +719,7 @@
 		</property>
 		<property>
 			<name>upperLimit</name>
-			<value>today + 30</value>
+			<value>today + 90</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -733,7 +733,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Full date and time with relative upper limits</value>
+			<value>Full date and time with relative upper limit (`today + 30`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -762,7 +762,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Full date and time with relative lower and upper limits</value>
+			<value>Full date and time with relative lower and upper limits (`today` - `today + 3`)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -782,7 +782,7 @@
 		</property>
 		<property>
 			<name>upperLimit</name>
-			<value>today + 30</value>
+			<value>today + 3</value>
 			<type>String</type>
 		</property>
 		<property>
