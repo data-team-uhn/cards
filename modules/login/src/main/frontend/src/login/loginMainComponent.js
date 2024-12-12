@@ -26,7 +26,6 @@ import SignIn from './loginForm';
 import Logo from "../components/Logo";
 
 import styles from "../styling/styles";
-import { CardsTranslationProvider } from '../translation/CardsTranslationProvider';
 
 class MainLoginContainer extends React.Component {
   constructor(props, selfContained) {
@@ -51,7 +50,6 @@ class MainLoginContainer extends React.Component {
     const { classes, selfContained } = this.props;
 
     return (
-        <CardsTranslationProvider>
           <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
             <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
               <Logo maxWidth="200px" component={Grid} item />
@@ -84,7 +82,6 @@ class MainLoginContainer extends React.Component {
               }
             </Grid>
           </Paper>
-        </CardsTranslationProvider>
     );
   }
 }

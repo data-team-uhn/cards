@@ -53,6 +53,7 @@ import FormIcon from "@mui/icons-material/Description";
 import SubjectIcon from "@mui/icons-material/AssignmentInd";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
+import TokenButton from "../dataHomepage/TokenButton.jsx";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
 import ResourceHeader from "./ResourceHeader.jsx"
 import SubjectTimeline from "./SubjectTimeline.jsx";
@@ -297,6 +298,9 @@ function SubjectHeader(props) {
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let subjectMenu = (
             <div className={classes.actionsMenu}>
+               <TokenButton
+                 entryPath={path}
+               />
                <PrintButton
                  resourcePath={path}
                  resourceData={subject?.data}

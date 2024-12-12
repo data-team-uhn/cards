@@ -40,6 +40,7 @@ import NextStepIcon from '@mui/icons-material/ChevronRight';
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
 import SurveyIcon from '@mui/icons-material/Assignment';
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import { DateTime } from "luxon";
 
@@ -179,11 +180,13 @@ function QuestionnaireSet(props) {
   // What form we're currently displaying
   const [ crtFormId, setCrtFormId ] = useState(null);
   // When something goes wrong:
-  const [ error, setError ] = useState("");
+  const [ error, setError ] = useState(null);
   // Screen layout props
   const [ screenType, setScreenType ] = useState();
   // Subtype for non-survey screens
   const [screenSubtype, setScreenSubtype ] = useState();
+
+  const intl = useIntl();
 
   const classes = useStyles();
 
@@ -329,6 +332,12 @@ function QuestionnaireSet(props) {
     }
   }, [isComplete, isSubmitted, endReached, enableReviewScreen]);
 
+  const surveyNotLoadedError =
+    <FormattedMessage
+      id="patient-portal-surveyNotLoaded"
+      defaultMessage="Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance."
+    />
+
   const loadExistingData = () => {
     setComplete(undefined);
     fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
@@ -347,7 +356,7 @@ function QuestionnaireSet(props) {
         }
         selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
       })
-      .catch(() => setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance."));
+      .catch(() => setError(surveyNotLoadedError));
   }
 
   const loadQuestionnaireSet = () => {
@@ -361,9 +370,13 @@ function QuestionnaireSet(props) {
       })
       .catch((response) => {
         if (response.status == 404) {
-          setError("The survey you are trying to access does not exist. Please contact the sender of the survey for further assistance.");
+          setError(
+            <FormattedMessage
+              id="patient-portal-surveyNotExists"
+              defaultMessage="The survey you are trying to access does not exist. Please contact the sender of the survey for further assistance."
+            />);
         } else {
-          setError("Your survey could not be loaded at this time. Please try again later or contact the sender of the survey for further assistance.");
+          setError(surveyNotLoadedError);
         }
         setQuestionnaires(null);
       });
@@ -434,7 +447,11 @@ function QuestionnaireSet(props) {
           newPreviews[formId] = text;
           return newPreviews;
         }))
-        .catch(() => setError("Your responses cannot be previewed at this time. Please try again later or contact the sender of the survey for further assistance."));
+        .catch(() => setError(
+          <FormattedMessage
+            id="patient-portal-responsesNotLoaded"
+            defaultMessage="Your responses cannot be previewed at this time. Please try again later or contact the sender of the survey for further assistance."
+          />));
     })
   }
 
@@ -490,7 +507,12 @@ function QuestionnaireSet(props) {
   if (!id) {
     return (
       getMessageScreen(
-        <Typography variant="h4" color="textSecondary">You do not have any pending surveys</Typography>
+        <Typography variant="h4" color="textSecondary">
+          <FormattedMessage
+            id="patient-portal-noPendingSurveys"
+            defaultMessage="You do not have any pending surveys"
+          />
+        </Typography>
       )
     );
   }
@@ -506,7 +528,12 @@ function QuestionnaireSet(props) {
   if (!questionnaireIds || !questionnaires || !subjectData) {
     return (
       getMessageScreen(<>
-        <Typography variant="h4" color="textSecondary">Loading...</Typography>
+        <Typography variant="h4" color="textSecondary">
+          <FormattedMessage
+            id="patient-portal-loading"
+            defaultMessage="Loading..."
+          />
+        </Typography>
         <CircularProgress />
       </>)
     );
@@ -521,7 +548,18 @@ function QuestionnaireSet(props) {
 
   let displayEstimate = (questionnaireId) => {
     let e = questionnaires[questionnaireId]?.estimate;
-    return e ? (e + " minute" + (e != 1 ? "s" : "")) : "";
+    return e
+      ? intl.formatMessage({
+          id: "patient-portal-",
+          defaultMessage: "{minutes, plural,\
+            one {# minute}\
+            other {# minutes}\
+            }"
+        },
+        {
+          minutes: e
+        })
+      : ""
   }
 
   let onSubmit = () => {
@@ -549,7 +587,11 @@ function QuestionnaireSet(props) {
       )
         .then(response => response.ok ? response.text() : Promise.reject(response))
         .then(() => setSubmitted(true))
-        .catch(() => setError("Recording the submission of your responses has failed. Please try again later or contact the sender of the survey for further assistance."))
+        .catch(() => setError(
+          <FormattedMessage
+            id="patient-portal-saveFailed"
+            defaultMessage="Recording the submission of your responses has failed. Please try again later or contact the sender of the survey for further assistance."
+          />))
         .finally(() => setSubmissionInProgress(false));
     }
   }
@@ -592,7 +634,17 @@ function QuestionnaireSet(props) {
   const greet = (name) => {
     let hourOfDay = (new Date()).getHours();
     let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
-    return `Good ${timeOfDay}` + (name ? `, ${name}` : '');
+    return <FormattedMessage
+        id="patient-portal-greeting"
+        defaultMessage="Good {time}{hasName, select,
+          yes {, {name}}
+          other {}}"
+        values={{
+          time: timeOfDay,
+          hasName: name ? "yes" : "no",
+          name: name
+        }}
+      />;
   }
 
   const appointmentDate = () => {

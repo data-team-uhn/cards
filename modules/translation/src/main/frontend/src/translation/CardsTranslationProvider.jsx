@@ -18,7 +18,7 @@
 //
 import React from "react";
 
-import {IntlProvider, FormattedMessage} from 'react-intl'
+import {IntlProvider } from 'react-intl'
 
 
 export function CardsTranslationProvider(props) {
@@ -31,18 +31,7 @@ other {sʎǝʌɹns #} \
     }
 
     return <IntlProvider messages={frenchMessages} local="fr" defaultLocale="en">
-            <FormattedMessage
-                id="intro"
-                defaultMessage="Hello, {name}, you have {surveyCount, plural,
-                    = 0 {no surveys}
-                    one {# survey}
-                    other {# surveys}
-                    } to complete."
-                values={{
-                    name: "John Doe",
-                    surveyCount: 3
-                }}
-            />
+            <p>Translation Provider Loaded</p>
             {props.children}
         </IntlProvider>
 }

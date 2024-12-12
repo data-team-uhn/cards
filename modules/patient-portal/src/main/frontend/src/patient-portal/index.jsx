@@ -26,6 +26,7 @@ import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import Footer from "./Footer.jsx";
 
+import { CardsTranslationProvider } from '../translation/CardsTranslationProvider';
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
 const CONFIG = "/Survey/PatientAccess.json";
@@ -82,10 +83,12 @@ function PatientPortalHomepage (props) {
   }
 
   return (<>
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
-      ...accessConfig,
-      ...surveyInstructions
-    }} />
+    <CardsTranslationProvider>
+      <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
+        ...accessConfig,
+        ...surveyInstructions
+      }} />
+    </CardsTranslationProvider>
     <Footer />
   </>);
 }
