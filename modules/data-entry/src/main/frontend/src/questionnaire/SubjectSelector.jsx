@@ -153,7 +153,6 @@ function UnstyledNewSubjectDialog (props) {
               autoFocus
               disabled={disabled}
               value={value}
-              onFocus={() => {setIsValid(true);}}
               onChange={(event) => { onChangeSubject(event); validateSubjectId(newSubjectType, event?.target?.value); }}
               error={!isValid}
               helperText={newSubjectType?.["idPatternHint"] || ""}
@@ -674,7 +673,7 @@ export function NewSubjectDialog (props) {
         disabled={disabledControls}
         error={error}
         onClose={goBack}
-        onChangeSubject={(event) => {changeNewSubjectName(event.target.value)}}
+        onChangeSubject={(event) => {setError(); changeNewSubjectName(event.target.value)}}
         onChangeType={changeNewSubjectType}
         onSubmit={createNewSubject}
         requiresParents={curSubjectRequiresParents}
