@@ -21,10 +21,9 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
+import { Alert, Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import MaterialReactTable from "material-react-table";
-import Alert from '@mui/material/Alert';
 
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./SubjectIdentifier.jsx";
@@ -64,7 +63,6 @@ let createQueryURL = (query, type, order) => {
 function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value, subjectType } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
-  const [ inputError, setInputError ] = useState(error);
 
   const [ regexp, setRegexp ] = useState();
   const [ isValid, setIsValid ] = useState(true);
@@ -142,14 +140,25 @@ function UnstyledNewSubjectDialog (props) {
     pagination.pageSize
   ]);
 
-  useEffect(() => {
-    setInputError(error);
-  }, [error]);
-
   return(
     <React.Fragment>
       <ResponsiveDialog title="Create new subject" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
+          { error && <Alert severity="error">{error}</Alert>}
+          <div className={classes.newSubjectInput}>
+            <TextField
+              label="Enter subject identifier"
+              variant="outlined"
+              fullWidth
+              autoFocus
+              disabled={disabled}
+              value={value}
+              onFocus={() => {setIsValid(true);}}
+              onChange={(event) => { onChangeSubject(event); validateSubjectId(newSubjectType, event?.target?.value); }}
+              error={!isValid}
+              helperText={newSubjectType?.["idPatternHint"] || ""}
+            />
+          </div>
           <MaterialReactTable
             enableTableHead={false}
             enableToolbarInternalActions={false}
@@ -193,20 +202,6 @@ function UnstyledNewSubjectDialog (props) {
               },
             })}
           />
-          <div className={classes.newSubjectInput}>
-            <TextField
-              label="Enter subject identifier"
-              variant="outlined"
-              fullWidth
-              autoFocus
-              disabled={disabled}
-              value={value}
-              onFocus={() => {setIsValid(true); setInputError("");}}
-              onChange={(event) => { onChangeSubject(event); validateSubjectId(newSubjectType, event?.target?.value); }}
-              error={!!inputError || !isValid}
-              helperText={inputError || newSubjectType?.["idPatternHint"] || ""}
-            />
-          </div>
         </DialogContent>
         <DialogActions>
           <Button
