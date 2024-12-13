@@ -141,8 +141,8 @@ function DateQuestionFull(props) {
           className: classes.textField
         }}
         inputProps={{
-          max: absoluteUpperLimit?.substring(0,10), // discard the Time part
-          min: absoluteLowerLimit?.substring(0,10)
+          max: DateQuestionUtilities.strip(absoluteUpperLimit, textFieldType),
+          min: DateQuestionUtilities.strip(absoluteLowerLimit, textFieldType)
         }}
         onChange={(event) => processChange(event.target.value, isEnd)}
         onBlur={(event) => processBlur(event.target.value, isEnd)}
@@ -173,7 +173,7 @@ function DateQuestionFull(props) {
           { /* If this is an interval, allow the user to select a second date */
           type === DateQuestionUtilities.INTERVAL_TYPE &&
           <React.Fragment>
-            <span className={classes.mdash}>&mdash;</span>
+            <span className={classes.mdash}> &mdash; </span>
             {getTextField(true, DateQuestionUtilities.dateToFormattedString(endDate, textFieldType))}
           </React.Fragment>
           }

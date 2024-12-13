@@ -171,6 +171,17 @@ export default class DateQuestionUtilities {
     return dateString?.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
   }
 
+  static stripFrom(dateString, delimiter) {
+    // Remove everything after the delimiter
+    return (dateString?.includes(delimiter) ? dateString?.substring(0, dateString?.indexOf(delimiter)) : dateString)
+  }
+
+  static strip(dateAsISO, textFieldType) {
+    if (textFieldType == 'datetime-local') return this.stripFrom(dateAsISO, '.');
+    if (textFieldType == 'date') return this.stripFrom(dateAsISO, 'T');
+    return dateAsISO;
+  }
+
   static isAnswerComplete(answers, type) {
     return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
   }
