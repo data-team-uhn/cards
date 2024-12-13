@@ -198,13 +198,13 @@ function UnstyledNewSubjectDialog (props) {
               label="Enter subject identifier"
               variant="outlined"
               fullWidth
+              autoFocus
               disabled={disabled}
               value={value}
               onFocus={() => {setIsValid(true); setInputError("");}}
-              onChange={onChangeSubject}
-              onBlur={(event) => { validateSubjectId(newSubjectType, event?.target?.value); }}
+              onChange={(event) => { onChangeSubject(event); validateSubjectId(newSubjectType, event?.target?.value); }}
               error={!!inputError || !isValid}
-              helperText={inputError || (!isValid ? "Id does not match the pattern" : newSubjectType?.["idPatternHint"]) || ""}
+              helperText={inputError || newSubjectType?.["idPatternHint"] || ""}
             />
           </div>
         </DialogContent>
