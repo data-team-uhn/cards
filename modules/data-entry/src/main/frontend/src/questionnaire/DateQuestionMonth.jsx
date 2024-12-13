@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography } from "@mui/material";
+import { FormHelperText, TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -179,12 +179,7 @@ function DateQuestionMonth(props) {
         InputProps={{
           className: classes.textField
         }}
-        inputProps={{
-          max: DateQuestionUtilities.processRelativeDate(upperLimit),
-          min: DateQuestionUtilities.processRelativeDate(lowerLimit)
-        }}
         error={error}
-        helperText={error && errorMessage}
         onChange={(event) => setDate(event.target.value, isEnd)}
         onBlur={() => onBlur(value, isEnd)}
         placeholder={dateFormat.toLowerCase()}
@@ -213,10 +208,11 @@ function DateQuestionMonth(props) {
         { /* If this is an interval, allow the user to select a second date */
         type === DateQuestionUtilities.INTERVAL_TYPE &&
         <React.Fragment>
-          <span className={classes.mdash}>&mdash;</span>
+          <span className={classes.mdash}> &mdash; </span>
           {getTextField(true, displayedEndDate)}
         </React.Fragment>
         }
+        { error && <FormHelperText error={error}>{errorMessage}</FormHelperText> }
       </>}
       <Answer
         answers={outputAnswers}
