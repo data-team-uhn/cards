@@ -1159,7 +1159,7 @@ Kidney failure: <15
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mL/min/1.73m2</value>
+			<value><![CDATA[mL/min/1.73m<sup>2</sup>]]></value>
 			<type>String</type>
 		</property>
 		<property>
