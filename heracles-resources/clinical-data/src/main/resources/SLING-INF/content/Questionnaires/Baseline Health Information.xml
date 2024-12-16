@@ -21,11 +21,6 @@
 	<name>Baseline Health Information</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
-		<name>description</name>
-		<value>Visit 1</value>
-		<type>String</type>
-	</property>
-	<property>
 		<name>title</name>
 		<value>Baseline Health Information</value>
 		<type>String</type>
