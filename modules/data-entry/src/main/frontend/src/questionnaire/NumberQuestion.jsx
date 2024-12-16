@@ -37,6 +37,7 @@ import AnswerInstructions from "./AnswerInstructions";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import MultipleChoice from "./MultipleChoice";
+import FormattedText from "../components/FormattedText";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
@@ -131,7 +132,7 @@ const useSliderStyles = makeStyles(theme => ({
 //    />
 function NumberQuestion(props) {
   const { existingAnswer, errorText, classes, pageActive, disableValueInstructions, ...rest} = props;
-  const { dataType,displayMode, minAnswers, minValue, maxValue, disableMinMaxValueEnforcement, messageForValuesOutsideMinMax, isRange,
+  const { dataType,displayMode, minAnswers, minValue, maxValue, disableMinMaxValueEnforcement, messageForValuesOutsideMinMax, isRange, unitOfMeasurement,
     sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel }
     = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
@@ -248,8 +249,8 @@ function NumberQuestion(props) {
     inputComponent: NumberFormatCustom, // Used to override a TextField's type
     className: classes.textField
   };
-  if (props.questionDefinition && props.questionDefinition.unitOfMeasurement) {
-    muiInputProps.endAdornment = <InputAdornment position="end">{props.questionDefinition.unitOfMeasurement}</InputAdornment>;
+  if (unitOfMeasurement) {
+    muiInputProps.endAdornment = <InputAdornment position="end"><FormattedText>{unitOfMeasurement}</FormattedText></InputAdornment>;
   }
 
   let hasAnswerOptions = !!(props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'cards:AnswerOption'));
@@ -282,13 +283,16 @@ function NumberQuestion(props) {
   let rangeErrorMessage = "The range is invalid: the lower limit must be less than or equal to the upper limit";
 
   let rangeDisplayFormatter = function(label, idx) {
-    if (idx > 0 || !(initialValue?.length)) return '';
-    let limits = initialValue.slice(0, 2);
-    // In case of invalid data (only one limit of the range is available)
-    if (limits.length == 1) {
-      limits.push("");
-    }
-    return limits.join(' - ');
+    if (idx != 1) return '';
+    return (
+      <FormattedText>
+        { `${initialValue?.[0]} &mdash; ${label}` }
+      </FormattedText>
+    );
+  }
+
+  let markdownFormatter = function(label, idx) {
+    return <FormattedText>{label}</FormattedText>;
   }
 
   let setValue = function(fn, value) {
@@ -326,7 +330,7 @@ function NumberQuestion(props) {
 
   return (
     <Question
-      defaultDisplayFormatter={isRange? rangeDisplayFormatter : undefined}
+      defaultDisplayFormatter={isRange ? rangeDisplayFormatter : markdownFormatter }
       compact={isRange}
       disableInstructions
       {...props}
