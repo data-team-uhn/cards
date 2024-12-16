@@ -1052,16 +1052,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1530,16 +1530,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2008,16 +2008,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2486,16 +2486,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2964,16 +2964,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3442,16 +3442,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3920,16 +3920,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4398,16 +4398,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4876,16 +4876,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5354,16 +5354,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5832,16 +5832,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6310,16 +6310,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6788,16 +6788,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7266,16 +7266,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7744,16 +7744,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8222,16 +8222,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8700,16 +8700,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9178,16 +9178,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9656,16 +9656,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10134,16 +10134,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10612,16 +10612,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11090,16 +11090,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11568,16 +11568,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12046,16 +12046,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12524,16 +12524,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13002,16 +13002,16 @@ If only year is known, code the month and day as 01.</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Patient-reportednottaking</name>
+				<name>Patientreportednottaking</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Patient-reported not taking</value>
+					<value>Patient reported not taking</value>
 					<type>String</type>
 				</property>
 				<property>
