@@ -45,8 +45,9 @@ function DeleteButton(props) {
   const [ deletionInProgress, setDeletionInProgress ] = useState(false);
 
   const buttonText = label || ("Delete " + (entryType?.toLowerCase() || '')).trim();
-  const defaultDialogAction = `Are you sure you want to delete ${entryType} ${entryName}?`;
-  const defaultErrorMessage = `${entryName || "The item"} could not be removed.`;
+  const defaultDialogMessage = `Are you sure you want to delete the following ${entryType}:`;
+  const defaultDialogAction = entryName;
+  const defaultErrorMessage = `The ${entryType?.toLowerCase() || "item"} could not be removed.`;
   const history = useHistory();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -98,6 +99,10 @@ function DeleteButton(props) {
     }
   }
 
+  let capitalize = (text) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
   let handleJsonError = (status, json) => {
     if (status === 409) {
       if (deleteRecursive) {
@@ -106,8 +111,8 @@ function DeleteButton(props) {
         openError();
       } else {
         let label = entryLabel ? entryLabel.concat(' ') : entryType ? entryType.concat(' ') : '';
-        setDialogMessage(`${json["status.message"].replace("This item", label + entryName)}`);
-        setDialogAction(`Would you like to delete ${entryName} and all items that reference it?`);
+        setDialogMessage(`${json["status.message"].replace("This item", capitalize(label) + '"' + entryName + '"')}`);
+        setDialogAction(`Would you like to delete this ${label.toLowerCase()} and all items that reference it?`);
         setDeleteRecursive(true);
         openDialog();
       }
@@ -150,7 +155,7 @@ function DeleteButton(props) {
 
   let handleClick = () => {
     onClick?.();
-    setDialogMessage(null);
+    setDialogMessage(defaultDialogMessage);
     setDialogAction(defaultDialogAction);
     setDeleteRecursive(false);
     openDialog();
@@ -171,7 +176,7 @@ function DeleteButton(props) {
       </ErrorDialog>
       <Dialog open={open} onClose={closeDialog}>
         <DialogTitle>
-          Delete {entryLabel ? entryLabel.concat(' ') : ''}{entryName}{deleteRecursive ? " and dependent items": null }
+          Delete {entryLabel ? entryLabel.concat(' ') : entryType.concat(' ')}{deleteRecursive ? " and dependent items": null }
         </DialogTitle>
         <DialogContent>
             <Typography variant="body1">{dialogMessage}</Typography>
