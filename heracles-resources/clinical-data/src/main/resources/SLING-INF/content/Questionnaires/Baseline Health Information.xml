@@ -328,16 +328,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Fibromuscular Dysplasia (FMD)</name>
+				<name>Fibromuscular dysplasia (FMD)</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Fibromuscular Dysplasia (FMD)</value>
+					<value>Fibromuscular dysplasia (FMD)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Fibromuscular Dysplasia (FMD)</value>
+					<value>Fibromuscular dysplasia (FMD)</value>
 					<type>String</type>
 				</property>
 			</node>

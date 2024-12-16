@@ -761,7 +761,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Calcium Score</value>
+				<value>Calcium score</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -7643,7 +7643,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Other Dominance</value>
+					<value>Other dominance</value>
 					<type>String</type>
 				</property>
 				<property>
