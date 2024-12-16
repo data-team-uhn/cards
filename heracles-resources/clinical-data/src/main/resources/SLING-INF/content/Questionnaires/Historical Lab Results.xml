@@ -37,7 +37,7 @@
 	</property>
 	<property>
 		<name>maxPerSubject</name>
-		<value>0</value>
+		<value>1</value>
 		<type>Long</type>
 	</property>
 	<property>
@@ -1149,7 +1149,7 @@ Please double check your entry prior to submitting this form.</value>
 		<property>
 			<name>description</name>
 			<value><![CDATA[Normal or high: >=90
-Mildly Decreased: 60 - 89  
+Mildly decreased: 60 - 89  
 Mildly-moderate decreased: 45 - 59  
 Moderate-severely decreased: 30 - 44  
 Severely decreased: 15-29  

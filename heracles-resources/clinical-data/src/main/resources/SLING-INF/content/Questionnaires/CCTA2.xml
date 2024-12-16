@@ -7761,7 +7761,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>CAD RADS Score</value>
+				<value>CAD RADS score</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -7947,7 +7947,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>CAD RADS Modifier</value>
+				<value>CAD RADS modifier</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -8114,7 +8114,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>CAD RADS Plaque</value>
+				<value>CAD RADS plaque</value>
 				<type>String</type>
 			</property>
 			<property>

@@ -37,7 +37,7 @@
 	</property>
 	<property>
 		<name>maxPerSubject</name>
-		<value>0</value>
+		<value>4</value>
 		<type>Long</type>
 	</property>
 	<property>

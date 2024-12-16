@@ -250,7 +250,7 @@
 			</property>
 		</node>
 		<node>
-			<name>Black - African American - African</name>
+			<name>Black-African American-African</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
@@ -259,12 +259,12 @@
 			</property>
 			<property>
 				<name>label</name>
-				<value>Black / African American / African</value>
+				<value>Black/African American/African</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Black / African American / African</value>
+				<value>Black/African American/African</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -274,7 +274,7 @@
 			</property>
 		</node>
 		<node>
-			<name>Hispanic - Latino - Spanish</name>
+			<name>Hispanic-Latino-Spanish</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
@@ -283,12 +283,12 @@
 			</property>
 			<property>
 				<name>label</name>
-				<value>Hispanic / Latino / Spanish</value>
+				<value>Hispanic/Latino/Spanish</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Hispanic / Latino / Spanish</value>
+				<value>Hispanic/Latino/Spanish</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -298,7 +298,7 @@
 			</property>
 		</node>
 		<node>
-			<name>Middle Eastern - North African</name>
+			<name>Middle Eastern-North African</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>defaultOrder</name>
@@ -307,12 +307,12 @@
 			</property>
 			<property>
 				<name>label</name>
-				<value>Middle Eastern / North African</value>
+				<value>Middle Eastern/North African</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Middle Eastern / North African</value>
+				<value>Middle Eastern/North African</value>
 				<type>String</type>
 			</property>
 			<property>

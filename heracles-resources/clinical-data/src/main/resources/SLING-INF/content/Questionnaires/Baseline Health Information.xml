@@ -426,16 +426,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Overweight-Obesity</name>
+				<name>Overweight-obesity</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Overweight/Obesity</value>
+					<value>Overweight/obesity</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Overweight/Obesity</value>
+					<value>Overweight/obesity</value>
 					<type>String</type>
 				</property>
 			</node>

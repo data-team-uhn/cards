@@ -37,6 +37,11 @@
 		</values>
 		<type>Reference</type>
 	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>3</value>
+		<type>Long</type>
+	</property>
 	<node>
 		<name>height</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
@@ -338,7 +343,7 @@
 		</property>
 		<property>
 			<name>text</name>
-			<value>Systolic Blood Pressure</value>
+			<value>Systolic blood pressure</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -397,7 +402,7 @@
 		</property>
 		<property>
 			<name>text</name>
-			<value>Diastolic Blood Pressure</value>
+			<value>Diastolic blood pressure</value>
 			<type>String</type>
 		</property>
 		<property>
