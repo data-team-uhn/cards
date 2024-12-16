@@ -330,7 +330,7 @@ function NumberQuestion(props) {
 
   return (
     <Question
-      defaultDisplayFormatter={isRange ? rangeDisplayFormatter : unitOfMeasurement ? markdownFormatter : undefined}
+      defaultDisplayFormatter={isRange ? rangeDisplayFormatter : markdownFormatter }
       compact={isRange}
       disableInstructions
       {...props}
