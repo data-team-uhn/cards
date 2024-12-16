@@ -894,16 +894,16 @@
 				</property>
 			</node>
 			<node>
-				<name>NotReported</name>
+				<name>Notreported</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2181,16 +2181,16 @@
 				</property>
 			</node>
 			<node>
-				<name>NotReported</name>
+				<name>Notreported</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3468,16 +3468,16 @@
 				</property>
 			</node>
 			<node>
-				<name>NotReported</name>
+				<name>Notreported</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4755,16 +4755,16 @@
 				</property>
 			</node>
 			<node>
-				<name>NotReported</name>
+				<name>Notreported</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6061,16 +6061,16 @@
 				</property>
 			</node>
 			<node>
-				<name>NotReported</name>
+				<name>Notreported</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7908,16 +7908,16 @@
 				</property>
 			</node>
 			<node>
-				<name>NotReported</name>
+				<name>Notreported</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8075,16 +8075,16 @@
 				</property>
 			</node>
 			<node>
-				<name>NotReported</name>
+				<name>Notreported</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8204,16 +8204,16 @@
 				</property>
 			</node>
 			<node>
-				<name>NotReported</name>
+				<name>Notreported</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not Reported</value>
+					<value>Not reported</value>
 					<type>String</type>
 				</property>
 				<property>
