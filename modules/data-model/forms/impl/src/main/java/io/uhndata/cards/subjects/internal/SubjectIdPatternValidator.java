@@ -28,6 +28,8 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultValidator;
 import org.apache.jackrabbit.oak.spi.commit.Validator;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
@@ -40,6 +42,8 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  */
 public class SubjectIdPatternValidator extends DefaultValidator
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubjectIdPatternValidator.class);
+
     private final SubjectTypeUtils subjectTypeUtils;
 
     private final SubjectUtils subjectUtils;
@@ -96,6 +100,7 @@ public class SubjectIdPatternValidator extends DefaultValidator
                 "This subject cannot be created because the subject type pattern is not valid");
         } catch (RepositoryException e) {
             // Should not happen
+            LOGGER.error("Unexpected exception validating subject identifier: {}", e.getMessage(), e);
         }
     }
 }
