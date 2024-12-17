@@ -32,7 +32,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  *
  * @version $Id$
  */
-@Component(name = "SubjectIdPatternValidatorProvider", service = EditorProvider.class)
+@Component(service = EditorProvider.class)
 public class SubjectIdPatternValidatorProvider extends ValidatorProvider
 {
     @Reference
