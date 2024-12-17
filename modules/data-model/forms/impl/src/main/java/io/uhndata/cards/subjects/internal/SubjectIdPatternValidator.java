@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.forms.internal;
+package io.uhndata.cards.subjects.internal;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -71,11 +72,11 @@ public class SubjectIdPatternValidator extends DefaultValidator
         try {
             final String id = subject.getProperty("id").getValue(Type.STRING);
             // Get the subject's type
-            Node currentParentType = this.subjectTypeUtils.getSubjectType(
+            Node subjectType = this.subjectTypeUtils.getSubjectType(
                 subject.getProperty("type").getValue(Type.REFERENCE));
 
-            if (currentParentType.hasProperty("idPattern")) {
-                final String regexp = currentParentType.getProperty("idPattern").getString();
+            if (subjectType.hasProperty("idPattern")) {
+                final String regexp = subjectType.getProperty("idPattern").getString();
                 if (StringUtils.isNotBlank(regexp)) {
                     Pattern pattern = Pattern.compile(regexp);
                     if (!pattern.matcher(id).find()) {
@@ -84,6 +85,9 @@ public class SubjectIdPatternValidator extends DefaultValidator
                     }
                 }
             }
+        } catch (PatternSyntaxException e) {
+            throw new CommitFailedException(CommitFailedException.STATE, 400,
+                "This subject cannot be created because the subject type pattern is not valid");
         } catch (RepositoryException e) {
             // Should not happen
         }
