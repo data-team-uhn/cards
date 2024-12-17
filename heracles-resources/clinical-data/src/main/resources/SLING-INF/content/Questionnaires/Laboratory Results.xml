@@ -1531,8 +1531,8 @@ Please double check your entry prior to submitting this form.</value>
 		<property>
 			<name>description</name>
 			<value><![CDATA[Normal: Male <2.5 mg/mmol, Female <3.5 mg/mmol  
-Microalbuminaria: Male 2.5-25 mg/mmol, Female 3.5-35 mg/mmol  
-Macroalbuminaria: Male 25-299 mg/mmol, Female 35-299 mg/mmol  
+Microalbuminuria: Male 2.5-25 mg/mmol, Female 3.5-35 mg/mmol  
+Macroalbuminuria: Male 25-299 mg/mmol, Female 35-299 mg/mmol  
 Nephrotic syndrome: >300 mg/mmol
 ]]></value>
 			<type>String</type>
