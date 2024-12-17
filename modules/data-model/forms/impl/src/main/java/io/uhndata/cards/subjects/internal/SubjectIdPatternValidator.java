@@ -44,11 +44,17 @@ public class SubjectIdPatternValidator extends DefaultValidator
 
     private final SubjectUtils subjectUtils;
 
-
     public SubjectIdPatternValidator(final SubjectTypeUtils subjectTypeUtils, final SubjectUtils subjectUtils)
     {
         this.subjectTypeUtils = subjectTypeUtils;
         this.subjectUtils = subjectUtils;
+    }
+
+    @Override
+    public Validator childNodeChanged(final String name, final NodeState before, final NodeState after)
+        throws CommitFailedException
+    {
+        return childNodeAdded(name, after);
     }
 
     @Override
@@ -70,7 +76,7 @@ public class SubjectIdPatternValidator extends DefaultValidator
     private void validateIdPattern(NodeState subject) throws CommitFailedException
     {
         try {
-            final String id = subject.getProperty("id").getValue(Type.STRING);
+            final String id = subject.getProperty("identifier").getValue(Type.STRING);
             // Get the subject's type
             Node subjectType = this.subjectTypeUtils.getSubjectType(
                 subject.getProperty("type").getValue(Type.REFERENCE));
