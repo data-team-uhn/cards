@@ -1494,7 +1494,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Additional question about your recent emergency visit</value>
+			<value>Additional questions about your recent emergency visit</value>
 			<type>String</type>
 		</property>
 		<node>
