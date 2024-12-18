@@ -17,30 +17,28 @@
 //  under the License.
 //
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
-import { 
+import {
+  Box,
   Button,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
-  IconButton,
-  Tooltip,
   Typography
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import statisticsStyle from "./statisticsStyle.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
+import EditButton from "../dataHomepage/EditButton.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
-import EditIcon from "@mui/icons-material/Edit";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
- * Create the LiveTable cell contents for a given node. This generates a link to the
+ * Create the MaterialTable cell contents for a given node. This generates a link to the
  * given node (via its admin page), or returns the node's label if no valid link can be made.
  *
  * @param {Object} node The cards:SubjectType or cards:Question node to generate a link for
@@ -68,17 +66,6 @@ function createTableCell(node) {
 
 }
 
-function EditStatisticButton(props) {
-  const { onClick } = props;
-  return(
-    <Tooltip title={"Edit Statistic"}>
-      <IconButton onClick={onClick} size="large">
-        <EditIcon />
-      </IconButton>
-    </Tooltip>
-  )
-}
-
 function AdminStatistics(props) {
   const { classes } = props;
   const [ dialogOpen, setDialogOpen ] = useState(false);
@@ -88,54 +75,50 @@ function AdminStatistics(props) {
   const [ newStat, setNewStat ] = useState(true);
   const [ currentId, setCurrentId ] = useState();
 
+  const entryType = "Statistic";
+
   let columns = [
     {
-      "key": "name",
-      "label": "Name",
-      "format": "string",
+      accessorKey: "name",
+      header: "Name",
     },
     {
-      "key": "type",
-      "label": "Type",
-      "format": "string",
+      accessorKey: "type",
+      header: "Type",
     },
     {
-      "key": "xVar",
-      "label": "X-axis",
-      "format": (stat) => createTableCell(stat?.xVar),
+      header: "X-axis",
+      Cell: ({ row }) => (createTableCell(row.original.xVar)),
     },
     {
-      "key": "yVar",
-      "label": "Y-axis",
-      "format": (stat) => createTableCell(stat?.yVar),
+      header: "Y-axis",
+      Cell: ({ row }) => (createTableCell(row.original.yVar)),
     },
     {
-      "key": "splitVar",
-      "label": "Split",
-      "format": (stat) => createTableCell(stat?.splitVar),
+      header: "Split",
+      Cell: ({ row }) => (createTableCell(row.original.splitVar)),
     },
     {
-      "key": "order",
-      "label": "Order",
-      "format": "string",
-    },
-    {
-      "key": "",
-      "label": "Actions",
-      "type": "actions",
-      "format": (row) => (<>
-                            <DeleteButton
-                              entryPath={row["@path"]}
-                              entryName={row.name}
-                              onComplete={dialogSuccess}
-                              entryType={"Statistic"}
-                            />
-                            <EditStatisticButton
-                              onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(row["@name"]);}}
-                            />
-                          </>),
+      accessorKey: "order",
+      header: "Order",
     },
   ]
+
+  let makeActions = ({ row }) => (
+          <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
+            <EditButton
+              entryType={entryType}
+              onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(row.original["@name"]);}}
+              useEditDialog
+            />
+            <DeleteButton
+              entryPath={row.original["@path"]}
+              entryName={row.original.name}
+              onComplete={dialogSuccess}
+              entryType={entryType}
+            />
+          </Box>
+        )
 
   let dialogClose = () => {
     setDialogOpen(false);
@@ -157,14 +140,20 @@ function AdminStatistics(props) {
             setNewStat(true);
             setCurrentId();
           },
-          inProgress: (dialogOpen && newStat)
         }}
         columns={columns}
-        entryType={"Statistic"}
-        admin={true}
+        entryType={entryType}
+        tableActions={makeActions}
         updateData={numNewEntries}
       />
-      <StatisticDialog open={dialogOpen} onClose={dialogClose} classes={classes} onSuccess={dialogSuccess} isNewStatistic={newStat} currentId={currentId}/>
+      <StatisticDialog
+        open={dialogOpen}
+        onClose={dialogClose}
+        onSuccess={dialogSuccess}
+        classes={classes}
+        isNewStatistic={newStat}
+        currentId={currentId}
+      />
     </>
   );
 }

@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, MenuItem, TextField, Typography, Select, FormHelperText } from "@mui/material";
 
@@ -24,16 +24,16 @@ import withStyles from '@mui/styles/withStyles';
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 function SubjectTypeDialog(props) {
-  const { open, onClose, onSubmit, data, isEdit, currentSubjectType, classes } = props;
+  const { open, onClose, onSuccess, data, isEdit, currentSubjectType, classes } = props;
   const initialParent = currentSubjectType?.["@path"].replace("/" + currentSubjectType["@name"], "") || "/SubjectTypes";
   const subjectTypes = !isEdit ? data : data.filter(item => item["jcr:uuid"] != currentSubjectType["jcr:uuid"]);
 
-  const [ label, setLabel ] = useState(isEdit ? currentSubjectType.label : "");
+  const [ label, setLabel ] = useState("");
   const [ parentSubject, setParentSubject ] = useState(initialParent);
-  const [ order, setOrder ] = useState(currentSubjectType && currentSubjectType["cards:defaultOrder"] ? currentSubjectType["cards:defaultOrder"] : 0);
-  const [ subjectListLabel, setSubjectListLabel ] = useState(currentSubjectType?.subjectListLabel || "");
-  const [ idPattern, setIdPattern ] = useState(currentSubjectType?.idPattern || "");
-  const [ idPatternHint, setIdPatternHint ] = useState(currentSubjectType?.idPatternHint || "");
+  const [ order, setOrder ] = useState(0);
+  const [ subjectListLabel, setSubjectListLabel ] = useState("");
+  const [ idPattern, setIdPattern ] = useState("");
+  const [ idPatternHint, setIdPatternHint ] = useState("");
 
   const [ error, setError ] = useState(null);
   const [ isDuplicateLabel, setIsDuplicateLabel ] = useState(false);
@@ -58,6 +58,16 @@ function SubjectTypeDialog(props) {
       setIsInvalidRegexp(true);
     }
   }
+
+  useEffect(() => {
+    if (isEdit && currentSubjectType) {
+      setLabel(currentSubjectType.label);
+      setOrder(currentSubjectType["cards:defaultOrder"] || 0);
+      setSubjectListLabel(currentSubjectType?.subjectListLabel || "");
+      setIdPattern(currentSubjectType?.idPattern || "");
+      setIdPatternHint(currentSubjectType?.idPatternHint || "");
+    }
+  }, [currentSubjectType]);
 
   let handleSubjectType = () => {
     setError("");
@@ -110,7 +120,8 @@ function SubjectTypeDialog(props) {
         if (isEdit && initialParent != parentSubject) {
           moveSubjectType();
         } else {
-          onSubmit();
+          onSuccess();
+          close();
         }
     });
   }
@@ -131,7 +142,8 @@ function SubjectTypeDialog(props) {
           return;
         }
 
-        onSubmit();
+        onSuccess();
+        close();
     });
   }
 
@@ -151,7 +163,7 @@ function SubjectTypeDialog(props) {
     <Dialog
       maxWidth="sm"
       open={open}
-      onClose={onClose}
+      onClose={close}
     >
       <DialogTitle>{isEdit ? "Modify " + currentSubjectType.label : "Create New Subject Type"}</DialogTitle>
       <DialogContent>

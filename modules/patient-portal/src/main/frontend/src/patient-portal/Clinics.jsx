@@ -41,9 +41,8 @@ function Clinics(props) {
   let columns = Object.keys(clinicsSpecs).filter((stat) => !Array.isArray(clinicsSpecs[stat]))
     .map((stat) => {
       return {
-        key: stat,
-        label: camelCaseToWords(stat),
-        format: clinicsSpecs[stat]
+        accessorKey: stat,
+        header: camelCaseToWords(stat)
       };
     });
 
@@ -66,14 +65,17 @@ function Clinics(props) {
             setDialogOpen(true);
             setIsNewClinic(true);
           },
-          inProgress: (dialogOpen && isNewClinic)
         }}
         columns={columns}
         entryType={"Survey/ClinicMapping"}
         customUrl={"Survey/ClinicMapping.paginate"}
-        admin={true}
       />
-      <OnboardNewClinicDialog open={dialogOpen} onClose={dialogClose} onSuccess={dialogSuccess} isNewClinic={isNewClinic} />
+      <OnboardNewClinicDialog
+        open={dialogOpen}
+        onClose={dialogClose}
+        onSuccess={dialogSuccess}
+        isNewClinic={isNewClinic}
+      />
     </>
   );
 }

@@ -16,14 +16,14 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from "react";
-
-import { IconButton, Tooltip } from "@mui/material";
+import React, { useState } from "react";
+import { Box } from "@mui/material";
 import { Link } from 'react-router-dom';
-import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
+import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-import EditIcon from "@mui/icons-material/Edit";
+import EditButton from "./EditButton.jsx";
+
 
 // Get a flat list of subject type parents as labels separated by " / "
 function getTextHierarchy (path, subjectTypes) {
@@ -36,79 +36,77 @@ function getTextHierarchy (path, subjectTypes) {
   return hierarchy;
 }
 
-function EditSubjectTypeButton(props) {
-  const { onClick } = props;
-  return(
-    <Tooltip title={"Edit Subject Type"}>
-      <IconButton onClick={onClick} size="large">
-        <EditIcon />
-      </IconButton>
-    </Tooltip>
-  )
-}
-
 function SubjectTypes(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
-  const [ updateData, setUpdateData ] = useState(false);
+  const [ updateData, setUpdateData ] = useState(0);
   const [ subjectTypeData, setSubjectTypeData ] = useState([]);
   const [ currentSubjectType, setCurrentSubjectType ] = useState(null);
   const [ isEdit, setIsEdit ] = useState(false);
+
+  const entryType = "Subject Type";
   const columns = [
     {
-      "key": "",
-      "label": "Subject Type",
-      "format": (row) => (getTextHierarchy(row['@path'], subjectTypeData)),
+      header: "Subject Type",
+      size: 100,
+      Cell: ({ row }) => (getTextHierarchy(row.original['@path'], subjectTypeData)),
     },
     {
-      "key": "subjectListLabel",
-      "label": "Subject list label",
-      "format": "string",
+      header: "Subject label",
+      accessorKey: 'subjectListLabel',
+      size: 80,
     },
     {
-      "key": "",
-      "label": "Subjects",
-      "format": (row) => (row.instanceCount ? <Link to={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label} underline="hover">{row.instanceCount}</Link> : "0"),
+      header: "Subjects",
+      size: 20,
+      Cell: ({ row }) => (row.original.instanceCount ? <Link to={"/content.html/Subjects#" + row.original['@name']} title={"Show subjects of type " + row.original.label} underline="hover">{row.original.instanceCount}</Link> : "0"),
     },
     {
-      "key": "cards:defaultOrder",
-      "label": "Default Order",
-      "format": "string",
+      header: "Default Order",
+      accessorKey: 'cards:defaultOrder',
+      size: 20,
     },
+/*    {
+      header: "Id Pattern",
+      accessorKey: 'idPattern',
+    },*/
     {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
-    },
-    {
-      "key": "",
-      "label": "Actions",
-      "type": "actions",
-      "format": (row) => (<>
-                            <DeleteButton
-                              entryPath={row["@path"]}
-                              entryName={row.label}
-                              onComplete={() => { setUpdateData(true); }}
-                              entryType={"Subject Type"}
-                              admin={true}
-                            />
-                            <EditSubjectTypeButton
-                              onClick={() => {setIsEdit(true); setCurrentSubjectType(row); setDialogOpen(true);}}
-                            />
-                          </>),
+      header: "Pattern Hint",
+      accessorKey: 'idPatternHint',
     },
   ]
-
-  // When the subject data is changed, set the update data flag to false
-  useEffect(() => {
-    if (subjectTypeData){
-      setUpdateData(false);
-    }
-  }, [subjectTypeData]);
 
   let onClose = () => {
     setDialogOpen(false);
     setIsEdit(false);
-    setCurrentSubjectType(null);
+    setCurrentSubjectType();
+  }
+
+  // If an entity was successfully added or deleted, trigger the table fetch
+  let dialogSuccess = () => {
+    setUpdateData((old) => (old+1));
+  }
+
+  let makeActions = ({ row }) => (
+            <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right'}}>
+              <EditButton
+                entryType={entryType}
+                onClick={() => {setIsEdit(true); setCurrentSubjectType(row.original); setDialogOpen(true);}}
+                useEditDialog
+              />
+              <DeleteButton
+                entryPath={row.original["@path"]}
+                entryName={row.original.label}
+                onComplete={dialogSuccess}
+                entryType={entryType}
+                admin
+              />
+            </Box>
+        )
+
+  let customFilterFn = (row, id, filterValue) => {
+    let path = row.original['@path'] || "";
+    let label = row.original.subjectListLabel || "";
+    return path.toLowerCase().includes(filterValue.toLowerCase()) || label.toLowerCase().includes(filterValue.toLowerCase());
   }
 
   return (
@@ -119,24 +117,24 @@ function SubjectTypes(props) {
         title: "New subject type",
         onClick: () => setDialogOpen(true)
       }}
-      resourceSelectors=".instanceCount"
       columns={columns}
-      entryType={"Subject Type"}
-      admin={true}
+      tableActions={makeActions}
+      entryType="SubjectType"
       disableTopPagination={true}
       updateData={updateData}
       onDataReceived={setSubjectTypeData}
+      resourceSelectors=".instanceCount"
+      customFilter={customFilterFn}
     />
-    { dialogOpen &&
-        <SubjectTypeDialog
-          onClose={() => { onClose(); }}
-          onSubmit={() => { onClose(); setUpdateData(true); }}
-          open={dialogOpen}
-          data={subjectTypeData}
-          isEdit={isEdit}
-          currentSubjectType={currentSubjectType}
-        />
-     }
+
+    <SubjectTypeDialog
+      open={dialogOpen}
+      onClose={onClose}
+      onSuccess={dialogSuccess}
+      data={subjectTypeData}
+      isEdit={isEdit}
+      currentSubjectType={currentSubjectType}
+    />
   </>
   );
 }
