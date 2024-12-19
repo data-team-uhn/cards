@@ -323,7 +323,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Don’t know / Can’t remember</value>
+					<value>Don't know / Can't remember</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -685,7 +685,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Don’t know / Not sure</value>
+					<value>Don't know / Not sure</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -818,7 +818,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Don’t know/Not sure</value>
+					<value>Don't know / Not sure</value>
 					<type>String</type>
 				</property>
 				<property>
