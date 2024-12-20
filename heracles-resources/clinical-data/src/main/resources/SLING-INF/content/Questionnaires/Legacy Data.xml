@@ -47,7 +47,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value>PL######</value>
+			<value>PL#######</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -62,7 +62,7 @@
 		</property>
 		<property>
 			<name>validationErrorText</name>
-			<value>The value must consist of "PL" followed by 6 hexadecimal digits, for example "MH1234EF"</value>
+			<value>The value must consist of "PL" followed by 7 digits, for example "PL1234567"</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -97,7 +97,7 @@
 		</property>
 		<property>
 			<name>validationRegexp</name>
-			<value>^(PL)[0-9A-Fa-f]{6}$</value>
+			<value>^(PL)[0-9]{7}$</value>
 			<type>String</type>
 		</property>
 		<property>
