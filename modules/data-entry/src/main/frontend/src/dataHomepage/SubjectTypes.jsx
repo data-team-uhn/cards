@@ -81,9 +81,18 @@ function SubjectTypes(props) {
     setCurrentSubjectType();
   }
 
-  // If an entity was successfully added or deleted, trigger the table fetch
-  let dialogSuccess = () => {
-    setUpdateData((old) => (old+1));
+  // If an entity was successfully added or deleted, trigger the table add new data, if passed on, or refresh
+  let dialogSuccess = (newData) => {
+    if (newData) {
+      let addedEvent = new CustomEvent('MaterialTableAppend', {
+        bubbles: true,
+        cancelable: true,
+        detail: newData
+      });
+      document.dispatchEvent(addedEvent);
+    } else {
+      setUpdateData((old) => (old+1));
+    }
   }
 
   let makeActions = ({ row }) => (

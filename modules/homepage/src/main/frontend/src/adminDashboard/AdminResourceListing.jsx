@@ -54,6 +54,13 @@ function AdminResourceListing(props) {
     setIsRefetching(false);
   };
 
+  let addData = (event) => {
+    if (event.detail) {
+      const newEntry = event.detail;
+      setData([...data, newEntry]);;
+    }
+  }
+
   // Fetch data from the server
   useEffect(() => {
     fetchData();
@@ -66,6 +73,15 @@ function AdminResourceListing(props) {
     }
   }, [updateData]);
 
+  // When data is created, add it to the table
+  useEffect(() => {
+    // subscribe event
+    window.addEventListener("MaterialTableAppend", addData);
+    return () => {
+      // unsubscribe event
+      document.removeEventListener("MaterialTableAppend", addData);
+    };
+  });
 
   return (
     <AdminScreen
