@@ -155,6 +155,24 @@ public interface ResourceJsonProcessor
     }
 
     /**
+     * Called for each property of a serialized node, allows adjusting the name of the JSON serialized property. The
+     * first processor invoked will receive the properties original name as the input string, and each subsequent
+     * processor being invoked receives the output of the previous one. If at the end of the process the outcome is
+     * {@code null}, then the property is skipped from the parent node's serialization. Only the outcome of the last
+     * processor is taken into consideration when serializing the parent node. The default implementation simply
+     * returns the input unmodified
+     * @param node the node whose property name is being determined
+     * @param property the property which is being named
+     * @param input the name determined by the previous processors, may be {@code null}
+     * @return the desired name for the property to be saved under in the JSON serialization, may be {@code} null if
+     *         the property should be skipped
+     */
+    default String processPropertyName(final Node node, final Property property, final String input)
+    {
+        return input;
+    }
+
+    /**
      * Called for each child node of a serialized node, allows processing the JSON serialization of a child node. The
      * first processor invoked will receive {@code null} as the JSON input, and each subsequent processor being invoked
      * receives the output of the previous one. If at the end of the process the outcome is {@code null}, then the child

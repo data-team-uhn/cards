@@ -171,12 +171,14 @@ public class ResourceToJsonAdapterFactory
         while (properties.hasNext()) {
             Property thisProp = properties.nextProperty();
             JsonValue value = null;
+            String name = thisProp.getName();
             for (ResourceJsonProcessor p : enabledProcessors) {
                 value =
                     p.processProperty(node, thisProp, value, n -> serializeNode(n, enabledProcessors, processedNodes));
+                name = p.processPropertyName(node, thisProp, name);
             }
-            if (value != null) {
-                json.add(thisProp.getName(), value);
+            if (value != null && name != null) {
+                json.add(name, value);
             }
         }
     }

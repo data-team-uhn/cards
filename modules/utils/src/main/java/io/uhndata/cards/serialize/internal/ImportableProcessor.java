@@ -22,7 +22,11 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonValue;
 
 import org.osgi.service.component.annotations.Component;
@@ -69,8 +73,19 @@ public class ImportableProcessor implements ResourceJsonProcessor
             } else if (propertyName.startsWith("sling:")) {
                 // Remove all sling properties
                 result = null;
+            } else if (isReference(property)) {
+                // Convert all reference properties to the path being referenced
+                if (property.isMultiple()) {
+                    final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                    for (Value value : property.getValues()) {
+                        Node referencedNode = property.getSession().getNodeByIdentifier(value.getString());
+                        arrayBuilder.add(referencedNode.getPath());
+                    }
+                    result = arrayBuilder.build();
+                } else {
+                    result = Json.createValue(property.getNode().getPath());
+                }
             }
-            // TODO: Add in better handling for requiredSubjectTypes
 
             return result;
         } catch (RepositoryException e) {
@@ -93,5 +108,26 @@ public class ImportableProcessor implements ResourceJsonProcessor
             // Really shouldn't happen
         }
         return input;
+    }
+
+    @Override
+    public String processPropertyName(final Node node, final Property property, final String input)
+    {
+        try {
+            if (isReference(property)) {
+                // Prefix all reference property names so the json to xml script recognizes they should
+                // be references and not strings
+                return "jcr:reference:" + property.getName();
+            }
+        } catch (RepositoryException e) {
+            // Really shouldn't happen
+        }
+        return input;
+    }
+
+    private boolean isReference(Property property)
+        throws RepositoryException
+    {
+        return PropertyType.REFERENCE == property.getType() || PropertyType.WEAKREFERENCE == property.getType();
     }
 }
