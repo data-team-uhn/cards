@@ -88,16 +88,20 @@ public class SubjectIdPatternValidator extends DefaultValidator
             if (subjectType.hasProperty("idPattern")) {
                 final String regexp = subjectType.getProperty("idPattern").getString();
                 if (StringUtils.isNotBlank(regexp)) {
-                    Pattern pattern = Pattern.compile(regexp);
-                    if (!pattern.matcher(id).find()) {
+                    try {
+                        Pattern pattern = Pattern.compile(regexp);
+                        if (!pattern.matcher(id).find()) {
+                            throw new CommitFailedException(CommitFailedException.STATE, 400,
+                                subjectType + " " + id + " cannot be created because its identifier"
+                                + " does not match the required format " + regexp);
+                        }
+                    } catch (PatternSyntaxException e) {
                         throw new CommitFailedException(CommitFailedException.STATE, 400,
-                            "This subject cannot be created because the id is not validated by subject type pattern");
+                            "The identifier format requirement for " + subjectType + " subjects is invalid: "
+                            + regexp + ". No " + subjectType + " subjects can be created.");
                     }
                 }
             }
-        } catch (PatternSyntaxException e) {
-            throw new CommitFailedException(CommitFailedException.STATE, 400,
-                "This subject cannot be created because the subject type pattern is not valid");
         } catch (RepositoryException e) {
             // Should not happen
             LOGGER.error("Unexpected exception validating subject identifier: {}", e.getMessage(), e);
