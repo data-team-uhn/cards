@@ -89,7 +89,7 @@ function UnstyledNewSubjectDialog (props) {
         setIsValid(true);
         return;
     }
-    let pattern = regexp || new RegExp(type.idPattern);
+    let pattern = new RegExp(type.idPattern);
     setIsValid(pattern.test(text));
   }
 
