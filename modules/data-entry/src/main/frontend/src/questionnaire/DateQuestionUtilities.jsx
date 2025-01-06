@@ -195,7 +195,7 @@ export default class DateQuestionUtilities {
       } else if (min) {
         return `${min} or later`;
       } else {
-        return `At most ${max}`;
+        return `Before or on ${max}`;
       }
     }
     return null;
