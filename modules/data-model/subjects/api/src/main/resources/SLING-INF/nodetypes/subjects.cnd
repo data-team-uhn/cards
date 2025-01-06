@@ -100,12 +100,18 @@
   // A description outlining the subject type.
   - description (String)
 
-  // The label/title to display to the user when listing subjects of this tyoe
+  // The label/title to display to the user when listing subjects of this type
   // Usually the plural of label
   - subjectListLabel (String)
 
   // Any number of parent subject types that are required by this subject type
   - requiredParentType (String) multiple
+
+  // Regexp to shape the subject Id
+  - idPattern (String)
+
+  // A human readable text explaining to the user what shape of Id is expected
+  - idPatternHint (String)
 
 //-----------------------------------------------------------------------------
 // The homepage for any SubjectTypes.

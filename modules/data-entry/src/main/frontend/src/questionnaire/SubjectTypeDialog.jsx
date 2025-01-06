@@ -32,8 +32,12 @@ function SubjectTypeDialog(props) {
   const [ parentSubject, setParentSubject ] = useState(initialParent);
   const [ order, setOrder ] = useState(currentSubjectType && currentSubjectType["cards:defaultOrder"] ? currentSubjectType["cards:defaultOrder"] : 0);
   const [ subjectListLabel, setSubjectListLabel ] = useState(currentSubjectType?.subjectListLabel || "");
+  const [ idPattern, setIdPattern ] = useState(currentSubjectType?.idPattern || "");
+  const [ idPatternHint, setIdPatternHint ] = useState(currentSubjectType?.idPatternHint || "");
+
   const [ error, setError ] = useState(null);
   const [ isDuplicateLabel, setIsDuplicateLabel ] = useState(false);
+  const [ isInvalidRegexp, setIsInvalidRegexp ] = useState(false);
 
   let validateLabel = (name) => {
     setError("");
@@ -43,6 +47,15 @@ function SubjectTypeDialog(props) {
         setIsDuplicateLabel(true);
         return;
       }
+    }
+  }
+
+  let validateRegexp = (pattern) => {
+    setIsInvalidRegexp(false);
+    try {
+      new RegExp(pattern);
+    } catch(e) {
+      setIsInvalidRegexp(true);
     }
   }
 
@@ -56,6 +69,8 @@ function SubjectTypeDialog(props) {
       formInfo["label"] = label;
       formInfo["cards:defaultOrder"] = order;
       formInfo["subjectListLabel"] = subjectListLabel;
+      formInfo["idPattern"] = idPattern;
+      formInfo["idPatternHint"] = idPatternHint;
 
       formData.append(':contentType', 'json');
       formData.append(':operation', 'import');
@@ -63,7 +78,12 @@ function SubjectTypeDialog(props) {
       formData.append(':content', JSON.stringify(formInfo));
     } else {
       // if nothing changed - just move the node
-      if (currentSubjectType["cards:defaultOrder"] == order && currentSubjectType["label"] === label && currentSubjectType["subjectListLabel"] === subjectListLabel) {
+      if (currentSubjectType["cards:defaultOrder"] == order &&
+          currentSubjectType["cards:defaultOrder"] == order &&
+          currentSubjectType["label"] === label &&
+          currentSubjectType["subjectListLabel"] === subjectListLabel &&
+          currentSubjectType["idPattern"] === idPattern &&
+          currentSubjectType["idPatternHint"] === idPatternHint) {
         moveSubjectType();
         return;
       } else {
@@ -71,6 +91,8 @@ function SubjectTypeDialog(props) {
         formData.append("cards:defaultOrder", order);
         formData.append("label", label);
         formData.append("subjectListLabel", subjectListLabel);
+        formData.append("idPattern", idPattern);
+        formData.append("idPatternHint", idPatternHint);
       }
     }
 
@@ -118,14 +140,16 @@ function SubjectTypeDialog(props) {
     setLabel("");
     setParentSubject("");
     setOrder(0);
-    setSubjectListLabel("")
+    setSubjectListLabel("");
+    setIdPattern("");
+    setIdPatternHint("");
     setIsDuplicateLabel(false);
     onClose();
   }
 
   return (
     <Dialog
-      maxWidth="xs"
+      maxWidth="sm"
       open={open}
       onClose={onClose}
     >
@@ -145,7 +169,7 @@ function SubjectTypeDialog(props) {
               onChange={(event) => { setLabel(event.target.value); validateLabel(event.target.value); }}
               autoFocus
               error={isDuplicateLabel}
-                helperText={isDuplicateLabel ? "This label already exists" : "Required*"}
+              helperText={isDuplicateLabel ? "This label already exists" : "Required*"}
             />
           </Grid>
           { (isEdit || subjectTypes && subjectTypes.length > 0) &&
@@ -199,7 +223,33 @@ function SubjectTypeDialog(props) {
               fullWidth
               type="text"
               value={subjectListLabel}
-              onChange={(event) => { setSubjectListLabel(event.target.value); setError(""); }}
+              onChange={(event) => { setSubjectListLabel(event.target.value); }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Typography>Subject Id Pattern</Typography>
+          </Grid>
+          <Grid item xs={8}>
+            <TextField
+              variant="standard"
+              fullWidth
+              type="text"
+              value={idPattern}
+              error={isInvalidRegexp}
+              helperText={isInvalidRegexp ? "Invalid regex pattern" : ""}
+              onChange={(event) => { setIdPattern(event.target.value); validateRegexp(event.target.value); }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Typography>Subject Id Pattern Hint</Typography>
+          </Grid>
+          <Grid item xs={8}>
+            <TextField
+              variant="standard"
+              fullWidth
+              type="text"
+              value={idPatternHint}
+              onChange={(event) => { setIdPatternHint(event.target.value); }}
             />
           </Grid>
         </Grid>
@@ -211,7 +261,10 @@ function SubjectTypeDialog(props) {
                   || isEdit && (currentSubjectType["cards:defaultOrder"] == order &&
                                 initialParent == parentSubject &&
                                 currentSubjectType["label"] == label &&
-                                currentSubjectType["subjectListLabel"] == subjectListLabel)
+                                currentSubjectType["subjectListLabel"] == subjectListLabel &&
+                                currentSubjectType?.["idPattern"] == idPattern &&
+                                currentSubjectType?.["idPatternHint"] == idPatternHint
+                                )
           }
           color="primary"
           variant="contained"

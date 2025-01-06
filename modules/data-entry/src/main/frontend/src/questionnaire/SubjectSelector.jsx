@@ -21,10 +21,9 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
+import { Alert, Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import MaterialReactTable from "material-react-table";
-import Alert from '@mui/material/Alert';
 
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./SubjectIdentifier.jsx";
@@ -65,6 +64,9 @@ function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value, subjectType } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
 
+  const [ regexp, setRegexp ] = useState();
+  const [ isValid, setIsValid ] = useState(true);
+
   const [ data, setData ] = useState([]);
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isRefetching, setIsRefetching ] = useState(false);
@@ -79,9 +81,23 @@ function UnstyledNewSubjectDialog (props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  // Validation against the regular expression if one is provided
+  // Empty inputs are considered valid
+  // If no regexp is provided, all inputs are valid
+  let validateSubjectId = (type, text) => {
+    if (!text || !type?.idPattern) {
+        setIsValid(true);
+        return;
+    }
+    let pattern = new RegExp(type.idPattern);
+    setIsValid(pattern.test(text));
+  }
+
   let changeType = (type) => {
     onChangeType && onChangeType(type);
     setNewSubjectType(type);
+    type?.idPattern && setRegexp(new RegExp(type.idPattern));
+    validateSubjectId(type, value);
   }
 
   // Auto-select on each dialog open if there's only one valid SubjectType given in allowedTypes
@@ -137,7 +153,9 @@ function UnstyledNewSubjectDialog (props) {
               autoFocus
               disabled={disabled}
               value={value}
-              onChange={onChangeSubject}
+              onChange={(event) => { onChangeSubject(event); validateSubjectId(newSubjectType, event?.target?.value); }}
+              error={!isValid}
+              helperText={newSubjectType?.["idPatternHint"] || ""}
             />
           </div>
           <MaterialReactTable
@@ -186,7 +204,7 @@ function UnstyledNewSubjectDialog (props) {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {setNewSubjectType(""); onClose()}}
+            onClick={() => {setNewSubjectType(""); setIsValid(true); onClose();}}
             variant="outlined"
             disabled={disabled}
             >
@@ -196,7 +214,7 @@ function UnstyledNewSubjectDialog (props) {
             onClick={() => {setNewSubjectType(""); onSubmit()}}
             variant="contained"
             color="primary"
-            disabled={disabled || continueDisabled}
+            disabled={disabled || continueDisabled || !isValid}
             >
             {requiresParents ? "Continue" : "Create"}
           </Button>
@@ -471,14 +489,8 @@ export function NewSubjectDialog (props) {
 
   // Called when creating a new subject
   let createNewSubject = () => {
-    if (newSubjectName[newSubjectIndex] == "") {
-      setError("Please enter a name for this subject.");
-    } else if (newSubjectType[newSubjectIndex] == "") {
-      setError("Please select a subject type.");
-    } else if (selectParentPopperOpen && newSubjectParent.length < newSubjectIndex) {
-      // They haven't selected a parent for the current type yet
-      setError("Please select a valid parent.");
-    } else if (newSubjectPopperOpen && curSubjectRequiresParents) {
+    setError();
+    if (newSubjectPopperOpen && curSubjectRequiresParents) {
       // If we were given a subject whose parent we must be a child of, we can just look there instead
       // Find everything after the first /
       let newSubjectParentPath = /(.+)\/.+?/g.exec(newSubjectType[newSubjectIndex]?.["@path"])[1];
@@ -490,7 +502,6 @@ export function NewSubjectDialog (props) {
         createNewSubjectRecursive(null, newSubjectIndex, newParentList);
       } else {
         // Display the parent type to select
-        setError();
         setNewSubjectPopperOpen(false);
         setSelectParentPopperOpen(true);
       }
@@ -609,7 +620,7 @@ export function NewSubjectDialog (props) {
     // if there are no new subjects...
     if (newSubjectIndex == 0) {
       // Close the entire dialog
-      closeDialog();
+      closeDialog(clearError);
     } else {
       // Go back a stage, and reopen the select parent dialog
       if (clearError) {
@@ -649,9 +660,9 @@ export function NewSubjectDialog (props) {
     setSelectParentPopperOpen(false);
   }
 
-  let closeDialog = () => {
-    clearDialog();
-    onClose();
+  let closeDialog = (clearError=true) => {
+    clearDialog(clearError);
+    clearError && onClose();
   }
 
   return (
@@ -662,7 +673,7 @@ export function NewSubjectDialog (props) {
         disabled={disabledControls}
         error={error}
         onClose={goBack}
-        onChangeSubject={(event) => {changeNewSubjectName(event.target.value)}}
+        onChangeSubject={(event) => {setError(); changeNewSubjectName(event.target.value)}}
         onChangeType={changeNewSubjectType}
         onSubmit={createNewSubject}
         requiresParents={curSubjectRequiresParents}
