@@ -40,9 +40,9 @@
         <name>Patient information</name>
         <primaryNodeType>cards:ClarityQuestionnaireMapping</primaryNodeType>
         <property>
-          <name>updatesExisting</name>
-          <value>true</value>
-          <type>Boolean</type>
+          <name>updatePolicy</name>
+          <value>updateExisting</value>
+          <type>String</type>
         </property>
         <node>
           <name>00000001</name>
@@ -214,9 +214,9 @@
             <name>Visit information</name>
             <primaryNodeType>cards:ClarityQuestionnaireMapping</primaryNodeType>
             <property>
-              <name>updatesExisting</name>
-              <value>true</value>
-              <type>Boolean</type>
+              <name>updatePolicy</name>
+              <value>updateExisting</value>
+              <type>String</type>
             </property>
             <node>
               <name>00000001</name>
