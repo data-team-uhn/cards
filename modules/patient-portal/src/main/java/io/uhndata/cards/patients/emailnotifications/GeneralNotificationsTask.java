@@ -76,10 +76,11 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
         final ThreadResourceResolverProvider resolverProvider, final EventAdmin eventAdmin,
         final TokenManager tokenManager, final MailService mailService,
         final FormUtils formUtils, final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
-        final String notificationType, final String clinicId, final String emailTemplatePath, final int daysToVisit)
+        final String notificationType, final String clinicId, final String emailTemplatePath, final int daysToVisit,
+        final boolean includePatientName)
     {
         super(resolverFactory, resolverProvider, tokenManager, mailService, formUtils, patientAccessConfiguration,
-            eventAdmin);
+            eventAdmin, includePatientName);
         this.taskName = taskName;
         this.notificationType = notificationType;
         this.clinicId = clinicId;
