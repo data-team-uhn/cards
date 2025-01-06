@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography } from "@mui/material";
+import { FormHelperText, TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -46,8 +46,8 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //<DateQuestion
 //  text="Please enter a date-time in 2019"
 //  dateFormat="yyyy-MM"
-//  lowerLimit={new Date("01-01-2019")}
-//  upperLimit={new Date("12-31-2019")}
+//  lowerLimit="2019-01-01"
+//  upperLimit="today"
 //  type="timestamp"
 //  />
 function DateQuestionMonth(props) {
@@ -62,8 +62,10 @@ function DateQuestionMonth(props) {
   const [ displayedEndDate, setDisplayedEndDate ] = useState(DateQuestionUtilities.formatDateAnswer(
     dateFormat,
     DateQuestionUtilities.stripTimeZone(typeof(startValues) === "object" ? startValues[1] : "")));
-  const upperLimitMoment = DateQuestionUtilities.toPrecision(upperLimit);
-  const lowerLimitMoment = DateQuestionUtilities.toPrecision(lowerLimit);
+  const upperLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(upperLimit));
+  const lowerLimitMoment = DateQuestionUtilities.toPrecision(DateQuestionUtilities.processRelativeDate(lowerLimit));
+
+  const instructions = DateQuestionUtilities.getAnswerValueInstructions(lowerLimitMoment, upperLimitMoment, dateFormat);
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
@@ -177,10 +179,7 @@ function DateQuestionMonth(props) {
         InputProps={{
           className: classes.textField
         }}
-        inputProps={{
-          max: upperLimit,
-          min: lowerLimit
-        }}
+        error={error}
         onChange={(event) => setDate(event.target.value, isEnd)}
         onBlur={() => onBlur(value, isEnd)}
         placeholder={dateFormat.toLowerCase()}
@@ -195,15 +194,25 @@ function DateQuestionMonth(props) {
       {...props}
       >
       {pageActive && <>
-        {error && <Typography color='error'>{errorMessage}</Typography>}
+        { instructions &&
+          <Typography
+            component="p"
+            color="textSecondary"
+            className="cards-answerInstructions"
+            variant="caption"
+          >
+            { instructions }
+          </Typography>
+        }
         {getTextField(false, displayedDate)}
         { /* If this is an interval, allow the user to select a second date */
         type === DateQuestionUtilities.INTERVAL_TYPE &&
         <React.Fragment>
-          <span className={classes.mdash}>&mdash;</span>
+          <span className={classes.mdash}> &mdash; </span>
           {getTextField(true, displayedEndDate)}
         </React.Fragment>
         }
+        { error && <FormHelperText error={error}>{errorMessage}</FormHelperText> }
       </>}
       <Answer
         answers={outputAnswers}

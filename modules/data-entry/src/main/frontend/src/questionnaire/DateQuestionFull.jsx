@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -46,8 +46,8 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //<DateQuestion
 //  text="Please enter a date-time in 2019"
 //  dateFormat="yyyy-MM-dd HH:mm:ss"
-//  lowerLimit={new Date("01-01-2019")}
-//  upperLimit={new Date("12-31-2019")}
+//  lowerLimit="2019-01-01"
+//  upperLimit="today"
 //  type="timestamp"
 //  />
 function DateQuestionFull(props) {
@@ -62,8 +62,14 @@ function DateQuestionFull(props) {
   const [ endDate, setEndDate ] = useState(
     typeof(startValues) === "object" ? DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(startValues[1])) : null
   );
-  const upperLimitMoment = DateQuestionUtilities.toPrecision(upperLimit);
-  const lowerLimitMoment = DateQuestionUtilities.toPrecision(lowerLimit);
+
+  const absoluteUpperLimit = DateQuestionUtilities.processRelativeDate(upperLimit, true);
+  const absoluteLowerLimit = DateQuestionUtilities.processRelativeDate(lowerLimit, false);
+
+  const upperLimitMoment = DateQuestionUtilities.toPrecision(absoluteUpperLimit);
+  const lowerLimitMoment = DateQuestionUtilities.toPrecision(absoluteLowerLimit);
+
+  const instructions = DateQuestionUtilities.getAnswerValueInstructions(lowerLimitMoment, upperLimitMoment, dateFormat);
 
   let setDate = (value, isEnd) => {
     if (isEnd) {
@@ -135,8 +141,8 @@ function DateQuestionFull(props) {
           className: classes.textField
         }}
         inputProps={{
-          max: upperLimit,
-          min: lowerLimit
+          max: DateQuestionUtilities.strip(absoluteUpperLimit, textFieldType),
+          min: DateQuestionUtilities.strip(absoluteLowerLimit, textFieldType)
         }}
         onChange={(event) => processChange(event.target.value, isEnd)}
         onBlur={(event) => processBlur(event.target.value, isEnd)}
@@ -153,11 +159,21 @@ function DateQuestionFull(props) {
       >
       {
         pageActive && <>
+          { instructions &&
+            <Typography
+              component="p"
+              color="textSecondary"
+              className="cards-answerInstructions"
+              variant="caption"
+            >
+              { instructions }
+            </Typography>
+          }
           {getTextField(false, DateQuestionUtilities.dateToFormattedString(startDate, textFieldType))}
           { /* If this is an interval, allow the user to select a second date */
           type === DateQuestionUtilities.INTERVAL_TYPE &&
           <React.Fragment>
-            <span className={classes.mdash}>&mdash;</span>
+            <span className={classes.mdash}> &mdash; </span>
             {getTextField(true, DateQuestionUtilities.dateToFormattedString(endDate, textFieldType))}
           </React.Fragment>
           }

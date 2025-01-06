@@ -99,6 +99,8 @@
         "dateFormat": "string",
         "entryMode": {
           "user": {
+             "lowerLimit": "string",
+             "upperLimit": "string"
           },
           "computed": {
             "expression": "code",

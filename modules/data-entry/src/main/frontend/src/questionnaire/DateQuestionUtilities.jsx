@@ -45,8 +45,8 @@ export default class DateQuestionUtilities {
       text: PropTypes.string,
       dateFormat: PropTypes.string,
       type: PropTypes.oneOf([DateQuestionUtilities.TIMESTAMP_TYPE, DateQuestionUtilities.INTERVAL_TYPE]),
-      lowerLimit: PropTypes.object,
-      upperLimit: PropTypes.object,
+      lowerLimit: PropTypes.string,
+      upperLimit: PropTypes.string,
     })
   };
 
@@ -171,8 +171,34 @@ export default class DateQuestionUtilities {
     return dateString?.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
   }
 
+  static stripFrom(dateString, delimiter) {
+    // Remove everything after the delimiter
+    return (dateString?.includes(delimiter) ? dateString?.substring(0, dateString?.indexOf(delimiter)) : dateString)
+  }
+
+  static strip(dateAsISO, textFieldType) {
+    if (textFieldType == 'datetime-local') return this.stripFrom(dateAsISO, '.');
+    if (textFieldType == 'date') return this.stripFrom(dateAsISO, 'T');
+    return dateAsISO;
+  }
+
   static isAnswerComplete(answers, type) {
     return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
+  }
+
+  static getAnswerValueInstructions(lowerLimit, upperLimit, format) {
+    if (lowerLimit || upperLimit) {
+      let min = lowerLimit?.toFormat(format);
+      let max = upperLimit?.toFormat(format);
+      if (min && max) {
+        return `Between ${min} and ${max}`;
+      } else if (min) {
+        return `${min} or later`;
+      } else {
+        return `Before or on ${max}`;
+      }
+    }
+    return null;
   }
 
   static dateDifference = (startDateInput, endDateInput) => {
@@ -224,5 +250,42 @@ export default class DateQuestionUtilities {
 
   static formatIsMeridiem(dateFormat) {
     return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
+  }
+
+  static processRelativeDate(dateString, endOfDay = false, toFormat) {
+    // Any input other than a string is not supported
+    if (typeof dateString != "string") return undefined;
+
+    let absoluteDate;
+    let adjustTime = true;
+
+    // Is the dateString "today" or a number of days relative to today ("today + N", "today - N")?
+    let relativeDate = dateString.trim().toLowerCase();
+
+    if (relativeDate.startsWith("today")) {
+      absoluteDate = DateTime.now();
+      let differenceInDays = relativeDate.match(/^today(\s*([\+-])\s*(\d+))?$/)?.slice(2,4).join("");
+      absoluteDate = absoluteDate.plus({days: +differenceInDays});
+
+    } else {
+
+      // If not, is it a valid date in ISO format?
+      let isoDate = DateTime.fromISO(dateString.trim());
+
+      if (isoDate.isValid){
+        absoluteDate = isoDate;
+        // If the provided date has a time specified, don't adjust the time to start/end of day
+        adjustTime = !dateString.includes("T");
+      }
+    }
+    // Otherwise it's an unsuported string, absoluteDate stays undefined and we end up returning undefined
+
+    if (absoluteDate) {
+      if (adjustTime) {
+        absoluteDate = endOfDay ? absoluteDate?.endOf('day') : absoluteDate?.startOf('day');
+      }
+      return toFormat ? absoluteDate?.toFormat(toFormat) : absoluteDate.toISO();
+    }
+    return undefined;
   }
 }
