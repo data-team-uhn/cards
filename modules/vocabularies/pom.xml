@@ -92,7 +92,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient-osgi</artifactId>
-      <version>4.5.6</version>
+      <version>4.5.13</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -118,7 +118,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-osgi</artifactId>
-      <version>3.17.0</version>
+      <version>4.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
