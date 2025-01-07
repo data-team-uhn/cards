@@ -18,16 +18,16 @@
 -->
 
 <node>
-	<name>SectionsWithInfoNodesTest</name>
+	<name>InformationNodesTest</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Sections with only Information nodes Test</value>
+		<value>Information Nodes Test</value>
 		<type>String</type>
 	</property>
 	<property>
 		<name>description</name>
-		<value>CARDS-2590: Sections with only Information nodes displayed in view mode</value>
+		<value>CARDS-2590, CARDS-2628</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -340,5 +340,215 @@
 			<value>success</value>
 			<type>String</type>
 		</property>
+	</node>
+	<node>
+		<name>ordered-information</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>compact</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>4 information boxes displayed in all modes mode in ascending numerical order</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>default</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>label</name>
+			<value>S3: Ordered Section</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>recurrent</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<node>
+			<name>ordered1</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>formMode</name>
+				<value>any</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>1. Information</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>type</name>
+				<value>success</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>ordered2</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>formMode</name>
+				<value>any</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>2. Information</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>type</name>
+				<value>success</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>ordered3</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>formMode</name>
+				<value>any</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>3. Information</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>type</name>
+				<value>success</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>ordered4</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>formMode</name>
+				<value>any</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>4. Information</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>type</name>
+				<value>success</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>recurrent-ordered-information</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>compact</name>
+			<value>False</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>4 information boxes displayed in all modes mode in ascending numerical order inside a recurrent section</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>default</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>label</name>
+			<value>S4: Recurrent Ordered Section</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>recurrent</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<node>
+			<name>recurrentordered1</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>formMode</name>
+				<value>any</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>1. Information</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>type</name>
+				<value>success</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>recurrentordered2</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>formMode</name>
+				<value>any</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>2. Information</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>type</name>
+				<value>success</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>recurrentordered3</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>formMode</name>
+				<value>any</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>3. Information</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>type</name>
+				<value>success</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>recurrentordered4</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>formMode</name>
+				<value>any</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>4. Information</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>type</name>
+				<value>success</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 </node>

@@ -410,8 +410,6 @@ public abstract class AbstractFormToStringSerializer
             } else if (json.containsKey(QUESTION_KEY)) {
                 uuid = json.get(QUESTION_KEY).getValueType() == ValueType.OBJECT
                     ? json.getJsonObject(QUESTION_KEY).getString(UUID_KEY) : json.getString(QUESTION_KEY);
-            } else if (QuestionnaireUtils.INFORMATION_NODETYPE.equals(json.getString(PRIMARY_TYPE_KEY))) {
-                uuid = json.getString(UUID_KEY);
             }
             return uuid;
         }
