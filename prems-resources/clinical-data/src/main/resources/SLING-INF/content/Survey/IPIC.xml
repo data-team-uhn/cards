@@ -49,7 +49,7 @@ We appreciate any insights you can provide and will look to make improvements ba
         </property>
         <property>
             <name>estimate</name>
-            <value>5</value>
+            <value>10</value>
             <type>Long</type>
         </property>
         <property>
