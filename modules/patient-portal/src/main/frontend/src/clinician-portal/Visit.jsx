@@ -50,6 +50,7 @@ import SurveyLinkButton from "./SurveyLinkButton";
 import EditButton from "../dataHomepage/EditButton";
 import PrintButton from "../dataHomepage/PrintButton";
 import SubjectLockAction from "../locking/SubjectLockAction";
+import FormattedText from "../components/FormattedText";
 import ResourceHeader from "../questionnaire/ResourceHeader";
 import { getHierarchyAsList, getTextHierarchy } from "../questionnaire/SubjectIdentifier";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
@@ -274,6 +275,16 @@ function Visit(props) {
     return surveyData?.[questionnaireId]?.statusFlags?.includes("LOCKED");
   }
 
+  const isFormNavigable = (questionnaireId) => {
+    return (surveyData?.[questionnaireId]?.questionnaire?.paginationVariant == "navigable");
+  }
+
+  const isPageComplete = (questionnaireId, section) => {
+    let answerSection = Object.values(surveyData?.[questionnaireId] || {})
+                         .find(e => (e?.section?.["jcr:uuid"] == section?.["jcr:uuid"]));
+    return answerSection && !answerSection.statusFlags?.includes("INCOMPLETE");
+  }
+
   const displayFlags = q => (
     (surveyData?.[q]?.statusFlags ?? [])
       .filter(f => ["INCOMPLETE", "SUBMITTED", "LOCKED"].includes(f))
@@ -298,7 +309,7 @@ function Visit(props) {
           secondaryAction={withAction && !isFormLocked(q) && <EditButton entryPath={surveyData?.[q]?.["@path"]}/>}
         >
           <ListItemButton onClick={() => history.push(`/content.html${surveyData?.[q]?.["@path"]}`)}>
-            <ListItemAvatar>
+            <ListItemAvatar sx={{alignSelf: "baseline", zoom: 1.2}}>
             { isFormLocked(q) ? lockedIndicator : (
                  isFormComplete(q) ? doneIndicator : (
                    isFormSubmitted(q) ? incompleteIndicator : surveyIndicator
@@ -306,13 +317,39 @@ function Visit(props) {
                )
             }
             </ListItemAvatar>
-            <ListItemText primary={questionnaires[q]?.title} secondary={displayFlags(q)} />
+            <ListItemText
+              primary={questionnaires[q]?.title}
+              secondary={<>
+                { displayFlags(q) }
+                { !isFormComplete(q) && isFormNavigable(q) && listPages(q) }
+              </>}
+            />
           </ListItemButton>
         </ListItem>
       ))}
       </List>
     </>
   );
+
+  // For navigable forms, list pages with their completion status
+  const listPages = (qId) => (
+    <List dense disablePadding sx={{width: "fit-content"}}>
+      { Object.values(surveyData?.[qId]?.questionnaire || {})
+          .filter(c => c?.["jcr:primaryType"] == "cards:Section")
+          .map(s => {
+            let isComplete = isPageComplete(qId, s);
+            return (
+              <ListItem disablePadding sx={{paddingRight: 6}} secondaryAction={ isComplete && <DoneIcon color="success"/> }>
+                <ListItemText
+                  disableTypography
+                  primary={<FormattedText variant="caption" sx={isComplete ? {opacity: .5} : {}}>{s.label || s["@name"]}</FormattedText>}
+                />
+              </ListItem>
+             );
+           })
+      }
+    </List>
+  )
 
   // -----------------------------------------------------------------------------------------------------------------
   // Render the visit:
