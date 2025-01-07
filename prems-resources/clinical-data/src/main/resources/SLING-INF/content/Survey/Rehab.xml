@@ -51,7 +51,7 @@ Please do not include any other hospital stays in your answers.
         </property>
         <property>
             <name>estimate</name>
-            <value>10</value>
+            <value>15</value>
             <type>Long</type>
         </property>
         <property>
