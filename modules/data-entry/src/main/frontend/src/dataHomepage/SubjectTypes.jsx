@@ -100,7 +100,6 @@ function SubjectTypes(props) {
               <EditButton
                 entryType={entryType}
                 onClick={() => {setIsEdit(true); setCurrentSubjectType(row.original); setDialogOpen(true);}}
-                useEditDialog
               />
               <DeleteButton
                 entryPath={row.original["@path"]}

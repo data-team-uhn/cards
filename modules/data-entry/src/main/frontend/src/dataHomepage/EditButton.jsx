@@ -30,18 +30,24 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * A component that renders an icon to open the edit URL for an entry or to use local edit dialog.
  */
 function EditButton(props) {
-  const { entryPath, entryType, size, className, admin, onClick, useEditDialog } = props;
+  const { entryPath, entryType, size, className, admin, onClick } = props;
 
-  let innerButton = <Tooltip title={entryType ? "Edit " + entryType : "Edit"}>
+  let innerButton =
         <IconButton className={className} size={size} onClick={onClick}>
           <EditIcon />
         </IconButton>
-      </Tooltip>
 
-  return useEditDialog ? innerButton : (
-    <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"} underline="hover">
-     {innerButton}
-    </Link>
+  return (
+	<Tooltip title={entryType ? "Edit " + entryType.toLowerCase() : "Edit"}>
+	  { onClick
+	    ?
+	    innerButton
+	    :
+        <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"} underline="hover">
+          {innerButton}
+        </Link>
+      }
+    </Tooltip>
   )
 }
 
@@ -51,7 +57,7 @@ EditButton.propTypes = {
   size: PropTypes.oneOf(["small", "medium", "large"]),
   className: PropTypes.string,
   admin: PropTypes.bool,
-  useEditDialog: PropTypes.bool,
+  onClick: PropTypes.func
 }
 
 EditButton.defaultProps = {

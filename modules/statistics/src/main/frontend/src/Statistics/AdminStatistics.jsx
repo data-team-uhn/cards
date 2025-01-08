@@ -109,7 +109,6 @@ function AdminStatistics(props) {
             <EditButton
               entryType={entryType}
               onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(row.original["@name"]);}}
-              useEditDialog
             />
             <DeleteButton
               entryPath={row.original["@path"]}
