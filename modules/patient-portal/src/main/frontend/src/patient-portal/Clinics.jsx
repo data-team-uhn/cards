@@ -68,7 +68,7 @@ function Clinics(props) {
         }}
         columns={columns}
         entryType={"Survey/ClinicMapping"}
-        customUrl={"Survey/ClinicMapping.paginate"}
+        dataUrl={"Survey/ClinicMapping.paginate"}
       />
       <OnboardNewClinicDialog
         open={dialogOpen}

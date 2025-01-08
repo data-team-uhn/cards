@@ -25,7 +25,7 @@ import MaterialReactTable from "material-react-table";
 
 
 function AdminResourceListing(props) {
-  const { title, columns, tableActions, buttonProps, customUrl, entryType, resourceSelectors, updateData,
+  const { title, columns, tableActions, buttonProps, dataUrl, entryType, resourceSelectors, updateData,
     onDataReceived, customFilter, ...rest } = props;
 
   const [ data, setData ] = useState([]);
@@ -41,7 +41,7 @@ function AdminResourceListing(props) {
       setIsRefetching(true);
     }
 
-    const urlBase = customUrl || '/query?query=' + encodeURIComponent('select * from [cards:'+ entryType+']');
+    const urlBase = dataUrl || '/query?query=' + encodeURIComponent('select * from [cards:'+ entryType+']');
     let url = new URL(urlBase, window.location.origin);
     resourceSelectors && url.searchParams.set("resourceSelectors", resourceSelectors);
     url.searchParams.set("limit", 1000);
