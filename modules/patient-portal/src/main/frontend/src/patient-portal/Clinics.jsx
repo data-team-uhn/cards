@@ -43,7 +43,7 @@ function Clinics(props) {
       return {
         accessorKey: stat,
         header: camelCaseToWords(stat),
-        enableSorting: stat != "emergencyContac" || stat != "description",
+        enableSorting: stat != "emergencyContact" || stat != "description",
       };
     });
 
