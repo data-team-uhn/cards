@@ -38,11 +38,11 @@ function EditButton(props) {
         </IconButton>
 
   return (
-	<Tooltip title={entryType ? "Edit " + entryType.toLowerCase() : "Edit"}>
-	  { onClick
-	    ?
-	    innerButton
-	    :
+    <Tooltip title={entryType ? "Edit " + entryType.toLowerCase() : "Edit"}>
+      { onClick
+        ?
+        innerButton
+        :
         <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"} underline="hover">
           {innerButton}
         </Link>
