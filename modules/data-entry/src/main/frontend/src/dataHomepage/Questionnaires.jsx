@@ -26,6 +26,7 @@ import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import ExportButton from "./ExportButton.jsx";
 import { DateTime } from "luxon";
+import FormattedText from "../components/FormattedText.jsx";
 
 // Convert a date into the given format string
 // If the date is invalid (usually because it is missing), return ""
@@ -66,6 +67,7 @@ function Questionnaires(props) {
     {
       accessorKey: "description",
       header: "Description",
+      Cell: ({ row }) => <FormattedText>{row.original.description}</FormattedText>,
     },
   ]
 
