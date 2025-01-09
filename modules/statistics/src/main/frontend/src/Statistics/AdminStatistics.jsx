@@ -88,14 +88,17 @@ function AdminStatistics(props) {
     },
     {
       header: "X-axis",
+      accessorKey: "xVar",
       Cell: ({ row }) => (createTableCell(row.original.xVar)),
     },
     {
       header: "Y-axis",
+      accessorKey: "yVar",
       Cell: ({ row }) => (createTableCell(row.original.yVar)),
     },
     {
       header: "Split",
+      accessorKey: "splitVar",
       Cell: ({ row }) => (createTableCell(row.original.splitVar)),
     },
     {

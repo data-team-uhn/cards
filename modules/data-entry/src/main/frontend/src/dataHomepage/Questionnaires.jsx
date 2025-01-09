@@ -53,11 +53,14 @@ function Questionnaires(props) {
   let columns = [
     {
       header: "Title",
+      accessorKey: "title",
       Cell: ({ row }) => (<Link to={"/content.html/admin" + row.original["@path"]} underline="hover">{row.original.title}</Link>),
     },
     {
       header: "Created on",
+      accessorKey: "jcr:created",
       Cell: ({ row }) => _formatDate(row.original["jcr:created"], "yyyy-MM-dd HH:mm"),
+      sortingFn: 'datetime',
       size: 20,
     },
     {

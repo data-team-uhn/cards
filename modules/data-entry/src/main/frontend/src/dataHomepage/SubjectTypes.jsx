@@ -48,6 +48,7 @@ function SubjectTypes(props) {
     {
       header: "Subject Type",
       size: 100,
+      accessorFn: (row) => getTextHierarchy(row['@path'], subjectTypeData),
       Cell: ({ row }) => (getTextHierarchy(row.original['@path'], subjectTypeData)),
     },
     {
@@ -58,6 +59,7 @@ function SubjectTypes(props) {
     {
       header: "Subjects",
       size: 20,
+      accessorFn: (row) => row.instanceCount || 0,
       Cell: ({ row }) => (row.original.instanceCount ? <Link to={"/content.html/Subjects#" + row.original['@name']} title={"Show subjects of type " + row.original.label} underline="hover">{row.original.instanceCount}</Link> : "0"),
     },
     {

@@ -89,9 +89,7 @@ function AdminResourceListing(props) {
       action={buttonProps ? <NewItemButton {...buttonProps}/> : action}
     >
       <MaterialReactTable
-        enableColumnActions={false}
         enableColumnFilters={false}
-        enableSorting={false}
         positionToolbarAlertBanner="none"
         muiSearchTextFieldProps={{ autoFocus: true }}
         initialState={{ showGlobalFilter: true }}
