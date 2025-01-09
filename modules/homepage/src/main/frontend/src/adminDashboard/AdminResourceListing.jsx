@@ -123,7 +123,7 @@ function AdminResourceListing(props) {
         filterFns={{
             myCustomFilterFn: customFilter,
           }}
-        globalFilterFn="myCustomFilterFn"
+        globalFilterFn={customFilter ? "myCustomFilterFn" : "contains"}
       />
     </AdminScreen>
   );

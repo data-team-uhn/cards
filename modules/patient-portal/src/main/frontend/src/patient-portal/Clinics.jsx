@@ -55,12 +55,6 @@ function Clinics(props) {
     setDialogOpen(false);
   }
 
-  let customFilterFn = (row, id, filterValue) => {
-    let name = row.original.clinicName || "";
-    let displayName = row.original.displayName || "";
-    return name.toLowerCase().includes(filterValue.toLowerCase()) || displayName.toLowerCase().includes(filterValue.toLowerCase());
-  }
-
   return (
     <>
       <AdminResourceListing
@@ -75,7 +69,6 @@ function Clinics(props) {
         columns={columns}
         entryType={"Survey/ClinicMapping"}
         dataUrl={"Survey/ClinicMapping.paginate"}
-        customFilter={customFilterFn}
       />
       <OnboardNewClinicDialog
         open={dialogOpen}
