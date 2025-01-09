@@ -46,33 +46,33 @@ function SubjectTypes(props) {
   const entryType = "Subject Type";
   const columns = [
     {
-      header: "Subject Type",
+      header: "Subject type",
       size: 100,
       accessorFn: (row) => getTextHierarchy(row['@path'], subjectTypeData),
       Cell: ({ row }) => (getTextHierarchy(row.original['@path'], subjectTypeData)),
     },
     {
-      header: "Subject label",
+      header: "Subject list label",
       accessorKey: 'subjectListLabel',
       size: 80,
     },
     {
-      header: "Subjects",
+      header: "Number of subjects",
       size: 20,
       accessorFn: (row) => row.instanceCount || 0,
       Cell: ({ row }) => (row.original.instanceCount ? <Link to={"/content.html/Subjects#" + row.original['@name']} title={"Show subjects of type " + row.original.label} underline="hover">{row.original.instanceCount}</Link> : "0"),
     },
     {
-      header: "Default Order",
+      header: "Order",
       accessorKey: 'cards:defaultOrder',
       size: 20,
     },
 /*    {
-      header: "Id Pattern",
+      header: "Id pattern",
       accessorKey: 'idPattern',
     },*/
     {
-      header: "Pattern Hint",
+      header: "Id pattern hint",
       accessorKey: 'idPatternHint',
       enableSorting: false,
     },
