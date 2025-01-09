@@ -89,7 +89,6 @@ function SubjectTypeDialog(props) {
       formData.append(':content', JSON.stringify(formInfo));
     } else {
       if (currentSubjectType["cards:defaultOrder"] == order &&
-          currentSubjectType["cards:defaultOrder"] == order &&
           currentSubjectType["label"] === label &&
           currentSubjectType["subjectListLabel"] === subjectListLabel &&
           currentSubjectType["idPattern"] === idPattern &&
