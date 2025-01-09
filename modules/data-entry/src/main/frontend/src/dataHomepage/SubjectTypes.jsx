@@ -67,10 +67,11 @@ function SubjectTypes(props) {
       accessorKey: 'cards:defaultOrder',
       size: 20,
     },
-/*    {
+    {
       header: "Id pattern",
       accessorKey: 'idPattern',
-    },*/
+      enableSorting: false,
+    },
     {
       header: "Id pattern hint",
       accessorKey: 'idPatternHint',
