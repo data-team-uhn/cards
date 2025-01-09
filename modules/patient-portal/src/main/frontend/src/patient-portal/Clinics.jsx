@@ -42,7 +42,8 @@ function Clinics(props) {
     .map((stat) => {
       return {
         accessorKey: stat,
-        header: camelCaseToWords(stat)
+        header: camelCaseToWords(stat),
+        enableSorting: stat != "emergencyContac" || stat != "description",
       };
     });
 

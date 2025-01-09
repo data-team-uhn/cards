@@ -67,6 +67,7 @@ function Questionnaires(props) {
     {
       accessorKey: "description",
       header: "Description",
+      enableSorting: false,
       Cell: ({ row }) => <FormattedText>{row.original.description}</FormattedText>,
     },
   ]

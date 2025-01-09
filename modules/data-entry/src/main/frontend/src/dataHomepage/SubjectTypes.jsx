@@ -74,6 +74,7 @@ function SubjectTypes(props) {
     {
       header: "Pattern Hint",
       accessorKey: 'idPatternHint',
+      enableSorting: false,
     },
   ]
 
