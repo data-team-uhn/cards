@@ -41,15 +41,13 @@ import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
 import MarkdownText from "./MarkdownText";
-import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import NotesIcon from '@mui/icons-material/Notes';
 import { stringToHash } from "../escape.jsx";
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import ComposedIcon from "../components/ComposedIcon.jsx";
+import DroppableAnswerOptionList from "./DroppableAnswerOptionList.jsx";
 
 let extractSortedOptions = (data) => {
   return Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption'
@@ -77,6 +75,9 @@ const useStyles = makeStyles(theme => ({
         paddingLeft: theme.spacing(1),
       },
     },
+    optionsList: {
+      position: 'relative',
+    },
     answerOptionReadonly: {
       "& .MuiInput-underline:before" : {
         borderBottom: "0 none !important",
@@ -103,6 +104,9 @@ const useStyles = makeStyles(theme => ({
         justifyContent: "flex-end",
         padding: theme.spacing(1,2),
       },
+    },
+    optionDisabled: {
+      opacity: 0.5,
     },
 }));
 
@@ -169,24 +173,6 @@ let AnswerOptions = (props) => {
       duplicateSetter: setIsNoneDuplicate
     }
   ];
-
-  let getItemStyle = (isDragging, draggableStyle) => ({
-    // change background colour if dragging
-    borderStyle: isDragging ? "dashed" : undefined,
-    borderWidth: isDragging ? "2px" : undefined,
-    ...draggableStyle
-  });
-
-  let onDragEnd = (result) => {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
-    }
-    let oldOptions = options.slice();
-    const [removed] = oldOptions.splice(result.source.index, 1);
-    oldOptions.splice(result.destination.index, 0, removed);
-    setOptions(oldOptions);
-  }
 
   // Clear local state when data changes
   useEffect(() => {
@@ -385,83 +371,13 @@ let AnswerOptions = (props) => {
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
       { generateSpecialOptions(0) }
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              { options.map((value, index) =>
-                <Draggable key={value.value} draggableId={value.value} index={index}>
-                  { (provided, snapshot) => (
-                    <Grid container
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="stretch"
-                      className={classes.answerOption}
-                      key={value.value}
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      style={getItemStyle(
-                          snapshot.isDragging,
-                          provided.draggableProps.style
-                      )}
-                    >
-                      <Grid item xs={1}>
-                        <Tooltip title="Drag to reorder">
-                          <IconButton {...provided.dragHandleProps} className={classes.optionsDragIndicator}>
-                            <DragIndicatorIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
-                        <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
-                        <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
-                        <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />
-                        <input type="hidden" name={`${value['@path']}/description`} value={value.description || ''} />
-                        <input type="hidden" name={`${value['@path']}/isDefault`} value={value.isDefault || false} />
-                        <input type="hidden" name={`${value['@path']}/isDefault@TypeHint`} value="Boolean" />
-                        <Tooltip title="Selected by default">
-                          <Checkbox
-                            color="secondary"
-                            checked={value.isDefault}
-                            onChange={(event) => {
-                              setOptions(old => {
-                                var _new = old.slice();
-                                _new[index].isDefault = !!(event?.target?.checked);
-                                return _new;
-                              });
-                            }}/>
-                        </Tooltip>
-                        <TextField
-                          variant="standard"
-                          InputProps={{
-                            readOnly: true,
-                          }}
-                          className={classes.answerOptionReadonly}
-                          defaultValue={value.label? value.value + " = " + value.label : value.value}
-                          multiline
-                        />
-                      </Grid>
-                      <Grid item xs={3} className={classes.answerOptionActions}>
-                        {generateDescriptionIcon(value, index, false)}
-                        <Tooltip title="Delete option">
-                          <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
-                            <CloseIcon/>
-                          </IconButton>
-                        </Tooltip>
-                      </Grid>
-                    </Grid>
-                  ) }
-                </Draggable>
-              )}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <DroppableAnswerOptionList
+        options={options}
+        setOptions={setOptions}
+        deleteOption={deleteOption}
+        generateDescriptionIcon={generateDescriptionIcon}
+        classes={classes}
+      />
       <TextField
         fullWidth
         variant="standard"
