@@ -648,7 +648,7 @@ def clean_title(title):
 # TODO: replace with white list
 def clean_name(name):
     result = re.sub(' ', '', simple_clean_name(name))
-    return result[:40]
+    return result[:40] if Options.trim_node_names else result
 
 def simple_clean_name(name):
     return re.sub(':|\(|\)|\[|\]|,', '', name.strip().replace("/", "-"))
@@ -931,6 +931,7 @@ CLI.add_argument("--subject-types", nargs=1, type=str, default=["/SubjectTypes/P
 CLI.add_argument("--logging", nargs=1, type=str, default="info")
 CLI.add_argument("--max-answers", nargs=1, type=int, default=1)
 CLI.add_argument("--max-per-subject", nargs=1, type=int, default=1)
+CLI.add_argument("--trim-node-names", action="store_true")
 
 args = CLI.parse_args()
 
