@@ -50,6 +50,8 @@ public abstract class AbstractFormToStringSerializer
     private static final String PRIMARY_TYPE_KEY = "jcr:primaryType";
     private static final String UUID_KEY = "jcr:uuid";
 
+    private static final String PATH_KEY = "@path";
+
     protected String toString(final Resource originalResource)
     {
         // The proper serialization depends on "deep", "dereference" and "labels", but we may allow other JSON
@@ -383,8 +385,8 @@ public abstract class AbstractFormToStringSerializer
             this.definitionUuids = definition.values().stream()
                 .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
                 .map(JsonValue::asJsonObject)
-                .filter(value -> value.containsKey(UUID_KEY))
-                .map(value -> value.getString(UUID_KEY))
+                .filter(value -> value.containsKey(UUID_KEY) || value.containsKey(PATH_KEY))
+                .map(value -> value.containsKey(UUID_KEY) ? value.getString(UUID_KEY) : value.getString(PATH_KEY))
                 .collect(Collectors.toList());
         }
 
@@ -411,7 +413,7 @@ public abstract class AbstractFormToStringSerializer
                 uuid = json.get(QUESTION_KEY).getValueType() == ValueType.OBJECT
                     ? json.getJsonObject(QUESTION_KEY).getString(UUID_KEY) : json.getString(QUESTION_KEY);
             } else if (QuestionnaireUtils.INFORMATION_NODETYPE.equals(json.getString(PRIMARY_TYPE_KEY))) {
-                uuid = json.getString(UUID_KEY);
+                uuid = json.getString(PATH_KEY);
             }
             return uuid;
         }
