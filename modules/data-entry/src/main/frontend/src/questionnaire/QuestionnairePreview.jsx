@@ -78,7 +78,6 @@ function QuestionnairePreview (props) {
       <FormProvider additionalFormData={{
           ['/Save']: () => { return new Promise((resolve, reject) => {return;})},
           ['/URL']: data ? data["@path"] : '',
-          ['/AllowResave']: () => {},
           ['/DisableUploads'] : true
           }}>
         <FormUpdateProvider>
