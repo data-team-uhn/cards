@@ -30,7 +30,7 @@ import io.uhndata.cards.permissions.spi.RestrictionFactory;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
- * Factory for {@link LockedRestrictionPattern}.
+ * Factory for {@link UnlockedRestrictionPattern}.
  *
  * @version $Id$
  */

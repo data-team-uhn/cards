@@ -23,22 +23,12 @@ import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
 
 /**
- * A restriction that makes locked nodes and forms not editable.
+ * A restriction that matches lock nodes.
  *
  * @version $Id$
  */
 public class LockRestrictionPattern implements RestrictionPattern
 {
-    // private final ResourceResolverFactory rrf;
-
-    /**
-     *
-     */
-    public LockRestrictionPattern()
-    {
-
-    }
-
     @Override
     public boolean matches()
     {

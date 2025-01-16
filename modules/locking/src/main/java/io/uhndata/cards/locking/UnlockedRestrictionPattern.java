@@ -24,7 +24,7 @@ import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 
 /**
- * A restriction that makes locked nodes and forms not editable.
+ * A restriction that matches nodes that are not locked.
  *
  * @version $Id$
  */
