@@ -115,7 +115,7 @@ function Question (props) {
               <List>
                 { labels.map( (item, idx) => {
                   return(
-                    <ListItem key={existingAnswer[0] + idx}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx, existingAnswer[1].value) : item}</ListItem>
+                    <ListItem key={existingAnswer[0] + idx}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item}</ListItem>
                   )})
                 }
               </List>
