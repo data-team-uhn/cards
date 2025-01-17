@@ -21,7 +21,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from 'react-dom';
 import PropTypes from "prop-types";
 import {
-  Box,
   Checkbox,
   Grid,
   IconButton,
@@ -139,25 +138,25 @@ function DroppableAnswerOption(props) {
     }));
   }, [value]);
 
-  return (
-    <React.Fragment>
-      <div className={classes.optionsList}>
-        <Grid container
+  let generateOption = (isPerview) => {
+    return (
+      <Grid container
           data-option-id={value.value}
           direction="row"
           justifyContent="space-between"
           alignItems="stretch"
-          className={classes.answerOption + ' ' + (draggableState.type === "dragging" ? classes.optionDisabled : "")}
+          className={classes.answerOption + ' ' + (!isPerview && draggableState.type === "dragging" ? classes.optionDisabled : "")}
           ref={ref}
         >
           <Grid item xs={1}>
-            <Tooltip title="Drag to reorder">
+            <Tooltip title={!isPerview ? "Drag to reorder" : ""}>
               <IconButton className={classes.optionsDragIndicator}>
                 <DragIndicatorIcon />
               </IconButton>
             </Tooltip>
           </Grid>
           <Grid item xs={8}>
+            {!isPerview && <span>
             <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
             <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
             <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
@@ -165,6 +164,7 @@ function DroppableAnswerOption(props) {
             <input type="hidden" name={`${value['@path']}/description`} value={value.description || ''} />
             <input type="hidden" name={`${value['@path']}/isDefault`} value={value.isDefault || false} />
             <input type="hidden" name={`${value['@path']}/isDefault@TypeHint`} value="Boolean" />
+            </span>}
             <Tooltip title="Selected by default">
               <Checkbox
                 color="secondary"
@@ -196,22 +196,19 @@ function DroppableAnswerOption(props) {
             </Tooltip>
           </Grid>
         </Grid>
-       {draggableState?.type === 'dragging-over' && draggableState?.closestEdge &&
-         (<DropIndicator edge={draggableState.closestEdge} gap={'8px'}/>)}
+	)
+  }
+
+  return (
+    <React.Fragment>
+      <div className={classes.optionsList}>
+        {generateOption(false)}
+        {draggableState?.type === 'dragging-over' && draggableState?.closestEdge &&
+          (<DropIndicator edge={draggableState.closestEdge} gap={'8px'}/>)}
       </div>
       { draggableState.type === "preview" &&
         createPortal(
-           <Grid container direction="row" justifyContent="space-between" alignItems="stretch" className={classes.answerOption}>
-             <Grid item xs={1}> <IconButton className={classes.optionsDragIndicator}> <DragIndicatorIcon /> </IconButton> </Grid>
-             <Grid item xs={8}>
-               <Checkbox color="secondary" checked={value.isDefault}/>
-               <TextField variant="standard" className={classes.answerOptionReadonly} defaultValue={value.label? value.value + " = " + value.label : value.value} multiline />
-             </Grid>
-             <Grid item xs={3} className={classes.answerOptionActions}>
-               {generateDescriptionIcon(value, index, false)}
-               <IconButton className={classes.answerOptionButton}> <CloseIcon/> </IconButton>
-             </Grid>
-          </Grid>,
+           generateOption(true),
           draggableState.container
         )}
     </React.Fragment>
