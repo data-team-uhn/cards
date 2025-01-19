@@ -6,7 +6,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'statsIcon']: '@mui/icons-material/BarChart.js',
+    [module_name + 'statsIcon']: '@mui/icons-material/BarChart',
     [module_name + 'AdminStatistics']: { 'dependOn': ['cards-dataentry.Forms', 'cards-dataentry.Questionnaires'], 'import': './src/Statistics/AdminStatistics.jsx' },
     [module_name + 'UserStatistics']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/Statistics/UserStatistics.jsx' },
   },

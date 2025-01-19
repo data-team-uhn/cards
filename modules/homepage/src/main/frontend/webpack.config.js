@@ -7,12 +7,12 @@ module.exports = {
   mode: 'development',
   entry: {
     [module_name + 'themeindex']: './src/themePage/index.jsx',
-    [module_name + 'modelOrganismsIcon']: '@mui/icons-material/Pets.js',
-    [module_name + 'variantsIcon']: '@mui/icons-material/Subtitles.js',
-    [module_name + 'adminIcon']: '@mui/icons-material/Settings.js',
+    [module_name + 'modelOrganismsIcon']: '@mui/icons-material/Pets',
+    [module_name + 'variantsIcon']: '@mui/icons-material/Subtitles',
+    [module_name + 'adminIcon']: '@mui/icons-material/Settings',
     [module_name + 'adminDashboard']: './src/adminDashboard/AdminDashboard.jsx',
     [module_name + 'QuickSearchResults']: { 'dependOn': ['cards-dataentry.Forms'], 'import': './src/themePage/QuickSearchResults.jsx' },
-    [module_name + 'QuickSearchConfigurationIcon']: '@mui/icons-material/Pageview.js',
+    [module_name + 'QuickSearchConfigurationIcon']: '@mui/icons-material/Pageview',
     [module_name + 'QuickSearchConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/themePage/QuickSearchConfiguration' },
   },
   plugins: [

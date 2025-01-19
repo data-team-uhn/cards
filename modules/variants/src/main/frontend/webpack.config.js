@@ -6,7 +6,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'variantsIcon']: '@mui/icons-material/Subtitles.js',
+    [module_name + 'variantsIcon']: '@mui/icons-material/Subtitles',
     [module_name + 'variantFilesContainer']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/variantFilesContainer.jsx' },
   },
   plugins: [

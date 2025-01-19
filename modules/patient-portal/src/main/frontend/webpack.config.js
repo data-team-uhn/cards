@@ -14,17 +14,17 @@ module.exports = {
     [module_name + 'ClinicForms']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/patient-portal/ClinicForms.jsx' },
     [module_name + 'ClinicVisits']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/patient-portal/ClinicVisits.jsx' },
     [module_name + 'ClinicDashboard']: { 'dependOn': ['cards-dataentry.Questionnaires', 'patient-portal.ClinicForms', 'patient-portal.ClinicVisits'], 'import': './src/patient-portal/ClinicDashboard.jsx' },
-    [module_name + 'clinicIcon']: '@mui/icons-material/Event.js',
+    [module_name + 'clinicIcon']: '@mui/icons-material/Event',
     [module_name + 'Clinics']: { 'dependOn': ['cards-dataentry.Questionnaires'], 'import': './src/patient-portal/Clinics.jsx' },
     [module_name + 'PrintHeader']: './src/patient-portal/PrintHeader.jsx',
     [module_name + 'PatientAccessConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/PatientAccessConfiguration.jsx' },
-    [module_name + 'PatientAccessConfigurationIcon']: '@mui/icons-material/MedicalInformation.js',
+    [module_name + 'PatientAccessConfigurationIcon']: '@mui/icons-material/MedicalInformation',
     [module_name + 'ToUConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/ToUConfiguration.jsx' },
-    [module_name + 'ToUConfigurationIcon']: '@mui/icons-material/Handshake.js',
+    [module_name + 'ToUConfigurationIcon']: '@mui/icons-material/Handshake',
     [module_name + 'SurveyInstructionsConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/SurveyInstructionsConfiguration.jsx' },
-    [module_name + 'SurveyInstructionsConfigurationIcon']: '@mui/icons-material/Quiz.js',
+    [module_name + 'SurveyInstructionsConfigurationIcon']: '@mui/icons-material/Quiz',
     [module_name + 'DashboardSettingsConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/DashboardSettingsConfiguration.jsx' },
-    [module_name + 'DashboardSettingsConfigurationIcon']: '@mui/icons-material/Dashboard.js'
+    [module_name + 'DashboardSettingsConfigurationIcon']: '@mui/icons-material/Dashboard'
   },
   plugins: [
     new CleanWebpackPlugin(),

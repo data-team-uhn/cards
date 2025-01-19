@@ -34,7 +34,7 @@
     "webpack-assets-manifest": "5.1.0"
   },
   "dependencies": {
-    "@mui/icons-material": "5.11.0",
+    "@mui/icons-material": "6.4.0",
     "@mui/material": "5.11.3",
     "@mui/styles": "5.11.2",
     "@mui/lab": "6.0.0-beta.23",
