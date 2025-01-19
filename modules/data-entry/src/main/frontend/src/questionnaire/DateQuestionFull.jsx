@@ -153,8 +153,9 @@ function DateQuestionFull(props) {
   }
 
   let displayFormatter = function(label, idx) {
+    let values = Array.isArray(startValues) ? startValues : [startValues];
     return (
-      <Tooltip title={Array.from(startValues || [])[idx]}>
+      <Tooltip title={values[idx]}>
         <span>{label}</span>
       </Tooltip>
     );
