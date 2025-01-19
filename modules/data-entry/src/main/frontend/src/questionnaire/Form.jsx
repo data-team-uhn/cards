@@ -25,7 +25,6 @@ import {
   Button,
   Chip,
   CircularProgress,
-  Grid,
   IconButton,
   List,
   ListItem,
@@ -33,6 +32,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -426,7 +426,7 @@ function Form (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -434,7 +434,7 @@ function Form (props) {
   if (error) {
     return (
       <Grid container justifyContent="center">
-        <Grid item>
+        <Grid>
           <Typography variant="h2" color="error">
             Error obtaining form data: {error.status} {error.statusText}
           </Typography>
@@ -675,7 +675,7 @@ function Form (props) {
         {/* FormPagination must be called regardless of whether paginationEnabled is true or false,
             because it is what populates the contents of the form.
             However, it should only be displayed to the user in edit mode when paginationEnabled is true. */}
-        <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
+        <Grid size={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
               disableProgress={disableProgress}
@@ -698,7 +698,7 @@ function Form (props) {
           />
         </Grid>
         { !paginationEnabled && !disableButton &&
-        <Grid item xs={false} className={classes.formBottom}>
+        <Grid size="auto" className={classes.formBottom}>
           <div className={classes.mainPageAction}>
             { isEdit &&
               <MainActionButton

@@ -22,11 +22,10 @@ import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Avatar,
-  Grid,
   Toolbar,
   Typography,
 } from '@mui/material';
-
+import Grid from '@mui/material/Grid2';
 import { withStyles } from '@mui/styles';
 
 import BuildIcon from '@mui/icons-material/Build';
@@ -94,8 +93,8 @@ export default function DowntimeWarning(props) {
       <Toolbar>
       {error && <Typography color='error'>{errorText}</Typography>}
       <Grid container spacing={1} direction="row" alignItems="center" wrap="nowrap">
-        <Grid item><Avatar><BuildIcon/></Avatar></Grid>
-        <Grid item>
+        <Grid><Avatar><BuildIcon/></Avatar></Grid>
+        <Grid>
         <Typography variant="body2">
           {appName} will be down for maintenance from <b>{fromDate}</b> to <b>{toDate}</b>. We appologize for the inconvenience this may cause.
         </Typography>

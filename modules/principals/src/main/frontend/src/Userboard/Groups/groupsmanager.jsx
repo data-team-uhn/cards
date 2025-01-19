@@ -19,8 +19,8 @@ import React from "react";
 
 import withStyles from '@mui/styles/withStyles';
 
-import { Avatar, Button, Card, CardContent, Grid, IconButton, Tooltip } from "@mui/material";
-
+import { Avatar, Button, Card, CardContent, IconButton, Tooltip } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";

@@ -19,7 +19,8 @@
 
 import React, { useContext, useState } from "react";
 
-import { Grid, LinearProgress, Link, TextField } from "@mui/material";
+import { LinearProgress, Link, TextField } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
@@ -306,7 +307,7 @@ function FileQuestion(props) {
       {
         pageActive && <>
           { uploadInProgress && (
-            <Grid item className={classes.root}>
+            <Grid className={classes.root}>
               <LinearProgress color="primary" />
             </Grid>
           ) }

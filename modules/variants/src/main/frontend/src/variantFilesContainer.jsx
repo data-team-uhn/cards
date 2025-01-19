@@ -26,13 +26,13 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Grid,
   LinearProgress,
   Link,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import makeStyles from '@mui/styles/makeStyles';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     paddingRight: theme.spacing(1)
   },
   fileList: {
-    "& .MuiGrid-item" : {
+    "& .MuiGrid2-root" : {
       paddingLeft: theme.spacing(4),
     }
   },
@@ -780,16 +780,16 @@ export default function VariantFilesContainer() {
             key="file-upload"
             id="variantForm">
         <Grid container direction="row-reverse" justifyContent="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
-          <Grid item xs={12} lg={6}>
+          <Grid size={{xs:12, lg:6}}>
             <Alert severity="info">
               <AlertTitle>Expected file name format:</AlertTitle>
               <div>Patient_Tumor.csv (e.g. AB12345_1.csv)</div>
               <div>Patient_Tumor_TumorRegion.csv (e.g. AB12345_1_a.csv)</div>
             </Alert>
           </Grid>
-          <Grid item xs={12} lg={6}>
+          <Grid size={{xs:12, lg:6}}>
           { uploadInProgress && (
-              <Grid item className={classes.root}>
+              <Grid className={classes.root}>
                 <LinearProgress color="primary" />
               </Grid>
             ) }
@@ -817,7 +817,7 @@ export default function VariantFilesContainer() {
             let isDataValid = subjectPath && tumorPath;
 
             return (
-              <Grid item key={file.name}>
+              <Grid key={file.name}>
                 <Typography variant="h6">{file.name}</Typography>
                 { upprogress && upprogress.state != "error" &&
                   <Box display="flex" alignItems="center" className={classes.fileProgress}>
@@ -894,7 +894,7 @@ export default function VariantFilesContainer() {
               </Grid>
           ) } ) }
       { showUploadAllButton ?
-      <Grid item>
+      <Grid>
       <Button type="submit" variant="contained" color="primary" disabled={showUploadDisabled} form="variantForm">
         <span><BackupIcon className={classes.buttonIcon}/>
           {uploadAllComplete ? 'Uploaded' :

@@ -21,12 +21,11 @@ import React, { useContext } from "react";
 
 import {
   CircularProgress,
-  Grid,
   IconButton,
   InputAdornment,
   TextField,
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import makeStyles from '@mui/styles/makeStyles';
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -127,7 +126,7 @@ export default function Search(props) {
 
   return(
     <React.Fragment>
-      <Grid item>
+      <Grid>
         <TextField
           fullWidth
           helperText={(error ? "Request Failed" : "Search BioPortal for vocabularies mentioning a specific concept, e.g. “Microcephaly”")}

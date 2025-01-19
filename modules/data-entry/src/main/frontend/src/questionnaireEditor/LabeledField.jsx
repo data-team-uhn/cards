@@ -19,10 +19,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Grid,
-  Typography
-} from "@mui/material";
+import { Typography } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -42,10 +40,10 @@ let LabeledField = (props) => {
 
   return (
     <Grid container alignItems='flex-start' spacing={2} direction="row">
-      <Grid item xs={condensed ? "auto" : 4}>
+      <Grid size={condensed ? "auto" : 4}>
         <Typography variant="subtitle2">{camelCaseToWords(name)}:</Typography>
       </Grid>
-      <Grid item xs={condensed ? "auto" : 8} className={classes.value}>{children}</Grid>
+      <Grid size={condensed ? "auto" : 8} className={classes.value}>{children}</Grid>
     </Grid>
   );
 }

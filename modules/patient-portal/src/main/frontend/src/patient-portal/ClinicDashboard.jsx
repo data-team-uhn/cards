@@ -25,11 +25,10 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 
 import {
   CircularProgress,
-  Grid,
   Typography,
   useMediaQuery
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useTheme } from '@mui/material/styles';
@@ -185,7 +184,7 @@ function ClinicDashboard(props) {
 
   if (defaultsLoading || extensionsLoading || !visitInfo) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -195,12 +194,12 @@ function ClinicDashboard(props) {
       { description && <Typography variant="overline">{description}</Typography>}
       <Grid container spacing={4} className={classes.dashboardContainer}>
         {/* Appointments view */}
-        <Grid item xs={12} xl={6} key={`view-appointments-${clinicId}`} className={classes.dashboardEntry}>
+        <Grid size={{xs:12, xl:6}} key={`view-appointments-${clinicId}`} className={classes.dashboardEntry}>
           <ClinicVisits color={getColor(0)} visitInfo={visitInfo} clinicId={clinicId} dashboardConfig={dashboardConfig}/>
         </Grid>
         {/* Survey views */}
         { surveys?.map((s, index) => (
-            <Grid item xs={12} xl={6} key={`view-survey-${clinicId}-${s["@name"]}`} className={classes.dashboardEntry}>
+            <Grid size={{xs:12, xl:6}} key={`view-survey-${clinicId}-${s["@name"]}`} className={classes.dashboardEntry}>
               <ClinicForms data={s} color={getColor(index + 1)} visitInfo={visitInfo} clinicId={clinicId} dashboardConfig={dashboardConfig}/>
             </Grid>
           ))
@@ -209,7 +208,7 @@ function ClinicDashboard(props) {
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
-            return <Grid item xs={12} xl={6} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
+            return <Grid size={{xs:12, xl:6}} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
               <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} clinicId={clinicId} dashboardConfig={dashboardConfig}/>
             </Grid>
           })

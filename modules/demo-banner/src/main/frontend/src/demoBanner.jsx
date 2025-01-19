@@ -21,11 +21,10 @@ import React from "react";
 
 import {
   AppBar,
-  Grid,
   Toolbar,
   Typography
 } from '@mui/material';
-
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 
 import WarningIcon from '@mui/icons-material/Warning';
@@ -43,8 +42,8 @@ export default function DemoBanner(props) {
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" wrap="nowrap">
-        <Grid item><WarningIcon/></Grid>
-        <Grid item>
+        <Grid><WarningIcon/></Grid>
+        <Grid>
         <Typography variant="subtitle2">
           This installation is for demo purposes only.
           Data entered here can be accessed by anyone and is

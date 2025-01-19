@@ -24,7 +24,6 @@ import PropTypes from "prop-types";
 import {
   Button,
   CircularProgress,
-  Grid,
   IconButton,
   List,
   ListItem,
@@ -32,7 +31,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 
 import { DateTime } from "luxon";
@@ -222,7 +221,7 @@ let Questionnaire = (props) => {
       ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
         <Grid container direction="column" spacing={4} wrap="nowrap">
           { questionnaireHeader }
-          <Grid item>
+          <Grid>
             { !isEdit ?
               <QuestionnairePreview
                 data={data}
@@ -328,7 +327,7 @@ let QuestionnaireItemSet = (props) => {
   //     To call the right component for each entry that has passed the "types" filter,  we strip its primaryType
   //     of the "cards:" prefix and then `eval` the result to the functional component's name, which is passed as
   //     a parameter to an anonymous function called for each such entry, that renders the component inside a
-  //     Grid item.
+  //     Grid.
   //
   // @param types - an array of (primary) types of entries to display.
   //   Each element in the array is a string representing a primaryType, e.g. "cards:Question"
@@ -341,7 +340,7 @@ let QuestionnaireItemSet = (props) => {
     { Object.entries(data)
       .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
       .map(([key, value]) => (
-        EntryType => <Grid item key={key}>
+        EntryType => <Grid key={key}>
                        <EntryType
                          data={value}
                          model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
@@ -370,7 +369,7 @@ let QuestionnaireItemSet = (props) => {
         { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
         { listEntries(generalModels, generalEntryTypes) }
         </>
-        : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
+        : <Grid><Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
   );
@@ -687,7 +686,7 @@ let QuestionnaireEntry = (props) => {
           onActionDone={handleDataChange}
           models={childModels}
         >
-          <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
+          <Grid className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
         </QuestionnaireItemSet>
         : <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
       }

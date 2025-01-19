@@ -22,10 +22,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   Typography
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import Fields from "../questionnaireEditor/Fields.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";

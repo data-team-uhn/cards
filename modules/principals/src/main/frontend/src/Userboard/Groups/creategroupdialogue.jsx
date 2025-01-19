@@ -17,8 +17,8 @@
 
 import React from "react";
 
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
-
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 
 import userboardStyle from '../userboardStyle.jsx';
@@ -64,7 +64,7 @@ class CreateGroupDialogue extends React.Component {
                 <DialogTitle>Create New Group</DialogTitle>
                 <DialogContent>
                     <Grid container>
-                        <Grid item>
+                        <Grid>
                             <TextField
                                 variant="standard"
                                 id="name"

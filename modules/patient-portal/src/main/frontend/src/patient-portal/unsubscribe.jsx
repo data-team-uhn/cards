@@ -18,7 +18,8 @@
 //
 import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
-import { Paper, Grid, Button, Typography } from '@mui/material';
+import { Paper, Button, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import makeStyles from '@mui/styles/makeStyles';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -34,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
     textAlign: "center",
-    "& .MuiGrid-item" : {
+    "& .MuiGrid2-root" : {
       textAlign: "center",
     },
   },
@@ -94,8 +95,8 @@ function Unsubscribe (props) {
           alignItems="center"
           alignContent="center"
         >
-          <Logo component={Grid} item xs={12} />
-          <Grid item>
+          <Logo component={Grid} size={12} />
+          <Grid>
             { error && <Alert severity="error">
               <AlertTitle>An error occurred</AlertTitle>
                {error}

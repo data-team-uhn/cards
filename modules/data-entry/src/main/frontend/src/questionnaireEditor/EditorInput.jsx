@@ -21,11 +21,10 @@ import React from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from 'prop-types';
 import {
-  Grid,
   Tooltip,
   Typography
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import Info from "@mui/icons-material/Info";
 
 import { camelCaseToWords } from "./LabeledField";
@@ -48,9 +47,9 @@ let EditorInput = (props) => {
   }))();
 
   return (
-  <Grid item>
+  <Grid>
     <Grid container alignItems="flex-start" spacing={2}>
-      <Grid item xs={4} className={classes.labelContainer}>
+      <Grid size={4} className={classes.labelContainer}>
         <Typography variant="subtitle2">
           {camelCaseToWords(name?.concat(':')) || ''}
           { name && hint &&
@@ -62,7 +61,7 @@ let EditorInput = (props) => {
           }
         </Typography>
       </Grid>
-      <Grid item xs={8}>
+      <Grid size={8}>
         {children}
       </Grid>
     </Grid>

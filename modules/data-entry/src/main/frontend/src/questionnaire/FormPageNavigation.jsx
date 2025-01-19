@@ -21,14 +21,13 @@ import React, { useState, useEffect } from "react";
 
 import {
   Fab,
-  Grid,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
   Tooltip,
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import CheckIcon from '@mui/icons-material/Check';
 import WarningIcon from '@mui/icons-material/Warning';
 
@@ -87,7 +86,7 @@ function FormPageNavigation (props) {
   let pageList = () => (
     <Grid container spacing={2} justifyContent="space-evenly">
     { pages.map((p, index) => (
-      <Grid item key={index}>
+      <Grid key={index}>
       { p.canBeVisible ?
           <Tooltip title={pageTitle(p, index)}>
           { pageButton(p, index) }
@@ -137,11 +136,11 @@ function FormPageNavigation (props) {
   // Render the expanded or condensed view depending on screen width
   return (
     <Grid container direction="row" spacing={4} justifyContent="space-between" alignItems="center" flexWrap="nowrap">
-      {backButton && <Grid item>{backButton}</Grid>}
-      <Grid item>
+      {backButton && <Grid>{backButton}</Grid>}
+      <Grid>
         { condensedPageList ? pageSelector() : pageList() }
       </Grid>
-      <Grid item>{saveButton}</Grid>
+      <Grid>{saveButton}</Grid>
     </Grid>
   );
 };

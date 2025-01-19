@@ -22,11 +22,11 @@ import { createPortal } from 'react-dom';
 import PropTypes from "prop-types";
 import {
   Checkbox,
-  Grid,
   IconButton,
   TextField,
   Tooltip,
 } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import CloseIcon from '@mui/icons-material/Close';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
@@ -148,14 +148,14 @@ function DroppableAnswerOption(props) {
           className={classes.answerOption + ' ' + (!isPerview && draggableState.type === "dragging" ? classes.optionDisabled : "")}
           ref={ref}
         >
-          <Grid item xs={1}>
+          <Grid xs={1}>
             <Tooltip title={!isPerview ? "Drag to reorder" : ""}>
               <IconButton className={classes.optionsDragIndicator}>
                 <DragIndicatorIcon />
               </IconButton>
             </Tooltip>
           </Grid>
-          <Grid item xs={8}>
+          <Grid xs={8}>
             {!isPerview && <span>
             <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
             <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
@@ -187,7 +187,7 @@ function DroppableAnswerOption(props) {
               multiline
             />
           </Grid>
-          <Grid item xs={3} className={classes.answerOptionActions}>
+          <Grid xs={3} className={classes.answerOptionActions}>
             {generateDescriptionIcon(value, index, false)}
             <Tooltip title="Delete option">
               <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>

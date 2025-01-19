@@ -22,9 +22,9 @@ import {
     Box,
     Card,
     CardContent,
-    CardHeader,
-    Grid,
+    CardHeader
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { makeStyles } from '@mui/styles';
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
@@ -32,7 +32,7 @@ import FormattedText from "../components/FormattedText.jsx";
 const useStyles = makeStyles(theme => ({
   editorContainer: {
     padding: theme.spacing(2, 0, 0),
-    "& > .MuiGrid-item > *": {
+    "& > .MuiGrid2-root > *": {
       height: "100% !important",
     },
     "& .w-md-editor-content": {
@@ -71,10 +71,10 @@ function WelcomeMessageConfiguration(props) {
             alignItems="stretch"
             className={classes.editorContainer}
           >
-            <Grid item xs={12} md={6}>
+            <Grid size={{xs:12, md:6}}>
               <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={onChange} />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{xs:12, md:6}}>
               <Card>
                 <CardHeader
                   className={classes.previewHeader}

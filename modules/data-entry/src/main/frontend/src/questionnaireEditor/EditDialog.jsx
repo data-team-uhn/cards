@@ -25,11 +25,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   TextField,
   Typography,
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import Fields from './Fields';
 import { camelCaseToWords } from './LabeledField';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -143,7 +142,7 @@ let EditDialog = (props) => {
   if (error) {
     return (
       <Grid container justifyContent='center'>
-        <Grid item>
+        <Grid>
           <Typography variant='h2' color='error'>
             Error obtaining form data: {error.status} {error.statusText}
           </Typography>
@@ -159,8 +158,8 @@ let EditDialog = (props) => {
   let targetIdField = () => {
     return (
       <Grid container alignItems='baseline' spacing={2} direction="row">
-        <Grid item xs={4}><Typography variant="subtitle2">{`${formattedType} id:` }</Typography></Grid>
-        <Grid item xs={8}>{
+        <Grid size={4}><Typography variant="subtitle2">{`${formattedType} id:` }</Typography></Grid>
+        <Grid size={8}>{
           targetExists ?
           <Typography>{data["@name"]}</Typography> :
           <TextField
@@ -198,7 +197,7 @@ let EditDialog = (props) => {
           <DialogContent>
             { error && <Typography color="error">{error}</Typography>}
             <Grid container direction="column" spacing={2}>
-              <Grid item>{targetIdField()}</Grid>
+              <Grid>{targetIdField()}</Grid>
               <Fields
                 data={dialogData}
                 hints={hints}

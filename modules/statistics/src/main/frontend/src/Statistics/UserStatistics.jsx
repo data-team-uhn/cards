@@ -18,10 +18,8 @@
 //
 
 import React, { useContext, useState } from "react";
-import {
-  Grid,
-  Typography
-} from "@mui/material";
+import { Typography } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import statisticsStyle from "./statisticsStyle.jsx";
@@ -67,7 +65,7 @@ function UserStatistics(props) {
   if (error) {
     return (
       <Grid container justifyContent="center" alignItems="center" className={classes.statsContainer}>
-        <Grid item>
+        <Grid>
           <Typography color="textSecondary">{error}</Typography>
         </Grid>
       </Grid>

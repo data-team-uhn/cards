@@ -20,11 +20,10 @@
 import React, { useEffect, useState } from "react";
 
 import {
-  Grid,
   Typography,
   Tooltip
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import MaterialReactTable from "material-react-table";
 import VocabularyActions from "./vocabularyActions"
 import Search from "./search";
@@ -60,7 +59,7 @@ export default function VocabularyTable(props) {
       }
 
       {(vocabList.length > 0) &&
-      <Grid item>
+      <Grid>
         <MaterialReactTable
             enableColumnActions={false}
             enableSorting={false}

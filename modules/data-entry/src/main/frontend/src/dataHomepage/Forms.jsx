@@ -20,7 +20,7 @@ import React, { useEffect } from "react";
 import Form from "../questionnaire/Form.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 
-import { Grid } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import FormView from "./FormView.jsx";
@@ -76,7 +76,7 @@ function Forms(props) {
 
   return (
     <Grid container className={classes.dashboardContainer}>
-      <Grid item className={classes.dashboardEntry} xs={12}>
+      <Grid className={classes.dashboardEntry} size={12}>
         <FormView
           expanded
           columns={columns}

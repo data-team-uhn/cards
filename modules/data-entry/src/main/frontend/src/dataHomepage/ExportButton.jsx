@@ -21,8 +21,9 @@ import PropTypes from "prop-types";
 import { makeStyles } from '@mui/styles';
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import { Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Grid, Radio, RadioGroup,
+import { Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Radio, RadioGroup,
   FormControlLabel, TextField, Typography, Button, IconButton, Tooltip } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import DownloadIcon from '@mui/icons-material/FileDownload';
 
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -42,12 +43,12 @@ const useStyles = makeStyles(theme => ({
     },
   },
   withMultiSelect: {
-    "& > .MuiGrid-item:first-child" : {
+    "& > .MuiGrid2-root:first-child" : {
       marginTop: theme.spacing(1),
     },
   },
   withSelect: {
-    "& > .MuiGrid-item:first-child" : {
+    "& > .MuiGrid2-root:first-child" : {
       marginTop: theme.spacing(.5),
     },
   },
@@ -252,8 +253,8 @@ function ExportButton(props) {
   let getUserSelector = (label, value, setter) => {
     return (
           <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
-            <Grid item xs={4}><Typography variant="subtitle2">{label}</Typography></Grid>
-            <Grid item xs={8}>
+            <Grid size={4}><Typography variant="subtitle2">{label}</Typography></Grid>
+            <Grid size={8}>
                 <FormControl variant="standard" fullWidth>
                   <Autocomplete
                     value={value && users.find(item => item.name == value) || null}
@@ -286,8 +287,8 @@ function ExportButton(props) {
       >
         <DialogContent dividers>
           <Grid container alignItems='center' direction="row" className={classes.container}>
-            <Grid item xs={4}><Typography variant="subtitle2">File format:</Typography></Grid>
-            <Grid item xs={8}>
+            <Grid size={4}><Typography variant="subtitle2">File format:</Typography></Grid>
+            <Grid size={8}>
               <RadioGroup
                 row
                 name="fileFormat"
@@ -301,8 +302,8 @@ function ExportButton(props) {
           </Grid>
 
           <Grid container alignItems='center' direction="row" className={classes.container}>
-            <Grid item xs={4}><Typography variant="subtitle2">Header format:</Typography></Grid>
-            <Grid item xs={8}>
+            <Grid size={4}><Typography variant="subtitle2">Header format:</Typography></Grid>
+            <Grid size={8}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -325,8 +326,8 @@ function ExportButton(props) {
           </Grid>
 
           <Grid container alignItems='center' direction="row" className={classes.container}>
-            <Grid item xs={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
-            <Grid item xs={8}>
+            <Grid size={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
+            <Grid size={8}>
               <RadioGroup
                 row
                 name="data"
@@ -344,8 +345,8 @@ function ExportButton(props) {
           <Typography variant="h6">Columns</Typography>
 
           <Grid container alignItems='center' direction="row" className={classes.container}>
-            <Grid item xs={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
-            <Grid item xs={8}>
+            <Grid size={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
+            <Grid size={8}>
               <RadioGroup
                 row
                 name="columnSelectionMode"
@@ -359,10 +360,10 @@ function ExportButton(props) {
           </Grid>
 
           <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.withMultiSelect}>
-            <Grid item xs={4}>
+            <Grid size={4}>
               <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
             </Grid>
-            <Grid item xs={8}>
+            <Grid size={8}>
               <QuestionnaireAutocomplete
                 multiple
                 entities={entities || []}
@@ -379,8 +380,8 @@ function ExportButton(props) {
           { getUserSelector("Created by:", createdBy, setCreatedBy) }
 
           <Grid container alignItems='baseline' direction="row" className={classes.container}>
-            <Grid item xs={4}><Typography variant="subtitle2">Created between:</Typography></Grid>
-            <Grid item xs={8}>
+            <Grid size={4}><Typography variant="subtitle2">Created between:</Typography></Grid>
+            <Grid size={8}>
               { getDateRange(createdAfter, setCreatedAfter, createdBefore, setCreatedBefore, createdRangeIsInvalid) }
             </Grid>
           </Grid>
@@ -388,15 +389,15 @@ function ExportButton(props) {
           { getUserSelector("Last modified by:", modifiedBy, setModifiedBy) }
 
           <Grid container alignItems='baseline' direction="row" className={classes.container}>
-            <Grid item xs={4}><Typography variant="subtitle2">Last modified between:</Typography></Grid>
-            <Grid item xs={8}>
+            <Grid size={4}><Typography variant="subtitle2">Last modified between:</Typography></Grid>
+            <Grid size={8}>
               { getDateRange(modifiedAfter, setModifiedAfter, modifiedBefore, setModifiedBefore, modifiedRangeIsInvalid) }
             </Grid>
           </Grid>
 
           <Grid container alignItems='center' direction="row" className={classes.container}>
-              <Grid item xs={4}><Typography variant="subtitle2">Status flag selection mode:</Typography></Grid>
-              <Grid item xs={8}>
+              <Grid size={4}><Typography variant="subtitle2">Status flag selection mode:</Typography></Grid>
+              <Grid size={8}>
                 <RadioGroup
                   row
                   name="statusSelectionMode"
@@ -410,10 +411,10 @@ function ExportButton(props) {
           </Grid>
 
           <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
-            <Grid item xs={4}>
+            <Grid size={4}>
               <Typography variant="subtitle2">{statusSelectionMode == "status" ? "Include only forms with the status flag:" : "Exclude all forms with the status flag:"}</Typography>
             </Grid>
-            <Grid item xs={8}>
+            <Grid size={8}>
               <FormControl variant="standard" fullWidth>
                 <Autocomplete
                     value={status}

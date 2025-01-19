@@ -25,9 +25,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   Typography
 } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import statisticsStyle from "./statisticsStyle.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";

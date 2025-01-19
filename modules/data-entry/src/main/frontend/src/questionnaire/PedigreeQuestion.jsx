@@ -19,7 +19,8 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@mui/material";
+import { Button, Dialog, DialogContent, Link, Tooltip } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -127,14 +128,14 @@ function PedigreeQuestion(props) {
           <div className={classes.answerField}>
           { pedigreeData.image ?
             <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={0}>
-              <Grid item>
+              <Grid>
                 <Tooltip title="Edit Pedigree">
                   <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}} underline="hover">
                     {image_div}
                   </Link>
                 </Tooltip>
               </Grid>
-              <Grid item>
+              <Grid>
                 <DeleteButton
                   entryName={"pedigree"}
                   entryType={"Pedigree"}

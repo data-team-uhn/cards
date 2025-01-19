@@ -20,7 +20,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { Button, Collapse, Grid, TextField, Tooltip } from "@mui/material";
+import { Button, Collapse, TextField, Tooltip } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import AddIcon from "@mui/icons-material/Add";
 import UnfoldMore from "@mui/icons-material/UnfoldMore";
@@ -76,7 +77,7 @@ function Note (props) {
       onEntered = {() => inputRef?.current?.focus()}
       >
       <Grid container spacing={2}>
-        <Grid item xs={fullSize ? 12 : 6}>
+        <Grid size={fullSize ? 12 : 6}>
           <TextField
             value = {note}
             onChange = {(event) => setNote(event?.target?.value)}
@@ -92,7 +93,7 @@ function Note (props) {
             {...rest}
             />
           </Grid>
-          <Grid item xs={fullSize ? 12 : 6}>
+          <Grid size={fullSize ? 12 : 6}>
             {children}
           </Grid>
         </Grid>

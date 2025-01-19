@@ -19,7 +19,8 @@
 
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Button, Collapse, Grid, IconButton, Tooltip } from "@mui/material";
+import { Button, Collapse, IconButton, Tooltip } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
@@ -188,7 +189,6 @@ function Section(props) {
       ? (<Collapse
       in={isDisplayed}
       component={Grid}
-      item
       {...gridProps}
       mountOnEnter
       unmountOnExit
@@ -216,7 +216,7 @@ function Section(props) {
               >
               {/* Section header */
                 (hasHeader || isRecurrent) &&
-                  <Grid item className={classes.sectionHeader}>
+                  <Grid className={classes.sectionHeader}>
                     {/* Delete this entry and expand this entry button */}
                     {isEdit && isRecurrent &&
                       <DeleteButton
@@ -263,7 +263,6 @@ function Section(props) {
                 unmountOnExit
                 in={!hiddenSection}
                 component={Grid}
-                item
                 >
                 <Grid container
                     {...FORM_ENTRY_CONTAINER_PROPS}
@@ -308,7 +307,7 @@ function Section(props) {
           })
         }
         {isEdit && isRecurrent &&
-        <Grid item className="addSectionContainer">
+        <Grid className="addSectionContainer">
           <Button
             size="small"
             variant="outlined"

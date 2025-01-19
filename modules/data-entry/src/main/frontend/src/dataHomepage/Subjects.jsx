@@ -22,7 +22,7 @@ import SubjectView from "./SubjectView.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
-import { Grid } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
@@ -74,7 +74,7 @@ function Subjects(props) {
 
   return (
     <Grid container className={classes.dashboardContainer}>
-      <Grid item className={classes.dashboardEntry} xs={12}>
+      <Grid className={classes.dashboardEntry} size={12}>
         <SubjectView
           expanded
           columns={columns}

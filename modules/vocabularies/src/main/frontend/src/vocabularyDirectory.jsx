@@ -21,11 +21,10 @@ import React, {useEffect} from "react";
 
 import { 
   Button,
-  Grid,
   LinearProgress,
   Typography
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import VocabularyTable from "./vocabularyTable";
 
 const Status = require("./statusCodes.json");
@@ -114,13 +113,13 @@ export default function VocabularyDirectory(props) {
   return(
     <React.Fragment>
     {(curStatus == Status["Loading"]) && (
-      <Grid item>
+      <Grid>
         <LinearProgress color={(props.type === "remote" ? "primary" : "secondary" )} />
       </Grid>
     )}
     {(curStatus == Status["Error"]) && (
       <React.Fragment>
-        <Grid item>
+        <Grid>
           <Typography color="error">
             The list of Bioportal vocabularies is currently inaccessible.
           </Typography>
@@ -128,7 +127,7 @@ export default function VocabularyDirectory(props) {
             Could not access Bioportal services. The API Key {props.apiKey} appears to be invalid.
           </Typography>}
         </Grid>
-        <Grid item>
+        <Grid>
           <Button variant="contained" color="primary" onClick={getVocabList}>
             <Typography variant="button">Retry</Typography>
           </Button>

@@ -30,8 +30,8 @@ import {
   CircularProgress,
   DialogActions,
   DialogContent,
-  Grid,
 } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 
 async function getDashboardExtensions() {
@@ -82,7 +82,7 @@ function UserDashboard(props) {
 
   if (loading) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -93,7 +93,7 @@ function UserDashboard(props) {
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
-            return <Grid item xs={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
+            return <Grid size={{ xs: 12, xl: 6}} key={"extension-" + index} className={classes.dashboardEntry}>
               <Extension />
             </Grid>
           })

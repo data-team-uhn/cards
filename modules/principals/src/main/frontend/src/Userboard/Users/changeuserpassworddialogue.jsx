@@ -16,7 +16,8 @@
 */
 
 import React from "react";
-import { Button, Grid, Dialog, DialogTitle, DialogContent, TextField, Tooltip, Typography } from "@mui/material";
+import { Button, Dialog, DialogTitle, DialogContent, TextField, Tooltip, Typography } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import { Formik } from "formik";
 import * as Yup from "yup";

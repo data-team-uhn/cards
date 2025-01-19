@@ -23,11 +23,10 @@ import PropTypes from "prop-types";
 import {
   Breadcrumbs,
   Collapse,
-  Grid,
   Typography,
   useScrollTrigger
 } from "@mui/material";
-
+import Grid from '@mui/material/Grid2';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { grey } from '@mui/material/colors';
@@ -110,9 +109,9 @@ function ResourceHeader (props) {
 
   return (
     <>
-    <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
+    <Grid size={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
       <Grid container direction="row" justifyContent="space-between" alignItems="center" wrap="nowrap">
-        <Grid item>
+        <Grid>
           <Breadcrumbs separator={separator}>
             {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
             <Collapse in={fullBreadcrumbTrigger}>
@@ -125,15 +124,15 @@ function ResourceHeader (props) {
         </Collapse>
       </Grid>
     </Grid>
-    <Grid item xs={12} className={classes.resourceTitle}>
+    <Grid size={12} className={classes.resourceTitle}>
        <Grid container direction="row" justifyContent="space-between" alignItems="start" spacing={1}>
-          <Grid item>
+          <Grid>
             <Grid container direction="row" spacing={1} alignItems="center">
-              <Grid item><Typography component="h2" variant="h4">{title}</Typography></Grid>
-              {tags?.map((t, i) => <Grid item key={`resource-tag-${i}`}>{t}</Grid>)}
+              <Grid><Typography component="h2" variant="h4">{title}</Typography></Grid>
+              {tags?.map((t, i) => <Grid key={`resource-tag-${i}`}>{t}</Grid>)}
             </Grid>
           </Grid>
-          {action && !fullBreadcrumbTrigger && <Grid item>{action}</Grid>}
+          {action && !fullBreadcrumbTrigger && <Grid>{action}</Grid>}
        </Grid>
        {children}
     </Grid>

@@ -17,8 +17,8 @@
 
 import React, { useState, useEffect } from "react";
 
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, MenuItem, TextField, Typography, Select, FormHelperText } from "@mui/material";
-
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent, MenuItem, TextField, Typography, Select, FormHelperText } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -179,10 +179,10 @@ function SubjectTypeDialog(props) {
       <DialogTitle>{isEdit ? "Modify " + currentSubjectType.label : "Create New Subject Type"}</DialogTitle>
       <DialogContent>
         <Grid container justifyContent="flex-start" alignItems="center" spacing={2}>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <Typography>Label</Typography>
           </Grid>
-          <Grid item xs={8}>
+          <Grid size={8}>
             <TextField
               variant="standard"
               fullWidth
@@ -197,10 +197,10 @@ function SubjectTypeDialog(props) {
           </Grid>
           { (isEdit || subjectTypes && subjectTypes.length > 0) &&
             <>
-              <Grid item xs={4}>
+              <Grid size={4}>
                 <Typography>Parent</Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid size={8}>
                 <Select
                   variant="standard"
                   disabled={isEdit && currentSubjectType.instanceCount != undefined && currentSubjectType.instanceCount > 0}
@@ -224,10 +224,10 @@ function SubjectTypeDialog(props) {
               </Grid>
             </>
           }
-          <Grid item xs={4}>
+          <Grid size={4}>
             <Typography>Order</Typography>
           </Grid>
-          <Grid item xs={8}>
+          <Grid size={8}>
             <TextField
               variant="standard"
               fullWidth
@@ -237,10 +237,10 @@ function SubjectTypeDialog(props) {
               onChange={(event) => { setOrder(event.target.value); setError(""); }}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <Typography>Subject list label</Typography>
           </Grid>
-          <Grid item xs={8}>
+          <Grid size={8}>
             <TextField
               variant="standard"
               fullWidth
@@ -249,10 +249,10 @@ function SubjectTypeDialog(props) {
               onChange={(event) => { setSubjectListLabel(event.target.value); }}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <Typography>Subject Id Pattern</Typography>
           </Grid>
-          <Grid item xs={8}>
+          <Grid size={8}>
             <TextField
               variant="standard"
               fullWidth
@@ -266,10 +266,10 @@ function SubjectTypeDialog(props) {
               {isEdit && currentSubjectType.instanceCount > 0 && "There are already subjects of this type. Changing the pattern may cause inconsistencies with the existing subject identifiers."}
             </FormHelperText>
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <Typography>Subject Id Pattern Hint</Typography>
           </Grid>
-          <Grid item xs={8}>
+          <Grid size={8}>
             <TextField
               variant="standard"
               fullWidth

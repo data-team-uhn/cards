@@ -18,7 +18,8 @@
 //
 import React from 'react';
 
-import { Fab, Grid, Paper, Typography } from '@mui/material';
+import { Fab, Paper, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import makeStyles from '@mui/styles/makeStyles';
 
 import NavigationIcon from '@mui/icons-material/Navigation';
@@ -33,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
     textAlign: "center",
-    "& .MuiGrid-item" : {
+    "& .MuiGrid2-root" : {
       textAlign: "center",
     },
   },
@@ -55,8 +56,8 @@ export default function ErrorPage(props) {
           alignItems="center"
           alignContent="center"
         >
-          <Logo maxWidth="360px" component={Grid} item/>
-          <Grid item>
+          <Logo maxWidth="360px" component={Grid}/>
+          <Grid>
             {errorCode && <Typography variant="h1" color={errorCodeColor || "primary"}>
               {errorCode}
             </Typography> }
@@ -68,7 +69,7 @@ export default function ErrorPage(props) {
             </FormattedText> }
           </Grid>
           { buttonLabel &&
-            <Grid item>
+            <Grid>
               <Fab
                 variant="extended"
                 color="primary"
