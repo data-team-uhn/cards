@@ -224,7 +224,7 @@ function ExportButton(props) {
                 onChange={(value) => {
                   setter(value);
                 }}
-                componentsProps={{ textField: {
+                slotProps={{ textField: {
                                      variant: 'standard',
                                      error: rangeIsInvalid,
                                      helperText: rangeIsInvalid ? " " : DATE_FORMAT
