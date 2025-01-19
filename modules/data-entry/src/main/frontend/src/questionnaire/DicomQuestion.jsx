@@ -299,9 +299,9 @@ function DicomQuestion(props) {
             {errorDialogText}
           </Typography>
         </DialogContent>
-        <Accordion className={styles.advancedHelp}>
+        <Accordion className={styles.advancedHelp} slotProps={{ heading: { component: 'h4' } }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle2">Advanced help</Typography>
+            <Typography component="span" variant="subtitle2">Advanced help</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <FormattedText variant="body2">{advancedErrorDialogText}</FormattedText>
