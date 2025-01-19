@@ -23,7 +23,7 @@ import AdminScreen from "./AdminScreen.jsx";
 
 import {
   CircularProgress,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText
 } from "@mui/material";
@@ -65,7 +65,7 @@ function AdminDashboard(props) {
                 key={route["cards:targetURL"]}
                 size={{xs:12, md:6, xl:4}}
               >
-                <ListItem button
+                <ListItemButton
                   onClick={() => history.push(route["cards:targetURL"])}
                 >
                     <ListItemIcon>
@@ -75,7 +75,7 @@ function AdminDashboard(props) {
                       primary={route["cards:extensionName"]}
                       secondary={route["cards:hint"]}
                     />
-                </ListItem>
+                </ListItemButton>
               </Grid>
             )
           })
