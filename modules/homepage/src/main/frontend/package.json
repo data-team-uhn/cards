@@ -47,7 +47,7 @@
     "semantic-ui-css": "2.5.0",
     "semantic-ui-react": "2.1.4",
     "set-blocking": "2.0.0",
-    "yup": "0.32.11"
+    "yup": "1.6.1"
   },
   "resolutions": {
     "@babel/runtime": "^7.21.0"
