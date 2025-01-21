@@ -30,7 +30,7 @@ import FormattedText from "../components/FormattedText.jsx";
 // GUI for displaying Information cards
 function Information (props) {
   let { classes, infoDefinition, ...otherProps } = props;
-  let { text, type } = { ...otherProps, ...infoDefinition }
+  let { text, type } = { type: "plain", ...otherProps, ...infoDefinition }
 
   return (type == "plain" ?
     <Card
@@ -54,10 +54,6 @@ Information.propTypes = {
     text: PropTypes.string,
     type: PropTypes.oneOf(["plain", "info", "warning", "error", "success"]),
   }),
-};
-
-Information.defaultProps = {
-  type: "plain",
 };
 
 export default withStyles(QuestionnaireStyle)(Information);

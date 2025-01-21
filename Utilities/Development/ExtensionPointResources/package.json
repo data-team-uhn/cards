@@ -17,7 +17,7 @@
     "@mui/icons-material": "6.4.0",
     "@mui/material": "6.4.0",
     "@mui/styles": "6.4.0",
-    "react": "^17.0.0"
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.21.0",

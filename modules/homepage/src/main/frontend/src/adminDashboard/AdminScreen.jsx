@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function AdminScreen(props) {
-  const { title, action, disableBreadcrumb, className, children } = props;
+  const { title, action, disableBreadcrumb, className, children } = { title: "Administration", ...props };
 
   const classes = useStyles();
   const appName = document.querySelector('meta[name="title"]')?.content;
@@ -77,10 +77,6 @@ AdminScreen.propTypes = {
   title: PropTypes.string,
   action: PropTypes.node,
   disableBreadcrumb: PropTypes.bool,
-};
-
-AdminScreen.defaultProps = {
-  title: "Administration",
 };
 
 export default AdminScreen;

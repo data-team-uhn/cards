@@ -96,7 +96,7 @@ const useStyles = makeStyles(theme => ({
  *   the title and titleAction line
  */
 function ResourceHeader (props) {
-  let { title, breadcrumbs, separator, tags, action, children } = props;
+  let { title, breadcrumbs, separator, tags, action, children, contentOffset } = { separator: "/", contentOffset: 0, ...props };
 
   const classes = useStyles();
 
@@ -109,7 +109,7 @@ function ResourceHeader (props) {
 
   return (
     <>
-    <Grid size={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
+    <Grid size={12} className={classes.resourceHeader} style={{top: contentOffset}} id="cards-resource-header">
       <Grid container direction="row" justifyContent="space-between" alignItems="center" wrap="nowrap">
         <Grid>
           <Breadcrumbs separator={separator}>
@@ -119,7 +119,7 @@ function ResourceHeader (props) {
             </Collapse>
           </Breadcrumbs>
         </Grid>
-        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid} item>
+        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid}>
           { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }
         </Collapse>
       </Grid>
@@ -157,11 +157,6 @@ ResourceHeader.propTypes = {
     PropTypes.node
   ]),
   contentOffset: PropTypes.number,
-}
-
-ResourceHeader.defaultProps = {
-  separator: "/",
-  contentOffset: 0,
 }
 
 export default ResourceHeader;

@@ -34,7 +34,7 @@
     "webpack-assets-manifest": "5.2.1"
   },
   "dependencies": {
-    "react": "^18.0.0"
+    "react": "^19.0.0"
   },
   "resolutions": {
     "@babel/runtime": "^7.26.0"

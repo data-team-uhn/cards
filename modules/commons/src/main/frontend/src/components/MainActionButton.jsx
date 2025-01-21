@@ -52,7 +52,8 @@ import style from './style.jsx';
 //
 
 function MainActionButton(props) {
-  const { icon, label, title, ariaLabel, onClick, inProgress, disabled, style, classes } = props;
+  const { icon, label, title, ariaLabel, onClick, classes } = props;
+  const { inProgress, disabled, style } = { inProgress: false, disabled: false, style: {}, ...props };
 
   let extended = !!label;
 
@@ -95,11 +96,5 @@ MainActionButton.propTypes = {
   classes: PropTypes.object.isRequired,
   style: PropTypes.object,
 }
-
-MainActionButton.defaultProps = {
-  inProgress: false,
-  disabled: false,
-  style: {},
-};
 
 export default withStyles(style)(MainActionButton);

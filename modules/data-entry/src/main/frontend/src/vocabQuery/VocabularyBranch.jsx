@@ -59,7 +59,7 @@ import { VALUE_POS } from "../questionnaire/Answer";
 //
 function VocabularyBranch(props) {
   const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError,
-    knownHasChildren, selectorComponent, onTermSelected, onTermUnselected, currentSelection, maxAnswers, parentId, classes } = props;
+    knownHasChildren, selectorComponent, onTermSelected, onTermUnselected, currentSelection, maxAnswers, parentId, classes } = {  parentId: "", ...props };
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -333,10 +333,6 @@ VocabularyBranch.propTypes = {
   maxAnswers: PropTypes.number,
   parentId: PropTypes.string,
   classes: PropTypes.object.isRequired
-};
-
-VocabularyBranch.defaultProps = {
-  parentId: ""
 };
 
 export default withStyles(BrowseTheme)(VocabularyBranch);

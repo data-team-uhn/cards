@@ -42,10 +42,13 @@ import MainActionButton from './MainActionButton.jsx';
 //  />
 //
 function NewItemButton(props) {
+  const { title, inProgress, ...rest } = { title: "New", inProgress: false, ...props };
   return (
     <MainActionButton
       ariaLabel="new"
       icon={<AddIcon />}
+      title={title}
+      inProgress={inProgress}
       {...props}
     />
   );
@@ -56,10 +59,5 @@ NewItemButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
 }
-
-NewItemButton.defaultProps = {
-  title: "New",
-  inProgress: false,
-};
 
 export default NewItemButton;

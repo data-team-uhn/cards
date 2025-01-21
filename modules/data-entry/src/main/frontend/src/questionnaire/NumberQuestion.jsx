@@ -131,7 +131,7 @@ const useSliderStyles = makeStyles(theme => ({
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { existingAnswer, errorText, classes, pageActive, disableValueInstructions, ...rest} = props;
+  const { existingAnswer, errorText, classes, pageActive, disableValueInstructions, ...rest} = { errorText: "", ...props };
   const { dataType,displayMode, minAnswers, minValue, maxValue, disableMinMaxValueEnforcement, messageForValuesOutsideMinMax, isRange, unitOfMeasurement,
     sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel }
     = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
@@ -513,10 +513,6 @@ NumberQuestion.propTypes = {
   maxValue: PropTypes.number,
   errorText: PropTypes.string,
   isRange: PropTypes.bool,
-};
-
-NumberQuestion.defaultProps = {
-  errorText: "",
 };
 
 const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)

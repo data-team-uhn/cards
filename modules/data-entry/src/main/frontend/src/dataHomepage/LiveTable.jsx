@@ -46,7 +46,10 @@ function LiveTable(props) {
 
   const { customUrl, resourceSelectors, columns, showTotalRows, defaultLimit, updateData, classes,
     filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
-    onDataReceived, onFiltersChange, filtersJsonString, ...rest } = props;
+    onDataReceived, onFiltersChange, filtersJsonString, ...rest } = {
+      defaultLimit: 20,
+      showTotalRows: false,
+      ...props };
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -434,11 +437,6 @@ function LiveTable(props) {
       {!tableData && (<LinearProgress className={classes.progressIndicator}/>)}
     </Paper>
   );
-}
-
-LiveTable.defaultProps = {
-  defaultLimit: 20,
-  showTotalRows: false
 }
 
 export default withStyles(LiveTableStyle)(LiveTable);

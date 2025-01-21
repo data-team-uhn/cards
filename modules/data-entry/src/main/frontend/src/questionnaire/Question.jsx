@@ -33,7 +33,7 @@ import FormattedText from "../components/FormattedText.jsx";
 function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
   let { compact } = { ...questionDefinition };
-  let { text, description, disableInstructions } = { ...questionDefinition, ...props }
+  let { text, description, disableInstructions } = { disableInstructions: false, ...questionDefinition, ...props };
 
   const [ doHighlight, setDoHighlight ] = useState();
   const [ anchor, setAnchor ] = useState();
@@ -142,10 +142,6 @@ Question.propTypes = {
     text: PropTypes.string,
     description: PropTypes.string,
     disableInstructions: PropTypes.bool,
-};
-
-Question.defaultProps = {
-    disableInstructions: false,
 };
 
 export default withStyles(QuestionnaireStyle)(Question);

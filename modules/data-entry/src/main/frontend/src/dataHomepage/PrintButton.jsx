@@ -56,7 +56,12 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  *
  */
 function PrintButton(props) {
-  const { resourcePath, resourceData, title, date, breadcrumb, onOpen, onClose, size, variant, label, className, disablePreview, fullScreen, disableShortcut } = props;
+  const { resourcePath, resourceData, title, date, breadcrumb, onOpen, onClose, size, variant, label, className, disablePreview,
+  fullScreen, disableShortcut } = {
+    variant: "icon",
+    size: "large",
+    fullScreen: true,
+    ...props };
 
   const [ open, setOpen ] = useState(false);
 
@@ -135,12 +140,6 @@ PrintButton.propTypes = {
   onOpen: PropTypes.func,
   onClose: PropTypes.func,
   size: PropTypes.oneOf(["small", "medium", "large"]),
-}
-
-PrintButton.defaultProps = {
-  variant: "icon",
-  size: "large",
-  fullScreen: true,
 }
 
 export default withStyles(QuestionnaireStyle)(PrintButton);

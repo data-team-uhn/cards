@@ -707,4 +707,3 @@ QuestionnaireEntry.propTypes = {
   titleField: PropTypes.string,
   model: PropTypes.string.isRequired
 };
-

@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Logo(props) {
-  const { component, mode, className, maxWidth, disableAffiliation, ...rest } = props;
+  const { component, mode, className, maxWidth, disableAffiliation, ...rest } = { component: Box, mode: "Light", ...props };
   const classes = useStyles();
 
   const appName = document.querySelector('meta[name="title"]')?.content;
@@ -76,9 +76,4 @@ Logo.propTypes = {
   className: PropTypes.string,
   maxWidth: PropTypes.string,
   disableAffiliation: PropTypes.bool,
-}
-
-Logo.defaultProps = {
-  component: Box,
-  mode: "Light",
 }

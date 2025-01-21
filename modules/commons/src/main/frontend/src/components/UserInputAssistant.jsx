@@ -79,7 +79,7 @@ import style from "./style.jsx";
 //
 
 function UserInputAssistant (props) {
-  const { anchorEl, variant, title, children, actionLabel, onAction, onIgnore, onClickAway, classes } = {...props};
+  const { anchorEl, variant, title, children, actionLabel, onAction, onIgnore, onClickAway, classes } = { variant: 'hint', ...props};
   let [ enabled, setEnabled ] = useState(true);
 
   let [ placement, setPlacement ] = useState("right");
@@ -152,7 +152,5 @@ UserInputAssistant.propTypes = {
   onIgnore: PropTypes.func,
   onClickAway: PropTypes.func,
 };
-UserInputAssistant.defaultProps = {
-  variant: 'hint',
-}
+
 export default withStyles(style)(UserInputAssistant);

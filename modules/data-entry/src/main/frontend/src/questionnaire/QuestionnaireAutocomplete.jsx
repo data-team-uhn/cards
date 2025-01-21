@@ -87,7 +87,12 @@ let entitySpecs = {
 // Any other props are passed directly to the Autocomplete component.
 
 function QuestionnaireAutocomplete(props) {
-  const { multiple, entities, selection, onSelectionChanged, getOptionValue, ...rest } = props;
+  const { multiple, entities, selection, onSelectionChanged, getOptionValue, ...rest } = {
+    multiple: false,
+    selection: [],
+    onSelectionChanged: () => {},
+    getOptionValue: (option) => option?.path,
+    ...props };
 
   const filterOptions = createFilterOptions({
     stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
@@ -209,12 +214,6 @@ QuestionnaireAutocomplete.propTypes = {
   selection: PropTypes.array,
   onSelectionChanged: PropTypes.func,
   getOptionValue: PropTypes.func,
-}
-QuestionnaireAutocomplete.defaultProps = {
-  multiple: false,
-  selection: [],
-  onSelectionChanged: () => {},
-  getOptionValue: (option) => option?.path,
 }
 
 export default QuestionnaireAutocomplete;
