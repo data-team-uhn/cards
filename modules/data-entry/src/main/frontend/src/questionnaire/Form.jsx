@@ -18,7 +18,7 @@
 //
 
 import React, { useEffect, useState, useContext } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 
 import {
   Breadcrumbs,
@@ -120,6 +120,8 @@ function Form (props) {
   // The first incomplete question, to be brought to the user's attention
   let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
   let [ disableProgress, setDisableProgress ] = useState();
+
+  let navigate = useNavigate();
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -390,7 +392,7 @@ function Form (props) {
 
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    props.history.push(urlBase + formURL + '.edit' + window.location.hash);
+    navigate(urlBase + formURL + '.edit' + window.location.hash);
   }
 
   let onClose = (event) => {
@@ -398,13 +400,13 @@ function Form (props) {
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        props.history.push(urlBase + formURL);
+        navigate(urlBase + formURL);
     });
   }
 
   let onDelete = () => {
     removeWindowHandlers && removeWindowHandlers();
-    props.history.push(urlBase + (data?.subject?.['@path'] || ''));
+    navigate(urlBase + (data?.subject?.['@path'] || ''));
   }
 
   let title = data?.questionnaire?.title || id || "";
@@ -538,10 +540,10 @@ function Form (props) {
         <Typography variant="overline">
           {"Related: "}
           {validLinks.length == 1 ?
-              validLinks.map(link => <Link key={link["@name"]} to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
+              validLinks.map(link => <Link key={link["@name"]} to={"../content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
               :
               <List dense disablePadding>
-              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
+              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"../content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
               </List>
           }
         </Typography>

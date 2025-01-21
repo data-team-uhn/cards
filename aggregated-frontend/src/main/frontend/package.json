@@ -35,7 +35,7 @@
     "react-number-format": "5.4.3",
     "react-phone-input-2": "2.15.1",
     "react-google-autocomplete": "2.7.5",
-    "react-router-dom": "5.2.0",
+    "react-router": "7.5.0",
     "react-to-print": "3.1.0",
     "material-react-table": "1.10.0",
     "uuid": "11.1.0",

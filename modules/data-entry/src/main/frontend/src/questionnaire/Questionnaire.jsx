@@ -18,7 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import PropTypes from "prop-types";
 
 import {
@@ -67,7 +67,7 @@ let Questionnaire = (props) => {
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
   let isEdit = window.location.pathname.endsWith(".edit");
-  let history = useHistory();
+  let navigate = useNavigate();
 
   let pageNameWriter = usePageNameWriterContext();
 
@@ -151,7 +151,7 @@ let Questionnaire = (props) => {
               entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
               entryName={questionnaireTitle}
               entryType="Questionnaire"
-              onComplete={() => history.replace(baseUrl)}
+              onComplete={() => navigate(baseUrl, { replace: true })}
               size="medium"
               variant="text"
               onClose={() => { setActionsMenu(null); }}
@@ -163,13 +163,13 @@ let Questionnaire = (props) => {
   let questionnaireMenu = (
       <div className={classes.actionsMenu}>
         { isEdit ?
-          <Tooltip title="Preview" onClick={() => history.push(questionnaireUrl)}>
+          <Tooltip title="Preview" onClick={() => navigate(questionnaireUrl)}>
             <IconButton size="large">
               <PreviewIcon />
             </IconButton>
           </Tooltip>
           :
-          <Tooltip title="Edit" onClick={() => history.push(questionnaireUrl + ".edit")}>
+          <Tooltip title="Edit" onClick={() => navigate(questionnaireUrl + ".edit")}>
             <IconButton color="primary" size="large">
               <EditIcon />
             </IconButton>
@@ -201,7 +201,7 @@ let Questionnaire = (props) => {
   let questionnaireHeader = (
         <ResourceHeader
           title={questionnaireTitle || ""}
-          breadcrumbs={[<Link to={baseUrl} underline="hover">Questionnaires</Link>]}
+          breadcrumbs={[<Link to={".." + baseUrl} underline="hover">Questionnaires</Link>]}
           action={questionnaireMenu}
           contentOffset={props.contentOffset}
           >
