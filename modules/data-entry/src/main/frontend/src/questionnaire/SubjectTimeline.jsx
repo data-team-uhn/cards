@@ -385,8 +385,4 @@ SubjectTimeline.propTypes = {
   id: PropTypes.string
 }
 
-SubjectTimeline.defaultProps = {
-  maxDisplayed: 4,
-}
-
 export default withStyles(SubjectTimeline, QuestionnaireStyle);

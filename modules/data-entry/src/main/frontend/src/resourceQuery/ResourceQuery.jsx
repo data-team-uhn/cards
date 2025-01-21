@@ -71,8 +71,24 @@ export const MAX_RESULTS = 10;
 //  infoDisplayer: a component used to display further information about the resource
 //
 function ResourceQuery(props) {
-  const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
-    value, questionDefinition, onChange, enableSelection, initialSelection, onRemoveOption, className, classes } = props;
+  const {
+    onClick,
+    clearOnClick = true,
+    focusAfterSelecting = true,
+    disabled,
+    variant = 'default',
+    isNested,
+    placeholder,
+    value,
+    questionDefinition,
+    onChange,
+    enableSelection,
+    initialSelection,
+    onRemoveOption,
+	className,
+    classes
+  } = props;
+
   const { maxAnswers, primaryType, labelProperty, propertiesToSearch, enableUserEntry } = questionDefinition;
   const { fetchSuggestions, formatSuggestionData, infoDisplayer } = props;
 
@@ -538,12 +554,6 @@ ResourceQuery.propTypes = {
     infoDisplayer: PropTypes.object,
     fetchSuggestions: PropTypes.func,
     formatSuggestionData: PropTypes.func,
-};
-
-ResourceQuery.defaultProps = {
-  clearOnClick: true,
-  focusAfterSelecting: true,
-  variant: 'default'
 };
 
 export default withStyles(ResourceQuery, QueryStyle);
