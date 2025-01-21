@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { v4 as uuidv4 } from 'uuid';
 import {
   Box,
@@ -54,7 +54,7 @@ function createTableCell(node) {
     let path = node["@path"];
     try {
       let questionnairePath = /^(.*\/Questionnaires\/[^\/]+)/.exec(path)[0];
-      let link = `/content.html/admin${questionnairePath}#${path}`;
+      let link = `../content.html/admin${questionnairePath}#${path}`;
       return <Link to={link} underline="hover">{label}</Link>
     } catch {
       return label;

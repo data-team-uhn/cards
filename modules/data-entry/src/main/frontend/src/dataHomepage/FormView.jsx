@@ -35,7 +35,7 @@ import {
   Typography,
 } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LaunchIcon from '@mui/icons-material/Launch';
 import DeleteButton from "./DeleteButton.jsx";
@@ -131,7 +131,7 @@ function FormView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()} underline="hover">
+            <Link to={"../content.html/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()} underline="hover">
               <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>

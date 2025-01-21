@@ -12,7 +12,7 @@
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { withStyles } from 'tss-react/mui';
 import { loadExtensions } from "../../uiextension/extensionManager";
 import { Drawer, List, ListItemButton, ListItemText } from "@mui/material";
@@ -64,7 +64,6 @@ const Sidebar = ({ ...props }) => {
       <NavLink
         to={entry["cards:targetURL"]}
         className={classes.item}
-        activeClassName="active"
         key={key}
       >
         <ListItemButton className={classes.itemLink + listBackground}>
