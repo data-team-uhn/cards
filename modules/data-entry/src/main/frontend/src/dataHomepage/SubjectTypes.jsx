@@ -18,7 +18,7 @@
 //
 import React, { useState } from "react";
 import { Box } from "@mui/material";
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
@@ -60,7 +60,7 @@ function SubjectTypes(props) {
       header: "Number of subjects",
       size: 20,
       accessorFn: (row) => row.instanceCount || 0,
-      Cell: ({ row }) => (row.original.instanceCount ? <Link to={"/content.html/Subjects#" + row.original['@name']} title={"Show subjects of type " + row.original.label} underline="hover">{row.original.instanceCount}</Link> : "0"),
+      Cell: ({ row }) => (row.original.instanceCount ? <Link to={"../content.html/Subjects#" + row.original['@name']} title={"Show subjects of type " + row.original.label} underline="hover">{row.original.instanceCount}</Link> : "0"),
     },
     {
       header: "Order",

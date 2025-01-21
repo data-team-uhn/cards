@@ -18,12 +18,11 @@
 //
 import PropTypes from "prop-types";
 import React, { useState, useContext } from "react";
-import { withRouter } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
 import { MenuList, Paper, Popper } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@mui/icons-material/Description";
 import Search from "@mui/icons-material/Search";
@@ -245,7 +244,7 @@ function SearchBar(props) {
             <Paper square className={classes.suggestionContainer}>
               <ClickAwayListener onClickAway={(event) => {
                 // Ignore clickaway events if they're just clicking on the input box or search button
-                if (!searchBar.current.contains(event.target)) {
+                if (!searchBar?.current?.contains(event.target)) {
                   onPopperClose && onPopperClose();
                   setPopperOpen(false);
                 }}}>
@@ -281,7 +280,7 @@ function SearchBar(props) {
                     </MenuItem>
                   ))}
                   { !results[0]?.disabled && showAllResultsLink &&
-                  <Link to={"/content.html/QuickSearchResults?query=" + encodeURIComponent(search)
+                  <Link to={"../content.html/QuickSearchResults?query=" + encodeURIComponent(search)
                               + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
                           className={classes.root} underline="hover">
                     <MenuItem
@@ -324,15 +323,12 @@ let defaultResultConstructor = (props) => (
 );
 
 let defaultRedirect = (event, row, props) => {
-
+  const navigate = useNavigate();
   // Redirect using React-router
   const anchor = row[CARDS_QUERY_MATCH_KEY][CARDS_QUERY_MATCH_PATH_KEY];
   const path = (row["jcr:primaryType"] == "cards:Questionnaire") ? "/content.html/admin" : "/content.html";
   if (row["@path"]) {
-    props.history.push({
-      pathname: path + row["@path"],
-      hash: anchor
-    });
+    navigate(path + row["@path"] + "#" + anchor);
   }
 }
 
@@ -346,4 +342,4 @@ SearchBar.propTypes = {
   resultConstructor: PropTypes.func
 }
 
-export default withStyles(HeaderStyle)(withRouter(SearchBar));
+export default withStyles(HeaderStyle)(SearchBar);

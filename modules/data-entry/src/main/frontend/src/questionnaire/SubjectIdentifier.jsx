@@ -18,10 +18,10 @@
 //
 
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 function defaultCreator (node) {
-  return {to: "/content.html" + node["@path"]}
+  return {to: "../content.html" + node["@path"]}
 }
 
 // Extract the subject id from the subject path

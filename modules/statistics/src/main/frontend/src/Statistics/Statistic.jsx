@@ -30,7 +30,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LineChartIcon from '@mui/icons-material/ShowChart';
 import { deepPurple, indigo } from '@mui/material/colors';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import palette from "google-palette";
 import {
@@ -165,10 +165,10 @@ function Statistic(props) {
     navigateToDataset(xVal, splitVal);
   }
 
-  let history = useHistory();
+  let navigate = useNavigate();
 
   let navigateToDataset = (xVal, splitVal) => {;
-    history.push(
+    navigate(
       "/content.html/Subjects#subjects:activeTab=" + definition?.meta?.yVar?.["@name"] +
       "&subjects:filters=" + window.btoa(encodeURIComponent(JSON.stringify(generateFilters(xVal, splitVal))))
     );

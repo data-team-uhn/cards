@@ -35,7 +35,7 @@ import {
   Typography,
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LaunchIcon from '@mui/icons-material/Launch';
 import DeleteWithRefreshButton from "./DeleteWithRefreshButton.jsx";
@@ -136,7 +136,7 @@ function SubjectView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()} underline="hover">
+            <Link to={"../content.html/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()} underline="hover">
               <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>

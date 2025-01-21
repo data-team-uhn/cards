@@ -25,7 +25,7 @@ import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
 import withStyles from '@mui/styles/withStyles';
 import GlobalStyles from '@mui/material/GlobalStyles';
-import { Redirect, Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
@@ -74,29 +74,28 @@ class Main extends React.Component {
     window.addEventListener("resize", this.autoCloseMobileMenus);
   };
 
+  getRenderElement = (route) => {
+    let ThisComponent = route["cards:extensionRender"];
+    let title = " | " + this.state.title;
+    return (
+      <Page title={title} pageDefaultName={route["cards:extensionName"]}>
+        <ThisComponent contentOffset={this.state.contentOffset} />
+      </Page>
+      );
+  };
+
   switchRoutes = (routes) => {
-    return (<Switch color="secondary">
+    return (<Routes color="secondary">
       {routes.map((route, key) => {
         return (
           <Route
             path={route["cards:targetURL"]}
-            exact={Boolean(route["cards:exactURLMatch"])}
-            render={(props) => {
-                let ThisComponent = route["cards:extensionRender"];
-                let newProps = {...props, contentOffset: this.state.contentOffset };
-                let title = " | " + this.state.title;
-                return (
-                  <Page title={title} pageDefaultName={route["cards:extensionName"]}>
-                    <ThisComponent {...newProps} />
-                  </Page>
-                  );
-              }
-            }
+            element={this.getRenderElement(route)}
             key={key}
           />
         );
       })}
-    </Switch>)
+    </Routes>)
   };
 
   render() {
@@ -187,11 +186,11 @@ root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
-        <Switch color="secondary">
-          <Route path="/content.html/" component={MainComponent} />
-          <Redirect from="/" to="/content.html/Questionnaires/User"/>
-          <Redirect from="/content" to="/content.html/Questionnaires/User" />
-        </Switch>
+        <Routes color="secondary">
+          <Route path="/*" element={<MainComponent />}/>
+          <Route path="/" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
+          <Route path="/content" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
+        </Routes>
       </Router>
     </ThemeProvider>
   </StyledEngineProvider>

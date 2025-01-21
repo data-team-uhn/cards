@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
@@ -29,6 +29,8 @@ function NewQuestionnaireDialog(props) {
   const [ error, setError ] = useState("");
   const [ duplicateTitle, setDuplicateTitle ] = useState(false);
   const [ title, setTitle ] = useState("");
+
+  const navigate = useNavigate();
 
   let createQuestionnaire = () => {
     setError("");
@@ -45,7 +47,7 @@ function NewQuestionnaireDialog(props) {
           // FIXME: Would be better to somehow obtain the router prefix from props
           // but that is not currently possible
           onClose();
-          props.history.push("/content.html/admin" + URL + ".edit");
+          navigate("/content.html/admin" + URL + ".edit");
         } else {
           return(Promise.reject(response));
         }
@@ -120,4 +122,4 @@ function NewQuestionnaireDialog(props) {
   )
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(NewQuestionnaireDialog));
+export default withStyles(QuestionnaireStyle)(NewQuestionnaireDialog);

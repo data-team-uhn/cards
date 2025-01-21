@@ -19,7 +19,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Breadcrumbs, Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 
@@ -45,8 +45,8 @@ function AdminScreen(props) {
   const heading = <Typography className={classes.title} variant="h4">{title}</Typography>;
   const breadcrumb = (
     <Breadcrumbs separator="/">
-      <Typography variant="overline"><Link to="/">{appName}</Link></Typography>
-      <Typography variant="overline"><Link to="/content.html/admin/">Administration</Link></Typography>
+      <Typography variant="overline"><Link to="../">{appName}</Link></Typography>
+      <Typography variant="overline"><Link to="../content.html/admin/">Administration</Link></Typography>
     </Breadcrumbs>
   );
 
