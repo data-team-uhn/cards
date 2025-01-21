@@ -45,7 +45,13 @@ import QueryMatchingUtils from "../resourceQuery/QueryMatchingUtils";
 //  onRemoveOption: Function to remove added answer
 //
 function VocabularyQuery(props) {
-  const { questionDefinition } = props;
+  const {
+    questionDefinition,
+    clearOnClick = true,
+    focusAfterSelecting = true,
+    variant = 'default',
+    ...rest
+  } = props;
 
   // Make sequential requests to source vocabularies
   // Callback onSuccess/onFailure when all requests have responded
@@ -131,7 +137,11 @@ function VocabularyQuery(props) {
 
   return (
       <ResourceQuery
-        {... props}
+        questionDefinition={questionDefinition}
+        clearOnClick={clearOnClick}
+        focusAfterSelecting={focusAfterSelecting}
+        variant={variant}
+        {... rest}
         infoDisplayer={questionDefinition?.enableVocabularyBrowser ? VocabularyBrowser : undefined}
         fetchSuggestions={fetchSuggestions}
         formatSuggestionData={formatSuggestionData}
@@ -153,12 +163,6 @@ VocabularyQuery.propTypes = {
     enableSelection: PropTypes.bool,
     initialSelection: PropTypes.array,
     onRemoveOption: PropTypes.func
-};
-
-VocabularyQuery.defaultProps = {
-  clearOnClick: true,
-  focusAfterSelecting: true,
-  variant: 'default'
 };
 
 export default VocabularyQuery;

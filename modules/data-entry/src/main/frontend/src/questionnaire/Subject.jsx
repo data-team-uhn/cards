@@ -79,7 +79,7 @@ let createQueryURL = (query, type) => {
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed, pageSize, history } = props;
+  let { id, classes, maxDisplayed = 4, pageSize = 10, history } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
@@ -807,11 +807,6 @@ export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion)
 
 Subject.propTypes = {
   id: PropTypes.string
-}
-
-Subject.defaultProps = {
-  maxDisplayed: 4,
-  pageSize: 10,
 }
 
 export default withStyles(withRouter(Subject), QuestionnaireStyle);

@@ -46,7 +46,15 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  />
 function DateQuestionYear(props) {
   let {existingAnswer, ...rest} = props;
-  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
+  let {
+    text,
+    dateFormat = "yyyy",
+    minAnswers = 0,
+    type = DateQuestionUtilities.TIMESTAMP_TYPE,
+    lowerLimit,
+    upperLimit
+  } = { ...props.questionDefinition, ...props};
+
   return (
     <NumberQuestion
       minAnswers={minAnswers}

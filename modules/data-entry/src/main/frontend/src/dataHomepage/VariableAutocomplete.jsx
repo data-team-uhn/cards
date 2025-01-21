@@ -81,7 +81,19 @@ const useStyles = makeStyles()(theme => ({
 // Any other props are passed directly to the Autocomplete component.
 
 let VariableAutocomplete = (props) => {
-  const { className, options, getOptionValue, getOptionLabel, getOptionSecondaryLabel, groupBy, selectedValue, onValueChanged, getHelperText, textFieldProps, ...rest } = props;
+  const {
+    className,
+    options,
+    getOptionValue = (option) => option?.uuid,
+    getOptionLabel = (option) => option?.label,
+    getOptionSecondaryLabel = () => {},
+    onValueChanged = () => {},
+    getHelperText = () => {},
+    textFieldProps = {},
+    groupBy,
+    selectedValue,
+    ...rest
+  } = props;
 
   const filterOptions = createFilterOptions({
     stringify: (option) => `${getOptionLabel?.(option)} ${getOptionSecondaryLabel?.(option) || ''}`
@@ -146,15 +158,6 @@ VariableAutocomplete.propTypes = {
   onValueChanged: PropTypes.func,
   getHelperText: PropTypes.func,
   textFieldProps: PropTypes.object,
-};
-
-VariableAutocomplete.defaultProps = {
-  getOptionValue: (option) => option?.uuid,
-  getOptionLabel: (option) => option?.label,
-  getOptionSecondaryLabel: () => {},
-  onValueChanged: () => {},
-  getHelperText: () => {},
-  textFieldProps: {}
 };
 
 export default VariableAutocomplete;

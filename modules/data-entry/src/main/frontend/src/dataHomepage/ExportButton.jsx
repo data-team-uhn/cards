@@ -74,7 +74,15 @@ const filterUserOptions =  createFilterOptions({
  * A component that renders an icon or button to open the export dialog that generates an export URL for an entry.
  */
 function ExportButton(props) {
-  const { entityData, entryLabel, entryPath, entryName, variant, size, onClose } = props;
+  const {
+    entityData,
+    entryLabel = "Export forms",
+    entryPath,
+    entryName,
+    variant = "icon",
+    size = "large",
+    onClose
+  } = props;
 
   const DEFAULTS = {
     fileFormat : ".csv",
@@ -468,12 +476,6 @@ ExportButton.propTypes = {
   entryName: PropTypes.string.isRequired,
   size: PropTypes.oneOf(["small", "medium", "large"]),
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
-}
-
-ExportButton.defaultProps = {
-  entryLabel: "Export forms",
-  variant: "icon",
-  size: "large",
 }
 
 export default ExportButton;

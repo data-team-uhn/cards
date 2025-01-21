@@ -54,7 +54,23 @@ const CARDS_QUERY_MATCH_PATH_KEY = "@path";
  * Other props will be forwarded to the Input element
  */
 function SearchBar(props) {
-  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, queryConstructor, resultConstructor, staticContext, showAllResultsLink, disableDropdownItemLink, ...rest } = props;
+  const {
+    classes,
+    className,
+    defaultValue = "",
+    invertColors,
+    onChange,
+    onPopperClose,
+    onSelect = defaultRedirect,
+    onSelectFinish,
+    queryConstructor = defaultQueryConstructor,
+    resultConstructor = defaultResultConstructor,
+    staticContext,
+    showAllResultsLink, 
+    disableDropdownItemLink,
+    ...rest
+  } =  props;
+
   const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
   const [ moreResults, setMoreResults ] = useState(0);
@@ -335,13 +351,6 @@ SearchBar.propTypes = {
   onSelect: PropTypes.func,
   queryConstructor: PropTypes.func,
   resultConstructor: PropTypes.func
-}
-
-SearchBar.defaultProps = {
-  defaultValue: "",
-  queryConstructor: defaultQueryConstructor,
-  resultConstructor: defaultResultConstructor,
-  onSelect: defaultRedirect
 }
 
 export default withStyles(withRouter(SearchBar), HeaderStyle);
