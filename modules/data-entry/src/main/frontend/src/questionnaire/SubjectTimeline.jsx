@@ -151,15 +151,16 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
  * Component that displays a Subject's Timeline Chart.
  *
  * @example
- * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
+ * <SubjectTimeline
+ *   classes={classes}
+ *   subject={currentSubject}
+ * />
  *
- * @param {string} id the identifier of a subject; this is the JCR node name
+ * @param {object} subject the subject
  */
 function SubjectTimeline(props) {
   let { classes, subject } = props;
   let [dateEntries, setDateEntries] = useState(null);
-  // Error message set when fetching the data from the server fails
-  let [ error, setError ] = useState();
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Fetch the forms and answers for a specific subject
@@ -203,8 +204,7 @@ function SubjectTimeline(props) {
   // Fetch a subject for a given URL
   let fetchSubject = async (path) => {
     let result = await fetchWithReLogin(globalLoginDisplay, `${path}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .catch(handleError);
+      .then((response) => response.ok ? response.json() : Promise.reject(response));
     return result;
   }
 
@@ -351,11 +351,6 @@ function SubjectTimeline(props) {
       .then(dateAnswers => getDateEntries(dateAnswers));
     }
   }, [subject]);
-
-  // Callback method for the `fetchData` method, invoked when the request failed.
-  let handleError = (response) => {
-    setError(response);
-  };
 
   if (!dateEntries) {
     return <CircularProgress/>
