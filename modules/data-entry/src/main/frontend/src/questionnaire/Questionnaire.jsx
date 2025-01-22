@@ -395,7 +395,14 @@ let QuestionnaireContents = (props) => {
     return (() => changeQuestionnaireContext([]));
   }, []);
 
-  return <QuestionnaireEntry {...props} />;
+  return <QuestionnaireEntry
+           disableCollapse={false}
+           type="Questionnaire"
+           avatar="assignment"
+           avatarColor={blueGrey[700]}
+           titleField="title"
+           model="Questionnaire.json"
+           { ...props } />;
 };
 
 QuestionnaireContents.propTypes = {
@@ -410,17 +417,13 @@ QuestionnaireContents.propTypes = {
   model: PropTypes.string.isRequired
 };
 
-QuestionnaireContents.defaultProps = {
-  disableCollapse: false,
-  type: "Questionnaire",
-  avatar: "assignment",
-  avatarColor: blueGrey[700],
-  titleField: "title",
-  model: "Questionnaire.json"
-};
-
 // Details about an information block displayed in a questionnaire
-let Information = (props) => <QuestionnaireEntry {...props} />;
+let Information = (props) => <QuestionnaireEntry
+                               type="Information"
+                               avatar="info"
+                               avatarColor={blue[600]}
+                               model="Information.json"
+                               {...props} />;
 
 Information.propTypes = {
   onActionDone: PropTypes.func,
@@ -431,15 +434,13 @@ Information.propTypes = {
   model: PropTypes.string.isRequired
 };
 
-Information.defaultProps = {
-  type: "Information",
-  avatar: "info",
-  avatarColor: blue[600],
-  model: "Information.json"
-};
-
 // Details about an id mapping block displayed in a questionnaire
-let ExternalLink = (props) => <QuestionnaireEntry {...props} />;
+let ExternalLink = (props) => <QuestionnaireEntry
+                                type="ExternalLink"
+                                avatar="link"
+                                avatarColor={purple[300]}
+                                model="ExternalLink.json"
+                                {...props} />;
 
 ExternalLink.propTypes = {
   onActionDone: PropTypes.func,
@@ -450,16 +451,14 @@ ExternalLink.propTypes = {
   model: PropTypes.string.isRequired
 };
 
-ExternalLink.defaultProps = {
-  type: "ExternalLink",
-  avatar: "link",
-  avatarColor: purple[300],
-  model: "ExternalLink.json"
-};
-
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
-let Question = (props) => <QuestionnaireEntry {...props} />;
+let Question = (props) => <QuestionnaireEntry
+                            type="Question"
+                            avatarColor={deepPurple[700]}
+                            titleField={"text"}
+                            model="Question.json"
+                            {...props} />;
 
 Question.propTypes = {
   onActionDone: PropTypes.func,
@@ -471,16 +470,15 @@ Question.propTypes = {
   model: PropTypes.string.isRequired
 };
 
-Question.defaultProps = {
-  type: "Question",
-  avatarColor: deepPurple[700],
-  titleField: "text",
-  model: "Question.json"
-};
-
 // Details about a particular section in a questionnaire.
 // Not to be confused with the public Section component responsible for rendering sections inside a Form.
-let Section = (props) => <QuestionnaireEntry {...props} />;
+let Section = (props) => <QuestionnaireEntry
+                           type="Section"
+                           avatar="view_stream"
+                           avatarColor={orange[800]}
+                           titleField="label"
+                           model="Section.json"
+                           {...props} />
 
 Section.propTypes = {
   onActionDone: PropTypes.func,
@@ -490,14 +488,6 @@ Section.propTypes = {
   avatarColor: PropTypes.string,
   titleField: PropTypes.string,
   model: PropTypes.string.isRequired
-};
-
-Section.defaultProps = {
-  type: "Section",
-  avatar: "view_stream",
-  avatarColor: orange[800],
-  titleField: "label",
-  model: "Section.json"
 };
 
 
@@ -691,6 +681,7 @@ let QuestionnaireEntry = (props) => {
         }
         onActionDone={handleDataChange}
         model={model}
+        disableCollapse={true}
         {...rest}
     >
       { childModels ?
@@ -722,6 +713,3 @@ QuestionnaireEntry.propTypes = {
   model: PropTypes.string.isRequired
 };
 
-QuestionnaireEntry.defaultProps = {
-  disableCollapse: true,
-};
