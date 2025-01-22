@@ -18,7 +18,6 @@
 //
 import PropTypes from "prop-types";
 import React from "react";
-import { withRouter } from "react-router-dom";
 
 import withStyles from '@mui/styles/withStyles';
 import HeaderStyle from "../../headerStyle.jsx";
@@ -43,4 +42,4 @@ HeaderSearchBar.propTypes = {
   doNotEscapeQuery: PropTypes.bool
 }
 
-export default withStyles(HeaderStyle)(withRouter(HeaderSearchBar));
+export default withStyles(HeaderStyle)(HeaderSearchBar);

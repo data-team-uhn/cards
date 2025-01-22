@@ -17,7 +17,6 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import { Button, IconButton, Tooltip } from "@mui/material";
@@ -144,4 +143,4 @@ PrintButton.defaultProps = {
   fullScreen: true,
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(PrintButton));
+export default withStyles(QuestionnaireStyle)(PrintButton);

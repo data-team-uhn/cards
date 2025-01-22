@@ -18,7 +18,6 @@
 //
 
 import React, { useEffect, useRef, useState } from 'react';
-import { withRouter } from "react-router-dom";
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -248,4 +247,4 @@ QuestionnaireItemCard.propTypes = {
   onActionDone: PropTypes.func.isRequired,
 };
 
-export default (withRouter(QuestionnaireItemCard));
+export default (QuestionnaireItemCard);
