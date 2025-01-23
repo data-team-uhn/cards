@@ -456,7 +456,7 @@ ExternalLink.propTypes = {
 let Question = (props) => <QuestionnaireEntry
                             type="Question"
                             avatarColor={deepPurple[700]}
-                            titleField={"text"}
+                            titleField="text"
                             model="Question.json"
                             {...props} />;
 
