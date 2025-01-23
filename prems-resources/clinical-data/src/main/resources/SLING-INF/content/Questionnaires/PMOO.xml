@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>PMAC</name>
+	<name>PMOO</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Princess Margaret Acute Care Survey</value>
+		<value>Princess Margaret Outpatient Oncology Survey</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -53,7 +53,7 @@
 		<type>Long</type>
 	</property>
 	<node>
-		<name>pmac_page_1</name>
+		<name>pmoo_page_1</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
@@ -61,7 +61,7 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>pmac_hospital</name>
+			<name>pmoo_hospital</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -95,7 +95,7 @@
 			</property>
 		</node>
 		<node>
-			<name>pmac_department</name>
+			<name>pmoo_department</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>dataType</name>
@@ -129,7 +129,7 @@
 			</property>
 		</node>
 		<node>
-			<name>pmac_1</name>
+			<name>pmoo_1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -234,7 +234,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pmac_2_ed_1</name>
+			<name>pmoo_2_ed_1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -359,7 +359,7 @@
 		</node>
 	</node>
 	<node>
-		<name>pmac_page_2</name>
+		<name>pmoo_page_2</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
@@ -367,7 +367,7 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>pmac_3_ed_2</name>
+			<name>pmoo_3_ed_2</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -472,7 +472,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pmac_4_ed_3</name>
+			<name>pmoo_4_ed_3</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -577,7 +577,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pmac_5_ed_4</name>
+			<name>pmoo_5_ed_4</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -702,7 +702,7 @@
 		</node>
 	</node>
 	<node>
-		<name>pmac_page_3</name>
+		<name>pmoo_page_3</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
@@ -710,7 +710,7 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>pmac_6_ed_11</name>
+			<name>pmoo_6_ed_11</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -834,7 +834,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pmac_7_ed_5</name>
+			<name>pmoo_7_ed_5</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -963,7 +963,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pmac_8_ed_6</name>
+			<name>pmoo_8_ed_6</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1092,7 +1092,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pmac_9_yvm_10a</name>
+			<name>pmoo_9_yvm_10a</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1198,7 +1198,7 @@
 		</node>
 	</node>
 	<node>
-		<name>pmac_page_4</name>
+		<name>pmoo_page_4</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
@@ -1206,7 +1206,7 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>pmac_10_yvm_12</name>
+			<name>pmoo_10_yvm_12</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1311,7 +1311,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pmac_11_yvm_14</name>
+			<name>pmoo_11_yvm_14</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1435,7 +1435,7 @@
 			</node>
 		</node>
 		<node>
-			<name>pmac_12_yvm_15</name>
+			<name>pmoo_12_yvm_15</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -1464,7 +1464,7 @@
 			</property>
 		</node>
 		<node>
-			<name>pmac_13_yvm_16</name>
+			<name>pmoo_13_yvm_16</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
