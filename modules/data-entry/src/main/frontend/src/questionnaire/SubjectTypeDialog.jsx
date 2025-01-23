@@ -240,7 +240,7 @@ function SubjectTypeDialog(props) {
               onChange={(event) => { setIdPattern(event.target.value); validateRegexp(event.target.value); }}
             />
             <FormHelperText>
-              {isEdit && currentSubjectType.instanceCount > 0 && "There are already subjects of this type. Changing the id pattern for this subject type may cause inconsistencies with the existing subject ids."}
+              {isEdit && currentSubjectType.instanceCount > 0 && "There are already subjects of this type. Changing the pattern may cause inconsistencies with the existing subject identifiers."}
             </FormHelperText>
           </Grid>
           <Grid item xs={4}>
