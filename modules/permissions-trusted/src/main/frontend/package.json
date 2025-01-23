@@ -37,9 +37,7 @@
     "@mui/material": "6.4.0",
     "@mui/styles": "6.4.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "semantic-ui-css": "2.5.0",
-    "semantic-ui-react": "2.1.4"
+    "react-dom": "^19.0.0"
   },
   "resolutions": {
     "@babel/runtime": "^7.26.0"
