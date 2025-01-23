@@ -19,7 +19,7 @@
 import React, { useEffect } from "react";
 import Form from "../questionnaire/Form.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
-
+import { useLocation } from 'react-router';
 import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -28,7 +28,8 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Forms(props) {
-  const { location, classes } = props;
+  const { classes } = props;
+  const location = useLocation();
   const questionnaire = /questionnaire=([^&]+)/.exec(location.search)?.[1];
   const pageNameWriter = usePageNameWriterContext();
 

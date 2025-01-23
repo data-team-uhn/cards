@@ -18,7 +18,7 @@
 //
 
 import React, { useState, useEffect, useContext } from "react";
-
+import { useLocation } from 'react-router';
 import {
   Alert,
   Button,
@@ -38,6 +38,7 @@ export default function googleApiKeyAdminPage() {
   const [ error, setError ] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
+  const location = useLocation();
 
   useEffect(() => {
     fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
