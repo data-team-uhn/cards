@@ -16,7 +16,6 @@
 */
 
 import React from "react";
-import { withRouter } from "react-router-dom";
 import withStyles from '@mui/styles/withStyles';
 
 import { Avatar, Box, Card, CardContent, IconButton, Tooltip } from "@mui/material";
@@ -65,7 +64,7 @@ class UsersManager extends React.Component {
   }
 
   render() {
-    const { classes, history } = this.props;
+    const { classes } = this.props;
 
     return (
       <AdminScreen
@@ -196,4 +195,4 @@ class UsersManager extends React.Component {
   }
 }
 
-export default withStyles (userboardStyle, {withTheme: true})(withRouter(UsersManager));
+export default withStyles (userboardStyle, {withTheme: true})(UsersManager);

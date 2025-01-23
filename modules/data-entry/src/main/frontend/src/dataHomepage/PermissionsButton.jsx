@@ -17,7 +17,6 @@
 //  under the License.
 //
 import React from "react";
-import { withRouter } from "react-router-dom";
 
 import { IconButton, Tooltip } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
@@ -42,4 +41,4 @@ function PermissionsButton(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(PermissionsButton));
+export default withStyles(QuestionnaireStyle)(PermissionsButton);

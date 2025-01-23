@@ -17,7 +17,6 @@
 //  under the License.
 //
 import React from "react";
-import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import { IconButton, Tooltip } from "@mui/material";
@@ -56,4 +55,4 @@ EditButton.defaultProps = {
   size: "large",
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(EditButton));
+export default withStyles(QuestionnaireStyle)(EditButton);
