@@ -204,7 +204,8 @@ function SubjectTimeline(props) {
   // Fetch a subject for a given URL
   let fetchSubject = async (path) => {
     let result = await fetchWithReLogin(globalLoginDisplay, `${path}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response));
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .catch(handleError);
     return result;
   }
 
@@ -351,6 +352,11 @@ function SubjectTimeline(props) {
       .then(dateAnswers => getDateEntries(dateAnswers));
     }
   }, [subject]);
+
+  // Callback method for the `fetchData` method, invoked when the request failed.
+  let handleError = (response) => {
+    console.log(response.statusText || response.message);
+  };
 
   if (!dateEntries) {
     return <CircularProgress/>
