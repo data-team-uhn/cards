@@ -17,7 +17,6 @@
 //  under the License.
 //
 import React, { useState, useContext } from "react";
-import { withRouter, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
@@ -33,7 +32,7 @@ import ErrorDialog from "../components/ErrorDialog.jsx";
  * A component that renders an icon to open a dialog to delete an entry.
  */
 function DeleteButton(props) {
-  const { classes, entryPath, entryName, onClick, onClose, onComplete, entryType, entryLabel, size, navigateBack, className, variant, label } = props;
+  const { classes, entryPath, entryName, onClick, onClose, onComplete, entryType, entryLabel, size, className, variant, label } = props;
 
   const [ open, setOpen ] = useState(false);
   const [ errorOpen, setErrorOpen ] = useState(false);
@@ -48,7 +47,6 @@ function DeleteButton(props) {
   const defaultDialogMessage = `Are you sure you want to delete the following ${entryType}:`;
   const defaultDialogAction = entryName;
   const defaultErrorMessage = `The ${entryType?.toLowerCase() || "item"} could not be removed.`;
-  const history = useHistory();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -74,7 +72,6 @@ function DeleteButton(props) {
     if (entryNotFound) {
       // Can't delete. Assume already deleted and exit if required
       if (onComplete) {onComplete();}
-      if (navigateBack) {goBack();}
     }
   }
 
@@ -128,7 +125,6 @@ function DeleteButton(props) {
     if (!entryPath) {
       if (onComplete) {onComplete();}
       closeDialog();
-      if (navigateBack) {goBack();}
       return;
     }
     let url = new URL(entryPath, window.location.origin);
@@ -146,7 +142,6 @@ function DeleteButton(props) {
       if (response.ok)  {
         closeDialog();
         if (onComplete) {onComplete();}
-        if (navigateBack) {goBack();}
       } else {
         handleError(response.status, response);
       }
@@ -159,14 +154,6 @@ function DeleteButton(props) {
     setDialogAction(defaultDialogAction);
     setDeleteRecursive(false);
     openDialog();
-  }
-
-  let goBack = () => {
-    if (history.length > 2) {
-      history.goBack();
-    } else {
-      history.replace("/");
-    }
   }
 
   return (
@@ -223,7 +210,6 @@ DeleteButton.propTypes = {
   onClick: PropTypes.func,
   onClose: PropTypes.func,
   onComplete: PropTypes.func,
-  navigateBack: PropTypes.bool,
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
   label: PropTypes.string,
   size: PropTypes.oneOf(["small", "medium", "large"]),
@@ -238,4 +224,4 @@ DeleteButton.defaultProps = {
   size: "large",
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(DeleteButton));
+export default withStyles(QuestionnaireStyle)(DeleteButton);
