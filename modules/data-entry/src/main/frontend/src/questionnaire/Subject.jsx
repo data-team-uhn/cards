@@ -143,9 +143,7 @@ function Subject(props) {
             />
           : <Grid item>
             <SubjectTimeline
-              id={currentSubjectId}
               classes={classes}
-              pageSize={pageSize}
               subject={currentSubject}
             />
             </Grid> }

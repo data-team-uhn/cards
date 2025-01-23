@@ -151,9 +151,12 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
  * Component that displays a Subject's Timeline Chart.
  *
  * @example
- * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
+ * <SubjectTimeline
+ *   classes={classes}
+ *   subject={currentSubject}
+ * />
  *
- * @param {string} id the identifier of a subject; this is the JCR node name
+ * @param {object} subject the subject
  */
 function SubjectTimeline(props) {
   let { classes, subject } = props;
@@ -355,6 +358,7 @@ function SubjectTimeline(props) {
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
     setError(response);
+    console.log(response.statusText || response.message);
   };
 
   if (!dateEntries) {
