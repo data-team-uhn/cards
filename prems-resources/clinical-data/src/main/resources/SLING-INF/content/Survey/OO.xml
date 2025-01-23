@@ -28,7 +28,7 @@
     <property>
         <name>intro</name>
         <value>
-Please answer some questions about your recent outpatient oncology visit at:
+Please answer some questions about your recent visit at:
 
 **@{visit.location}**
 
