@@ -18,7 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useLocation } from 'react-router';
 import PropTypes from "prop-types";
 
 import {
@@ -64,6 +64,7 @@ let Questionnaire = (props) => {
   let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ error, setError ] = useState();
+  let location = useLocation();
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
   let isEdit = window.location.pathname.endsWith(".edit");

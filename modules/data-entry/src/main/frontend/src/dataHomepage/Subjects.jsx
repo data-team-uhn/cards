@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useEffect } from "react";
+import { useLocation } from 'react-router';
 import Subject from "../questionnaire/Subject.jsx";
 import SubjectView from "./SubjectView.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/SubjectIdentifier.jsx";
@@ -29,6 +30,7 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Subjects(props) {
   const { classes } = props;
+  const location = useLocation();
   const entry = getSubjectIdFromPath(location.pathname);
 
   // Clear the page name overwriting if moving from a specific Subject to the Subjects page
