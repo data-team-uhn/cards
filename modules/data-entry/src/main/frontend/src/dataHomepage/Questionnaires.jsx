@@ -27,6 +27,7 @@ import EditButton from "./EditButton.jsx";
 import ExportButton from "./ExportButton.jsx";
 import { DateTime } from "luxon";
 import FormattedText from "../components/FormattedText.jsx";
+import { useLocation } from 'react-router';
 
 // Convert a date into the given format string
 // If the date is invalid (usually because it is missing), return ""
@@ -44,6 +45,7 @@ function Questionnaires(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ updateData, setUpdateData ] = useState(0);
 
+  const location = useLocation();
   const entry = /Questionnaires\/([^.]+)/.exec(location.pathname);
   const entryType = "Questionnaire";
 
