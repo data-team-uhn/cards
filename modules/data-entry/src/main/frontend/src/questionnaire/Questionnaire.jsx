@@ -510,7 +510,7 @@ Conditional.propTypes = {
 // Details about a group pf conditions for displaying a section
 let ConditionalGroup = (props) => <QuestionnaireEntry
                                     type="ConditionalGroup"
-                                    avatarColor{indigo[800]}
+                                    avatarColor={indigo[800]}
                                     model="ConditionalGroup.json"
                                     {...props} />;
 
