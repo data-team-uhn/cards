@@ -254,7 +254,7 @@ function SearchBar(props) {
                       <ListItemText
                         primary={"Error: " + (error.statusText ? error.statusText : error.message)}
                         secondary={(error.status ? error.status : error.name)}
-                        primaryTypographyProps={{color: "error"}}
+                        slotProps={{ primary: {color: "error"} }}
                         />
                     </MenuItem>
                   : results.map( (result, i) => (

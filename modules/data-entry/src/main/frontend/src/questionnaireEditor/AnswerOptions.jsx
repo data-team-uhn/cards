@@ -421,7 +421,7 @@ let AnswerOptions = (props) => {
         className={classes.descriptionPopover}
       >
         <Card>
-          <CardHeader title={`Description for "${descriptionLabel}"`} titleTypographyProps={{variant: "h6"}}/>
+          <CardHeader title={`Description for "${descriptionLabel}"`} slotProps={{ title: {variant: "h6"} }}/>
           <CardContent>
           { descriptionIndex != null &&
             <MarkdownText value={description} onChange={setDescription} />

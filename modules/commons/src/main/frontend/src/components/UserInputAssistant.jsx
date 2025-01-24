@@ -121,7 +121,7 @@ function UserInputAssistant (props) {
             }
             </Avatar>}
             title={title}
-            titleTypographyProps={{variant: "h6"}}
+            slotProps={{ title: {variant: "h6"} }}
             />
           <CardContent>
             { children }

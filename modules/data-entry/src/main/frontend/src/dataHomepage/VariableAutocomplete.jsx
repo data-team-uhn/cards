@@ -95,9 +95,11 @@ let VariableAutocomplete = (props) => {
   return (
     <Autocomplete
       className={classNames.join(' ')}
-      PopperComponent={ groupBy ?
-        (props) => <Popper {...props} className={classes.autocompletePopper} placement="bottom" />
-      : undefined }
+      slots={{
+        popper: groupBy ?
+          (props) => <Popper {...props} className={classes.autocompletePopper} placement="bottom" />
+          : undefined,
+      }}
       value={selectedValue && options.find(o => getOptionValue(o) == selectedValue) || null}
       options={options}
       filterOptions={filterOptions}

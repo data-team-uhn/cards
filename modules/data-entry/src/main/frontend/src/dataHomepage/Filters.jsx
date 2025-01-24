@@ -375,7 +375,7 @@ function Filters(props) {
       <ResponsiveDialog
         open={dialogOpen}
         onClose={closeDialog}
-        BackdropProps={{invisible: true}}
+        slotProps={{ backdrop: { invisible: true } }}
         width="md"
         disableEnforceFocus
         title="Modify filters"

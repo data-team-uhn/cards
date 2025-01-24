@@ -79,7 +79,7 @@ function WelcomeMessageConfiguration(props) {
                 <CardHeader
                   className={classes.previewHeader}
                   title="Preview"
-                  titleTypographyProps={{variant: "overline"}}
+                  slotProps={{ title: {variant: "overline"} }}
                 />
                 <CardContent>
                   <FormattedText variant="body2">

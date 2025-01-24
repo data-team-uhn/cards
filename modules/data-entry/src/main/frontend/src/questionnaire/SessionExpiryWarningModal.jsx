@@ -116,7 +116,7 @@ function SessionExpiryWarningModal(props) {
       title={ getExpiryMessage() }
       >
         <DialogContent dividers>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" component="p">
           { expired ?
             "Your session has expired. Please refresh this page to keep editing."
             :
