@@ -108,7 +108,11 @@ function SurveyInstructionsConfiguration() {
                       <TextField
                         multiline
                         minRows={3}
-                        InputLabelProps={{ shrink: true }}
+                        slotProps={{
+                          inputLabel: {
+                            shrink: true,
+                          },
+                        }}
                         variant="outlined"
                         id={key}
                         name={key}

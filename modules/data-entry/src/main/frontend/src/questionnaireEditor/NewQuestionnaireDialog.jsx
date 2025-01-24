@@ -81,12 +81,14 @@ function NewQuestionnaireDialog(props) {
           <TextField
             variant="standard"
             autoFocus
-            inputProps={{
-              onKeyDown: (event) => {
-                if (event.key == 'Enter' && title) {
-                  createQuestionnaire();
+            slotProps={{
+              htmlInput: {
+                onKeyDown: (event) => {
+                  if (event.key == 'Enter' && title) {
+                    createQuestionnaire();
+                  }
                 }
-              }
+              },
             }}
             placeholder="Enter a title"
             onChange={(event) => { 

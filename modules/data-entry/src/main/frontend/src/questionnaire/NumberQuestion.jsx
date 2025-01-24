@@ -386,8 +386,13 @@ function NumberQuestion(props) {
               value={lowerLimit}
               placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
               onChange={event => setValue(setLowerLimit, event.target.value)}
-              inputProps={textFieldProps}
-              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              slotProps={{
+                input: muiInputProps,
+                htmlInput: textFieldProps,
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
               />
             <span className="separator">&mdash;</span>
             <TextField
@@ -396,8 +401,13 @@ function NumberQuestion(props) {
               value={upperLimit}
               placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
               onChange={event => setValue(setUpperLimit, event.target.value)}
-              inputProps={textFieldProps}
-              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              slotProps={{
+                input: muiInputProps,
+                htmlInput: textFieldProps,
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
               />
           </div>)
         }

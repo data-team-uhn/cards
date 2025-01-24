@@ -79,7 +79,11 @@ function DashboardSettingsConfiguration() {
             <ListItem key={field.key}>
             { field.type != "boolean" ?
               <TextField
-                InputLabelProps={{ shrink: true }}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
                 variant="standard"
                 fullWidth
                 id={field.key}

@@ -232,7 +232,11 @@ function SubjectTypeDialog(props) {
               variant="standard"
               fullWidth
               type="number"
-              inputProps={{min: 0}}
+              slotProps={{
+                htmlInput: {
+                  min: 0
+                },
+              }}
               value={order}
               onChange={(event) => { setOrder(event.target.value); setError(""); }}
             />

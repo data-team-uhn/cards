@@ -134,15 +134,17 @@ function DateQuestionFull(props) {
         variant="standard"
         type={textFieldType}
         className={classes.textField + isEnd ? "" : (" " + classes.answerField)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        InputProps={{
-          className: classes.textField
-        }}
-        inputProps={{
-          max: DateQuestionUtilities.strip(absoluteUpperLimit, textFieldType),
-          min: DateQuestionUtilities.strip(absoluteLowerLimit, textFieldType)
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+          },
+          input: {
+            className: classes.textField,
+          },
+          htmlInput: {
+            max: DateQuestionUtilities.strip(absoluteUpperLimit, textFieldType),
+            min: DateQuestionUtilities.strip(absoluteLowerLimit, textFieldType),
+          },
         }}
         onChange={(event) => processChange(event.target.value, isEnd)}
         onBlur={(event) => processBlur(event.target.value, isEnd)}

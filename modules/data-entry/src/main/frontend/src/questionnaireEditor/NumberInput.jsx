@@ -52,10 +52,10 @@ let NumberInput = (props) => {
         onChange={(event) => { setValue(event.target.value); }}
         onBlur={(event) => { setValue(event.target.value || defaultValue); }}
         helperText={isMax ? `0 means "Unlimited"` : ''}
-        InputProps={{
-          inputProps: { 
+        slotProps={{
+          htmlInput: {
             min: minValue
-          }
+          },
         }}
       />
       <input type="hidden" name={objectKey + "@TypeHint"} value={type} />

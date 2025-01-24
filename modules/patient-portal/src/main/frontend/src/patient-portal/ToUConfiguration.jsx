@@ -73,7 +73,11 @@ function ToUConfiguration() {
           <List>
             <ListItem key="title">
               <TextField
-                InputLabelProps={{ shrink: true }}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
                 variant="standard"
                 fullWidth
                 id="title"
@@ -86,7 +90,11 @@ function ToUConfiguration() {
             </ListItem>
             <ListItem key="version">
               <TextField
-                InputLabelProps={{ shrink: true }}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
                 variant="standard"
                 id="version"
                 name="version"

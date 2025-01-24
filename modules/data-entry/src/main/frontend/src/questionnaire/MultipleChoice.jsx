@@ -402,18 +402,19 @@ function MultipleChoice(props) {
             disabled={disabled}
             onFocus={() => {maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}}
             onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
-            inputProps={Object.assign({
-              onKeyDown: (event) => {
-                if (event.key == 'Enter') {
-                  // We need to stop the event so that it doesn't trigger a form submission
-                  event.preventDefault();
-                  event.stopPropagation();
-                  acceptEnteredOption(!softValidation);
-                }
-              },
-              tabIndex: isRadio ? -1 : undefined
-            }, additionalInputProps)
-            }
+            slotProps={{
+              htmlInput: Object.assign({
+                  onKeyDown: (event) => {
+                    if (event.key == 'Enter') {
+                      // We need to stop the event so that it doesn't trigger a form submission
+                      event.preventDefault();
+                      event.stopPropagation();
+                      acceptEnteredOption(!softValidation);
+                    }
+                  },
+                  tabIndex: isRadio ? -1 : undefined
+                }, additionalInputProps),
+            }}
             value={ghostName || ''}
             multiline={textbox}
             InputProps={muiInputProps}
