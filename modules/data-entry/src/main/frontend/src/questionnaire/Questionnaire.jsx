@@ -492,7 +492,11 @@ Section.propTypes = {
 
 
 // Details about a simple condition for displaying a section
-let Conditional = (props) => <QuestionnaireEntry {...props} />;
+let Conditional = (props) => <QuestionnaireEntry
+                               type="Conditional"
+                               avatarColor={cyan[800]}
+                               model="Conditional.json"
+                               {...props} />;
 
 Conditional.propTypes = {
   onActionDone: PropTypes.func,
@@ -503,14 +507,12 @@ Conditional.propTypes = {
   model: PropTypes.string
 };
 
-Conditional.defaultProps = {
-  type: "Conditional",
-  avatarColor: cyan[800],
-  model: "Conditional.json"
-};
-
 // Details about a group pf conditions for displaying a section
-let ConditionalGroup = (props) => <QuestionnaireEntry {...props} />;
+let ConditionalGroup = (props) => <QuestionnaireEntry
+                                    type="ConditionalGroup"
+                                    avatarColor{indigo[800]}
+                                    model="ConditionalGroup.json"
+                                    {...props} />;
 
 ConditionalGroup.propTypes = {
   onActionDone: PropTypes.func,
@@ -519,12 +521,6 @@ ConditionalGroup.propTypes = {
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
   model: PropTypes.string
-};
-
-ConditionalGroup.defaultProps = {
-  type: "ConditionalGroup",
-  avatarColor: indigo[800],
-  model: "ConditionalGroup.json"
 };
 
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
