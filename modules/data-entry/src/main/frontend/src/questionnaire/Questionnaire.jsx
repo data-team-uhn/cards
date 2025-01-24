@@ -410,11 +410,11 @@ QuestionnaireContents.propTypes = {
   onFieldsChanged: PropTypes.func,
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
   titleField: PropTypes.string,
-  model: PropTypes.string.isRequired
+  model: PropTypes.string
 };
 
 // Details about an information block displayed in a questionnaire
@@ -428,10 +428,10 @@ let Information = (props) => <QuestionnaireEntry
 Information.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
-  model: PropTypes.string.isRequired
+  model: PropTypes.string
 };
 
 // Details about an id mapping block displayed in a questionnaire
@@ -445,10 +445,10 @@ let ExternalLink = (props) => <QuestionnaireEntry
 ExternalLink.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
-  model: PropTypes.string.isRequired
+  model: PropTypes.string
 };
 
 // Details about a particular question in a questionnaire.
@@ -463,11 +463,11 @@ let Question = (props) => <QuestionnaireEntry
 Question.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
   titleField: PropTypes.string,
-  model: PropTypes.string.isRequired
+  model: PropTypes.string
 };
 
 // Details about a particular section in a questionnaire.
@@ -483,24 +483,24 @@ let Section = (props) => <QuestionnaireEntry
 Section.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
   titleField: PropTypes.string,
-  model: PropTypes.string.isRequired
+  model: PropTypes.string
 };
 
 
-// Details about a simple condition for desplaying a section
+// Details about a simple condition for displaying a section
 let Conditional = (props) => <QuestionnaireEntry {...props} />;
 
 Conditional.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
-  model: PropTypes.string.isRequired
+  model: PropTypes.string
 };
 
 Conditional.defaultProps = {
@@ -509,16 +509,16 @@ Conditional.defaultProps = {
   model: "Conditional.json"
 };
 
-// Details about a group pf conditions for desplaying a section
+// Details about a group pf conditions for displaying a section
 let ConditionalGroup = (props) => <QuestionnaireEntry {...props} />;
 
 ConditionalGroup.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
-  model: PropTypes.string.isRequired
+  model: PropTypes.string
 };
 
 ConditionalGroup.defaultProps = {
