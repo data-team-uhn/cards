@@ -395,7 +395,14 @@ let QuestionnaireContents = (props) => {
     return (() => changeQuestionnaireContext([]));
   }, []);
 
-  return <QuestionnaireEntry {...props} />;
+  return <QuestionnaireEntry
+           disableCollapse={false}
+           type="Questionnaire"
+           avatar="assignment"
+           avatarColor={blueGrey[700]}
+           titleField="title"
+           model="Questionnaire.json"
+           { ...props } />;
 };
 
 QuestionnaireContents.propTypes = {
@@ -403,138 +410,117 @@ QuestionnaireContents.propTypes = {
   onFieldsChanged: PropTypes.func,
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
   titleField: PropTypes.string,
-  model: PropTypes.string.isRequired
-};
-
-QuestionnaireContents.defaultProps = {
-  disableCollapse: false,
-  type: "Questionnaire",
-  avatar: "assignment",
-  avatarColor: blueGrey[700],
-  titleField: "title",
-  model: "Questionnaire.json"
+  model: PropTypes.string
 };
 
 // Details about an information block displayed in a questionnaire
-let Information = (props) => <QuestionnaireEntry {...props} />;
+let Information = (props) => <QuestionnaireEntry
+                               type="Information"
+                               avatar="info"
+                               avatarColor={blue[600]}
+                               model="Information.json"
+                               {...props} />;
 
 Information.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
-  model: PropTypes.string.isRequired
-};
-
-Information.defaultProps = {
-  type: "Information",
-  avatar: "info",
-  avatarColor: blue[600],
-  model: "Information.json"
+  model: PropTypes.string
 };
 
 // Details about an id mapping block displayed in a questionnaire
-let ExternalLink = (props) => <QuestionnaireEntry {...props} />;
+let ExternalLink = (props) => <QuestionnaireEntry
+                                type="ExternalLink"
+                                avatar="link"
+                                avatarColor={purple[300]}
+                                model="ExternalLink.json"
+                                {...props} />;
 
 ExternalLink.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
-  model: PropTypes.string.isRequired
-};
-
-ExternalLink.defaultProps = {
-  type: "ExternalLink",
-  avatar: "link",
-  avatarColor: purple[300],
-  model: "ExternalLink.json"
+  model: PropTypes.string
 };
 
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
-let Question = (props) => <QuestionnaireEntry {...props} />;
+let Question = (props) => <QuestionnaireEntry
+                            type="Question"
+                            avatarColor={deepPurple[700]}
+                            titleField="text"
+                            model="Question.json"
+                            {...props} />;
 
 Question.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
   titleField: PropTypes.string,
-  model: PropTypes.string.isRequired
-};
-
-Question.defaultProps = {
-  type: "Question",
-  avatarColor: deepPurple[700],
-  titleField: "text",
-  model: "Question.json"
+  model: PropTypes.string
 };
 
 // Details about a particular section in a questionnaire.
 // Not to be confused with the public Section component responsible for rendering sections inside a Form.
-let Section = (props) => <QuestionnaireEntry {...props} />;
+let Section = (props) => <QuestionnaireEntry
+                           type="Section"
+                           avatar="view_stream"
+                           avatarColor={orange[800]}
+                           titleField="label"
+                           model="Section.json"
+                           {...props} />
 
 Section.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
   titleField: PropTypes.string,
-  model: PropTypes.string.isRequired
-};
-
-Section.defaultProps = {
-  type: "Section",
-  avatar: "view_stream",
-  avatarColor: orange[800],
-  titleField: "label",
-  model: "Section.json"
+  model: PropTypes.string
 };
 
 
-// Details about a simple condition for desplaying a section
-let Conditional = (props) => <QuestionnaireEntry {...props} />;
+// Details about a simple condition for displaying a section
+let Conditional = (props) => <QuestionnaireEntry
+                               type="Conditional"
+                               avatarColor={cyan[800]}
+                               model="Conditional.json"
+                               {...props} />;
 
 Conditional.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
-  model: PropTypes.string.isRequired
+  model: PropTypes.string
 };
 
-Conditional.defaultProps = {
-  type: "Conditional",
-  avatarColor: cyan[800],
-  model: "Conditional.json"
-};
-
-// Details about a group pf conditions for desplaying a section
-let ConditionalGroup = (props) => <QuestionnaireEntry {...props} />;
+// Details about a group pf conditions for displaying a section
+let ConditionalGroup = (props) => <QuestionnaireEntry
+                                    type="ConditionalGroup"
+                                    avatarColor{indigo[800]}
+                                    model="ConditionalGroup.json"
+                                    {...props} />;
 
 ConditionalGroup.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
-  model: PropTypes.string.isRequired
-};
-
-ConditionalGroup.defaultProps = {
-  type: "ConditionalGroup",
-  avatarColor: indigo[800],
-  model: "ConditionalGroup.json"
+  model: PropTypes.string
 };
 
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
@@ -691,6 +677,7 @@ let QuestionnaireEntry = (props) => {
         }
         onActionDone={handleDataChange}
         model={model}
+        disableCollapse={true}
         {...rest}
     >
       { childModels ?
@@ -722,6 +709,3 @@ QuestionnaireEntry.propTypes = {
   model: PropTypes.string.isRequired
 };
 
-QuestionnaireEntry.defaultProps = {
-  disableCollapse: true,
-};
