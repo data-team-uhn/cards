@@ -18,7 +18,7 @@
 -->
 
 <node>
-  <name>PMH-AC</name>
+  <name>PMH-OO</name>
   <primaryNodeType>sling:Folder</primaryNodeType>
   <node>
     <name>Patient</name>

@@ -18,7 +18,7 @@
 -->
 
 <node>
-    <name>AC</name>
+    <name>OOIP</name>
     <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
     <property>
         <name>name</name>
@@ -28,7 +28,7 @@
     <property>
         <name>intro</name>
         <value>
-Please answer some questions about your recent acute care visit at:
+Please answer some questions about your recent outpatient oncology visit and hospital stay at:
 
 **@{visit.location}**
 
@@ -42,11 +42,11 @@ Please do not include any other encounters or hospital stays in your answers.
         <type>Boolean</type>
     </property>
     <node>
-        <name>AC Survey</name>
+        <name>OO Survey</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
-            <value>/Questionnaires/PMAC</value>
+            <value>/Questionnaires/PMOO</value>
             <type>Reference</type>
         </property>
         <property>
@@ -80,7 +80,55 @@ Please do not include any other encounters or hospital stays in your answers.
       "link" : "dashboard+path"
     },
     {
-      "key": "pmac_overall",
+      "key": "pmoo_overall",
+      "label": "Overall experience",
+      "link" : "string"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
+    </node>
+    <node>
+        <name>Inpatient Survey</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/OAIP</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>26</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "mrn",
+      "label": "MRN",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Discharge date",
+      "format": "date:yyyy-MM-dd HH:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "oaip_11",
       "label": "Overall experience",
       "link" : "string"
     }

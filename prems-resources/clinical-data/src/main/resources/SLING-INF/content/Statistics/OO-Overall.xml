@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>AC-Overall</name>
+	<name>OO-Overall</name>
 	<primaryNodeType>cards:Statistic</primaryNodeType>
 	<property>
 		<name>name</name>
-		<value>PM Acute Care Overall Rating</value>
+		<value>PM Outpatient Oncology Overall Rating</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -37,7 +37,7 @@
 	</property>
 	<property>
 		<name>xVar</name>
-		<value>/Questionnaires/PMAC/pmac_page_4/pmac_11_yvm_14</value>
+		<value>/Questionnaires/PMOO/pmoo_page_4/pmoo_11_yvm_14</value>
 		<type>Reference</type>
 	</property>
 	<property>
