@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography } from "@mui/material";
+import { TextField, Tooltip, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -152,9 +152,19 @@ function DateQuestionFull(props) {
     )
   }
 
+  let displayFormatter = function(label, idx) {
+    let values = Array.isArray(startValues) ? startValues : [startValues];
+    return (
+      <Tooltip title={values[idx]}>
+        <span>{label}</span>
+      </Tooltip>
+    );
+  }
+
   return (
     <Question
       currentAnswers={DateQuestionUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
+      defaultDisplayFormatter={displayFormatter}
       {...props}
       >
       {

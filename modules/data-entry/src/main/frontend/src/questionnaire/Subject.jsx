@@ -331,10 +331,11 @@ function SubjectHeader(props) {
         >
       {
         subject?.data?.['jcr:created'] ?
-        <Typography
-          variant="overline"
-          color="textSecondary" >
-            Entered by {subject.data['jcr:createdBy']} on {DateTime.fromISO(subject.data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
+        <Typography variant="overline"  color="textSecondary">
+          {"Entered by " + subject.data['jcr:createdBy'] + " on "}
+          <Tooltip title={subject.data['jcr:created']}>
+            <span>{DateTime.fromISO(subject.data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
+          </Tooltip>
         </Typography>
         : ""
       }

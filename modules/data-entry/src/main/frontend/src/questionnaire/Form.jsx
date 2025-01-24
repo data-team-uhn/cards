@@ -580,7 +580,12 @@ function Form (props) {
           <Breadcrumbs separator="·">
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
-            <Typography variant="overline">Entered by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</Typography>
+            <Typography variant="overline">
+              {"Entered by " + data['jcr:createdBy'] + " on "}
+              <Tooltip title={data['jcr:created']}>
+                <span>{DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
+              </Tooltip>
+            </Typography>
             : ""
           }
           {
@@ -590,10 +595,26 @@ function Form (props) {
           }
           {
             lastSaveTimestamp ?
-            <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + getTimestampString(lastSaveTimestamp.toISOString())}</Typography>
+            <Typography variant="overline">
+              {saveInProgress ?
+              "Saving ... "
+              :
+              <span>
+                {"Saved "}
+                <Tooltip title={lastSaveTimestamp.toISOString()}>
+                  <span>{getTimestampString(lastSaveTimestamp.toISOString())}</span>
+                </Tooltip>
+              </span>
+              }
+            </Typography>
             :
             data && data['jcr:lastModified'] ?
-            <Typography variant="overline">{"Last modified " + getTimestampString(data['jcr:lastModified'])}</Typography>
+            <Typography variant="overline">
+                {"Last modified "}
+                <Tooltip title={data['jcr:lastModified']}>
+                  <span>{getTimestampString(data['jcr:lastModified'])}</span>
+                </Tooltip>
+            </Typography>
             : ""
           }
           </Breadcrumbs>
@@ -696,7 +717,12 @@ function Form (props) {
         <Typography variant="h6">Your changes were not saved.</Typography>
         <Typography variant="body1" paragraph>Server responded with error code {errorCode}: {errorMessage}</Typography>
         {lastSaveTimestamp &&
-          <Typography variant="body1" paragraph>The last successful save was {getTimestampString(lastSaveTimestamp.toISOString())}.</Typography>
+          <Typography variant="body1" paragraph>
+            {"The last successful save was "}
+            <Tooltip title={lastSaveTimestamp.toISOString()}>
+              <span>{getTimestampString(lastSaveTimestamp.toISOString())}.</span>
+            </Tooltip>
+          </Typography>
         }
       </ErrorDialog>
       { isEdit &&
