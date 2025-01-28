@@ -18,7 +18,7 @@
 {
   "bundles":[
     {
-      "id":"joda-time:joda-time:2.10.14",
+      "id":"joda-time:joda-time:2.12.7",
       "start-order":"26"
     },
     {
