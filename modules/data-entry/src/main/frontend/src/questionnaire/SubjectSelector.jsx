@@ -100,11 +100,12 @@ function UnstyledNewSubjectDialog (props) {
     validateSubjectId(type, value);
   }
 
-  // Auto-select on each dialog open if there's only one valid SubjectType given in allowedTypes
+  // Auto-select on each dialog open if there's only one valid SubjectType given in allowedTypes or data
   useEffect(() => {
-    if (open && allowedTypes?.length) {
-      allowedTypes.length === 1 && changeType(allowedTypes[0]);
-      setRowCount(allowedTypes?.length);
+    let types = allowedTypes?.length ? allowedTypes : data;
+    if (open && types?.length) {
+      types.length === 1 && changeType(types[0]);
+      setRowCount(types?.length);
     }
   }, [allowedTypes, open]);
 
