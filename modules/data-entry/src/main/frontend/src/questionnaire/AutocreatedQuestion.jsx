@@ -19,7 +19,6 @@
 
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { InputAdornment, TextField } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -37,7 +36,6 @@ let AutocreatedQuestion = (props) => {
   const { existingAnswer, classes, pageActive, questionName} = rest;
   const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...rest};
 
-  const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
 
 

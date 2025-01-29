@@ -29,7 +29,7 @@ import UnfoldLess from "@mui/icons-material/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, fullSize, placeholder, value, ...rest } = {...props};
+  const { answerPath, children, existingAnswer, classes, onChangeNote, pageActive, fullSize, placeholder, value, ...rest } = {...props};
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();
@@ -111,7 +111,6 @@ Note.propTypes = {
   ]),
   existingAnswer: PropTypes.array,
   classes: PropTypes.object.isRequired,
-  onAddSuggestion: PropTypes.func,
   onChangeNote: PropTypes.func,
   pageActive: PropTypes.bool,
   fullSize: PropTypes.bool,

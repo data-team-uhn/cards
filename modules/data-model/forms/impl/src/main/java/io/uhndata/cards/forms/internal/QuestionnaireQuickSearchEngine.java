@@ -56,7 +56,7 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
     public QuickSearchEngine.Results quickSearch(final SearchParameters query, final ResourceResolver resourceResolver)
     {
         final String xpathQuery = getXPathQuery(query.getQuery());
-        final Iterator<Resource> foundResources = resourceResolver.findResources(xpathQuery.toString(), "xpath");
+        final Iterator<Resource> foundResources = resourceResolver.findResources(xpathQuery, "xpath");
         return new QuestionnaireResults(query.getQuery(), foundResources);
     }
 

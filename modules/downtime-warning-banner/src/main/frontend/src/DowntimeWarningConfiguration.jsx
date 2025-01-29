@@ -20,7 +20,6 @@ import React, { useState, useEffect } from 'react';
 import {
     Checkbox,
     TextField,
-    Tooltip,
     FormControlLabel,
     List,
     ListItem,

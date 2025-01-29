@@ -21,7 +21,6 @@
 """
 
 import os
-import json
 
 for d in os.walk('.'):
   if d[0].startswith('./.git/'):

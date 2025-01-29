@@ -339,8 +339,6 @@ function NewFormDialog(props) {
     }
   }
 
-  let isRowSelected = (row) => (row.original["jcr:uuid"] === selectedQuestionnaire?.["jcr:uuid"]);
-
   return (
     <React.Fragment>
       <ResponsiveDialog
@@ -463,7 +461,6 @@ function NewFormDialog(props) {
           closeAllDialogs();
           onClose && onClose();
         }}
-        onChangeSubject={(event) => {setNewSubjectName(event.target.value);}}
         currentSubject={currentSubject}
         onSubmit={createForm}
         open={newSubjectPopperOpen}

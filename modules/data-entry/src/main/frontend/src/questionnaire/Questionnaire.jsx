@@ -537,7 +537,7 @@ let QuestionnaireEntry = (props) => {
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
   let updateContext = (data) => {
-    let vars = findQuestions({data: data});
+    let vars = findQuestionnaireEntries({data: data});
     changeQuestionnaireContext((oldContext) => {
        let newContext = oldContext || [];
        vars.forEach(v => {

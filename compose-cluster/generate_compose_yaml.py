@@ -30,7 +30,7 @@ try:
   import tzlocal
   import argparse
   import zoneinfo
-  from OpenSSL import crypto, SSL
+  from OpenSSL import crypto
 except ImportError:
   print("Error: Missing dependencies!")
   print()

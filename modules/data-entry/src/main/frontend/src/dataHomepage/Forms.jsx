@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Form from "../questionnaire/Form.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 
