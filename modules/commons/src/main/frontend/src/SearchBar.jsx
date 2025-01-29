@@ -17,7 +17,7 @@
 //  under the License.
 //
 import PropTypes from "prop-types";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
@@ -81,8 +81,9 @@ function SearchBar(props) {
   let searchBar = React.useRef();
 
   // Fetch saved admin config settings
-  let getQuickSearchSettings = () => {
-    fetchWithReLogin(globalLoginDisplay, '/apps/cards/config/QuickSearch.json')
+  useEffect(() => {
+    if (!fetched) {
+      fetchWithReLogin(globalLoginDisplay, '/apps/cards/config/QuickSearch.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);
@@ -90,7 +91,8 @@ function SearchBar(props) {
         setAllowedResourceTypes(json["allowedResourceTypes"]);
         setShowTotalRows(json["showTotalRows"]  == 'true');
       });
-  }
+    }
+  }, []);
 
   // Callback to update the value of the search bar. Sends off a delayed fulltext request
   let changeSearch = (query) => {
@@ -171,10 +173,6 @@ function SearchBar(props) {
           className={classes.dropdownItem}
         />
     )
-  }
-
-  if (!fetched) {
-    getQuickSearchSettings();
   }
 
   return(
