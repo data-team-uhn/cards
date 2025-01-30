@@ -63,8 +63,8 @@ public class SubjectIdPatternValidator extends DefaultValidator
     public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
     {
         // catch identifier changes
-        if ("identifier".equals(after.getName())) {
-            childNodeAdded(null, this.currentNode);
+        if ("identifier".equals(after.getName()) && this.subjectUtils.isSubject(this.currentNode)) {
+            validateIdPattern(this.currentNode);
         }
     }
 
