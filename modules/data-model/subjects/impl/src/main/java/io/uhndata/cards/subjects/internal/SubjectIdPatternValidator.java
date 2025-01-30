@@ -24,6 +24,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.CommitFailedException;
+import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultValidator;
 import org.apache.jackrabbit.oak.spi.commit.Validator;
@@ -48,17 +49,29 @@ public class SubjectIdPatternValidator extends DefaultValidator
 
     private final SubjectUtils subjectUtils;
 
-    public SubjectIdPatternValidator(final SubjectTypeUtils subjectTypeUtils, final SubjectUtils subjectUtils)
+    private final NodeState currentNode;
+
+    public SubjectIdPatternValidator(final SubjectTypeUtils subjectTypeUtils, final SubjectUtils subjectUtils,
+        final NodeState currentNode)
     {
         this.subjectTypeUtils = subjectTypeUtils;
         this.subjectUtils = subjectUtils;
+        this.currentNode = currentNode;
+    }
+
+    @Override
+    public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
+    {
+        // catch identifier changes
+        if ("identifier".equals(after.getName()) && this.subjectUtils.isSubject(this.currentNode)) {
+            validateIdPattern(this.currentNode);
+        }
     }
 
     @Override
     public Validator childNodeChanged(final String name, final NodeState before, final NodeState after)
-        throws CommitFailedException
     {
-        return childNodeAdded(name, after);
+        return new SubjectIdPatternValidator(this.subjectTypeUtils, this.subjectUtils, after);
     }
 
     @Override
