@@ -16,7 +16,7 @@
 # under the License.
 
 psutil==5.9.5
-pyOpenSSL==23.2.0
+pyOpenSSL==25.0.0
 cryptography==43.0.1
 cffi==1.15.1
 pycparser==2.21
