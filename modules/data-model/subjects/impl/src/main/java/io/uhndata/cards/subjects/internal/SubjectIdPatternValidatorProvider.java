@@ -44,6 +44,6 @@ public class SubjectIdPatternValidatorProvider extends ValidatorProvider
     @Override
     protected Validator getRootValidator(NodeState before, NodeState after, CommitInfo info)
     {
-        return new SubjectIdPatternValidator(this.subjectTypeUtils, this.subjectUtils);
+        return new SubjectIdPatternValidator(this.subjectTypeUtils, this.subjectUtils, after);
     }
 }
