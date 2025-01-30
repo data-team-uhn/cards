@@ -93,8 +93,8 @@ function DroppableAnswerOption(props) {
         onDrop() {
             setDraggableState({ type: 'idle' });
         },
-    }), 
-    dropTargetForElements({
+      }),
+      dropTargetForElements({
         element,
         canDrop({ source }) {
             // not allowing dropping on yourself
