@@ -108,7 +108,7 @@ function AdminStatistics(props) {
   ]
 
   let makeActions = ({ row }) => (
-          <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
+          <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right'}}>
             <EditButton
               entryType={entryType}
               onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(row.original["@name"]);}}
