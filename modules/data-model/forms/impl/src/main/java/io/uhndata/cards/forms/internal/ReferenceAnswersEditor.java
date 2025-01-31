@@ -125,51 +125,49 @@ public class ReferenceAnswersEditor extends DefaultEditor
     @Override
     public void leave(final NodeState before, final NodeState after)
     {
+        if (!this.isFormNode) {
+            // Only process forms
+            return;
+        }
+
         try (ResourceResolver serviceResolver =
             this.rrf.getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, this.serviceName))) {
-            if (serviceResolver != null) {
-                this.serviceSession = serviceResolver.adaptTo(Session.class);
+            this.serviceSession = serviceResolver.adaptTo(Session.class);
 
-                if (!this.isFormNode) {
-                    // Only process forms
-                    return;
-                }
+            // Get a list of all reference questions
+            final Node questionnaireNode = this.formUtils.getQuestionnaire(this.currentNodeBuilder);
+            if (questionnaireNode == null) {
+                return;
+            }
+            // A map of reference questions with the question path as the key
+            final Map<String, Node> referenceQuestions = new HashMap<>();
+            getChildReferenceQuestions(questionnaireNode, referenceQuestions);
 
-                // Get a list of all reference questions
-                final Node questionnaireNode = this.formUtils.getQuestionnaire(this.currentNodeBuilder);
-                if (questionnaireNode == null) {
-                    return;
-                }
-                // A map of reference questions with the question path as the key
-                final Map<String, Node> referenceQuestions = new HashMap<>();
-                getChildReferenceQuestions(questionnaireNode, referenceQuestions);
+            // If the questionnaire has no reference questions, nothing to do
+            if (referenceQuestions.size() == 0) {
+                return;
+            }
 
-                // If the questionnaire has no reference questions, nothing to do
-                if (referenceQuestions.size() == 0) {
-                    return;
-                }
+            // A set of all the reference answers that do not currently reference a source answer
+            final Set<NodeBuilder> unlinkedReferenceAnswers = new HashSet<>();
+            // A map of all the answer sections in this form, keyed by section id
+            final Map<String, NodeBuilder> answerSections = new HashMap<>();
+            // A map of all the forms referenced by one of this form's reference answers
+            // Key is the questionnaire id, value is the form node
+            final Set<String> sourceForms = new HashSet<>();
 
-                // A set of all the reference answers that do not currently reference a source answer
-                final Set<NodeBuilder> unlinkedReferenceAnswers = new HashSet<>();
-                // A map of all the answer sections in this form, keyed by section id
-                final Map<String, NodeBuilder> answerSections = new HashMap<>();
-                // A map of all the forms referenced by one of this form's reference answers
-                // Key is the questionnaire id, value is the form node
-                final Set<String> sourceForms = new HashSet<>();
+            // Iterate through all answers looking for unlinked reference answers, referenced forms and
+            // clearing reference questions that have been answered
+            iterateAnswers(this.currentNodeBuilder, unlinkedReferenceAnswers, sourceForms,
+                referenceQuestions, answerSections);
 
-                // Iterate through all answers looking for unlinked reference answers, referenced forms and
-                // clearing reference questions that have been answered
-                iterateAnswers(this.currentNodeBuilder, unlinkedReferenceAnswers, sourceForms,
-                    referenceQuestions, answerSections);
+            createMissingReferenceAnswers(referenceQuestions, unlinkedReferenceAnswers, answerSections);
 
-                createMissingReferenceAnswers(referenceQuestions, unlinkedReferenceAnswers, answerSections);
-
-                // There are missing reference questions, let's create them!
-                if (unlinkedReferenceAnswers.size() > 0) {
-                    unlinkedReferenceAnswers.stream().forEach(answer -> {
-                        processUnlinkedAnswer(answer, sourceForms);
-                    });
-                }
+            // There are missing reference questions, let's create them!
+            if (unlinkedReferenceAnswers.size() > 0) {
+                unlinkedReferenceAnswers.stream().forEach(answer -> {
+                    processUnlinkedAnswer(answer, sourceForms);
+                });
             }
         } catch (LoginException e) {
             // Should not happen
@@ -239,7 +237,7 @@ public class ReferenceAnswersEditor extends DefaultEditor
         }
     }
 
-    // If the parent section or form exists, create any missing reference answers and record it's existance
+    // If the parent section or form exists, create any missing reference answers and record it's existence
     private void createMissingReferenceAnswers(Map<String, Node> referenceQuestions,
         Set<NodeBuilder> unlinkedReferenceAnswers, Map<String, NodeBuilder> answerSections)
     {
@@ -247,7 +245,7 @@ public class ReferenceAnswersEditor extends DefaultEditor
             unlinkedReferenceAnswers, answerSections));
     }
 
-    // If the parent section or form exists, create the specified reference answer and record it's existance
+    // If the parent section or form exists, create the specified reference answer and record it's existence
     private void createMissingReferenceAnswer(Node question, Set<NodeBuilder> unlinkedReferenceAnswers,
         Map<String, NodeBuilder> answerSections)
     {
