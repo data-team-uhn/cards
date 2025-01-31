@@ -32,13 +32,13 @@ import xml.etree.ElementTree as ET
 
 # Sample usage:
 #
-# ~/cards/Utilities/NameDuplicates$ python nameDuplicates.py
-# ['test.xml']
+# ~/cards/Utilities/Development$ python find_duplicate_names.py
+# ['duplicates_test.xml']
 # Question2
 # Section1
-# Parsed test.xml. Invalid: 0. Duplicates: 2. Parsed Nodes: 15
+# Parsed duplicates_test.xml. Invalid: 0. Duplicates: 2. Parsed Nodes: 15
 #
-# ~/cards/Utilities/FormImport/test$ python nameDuplicates.py --path /home/acrow/cards/proms-resources/clinical-data/src/main/resources/SLING-INF/content/Questionnaires
+# ~/cards/Utilities/Development$ python find_duplicate_names.py --path ../../proms-resources/clinical-data/src/main/resources/SLING-INF/content/Questionnaires
 # ['AUDITC.xml', 'EQ5D.xml', 'SC.xml', 'PHQ9.xml', 'GAD7.xml', 'SF12.xml']
 # Parsed AUDITC.xml. Invalid: 0. Duplicates: 0. Parsed Nodes: 25
 # Parsed EQ5D.xml. Invalid: 0. Duplicates: 0. Parsed Nodes: 26
