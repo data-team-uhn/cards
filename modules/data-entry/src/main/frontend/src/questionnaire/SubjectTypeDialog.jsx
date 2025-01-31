@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, MenuItem, TextField, Typography, Select, FormHelperText } from "@mui/material";
 
@@ -24,16 +24,16 @@ import withStyles from '@mui/styles/withStyles';
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 function SubjectTypeDialog(props) {
-  const { open, onClose, onSubmit, data, isEdit, currentSubjectType, classes } = props;
+  const { open, onClose, onSuccess, data, isEdit, currentSubjectType, classes } = props;
   const initialParent = currentSubjectType?.["@path"].replace("/" + currentSubjectType["@name"], "") || "/SubjectTypes";
   const subjectTypes = !isEdit ? data : data.filter(item => item["jcr:uuid"] != currentSubjectType["jcr:uuid"]);
 
-  const [ label, setLabel ] = useState(isEdit ? currentSubjectType.label : "");
-  const [ parentSubject, setParentSubject ] = useState(initialParent);
-  const [ order, setOrder ] = useState(currentSubjectType && currentSubjectType["cards:defaultOrder"] ? currentSubjectType["cards:defaultOrder"] : 0);
-  const [ subjectListLabel, setSubjectListLabel ] = useState(currentSubjectType?.subjectListLabel || "");
-  const [ idPattern, setIdPattern ] = useState(currentSubjectType?.idPattern || "");
-  const [ idPatternHint, setIdPatternHint ] = useState(currentSubjectType?.idPatternHint || "");
+  const [ label, setLabel ] = useState("");
+  const [ parent, setParent ] = useState(initialParent);
+  const [ order, setOrder ] = useState(0);
+  const [ subjectListLabel, setSubjectListLabel ] = useState("");
+  const [ idPattern, setIdPattern ] = useState("");
+  const [ idPatternHint, setIdPatternHint ] = useState("");
 
   const [ error, setError ] = useState(null);
   const [ isDuplicateLabel, setIsDuplicateLabel ] = useState(false);
@@ -59,33 +59,48 @@ function SubjectTypeDialog(props) {
     }
   }
 
+  useEffect(() => {
+    if (isEdit && currentSubjectType) {
+      setLabel(currentSubjectType.label);
+      setParent(initialParent);
+      setOrder(currentSubjectType["cards:defaultOrder"] || 0);
+      setSubjectListLabel(currentSubjectType?.subjectListLabel || "");
+      setIdPattern(currentSubjectType?.idPattern || "");
+      setIdPatternHint(currentSubjectType?.idPatternHint || "");
+    }
+  }, [currentSubjectType]);
+
   let handleSubjectType = () => {
     setError("");
     let formData = new FormData();
 
-    if (!isEdit) {
-      let formInfo = {};
-      formInfo["jcr:primaryType"] = "cards:SubjectType";
-      formInfo["label"] = label;
-      formInfo["cards:defaultOrder"] = order;
-      formInfo["subjectListLabel"] = subjectListLabel;
-      formInfo["idPattern"] = idPattern;
-      formInfo["idPatternHint"] = idPatternHint;
+    let formInfo = {};
+    formInfo["jcr:primaryType"] = "cards:SubjectType";
+    formInfo["label"] = label;
+    formInfo["cards:defaultOrder"] = order;
+    formInfo["subjectListLabel"] = subjectListLabel;
+    formInfo["idPattern"] = idPattern;
+    formInfo["idPatternHint"] = idPatternHint;
 
+    if (!isEdit) {
       formData.append(':contentType', 'json');
       formData.append(':operation', 'import');
       formData.append(':nameHint', label);
       formData.append(':content', JSON.stringify(formInfo));
     } else {
-      // if nothing changed - just move the node
       if (currentSubjectType["cards:defaultOrder"] == order &&
-          currentSubjectType["cards:defaultOrder"] == order &&
           currentSubjectType["label"] === label &&
           currentSubjectType["subjectListLabel"] === subjectListLabel &&
           currentSubjectType["idPattern"] === idPattern &&
           currentSubjectType["idPatternHint"] === idPatternHint) {
-        moveSubjectType();
-        return;
+        // if nothing changed except parent - just move the node
+        if (initialParent != parent) {
+          moveSubjectType();
+          return;
+        } else {
+          close();
+          return;
+        }
       } else {
         // Update all the changes first
         formData.append("cards:defaultOrder", order);
@@ -96,7 +111,7 @@ function SubjectTypeDialog(props) {
       }
     }
 
-    fetch(isEdit ? currentSubjectType["@path"] : parentSubject, {
+    fetch(isEdit ? currentSubjectType["@path"] : parent, {
         method: 'POST',
         body: formData
     })
@@ -107,10 +122,17 @@ function SubjectTypeDialog(props) {
         }
 
         // If parent changed we need to move the node
-        if (isEdit && initialParent != parentSubject) {
+        if (isEdit && initialParent != parent) {
           moveSubjectType();
         } else {
-          onSubmit();
+          if (!isEdit) {
+            formInfo["@name"] = label;
+            formInfo["@path"] = parent + "/" + label;
+            onSuccess(formInfo);
+          } else {
+            onSuccess();
+          }
+          close();
         }
     });
   }
@@ -118,7 +140,7 @@ function SubjectTypeDialog(props) {
   let moveSubjectType = () => {
     let formData = new FormData();
     formData.append(':operation', 'move');
-    formData.append(':dest', !parentSubject.endsWith("/") ? parentSubject + "/" : parentSubject);
+    formData.append(':dest', !parent.endsWith("/") ? parent + "/" : parent);
     formData.append(':replace', true);
 
     fetch(currentSubjectType["@path"], {
@@ -131,14 +153,15 @@ function SubjectTypeDialog(props) {
           return;
         }
 
-        onSubmit();
+        onSuccess();
+        close();
     });
   }
 
   let close = () => {
     setError("");
     setLabel("");
-    setParentSubject("");
+    setParent("/SubjectTypes");
     setOrder(0);
     setSubjectListLabel("");
     setIdPattern("");
@@ -151,7 +174,7 @@ function SubjectTypeDialog(props) {
     <Dialog
       maxWidth="sm"
       open={open}
-      onClose={onClose}
+      onClose={close}
     >
       <DialogTitle>{isEdit ? "Modify " + currentSubjectType.label : "Create New Subject Type"}</DialogTitle>
       <DialogContent>
@@ -183,8 +206,8 @@ function SubjectTypeDialog(props) {
                   disabled={isEdit && currentSubjectType.instanceCount != undefined && currentSubjectType.instanceCount > 0}
                   labelId="parent"
                   label="optional"
-                  value={parentSubject}
-                  onChange={(event) => { setParentSubject(event.target.value); setError(""); }}
+                  value={parent}
+                  onChange={(event) => { setParent(event.target.value); setError(""); }}
                   displayEmpty
                 >
                   <MenuItem key="none" value="/SubjectTypes">
@@ -262,7 +285,7 @@ function SubjectTypeDialog(props) {
         <Button
           disabled={!isEdit && (!label || isDuplicateLabel)
                   || isEdit && (currentSubjectType["cards:defaultOrder"] == order &&
-                                initialParent == parentSubject &&
+                                initialParent == parent &&
                                 currentSubjectType["label"] == label &&
                                 currentSubjectType["subjectListLabel"] == subjectListLabel &&
                                 currentSubjectType?.["idPattern"] == idPattern &&

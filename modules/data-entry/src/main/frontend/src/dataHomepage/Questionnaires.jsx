@@ -16,17 +16,36 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState } from "react";
+import { Link } from 'react-router-dom';
+import { Box } from "@mui/material";
 import Questionnaire from "../questionnaire/Questionnaire.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import ExportButton from "./ExportButton.jsx";
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { DateTime } from "luxon";
+import FormattedText from "../components/FormattedText.jsx";
+
+// Convert a date into the given format string
+// If the date is invalid (usually because it is missing), return ""
+let _formatDate = (date, formatString) => {
+  let dateObj = DateTime.fromISO(date);
+  if (dateObj.isValid) {
+    return dateObj.toFormat(formatString);
+  }
+  return "";
+};
+
 
 function Questionnaires(props) {
+  const [ questionnairesData, setQuestionnairesData ] = useState([]);
+  const [ dialogOpen, setDialogOpen ] = useState(false);
+  const [ updateData, setUpdateData ] = useState(0);
+
   const entry = /Questionnaires\/([^.]+)/.exec(location.pathname);
+  const entryType = "Questionnaire";
 
   if (entry) {
     return <Questionnaire id={entry[1]} key={location.pathname} contentOffset={props.contentOffset}/>;
@@ -34,39 +53,85 @@ function Questionnaires(props) {
 
   let columns = [
     {
-      "key": "title",
-      "label": "Title",
-      "format": getEntityIdentifier,
-      "link": "dashboard+path",
+      header: "Title",
+      accessorKey: "title",
+      Cell: ({ row }) => (<Link to={"/content.html/admin" + row.original["@path"]} underline="hover">{row.original.title}</Link>),
     },
     {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:yyyy-MM-dd HH:mm",
+      header: "Created on",
+      accessorKey: "jcr:created",
+      Cell: ({ row }) => _formatDate(row.original["jcr:created"], "yyyy-MM-dd HH:mm"),
+      sortingFn: 'datetime',
+      size: 20,
     },
     {
-      "key": "jcr:createdBy",
-      "label": "Created by",
-      "format": "string",
+      accessorKey: "description",
+      header: "Description",
+      enableSorting: false,
+      Cell: ({ row }) => <FormattedText variant="caption">{row.original.description}</FormattedText>,
     },
   ]
-  const actions = [
-    DeleteButton,
-    ExportButton,
-    EditButton
-  ]
+
+  let makeActions = ({ row }) => {
+    return (
+            <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right'}}>
+              <EditButton
+                entryType={entryType}
+                entryPath={row.original["@path"]}
+                admin
+              />
+              <ExportButton
+                entryPath={row.original["@path"]}
+                entryName={row.original.title}
+                entityData={row.original}
+                entryType={entryType}
+                size="medium"
+              />
+              <DeleteButton
+                entryPath={row.original["@path"]}
+                entryName={row.original.title}
+                onComplete={dialogSuccess}
+                entryType={entryType}
+                admin
+              />
+            </Box>
+          )
+  }
+
+  let customFilterFn = (row, id, filterValue) => {
+    let title = row.original.title || "";
+    let description = row.original.description || "";
+    return title.toLowerCase().includes(filterValue.toLowerCase()) || description.toLowerCase().includes(filterValue.toLowerCase());
+  }
+
+  let dialogClose = () => {
+    setDialogOpen(false);
+  }
+
+  // If an entity was successfully added or deleted, trigger the table fetch
+  let dialogSuccess = () => {
+    setUpdateData((old) => (old+1));
+  }
 
   return (
     <>
       <AdminResourceListing
         title="Questionnaires"
-        action={
-          <NewQuestionnaireDialog />
-        }
+        buttonProps={{
+          title: "New questionnaire",
+          onClick: () => setDialogOpen(true)
+        }}
         columns={columns}
-        actions={actions}
-        entryType={"Questionnaire"}
-        admin={true}
+        tableActions={makeActions}
+        entryType={entryType}
+        updateData={updateData}
+        onDataReceived={setQuestionnairesData}
+        customFilter={customFilterFn}
+      />
+      <NewQuestionnaireDialog
+        open={dialogOpen}
+        onClose={dialogClose}
+        questionnaires={questionnairesData}
       />
     </>
   );

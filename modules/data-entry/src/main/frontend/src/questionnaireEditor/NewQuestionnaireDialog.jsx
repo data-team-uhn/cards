@@ -22,59 +22,41 @@ import { withRouter } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import { v4 as uuidv4 } from 'uuid';
-import NewItemButton from "../components/NewItemButton.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function NewQuestionnaireDialog(props) {
-  const [ open, setOpen ] = useState(false);
-  const [ isFetching, setFetching ] = useState(false);
+  const { open, onClose, questionnaires } = props;
   const [ error, setError ] = useState("");
   const [ duplicateTitle, setDuplicateTitle ] = useState(false);
   const [ title, setTitle ] = useState("");
-  const [ questionnaires, setQuestionnaires ] = useState([]);
 
-  let openDialog = () => {
-    setOpen(true);
-    setDuplicateTitle(false);
-    setError("");
-    // Determine what questionnaires are available
-    if (questionnaires.length === 0) {
-      // Send a fetch request to determine the questionnaires available
-      fetch('/query?query=' + encodeURIComponent('select * from [cards:Questionnaire]'))
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => {setQuestionnaires(json["rows"])})
-        .finally(() => {setFetching(false)});
-      setFetching(true);
-    }
-  }
-
-  let createForm = () => {
+  let createQuestionnaire = () => {
     setError("");
 
-    // Make a POST request to create a new form, with a randomly generated UUID
+    // Make a POST request to create a new questionnaire, with a randomly generated UUID
     const URL = "/Questionnaires/" + uuidv4();
     var request_data = new FormData();
     request_data.append('jcr:primaryType', 'cards:Questionnaire');
     request_data.append('title', title);
     fetch( URL, { method: 'POST', body: request_data })
       .then( (response) => {
-        setFetching(false);
         if (response.ok) {
           // Redirect the user to the new uuid
           // FIXME: Would be better to somehow obtain the router prefix from props
           // but that is not currently possible
+          onClose();
           props.history.push("/content.html/admin" + URL + ".edit");
         } else {
           return(Promise.reject(response));
         }
       })
       .catch(parseErrorResponse);
-    setFetching(true);
   }
+
   let parseErrorResponse = (response) => {
-    setFetching(false);
     setError(`New questionnaire request failed with error code ${response.status}: ${response.statusText}`);
   }
+
   let handleChangeTitle = (value) => {
     // Check if a questionnaire with the given title exists already
     const titles = questionnaires.filter(questionnaire => questionnaire.title == value);
@@ -90,7 +72,7 @@ function NewQuestionnaireDialog(props) {
 
   return (
     <React.Fragment>
-       <Dialog open={open} onClose={() => { setOpen(false); }} autoFocus={false}>
+       <Dialog open={open} onClose={onClose} autoFocus={false}>
         <DialogTitle id="new-questionnaire-title">
           Create a new questionnaire
         </DialogTitle>
@@ -102,7 +84,7 @@ function NewQuestionnaireDialog(props) {
             inputProps={{
               onKeyDown: (event) => {
                 if (event.key == 'Enter' && title) {
-                  createForm();
+                  createQuestionnaire();
                 }
               }
             }}
@@ -113,30 +95,25 @@ function NewQuestionnaireDialog(props) {
             error={duplicateTitle}
             helperText={duplicateTitle ? "A questionnaire with this name already exists" : " "}
           >  
-          </TextField>
+        </TextField>
         </DialogContent>
          <DialogActions>
           <Button
             variant="contained"
             color="primary"
-            onClick={createForm}
+            onClick={createQuestionnaire}
             disabled={!title}
             >
-            {'Create'}
+            Create
           </Button>
           <Button
             variant="outlined"
-            onClick={() => { setOpen(false); }}
+            onClick={onClose}
             >
-            {'Cancel'}
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>
-      <NewItemButton
-           title="New questionnaire"
-           onClick={() => { openDialog(); }}
-           inProgress={!open && isFetching}
-      />
     </React.Fragment>
   )
 }
