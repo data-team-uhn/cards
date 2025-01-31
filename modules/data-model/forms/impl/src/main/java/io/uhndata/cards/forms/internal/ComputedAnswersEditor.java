@@ -178,7 +178,7 @@ public class ComputedAnswersEditor extends AnswersEditor
         try {
             final Node question = entry.getKey();
             final NodeBuilder answer = entry.getValue();
-            Type<?> resultType = getAnswerType(question);
+            Type<?> resultType = this.questionnaireUtils.getAnswerType(question);
 
             ExpressionUtils.ExpressionResult expressionResult = this.expressionUtils.evaluate(question,
                 answersByQuestionName, resultType, changedQuestions);
