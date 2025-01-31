@@ -96,6 +96,7 @@ function SubjectTypeDialog(props) {
         // if nothing changed except parent - just move the node
         if (initialParent != parent) {
           moveSubjectType();
+          return;
         } else {
           close();
           return;
