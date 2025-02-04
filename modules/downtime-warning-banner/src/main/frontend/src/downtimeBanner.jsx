@@ -54,6 +54,7 @@ export default function DowntimeWarning(props) {
   const [ enabled, setEnabled ] = useState(false);
   const [ fromDate, setFromDate ] = useState();
   const [ toDate, setToDate ] = useState();
+  const [ periodEnded, setPeriodEnded ] = useState(false);
   // Error message set when fetching the data from the server fails
   const [ error, setError ] = useState();
 
@@ -73,6 +74,11 @@ export default function DowntimeWarning(props) {
         if (json.toDate) {
           let date = new Date(json.toDate);
           setToDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
+
+          // Check if the downtime period ended
+          if (new Date() > date) {
+            setPeriodEnded(true);
+          }
         }
       })
       .catch((error) => {
@@ -80,7 +86,7 @@ export default function DowntimeWarning(props) {
       });
   }, []);
 
-  if (!enabled || !fromDate || !toDate) {
+  if (!enabled || !fromDate || !toDate || periodEnded) {
       return null;
   }
 
