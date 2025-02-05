@@ -113,7 +113,7 @@ export default class DateQuestionUtilities {
       'd':'month',
       'M':'year'
     };
-    let truncateTo;
+    let truncateTo = 'millisecond';
     for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
       if (toFormat.indexOf(formatSpecifier) < 0) {
         truncateTo = targetPrecision;
