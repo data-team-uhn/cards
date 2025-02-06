@@ -12,7 +12,8 @@
     "entryMode": {
       "user": {
         "lowerLimit": "string",
-        "upperLimit": "string"
+        "upperLimit": "string",
+        "defaultValue": "string"
       },
       "computed": {
         "expression": "code",

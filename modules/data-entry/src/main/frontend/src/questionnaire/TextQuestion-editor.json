@@ -4,6 +4,7 @@
       "user": {
         "minAnswers": "long",
         "maxAnswers": "long",
+        "defaultValue": "string",
         "validationRegexp": "string",
         "validationErrorText": "markdown",
         "liveValidation": "boolean",

@@ -1,6 +1,7 @@
 {
   "address": {
     "minAnswers": {"0":{}, "1":{}},
+    "defaultValue": "string",
     "countries": "string",
     "searchPlacesAround": "string"
   }

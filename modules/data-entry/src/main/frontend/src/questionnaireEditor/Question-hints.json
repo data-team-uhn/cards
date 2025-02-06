@@ -4,5 +4,6 @@
   "enableUserEntry": "If enabled, the user is not restricted to using one of the suggestions in the dropdown, and may save their own text as the free-form answer to the question.",
   "lowerLimit": "A date in ISO format, or a relative moment such as `today`, `today + N`, or `today - N` where `N` is the number of days.",
   "upperLimit": "A date in ISO format, or a relative moment such as `today`, `today + N`, or `today - N` where `N` is the number of days.",
-  "question": "Path to a question, either in this or a different questionnaire. Example: `/Questionnaires/Demographics/name`"
+  "question": "Path to a question, either in this or a different questionnaire. Example: `/Questionnaires/Demographics/name`",
+  "defaultValue": "*boolean: enter 0 or 1\n*date: enter in the specified date format\n*vocabulary: path to a vocabulary term from an installed vocabulary, e.g. `/Vocabularies/HANCESTRO/HANCESTRO_0008` for `Asian ethnicity` as defined by the `HANCESTRO` vocabulary\n*resource: path to a resource node, e.g. `/SubjectTypes/Patient` to specify the patient subject type\n*selectableArea: one of the options compatible with the specified selectable area variant, such as `head`, `face`, `leftjaw`, `rightjaw`, `jaw`, `neck`, `throat` for the **Face** variant"
 }

@@ -8,6 +8,7 @@
         "disableNegativeInput": "boolean",
         "minValue": "double",
         "maxValue": "double",
+        "defaultValue": "string",
         "disableMinMaxValueEnforcement": "boolean",
         "messageForValuesOutsideMinMax": "markdown",
         "displayMode": {
@@ -85,6 +86,7 @@
         "disableNegativeInput": "boolean",
         "minValue": "double",
         "maxValue": "double",
+        "defaultValue": "string",
         "disableMinMaxValueEnforcement": "boolean",
         "messageForValuesOutsideMinMax": "markdown",
         "displayMode": {
@@ -164,6 +166,7 @@
         "disableNegativeInput": "boolean",
         "minValue": "double",
         "maxValue": "double",
+        "defaultValue": "string",
         "disableMinMaxValueEnforcement": "boolean",
         "messageForValuesOutsideMinMax": "markdown",
         "displayMode": {

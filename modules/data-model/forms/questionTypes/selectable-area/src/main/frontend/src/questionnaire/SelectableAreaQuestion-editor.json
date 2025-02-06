@@ -2,6 +2,7 @@
   "selectableArea": {
     "minAnswers": {"0":{}, "1":{}},
     "maxAnswers": "long",
+    "defaultValue": "string",
     "variant": {
       "type": "list",
       "primaryType": "cards:SelectableAreaVariant",

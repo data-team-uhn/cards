@@ -1,6 +1,7 @@
 {
   "phone": {
     "minAnswers": {"0":{}, "1":{}},
+    "defaultValue": "string",
     "defaultCountry": "string",
     "onlyCountries": "string",
     "regions": "string"

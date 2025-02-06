@@ -13,6 +13,7 @@
       "user": {
         "minAnswers": "long",
         "maxAnswers": "long",
+        "defaultValue": "string",
         "displayMode": {
           "input": {
             "enableVocabularyBrowser" : "boolean",
