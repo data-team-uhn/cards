@@ -39,6 +39,7 @@
         "minAnswers": "long",
         "maxAnswers": "long",
         "verticalLayout" : "boolean",
+        "defaultValue": "string",
         "dataType": {
           "text": {
             "answerOptions" : {
