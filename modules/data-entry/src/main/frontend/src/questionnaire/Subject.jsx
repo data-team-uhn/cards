@@ -80,7 +80,7 @@ let createQueryURL = (query, type) => {
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed, pageSize, history } = props;
+  let { id, classes, maxDisplayed, pageSize, history, admin } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
@@ -91,6 +91,8 @@ function Subject(props) {
   // handleDisplay() to a utility file for SubjectContainer and SubjectTimeline.
   const tabs = ["Chart", "Timeline"]
   const location = useLocation();
+
+  const baseURL = "/content.html" + (admin ? "/admin" : "");
 
   useEffect(() => {
     let newId = getSubjectIdFromPath(location.pathname);
@@ -120,7 +122,12 @@ function Subject(props) {
 
   return (
     <React.Fragment>
-      <NewFormDialog currentSubject={currentSubject} withButton buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") } />
+      <NewFormDialog
+        currentSubject={currentSubject}
+        withButton
+        buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
+        admin={admin}
+      />
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader
           id={currentSubjectId}
@@ -131,6 +138,7 @@ function Subject(props) {
           reloadSubject={fetchRelatedRef}
           history={history}
           contentOffset={props.contentOffset}/>
+          admin={admin}
         <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
@@ -151,6 +159,7 @@ function Subject(props) {
               pageSize={pageSize}
               subject={currentSubject}
               fetchSubjectData={fetchRelatedRef.current}
+              baseURL={baseURL}
             />
           : <Grid item>
             <SubjectTimeline
@@ -170,7 +179,7 @@ function Subject(props) {
  * Component that recursively gets and displays the selected subject and its related SubjectTypes
  */
 function SubjectContainer(props) {
-  let { id, classes, level, maxDisplayed, pageSize, subject, fetchSubjectData } = props;
+  let { id, classes, level, maxDisplayed, pageSize, subject, fetchSubjectData, baseURL } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // hold related subjects
@@ -238,7 +247,9 @@ function SubjectContainer(props) {
         pageSize={pageSize}
         onDelete={() => {setDeleted(true)}}
         childSubjects={relatedSubjects}
-        fetchSubjectData={fetchSubjectData}/>
+        fetchSubjectData={fetchSubjectData}
+        baseURL={baseURL}
+      />
     </React.Fragment>
   );
 }
@@ -247,7 +258,7 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject, history, pageTitle, reloadSubject } = props;
+  let { id, classes, getSubject, history, pageTitle, reloadSubject, admin } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
@@ -339,7 +350,7 @@ function SubjectHeader(props) {
               />
             </div>
   );
-  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true) || [getHomepageLink(subject?.data)]);;
+  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true, admin) || [getHomepageLink(subject?.data, admin)]);;
 
   return (
     subject?.data &&
@@ -375,7 +386,7 @@ function SubjectHeader(props) {
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
 function SubjectMemberInternal (props) {
-  let { classes, data, id, level, maxDisplayed, onDelete, pageSize, childSubjects, fetchSubjectData } = props;
+  let { classes, data, id, level, maxDisplayed, onDelete, pageSize, childSubjects, fetchSubjectData, baseURL } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // Whether a subject is expanded and displaying its forms
@@ -498,7 +509,7 @@ function SubjectMemberInternal (props) {
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item xs={true}>
               <Typography variant="overline">
-                 {label} <Link to={"/content.html" + path} underline="hover">{identifier}</Link>
+                 {label} <Link to={baseURL + path} underline="hover">{identifier}</Link>
               </Typography>
             </Grid>
             <Grid item xs="3.5">{tags}</Grid>
@@ -591,7 +602,7 @@ function SubjectMemberInternal (props) {
                                        <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
                                      </Grid>
                                      <Grid item xs={false}>
-                                       <Link to={"/content.html" + row.original["@path"]} underline="hover">
+                                       <Link to={baseURL + row.original["@path"]} underline="hover">
                                          {questionnaireTitle}
                                        </Link>
                                        <Typography variant="caption" component="div" color="textSecondary">
@@ -626,18 +637,18 @@ function SubjectMemberInternal (props) {
                 enableRowActions
                 positionActionsColumn="last"
                 renderRowActions={({ row }) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
-                      <EditButton
-                        entryPath={row.original["@path"]}
-                        entryType="Form"
-                      />
-                      <DeleteButton
-                        entryPath={row.original["@path"]}
-                        entryName={getEntityIdentifier(row.original)}
-                        entryType="Form"
-                        onComplete={fetchTableData}
-                      />
-                    </Box>
+                  <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
+                    <EditButton
+                      entryPath={row.original["@path"]}
+                      entryType="Form"
+                    />
+                    <DeleteButton
+                      entryPath={row.original["@path"]}
+                      entryName={getEntityIdentifier(row.original)}
+                      entryType="Form"
+                      onComplete={fetchTableData}
+                    />
+                  </Box>
                 )}
               />
             </Grid>
@@ -659,7 +670,9 @@ function SubjectMemberInternal (props) {
                 maxDisplayed={maxDisplayed}
                 pageSize={pageSize}
                 subject={subject}
-                fetchSubjectData={fetchSubjectData}/>
+                fetchSubjectData={fetchSubjectData}
+                baseURL={baseURL}
+              />
             )
           })}
         </Grid>

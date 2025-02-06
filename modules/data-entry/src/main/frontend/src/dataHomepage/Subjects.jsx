@@ -28,8 +28,9 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Subjects(props) {
-  const { classes } = props;
+  const { extension, classes } = props;
   const entry = getSubjectIdFromPath(location.pathname);
+  const admin = extension?.["cards:admin"]
 
   // Clear the page name overwriting if moving from a specific Subject to the Subjects page
   const pageNameWriter = usePageNameWriterContext();
@@ -40,7 +41,12 @@ function Subjects(props) {
   }, [entry]);
 
   if (entry) {
-    return <Subject id={entry} contentOffset={props.contentOffset} key={entry} />;
+    return <Subject
+      id={entry}
+      contentOffset={props.contentOffset}
+      key={entry}
+      admin={admin}
+      />;
   }
 
   const columns = [
@@ -58,7 +64,7 @@ function Subjects(props) {
     {
       "key": "",
       "label": "Parents",
-      "format": (row) => (row['parents'] ? getHierarchy(row['parents']) : ''),
+      "format": (row) => (row['parents'] ? getHierarchy(row['parents'], undefined, undefined, admin) : ''),
     },
     {
       "key": "jcr:created",
@@ -78,6 +84,7 @@ function Subjects(props) {
         <SubjectView
           expanded
           columns={columns}
+          admin={admin}
         />
       </Grid>
     </Grid>

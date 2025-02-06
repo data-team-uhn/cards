@@ -72,7 +72,7 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  * @param {string} id the identifier of a form; this is the JCR node name
  */
 function Form (props) {
-  let { classes, id, contentOffset } = props;
+  let { classes, id, contentOffset, admin } = props;
   let { mode, className, actionSwitches, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -157,7 +157,7 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
-  const urlBase = "/content.html";
+  const baseURL = "/content.html" + (admin ? "/admin" : "");
   const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
   const isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
   let globalLoginDisplay = useContext(GlobalLoginContext);
@@ -387,23 +387,23 @@ function Form (props) {
     saveData(event);
   }
 
-  let onEdit = (event) => {
+  let onEdit = (url) => {
     // Redirect the user to the edit form mode
-    props.history.push(urlBase + formURL + '.edit' + window.location.hash);
+    props.history.push(url + '.edit' + window.location.hash);
   }
 
-  let onClose = (event) => {
+  let onClose = (url) => {
     // Redirect the user to the view form mode
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        props.history.push(urlBase + formURL);
+        props.history.push(url);
     });
   }
 
-  let onDelete = () => {
+  let onDelete = (baseURL, data) => {
     removeWindowHandlers && removeWindowHandlers();
-    props.history.push(urlBase + (data?.subject?.['@path'] || ''));
+    props.history.push(baseURL + (data?.subject?.['@path'] || ''));
   }
 
   let title = data?.questionnaire?.title || id || "";
@@ -558,10 +558,10 @@ function Form (props) {
         <Typography variant="overline">
           {"Related: "}
           {validLinks.length == 1 ?
-              validLinks.map(link => <Link key={link["@name"]} to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
+              validLinks.map(link => <Link key={link["@name"]} to={baseURL + link["to"]}>{link["resourceLabel"]}</Link>)
               :
               <List dense disablePadding>
-              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
+              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={baseURL + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
               </List>
           }
         </Typography>
@@ -582,7 +582,7 @@ function Form (props) {
         { !disableHeader &&
         <ResourceHeader
           title={title}
-          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
+          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject, undefined, admin).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
           tags={ statusFlags?.map( item => (
             <Chip
               label={item[0].toUpperCase() + item.slice(1).toLowerCase()}

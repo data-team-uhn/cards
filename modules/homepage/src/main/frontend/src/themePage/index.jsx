@@ -83,7 +83,7 @@ class Main extends React.Component {
             exact={Boolean(route["cards:exactURLMatch"])}
             render={(props) => {
                 let ThisComponent = route["cards:extensionRender"];
-                let newProps = {...props, contentOffset: this.state.contentOffset };
+                let newProps = {...props, contentOffset: this.state.contentOffset, extension: route };
                 let title = " | " + this.state.title;
                 return (
                   <Page title={title} pageDefaultName={route["cards:extensionName"]}>

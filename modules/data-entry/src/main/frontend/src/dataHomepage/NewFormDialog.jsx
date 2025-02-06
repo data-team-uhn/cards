@@ -46,7 +46,7 @@ const PROGRESS_SELECT_SUBJECT = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { classes, presetPath, currentSubject, theme, open, onClose, withButton, buttonTitle } = {open: false, ...props };
+  const { classes, presetPath, currentSubject, theme, open, onClose, withButton, buttonTitle, admin } = {open: false, ...props };
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
@@ -108,7 +108,7 @@ function NewFormDialog(props) {
           // Redirect the user to the new uuid
           // FIXME: Would be better to somehow obtain the router prefix from props
           // but that is not currently possible
-          props.history.push("/content.html" + URL + '.edit');
+          props.history.push("/content.html" + (admin ? "/admin" : "") + URL + '.edit');
         } else {
           return(Promise.reject(response));
         }
