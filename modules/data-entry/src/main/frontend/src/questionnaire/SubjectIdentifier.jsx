@@ -24,10 +24,15 @@ function defaultCreator (node) {
   return {to: "../content.html" + node["@path"]}
 }
 
+function adminCreator (node) {
+  return {to: "../content.html/admin" + node["@path"]}
+}
+
 // Extract the subject id from the subject path
 // returns null if the parameter is not a valid subject path (expected format: Subjects/<id>)
-export function getHomepageLink (subjectNode) {
-  let props = defaultCreator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`});
+export function getHomepageLink (subjectNode, admin=false) {
+  let creator = admin ? adminCreator : defaultCreator;
+  let props = creator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`});
   return (<Link {...props} underline="hover">{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
 }
 
@@ -39,13 +44,12 @@ export function getSubjectIdFromPath (path) {
 }
 
 // Recursive function to get a flat list of parents
-export function getHierarchy (node, RenderComponent, propsCreator) {
+export function getHierarchy (node, RenderComponent, propsCreator, admin=false) {
   let HComponent = RenderComponent || Link;
-  let hpropsCreator = propsCreator || defaultCreator;
-  let props = hpropsCreator(node);
+  let props = propsCreator || (admin ? adminCreator(node) : defaultCreator(node));
   let output = <React.Fragment>{node.type.label} <HComponent {...props}>{node.identifier}</HComponent></React.Fragment>;
   if (node["parents"]?.type) {
-    let ancestors = getHierarchy(node["parents"], HComponent, propsCreator);
+    let ancestors = getHierarchy(node["parents"], HComponent, propsCreator, admin);
     return <React.Fragment>{ancestors} / {output}</React.Fragment>
   } else {
     return output;
@@ -65,19 +69,19 @@ export function getTextHierarchy (node, withType = false) {
 }
 
 // Recursive function to get the list of ancestors as an array
-export function getHierarchyAsList (node, includeHomepage) {
+export function getHierarchyAsList (node, includeHomepage, admin=false) {
   if (!node?.type) {
-    return includeHomepage ? [getHomepageLink()] : [];
+    return includeHomepage ? [getHomepageLink(undefined, admin)] : [];
   }
-  let props = defaultCreator(node);
+  let props = admin ? adminCreator(node) : defaultCreator(node);
   let parent = <>{node.type.label} <Link {...props} underline="hover">{node.identifier}</Link></>;
   if (node["parents"]) {
-    let ancestors = getHierarchyAsList(node["parents"]);
+    let ancestors = getHierarchyAsList(node["parents"], undefined, admin);
     ancestors.push(parent);
     return ancestors;
   } else {
     let result = [parent];
-    includeHomepage && result.unshift(getHomepageLink(node));
+    includeHomepage && result.unshift(getHomepageLink(node, admin));
     return result;
   }
 }

@@ -26,7 +26,8 @@ import FormView from "./FormView.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Forms(props) {
-  const { classes } = props;
+  const { extension, classes } = props;
+  const admin = extension?.["cards:admin"] || props.admin;
   const location = useLocation();
   const questionnaire = /questionnaire=([^&]+)/.exec(location.search)?.[1];
 
@@ -40,7 +41,7 @@ function Forms(props) {
     {
       "key": "",
       "label": "Subject",
-      "format": (row) => (row.subject ? getHierarchy(row.subject) : ''),
+      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, admin) : ''),
     },
     {
       "key": "questionnaire/title",

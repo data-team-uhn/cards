@@ -26,7 +26,8 @@ import { withStyles } from 'tss-react/mui';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function Subjects(props) {
-  const { classes } = props;
+  const { extension, classes } = props;
+  const admin = extension?.["cards:admin"]
 
   const columns = [
     {
@@ -43,7 +44,7 @@ function Subjects(props) {
     {
       "key": "",
       "label": "Parents",
-      "format": (row) => (row['parents'] ? getHierarchy(row['parents']) : ''),
+      "format": (row) => (row['parents'] ? getHierarchy(row['parents'], undefined, undefined, admin) : ''),
     },
     {
       "key": "jcr:created",
@@ -63,6 +64,7 @@ function Subjects(props) {
         <SubjectView
           expanded
           columns={columns}
+          admin={admin}
         />
       </Grid>
     </Grid>

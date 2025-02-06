@@ -44,12 +44,15 @@ import NewFormDialog from "./NewFormDialog.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function FormView(props) {
-  const { questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
+  const { extension, questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
 
   const [ title, setTitle ] = useState(props.title);
   const [ subtitle, setSubtitle ] = useState(props.subtitle);
   const [ qFilter, setQFilter ] = useState();
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
+
+  const admin = extension?.["cards:admin"] || props.admin
+  const baseURL = "../content.html" + admin ? "/admin" : ""
 
   // Column configuration for the LiveTables
   const columns = [
@@ -131,7 +134,7 @@ function FormView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"../content.html/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()} underline="hover">
+            <Link to={baseURL + "/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()} underline="hover">
               <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
@@ -154,10 +157,16 @@ function FormView(props) {
           disableTopPagination={!topPagination}
           onFiltersChange={(str) => { setFiltersJsonString(str); }}
           filtersJsonString={filtersJsonString}
+          admin={admin}
         />
       }
       { expanded &&
-        <NewFormDialog presetPath={questionnaire} withButton buttonTitle="New questionnaire" />
+        <NewFormDialog
+          presetPath={questionnaire}
+          withButton
+          buttonTitle="New questionnaire"
+          admin={admin}
+        />
       }
       </CardContent>
     </Card>
