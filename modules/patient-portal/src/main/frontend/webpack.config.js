@@ -16,6 +16,8 @@ module.exports = {
     [module_name + 'Form']: { 'dependOn': ['cards-login.loginDialogue', 'cards-dataentry.Forms'], 'import': './src/clinician-portal/Form.jsx' },
     [module_name + 'ClinicForms']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/clinician-portal/ClinicForms.jsx' },
     [module_name + 'ClinicVisits']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/clinician-portal/ClinicVisits.jsx' },
+    [module_name + 'ClinicianFormView']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/clinician-portal/ClinicianFormView.jsx' },
+    [module_name + 'ClinicianSubjectView']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/clinician-portal/ClinicianSubjectView.jsx' },
     [module_name + 'ClinicDashboard']: { 'dependOn': ['cards-dataentry.Questionnaires', 'patient-portal.ClinicForms', 'patient-portal.ClinicVisits'], 'import': './src/clinician-portal/ClinicDashboard.jsx' },
     [module_name + 'clinicIcon']: '@mui/icons-material/Event.js',
     [module_name + 'Clinics']: { 'dependOn': ['cards-dataentry.Questionnaires'], 'import': './src/clinician-portal/Clinics.jsx' },
