@@ -38,6 +38,7 @@
         "//CHILDREN" : {"Question" : "QuestionMatrixEntry.json"},
         "minAnswers": "long",
         "maxAnswers": "long",
+        "defaultValue": "string",
         "dataType": {
           "text": {
             "answerOptions" : {

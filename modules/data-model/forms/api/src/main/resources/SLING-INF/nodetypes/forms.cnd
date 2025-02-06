@@ -239,9 +239,8 @@
   // For computed answers, the expression used to calculate the value
   - expression (string)
 
-  // For identifier questions, the format of identifier that should be generated
-  // - uuid: a random UUID
-  - identifierType
+  // Default values for questions
+  - defaultValue (string)
 
   // Since not all properties are mandatory, customizing a question requires defining only
   // the properties of interest.
@@ -331,6 +330,9 @@
   // - long, double, decimal: a number
   // - vocabulary: a term from a vocabulary
   - dataType (string) = 'text'
+
+  // Default values for a QuestionMatrix
+  - defaultValue (string)
 
   // Children
 
