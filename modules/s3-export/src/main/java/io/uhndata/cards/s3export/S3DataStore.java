@@ -21,6 +21,7 @@ package io.uhndata.cards.s3export;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,24 +30,24 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
-import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
-import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PartETag;
-import com.amazonaws.services.s3.model.UploadPartRequest;
-import com.amazonaws.services.s3.model.UploadPartResult;
 import io.uhndata.cards.export.ExportConfigDefinition;
 import io.uhndata.cards.export.spi.DataStore;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.checksums.RequestChecksumCalculation;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
+import software.amazon.awssdk.services.s3.model.CompletedPart;
+import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.UploadPartRequest;
+import software.amazon.awssdk.services.s3.model.UploadPartResponse;
 
 @Component(immediate = true, service = DataStore.class)
-@SuppressWarnings("checkstyle:ClassDataAbstractionCoupling")
 public class S3DataStore implements DataStore
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3DataStore.class);
@@ -68,53 +69,25 @@ public class S3DataStore implements DataStore
         final String s3BucketName = env(getNamedParameter(config.storageParameters(), "bucket", "%ENV%S3_BUCKET_NAME"));
         final String awsKey = env(getNamedParameter(config.storageParameters(), "accessKey", "%ENV%AWS_KEY"));
         final String awsSecret = env(getNamedParameter(config.storageParameters(), "secretKey", "%ENV%AWS_SECRET"));
-        final EndpointConfiguration endpointConfig =
-            new EndpointConfiguration(s3EndpointUrl, s3EndpointRegion);
-        final AWSCredentials credentials = new BasicAWSCredentials(awsKey, awsSecret);
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-            .withPayloadSigningEnabled(true)
-            .withEndpointConfiguration(endpointConfig)
-            .withPathStyleAccessEnabled(true)
-            .withCredentials(new AWSStaticCredentialsProvider(credentials))
+        final S3Client s3 = S3Client.builder()
+            .region(Region.of(s3EndpointRegion))
+            .endpointOverride(URI.create(s3EndpointUrl))
+            .requestChecksumCalculation(RequestChecksumCalculation.WHEN_REQUIRED)
+            .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
+            .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(awsKey, awsSecret)))
             .build();
 
+        // Some s3 buckets may forbid uploading "applications", so let's pretend they're just plain text files
+        final String safeMimetype =
+            "true".equals(getNamedParameter(config.storageParameters(), "blockedApplicationMimeTypeWorkaround"))
+                && mimetype.startsWith("application/") ? "text/plain" : mimetype;
         try {
-            final ObjectMetadata meta = new ObjectMetadata();
-            // Some s3 buckets may forbid uploading "applications", so let's pretend that they're just plain text files
-            meta.setContentType(
-                "true".equals(getNamedParameter(config.storageParameters(), "blockedApplicationMimeTypeWorkaround"))
-                    && mimetype.startsWith("application/") ? "text/plain" : mimetype);
-            if (size >= 0) {
-                meta.setContentLength(size);
-            }
-
-            final List<PartETag> partETags = new ArrayList<>();
-
-            final InitiateMultipartUploadRequest initRequest =
-                new InitiateMultipartUploadRequest(s3BucketName, filename).withObjectMetadata(meta);
-            final InitiateMultipartUploadResult initResponse = s3.initiateMultipartUpload(initRequest);
-            long position = 0;
             long partSize = getPartSize(config.storageParameters());
-            for (int partNumber = 1; position < size; ++partNumber) {
-                partSize = Math.min(partSize, (size - position));
-
-                UploadPartRequest uploadRequest = new UploadPartRequest()
-                    .withBucketName(s3BucketName)
-                    .withKey(filename)
-                    .withUploadId(initResponse.getUploadId())
-                    .withInputStream(contents)
-                    .withPartNumber(partNumber)
-                    .withPartSize(partSize);
-
-                UploadPartResult uploadResult = s3.uploadPart(uploadRequest);
-                partETags.add(uploadResult.getPartETag());
-
-                position += partSize;
+            if (size <= partSize) {
+                simpleUpload(contents, size, s3, s3BucketName, filename, safeMimetype);
+            } else {
+                multipartUpload(contents, size, partSize, s3, s3BucketName, filename, safeMimetype);
             }
-
-            CompleteMultipartUploadRequest compRequest = new CompleteMultipartUploadRequest(s3BucketName, filename,
-                initResponse.getUploadId(), partETags);
-            s3.completeMultipartUpload(compRequest);
         } catch (Exception e) {
             throw new IOException("Failed to store file " + filename + " into S3 store " + getName(), e);
         }
@@ -142,5 +115,46 @@ public class S3DataStore implements DataStore
             return System.getenv(value.substring("%ENV%".length()));
         }
         return value;
+    }
+
+    private void simpleUpload(final InputStream contents, final long size, S3Client s3, String s3BucketName,
+        String filename, String mimetype)
+    {
+        s3.putObject(PutObjectRequest.builder()
+            .bucket(s3BucketName)
+            .key(filename)
+            .contentType(mimetype)
+            .build(),
+            RequestBody.fromInputStream(contents, size));
+    }
+
+    private void multipartUpload(final InputStream contents, final long size, final long maxSize, final S3Client s3,
+        final String s3BucketName, final String filename, final String mimetype)
+    {
+        final String uploadId = s3.createMultipartUpload(CreateMultipartUploadRequest.builder()
+            .bucket(s3BucketName)
+            .key(filename)
+            .contentType(mimetype)
+            .build()).uploadId();
+
+        final List<CompletedPart> parts = new ArrayList<>();
+
+        long position = 0;
+        long partSize = maxSize;
+        for (int partNumber = 1; position < size; ++partNumber) {
+            partSize = Math.min(maxSize, (size - position));
+
+            UploadPartResponse uploadResult = s3.uploadPart(
+                UploadPartRequest.builder().bucket(s3BucketName).key(filename).uploadId(uploadId)
+                    .partNumber(partNumber).contentLength(partSize).build(),
+                RequestBody.fromInputStream(contents, partSize));
+            parts.add(CompletedPart.builder().partNumber(partNumber).eTag(uploadResult.eTag()).build());
+
+            position += partSize;
+        }
+        CompletedMultipartUpload completedMultipartUpload = CompletedMultipartUpload.builder().parts(parts).build();
+        s3.completeMultipartUpload(
+            CompleteMultipartUploadRequest.builder().bucket(s3BucketName).key(filename).uploadId(uploadId)
+                .multipartUpload(completedMultipartUpload).build());
     }
 }

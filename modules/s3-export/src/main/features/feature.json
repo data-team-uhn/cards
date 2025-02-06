@@ -21,24 +21,17 @@
       "id":"${project.groupId}:${project.artifactId}:${project.version}",
       "start-order":"26"
     },
-    {
-      "id":"com.amazonaws:aws-java-sdk-osgi:1.12.779",
-      "start-order":"26"
-    },
-    {
-      "id":"joda-time:joda-time:2.12.7",
-      "start-order":"26"
-    },
-    {
-      "id":"com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.17.2",
-      "start-order":"26"
-    },
+
     {
       "id":"io.netty:netty-tcnative-classes:2.0.61.Final",
       "start-order":"26"
     },
     {
       "id":"io.netty:netty-codec-http:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-codec-http2:4.1.94.Final",
       "start-order":"26"
     },
     {
@@ -66,11 +59,19 @@
       "start-order":"26"
     },
     {
+      "id":"io.netty:netty-transport-native-epoll:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-transport-classes-epoll:4.1.94.Final",
+      "start-order":"26"
+    },
+    {
       "id":"io.netty:netty-resolver:4.1.94.Final",
       "start-order":"26"
     },
     {
-      "id":"software.amazon.ion:ion-java:1.5.1",
+      "id":"org.reactivestreams:reactive-streams:1.0.4",
       "start-order":"26"
     }
   ]
