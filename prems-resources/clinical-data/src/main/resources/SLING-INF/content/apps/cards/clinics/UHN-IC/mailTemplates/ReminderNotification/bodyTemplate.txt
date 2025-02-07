@@ -23,7 +23,7 @@ complete.
 To begin the survey, click the following link:
 ${surveysLink}
 
-The survey will be available until ${expirationDate}. Please do not delay.
+The survey will be available until ${beforeExpirationDate}. Please do not delay.
 
 The survey will not load if you are using Internet Explorer. Please use
 another web browser, such as Edge, Chrome, or Firefox.

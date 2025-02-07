@@ -22,7 +22,7 @@ please contact us at yourexperience@uhn.ca. You can also unsubscribe from all
 further emails from Your Experience by following this link:
 ${unsubscribeLink}
 
-The survey will be available until ${expirationDate}. Please do not delay.
+The survey will be available until ${beforeExpirationDate}. Please do not delay.
 
 Thank you for your time and help. Your effort will help us provide better care to
 all our patients and ensure it is reflective of UHN’s Patient Declaration of Values

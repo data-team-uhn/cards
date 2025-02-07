@@ -8,7 +8,7 @@ approximately 5 minutes to complete.
 To begin the survey, click the following link:
 ${surveysLink}
 
-The survey will be available until ${expirationDate}.
+The survey will be available until ${beforeExpirationDate}.
 
 Please note that this survey is compatible with voice activated software which
 can be used to navigate it.
