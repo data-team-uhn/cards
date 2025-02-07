@@ -195,6 +195,8 @@ abstract class AbstractEmailNotification
         final DateFormat sdf = DateFormat.getDateInstance(DateFormat.LONG);
         sdf.setTimeZone(tokenExpiryDate.getTimeZone());
         valuesMap.put("expirationDate", sdf.format(tokenExpiryDate.getTime()));
+        tokenExpiryDate.add(Calendar.DATE, -1);
+        valuesMap.put("beforeExpirationDate", sdf.format(tokenExpiryDate.getTime()));
         return template.getEmailBuilderForSubject(visitSubject, valuesMap, this.formUtils)
             .withRecipient(patientEmailAddress, patientFullName)
             .withExtraHeader("List-Unsubscribe", "<" + unsubscribeLink + ">")
