@@ -54,7 +54,7 @@ function NewFormDialog(props) {
     onClose,
     withButton,
     buttonTitle,
-    admin
+    extensionURL
   } = props;
 
   const [ dialogOpen, setDialogOpen ] = useState(false);
@@ -119,7 +119,7 @@ function NewFormDialog(props) {
           // Redirect the user to the new uuid
           // FIXME: Would be better to somehow obtain the router prefix from props
           // but that is not currently possible
-          navigate("/content.html" + (admin ? "/admin" : "") + URL + '.edit');
+          navigate("/content.html" + (extensionURL ? "/" + extensionURL : "") + URL + '.edit');
         } else {
           return(Promise.reject(response));
         }

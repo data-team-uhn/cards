@@ -55,6 +55,7 @@ function LiveTable(props) {
     entryType,
     actions,
     admin,
+    extensionURL,
     disableTopPagination,
     disableBottomPagination,
     onDataReceived,
@@ -204,7 +205,7 @@ function LiveTable(props) {
 
   let makeRow = (entry, i) => {
     return (
-      <TableRow key={entry["@path"] + i}>
+      <TableRow key={entry["@path"] + i} className={classes.dataRow}>
         { columns ?
           (
             columns.map((column, index) => makeCell(entry, column, index))
@@ -214,7 +215,7 @@ function LiveTable(props) {
             <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
           )
         }
-        { actions ? makeActions(entry, actions, columns ? columns.count : 0) : null}
+        { actions && actions.length > 0 ? makeActions(entry, actions, columns ? columns.count : 0) : null}
       </TableRow>
     );
   };
@@ -235,7 +236,7 @@ function LiveTable(props) {
 
     // allow livetable to link to components in the admin dashboard
     // if livetable item must link to a component within the admin dashboard, set "admin": true
-    let pathPrefix = (admin ? "../content.html/admin" : "../content.html");
+    let pathPrefix = ((extensionURL || admin) ? "../content.html/" + (extensionURL ? extensionURL : "admin") : "../content.html");
 
     if (column.link) {
       if (column.link === 'path') {
@@ -266,7 +267,8 @@ function LiveTable(props) {
         onComplete={refresh}
         entryType={entryType}
         entryLabel={entry["jcr:primaryType"] == "cards:Subject" ? entry.type?.label : undefined}
-        admin={admin} />
+        extensionURL={extensionURL}
+      />
     });
     return <TableCell key={index} className={classes.tableActions}>{content}</TableCell>;
   }

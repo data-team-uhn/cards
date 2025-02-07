@@ -72,7 +72,7 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  * <Form />
  */
 function Form (props) {
-  let { classes, contentOffset, admin } = props;
+  let { classes, contentOffset, extensionURL } = props;
   let { mode, className, actionSwitches, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -169,7 +169,7 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
-  const baseURL = "/content.html" + (admin ? "/admin" : "");
+  const baseURL = "/content.html" + (extensionURL ? "/" + extensionURL : "");
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
@@ -577,7 +577,7 @@ function Form (props) {
         { !disableHeader &&
         <ResourceHeader
           title={title}
-          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject, undefined, admin).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
+          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject, undefined, extensionURL).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
           tags={ statusFlags?.map( item => (
             <Chip
               label={item[0].toUpperCase() + item.slice(1).toLowerCase()}

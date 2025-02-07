@@ -26,12 +26,13 @@ import FormView from "./FormView.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Forms(props) {
-  const { extension, classes } = props;
-  const admin = extension?.["cards:admin"] || props.admin;
+  const { extension, classes, columns, actionSwitches } = props;
   const location = useLocation();
   const questionnaire = /questionnaire=([^&]+)/.exec(location.search)?.[1];
 
-  const columns = [
+  const extensionURL = extension?.["cards:extensionURL"]
+
+  const defaultColumns = [
     {
       "key": "@name",
       "label": "Identifier",
@@ -41,7 +42,7 @@ function Forms(props) {
     {
       "key": "",
       "label": "Subject",
-      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, admin) : ''),
+      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, extensionURL) : ''),
     },
     {
       "key": "questionnaire/title",
@@ -65,8 +66,10 @@ function Forms(props) {
       <Grid className={classes.dashboardEntry} size={12}>
         <FormView
           expanded
-          columns={columns}
+          columns={columns || defaultColumns}
           questionnaire={questionnaire}
+          extensionURL={extensionURL}
+          actionSwitches={actionSwitches}
         />
       </Grid>
     </Grid>
