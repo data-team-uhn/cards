@@ -20,9 +20,9 @@ import React from "react";
 
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import DefaultForms from "../dataHomepage/Forms.jsx";
+import DefaultSubjects from "../dataHomepage/Subjects.jsx";
 
-function Forms(props) {
+function Subjects(props) {
 
   const actionSwitches = {
     edit: () => false,
@@ -33,20 +33,15 @@ function Forms(props) {
 
   const columns = [
     {
-      "key": "@name",
+      "key": "identifier",
       "label": "Identifier",
       "format": getEntityIdentifier,
       "link": "dashboard+path",
     },
     {
       "key": "",
-      "label": "Subject",
-      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, props.extensionURL) : ''),
-    },
-    {
-      "key": "questionnaire/title",
-      "label": "Questionnaire",
-      "format": "string",
+      "label": "Parents",
+      "format": (row) => (row['parents'] ? getHierarchy(row['parents'], undefined, undefined, props.extensionURL) : ''),
     },
     {
       "key": "jcr:created",
@@ -56,7 +51,7 @@ function Forms(props) {
   ]
 
   return (
-    <DefaultForms
+    <DefaultSubjects
       actionSwitches={actionSwitches}
       columns={columns}
       {...props}
@@ -64,4 +59,4 @@ function Forms(props) {
   );
 }
 
-export default Forms;
+export default Subjects;

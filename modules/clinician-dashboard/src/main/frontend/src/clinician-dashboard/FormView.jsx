@@ -16,13 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import DefaultForms from "../dataHomepage/Forms.jsx";
+import DefaultFormView from "../dataHomepage/FormView.jsx";
 
-function Forms(props) {
+function FormView(props) {
 
   const actionSwitches = {
     edit: () => false,
@@ -39,16 +38,6 @@ function Forms(props) {
       "link": "dashboard+path",
     },
     {
-      "key": "",
-      "label": "Subject",
-      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, props.extensionURL) : ''),
-    },
-    {
-      "key": "questionnaire/title",
-      "label": "Questionnaire",
-      "format": "string",
-    },
-    {
       "key": "jcr:created",
       "label": "Created on",
       "format": "date:yyyy-MM-dd HH:mm",
@@ -56,7 +45,7 @@ function Forms(props) {
   ]
 
   return (
-    <DefaultForms
+    <DefaultFormView
       actionSwitches={actionSwitches}
       columns={columns}
       {...props}
@@ -64,4 +53,4 @@ function Forms(props) {
   );
 }
 
-export default Forms;
+export default FormView;
