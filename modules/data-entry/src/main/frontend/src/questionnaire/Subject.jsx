@@ -80,7 +80,7 @@ let createQueryURL = (query, type) => {
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed, pageSize, history, admin } = props;
+  let { id, classes, maxDisplayed, pageSize, history, extensionURL } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
@@ -92,7 +92,7 @@ function Subject(props) {
   const tabs = ["Chart", "Timeline"]
   const location = useLocation();
 
-  const baseURL = "/content.html" + (admin ? "/admin" : "");
+  const baseURL = "/content.html" + (extensionURL ? "/" + extensionURL : "");
 
   useEffect(() => {
     let newId = getSubjectIdFromPath(location.pathname);
@@ -126,7 +126,7 @@ function Subject(props) {
         currentSubject={currentSubject}
         withButton
         buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
-        admin={admin}
+        extensionURL={extensionURL}
       />
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader
@@ -137,8 +137,9 @@ function Subject(props) {
           getSubject={handleSubject}
           reloadSubject={fetchRelatedRef}
           history={history}
-          contentOffset={props.contentOffset}/>
-          admin={admin}
+          contentOffset={props.contentOffset}
+          extensionURL={extensionURL}
+        />
         <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
@@ -258,7 +259,7 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject, history, pageTitle, reloadSubject, admin } = props;
+  let { id, classes, getSubject, history, pageTitle, reloadSubject, extensionURL } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
@@ -350,7 +351,7 @@ function SubjectHeader(props) {
               />
             </div>
   );
-  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true, admin) || [getHomepageLink(subject?.data, admin)]);;
+  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true, extensionURL) || [getHomepageLink(subject?.data, extensionURL)]);;
 
   return (
     subject?.data &&

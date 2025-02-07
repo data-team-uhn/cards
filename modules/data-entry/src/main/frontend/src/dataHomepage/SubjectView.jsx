@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -45,7 +45,7 @@ import NewItemButton from "../components/NewItemButton.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 
 function SubjectView(props) {
-  const { expanded, disableHeader, disableAvatar, topPagination, extension, classes } = props;
+  const { expanded, actionSwitches, disableHeader, disableAvatar, topPagination, extension, classes } = props;
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ activeTab, setActiveTab ] = useState(0);
   const [ subjectTypes, setSubjectTypes] = useState([])
@@ -53,8 +53,9 @@ function SubjectView(props) {
   const [ columns, setColumns ] = React.useState(props.columns || null);
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("subjects:filters"));
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
-  const admin = extension?.["cards:admin"] || props.admin
-  const baseURL = "/content.html" + admin ? "/admin" : ""
+
+  const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || ""
+  const baseURL = "/content.html" + extensionURL ? "/" + extensionURL : ""
 
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("subjects:activeTab");
 
@@ -79,9 +80,14 @@ function SubjectView(props) {
       "format": "string",
     },
   ]
-  const actions = [
-    DeleteWithRefreshButton
-  ]
+  const actions = {
+    "delete": DeleteWithRefreshButton
+  }
+  const [ enabledActions, setEnabledActions ] = useState(actions);
+  let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]()));
+  useEffect(() => {
+    setEnabledActions(Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1]));
+  }, [actionSwitches])
 
   let fetchSubjectTypes = () => {
     let url = new URL("/query", window.location.origin);
@@ -136,7 +142,7 @@ function SubjectView(props) {
             </Tabs>
         }
         action={
-          !expanded &&
+          !expanded && isActionEnabled("expand") &&
           <Tooltip title="Expand">
             <Link to={baseURL + "/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()} underline="hover">
               <IconButton size="large">
@@ -156,17 +162,17 @@ function SubjectView(props) {
               customUrl={'/Subjects.paginate?fieldname=type&fieldvalue='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
               defaultLimit={10}
               entryType="Subject"
-              actions={actions}
+              actions={enabledActions.length > 0 ? enabledActions : undefined}
               disableTopPagination={!topPagination}
               filters
               onFiltersChange={(str) => setFiltersJsonString(str)}
               filtersJsonString={filtersJsonString}
-              admin={admin}
+              extensionURL={extensionURL}
             />
           : <Typography>No results</Typography>
       }
       </CardContent>
-      {expanded &&
+      {expanded && isActionEnabled("create") &&
       <>
         <NewItemButton
            onClick={() => {setNewSubjectPopperOpen(true)}}
@@ -175,7 +181,7 @@ function SubjectView(props) {
           onClose={() => { setNewSubjectPopperOpen(false);}}
           onSubmit={() => { setNewSubjectPopperOpen(false);}}
           open={newSubjectPopperOpen}
-          admin={admin}
+          extensionURL={extensionURL}
         />
       </>
       }

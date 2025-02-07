@@ -65,6 +65,9 @@ const liveTableStyle = theme => ({
             float : "right"
         }
     },
+    dataRow: {
+        height: "3em"
+    },
 });
 
 export default liveTableStyle;

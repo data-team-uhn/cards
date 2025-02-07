@@ -44,15 +44,15 @@ import NewFormDialog from "./NewFormDialog.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function FormView(props) {
-  const { extension, questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
+  const { extension, actionSwitches, questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
 
   const [ title, setTitle ] = useState(props.title);
   const [ subtitle, setSubtitle ] = useState(props.subtitle);
   const [ qFilter, setQFilter ] = useState();
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
 
-  const admin = extension?.["cards:admin"] || props.admin
-  const baseURL = "/content.html" + admin ? "/admin" : ""
+  const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || ""
+  const baseURL = "/content.html" + extensionURL ? "/" + extensionURL : ""
 
   // Column configuration for the LiveTables
   const columns = [
@@ -73,10 +73,15 @@ function FormView(props) {
       "format": "string",
     },
   ]
-  const actions = [
-    DeleteButton,
-    EditButton
-  ]
+  const actions = {
+    "delete": DeleteButton,
+    "edit": EditButton
+  }
+  const [ enabledActions, setEnabledActions ] = useState(actions);
+  let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]()));
+  useEffect(() => {
+    setEnabledActions(Object.entries(actions).filter(entry => isActionEnabled(entry[0])).map(entry => entry[1]));
+  }, [actionSwitches])
 
   const tabFilter = {
     "Questionnaires" : '&includeallstatus=true',
@@ -132,7 +137,7 @@ function FormView(props) {
           </>
         }
         action={
-          !expanded &&
+          !expanded && isActionEnabled("expand") &&
           <Tooltip title="Expand">
             <Link to={baseURL + "/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()} underline="hover">
               <IconButton size="large">
@@ -153,19 +158,19 @@ function FormView(props) {
           filters
           questionnaire={questionnaire}
           entryType="Form"
-          actions={actions}
+          actions={enabledActions.length > 0 ? enabledActions : undefined}
           disableTopPagination={!topPagination}
           onFiltersChange={(str) => { setFiltersJsonString(str); }}
           filtersJsonString={filtersJsonString}
-          admin={admin}
+          extensionURL={extensionURL}
         />
       }
-      { expanded &&
+      { expanded && isActionEnabled("create") &&
         <NewFormDialog
           presetPath={questionnaire}
           withButton
           buttonTitle="New questionnaire"
-          admin={admin}
+          extensionURL={extensionURL}
         />
       }
       </CardContent>

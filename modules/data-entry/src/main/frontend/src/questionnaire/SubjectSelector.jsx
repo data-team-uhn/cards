@@ -422,7 +422,7 @@ export const parseToArray = (object) => {
  * @param {bool} open If true, this dialog is open
  */
 export function NewSubjectDialog (props) {
-  const { allowedTypes, currentSubject, disabled, onClose, onSubmit, open, disableRedirect, admin } = props;
+  const { allowedTypes, currentSubject, disabled, onClose, onSubmit, open, disableRedirect, extensionURL } = props;
   const [ error, setError ] = useState("");
   const [ newSubjectName, setNewSubjectName ] = useState([""]);
   const [ newSubjectType, setNewSubjectType ] = useState([""]);
@@ -453,7 +453,7 @@ export function NewSubjectDialog (props) {
       let subjectId = getSubjectIdFromPath(subject);
       if (!disableRedirect && subjectId) {
         history.push({
-          pathname: "/content.html" + (admin ? "/admin" : "") + "/Subjects/" + subjectId
+          pathname: "/content.html" + (extensionURL ? "/" + extensionURL : "") + "/Subjects/" + subjectId
         });
         return;
       } else {

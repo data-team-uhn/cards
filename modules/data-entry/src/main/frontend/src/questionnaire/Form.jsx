@@ -72,7 +72,7 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  * @param {string} id the identifier of a form; this is the JCR node name
  */
 function Form (props) {
-  let { classes, id, contentOffset, admin } = props;
+  let { classes, id, contentOffset, extensionURL } = props;
   let { mode, className, actionSwitches, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -157,7 +157,7 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
-  const baseURL = "/content.html" + (admin ? "/admin" : "");
+  const baseURL = "/content.html" + (extensionURL ? "/" + extensionURL : "");
   const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
   const isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
   let globalLoginDisplay = useContext(GlobalLoginContext);
@@ -387,17 +387,17 @@ function Form (props) {
     saveData(event);
   }
 
-  let onEdit = (url) => {
+  let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    props.history.push(url + '.edit' + window.location.hash);
+    props.history.push(baseURL + formURL + '.edit' + window.location.hash);
   }
 
-  let onClose = (url) => {
+  let onClose = (event) => {
     // Redirect the user to the view form mode
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        props.history.push(url);
+        props.history.push(baseURL + formURL);
     });
   }
 
@@ -582,7 +582,7 @@ function Form (props) {
         { !disableHeader &&
         <ResourceHeader
           title={title}
-          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject, undefined, admin).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
+          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject, undefined, extensionURL).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
           tags={ statusFlags?.map( item => (
             <Chip
               label={item[0].toUpperCase() + item.slice(1).toLowerCase()}

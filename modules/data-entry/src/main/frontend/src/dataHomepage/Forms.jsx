@@ -28,12 +28,12 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Forms(props) {
-  const { location, extension, classes } = props;
+  const { location, extension, classes, columns, actionSwitches } = props;
   const questionnaire = /questionnaire=([^&]+)/.exec(location.search)?.[1];
   const pageNameWriter = usePageNameWriterContext();
 
   const entry = /Forms\/([^.\/]+)/.exec(location.pathname);
-  const admin = extension?.["cards:admin"]
+  const extensionURL = extension?.["cards:extensionURL"]
 
   // When moving from a specific form to the "Forms" page, ensure that the title properly changes
   useEffect(() => {
@@ -47,11 +47,11 @@ function Forms(props) {
       id={entry[1]}
       key={location.pathname}
       contentOffset={props.contentOffset}
-      admin={admin}
+      extensionURL={extensionURL}
       />;
   }
 
-  const columns = [
+  const defaultColumns = [
     {
       "key": "@name",
       "label": "Identifier",
@@ -61,7 +61,7 @@ function Forms(props) {
     {
       "key": "",
       "label": "Subject",
-      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, admin) : ''),
+      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, extensionURL) : ''),
     },
     {
       "key": "questionnaire/title",
@@ -85,9 +85,10 @@ function Forms(props) {
       <Grid item className={classes.dashboardEntry} xs={12}>
         <FormView
           expanded
-          columns={columns}
+          columns={columns || defaultColumns}
           questionnaire={questionnaire}
-          admin={admin}
+          extensionURL={extensionURL}
+          actionSwitches={actionSwitches}
         />
       </Grid>
     </Grid>

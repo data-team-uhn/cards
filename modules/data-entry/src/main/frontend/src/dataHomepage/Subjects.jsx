@@ -28,9 +28,9 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Subjects(props) {
-  const { extension, classes } = props;
+  const { extension, classes, actionSwitches, columns } = props;
   const entry = getSubjectIdFromPath(location.pathname);
-  const admin = extension?.["cards:admin"]
+  const extensionURL = extension?.["cards:extensionURL"]
 
   // Clear the page name overwriting if moving from a specific Subject to the Subjects page
   const pageNameWriter = usePageNameWriterContext();
@@ -45,11 +45,11 @@ function Subjects(props) {
       id={entry}
       contentOffset={props.contentOffset}
       key={entry}
-      admin={admin}
+      extensionURL={extensionURL}
       />;
   }
 
-  const columns = [
+  const defaultColumns = [
     {
       "key": "identifier",
       "label": "Identifier",
@@ -64,7 +64,7 @@ function Subjects(props) {
     {
       "key": "",
       "label": "Parents",
-      "format": (row) => (row['parents'] ? getHierarchy(row['parents'], undefined, undefined, admin) : ''),
+      "format": (row) => (row['parents'] ? getHierarchy(row['parents'], undefined, undefined, extensionURL) : ''),
     },
     {
       "key": "jcr:created",
@@ -83,8 +83,9 @@ function Subjects(props) {
       <Grid item className={classes.dashboardEntry} xs={12}>
         <SubjectView
           expanded
-          columns={columns}
-          admin={admin}
+          columns={columns || defaultColumns}
+          extensionURL={extensionURL}
+          actionSwitches={actionSwitches}
         />
       </Grid>
     </Grid>
