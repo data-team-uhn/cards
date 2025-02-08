@@ -52,7 +52,7 @@ const GHOST_SENTINEL = "custom-input";
   * @param {bool} error indicates if the current selection is in a state of error
   */
 function MultipleChoice(props) {
-  let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
+  let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, defaultValue, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let { validate, validationErrorText, liveValidation, softValidation } = {...props.questionDefinition, ...props};
   // pageActive and answerNodeType should be passed to the Answer component, so we make sure to include them in the `rest` variable above
@@ -76,7 +76,6 @@ function MultipleChoice(props) {
   const isSelect = displayMode === "select";
   const isNumeric = ["cards:LongAnswer", "cards:DecimalAnswer", "cards:DoubleAnswer"].includes(answerNodeType);
 
-  const defaultValue = props.questionDefinition.defaultValue;
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined)

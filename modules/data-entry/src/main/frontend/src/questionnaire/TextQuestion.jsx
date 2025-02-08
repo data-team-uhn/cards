@@ -97,6 +97,7 @@ function TextQuestion(props) {
         answerNodeType={answerNodeType}
         validate={validate}
         validationErrorText={validationErrorText}
+        defaultValue={props.questionDefinition.defaultValue}
         {...props}
         />
     </Question>);

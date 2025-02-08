@@ -29,6 +29,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import DateQuestionUtilities from "./DateQuestionUtilities";
+import { DateTime } from "luxon";
 
 // Component that renders a date/time question
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -54,7 +55,11 @@ function DateQuestionFull(props) {
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
-  const defaultValue = props.questionDefinition.defaultValue;
+  let defaultValue = props.questionDefinition.defaultValue;
+  let dateObj = DateTime.fromISO(defaultValue);
+  if (!dateObj.isValid) {
+    defaultValue = null;
+  }
   let startValues = existingAnswer && existingAnswer[1].value || defaultValue || "";
 
   const [ startDate, setStartDate ] = useState(DateQuestionUtilities.toPrecision(

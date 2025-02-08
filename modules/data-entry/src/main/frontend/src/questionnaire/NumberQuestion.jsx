@@ -140,7 +140,9 @@ function NumberQuestion(props) {
   const [ minMaxError, setMinMaxError ] = useState(false);
   const [ rangeError, setRangeError ] = useState(false);
 
-  const defaultValue = props.questionDefinition.defaultValue;
+  let defaultValue = props.questionDefinition.defaultValue;
+  defaultValue = isNaN(Number(defaultValue)) ? null : Number(defaultValue);
+
   const initialValue = Array.from(existingAnswer?.[1]?.value || defaultValue || []);
 
   // The following two are only used for range answers
@@ -450,6 +452,7 @@ function NumberQuestion(props) {
             validate={disableMinMaxValueEnforcement ? value => !hasMinMaxValueError(value) : undefined}
             validationErrorText={minMaxMessage}
             softValidation={disableMinMaxValueEnforcement}
+            defaultValue={defaultValue}
             {...rest}
             />
         }

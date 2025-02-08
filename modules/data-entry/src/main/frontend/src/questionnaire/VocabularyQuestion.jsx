@@ -73,6 +73,7 @@ function VocabularyQuestion(props) {
         noteProps={{
           vocabulary: questionDefinition.sourceVocabularies
         }}
+        defaultValue={props.questionDefinition.defaultValue}
         {...props}
         />
     </Question>);
