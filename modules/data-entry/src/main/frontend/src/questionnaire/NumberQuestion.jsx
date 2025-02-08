@@ -154,7 +154,8 @@ function NumberQuestion(props) {
   const [ minMaxError, setMinMaxError ] = useState(false);
   const [ rangeError, setRangeError ] = useState(false);
 
-  const initialValue = Array.from(existingAnswer?.[1]?.value ?? []);
+  const defaultValue = props.questionDefinition.defaultValue;
+  const initialValue = Array.from(existingAnswer?.[1]?.value || defaultValue || []);
 
   // The following two are only used for range answers
   const [lowerLimit, setLowerLimit] = useState(initialValue[0]);
@@ -163,7 +164,7 @@ function NumberQuestion(props) {
   // The following is only used for non-range sliders.
   // Default to an empty string, which results in a "no data"
   // selection as close to 0 as possible within the valid range
-  const [sliderValue, setSliderValue] = useState(existingAnswer?.[1]?.value);
+  const [sliderValue, setSliderValue] = useState(existingAnswer?.[1]?.value || defaultValue);
 
   // The following is only used for ranged sliders.
   // Setting a default of "" leads to an error, unlike the non-range case.

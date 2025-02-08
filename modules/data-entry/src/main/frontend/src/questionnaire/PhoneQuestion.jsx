@@ -41,7 +41,8 @@ function PhoneQuestion(props) {
   checkPropTypes(PhoneQuestion, props);
   const { existingAnswer, pageActive, questionDefinition, ...rest } = props;
 
-  let initialValue = existingAnswer && existingAnswer[1].value || "";
+  const defaultValue = questionDefinition.defaultValue;
+  let initialValue = existingAnswer && existingAnswer[1].value || defaultValue || "";
   const [phone, changePhone] = useState(initialValue);
 
   const countries = questionDefinition.onlyCountries?.split(/\s*,\s*/) || undefined;

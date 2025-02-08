@@ -67,9 +67,10 @@ function TimeQuestion(props) {
   // if neither save nor date format is specified
   saveFormat = saveFormat || dateFormat || "HH:mm:ss.SSS";
   dateFormat = dateFormat || "HH:mm";
+  const defaultValue = props.questionDefinition.defaultValue;
   let currentStartValue = (existingAnswer?.[1]?.value
     && DateTime.fromFormat(existingAnswer[1].value, saveFormat).isValid)
-    ? DateTime.fromFormat(existingAnswer[1].value, saveFormat) : null;
+    ? DateTime.fromFormat(existingAnswer[1].value, saveFormat) : defaultValue || null;
 
   const [selectedTime, changeTime] = useState(currentStartValue);
   const [error, setError] = useState(undefined);
