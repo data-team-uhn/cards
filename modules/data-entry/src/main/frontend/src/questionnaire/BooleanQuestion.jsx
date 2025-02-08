@@ -74,6 +74,7 @@ function BooleanQuestion(props) {
         valueType="Long" /* Notably not "Boolean", since we need it to be stored as a long in the backend */
         maxAnswers={1}
         defaults={options}
+        defaultValue={props.questionDefinition.defaultValue}
         {...props}
       />
     </Question>);
