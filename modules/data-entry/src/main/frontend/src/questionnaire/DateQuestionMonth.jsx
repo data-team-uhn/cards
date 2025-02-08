@@ -54,7 +54,8 @@ function DateQuestionMonth(props) {
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy/MM", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
-  let startValues = existingAnswer && existingAnswer[1].value || "";
+  const defaultValue = props.questionDefinition.defaultValue;
+  let startValues = existingAnswer && existingAnswer[1].value || defaultValue || "";
 
   const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.formatDateAnswer(
     dateFormat,

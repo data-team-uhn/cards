@@ -92,8 +92,10 @@ export class Time {
 function TimeQuestion(props) {
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
+
+  const defaultValue = props.questionDefinition.defaultValue;
   let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)
-    ? existingAnswer[1].value : "";
+    ? existingAnswer[1].value : defaultValue || "";
   const [selectedTime, changeTime] = useState(currentStartValue);
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";

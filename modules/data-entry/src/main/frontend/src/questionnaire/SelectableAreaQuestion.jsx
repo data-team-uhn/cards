@@ -69,9 +69,13 @@ function SelectableAreaQuestion(props) {
 
   const questionRef = useRef(null);
 
+  const defaultValue = questionDefinition.defaultValue;
   let initialSelection =
     // If there's no existing answer, there's no initial selection
-    (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
+    (!existingAnswer || existingAnswer[1].value === undefined)
+    ?
+      (defaultValue ? [[defaultValue, defaultValue]] : [])
+    :
     // The value can either be a single value or an array of values; force it into an array
     Array.of(existingAnswer[1].value).flat()
     // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue

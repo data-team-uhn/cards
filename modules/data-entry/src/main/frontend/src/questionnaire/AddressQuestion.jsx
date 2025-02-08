@@ -97,7 +97,8 @@ const inputGlobalStyles = <GlobalStyles
 function AddressQuestion(props) {
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
 
-  let currentStartValue = existingAnswer && existingAnswer[1].value || "";
+  const defaultValue = questionDefinition.defaultValue;
+  let currentStartValue = existingAnswer && existingAnswer[1].value || defaultValue || "";
   const [address, setAddress] = useState(currentStartValue);
   const [isValidApi, setIsValidApi] = useState(true);
 

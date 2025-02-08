@@ -76,9 +76,13 @@ function MultipleChoice(props) {
   const isSelect = displayMode === "select";
   const isNumeric = ["cards:LongAnswer", "cards:DecimalAnswer", "cards:DoubleAnswer"].includes(answerNodeType);
 
+  const defaultValue = props.questionDefinition.defaultValue;
   let initialSelection =
     // If there's no existing answer, there's no initial selection
-    (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
+    (!existingAnswer || existingAnswer[1].value === undefined)
+    ?
+      (defaultValue ? [[defaultValue, defaultValue]] : [])
+    :
     // The value can either be a single value or an array of values; force it into an array
     Array.of(existingAnswer[1].value).flat()
     // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
@@ -109,9 +113,9 @@ function MultipleChoice(props) {
 
   // If this is a bare input or radio input, we need to pre-populate the blank input with the custom answer (if available)
   let inputPrefill = (isBare || (isRadio && default_values.indexOf(String(initialSelection[0]?.[VALUE_POS])) < 0)) && existingAnswer?.[1] || '';
-  // Prefill the input with the displayed value, unless the answer type is numeric, which means the displayed value may contain a unit of measurement
-  const [ghostName, setGhostName] = useState(isNumeric ? inputPrefill?.value : inputPrefill?.displayedValue);
-  const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
+  // Prefill the input with the displayed value, unless the answer type is numeric, which means the displayed value may contain a unit of measurement or with a default value (if available)
+  const [ghostName, setGhostName] = useState(isNumeric ? inputPrefill?.value || defaultValue : inputPrefill?.displayedValue || defaultValue);
+  const [ghostValue, setGhostValue] = useState(inputPrefill?.value || defaultValue || GHOST_SENTINEL);
   const ghostSelected = selection.some(element => {return String(element[VALUE_POS]) === ghostValue || element[LABEL_POS] === ghostName});
   const disabled = maxAnswers > 1 && selection.length >= maxAnswers;
   let inputEl = null;
