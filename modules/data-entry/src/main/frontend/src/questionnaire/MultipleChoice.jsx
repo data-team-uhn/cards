@@ -85,6 +85,7 @@ function MultipleChoice(props) {
     noneOfTheAboveValue,
     error,
     questionName,
+    defaultValue,
     ...rest
   } = props;
   let { maxAnswers, displayMode, enableSeparatorDetection } = { ...props.questionDefinition, ...props };
@@ -110,7 +111,6 @@ function MultipleChoice(props) {
   const isSelect = displayMode === "select";
   const isNumeric = ["cards:LongAnswer", "cards:DecimalAnswer", "cards:DoubleAnswer"].includes(answerNodeType);
 
-  const defaultValue = props.questionDefinition.defaultValue;
   let initialSelection =
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined)

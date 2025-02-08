@@ -96,6 +96,7 @@ function ResourceQuestion(props) {
           answerNodeType="cards:ResourceAnswer"
           valueType="String"
           defaults={props.defaults || (options.length > 0 ? options : undefined)}
+          defaultValue={props.questionDefinition.defaultValue}
           {...props}
         />
         : <CircularProgress />
