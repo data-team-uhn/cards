@@ -68,10 +68,5 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk-osgi</artifactId>
-      <version>1.12.779</version>
-    </dependency>
   </dependencies>
 </project>
