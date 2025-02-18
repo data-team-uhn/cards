@@ -56,6 +56,12 @@ import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 const useStyles = makeStyles()(theme => ({
+  formItem: {
+    "& .MuiListItemAvatar-root" : {
+      marginTop: 6,
+      zoom: 1,
+    },
+  },
   stepIndicator : {
     border: "1px solid " + theme.palette.action.disabled,
     background: "transparent",
@@ -302,6 +308,7 @@ function Visit(props) {
       <List>
       { qIds.map((q, i) => (
         <ListItem
+          className={classes.formItem}
           key={q}
           disablePadding
           secondaryAction={withAction && !isFormLocked(q) && <EditButton entryPath={surveyData?.[q]?.["@path"]}/>}
