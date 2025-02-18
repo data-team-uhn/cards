@@ -24,6 +24,7 @@ import {
   Alert,
   AlertTitle,
   Avatar,
+  Chip,
   CircularProgress,
   Divider,
   Grid,
@@ -293,11 +294,20 @@ function Visit(props) {
     return answerSection && !answerSection.statusFlags?.includes("INCOMPLETE");
   }
 
+  const displayFlag = flag => (
+    <Chip
+      label={flag.substring(0,1).toUpperCase() + flag.substring(1).toLowerCase()}
+      variant="outlined"
+      size="small"
+      className={`${classes[flag + "Flag"] || classes.DefaultFlag}`}
+      sx={{mr: 1}}
+    />
+  )
+
   const displayFlags = q => (
     (surveyData?.[q]?.statusFlags ?? [])
       .filter(f => ["INCOMPLETE", "SUBMITTED", "LOCKED"].includes(f))
-      .map(f => f.substring(0,1).toUpperCase() + f.substring(1).toLowerCase())
-      .join(", ")
+      .map(displayFlag)
   );
 
   // ----------------------------------------------------------------------------------------------------------------_
@@ -386,6 +396,7 @@ function Visit(props) {
             />
           </div>
         }
+        tags={visit?.statusFlags?.map(displayFlag)}
       />
       <Grid item>{ displayVisitInfo() }</Grid>
       <Grid item>
