@@ -187,7 +187,7 @@ function Patient(props) {
 
     return (name || birthInfo) ?
       <>
-        {name ? <> {name}<br/> </> : null}
+        {name ? <AlertTitle>{name}</AlertTitle> : null}
         {birthInfo ? <> {birthInfo} </> : null}
       </>
     : null
@@ -207,7 +207,13 @@ function Patient(props) {
         title={`Patient ${patientData?.identifier}`}
         breadcrumbs={(patientData?.parents && getHierarchyAsList(patientData.parents, true) || [getHomepageLink(patientData)])}
       />
-      { patientInfo && <Grid item><Alert severity="info" icon={<ContactPageIcon/>}>{ patientInfo }</Alert></Grid> }
+      { patientInfo &&
+        <Grid item>
+          <Alert variant="outlined" severity="info" icon={<ContactPageIcon/>}>
+          { patientInfo }
+          </Alert>
+        </Grid>
+      }
       <Grid item>
         <Box sx={{ height: 400, width: '100%' }}>
           <DataGrid

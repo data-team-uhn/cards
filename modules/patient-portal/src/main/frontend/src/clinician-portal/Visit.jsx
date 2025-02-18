@@ -247,10 +247,12 @@ function Visit(props) {
     let provider = getVisitField("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
     return (dateTime || location || provider) ?
-      <Alert severity="info" icon={<EventNoteIcon/>}>
+      <Alert variant="outlined" severity="info" icon={<EventNoteIcon/>} sx={{marginTop: -2}}>
+        <strong>
         {dateTime ? <> {dateTime} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
+        </strong>
       </Alert>
       : null
   }
