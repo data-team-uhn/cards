@@ -16,9 +16,9 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from "react";
+import React from "react";
 
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { getShortHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import DefaultFormView from "../dataHomepage/FormView.jsx";
 
 function FormView(props) {
@@ -34,8 +34,13 @@ function FormView(props) {
     {
       "key": "@name",
       "label": "Identifier",
-      "format": getEntityIdentifier,
+      "format": (row) =>  row.questionnaire?.title || row["@name"],
       "link": "dashboard+path",
+    },
+    {
+      "key": "",
+      "label": "Subject",
+      "format": (row) => (row.subject ? getShortHierarchy(row.subject) : ''),
     },
     {
       "key": "jcr:created",

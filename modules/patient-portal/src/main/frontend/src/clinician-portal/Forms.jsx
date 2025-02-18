@@ -18,8 +18,7 @@
 //
 import React from "react";
 
-import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { getShortHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import DefaultForms from "../dataHomepage/Forms.jsx";
 
 function Forms(props) {
@@ -35,13 +34,13 @@ function Forms(props) {
     {
       "key": "@name",
       "label": "Identifier",
-      "format": getEntityIdentifier,
+      "format": (row) =>  row.questionnaire?.title || row["@name"],
       "link": "dashboard+path",
     },
     {
       "key": "",
       "label": "Subject",
-      "format": (row) => (row.subject ? getHierarchy(row.subject, undefined, undefined, props.extensionURL) : ''),
+      "format": (row) => (row.subject ? getShortHierarchy(row.subject) : ''),
     },
     {
       "key": "questionnaire/title",
