@@ -373,11 +373,12 @@ function Visit(props) {
         breadcrumbs={(parents && getHierarchyAsList(parents, true) || "")}
         action={
           <div className={classes.actionsMenu}>
-            <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} />
-            { !visit?.statusFlags?.includes("LOCKED") &&
-              <SubjectLockAction subject={visit} reloadSubject={loadExistingData} />
-            }
+            { !isLocked && <>
+              <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} size="medium"/>
+              <SubjectLockAction subject={visit} reloadSubject={loadExistingData} size="medium"/>
+            </>}
             <PrintButton
+              size="medium"
               resourcePath={visitPath}
               resourceData={visit}
               breadcrumb={getTextHierarchy(visit, true)}
