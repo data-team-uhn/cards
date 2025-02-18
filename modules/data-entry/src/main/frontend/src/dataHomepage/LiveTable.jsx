@@ -54,7 +54,6 @@ function LiveTable(props) {
     filters,
     entryType,
     actions,
-    admin,
     extensionURL,
     disableTopPagination,
     disableBottomPagination,
@@ -234,9 +233,7 @@ function LiveTable(props) {
       content = _formatDate(content, format);
     }
 
-    // allow livetable to link to components in the admin dashboard
-    // if livetable item must link to a component within the admin dashboard, set "admin": true
-    let pathPrefix = ((extensionURL || admin) ? "../content.html/" + (extensionURL ? extensionURL : "admin") : "../content.html");
+    let pathPrefix = (extensionURL ? "../content.html/" + extensionURL : "../content.html");
 
     if (column.link) {
       if (column.link === 'path') {
