@@ -20,16 +20,14 @@ import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 
 import {
-  Badge,
   CircularProgress,
   IconButton,
   Tooltip,
 } from "@mui/material";
 
 import ErrorIcon from '@mui/icons-material/Error';
-import LinkIcon from '@mui/icons-material/Link';
-import SurveyIcon from '@mui/icons-material/Assignment';
-import SurveyCopiedIcon from '@mui/icons-material/AssignmentTurnedIn';
+import DoneIcon from '@mui/icons-material/Done';
+import ShareIcon from '@mui/icons-material/Share';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
@@ -71,13 +69,7 @@ function SurveyLinkButton(props) {
           : `Copy patient survey link to clipboard`
         }>
           <IconButton size={size ?? "large"}>
-            <Badge
-              color="default"
-              badgeContent={<LinkIcon fontSize="small" sx={{zoom: .75}}/>}
-              anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-            >
-              { copied ? <SurveyCopiedIcon/> : <SurveyIcon /> }
-            </Badge>
+            { copied ? <DoneIcon/> : <ShareIcon/> }
           </IconButton>
         </Tooltip>
     </CopyToClipboard>
