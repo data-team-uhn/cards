@@ -108,6 +108,8 @@ function Visit(props) {
   const [ error, setError ] = useState("");
   // Visit information form
   const [ visitInformation, setVisitInformation ] = useState();
+  // If the current visit is locked
+  const [ isLocked, setLocked ] = useState(false);
 
   const VISIT_INFORMATION_FORM_TITLE = "Visit information";
 
@@ -124,8 +126,8 @@ function Visit(props) {
     fetchWithReLogin(globalLoginDisplay, `/Subjects/${patientUuid}/${visitUuid}.data.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
+        setVisit(json);
         if (!questionnaires) {
-          setVisit(json);
           setVisitNumber(json["identifier"]);
           setVisitPath(json["@path"]);
           setParents(json["parents"]);
@@ -204,6 +206,11 @@ function Visit(props) {
 
   // After the visit is loaded and we know the questionnaire set identifier, load all questionnaires that need to be filled out
   useEffect(loadQuestionnaireSet, [questionnaireSetId]);
+
+  // When a visit is loaded, record if it is locked
+  useEffect(() => {
+    setLocked(visit?.statusFlags && visit.statusFlags.includes("LOCKED"))
+  }, [visit])
 
 
   // --------------------------------------------------------------------------------------------------------------
