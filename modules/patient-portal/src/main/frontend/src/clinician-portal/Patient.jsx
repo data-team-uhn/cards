@@ -40,7 +40,7 @@ import { DateTime } from "luxon";
 
 import ResourceHeader from "../questionnaire/ResourceHeader.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
-import { getHierarchyAsList } from "../questionnaire/SubjectIdentifier";
+import { getHierarchyAsList, getHomepageLink } from "../questionnaire/SubjectIdentifier";
 import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle.jsx";
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -205,7 +205,7 @@ function Patient(props) {
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
       <ResourceHeader
         title={`Patient ${patientData?.identifier}`}
-        breadcrumbs={(patientData?.parents && getHierarchyAsList(patientData.parents, true) || "")}
+        breadcrumbs={(patientData?.parents && getHierarchyAsList(patientData.parents, true) || [getHomepageLink(patientData)])}
       />
       { patientInfo && <Grid item><Alert severity="info" icon={<ContactPageIcon/>}>{ patientInfo }</Alert></Grid> }
       <Grid item>
