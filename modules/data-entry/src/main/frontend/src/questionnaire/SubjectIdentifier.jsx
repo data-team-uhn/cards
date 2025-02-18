@@ -55,6 +55,19 @@ export function getHierarchy (node, RenderComponent, propsCreator, extensionURL=
   }
 }
 
+// Recursive function to get a flat list of parents with no subject labels
+export function getShortHierarchy (node, RenderComponent, propsCreator, extensionURL="") {
+  let HComponent = RenderComponent || Link;
+  let props = propsCreator || extensionCreator(node, extensionURL);
+  let output = <HComponent {...props}>{node.identifier}</HComponent>;
+  if (node["parents"] && node["parents"].type) {
+    let ancestors = getShortHierarchy(node["parents"], HComponent, propsCreator, extensionURL);
+    return <React.Fragment>{ancestors} / {output}</React.Fragment>
+  } else {
+    return output;
+  }
+}
+
 // Recursive function to get a flat list of parents with no links and subject labels
 export function getTextHierarchy (node, withType = false) {
   let type = withType ? (node?.["type"]?.["@name"] + " "): "";
