@@ -20,9 +20,11 @@
 package io.uhndata.cards.subjects.internal.export;
 
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
@@ -50,7 +52,8 @@ public class SubjectsWithModifiedFormsRetriever implements DataRetriever
         final ResourceResolver resolver)
         throws RepositoryException
     {
-        List<ResourceIdentifier> subjects = new LinkedList<>();
+        final List<ResourceIdentifier> subjects = new LinkedList<>();
+        final Set<String> seenSubjects = new HashSet<>();
         // FIXME This doesn't take into account the questionnairesToBeExported setting
         String query = String.format(
             "SELECT subject.* FROM [cards:Form] AS form INNER JOIN [cards:Subject] AS subject"
@@ -65,6 +68,9 @@ public class SubjectsWithModifiedFormsRetriever implements DataRetriever
         Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
         while (results.hasNext()) {
             Resource subject = results.next();
+            if (!seenSubjects.add(subject.getPath())) {
+                continue;
+            }
             String exportPath = String.format("%s%s.data.deep"
                 + ".dataFilter:modifiedAfter=%s"
                 + (endDate != null ? ".dataFilter:modifiedBefore=%s" : ""),
