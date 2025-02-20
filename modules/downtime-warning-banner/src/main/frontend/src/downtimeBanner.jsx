@@ -73,6 +73,11 @@ export default function DowntimeWarning(props) {
         if (json.toDate) {
           let date = new Date(json.toDate);
           setToDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
+
+          // Check if the downtime period ended
+          if (new Date() > date) {
+            setEnabled(false);
+          }
         }
       })
       .catch((error) => {
