@@ -46,6 +46,7 @@ import io.uhndata.cards.emailnotifications.EmailTemplate;
 import io.uhndata.cards.emailnotifications.EmailUtils;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.patients.emailnotifications.AppointmentUtils.EmptyNodeIterator;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import jakarta.mail.MessagingException;
 
@@ -103,9 +104,12 @@ abstract class AbstractEmailNotification
      * is null, otherwise the absolute JCR path to the template.
      * @param emailSubject The subject line of the notification email
      * @param clinicId only send notifications for appointments with a clinic specified by this ID.
+     * @param notificationType
      * @return the number of notification emails that have been sent
      */
-    public long sendNotification(final int differenceInDays, final EmailTemplate template, final String clinicId)
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
+    public long sendNotification(final int differenceInDays, final EmailTemplate template, final String clinicId,
+        String notificationType)
     {
         final Calendar dateToQuery = Calendar.getInstance();
         dateToQuery.add(Calendar.DATE, differenceInDays);
@@ -117,8 +121,24 @@ abstract class AbstractEmailNotification
             this.resolverProvider.push(resolver);
             mustPopResolver = true;
             final Session session = resolver.adaptTo(Session.class);
-            NodeIterator appointmentResults = AppointmentUtils.getAppointmentsForDay(session,
-                dateToQuery, clinicId);
+            final Node clinicNode = session.getNode(clinicId);
+            final int surveyDeadline =
+                this.patientAccessConfiguration.getClinicDaysRelativeToEventWhileSurveyIsValid(clinicNode);
+
+            NodeIterator appointmentResults = EmptyNodeIterator.INSTANCE;
+            switch (notificationType) {
+                case "initial":
+                    appointmentResults = AppointmentUtils.getAppointmentsForInitialEmailForDay(session, dateToQuery,
+                        clinicId, surveyDeadline);
+                    break;
+                case "reminder":
+                    appointmentResults = AppointmentUtils.getAppointmentsForReminderEmailForDay(session, dateToQuery,
+                        clinicId);
+                    break;
+                default:
+                    LOGGER.warn("Unknown notification type: {}", notificationType);
+            }
+
             while (appointmentResults.hasNext()) {
                 Node appointmentDate = appointmentResults.nextNode();
                 Node appointmentForm = this.formUtils.getForm(appointmentDate);

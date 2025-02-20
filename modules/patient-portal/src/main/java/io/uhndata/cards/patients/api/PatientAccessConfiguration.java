@@ -71,4 +71,14 @@ public interface PatientAccessConfiguration
      * @return A number of days
      */
     int getDraftLifetime();
+
+    /**
+     * Returns the token lifetime associated with the clinic related to the visitInformationNode Resource
+     * or default if it cannot be found.
+     *
+     * @param clinicNode the clinic Node
+     *
+     * @return A number of days
+     */
+    int getClinicDaysRelativeToEventWhileSurveyIsValid(Node clinicNode);
 }

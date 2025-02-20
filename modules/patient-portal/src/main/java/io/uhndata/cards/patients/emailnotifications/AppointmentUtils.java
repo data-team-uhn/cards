@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.utils.DateUtils;
 
 public final class AppointmentUtils
 {
@@ -245,26 +246,48 @@ public final class AppointmentUtils
     }
 
     /**
-     * Finds all appointments scheduled for a given day for all clinics.
+     * Finds all appointments scheduled for sending an initial email in a given day for a given clinic.
      *
      * @param session a valid JCR session
      * @param dateToQuery the Java Calendar object for the day to query for appointments
+     * @param clinicId the clinic identifier recorded in the Visit information form - ensure that it matches.
      * @return an Iterator of cards:DateAnswer Resources representing the scheduled visits
      */
-    public static NodeIterator getAppointmentsForDay(Session session, Calendar dateToQuery)
+    public static NodeIterator getAppointmentsForReminderEmailForDay(Session session, Calendar dateToQuery,
+        String clinicId)
     {
-        return getAppointmentsForDay(session, dateToQuery, null);
+        return getAppointmentsForDay(session, dateToQuery, clinicId, 0, false, true);
     }
 
     /**
-     * Finds all appointments scheduled for a given day for a given clinic.
+     * Finds all appointments scheduled for sending an initial email in a given day for a given clinic.
      *
      * @param session a valid JCR session
      * @param dateToQuery the Java Calendar object for the day to query for appointments
-     * @param clinicId the clinic indentifier recorded in the Visit information form - ensure that it matches.
+     * @param clinicId the clinic identifier recorded in the Visit information form - ensure that it matches.
+     * @param surveyDeadline Clinic property for the number of days a token is valid for
      * @return an Iterator of cards:DateAnswer Resources representing the scheduled visits
      */
-    public static NodeIterator getAppointmentsForDay(Session session, Calendar dateToQuery, String clinicId)
+    public static NodeIterator getAppointmentsForInitialEmailForDay(Session session, Calendar dateToQuery,
+        String clinicId, int surveyDeadline)
+    {
+        return getAppointmentsForDay(session, dateToQuery, clinicId, surveyDeadline, true, false);
+    }
+
+    /**
+     * Finds all appointments scheduled for a given day for a given clinic for a given goal.
+     *
+     * @param session a valid JCR session
+     * @param dateToQuery the Java Calendar object for the day to query for appointments
+     * @param clinicId the clinic identifier recorded in the Visit information form - ensure that it matches.
+     * @param surveyDeadline Clinic property for the number of days a token is valid for
+     * @param isInitial boolean to find all appointments scheduled for sending an initial email if true
+     * @param isReminder boolean to find all appointments scheduled for sending reminder email if true
+     * @return an Iterator of cards:DateAnswer Resources representing the scheduled visits
+     */
+    @SuppressWarnings({"checkstyle:MultipleStringLiterals"})
+    public static NodeIterator getAppointmentsForDay(Session session, Calendar dateToQuery, String clinicId,
+        int surveyDeadline, boolean isInitial, boolean isReminder)
     {
         try {
             final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
@@ -274,19 +297,21 @@ public final class AppointmentUtils
                 session.getNode("/Questionnaires/Visit information/status").getIdentifier();
             final String hasSurveysUUID =
                 session.getNode("/Questionnaires/Visit information/has_surveys").getIdentifier();
-            final String clinicUUID =
-                session.getNode(CLINIC_PATH).getIdentifier();
-            final Calendar lowerBoundDate = (Calendar) dateToQuery.clone();
-            lowerBoundDate.set(Calendar.HOUR_OF_DAY, 0);
-            lowerBoundDate.set(Calendar.MINUTE, 0);
-            lowerBoundDate.set(Calendar.SECOND, 0);
-            lowerBoundDate.set(Calendar.MILLISECOND, 0);
+            final String clinicUUID = session.getNode(CLINIC_PATH).getIdentifier();
+            final Calendar lowerBoundDate = DateUtils.atMidnight((Calendar) dateToQuery.clone());
+            final String lowerBoundDateTime = formatter.format(lowerBoundDate.getTime());
+            final Calendar midnightToday = DateUtils.atMidnight(Calendar.getInstance());
+            final String midnightTodayTime = formatter.format(midnightToday.getTime());
             final Calendar upperBoundDate = (Calendar) lowerBoundDate.clone();
             upperBoundDate.add(Calendar.DAY_OF_YEAR, 1);
+            final String upperBoundDateTime = formatter.format(upperBoundDate.getTime());
+            final Calendar lowerBoundDeadlineDate = (Calendar) upperBoundDate.clone();
+            lowerBoundDeadlineDate.add(Calendar.DAY_OF_YEAR, -1 * surveyDeadline);
+            final String lowerBoundDeadlineDateTime = formatter.format(lowerBoundDeadlineDate.getTime());
             LOGGER.info("Querying for appointments for clinic {} between {} and {}.",
                 clinicId,
-                formatter.format(lowerBoundDate.getTime()),
-                formatter.format(upperBoundDate.getTime()));
+                lowerBoundDateTime,
+                upperBoundDateTime);
 
             final String query = "SELECT vdate.* FROM [cards:DateAnswer] AS vdate "
                 + "  INNER JOIN [cards:TextAnswer] AS vstatus ON vstatus.form = vdate.form "
@@ -294,8 +319,14 @@ public final class AppointmentUtils
                 + ((clinicId != null)
                     ? "  INNER JOIN [cards:ResourceAnswer] AS clinic ON clinic.form = vdate.form " : "")
                 + "WHERE vdate.'question'='" + visitTimeUUID + "' "
-                + "  AND vdate.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
-                + "  AND vdate.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)"
+                + "  AND vdate.'value' < cast('" + upperBoundDateTime + "' AS date)"
+                + (isInitial
+                    ? "  AND vdate.'value' >= cast('" + lowerBoundDeadlineDateTime + "' AS date)"
+                    + "  AND ( vdate.[jcr:created] >= cast('" + midnightTodayTime + "' AS date)"
+                    + "  OR vdate.'value' >= cast('" + lowerBoundDateTime + "' AS date) )" : "")
+                + (isReminder
+                    ? "  AND vdate.[jcr:created] < cast('" + midnightTodayTime + "' AS date)"
+                    + "  AND vdate.'value' >= cast('" + lowerBoundDateTime + "' AS date)" : "")
                 + "  AND vstatus.'question' = '" + statusUUID + "' "
                 + "  AND vstatus.'value' <> 'cancelled'"
                 + "  AND vstatus.'value' <> 'entered-in-error'"
@@ -314,9 +345,9 @@ public final class AppointmentUtils
     /**
      * A node iterator that is always empty.
      */
-    private static final class EmptyNodeIterator implements NodeIterator
+    public static final class EmptyNodeIterator implements NodeIterator
     {
-        private static final NodeIterator INSTANCE = new EmptyNodeIterator();
+        static final NodeIterator INSTANCE = new EmptyNodeIterator();
 
         @Override
         public Object next()
