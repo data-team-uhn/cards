@@ -16,34 +16,17 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useEffect } from "react";
-import { useLocation } from 'react-router';
-import Subject from "../questionnaire/Subject.jsx";
+import React from "react";
 import SubjectView from "./SubjectView.jsx";
-import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/SubjectIdentifier.jsx";
+import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 import { Grid } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Subjects(props) {
   const { classes } = props;
-  const location = useLocation();
-  const entry = getSubjectIdFromPath(location.pathname);
-
-  // Clear the page name overwriting if moving from a specific Subject to the Subjects page
-  const pageNameWriter = usePageNameWriterContext();
-  useEffect(() => {
-    if (!entry) {
-      pageNameWriter("");
-    }
-  }, [entry]);
-
-  if (entry) {
-    return <Subject id={entry} contentOffset={props.contentOffset} key={entry} />;
-  }
 
   const columns = [
     {

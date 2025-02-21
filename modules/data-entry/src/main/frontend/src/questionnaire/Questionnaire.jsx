@@ -59,7 +59,7 @@ export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamesp
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
-  let { id, classes } = props;
+  let { classes } = props;
   let [ data, setData ] = useState();
   let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
@@ -71,6 +71,8 @@ let Questionnaire = (props) => {
   let navigate = useNavigate();
 
   let pageNameWriter = usePageNameWriterContext();
+
+  let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
 
   let handleError = (response) => {
     setError(response);

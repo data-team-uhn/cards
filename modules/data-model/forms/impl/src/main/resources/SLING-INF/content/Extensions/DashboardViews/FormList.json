@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/dashboardviews/entry",
-  "cards:extensionName": "Form View",
-  "cards:extensionRenderURL": "asset:cards-dataentry.FormView.js",
+  "cards:extensionName": "Form List",
+  "cards:extensionRenderURL": "asset:cards-dataentry.FormList.js",
   "cards:defaultOrder": 2
 }

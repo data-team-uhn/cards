@@ -19,7 +19,6 @@
 import React, { useState } from "react";
 import { Link } from 'react-router';
 import { Box } from "@mui/material";
-import Questionnaire from "../questionnaire/Questionnaire.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
@@ -27,7 +26,6 @@ import EditButton from "./EditButton.jsx";
 import ExportButton from "./ExportButton.jsx";
 import { DateTime } from "luxon";
 import FormattedText from "../components/FormattedText.jsx";
-import { useLocation } from 'react-router';
 
 // Convert a date into the given format string
 // If the date is invalid (usually because it is missing), return ""
@@ -45,13 +43,7 @@ function Questionnaires(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ updateData, setUpdateData ] = useState(0);
 
-  const location = useLocation();
-  const entry = /Questionnaires\/([^.]+)/.exec(location.pathname);
   const entryType = "Questionnaire";
-
-  if (entry) {
-    return <Questionnaire id={entry[1]} key={location.pathname} contentOffset={props.contentOffset}/>;
-  }
 
   let columns = [
     {

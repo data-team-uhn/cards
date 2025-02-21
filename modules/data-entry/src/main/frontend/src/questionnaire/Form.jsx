@@ -69,12 +69,10 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  * Component that displays an editable Form.
  *
  * @example
- * <Form id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
- *
- * @param {string} id the identifier of a form; this is the JCR node name
+ * <Form />
  */
 function Form (props) {
-  let { classes, id, contentOffset } = props;
+  let { classes, contentOffset } = props;
   let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -113,6 +111,10 @@ function Form (props) {
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
   let [ classNames, setClassNames ] = useState(className ? [className] : []);
 
+  let id = props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1];
+  let isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
+  let isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
+
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
   // Check if the form is required to be complete before progressing
@@ -125,6 +127,10 @@ function Form (props) {
   let [ disableProgress, setDisableProgress ] = useState();
 
   let navigate = useNavigate();
+
+  useEffect(() => {
+    setPaginationEnabled(isEdit && !!data?.['questionnaire']?.['paginate']);
+  }, [isEdit]);
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -164,8 +170,6 @@ function Form (props) {
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
   const urlBase = "/content.html";
-  const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
-  const isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {

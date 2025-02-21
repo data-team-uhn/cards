@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Subject",
+  "cards:targetURL": "/content.html/Subjects/*",
+  "cards:extensionRenderURL": "asset:cards-dataentry.Subject.js"
+}
