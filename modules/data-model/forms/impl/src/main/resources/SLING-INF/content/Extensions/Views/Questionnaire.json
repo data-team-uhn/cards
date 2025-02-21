@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Questionnaire",
+  "cards:targetURL": "/content.html/admin/Questionnaires/*",
+  "cards:extensionRenderURL": "asset:cards-dataentry.Questionnaire.js"
+}

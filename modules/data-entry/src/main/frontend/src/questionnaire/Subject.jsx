@@ -72,16 +72,14 @@ let createQueryURL = (query, type) => {
  * Component that displays a Subject.
  *
  * @example
- * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
+ * <Subject/>
  *
- * @param {string} id the identifier of a subject; this is the JCR node name
  * @param {int} maxDisplayed the maximum number of form question/answers to be displayed. defaults to 4
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed, pageSize } = { maxDisplayed: 4, pageSize: 10, ...props };
+  let { classes, maxDisplayed, pageSize } = { maxDisplayed: 4, pageSize: 10, ...props };
   const [ currentSubject, setCurrentSubject ] = useState();
-  const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
 
   // TODO: These tabs should be extensible.
@@ -90,10 +88,9 @@ function Subject(props) {
   const tabs = ["Chart", "Timeline"]
   const location = useLocation();
   const navigate = useNavigate();
+  const currentSubjectId = getSubjectIdFromPath(location.pathname);
 
   useEffect(() => {
-    let newId = getSubjectIdFromPath(location.pathname);
-    newId && setCurrentSubjectId(newId);
     if (location.hash.length > 0 && tabs.includes(location.hash.substring(1))) {
       setActiveTab(tabs.indexOf(location.hash.substring(1)));
     }

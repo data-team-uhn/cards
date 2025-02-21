@@ -67,12 +67,10 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  * Component that displays an editable Form.
  *
  * @example
- * <Form id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
- *
- * @param {string} id the identifier of a form; this is the JCR node name
+ * <Form />
  */
 function Form (props) {
-  let { classes, id, contentOffset } = props;
+  let { classes, contentOffset } = props;
   let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -122,6 +120,8 @@ function Form (props) {
   let [ disableProgress, setDisableProgress ] = useState();
 
   let navigate = useNavigate();
+
+  let id = /Forms\/([^.\/]+)/.exec(location.pathname)[1];
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component

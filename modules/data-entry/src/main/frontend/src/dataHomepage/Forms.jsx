@@ -16,8 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useEffect } from "react";
-import Form from "../questionnaire/Form.jsx";
+import React from "react";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 import { useLocation } from 'react-router';
 import Grid from '@mui/material/Grid2';
@@ -25,26 +24,11 @@ import withStyles from '@mui/styles/withStyles';
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import FormView from "./FormView.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 function Forms(props) {
   const { classes } = props;
   const location = useLocation();
   const questionnaire = /questionnaire=([^&]+)/.exec(location.search)?.[1];
-  const pageNameWriter = usePageNameWriterContext();
-
-  const entry = /Forms\/([^.\/]+)/.exec(location.pathname);
-
-  // When moving from a specific form to the "Forms" page, ensure that the title properly changes
-  useEffect(() => {
-    if (!entry) {
-      pageNameWriter("");
-    }
-  }, [entry]);
-
-  if (entry) {
-    return <Form id={entry[1]} key={location.pathname} contentOffset={props.contentOffset} />;
-  }
 
   const columns = [
     {

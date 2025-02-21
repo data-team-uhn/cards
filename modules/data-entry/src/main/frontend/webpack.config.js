@@ -20,6 +20,9 @@ module.exports = {
     [module_name + 'SubjectSelector']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/questionnaire/SubjectSelector.jsx' },
     [module_name + 'NewFormDialog']: { 'dependOn': ['cards-login.loginDialogue', 'cards-dataentry.SubjectSelector'], 'import': './src/dataHomepage/NewFormDialog.jsx' },
     [module_name + 'userDashboard']: { 'dependOn': ['cards-login.loginDialogue', 'cards-dataentry.NewFormDialog', 'cards-dataentry.SubjectSelector'], 'import': './src/dataHomepage/UserDashboard.jsx' },
+    [module_name + 'Form']: './src/questionnaire/Form.jsx',
+    [module_name + 'Questionnaire']: './src/questionnaire/Questionnaire.jsx',
+    [module_name + 'Subject']: './src/questionnaire/Subject.jsx',
   },
   plugins: [
     new CleanWebpackPlugin(),
