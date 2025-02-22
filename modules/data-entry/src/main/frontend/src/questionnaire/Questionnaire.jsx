@@ -42,7 +42,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import ExportButton from "../dataHomepage/ExportButton";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
@@ -220,10 +220,9 @@ let Questionnaire = (props) => {
       </Typography>
     :
       ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
-        <Grid container direction="column" spacing={4} wrap="nowrap">
+        <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
           { questionnaireHeader }
-          <Grid>
-            { !isEdit ?
+          { !isEdit ?
               <QuestionnairePreview
                 data={data}
                 title={questionnaireTitle}
@@ -240,8 +239,7 @@ let Questionnaire = (props) => {
                   menuProps={{isMainAction: true}}
                 />
               </QuestionnaireProvider>
-            }
-          </Grid>
+          }
         </Grid>
       )
   );
