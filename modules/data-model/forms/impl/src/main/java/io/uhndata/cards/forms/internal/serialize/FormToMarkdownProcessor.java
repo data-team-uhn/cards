@@ -75,7 +75,11 @@ public class FormToMarkdownProcessor extends AbstractFormToStringSerializer impl
     @Override
     void formatSectionTitle(final String title, final StringBuilder result)
     {
-        result.append("\n### ").append(title).append('\n');
+        if (title.matches("^#++\\s++.*")) {
+            result.append(title).append('\n');
+        } else {
+            result.append("\n### ").append(title).append('\n');
+        }
     }
 
     @Override
