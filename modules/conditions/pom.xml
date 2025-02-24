@@ -19,20 +19,19 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>cards-modules</artifactId>
-    <version>0.9.29-SNAPSHOT</version>
+    <version>0.9.28-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-form-completion-status</artifactId>
+  <artifactId>cards-conditions</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Status Flags</name>
-  <description>Flags form answers as incomplete or invalid</description>
+  <name>CARDS - Conditions</name>
 
   <build>
     <plugins>
-      <!-- This is an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -47,43 +46,9 @@
       <artifactId>jcr</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.sling</groupId>
-      <artifactId>org.apache.sling.api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>oak-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>oak-store-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.component.annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-resolver-provider</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-collections4</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.uhndata.cards</groupId>
-      <artifactId>cards-data-model-forms-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-conditions</artifactId>
-      <version>${project.version}</version>
+      <version>${oak.version}</version>
     </dependency>
   </dependencies>
 </project>

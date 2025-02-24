@@ -16,11 +16,13 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -58,9 +60,6 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 })
 public class ReferenceAnswersChangedListener implements ResourceChangeListener
 {
-    /** Answer's property name. **/
-    public static final String VALUE = "value";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceAnswersChangedListener.class);
 
     /** Provides access to resources. */
@@ -123,11 +122,10 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
 
     /**
      * This method reads through a NodeIterator of changed Nodes. If a given changed Node is a cards/Answer node all
-     * other cards/Answer nodes that make reference to it are updated so that the value property of the referenced Node
-     * matches the value property of the changed node.
+     * other cards/Answer nodes that make reference to it are updated if appropriate so that the value property of the
+     * referenced Node matches the value property of the changed node.
      *
      * @param nodeIterator an iterator of nodes of which have changed due to an update made to a Form
-     * @param serviceResolver a ResourceResolver that can be used for querying the JCR
      * @param session a service session providing access to the repository
      */
     private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final Session session)
@@ -135,65 +133,108 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     {
         final VersionManager versionManager = session.getWorkspace().getVersionManager();
         Set<String> checkoutPaths = new HashSet<>();
-        while (nodeIterator.hasNext()) {
-            final Node node = nodeIterator.nextNode();
-            if (node.isNodeType("cards:AnswerSection")) {
-                checkAndUpdateAnswersValues(node.getNodes(), session);
-            } else if (node.isNodeType("cards:Answer")) {
-                final String answerNodeType = node.getPrimaryNodeType().getName();
-                final String subject = this.formUtils.getSubject(this.formUtils.getForm(node)).getIdentifier();
-                // TODO: is this query needed with the refactor in CARDS-2509/2571?
-                // May be possible to replace it with a loop on node.getReferences()
-                final NodeIterator resourceIteratorReferencingAnswers = session
-                    .getWorkspace().getQueryManager().createQuery(
-                        // Answers that were explicitly copied from this answer
-                        "SELECT a.* FROM [" + answerNodeType + "] AS a WHERE a.copiedFrom = '"
-                            + escape(node.getPath()) + "'"
-                            + " UNION "
-                            // Answers that don't have a value yet
-                            + "SELECT a.* FROM [" + answerNodeType + "] AS a"
-                            + "  INNER JOIN [cards:Form] AS f ON a.form = f.[jcr:uuid]"
-                            + "  INNER JOIN [cards:Question] AS q ON a.question = q.[jcr:uuid]"
-                            + "  WHERE"
-                            // The answer doesn't have a value
-                            + "    a.value is null"
-                            // The answer's question references this question
-                            + "    AND q.question = '"
-                            + escape(node.getProperty("question").getNode().getPath()) + "'"
-                            // The answer belongs to the same subject or one of its descendants
-                            + "    AND f.relatedSubjects = '" + subject + "'"
-                            // Use the fast index for the query
-                            + " OPTION (index tag cards)",
-                        "JCR-SQL2")
-                    .execute().getNodes();
-                final Property sourceAnswerValue =
-                    !node.hasProperty(VALUE) ? null : node.getProperty(VALUE);
-                while (resourceIteratorReferencingAnswers.hasNext()) {
-                    final Node referenceAnswer = resourceIteratorReferencingAnswers.nextNode();
-                    if (shouldUpdateValue(sourceAnswerValue, referenceAnswer)) {
-                        final Node formNode = this.formUtils.getForm(referenceAnswer);
-                        final String referenceFormPath = formNode.getPath();
-                        versionManager.checkout(referenceFormPath);
-                        checkoutPaths.add(referenceFormPath);
-                        if (sourceAnswerValue == null) {
-                            referenceAnswer.setProperty(VALUE, (Value) null);
-                        } else if (sourceAnswerValue.isMultiple()) {
-                            referenceAnswer.setProperty(VALUE, sourceAnswerValue.getValues());
-                        } else {
-                            referenceAnswer.setProperty(VALUE, sourceAnswerValue.getValue());
-                        }
-                        referenceAnswer.setProperty("copiedFrom", node.getPath());
-                    }
-                }
+        checkAndUpdateAnswersValues(nodeIterator, session, checkoutPaths, versionManager);
+        if (session.hasPendingChanges()) {
+            session.save();
+            for (String path : checkoutPaths) {
+                versionManager.checkin(path);
             }
-        }
-        session.save();
-        for (String path : checkoutPaths) {
-            versionManager.checkin(path);
         }
     }
 
-    private boolean shouldUpdateValue(final Property source, final Node reference) throws RepositoryException
+    /**
+     * This method reads through a NodeIterator of changed Nodes. If a given changed Node is a cards/Answer node all
+     * other cards/Answer nodes that make reference to it are updated if appropriate so that the value property of the
+     * referenced Node matches the value property of the changed node.
+     * @param nodeIterator an iterator of nodes of which have changed due to an update made to a Form
+     * @param session a service session providing access to the repository
+     * @param checkoutPaths the list of forms that were checked out which will need to be checked back in
+     * @param versionManager the version manager that should be used to checkout any needed forms
+     * @throws RepositoryException if the node could not be processed
+     */
+    private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final Session session,
+        Set<String> checkoutPaths, VersionManager versionManager)
+        throws RepositoryException
+    {
+        while (nodeIterator.hasNext()) {
+            final Node node = nodeIterator.nextNode();
+            if (node.isNodeType("cards:AnswerSection")) {
+                checkAndUpdateAnswersValues(node.getNodes(), session, checkoutPaths, versionManager);
+            } else if (node.isNodeType("cards:Answer")) {
+                processAnswer(versionManager, session, checkoutPaths, node);
+            }
+        }
+    }
+
+    /**
+     * Process a changed cards/Answer node and check if there are any other cards/Answer nodes that reference the
+     * changed node or should reference the changed node. If there are any referencing cards/Answer nodes, update
+     * their values to the newly changed value if appropriate.
+     * @param versionManager the version manager that should be used to checkout any needed forms
+     * @param session a service session providing access to the repository
+     * @param checkoutPaths the list of forms that were checked out which will need to be checked back in
+     * @param answerNode the cards/Answer node to check for any (potential) referencing nodes
+     * @throws RepositoryException if the node could not be processed
+     */
+    private void processAnswer(final VersionManager versionManager, final Session session,
+        final Set<String> checkoutPaths, final Node answerNode)
+        throws RepositoryException
+    {
+        final String answerNodeType = answerNode.getPrimaryNodeType().getName();
+        final String subject = this.formUtils.getSubject(this.formUtils.getForm(answerNode)).getIdentifier();
+        // Query for two different types of answers:
+        // 1. Reference answers that are referencing the current changed answer
+        //    (Reference answers already copying from the current answer)
+        // 2. Reference answers that have no value and who's question references the current answer's question
+        //    (Unanswered reference answers that could potentially be copied from the current answer)
+        final NodeIterator resourceIteratorReferencingAnswers = session
+            .getWorkspace().getQueryManager().createQuery(
+                // Answers that were explicitly copied from this answer
+                "SELECT a.* FROM [" + answerNodeType + "] AS a WHERE a.copiedFrom = '"
+                    + escape(answerNode.getPath()) + "'"
+                    + " UNION "
+                    // Answers that don't have a value yet
+                    + "SELECT a.* FROM [" + answerNodeType + "] AS a"
+                    + "  INNER JOIN [cards:Form] AS f ON a.form = f.[jcr:uuid]"
+                    + "  INNER JOIN [cards:Question] AS q ON a.question = q.[jcr:uuid]"
+                    + "  WHERE"
+                    // The answer doesn't have a value
+                    + "    a.copiedFrom is null"
+                    // The answer's question references this question
+                    + "    AND q.question = '"
+                    + escape(answerNode.getProperty(FormUtils.QUESTION_PROPERTY).getNode().getPath()) + "'"
+                    // The answer belongs to the same subject or one of its descendants
+                    + "    AND f.relatedSubjects = '" + subject + "'"
+                    // Use the fast index for the query
+                    + " OPTION (index tag cards)",
+                "JCR-SQL2")
+            .execute().getNodes();
+        final Property sourceAnswerValue =
+            !answerNode.hasProperty(FormUtils.VALUE_PROPERTY) ? null : answerNode.getProperty(FormUtils.VALUE_PROPERTY);
+        while (resourceIteratorReferencingAnswers.hasNext()) {
+            final Node referenceAnswer = resourceIteratorReferencingAnswers.nextNode();
+            final Node referenceQuestion = referenceAnswer.getProperty(FormUtils.QUESTION_PROPERTY).getNode();
+            if (updatePolicyApplies(sourceAnswerValue, referenceAnswer)) {
+                if (ReferenceConditionUtils.referenceHasCondition(referenceQuestion)
+                    && !ReferenceConditionUtils.isReferenceConditionSatisfied(
+                        this.formUtils, referenceQuestion, answerNode)) {
+                    updateValueWithFallback(versionManager, session, checkoutPaths, referenceAnswer, answerNode);
+                } else {
+                    updateValueFromSource(versionManager, checkoutPaths, sourceAnswerValue, referenceAnswer,
+                        answerNode);
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if the reference question's update policy allows for updating the reference answer.
+     * @param source The source answer that may be copied from
+     * @param reference The reference answer that may be updated
+     * @return True if the policy allows for updating, false otherwise
+     * @throws RepositoryException if an unexpected error occurs determining if the policy allows for changes
+     */
+    private boolean updatePolicyApplies(final Property source, final Node reference) throws RepositoryException
     {
         String updateMode = "";
         Node referenceQuestion = this.formUtils.getQuestion(reference);
@@ -213,42 +254,221 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                 updatePolicyMatches = true;
                 break;
         }
-        return updatePolicyMatches && isNotSame(source, reference);
+        return updatePolicyMatches;
     }
 
-    // TODO: should be renamed to avoid negative
-    // Will handle while dealing with 2509/2571 merge
-    // TODO: Fix Cyclomatic Complexity
-    // Will handle while dealing with 2509/2571 merge
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
-    private boolean isNotSame(final Property source, final Node reference) throws RepositoryException
+    /**
+     * Fill out a reference answer with a value copied from the referenced question.
+     * @param versionManager A version manager to be used to checkout forms if needed
+     * @param checkoutPaths The list of forms that have been checkout out and need to be checked back in
+     * @param sourceAnswerValue The source answer value to copy the answer from
+     * @param referenceAnswer The reference answer to copy the value into
+     * @param sourceNode The source answer node that the value is being copied from
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private void updateValueFromSource(final VersionManager versionManager, final Set<String> checkoutPaths,
+        final Property sourceAnswerValue, final Node referenceAnswer, final Node sourceNode)
+        throws RepositoryException
     {
-        final Property referenceAnswerValue =
-            !reference.hasProperty(VALUE) ? null : reference.getProperty(VALUE);
+        if (!isSame(sourceAnswerValue, referenceAnswer)) {
+            checkoutFormIfNeeded(versionManager, referenceAnswer, checkoutPaths);
+            if (sourceAnswerValue == null) {
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, (Value) null);
+            } else if (sourceAnswerValue.isMultiple()) {
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, sourceAnswerValue.getValues());
+            } else {
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, sourceAnswerValue.getValue());
+            }
+            referenceAnswer.setProperty("copiedFrom", sourceNode.getPath());
+        }
+        removeInvalidSourceStatusFlag(versionManager, referenceAnswer, checkoutPaths);
+    }
 
-        if (source == null && referenceAnswerValue != null || source != null && referenceAnswerValue == null) {
-            return true;
-        } else if (source == null) {
-            // Both must be null
-            return false;
-        }
-        Set<String> sourceValues = new HashSet<>();
-        if (source.isMultiple()) {
-            for (Value v : source.getValues()) {
-                sourceValues.add(v.getString());
+    /**
+     * Fill out a reference answer with the value specified as the fallback value.
+     * If no fallback value is present, fill out a null value.
+     * @param versionManager A version manager to be used to checkout forms if needed
+     * @param session A session that can be used to retrieve the reference question
+     * @param checkoutPaths The list of forms that have been checkout out and need to be checked back in
+     * @param referenceAnswer The reference answer to copy the value into
+     * @param sourceNode The source answer node that the value is being copied from
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private void updateValueWithFallback(final VersionManager versionManager, final Session session,
+        final Set<String> checkoutPaths, final Node referenceAnswer, final Node sourceNode)
+        throws RepositoryException
+    {
+        Object values = ReferenceConditionUtils.getFallbackValue(session,
+            referenceAnswer.getProperty(FormUtils.QUESTION_PROPERTY).getNode());
+        Property referenceAnswerProperty = referenceAnswer.hasProperty(FormUtils.VALUE_PROPERTY)
+            ? referenceAnswer.getProperty(FormUtils.VALUE_PROPERTY)
+            : null;
+
+        if (values instanceof Value[]) {
+            if (!isSame(referenceAnswerProperty, (Value[]) values)) {
+                checkoutFormIfNeeded(versionManager, referenceAnswer, checkoutPaths);
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, (Value[]) values);
+                referenceAnswer.setProperty("copiedFrom", sourceNode.getPath());
             }
         } else {
-            sourceValues.add(source.getValue().getString());
+            if (!isSame(referenceAnswerProperty, (Value) values)) {
+                checkoutFormIfNeeded(versionManager, referenceAnswer, checkoutPaths);
+                referenceAnswer.setProperty(FormUtils.VALUE_PROPERTY, (Value) values);
+                referenceAnswer.setProperty("copiedFrom", sourceNode.getPath());
+            }
         }
-        Set<String> referenceValues = new HashSet<>();
-        if (referenceAnswerValue.isMultiple()) {
-            for (Value v : referenceAnswerValue.getValues()) {
-                referenceValues.add(v.getString());
+        addInvalidSourceStatusFlag(versionManager, referenceAnswer, checkoutPaths);
+    }
+
+    private void addInvalidSourceStatusFlag(final VersionManager versionManager, Node answer,
+        final Set<String> checkoutPaths)
+        throws RepositoryException
+    {
+        if (answer.hasProperty(FormUtils.STATUS_FLAGS_PROPERTY)) {
+            List<String> statusValues = Arrays.stream(answer.getProperty(FormUtils.STATUS_FLAGS_PROPERTY).getValues())
+                .map(v -> v.toString()).collect(Collectors.toList());
+            if (!statusValues.contains(ReferenceConditionUtils.INVALID_SOURCE_FLAG)) {
+                checkoutFormIfNeeded(versionManager, answer, checkoutPaths);
+                statusValues.add(ReferenceConditionUtils.INVALID_SOURCE_FLAG);
+                answer.setProperty(FormUtils.STATUS_FLAGS_PROPERTY,
+                    statusValues.toArray(new String[statusValues.size()]));
+            }
+        }
+    }
+
+    private void removeInvalidSourceStatusFlag(final VersionManager versionManager, Node answer,
+        final Set<String> checkoutPaths)
+        throws RepositoryException
+    {
+        if (answer.hasProperty(FormUtils.STATUS_FLAGS_PROPERTY)) {
+            Value[] statusValues = answer.getProperty(FormUtils.STATUS_FLAGS_PROPERTY).getValues();
+            Value[] filteredValues = Arrays.stream(statusValues)
+                .filter(v -> !ReferenceConditionUtils.INVALID_SOURCE_FLAG.equals(v.toString())).toArray(Value[]::new);
+            if (statusValues.length != filteredValues.length) {
+                checkoutFormIfNeeded(versionManager, answer, checkoutPaths);
+                answer.setProperty(FormUtils.STATUS_FLAGS_PROPERTY, filteredValues);
+            }
+        }
+    }
+
+    /**
+     * Checkout the parent form of an answer if it is checked in.
+     * @param versionManager The version manager that should be used to check out the form
+     * @param answerNode The answer which should have it's parent form checked out
+     * @param checkoutPaths The list of forms that have been checked out and need to be checked in again
+     * @throws RepositoryException If an unexpected error occurs
+     */
+    private void checkoutFormIfNeeded(final VersionManager versionManager, final Node answerNode,
+        final Set<String> checkoutPaths)
+        throws RepositoryException
+    {
+        final String path = this.formUtils.getForm(answerNode).getPath();
+        final boolean wasCheckedOut = versionManager.isCheckedOut(path);
+        if (!wasCheckedOut) {
+            versionManager.checkout(path);
+            checkoutPaths.add(path);
+        }
+    }
+
+    /**
+     * Check if a property and an answer node have the same values.
+     * Two null values count as the same, a null and a non-null are different
+     * @param property A property to compare
+     * @param answerNode An answer node to compare
+     * @return True if the values are the same
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private boolean isSame(final Property property, final Node answerNode) throws RepositoryException
+    {
+        final Property nodeValue =
+            !answerNode.hasProperty(FormUtils.VALUE_PROPERTY) ? null : answerNode.getProperty(FormUtils.VALUE_PROPERTY);
+
+        if (property != null && nodeValue != null) {
+            // Both values are not null: check if the values are the same
+            Set<String> propertyValues = propertyToStrings(property);
+            Set<String> nodeValues = propertyToStrings(nodeValue);
+            return isSame(propertyValues, nodeValues);
+        } else {
+            // Same if both are null, otherwise not the same
+            return property == null && nodeValue == null;
+        }
+    }
+
+    /**
+     * Check if a property and a value have the same values.
+     * Two null values count as the same, a null and a non-null are different
+     * @param property A property to compare
+     * @param value A value to compare
+     * @return True if the values are the same
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private boolean isSame(final Property property, final Value value)
+        throws RepositoryException
+    {
+        if (property != null && value != null) {
+            Set<String> propertyStrings = propertyToStrings(property);
+            Set<String> valueStrings = new HashSet<>();
+            valueStrings.add(value.getString());
+            return isSame(propertyStrings, valueStrings);
+        } else {
+            return property == null && value == null;
+        }
+
+    }
+
+    /**
+     * Check if a property and a value array have the same values.
+     * Two null values count as the same, a null and a non-null are different
+     * @param property A property to compare
+     * @param value A value array to compare
+     * @return True if the values are the same
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private boolean isSame(final Property property, final Value[] values)
+        throws RepositoryException
+    {
+        if (property != null && values != null) {
+            Set<String> propertyStrings = propertyToStrings(property);
+            Set<String> valueStrings = new HashSet<>();
+            for (Value v : values) {
+                valueStrings.add(v.getString());
+            }
+            return isSame(propertyStrings, valueStrings);
+        } else {
+            return property == null && values == null;
+        }
+
+    }
+
+    /**
+     * Check if two sets of strings contain the same values.
+     * @param left A set of strings to compare
+     * @param right A set of strings to compare
+     * @return True if the sets contain the same values
+     */
+    private boolean isSame(Set<String> left, Set<String> right)
+    {
+        return left.equals(right);
+    }
+
+    /**
+     * Etract the values of  property into a set of strings.
+     * @param property The values to extract the values from
+     * @return The set of strings representing the properties' values
+     * @throws RepositoryException if an unexpected error occurs
+     */
+    private Set<String> propertyToStrings(final Property property)
+        throws RepositoryException
+    {
+        Set<String> values = new HashSet<>();
+        if (property.isMultiple()) {
+            for (Value v : property.getValues()) {
+                values.add(v.getString());
             }
         } else {
-            referenceValues.add(referenceAnswerValue.getValue().getString());
+            values.add(property.getValue().getString());
         }
-        return !sourceValues.equals(referenceValues);
+        return values;
     }
 
     private String escape(final String value)

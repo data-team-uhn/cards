@@ -96,6 +96,10 @@
         {
             "id":"io.uhndata.cards:cards-google-apis:${project.version}",
             "start-order":"25"
+        },
+        {
+            "id":"io.uhndata.cards:cards-conditions:${project.version}",
+            "start-order":"25"
         }
     ]
 }
