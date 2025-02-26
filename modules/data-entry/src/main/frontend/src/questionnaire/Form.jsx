@@ -192,7 +192,7 @@ function Form (props) {
     requireCompletion && paginationEnabled && setDisableProgress(true);
   }, [requireCompletion, paginationEnabled]);
 
-  let checkoutIfNeededAndFetchData = () => {
+  let checkoutIfNeededAndFetchData = (callback) => {
     // Check if it was already checked out
     fetchWithReLogin(globalLoginDisplay, formURL + "/jcr:isCheckedOut")
       .then(response => response.text())
@@ -209,7 +209,8 @@ function Form (props) {
         } else {
           fetchData();
         }
-      });
+      })
+      .finally(callback);
   };
 
   // Fetch the form's data as JSON from the server.
@@ -399,7 +400,9 @@ function Form (props) {
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        navigate(urlBase + formURL);
+        checkoutIfNeededAndFetchData(() => {
+            navigate(urlBase + formURL);
+        });
     });
   }
 
