@@ -160,7 +160,7 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
  */
 function SubjectTimeline(props) {
   let { classes, subject } = props;
-  let [dateEntries, setDateEntries] = useState(null);
+  let [ dateEntries, setDateEntries ] = useState(null);
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   let globalLoginDisplay = useContext(GlobalLoginContext);
@@ -357,6 +357,7 @@ function SubjectTimeline(props) {
 
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
+    setDateEntries([]);
     setError(response);
     console.log(response.statusText || response.message);
   };
