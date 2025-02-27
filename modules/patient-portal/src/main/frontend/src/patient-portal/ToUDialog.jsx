@@ -189,11 +189,11 @@ function ToUDialog(props) {
       <DialogActions>
       { actionRequired && !error && !actionError ?
         <>
-          <Button color="primary" onClick={() => saveTouAccepted(tou.version)} variant="contained">
-            Accept
-          </Button>
-          <Button color="secondary" onClick={() => setShowConfirmationTou(true)} variant="contained">
+          <Button color="primary" variant="outlined" onClick={() => setShowConfirmationTou(true)}>
             Decline
+          </Button>
+          <Button color="primary" variant="contained" onClick={() => saveTouAccepted(tou.version)}>
+            Accept
           </Button>
         </>
         :
@@ -211,17 +211,17 @@ function ToUDialog(props) {
     { actionRequired &&
       <ResponsiveDialog open={showConfirmationTou} title="Action required">
         <DialogContent>
-          You can only fill out your pre-appointment surveys online after accepting the DATA PRO Terms of Use.
+          You can only fill out your surveys online after accepting the Terms of Use.
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowConfirmationTou(false)} variant="outlined" className={classes.reviewButton}>
+          <Button color="primary" variant="outlined" onClick={() => setShowConfirmationTou(false)} className={classes.reviewButton}>
             Review Terms
           </Button>
-          <Button color="primary" onClick={() => {setShowConfirmationTou(false); saveTouAccepted(tou?.version)}} variant="contained" >
-            Accept
-          </Button>
-          <Button color="secondary" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
+          <Button color="primary" variant="outlined" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}}>
             Decline
+          </Button>
+          <Button color="primary" variant="contained" onClick={() => {setShowConfirmationTou(false); saveTouAccepted(tou?.version)}}>
+            Accept
           </Button>
         </DialogActions>
       </ResponsiveDialog>
