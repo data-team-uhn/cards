@@ -639,6 +639,7 @@ function Form (props) {
                 onError={setSelectorDialogError}
                 title="Set subject"
                 selectedQuestionnaire={data?.questionnaire}
+                disableRedirect
               />
             }
             {changedSubject &&
