@@ -173,7 +173,8 @@ function SubjectTimeline(props) {
     .then(async (response) => {
       let json = await response.json();
       return response.ok ? {response: json, level: level, names: subjectNames} : Promise.reject(response)
-    }));
+    })
+    .catch(handleError));
   };
 
   // Recursively fetch all submitted forms for a subject and it's child subjects
