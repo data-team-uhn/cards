@@ -110,7 +110,7 @@ function Subject(props) {
   }
 
   function setTab(index) {
-    navigate(location.pathname+location.search+"#"+tabs[index], location.state);
+    navigate(location.pathname+location.search+"#"+tabs[index]);
     setActiveTab(index);
   }
 

@@ -149,13 +149,10 @@ function PedigreeQuestion(props) {
           </div>
           <Dialog fullScreen open={expanded}
             onClose={() => { setExpanded(false); }}
-            slotProps={{
-              transition: {
-                onEntering: () => { openPedigree(); },
-                onExit: () => { closePedigree(); }
-              },
-            }}
-            >
+            TransitionProps={{
+              onEntering: () => { openPedigree(); },
+              onExit: () => { closePedigree(); }
+            }}>
             <DialogContent>
               <div id="pedigreeEditor"></div>
             </DialogContent>
