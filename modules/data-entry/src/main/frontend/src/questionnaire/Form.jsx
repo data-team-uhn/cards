@@ -121,7 +121,7 @@ function Form (props) {
 
   let navigate = useNavigate();
 
-  let id = /Forms\/([^.\/]+)/.exec(location.pathname)[1];
+  let id = props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1];
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
