@@ -715,10 +715,11 @@ export function NewSubjectDialog (props) {
  * @param {func} onChange Callback for when the user changes their selection
  * @param {func} onClose Callback for when the user closes this dialog
  * @param {func} onError Callback for when an error occurs during subject selection
+ * @param {bool} disableRedirect Whether to disable the default behavior of redirecting to the newly created subject upon successful creation
  * @param {string} title Title of the dialog, if any
  */
 function UnstyledSelectorDialog (props) {
-  const { allowedTypes, classes, currentSubject, disabled, open, onChange, onClose, onError, title, selectedQuestionnaire, ...rest } = props;
+  const { allowedTypes, classes, currentSubject, disabled, open, onChange, onClose, onError, title, selectedQuestionnaire, disableRedirect, ...rest } = props;
   const [ subjects, setSubjects ] = useState([]);
   const [ selectedSubject, setSelectedSubject ] = useState();
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
@@ -783,6 +784,7 @@ function UnstyledSelectorDialog (props) {
       onClose={() => { setNewSubjectPopperOpen(false); }}
       onSubmit={handleSubmitNew}
       open={open && newSubjectPopperOpen}
+      disableRedirect={disableRedirect}
       />
     <ResponsiveDialog title={title} open={open} onClose={onClose}>
       <DialogContent dividers className={classes.dialogContentWithTable}>
