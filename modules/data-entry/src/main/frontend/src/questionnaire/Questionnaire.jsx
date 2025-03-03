@@ -66,13 +66,12 @@ let Questionnaire = (props) => {
   let [ error, setError ] = useState();
   let location = useLocation();
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
+  let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
   let isEdit = window.location.pathname.endsWith(".edit");
   let navigate = useNavigate();
 
   let pageNameWriter = usePageNameWriterContext();
-
-  let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
 
   let handleError = (response) => {
     setError(response);
