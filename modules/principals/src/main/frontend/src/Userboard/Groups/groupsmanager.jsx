@@ -67,6 +67,7 @@ class GroupsManager extends React.Component {
   }
 
   handleRemoveUsers(currentGroupName, groupUsers) {
+	if (!this.tableRef.current) return;
     let formData = new FormData();
 
     let selectedUsers = Object.keys(this.tableRef.current?.getState().rowSelection);
