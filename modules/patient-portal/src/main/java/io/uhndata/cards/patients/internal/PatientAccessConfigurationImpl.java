@@ -145,7 +145,7 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     {
         Node visitSubject = this.formUtils.getSubject(visitInformationNode, "/SubjectTypes/Patient/Visit");
         Node clinicNode = AppointmentUtils.getValidClinicNode(this.formUtils, visitSubject);
-        return getDaysRelativeToEventWhileSurveyIsValid(clinicNode);
+        return getClinicDaysRelativeToEventWhileSurveyIsValid(clinicNode);
     }
 
     @Override

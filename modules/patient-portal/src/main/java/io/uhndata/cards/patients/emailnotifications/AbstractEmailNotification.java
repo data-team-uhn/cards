@@ -127,16 +127,14 @@ abstract class AbstractEmailNotification
 
             NodeIterator appointmentResults = EmptyNodeIterator.INSTANCE;
             switch (notificationType) {
-                case "initial":
+                case "Invitation":
                     appointmentResults = AppointmentUtils.getAppointmentsForInitialEmailForDay(session, dateToQuery,
                         clinicId, surveyDeadline);
                     break;
-                case "reminder":
+                default:
                     appointmentResults = AppointmentUtils.getAppointmentsForReminderEmailForDay(session, dateToQuery,
                         clinicId);
                     break;
-                default:
-                    LOGGER.warn("Unknown notification type: {}", notificationType);
             }
 
             while (appointmentResults.hasNext()) {
