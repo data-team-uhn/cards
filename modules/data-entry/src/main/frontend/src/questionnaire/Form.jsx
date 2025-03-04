@@ -252,7 +252,7 @@ function Form (props) {
     setBaseVersion(json["jcr:baseVersion"]);
     setStatusFlags(json.statusFlags);
 
-    if (isEdit) {
+    if (window.location.pathname.endsWith(".edit") || mode == "edit") {
       setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
       typeof(paginationVariant) == "undefined" && setPaginationVariant(json?.questionnaire?.paginationVariant);
       typeof(paginationNavMode) == "undefined" && setPaginationNavMode(json?.questionnaire?.paginationMode);
