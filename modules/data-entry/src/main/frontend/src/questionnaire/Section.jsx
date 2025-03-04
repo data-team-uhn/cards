@@ -328,7 +328,7 @@ function Section(props) {
       )
       }
     </React.Fragment>
-    , [conditionIsMet, instanceLabels, labelsToHide, selectedUUID, removableAnswers[ID_STATE_KEY], pageActive]);
+    , [conditionIsMet, instanceLabels, labelsToHide, selectedUUID, removableAnswers[ID_STATE_KEY], pageActive, isEdit]);
 }
 
 Section.propTypes = {
