@@ -73,8 +73,7 @@ public interface PatientAccessConfiguration
     int getDraftLifetime();
 
     /**
-     * Returns the token lifetime associated with the clinic related to the visitInformationNode Resource
-     * or default if it cannot be found.
+     * Returns the token lifetime associated with the clinic or default if it cannot be found.
      *
      * @param clinicNode the clinic Node
      *

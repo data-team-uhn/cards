@@ -246,7 +246,7 @@ public final class AppointmentUtils
     }
 
     /**
-     * Finds all appointments scheduled for sending an initial email in a given day for a given clinic.
+     * Finds all appointments scheduled for sending a reminder email in a given day for a given clinic.
      *
      * @param session a valid JCR session
      * @param dateToQuery the Java Calendar object for the day to query for appointments
