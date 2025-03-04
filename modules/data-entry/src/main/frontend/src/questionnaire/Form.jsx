@@ -107,6 +107,9 @@ function Form (props) {
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
   let [ classNames, setClassNames ] = useState(className ? [className] : []);
+  let [ id, setId ] = useState(props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1]);
+  let [ isEdit, setIsEdit ] = useState(window.location.pathname.endsWith(".edit") || mode == "edit");
+  let [ isSummary, setIsSummary ] = useState(window.location.pathname.endsWith(".summary") || mode == "summary");
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
@@ -121,7 +124,15 @@ function Form (props) {
 
   let navigate = useNavigate();
 
-  let id = props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1];
+  useEffect(() => {
+    setId(props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1]);
+    setIsEdit(window.location.pathname.endsWith(".edit") || mode == "edit");
+    setIsSummary(window.location.pathname.endsWith(".summary") || mode == "summary");
+  }, [location.pathname, mode]);
+
+  useEffect(() => {
+    setPaginationEnabled(isEdit && !!data?.['questionnaire']?.['paginate']);
+  }, [isEdit]);
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -160,8 +171,6 @@ function Form (props) {
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
   const urlBase = "/content.html";
-  const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
-  const isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
@@ -239,7 +248,7 @@ function Form (props) {
     setBaseVersion(json["jcr:baseVersion"]);
     setStatusFlags(json.statusFlags);
 
-    if (isEdit) {
+    if (window.location.pathname.endsWith(".edit") || mode == "edit") {
       setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
       typeof(paginationVariant) == "undefined" && setPaginationVariant(json?.questionnaire?.paginationVariant);
       typeof(paginationNavMode) == "undefined" && setPaginationNavMode(json?.questionnaire?.paginationMode);
