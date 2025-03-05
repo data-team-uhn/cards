@@ -23,7 +23,6 @@ import {
   Avatar,
   Button,
   CircularProgress,
-  Divider,
   Fab,
   Grid,
   List,
@@ -708,7 +707,7 @@ function QuestionnaireSet(props) {
   ];
 
   let submitButton = (label) => (
-    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key="review-submit">
+    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key={"review-submit"+label}>
       {submissionInProgress ? "Submitting...." : (label ?? "Submit")}
     </Fab>
   );
@@ -719,19 +718,17 @@ function QuestionnaireSet(props) {
     </Grid>
   ] : [
     <Typography variant="h4" key="review-title">Review and Submit</Typography>,
-    <Divider/>,
     submitButton("Submit now"),
-    <Divider/>,
     <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
       <Grid key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
         <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
           <Grid container direction="column" spacing={2}>
-            <Grid>
+            <Grid key="form-preview">
               <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
             </Grid>
-            <Grid alignSelf="center">
+            <Grid alignSelf="center" key="change-button">
               <Button
                 variant="outlined"
                 onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
@@ -865,7 +862,7 @@ function QuestionnaireSetScreen (props) {
   return (
   <Paper elevation={0} className={classes.mainContainer}>
     <Grid container direction="column" spacing={4} {...rest}>
-      {Array.from(children || []).filter(c => c).map((c, i) => <Grid key={i+"MainItem"} className={classes.mainItem} size={12}>{c}</Grid>)}
+      {Array.from(children || []).filter(c => c).map((c, i) => <Grid key={i+"MainItem"} className={classes.mainItem}>{c}</Grid>)}
     </Grid>
   </Paper>
   );
