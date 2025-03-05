@@ -71,10 +71,10 @@ function WelcomeMessageConfiguration(props) {
             alignItems="stretch"
             className={classes.editorContainer}
           >
-            <Grid size={{xs:12, md:6}}>
+            <Grid size={{xs:12, md:6}} key="markdown-text">
               <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={onChange} />
             </Grid>
-            <Grid size={{xs:12, md:6}}>
+            <Grid size={{xs:12, md:6}} key="formatted-text">
               <Card>
                 <CardHeader
                   className={classes.previewHeader}
