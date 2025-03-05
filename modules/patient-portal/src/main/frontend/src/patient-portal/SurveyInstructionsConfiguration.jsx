@@ -78,7 +78,7 @@ function SurveyInstructionsConfiguration() {
         onConfigSaved={() => setHasChanges(false)}
         >
           <List className={classes.formEntries}>
-            { Object.keys(labels).map(category => { return (<>
+            { Object.keys(labels).map(category => { return (<React.Fragment key={category + "Wrapper"}>
               <ListItem key={category}>
                 <Typography variant="h6">{camelCaseToWords(category)}</Typography>
               </ListItem>
@@ -125,7 +125,7 @@ function SurveyInstructionsConfiguration() {
                   }
                 </ListItem>)
               })}
-            </>)
+            </React.Fragment>)
           })}
         </List>
       </AdminConfigScreen>
