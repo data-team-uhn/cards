@@ -670,7 +670,7 @@ function QuestionnaireSet(props) {
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    introMessage ? <FormattedText component="p" key="intro-message">{introMessage}</FormattedText> : displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
+    introMessage ? <FormattedText key="intro-message">{introMessage}</FormattedText> : displayText("surveyIntro", Typography, {key: "welcome-message"}),
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -688,7 +688,7 @@ function QuestionnaireSet(props) {
     <Typography component="p" key="expiry-message" color="textSecondary">
         {expiryDate()}
     </Typography>,
-    displayText("surveyDraftInfo", FormattedText, {component: "p", variant: "body2", key: "draft-info"}),
+    displayText("surveyDraftInfo", FormattedText, {variant: "body2", key: "draft-info"}),
   ];
 
   let formScreen = [
@@ -759,8 +759,8 @@ function QuestionnaireSet(props) {
   let endingMessage = ending.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
   let finalInstructions = (
-      endingMessage ? <FormattedText component="p" key="summary-instructions">{endingMessage}</FormattedText> :
-      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions", component: "p"})
+      endingMessage ? <FormattedText key="summary-instructions">{endingMessage}</FormattedText> :
+      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions"})
   );
 
   let disclaimer = (
