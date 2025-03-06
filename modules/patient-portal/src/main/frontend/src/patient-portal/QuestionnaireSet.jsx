@@ -725,7 +725,7 @@ function QuestionnaireSet(props) {
       { previews?.[subjectData?.[q]?.["@name"]] ?
         <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
           <Grid container direction="column" spacing={2}>
-            <Grid key="subject-data">
+            <Grid key="form-preview">
               <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
             </Grid>
             <Grid alignSelf="center" key="change-button">
