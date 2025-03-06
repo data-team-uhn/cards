@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/view",
-  "cards:extensionName": "Form",
+  "cards:extensionName": "Form View",
   "cards:targetURL": "/content.html/Forms/*",
-  "cards:extensionRenderURL": "asset:cards-dataentry.Form.js"
+  "cards:extensionRenderURL": "asset:cards-dataentry.FormView.js"
 }

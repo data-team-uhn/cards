@@ -4,6 +4,7 @@
   "cards-dataentry.Questionnaires.js": ["asset:cards-dataentry.Forms.js"],
   "cards-dataentry.Subjects.js": ["asset:cards-dataentry.LiveTable.js", "asset:cards-dataentry.Forms.js"],
   "cards-dataentry.SubjectTypes.js": ["asset:cards-dataentry.LiveTable.js"],
+  "cards-dataentry.FormList.js": ["asset:cards-dataentry.Forms.js"],
   "cards-dataentry.FormView.js": ["asset:cards-dataentry.Forms.js"],
   "cards-dataentry.SubjectView.js": ["asset:cards-dataentry.Subjects.js"],
   "cards-dataentry.SubjectSelector.js": ["asset:cards-login.loginDialogue.js"],

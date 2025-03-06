@@ -107,9 +107,10 @@ function Form (props) {
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
   let [ classNames, setClassNames ] = useState(className ? [className] : []);
-  let [ id, setId ] = useState(props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1]);
-  let [ isEdit, setIsEdit ] = useState(window.location.pathname.endsWith(".edit") || mode == "edit");
-  let [ isSummary, setIsSummary ] = useState(window.location.pathname.endsWith(".summary") || mode == "summary");
+
+  let id = props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1];
+  let isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
+  let isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
@@ -123,12 +124,6 @@ function Form (props) {
   let [ disableProgress, setDisableProgress ] = useState();
 
   let navigate = useNavigate();
-
-  useEffect(() => {
-    setId(props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1]);
-    setIsEdit(window.location.pathname.endsWith(".edit") || mode == "edit");
-    setIsSummary(window.location.pathname.endsWith(".summary") || mode == "summary");
-  }, [location.pathname, mode]);
 
   useEffect(() => {
     setPaginationEnabled(isEdit && !!data?.['questionnaire']?.['paginate']);
