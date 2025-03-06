@@ -1010,22 +1010,26 @@ function SubjectSelectorList(props) {
           querySubjectSubset += " or ";
         }
       }
-      let querySubjectSubsetClause = (querySubjectSubset.length > 0) ? (" and (" + querySubjectSubset + ") ") : " ";
-      // fetch the Subjects of each form of this questionnaire type for all listed subjects
-      url = `/query?rawResults=true&query=SELECT f.[subject] FROM [cards:Form] as f `
-          + `where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}`
-          + `&limit=${selectedQuestionnaire?.["maxPerSubject"] * pagination.pageSize}`;
-      const responseSubject = await fetchWithReLogin(globalLoginDisplay, url);
-      const relatedSubjectsResp = await responseSubject.json();
 
-      setRelatedSubjects(relatedSubjectsResp.rows);
-      let latestRelatedSubjects = relatedSubjectsResp.rows;
+      if (selectedQuestionnaire?.["maxPerSubject"] > 0) {
+          let querySubjectSubsetClause = (querySubjectSubset.length > 0) ? (" and (" + querySubjectSubset + ") ") : " ";
+          // fetch the Subjects of each form of this questionnaire type for all listed subjects
+          url = `/query?rawResults=true&query=SELECT f.[subject] FROM [cards:Form] as f `
+              + `where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}`
+              + `&limit=${selectedQuestionnaire?.["maxPerSubject"] * pagination.pageSize}`;
+          const responseSubject = await fetchWithReLogin(globalLoginDisplay, url);
+          const relatedSubjectsResp = await responseSubject.json();
 
-      // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
-      let atMax = (filteredData.length === 1 && latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["f.subject"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
-      if (filteredData.length === 1 && !atMax) {
-        handleSelection(filteredData[0]) && onSelect(filteredData[0]);
+          setRelatedSubjects(relatedSubjectsResp.rows);
+          let latestRelatedSubjects = relatedSubjectsResp.rows;
+
+          // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
+          let atMax = (filteredData.length === 1 && latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["f.subject"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+          if (filteredData.length === 1 && !atMax) {
+            handleSelection(filteredData[0]) && onSelect(filteredData[0]);
+          }
       }
+
       setData(filteredData.map((row) => ({
         hierarchy: getHierarchy(row, React.Fragment, () => ({})),
           ...row })));
