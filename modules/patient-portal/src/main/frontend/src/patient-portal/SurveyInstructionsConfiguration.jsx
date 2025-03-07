@@ -78,7 +78,7 @@ function SurveyInstructionsConfiguration() {
         onConfigSaved={() => setHasChanges(false)}
         >
           <List className={classes.formEntries}>
-            { Object.keys(labels).map(category => { return (<span key={category + category}>
+            { Object.keys(labels).map(category => { return (<span key={category + "Wrapper"}>
               <ListItem key={category}>
                 <Typography variant="h6">{camelCaseToWords(category)}</Typography>
               </ListItem>
