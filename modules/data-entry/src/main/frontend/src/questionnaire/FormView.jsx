@@ -18,6 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 
 import Form from "./Form";
 
@@ -26,15 +27,16 @@ import Form from "./Form";
  * @returns {Object} a React Form component
  */
 export default function FormView() {
+  let location = useLocation();
   let [ id, setId ] = useState(/Forms\/([^.\/]+)/.exec(location.pathname)[1]);
   let [ mode, setMode ] = useState(location.pathname.endsWith(".edit") ? "edit" : location.pathname.endsWith(".summary") ? "summary" : undefined);
 
   useEffect(() => {
     setId(/Forms\/([^.\/]+)/.exec(location.pathname)[1]);
     setMode(location.pathname.endsWith(".edit") ? "edit" : location.pathname.endsWith(".summary") ? "summary" : undefined);
-  }, [location.pathname]);
+  }, [location]);
 
   return (
-      <Form id={id} mode={mode}/>
+    <Form id={id} mode={mode} key={id}/>
     );
 }
