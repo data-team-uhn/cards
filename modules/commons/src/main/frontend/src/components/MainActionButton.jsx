@@ -52,8 +52,17 @@ import style from './style.jsx';
 //
 
 function MainActionButton(props) {
-  const { icon, label, title, ariaLabel, onClick, classes } = props;
-  const { inProgress, disabled, style } = { inProgress: false, disabled: false, style: {}, ...props };
+  const {
+    classes,
+    icon,
+    label,
+    title,
+    ariaLabel,
+    onClick,
+    inProgress = false,
+    disabled = false,
+    style = {}
+  } = props;
 
   let extended = !!label;
 

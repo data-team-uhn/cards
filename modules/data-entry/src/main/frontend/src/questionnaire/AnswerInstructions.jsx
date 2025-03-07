@@ -32,12 +32,14 @@ import { hasWarningFlags } from "./FormUtilities";
 // based on minAnswers and maxAnswers from the question definition
 
 function AnswerInstructions (props) {
-  let { classes, minAnswers, maxAnswers, currentAnswers, answerLabel } = {
-    minAnswers: 0,
-    maxAnswers: 1,
-    currentAnswers: 0,
-    answerLabel: "value",
-    ...props };
+  let {
+    classes,
+    minAnswers = 0,
+    maxAnswers = 1,
+    currentAnswers = 0,
+    answerLabel = "value",
+  } = props;
+
   let { isEdit, existingAnswer } = props;
   let [ answerIsAcceptable, setAnswerAcceptable] = useState();
 

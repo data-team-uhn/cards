@@ -96,7 +96,15 @@ const useStyles = makeStyles(theme => ({
  *   the title and titleAction line
  */
 function ResourceHeader (props) {
-  let { title, breadcrumbs, separator, tags, action, children, contentOffset } = { separator: "/", contentOffset: 0, ...props };
+  let {
+    title,
+    breadcrumbs,
+    separator = "/",
+    tags,
+    action,
+    children,
+    contentOffset = 0
+  } = props;
 
   const classes = useStyles();
 

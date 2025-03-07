@@ -61,7 +61,14 @@ const useStyles = makeStyles(theme => ({
 // </ErrorDialog>
 //
 const ErrorDialog = (props) => {
-  const { title, children, onClose, maxWidth, fullWidth, ...rest } = { title: "Error", maxWidth: "xs", fullWidth: true, ...props };
+  const {
+    title = "Error",
+    children,
+    onClose,
+    maxWidth = "xs",
+    fullWidth = true,
+    ...rest
+  } = props;
 
   const classes = useStyles();
 

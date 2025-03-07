@@ -52,7 +52,14 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  />
 function DateQuestionFull(props) {
   let {existingAnswer, classes, pageActive, ...rest} = props;
-  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
+  let {
+    text,
+    dateFormat = "yyyy-MM-dd",
+    minAnswers = 0,
+    type = DateQuestionUtilities.TIMESTAMP_TYPE,
+    lowerLimit,
+    upperLimit
+  } = {...props.questionDefinition, ...props};
 
   let startValues = existingAnswer && existingAnswer[1].value || "";
 

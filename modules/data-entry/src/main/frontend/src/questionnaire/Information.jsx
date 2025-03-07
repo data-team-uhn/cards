@@ -30,7 +30,7 @@ import FormattedText from "../components/FormattedText.jsx";
 // GUI for displaying Information cards
 function Information (props) {
   let { classes, infoDefinition, ...otherProps } = props;
-  let { text, type } = { type: "plain", ...otherProps, ...infoDefinition }
+  let { text, type = "plain" } = { ...otherProps, ...infoDefinition }
 
   return (type == "plain" ?
     <Card

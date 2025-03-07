@@ -79,7 +79,18 @@ import style from "./style.jsx";
 //
 
 function UserInputAssistant (props) {
-  const { anchorEl, variant, title, children, actionLabel, onAction, onIgnore, onClickAway, classes } = { variant: 'hint', ...props};
+  const {
+    anchorEl,
+    variant = 'hint',
+    title,
+    children,
+    actionLabel,
+    onAction,
+    onIgnore,
+    onClickAway,
+    classes
+  } = props;
+
   let [ enabled, setEnabled ] = useState(true);
 
   let [ placement, setPlacement ] = useState("right");

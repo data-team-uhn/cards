@@ -34,10 +34,14 @@ import ResponsiveDialog from "../components/ResponsiveDialog";
  * @param {func} onExpired Callback for when the countdown reaches 0 and the session expired
  */
 function SessionExpiryWarningModal(props) {
-  const { activeLength, countdownLength, lastActivityTimestamp, onStay, onExit, onExpired } = {
-    activeLength: 29 * 60 * 1000,
-    countdownLength: 2 * 60 * 1000,
-    ...props };
+  const {
+    activeLength = 29 * 60 * 1000,
+    countdownLength = 2 * 60 * 1000,
+    lastActivityTimestamp,
+    onStay,
+    onExit,
+    onExpired
+  } = props;
 
   let [ open, setOpen ] = useState(false);
   let [ expired, setExpired ] = useState(false);

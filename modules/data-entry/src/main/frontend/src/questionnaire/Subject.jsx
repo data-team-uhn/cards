@@ -78,7 +78,7 @@ let createQueryURL = (query, type) => {
  */
 
 function Subject(props) {
-  let { classes, maxDisplayed, pageSize } = { maxDisplayed: 4, pageSize: 10, ...props };
+  let { classes, maxDisplayed = 4, pageSize = 10 } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ activeTab, setActiveTab ] = useState(0);
 

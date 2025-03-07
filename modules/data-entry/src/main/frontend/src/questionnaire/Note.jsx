@@ -30,8 +30,8 @@ import UnfoldLess from "@mui/icons-material/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, children, existingAnswer, classes, onChangeNote, pageActive, fullSize, value, ...rest } = {...props};
-  const { placeholder } = { placeholder: "Please place any additional notes here.", ...props };
+  const { answerPath, children, existingAnswer, classes, onChangeNote, pageActive, fullSize, value, ...rest } = props;
+  const { placeholder = "Please place any additional notes here." } = props;
   
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));

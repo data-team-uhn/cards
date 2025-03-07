@@ -74,7 +74,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ResponsiveDialog = forwardRef((props, ref) => {
-  const { title, width, children, withCloseButton, className, onClose, ...rest } = { width: "sm", ...props };
+  const {
+    title,
+    width = "sm",
+    children,
+    withCloseButton,
+    className,
+    onClose,
+    ...rest
+  } = props;
 
   const classes = useStyles();
 

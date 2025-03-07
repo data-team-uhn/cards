@@ -42,14 +42,19 @@ import MainActionButton from './MainActionButton.jsx';
 //  />
 //
 function NewItemButton(props) {
-  const { title, inProgress, ...rest } = { title: "New", inProgress: false, ...props };
+  const {
+    title = "New",
+    inProgress = false,
+    ...rest
+  } = props;
+
   return (
     <MainActionButton
       ariaLabel="new"
       icon={<AddIcon />}
       title={title}
       inProgress={inProgress}
-      {...props}
+      {...rest}
     />
   );
 }

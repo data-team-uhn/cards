@@ -56,12 +56,22 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  *
  */
 function PrintButton(props) {
-  const { resourcePath, resourceData, title, date, breadcrumb, onOpen, onClose, size, variant, label, className, disablePreview,
-  fullScreen, disableShortcut } = {
-    variant: "icon",
-    size: "large",
-    fullScreen: true,
-    ...props };
+  const {
+    resourcePath,
+    resourceData,
+    title,
+    date,
+    breadcrumb,
+    onOpen,
+    onClose,
+    size = "large",
+    variant = "icon",
+    label,
+    className,
+    disablePreview,
+    fullScreen = true,
+    disableShortcut
+  } = props;
 
   const [ open, setOpen ] = useState(false);
 

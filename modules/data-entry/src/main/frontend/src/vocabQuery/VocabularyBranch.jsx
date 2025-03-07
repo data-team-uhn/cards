@@ -58,8 +58,28 @@ import { VALUE_POS } from "../questionnaire/Answer";
 //  parentId: id of a parent brunch term
 //
 function VocabularyBranch(props) {
-  const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError,
-    knownHasChildren, selectorComponent, onTermSelected, onTermUnselected, currentSelection, maxAnswers, parentId, classes } = {  parentId: "", ...props };
+  const {
+    defaultOpen,
+    id,
+    path,
+    name,
+    onTermClick,
+    onCloseInfoBox,
+    registerInfo,
+    getInfo,
+    expands,
+    headNode,
+    focused,
+    onError,
+    knownHasChildren,
+    selectorComponent,
+    onTermSelected,
+    onTermUnselected,
+    currentSelection,
+    maxAnswers,
+    parentId = "",
+    classes
+  } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);

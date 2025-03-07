@@ -46,7 +46,17 @@ const PROGRESS_SELECT_SUBJECT = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { classes, presetPath, currentSubject, theme, open, onClose, withButton, buttonTitle } = {open: false, ...props };
+  const {
+    classes,
+    presetPath,
+    currentSubject,
+    theme,
+    open = false,
+    onClose,
+    withButton,
+    buttonTitle
+  } = props;
+
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);

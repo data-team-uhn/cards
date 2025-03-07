@@ -44,12 +44,26 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, resourceSelectors, columns, showTotalRows, defaultLimit, updateData, classes,
-    filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
-    onDataReceived, onFiltersChange, filtersJsonString, ...rest } = {
-      defaultLimit: 20,
-      showTotalRows: false,
-      ...props };
+  const {
+    customUrl,
+    resourceSelectors,
+    columns,
+    showTotalRows = false,
+    defaultLimit = 20,
+    updateData,
+    classes,
+    filters,
+    entryType,
+    actions,
+    admin,
+    disableTopPagination,
+    disableBottomPagination,
+    onDataReceived,
+    onFiltersChange,
+    filtersJsonString,
+    ...rest
+  } = props;
+
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(

@@ -45,11 +45,13 @@ import QueryMatchingUtils from "../resourceQuery/QueryMatchingUtils";
 //  onRemoveOption: Function to remove added answer
 //
 function VocabularyQuery(props) {
-  const { questionDefinition, clearOnClick, focusAfterSelecting, variant, ...rest } = {
-  clearOnClick: true,
-  focusAfterSelecting: true,
-  variant: 'default',
-  ...props };
+  const {
+    questionDefinition,
+    clearOnClick = true,
+    focusAfterSelecting = true,
+    variant = 'default',
+    ...rest
+  } = props;
 
   // Make sequential requests to source vocabularies
   // Callback onSuccess/onFailure when all requests have responded
