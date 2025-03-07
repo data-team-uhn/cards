@@ -19,7 +19,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Form } from "./Form";
+import Form from "./Form";
 
 /**
  * A shell component to render form view
