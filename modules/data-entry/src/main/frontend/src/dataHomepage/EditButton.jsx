@@ -30,7 +30,14 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * A component that renders an icon to open the edit URL for an entry or to use local edit dialog.
  */
 function EditButton(props) {
-  const { entryPath, entryType = "", size = "large", className, admin, onClick } = props;
+  const {
+    entryPath,
+    entryType = "",
+    size = "large",
+    className,
+    admin,
+    onClick
+  } = props;
 
   let innerButton =
         <IconButton className={className} size={size} onClick={onClick}>
