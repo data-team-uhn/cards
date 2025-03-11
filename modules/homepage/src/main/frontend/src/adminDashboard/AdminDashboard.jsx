@@ -64,6 +64,7 @@ function AdminDashboard(props) {
               <Grid
                 key={route["cards:targetURL"]}
                 size={{xs:12, md:6, xl:4}}
+                alignContent="center"
               >
                 <ListItemButton
                   onClick={() => navigate(route["cards:targetURL"])}

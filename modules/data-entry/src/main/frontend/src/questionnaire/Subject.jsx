@@ -460,12 +460,12 @@ function SubjectMemberInternal (props) {
           <Grid container direction="row" spacing={1} justifyContent="flex-start">
             <Grid size="auto">{expandAction}</Grid>
             <Grid size="auto">{avatar}</Grid>
-            <Grid size="auto">
+            <Grid size="grow">
               <Typography variant="overline">
                  {label} <Link to={"../content.html" + path} underline="hover">{identifier}</Link>
               </Typography>
             </Grid>
-            <Grid xs="3.5">{tags}</Grid>
+            <Grid size={{xs: 3.5}}>{tags}</Grid>
             <Grid className={classes.childSubjectActions}>{action}</Grid>
           </Grid>
         </Grid>
@@ -529,12 +529,13 @@ function SubjectMemberInternal (props) {
                     minSize: 40,
                     maxSize: 40,
                     muiTableBodyCellProps: {
-                      sx: {
-                        paddingRight: '2px',
-                        paddingLeft: '0',
+                      sx: (theme) => ({
+                        paddingRight: '0',
+                        paddingLeft: theme.spacing(0.25),
+                        paddingTop: theme.spacing(0.5),
                         flex: '0 0 auto',
                         alignItems: 'start'
-                      },
+                      }),
                     },
                   },
                 }}

@@ -148,14 +148,14 @@ function DroppableAnswerOption(props) {
           className={classes.answerOption + ' ' + (!isPerview && draggableState.type === "dragging" ? classes.optionDisabled : "")}
           ref={ref}
         >
-          <Grid xs={1}>
+          <Grid size={{xs: 1}}>
             <Tooltip title={!isPerview ? "Drag to reorder" : ""}>
               <IconButton className={classes.optionsDragIndicator}>
                 <DragIndicatorIcon />
               </IconButton>
             </Tooltip>
           </Grid>
-          <Grid xs={8}>
+          <Grid size={{xs: 8}}>
             {!isPerview && <span>
             <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
             <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
@@ -187,7 +187,7 @@ function DroppableAnswerOption(props) {
               multiline
             />
           </Grid>
-          <Grid xs={3} className={classes.answerOptionActions}>
+          <Grid size={{xs: 3}} className={classes.answerOptionActions}>
             {generateDescriptionIcon(value, index, false)}
             <Tooltip title="Delete option">
               <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
