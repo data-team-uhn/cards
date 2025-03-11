@@ -202,6 +202,9 @@ const questionnaireStyle = theme => ({
          "& .MuiTableCell-body": {
             padding: theme.spacing(0, 2),
          },
+         "& .MuiTableCell-body:last-child": {
+            paddingRight: 0,
+         },
     },
     subjectView : {
         "& .MuiTabs-indicator": {
@@ -257,7 +260,7 @@ const questionnaireStyle = theme => ({
         marginBottom: theme.spacing(4),
     },
     subjectNestedContainer: {
-        marginLeft: theme.spacing(5),
+        paddingLeft: theme.spacing(5),
         "& .MuiGrid-container:last-child" : {
           marginBottom: "0 !important",
         }
