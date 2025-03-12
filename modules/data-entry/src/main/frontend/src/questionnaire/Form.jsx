@@ -203,7 +203,7 @@ function Form (props) {
       .then(response => response.text())
       .then(text => {
         setWasCheckedOut(text === "true");
-        if (isEdit) {
+        if (window.location.pathname.endsWith(".edit") || mode == "edit") {
           // Perform a JCR check-out of the Form
           let checkoutForm = new FormData();
           checkoutForm.set(":operation", "checkout");
