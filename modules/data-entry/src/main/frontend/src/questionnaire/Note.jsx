@@ -29,7 +29,9 @@ import UnfoldLess from "@mui/icons-material/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, children, existingAnswer, classes, onChangeNote, pageActive, fullSize, placeholder, value, ...rest } = {...props};
+
+  const { answerPath, children, existingAnswer, classes, onChangeNote, pageActive, fullSize, placeholder, value, onAddSuggestion, ...rest } = {...props};
+
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();
