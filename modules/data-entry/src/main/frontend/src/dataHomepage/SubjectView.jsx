@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useState, useContext } from "react";
+import { useTheme } from '@mui/material/styles';
 import LiveTable from "./LiveTable.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -53,7 +54,7 @@ function SubjectView(props) {
   const [ columns, setColumns ] = React.useState(props.columns || null);
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("subjects:filters"));
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
-
+  const theme = useTheme();
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("subjects:activeTab");
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -160,7 +161,7 @@ function SubjectView(props) {
               onFiltersChange={(str) => setFiltersJsonString(str)}
               filtersJsonString={filtersJsonString}
             />
-          : <Typography>No results</Typography>
+          : <Typography style={{ paddingLeft: theme.spacing(1)}}>No results</Typography>
       }
       </CardContent>
       {expanded &&
