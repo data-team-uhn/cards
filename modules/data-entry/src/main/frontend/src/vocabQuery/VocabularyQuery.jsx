@@ -137,6 +137,7 @@ function VocabularyQuery(props) {
 
   return (
       <ResourceQuery
+        questionDefinition={questionDefinition}
         clearOnClick={clearOnClick}
         focusAfterSelecting={focusAfterSelecting}
         variant={variant}
