@@ -26,7 +26,7 @@ import Form from "./Form";
  * A shell component to render form view
  * @returns {Object} a React Form component
  */
-export default function FormView() {
+export default function FormView(props) {
   let location = useLocation();
   let [ id, setId ] = useState(/Forms\/([^.\/]+)/.exec(location.pathname)[1]);
   let [ mode, setMode ] = useState(location.pathname.endsWith(".edit") ? "edit" : location.pathname.endsWith(".summary") ? "summary" : undefined);
@@ -37,6 +37,6 @@ export default function FormView() {
   }, [location]);
 
   return (
-    <Form id={id} mode={mode} key={id}/>
+    <Form id={id} mode={mode} key={id} {...props}/>
     );
 }
