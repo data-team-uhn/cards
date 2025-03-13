@@ -33,7 +33,7 @@ export default function FormView() {
 
   useEffect(() => {
     setId(/Forms\/([^.\/]+)/.exec(location.pathname)[1]);
-    setMode(location.pathname.endsWith(".edit") ? "edit" : location.pathname.endsWith(".summary") ? "summary" : undefined);
+    setMode(location.pathname.endsWith(".edit") ? "edit" : location.pathname.endsWith(".summary") ? "summary" : "view");
   }, [location]);
 
   return (

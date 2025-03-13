@@ -413,9 +413,7 @@ function Form (props) {
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        checkoutIfNeededAndFetchData(() => {
-            navigate(urlBase + formURL);
-        });
+        navigate(urlBase + formURL);
     });
   }
 
@@ -439,7 +437,7 @@ function Form (props) {
   // Load the Form, only once, upon initialization
   useEffect(() => {
     checkoutIfNeededAndFetchData();
-  }, []);
+  }, [mode]);
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
