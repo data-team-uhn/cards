@@ -403,7 +403,6 @@ const questionnaireStyle = theme => ({
         position: "sticky",
         top: 0,
         zIndex: 2,
-        marginTop: theme.spacing(2*GRID_SPACE_UNIT),
         paddingTop: 0,
       },
       "& > .MuiCollapse-wrapper" : {
