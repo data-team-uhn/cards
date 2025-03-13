@@ -203,7 +203,7 @@ const questionnaireStyle = theme => ({
             padding: theme.spacing(0, 2),
          },
          "& .MuiTableCell-body:last-child": {
-            paddingRight: 0,
+            paddingRight: theme.spacing(.5),
          },
     },
     subjectView : {
