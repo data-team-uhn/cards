@@ -268,6 +268,24 @@ const questionnaireStyle = theme => ({
     circularProgressContainer: {
         marginTop: theme.spacing(5),
     },
+    formCircularProgressContainer: {
+        position: "fixed",
+        backgroundColor: theme.palette.background.paper,
+        zIndex: theme.zIndex.drawer + 10,
+        top: "50%",
+        left: "50%",
+        [theme.breakpoints.up('md')]: {
+          marginLeft: "130px",
+        },
+    },
+    circularProgressBackdrop: {
+	    backgroundColor: theme.palette.background.paper,
+        zIndex: theme.zIndex.drawer + 1,
+        opacity: "0.5!important",
+        [theme.breakpoints.up('md')]: {
+          marginLeft: "260px",
+        },
+    },
     compactLayout : {
       "& .MuiList-root" : {
         [theme.breakpoints.up('sm')]: {

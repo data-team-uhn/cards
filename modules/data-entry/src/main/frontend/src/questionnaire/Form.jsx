@@ -21,6 +21,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router";
 
 import {
+  Backdrop,
   Breadcrumbs,
   Button,
   Chip,
@@ -648,6 +649,15 @@ function Form (props) {
                 selectedQuestionnaire={data?.questionnaire}
                 disableRedirect
               />
+            }
+            {saveInProgress &&
+              <span>
+                <Backdrop
+                  open={saveInProgress}
+                  className={classes.circularProgressBackdrop}
+                />
+                <CircularProgress className={classes.formCircularProgressContainer}/>
+              </span>
             }
             {changedSubject &&
               <React.Fragment>
