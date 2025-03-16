@@ -33,6 +33,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { alpha } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import EditIcon from '@mui/icons-material/Edit';
@@ -651,13 +652,16 @@ function Form (props) {
               />
             }
             {saveInProgress &&
-              <span>
-                <Backdrop
-                  open={saveInProgress}
-                  className={classes.circularProgressBackdrop}
-                />
-                <CircularProgress className={classes.formCircularProgressContainer}/>
-              </span>
+              <Backdrop
+               open={saveInProgress}
+               sx={(theme) => ({
+                 backgroundColor: alpha(theme.palette.background.paper, .5),
+                 marginLeft: {md : "260px"},
+                 zIndex: theme.zIndex.drawer + 1
+               })}
+             >
+               <CircularProgress />
+             </Backdrop>
             }
             {changedSubject &&
               <React.Fragment>
