@@ -97,7 +97,7 @@ root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={portalTheme}>
       <Router history={hist}>
-        <Routes color="secondary">
+        <Routes>
           <Route path="/Survey.html/" element={<PatientPortalHomepage />}/>
           <Route path="/Survey" element={<Navigate replace to="/Survey.html/" />}/>
           <Route path="/" element={<Navigate replace to="/Survey.html/" />}/>

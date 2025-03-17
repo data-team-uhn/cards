@@ -78,7 +78,7 @@ function Main(props) {
   };
 
   let switchRoutes = () => {
-    return (<Routes color="secondary">
+    return (<Routes>
       {routes.map((route, key) => {
         return (
           <Route
@@ -172,7 +172,7 @@ root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
-        <Routes color="secondary">
+        <Routes>
           <Route path="/*" element={<MainComponent />}/>
           <Route path="/" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
           <Route path="/content" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
