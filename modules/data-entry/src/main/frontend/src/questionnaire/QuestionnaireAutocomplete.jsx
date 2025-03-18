@@ -88,6 +88,7 @@ let entitySpecs = {
 
 // TODO: Don't actually need entity.uuid ?
 function QuestionnaireAutocomplete(props) {
+  PropTypes.checkPropTypes(QuestionnaireAutocomplete.propTypes, props, 'prop', 'QuestionnaireAutocomplete');
   const {
     multiple = false,
     entities,

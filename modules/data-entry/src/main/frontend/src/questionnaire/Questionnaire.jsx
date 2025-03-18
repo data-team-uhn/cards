@@ -59,6 +59,7 @@ export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamesp
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
+  PropTypes.checkPropTypes(Questionnaire.propTypes, props, 'prop', 'Questionnaire');
   let { classes } = props;
   let [ data, setData ] = useState();
   let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
@@ -255,6 +256,7 @@ export default withStyles(Questionnaire, QuestionnaireStyle);
 
 
 let QuestionnaireItemSet = (props) => {
+  PropTypes.checkPropTypes(QuestionnaireItemSet.propTypes, props, 'prop', 'QuestionnaireItemSet');
   let { children, models, onActionDone, data, classes } = props;
 
   let prioritaryModels = {};
@@ -384,6 +386,7 @@ QuestionnaireItemSet.propTypes = {
 
 // Questionnaire contents: properties + entries
 let QuestionnaireContents = (props) => {
+  PropTypes.checkPropTypes(QuestionnaireContents.propTypes, props, 'prop', 'QuestionnaireContents');
   let { data } = props;
 
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
@@ -526,6 +529,7 @@ ConditionalGroup.propTypes = {
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
 
 let QuestionnaireEntry = (props) => {
+  PropTypes.checkPropTypes(QuestionnaireEntry.propTypes, props, 'prop', 'QuestionnaireEntry');
   let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
   let [ menuItems, setMenuItems ] = useState([]);

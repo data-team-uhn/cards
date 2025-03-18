@@ -31,6 +31,7 @@ import NewItemButton from "../components/NewItemButton";
 // Menu for creating questions or sections
 
 let CreationMenu = (props) => {
+  PropTypes.checkPropTypes(CreationMenu.propTypes, props, 'prop', 'CreationMenu');
   const {
     isMainAction,
     data,

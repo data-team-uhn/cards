@@ -37,6 +37,7 @@ import LabeledField from "./LabeledField";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
 let Fields = (props) => {
+  PropTypes.checkPropTypes(Fields.propTypes, props, 'prop', 'Fields');
   let { data, hints, JSON, edit, condensed, ...rest } = props;
 
   /**

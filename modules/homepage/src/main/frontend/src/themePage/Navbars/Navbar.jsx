@@ -22,6 +22,7 @@ import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
 import headerStyle from "../../headerStyle.jsx";
 
 function Header({ ...props }) {
+  PropTypes.checkPropTypes(Header.propTypes, props, 'prop', 'Header');
   const { classes, color } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color

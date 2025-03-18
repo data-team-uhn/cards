@@ -36,6 +36,7 @@ export function camelCaseToWords(str) {
 }
 
 let LabeledField = (props) => {
+  PropTypes.checkPropTypes(LabeledField.propTypes, props, 'prop', 'LabeledField');
   let {name, condensed, children } = props;
 
   let { classes } = useStyles();

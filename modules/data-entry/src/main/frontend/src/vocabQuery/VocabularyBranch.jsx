@@ -58,6 +58,7 @@ import { VALUE_POS } from "../questionnaire/Answer";
 //  parentId: id of a parent brunch term
 //
 function VocabularyBranch(props) {
+  PropTypes.checkPropTypes(VocabularyBranch.propTypes, props, 'prop', 'VocabularyBranch');
   const {
     defaultOpen,
     id,

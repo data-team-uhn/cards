@@ -53,6 +53,7 @@ const CARDS_QUERY_MATCH_PATH_KEY = "@path";
  * Other props will be forwarded to the Input element
  */
 function SearchBar(props) {
+  PropTypes.checkPropTypes(SearchBar.propTypes, props, 'prop', 'SearchBar');
   const {
     classes,
     className,

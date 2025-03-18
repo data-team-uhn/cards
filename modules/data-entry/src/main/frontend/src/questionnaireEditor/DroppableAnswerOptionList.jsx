@@ -29,6 +29,7 @@ import { reorderWithEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/r
 import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash';
 
 function DroppableAnswerOptionList(props) {
+  PropTypes.checkPropTypes(DroppableAnswerOptionList.propTypes, props, 'prop', 'DroppableAnswerOptionList');
   const { classes, options, setOptions, deleteOption, generateDescriptionIcon } = props;
 
   useEffect(() => {

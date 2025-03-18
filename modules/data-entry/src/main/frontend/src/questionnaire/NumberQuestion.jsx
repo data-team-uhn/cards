@@ -130,6 +130,7 @@ const useSliderStyles = makeStyles()(theme => ({
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
+  PropTypes.checkPropTypes(NumberQuestion.propTypes, props, 'prop', 'NumberQuestion');
   const { existingAnswer, errorText = "", classes, pageActive, disableValueInstructions, ...rest} = props;
   const {
     dataType,
@@ -487,6 +488,7 @@ export const NumberFormatCustom = forwardRef(function NumberFormatCustom(
     props,
     ref,
   ) {
+  PropTypes.checkPropTypes(NumberFormatCustom.propTypes, props, 'prop', 'NumberFormatCustom');
   const { inputRef, onChange, ...other } = props;
 
   return (

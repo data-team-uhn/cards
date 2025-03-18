@@ -51,6 +51,7 @@ import FormattedText from "../components/FormattedText.jsx";
 //    variant="/libs/cards/dataEntry/SelectableArea/FullBody"
 //    />
 function SelectableAreaQuestion(props) {
+  PropTypes.checkPropTypes(SelectableAreaQuestion.propTypes, props, 'prop', 'SelectableAreaQuestion');
   let { classes, errorText, existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
   let { variant, maxAnswers } = {...props.questionDefinition, ...props};
 

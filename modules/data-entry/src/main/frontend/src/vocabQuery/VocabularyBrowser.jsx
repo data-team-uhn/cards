@@ -44,6 +44,7 @@ import BrowseTheme from "./browseStyle.jsx";
 // questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 function VocabularyBrowser(props) {
+  PropTypes.checkPropTypes(VocabularyBrowser.propTypes, props, 'prop', 'VocabularyBrowser');
   const { browserOpen, onCloseInfo, onCloseBrowser, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots,
     vocabulary, enableSelection, initialSelection, questionDefinition, classes } = props;
 

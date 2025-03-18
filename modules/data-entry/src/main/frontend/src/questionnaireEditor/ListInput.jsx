@@ -28,6 +28,7 @@ import { useFieldsWriterContext } from "./FieldsContext";
 import FormControl from '@mui/material/FormControl';
 
 let ListInput = (props) => {
+  PropTypes.checkPropTypes(ListInput.propTypes, props, 'prop', 'ListInput');
   let { objectKey, data, value: type, hint } = props;
   let [ selection, setSelection ] = useState(Array.of(data[objectKey] ?? []).flat());
   const [ options, setOptions ] = useState([]);

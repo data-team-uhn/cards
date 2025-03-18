@@ -44,6 +44,8 @@ const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPAR
  *
  */
 const DateFilter = forwardRef((props, ref) => {
+  PropTypes.checkPropTypes(DateFilter.propTypes, props, 'prop', 'DateFilter');
+  // DefaultLabel intentionally unused, since it needs to not be passed to TextField
   const { classes, initial, onChangeInput, questionDefinition } = props;
 
   const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(initial?.value)));

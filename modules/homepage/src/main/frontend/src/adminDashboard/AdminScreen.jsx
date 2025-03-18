@@ -37,6 +37,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 function AdminScreen(props) {
+  PropTypes.checkPropTypes(AdminScreen.propTypes, props, 'prop', 'AdminScreen');
   const {
     title = "Administration",
     action,

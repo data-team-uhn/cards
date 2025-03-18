@@ -42,6 +42,7 @@ import MainActionButton from './MainActionButton.jsx';
 //  />
 //
 function NewItemButton(props) {
+  PropTypes.checkPropTypes(NewItemButton.propTypes, props, 'prop', 'NewItemButton');
   const {
     title = "New",
     inProgress,

@@ -92,6 +92,7 @@ const useStyles = makeStyles()(theme => ({
  */
 
 function DropdownsDatePicker(props) {
+  PropTypes.checkPropTypes(DropdownsDatePicker.propTypes, props, 'prop', 'DropdownsDatePicker');
   const {
     startDate = "1900-01-01",
     endDate,

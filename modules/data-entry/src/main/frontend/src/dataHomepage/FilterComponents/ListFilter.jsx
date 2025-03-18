@@ -39,6 +39,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  */
 const ListFilter = forwardRef((props, ref) => {
+  PropTypes.checkPropTypes(ListFilter.propTypes, props, 'prop', 'ListFilter');
   const { classes, initial, onChangeInput, questionDefinition } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");

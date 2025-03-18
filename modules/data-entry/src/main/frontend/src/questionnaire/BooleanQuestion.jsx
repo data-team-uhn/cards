@@ -54,7 +54,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
+  PropTypes.checkPropTypes(BooleanQuestion.propTypes, props, 'prop', 'BooleanQuestion');
+  const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props };
 
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
   // override them, and the props to be able to override the questionDefinition

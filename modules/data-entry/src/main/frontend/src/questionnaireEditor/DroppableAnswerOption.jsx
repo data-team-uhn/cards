@@ -50,6 +50,7 @@ export function isOptionData(data) {
 }
 
 function DroppableAnswerOption(props) {
+  PropTypes.checkPropTypes(DroppableAnswerOption.propTypes, props, 'prop', 'DroppableAnswerOption');
   const { classes, value, index, deleteOption, generateDescriptionIcon } = props;
 
   const ref = useRef(null);

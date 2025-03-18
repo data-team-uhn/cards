@@ -28,6 +28,7 @@ import ValueComponentManager from "../questionnaireEditor/ValueComponentManager"
 // Boolean Input field used by Edit dialog component
 
 let BooleanInput = (props) => {
+  PropTypes.checkPropTypes(BooleanInput.propTypes, props, 'prop', 'BooleanInput');
   let { objectKey, data, hint, onChange } = props;
   let [ checked, setChecked ] = useState(data?.[objectKey] == true);
 

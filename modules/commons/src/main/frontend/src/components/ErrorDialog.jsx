@@ -61,6 +61,7 @@ const useStyles = makeStyles()(theme => ({
 // </ErrorDialog>
 //
 const ErrorDialog = (props) => {
+  PropTypes.checkPropTypes(ErrorDialog.propTypes, props, 'prop', 'ErrorDialog');
   const {
     title = "Error",
     children,

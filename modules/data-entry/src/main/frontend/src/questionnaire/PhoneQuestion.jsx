@@ -38,6 +38,7 @@ import PhoneInput from 'react-phone-input-2';
 //   }}
 //   />
 function PhoneQuestion(props) {
+  PropTypes.checkPropTypes(PhoneQuestion.propTypes, props, 'prop', 'PhoneQuestion');
   const { existingAnswer, pageActive, questionDefinition, ...rest} = props;
 
   let initialValue = existingAnswer && existingAnswer[1].value || "";

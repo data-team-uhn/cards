@@ -49,6 +49,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    text="Test text question (lowercase only)"
 //    />
 function ChromosomeQuestion(props) {
+  PropTypes.checkPropTypes(ChromosomeQuestion.propTypes, props, 'prop', 'ChromosomeQuestion');
   // By default we enable 22 numbered chromosomes plus X and Y
   const defaultValues = {
     chromosomeNumber : 22,

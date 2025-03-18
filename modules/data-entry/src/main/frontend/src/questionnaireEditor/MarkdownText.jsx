@@ -40,6 +40,7 @@ const infoButton = {
 
 // Markdown Text Input field used by Edit dialog component
 let MarkdownText = (props) => {
+  PropTypes.checkPropTypes(MarkdownText.propTypes, props, 'prop', 'MarkdownText');
   let {
     onChange,
     height = 200,

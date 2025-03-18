@@ -71,6 +71,7 @@ export const MAX_RESULTS = 10;
 //  infoDisplayer: a component used to display further information about the resource
 //
 function ResourceQuery(props) {
+  PropTypes.checkPropTypes(ResourceQuery.propTypes, props, 'prop', 'ResourceQuery');
   const {
     onClick,
     clearOnClick = true,

@@ -52,6 +52,7 @@ import style from './style.jsx';
 //
 
 function MainActionButton(props) {
+  PropTypes.checkPropTypes(MainActionButton.propTypes, props, 'prop', 'MainActionButton');
   const {
     classes,
     icon,

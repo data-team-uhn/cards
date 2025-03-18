@@ -36,6 +36,7 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
 function Main(props) {
+  PropTypes.checkPropTypes(Main.propTypes, props, 'prop', 'Main');
   const { classes, ...rest } = props;
 
   let [ contentOffset, setContentOffset ] = useState(0);

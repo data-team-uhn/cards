@@ -74,6 +74,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 const ResponsiveDialog = forwardRef((props, ref) => {
+  PropTypes.checkPropTypes(ResponsiveDialog.propTypes, props, 'prop', 'ResponsiveDialog');
   const {
     title,
     width = "sm",

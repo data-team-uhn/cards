@@ -33,6 +33,7 @@ import QuestionComponentManager from "../questionnaireEditor/QuestionComponentMa
 // Object Input field used by Edit dialog component
 
 let ObjectInput = (props) => {
+  PropTypes.checkPropTypes(ObjectInput.propTypes, props, 'prop', 'ObjectInput');
   let { objectKey, value, data, hint, hints, onChange, ...rest } = props;
 
   let options = Object.keys(value || {});

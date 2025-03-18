@@ -126,6 +126,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 function PrintPreview(props) {
+  PropTypes.checkPropTypes(PrintPreview.propTypes, props, 'prop', 'PrintPreview');
   const { open, resourcePath, resourceData, title, breadcrumb, date, subtitle, disablePreview, fullScreen, onClose, ...rest } = props;
 
   const [ content, setContent ] = useState();

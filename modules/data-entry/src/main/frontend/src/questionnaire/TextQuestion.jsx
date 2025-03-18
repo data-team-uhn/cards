@@ -56,6 +56,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    validationErrorText="Please enter a lowercase input"
 //    />
 function TextQuestion(props) {
+  PropTypes.checkPropTypes(TextQuestion.propTypes, props, 'prop', 'TextQuestion');
   let {
     dataType,
     displayMode,

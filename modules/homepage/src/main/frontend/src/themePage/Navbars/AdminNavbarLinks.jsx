@@ -41,6 +41,7 @@ import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassword
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
 
 function HeaderLinks (props) {
+  PropTypes.checkPropTypes(HeaderLinks.propTypes, props, 'prop', 'HeaderLinks');
   const { classes, closeSidebar, color } = props;
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ passwordDialogOpen, setPasswordDialogOpen ] = useState(false);

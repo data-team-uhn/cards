@@ -39,6 +39,7 @@ import BrowseTheme from "./browseStyle.jsx";
 // onClose: Callback for the close event
 //
 function InfoBox(props) {
+  PropTypes.checkPropTypes(InfoBox.propTypes, props, 'prop', 'InfoBox');
   const { open, infoboxRef, vocabulary, term, infoAboveBackground, browserOpened, onActionClick, onClickAway, onClose, classes } = props;
 
   if (!term?.infoAnchor) {

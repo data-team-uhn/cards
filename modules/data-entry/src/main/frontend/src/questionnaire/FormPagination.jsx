@@ -51,6 +51,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
+  PropTypes.checkPropTypes(FormPagination.propTypes, props, 'prop', 'FormPagination');
   let {
     classes,
     enabled = true,

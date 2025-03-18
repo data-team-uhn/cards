@@ -41,6 +41,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 let FormattedText = (props) => {
+  PropTypes.checkPropTypes(FormattedText.propTypes, props, 'prop', 'FormattedText');
   let { children, ...typographyProps } = props;
   const { classes } = useStyles();
 

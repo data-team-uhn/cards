@@ -85,6 +85,7 @@ const useStyles = makeStyles()(theme => ({
 const TOU_ACCEPTED_VARNAME = 'tou_accepted';
 
 function ToUDialog(props) {
+  PropTypes.checkPropTypes(ToUDialog.propTypes, props, 'prop', 'ToUDialog');
   const { open, actionRequired, onCleared, onDecline, onClose, ...rest } = props;
 
   const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);

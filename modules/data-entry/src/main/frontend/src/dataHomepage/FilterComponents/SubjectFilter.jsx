@@ -41,7 +41,8 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  * Other props will be forwarded to the SearchBar component
  */
 const SubjectFilter = forwardRef((props, ref) => {
-  const { classes, initial, onChangeInput, questionDefinition } = props;
+  PropTypes.checkPropTypes(SubjectFilter.propTypes, props, 'prop', 'SubjectFilter');
+  const { classes, initial, onChangeInput } = props;
   const [ error, setError ] = useState();
   const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
 

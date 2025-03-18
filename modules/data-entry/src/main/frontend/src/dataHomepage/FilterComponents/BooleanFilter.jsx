@@ -39,7 +39,8 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  */
 const BooleanFilter = forwardRef((props, ref) => {
-  const { classes, initial, onChangeInput, questionDefinition, ...rest } = props;
+  PropTypes.checkPropTypes(BooleanFilter.propTypes, props, 'prop', 'BooleanFilter');
+  const { classes, initial, onChangeInput } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");
 

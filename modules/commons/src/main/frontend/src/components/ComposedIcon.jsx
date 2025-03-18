@@ -33,15 +33,19 @@ const sizesMap = {
   'large': { size: 25, extraSize: 15 },
 }
 
-const ComposedIcon = ({
-  MainIcon,
-  ExtraIcon,
-  size = 'small',
-  color = 'inherit',
-  position = 'bottom-end',
-  theme = useTheme(),
-  disabled,
-}) => (
+const ComposedIcon = (props) => {
+  PropTypes.checkPropTypes(ComposedIcon.propTypes, props, 'prop', 'ComposedIcon');
+  const {
+    MainIcon,
+    ExtraIcon,
+    size = 'small',
+    color = 'inherit',
+    position = 'bottom-end',
+    theme = useTheme(),
+    disabled,
+  } = props;
+
+  return (
   <div style={{
     position: 'relative',
     cursor: 'default'
@@ -72,7 +76,7 @@ const ComposedIcon = ({
       /> }
     </div>
   </div>
-)
+);}
 
 ComposedIcon.propTypes = {
   MainIcon: PropTypes.elementType.isRequired,

@@ -32,6 +32,7 @@ import { camelCaseToWords } from "./LabeledField";
 import FormattedText from "../components/FormattedText.jsx";
 
 let EditorInput = (props) => {
+  PropTypes.checkPropTypes(EditorInput.propTypes, props, 'prop', 'EditorInput');
   let { children, name, hint } = props;
 
   const classes = makeStyles((theme) => ({

@@ -27,6 +27,7 @@ import { hasWarningFlags } from "./FormUtilities";
 // based on minAnswers and maxAnswers from the question definition
 
 function AnswerInstructions (props) {
+  PropTypes.checkPropTypes(AnswerInstructions.propTypes, props, 'prop', 'AnswerInstructions');
   let {
     minAnswers = 0,
     maxAnswers = 1,

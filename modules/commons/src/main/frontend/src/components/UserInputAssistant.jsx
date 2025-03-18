@@ -79,6 +79,7 @@ import style from "./style.jsx";
 //
 
 function UserInputAssistant (props) {
+  PropTypes.checkPropTypes(UserInputAssistant.propTypes, props, 'prop', 'UserInputAssistant');
   const {
     anchorEl,
     variant = 'hint',
