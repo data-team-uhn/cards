@@ -1011,8 +1011,8 @@ function SubjectSelectorList(props) {
         }
       }
 
-      if (selectedQuestionnaire?.["maxPerSubject"] > 0) {
-          let querySubjectSubsetClause = (querySubjectSubset.length > 0) ? (" and (" + querySubjectSubset + ") ") : " ";
+      if (selectedQuestionnaire?.["maxPerSubject"] > 0 && querySubjectSubset.length > 0) {
+          let querySubjectSubsetClause = " and (" + querySubjectSubset + ") ";
           // fetch the Subjects of each form of this questionnaire type for all listed subjects
           url = `/query?rawResults=true&query=SELECT f.[subject] FROM [cards:Form] as f `
               + `where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}`
