@@ -87,6 +87,7 @@ let entitySpecs = {
 // Any other props are passed directly to the Autocomplete component.
 
 function QuestionnaireAutocomplete(props) {
+  PropTypes.checkPropTypes(QuestionnaireAutocomplete.propTypes, props, 'prop', 'QuestionnaireAutocomplete');
   const {
     multiple = false,
     entities,

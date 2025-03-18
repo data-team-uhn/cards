@@ -31,6 +31,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
+  PropTypes.checkPropTypes(Question.propTypes, props, 'prop', 'Question');
   let { classes, children, questionDefinition, existingAnswer, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
   let { compact } = { ...questionDefinition };
   let { text, description, disableInstructions = false } = { ...questionDefinition, ...props };

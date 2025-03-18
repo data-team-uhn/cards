@@ -50,6 +50,7 @@ import PedigreeEditor from "../pedigree/pedigree";
 //      }}
 //    />
 function PedigreeQuestion(props) {
+  PropTypes.checkPropTypes(PedigreeQuestion.propTypes, props, 'prop', 'PedigreeQuestion');
   const { existingAnswer, classes, pageActive, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in CARDS:

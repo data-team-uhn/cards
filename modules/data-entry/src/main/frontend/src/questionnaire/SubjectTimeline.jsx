@@ -159,6 +159,7 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
  * @param {object} subject the subject
  */
 function SubjectTimeline(props) {
+  PropTypes.checkPropTypes(SubjectTimeline.propTypes, props, 'prop', 'SubjectTimeline');
   let { classes, subject } = props;
   let [dateEntries, setDateEntries] = useState(null);
   // Error message set when fetching the data from the server fails

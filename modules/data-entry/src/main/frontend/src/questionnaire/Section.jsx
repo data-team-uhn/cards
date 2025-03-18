@@ -63,6 +63,7 @@ function createTitle(label, idx, isRecurrent) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
+  PropTypes.checkPropTypes(Section.propTypes, props, 'prop', 'Section');
   const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps } = props;
   const isRecurrent = sectionDefinition['recurrent'];
   const isCompact = sectionDefinition['compact'];

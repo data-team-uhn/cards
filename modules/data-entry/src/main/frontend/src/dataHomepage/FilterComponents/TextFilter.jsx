@@ -46,6 +46,7 @@ const QuestionnaireStyleNotesContain = theme => ({
  *
  */
 const TextFilter = forwardRef((props, ref) => {
+  PropTypes.checkPropTypes(TextFilter.propTypes, props, 'prop', 'TextFilter');
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   // Manage our own state inside here as well
   const [ input, setInput ] = useState(defaultValue || "");

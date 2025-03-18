@@ -40,6 +40,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  *
  */
 const NumericFilter = forwardRef((props, ref) => {
+  PropTypes.checkPropTypes(NumericFilter.propTypes, props, 'prop', 'NumericFilter');
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   return (
     <TextField

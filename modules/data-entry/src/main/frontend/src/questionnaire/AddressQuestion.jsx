@@ -95,6 +95,7 @@ const inputGlobalStyles = <GlobalStyles
 //   }}
 //   />
 function AddressQuestion(props) {
+  PropTypes.checkPropTypes(AddressQuestion.propTypes, props, 'prop', 'AddressQuestion');
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
 
   let currentStartValue = existingAnswer && existingAnswer[1].value || "";

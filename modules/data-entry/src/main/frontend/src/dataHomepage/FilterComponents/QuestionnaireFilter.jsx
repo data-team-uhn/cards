@@ -39,6 +39,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  * Other props will be forwarded to the SearchBar component
  */
 const QuestionnaireFilter = forwardRef((props, ref) => {
+  PropTypes.checkPropTypes(QuestionnaireFilter.propTypes, props, 'prop', 'QuestionnaireFilter');
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   const [ error, setError ] = useState();
   // Store information about each questionnaire and whether or not we have

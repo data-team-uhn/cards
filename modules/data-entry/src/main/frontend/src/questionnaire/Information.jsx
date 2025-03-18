@@ -29,6 +29,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying Information cards
 function Information (props) {
+  PropTypes.checkPropTypes(Information.propTypes, props, 'prop', 'Information');
   let { classes, infoDefinition, ...otherProps } = props;
   let { text, type = "plain" } = { ...otherProps, ...infoDefinition }
 

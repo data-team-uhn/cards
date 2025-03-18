@@ -30,6 +30,7 @@ import UnfoldLess from "@mui/icons-material/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
+  PropTypes.checkPropTypes(Note.propTypes, props, 'prop', 'Note');
   const { answerPath, children, existingAnswer, classes, onChangeNote, pageActive, fullSize, value, onAddSuggestion, ...rest } = props;
   const { placeholder = "Please place any additional notes here." } = props;
   

@@ -35,6 +35,7 @@ export const IS_DEFAULT_ANSWER_POS = 4;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
+  PropTypes.checkPropTypes(Answer.propTypes, props, 'prop', 'Answer');
   let {
     answers,
     answerMetadata,

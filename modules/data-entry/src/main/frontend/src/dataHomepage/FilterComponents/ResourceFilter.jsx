@@ -39,6 +39,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  */
 const ResourceFilter = forwardRef((props, ref) => {
+  PropTypes.checkPropTypes(ResourceFilter.propTypes, props, 'prop', 'ResourceFilter');
   const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
   const enableUserEntry = !!!questionDefinition?.displayMode || questionDefinition?.displayMode?.includes("input");
 

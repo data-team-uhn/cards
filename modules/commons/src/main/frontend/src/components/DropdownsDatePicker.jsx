@@ -92,6 +92,7 @@ const useStyles = makeStyles(theme => ({
  */
 
 function DropdownsDatePicker(props) {
+  PropTypes.checkPropTypes(DropdownsDatePicker.propTypes, props, 'prop', 'DropdownsDatePicker');
   const { startDate, endDate, selectedDate, order, onDateChange, yearReverse, disabled, monthShort, formatDate, autoFocus, fullWidth, ...rest }
     = { startDate: "1900-01-01",
         order: [DropdownDate.year, DropdownDate.month, DropdownDate.day],

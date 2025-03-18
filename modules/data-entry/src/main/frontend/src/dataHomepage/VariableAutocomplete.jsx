@@ -81,6 +81,7 @@ const useStyles = makeStyles(theme => ({
 // Any other props are passed directly to the Autocomplete component.
 
 let VariableAutocomplete = (props) => {
+  PropTypes.checkPropTypes(VariableAutocomplete.propTypes, props, 'prop', 'VariableAutocomplete');
   const {
     className,
     options,

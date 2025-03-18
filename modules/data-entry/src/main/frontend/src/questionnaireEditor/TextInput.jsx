@@ -31,6 +31,7 @@ import ValueComponentManager from "../questionnaireEditor/ValueComponentManager"
 
 // Text Input field used by Edit dialog component
 let TextInput = (props) => {
+  PropTypes.checkPropTypes(TextInput.propTypes, props, 'prop', 'TextInput');
   let { objectKey, data, multiline, variant, hint } = props;
 
   return (

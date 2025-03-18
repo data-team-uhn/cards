@@ -22,6 +22,7 @@ import sidebarStyle from "./sidebarStyle.jsx";
 import AppInfo from "./AppInfo.jsx";
 
 const Sidebar = ({ ...props }) => {
+  PropTypes.checkPropTypes(Sidebar.propTypes, props, 'prop', 'Sidebar');
   let location = useLocation();
   // Verifies if routeName is the one active
   let isRouteActive = function(routeName) {

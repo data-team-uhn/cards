@@ -75,6 +75,7 @@ const filterUserOptions =  createFilterOptions({
  * A component that renders an icon or button to open the export dialog that generates an export URL for an entry.
  */
 function ExportButton(props) {
+  PropTypes.checkPropTypes(ExportButton.propTypes, props, 'prop', 'ExportButton');
   const {
     entityData,
     entryLabel = "Export forms",

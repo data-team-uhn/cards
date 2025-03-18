@@ -71,6 +71,7 @@ const useStyles = makeStyles(theme => ({
 // submission.
 //
 function DicomQuestion(props) {
+  PropTypes.checkPropTypes(DicomQuestion.propTypes, props, 'prop', 'DicomQuestion');
   const { existingAnswer, questionDefinition, ...rest } = props;
 
   let [ dicomMetadataNote, setDicomMetadataNote ] = useState();

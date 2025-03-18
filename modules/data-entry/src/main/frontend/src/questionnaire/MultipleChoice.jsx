@@ -52,6 +52,7 @@ const GHOST_SENTINEL = "custom-input";
   * @param {bool} error indicates if the current selection is in a state of error
   */
 function MultipleChoice(props) {
+  PropTypes.checkPropTypes(MultipleChoice.propTypes, props, 'prop', 'MultipleChoice');
   let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let { validate, validationErrorText, liveValidation, softValidation } = {...props.questionDefinition, ...props};

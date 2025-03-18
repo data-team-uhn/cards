@@ -25,6 +25,7 @@ import SearchBar from "../../SearchBar.jsx"; // In the commons module
 import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
 
 function HeaderSearchBar(props) {
+  PropTypes.checkPropTypes(HeaderSearchBar.propTypes, props, 'prop', 'HeaderSearchBar');
   const { classes, doNotEscapeQuery, ...rest } = props;
 
   return(

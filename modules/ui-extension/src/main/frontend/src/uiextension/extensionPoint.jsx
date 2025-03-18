@@ -33,6 +33,7 @@ const UIXP_FINDER_URL = "/uixp";
 //    path="/testRig.js"
 //    />
 function ExtensionPoint(props) {
+  PropTypes.checkPropTypes(ExtensionPoint.propTypes, props, 'prop', 'ExtensionPoint');
   const { path, callback } = props;
   const [ renderedResponse, setRenderedResponse ] = useState(null);
   const [ initialized, setInitialized ] = useState(false);

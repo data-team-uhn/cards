@@ -39,6 +39,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  */
 const VocabularyFilter = forwardRef((props, ref) => {
+  PropTypes.checkPropTypes(VocabularyFilter.propTypes, props, 'prop', 'VocabularyFilter');
   const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
 
   return (

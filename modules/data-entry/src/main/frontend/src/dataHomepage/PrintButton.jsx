@@ -56,6 +56,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  *
  */
 function PrintButton(props) {
+  PropTypes.checkPropTypes(PrintButton.propTypes, props, 'prop', 'PrintButton');
   const {
     resourcePath,
     resourceData,

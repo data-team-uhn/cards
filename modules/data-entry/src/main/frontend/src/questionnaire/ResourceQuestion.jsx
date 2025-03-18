@@ -35,6 +35,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Component that renders a question, where the answer options are children of a given JCR node
 
 function ResourceQuestion(props) {
+  PropTypes.checkPropTypes(ResourceQuestion.propTypes, props, 'prop', 'ResourceQuestion');
   const {classes, ...rest} = props;
   const {primaryType, labelProperty, maxAnswers, displayMode} = { ...props.questionDefinition };
   const [options, setOptions] = useState();

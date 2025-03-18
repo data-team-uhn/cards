@@ -56,6 +56,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
+  PropTypes.checkPropTypes(BooleanQuestion.propTypes, props, 'prop', 'BooleanQuestion');
   const {classes, ...rest} = props;
   const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
 

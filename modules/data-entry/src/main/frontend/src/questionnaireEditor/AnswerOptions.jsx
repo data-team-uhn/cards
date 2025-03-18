@@ -110,6 +110,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let AnswerOptions = (props) => {
+  PropTypes.checkPropTypes(AnswerOptions.propTypes, props, 'prop', 'AnswerOptions');
   const { objectKey, value, data, path, saveButtonRef, hint } = props;
   const classes = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));

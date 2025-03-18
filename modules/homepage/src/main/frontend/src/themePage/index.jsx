@@ -35,6 +35,7 @@ import IndexStyle from "./indexStyle.jsx";
 import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
 
 function Main(props) {
+  PropTypes.checkPropTypes(Main.propTypes, props, 'prop', 'Main');
   const { classes, ...rest } = props;
 
   let [ contentOffset, setContentOffset ] = useState(0);

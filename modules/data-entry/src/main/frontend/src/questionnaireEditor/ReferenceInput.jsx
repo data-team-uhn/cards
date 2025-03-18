@@ -35,6 +35,7 @@ let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 
 // Reference Input field used by Edit dialog component
 let ReferenceInput = (props) => {
+  PropTypes.checkPropTypes(ReferenceInput.propTypes, props, 'prop', 'ReferenceInput');
   const { objectKey, data, value, hint } = props;
   const fieldsReader = useFieldsReaderContext();
   const fieldsWriter = useFieldsWriterContext();

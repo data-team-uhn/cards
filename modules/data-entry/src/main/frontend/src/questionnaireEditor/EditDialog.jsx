@@ -36,6 +36,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
+  PropTypes.checkPropTypes(EditDialog.propTypes, props, 'prop', 'EditDialog');
   const { data, type, targetExists, isOpen, onSaved, onCancel, id, model } = props;
   let [ targetId, setTargetId ] = useState('');
   const dialogData = targetExists ? data : {};

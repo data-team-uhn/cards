@@ -31,6 +31,7 @@ import ValueComponentManager from "./ValueComponentManager";
 // Number Input field used by Edit dialog component
 
 let NumberInput = (props) => {
+  PropTypes.checkPropTypes(NumberInput.propTypes, props, 'prop', 'NumberInput');
   let { objectKey, data, hint } = props;
   const type = props.value?.charAt(0).toUpperCase() + props.value?.slice(1).toLowerCase();
   const defaultValue = type === "Long" ? (objectKey == "maxAnswers" ? 1 : 0) : '';

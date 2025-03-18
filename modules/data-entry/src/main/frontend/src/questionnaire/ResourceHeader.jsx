@@ -96,6 +96,7 @@ const useStyles = makeStyles(theme => ({
  *   the title and titleAction line
  */
 function ResourceHeader (props) {
+  PropTypes.checkPropTypes(ResourceHeader.propTypes, props, 'prop', 'ResourceHeader');
   let {
     title,
     breadcrumbs,

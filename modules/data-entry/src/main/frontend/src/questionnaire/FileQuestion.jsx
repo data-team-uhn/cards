@@ -47,6 +47,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Sample usage:
 // (TODO)
 function FileQuestion(props) {
+  PropTypes.checkPropTypes(FileQuestion.propTypes, props, 'prop', 'FileQuestion');
   const { classes, existingAnswer, pageActive, ...rest } = props;
   const { maxAnswers, namePattern } = { ...props.questionDefinition, ...props }
   const { onBeforeUpload, onAfterUpload, onDelete, previewRenderer, answerNodeType } = props;

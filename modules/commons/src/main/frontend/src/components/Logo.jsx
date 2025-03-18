@@ -49,6 +49,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Logo(props) {
+  PropTypes.checkPropTypes(Logo.propTypes, props, 'prop', 'Logo');
   const {
     component = Box,
     mode = "Light",

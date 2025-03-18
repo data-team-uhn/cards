@@ -43,6 +43,7 @@ import NCRNote from "./NCRNote.jsx";
 //   }}
 //   />
 function VocabularyQuestion(props) {
+  PropTypes.checkPropTypes(VocabularyQuestion.propTypes, props, 'prop', 'VocabularyQuestion');
   let { questionDefinition } = props;
   let { maxAnswers } = { ...questionDefinition, ...props };
 

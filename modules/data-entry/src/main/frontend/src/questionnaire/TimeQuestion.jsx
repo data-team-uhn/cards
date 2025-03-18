@@ -90,6 +90,7 @@ export class Time {
 //  upperLimit={"23:59"}
 //  />
 function TimeQuestion(props) {
+  PropTypes.checkPropTypes(TimeQuestion.propTypes, props, 'prop', 'TimeQuestion');
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)

@@ -45,6 +45,7 @@ import QueryMatchingUtils from "../resourceQuery/QueryMatchingUtils";
 //  onRemoveOption: Function to remove added answer
 //
 function VocabularyQuery(props) {
+  PropTypes.checkPropTypes(VocabularyQuery.propTypes, props, 'prop', 'VocabularyQuery');
   const {
     questionDefinition,
     clearOnClick = true,

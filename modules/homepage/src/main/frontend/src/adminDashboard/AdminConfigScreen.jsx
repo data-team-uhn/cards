@@ -98,6 +98,7 @@ const useStyles = makeStyles(theme => ({
  */
 
 function AdminConfigScreen(props) {
+  PropTypes.checkPropTypes(AdminConfigScreen.propTypes, props, 'prop', 'AdminConfigScreen');
   const { title, configPath, configTemplate, onConfigFetched, hasChanges, configError, buildConfigData, onConfigSaved, children } = props;
   const [ config, setConfig ] = useState();
   const [ configIsInitial, setConfigIsInitial ] = useState(true);

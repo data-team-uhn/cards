@@ -18,7 +18,7 @@
 //
 
 import React from "react";
-
+import PropTypes from 'prop-types';
 import withStyles from '@mui/styles/withStyles';
 
 import NumberQuestion from "./NumberQuestion";
@@ -48,6 +48,7 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  type="timestamp"
 //  />
 function DateQuestionYear(props) {
+  PropTypes.checkPropTypes(DateQuestionYear.propTypes, props, 'prop', 'DateQuestionYear');
   let {existingAnswer, classes, ...rest} = props;
   let {
     text,

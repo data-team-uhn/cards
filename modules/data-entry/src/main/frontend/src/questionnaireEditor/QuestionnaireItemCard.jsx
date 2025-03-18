@@ -101,6 +101,7 @@ const useStyles = makeStyles(theme => ({
 // General class or Sections and Questions
 
 let QuestionnaireItemCard = (props) => {
+  PropTypes.checkPropTypes(QuestionnaireItemCard.propTypes, props, 'prop', 'QuestionnaireItemCard');
   let {
     children,
     avatar,

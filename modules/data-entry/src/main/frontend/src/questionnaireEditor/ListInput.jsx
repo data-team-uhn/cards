@@ -29,6 +29,7 @@ import ValueComponentManager from "./ValueComponentManager";
 import { useFieldsWriterContext } from "./FieldsContext";
 
 let ListInput = (props) => {
+  PropTypes.checkPropTypes(ListInput.propTypes, props, 'prop', 'ListInput');
   let { objectKey, data, value: type, hint } = props;
   let [ selection, setSelection ] = useState(Array.of(data[objectKey] ?? []).flat());
   const [ options, setOptions ] = useState([]);

@@ -32,6 +32,7 @@ import ErrorDialog from "../components/ErrorDialog.jsx";
  * A component that renders an icon to open a dialog to delete an entry.
  */
 function DeleteButton(props) {
+  PropTypes.checkPropTypes(DeleteButton.propTypes, props, 'prop', 'DeleteButton');
   const {
     classes,
     entryPath = "",
