@@ -172,9 +172,11 @@ function DeleteButton(props) {
 
   return (
     <React.Fragment>
-      <ErrorDialog open={errorOpen} onClose={closeError}>
-        <Typography>{errorMessage}</Typography>
-      </ErrorDialog>
+      {errorOpen &&
+        <ErrorDialog open={errorOpen} onClose={closeError}>
+          <Typography>{errorMessage}</Typography>
+        </ErrorDialog>
+      }
       <Dialog open={open} onClose={closeDialog}>
         <DialogTitle>
           Delete {entryLabel ? entryLabel.concat(' ') : entryType.concat(' ')}{deleteRecursive ? " and dependent items": null }

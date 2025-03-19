@@ -297,7 +297,7 @@ FormPagination.propTypes = {
   navMode: PropTypes.oneOf(['back_next', 'only_next']),
   questionnaireData: PropTypes.object.isRequired,
   setPagesCallback: PropTypes.func.isRequired,
-  isPageCompleted: PropTypes.func.isRequired,
+  isPageCompleted: PropTypes.func,
   lastSaveStatus: PropTypes.bool,
   saveInProgress: PropTypes.bool
 };

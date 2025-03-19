@@ -59,7 +59,6 @@ export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamesp
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
-  PropTypes.checkPropTypes(Questionnaire.propTypes, props, 'prop', 'Questionnaire');
   let { classes } = props;
   let [ data, setData ] = useState();
   let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
@@ -246,10 +245,6 @@ let Questionnaire = (props) => {
         </Grid>
       )
   );
-};
-
-Questionnaire.propTypes = {
-  id: PropTypes.string.isRequired
 };
 
 export default withStyles(Questionnaire, QuestionnaireStyle);

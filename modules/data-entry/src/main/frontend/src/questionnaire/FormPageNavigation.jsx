@@ -156,7 +156,7 @@ function FormPageNavigation (props) {
 
 FormPageNavigation.propTypes = {
   pages: PropTypes.array.isRequired,
-  activePage: PropTypes.number.isRequired,
+  activePage: PropTypes.number,
   saveButton: PropTypes.object.isRequired,
   backButton: PropTypes.object,
   isPageCompleted: PropTypes.func,
