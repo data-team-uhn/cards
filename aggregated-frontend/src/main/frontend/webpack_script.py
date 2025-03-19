@@ -49,7 +49,7 @@ def merge_package_json_files(root, dir_name, project_to_name_map, package_merged
                 package_merged[key] = value
             package_merged["name"] = package_name
             package_merged["description"] = 'Merged package.json'
-            package_merged["resolutions"] = {}
+            package_merged["resolutions"] = {"@babel/runtime": "^7.26.0", "react-is": "^19.0.0"}
         else:
             # Merge contents
             for i in package["babel"]["plugins"]:
@@ -57,9 +57,6 @@ def merge_package_json_files(root, dir_name, project_to_name_map, package_merged
                     package_merged["babel"]["plugins"].append(i)
             update_dependency_version_map(package_merged["devDependencies"], package["devDependencies"])
             update_dependency_version_map(package_merged["dependencies"], package["dependencies"])
-
-            if "resolutions" in package:
-                package_merged["resolutions"].update(package["resolutions"])
 
 
 def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name_map, webpack_config_entries):
