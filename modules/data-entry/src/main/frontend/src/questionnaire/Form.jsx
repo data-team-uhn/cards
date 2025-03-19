@@ -697,7 +697,7 @@ function Form (props) {
             because it is what populates the contents of the form.
             However, it should only be displayed to the user in edit mode when paginationEnabled is true. */}
         <Grid size={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
-          <FormPagination
+          {data && <FormPagination
               saveInProgress={saveInProgress}
               disableProgress={disableProgress}
               lastSaveStatus={lastSaveStatus}
@@ -716,7 +716,7 @@ function Form (props) {
               onPageChange={() => { setDisableProgress(requireCompletion); setIncompleteQuestionEl(null); }}
               doneLabel={doneLabel}
               doneIcon={doneIcon}
-          />
+          />}
         </Grid>
         { !paginationEnabled && !disableButton &&
         <Grid size="auto" className={classes.formBottom}>
@@ -735,7 +735,7 @@ function Form (props) {
         </Grid>
         }
       </Grid>
-      <ErrorDialog title="Failed to save" open={errorDialogDisplayed} onClose={closeErrorDialog}>
+      {errorDialogDisplayed && <ErrorDialog title="Failed to save" open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <Typography variant="h6">Your changes were not saved.</Typography>
         <Typography variant="body1" component="p">Server responded with error code {errorCode}: {errorMessage}</Typography>
         {lastSaveTimestamp &&
@@ -746,7 +746,7 @@ function Form (props) {
             </Tooltip>
           </Typography>
         }
-      </ErrorDialog>
+      </ErrorDialog>}
       { isEdit &&
         <SessionExpiryWarningModal
           lastActivityTimestamp={lastSaveTimestamp}
