@@ -227,7 +227,7 @@ function SubjectTimeline(props) {
     let results = await Promise.all(subjectDataPromises);
 
     // Get all the form data into a single array
-    results = results.map(formData =>
+    results = results.filter(formData => !!formData).map(formData =>
       Object.values(formData.response).filter(entry => Array.isArray(entry)).flat().filter(entry => entry["jcr:primaryType"] == "cards:Form").map(entry => {
         return {form: entry, level: formData.level, names: formData.names}
       })
