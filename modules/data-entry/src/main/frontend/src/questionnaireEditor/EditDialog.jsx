@@ -211,6 +211,12 @@ let EditDialog = (props) => {
           </DialogContent>
           <DialogActions>
             <Button
+              variant='outlined'
+              onClick={() => { setOpen(false); onCancel && onCancel();}}
+            >
+              {'Cancel'}
+            </Button>
+            <Button
               ref={saveButtonRef}
               type='submit'
               variant='contained'
@@ -221,12 +227,6 @@ let EditDialog = (props) => {
               lastSaveStatus === true ? 'Saved' :
               lastSaveStatus === false ? 'Save failed, log in and try again?' :
               'Save'}
-            </Button>
-            <Button
-              variant='outlined'
-              onClick={() => { setOpen(false); onCancel && onCancel();}}
-            >
-              {'Cancel'}
             </Button>
           </DialogActions>
        </Dialog>
