@@ -676,7 +676,7 @@ function Form (props) {
                 <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
               </React.Fragment>
             }
-            {pages &&
+            {pages && !fetchInProgress &&
               Object.entries(data.questionnaire)
                 .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
                 .map(([key, entryDefinition]) => {

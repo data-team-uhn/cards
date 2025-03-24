@@ -124,7 +124,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
   // If there is no existing answer / answerSection, and we're not in edit mode, don't display this
-  if (!isEdit && existingQuestionAnswer.length == 0) {
+  if (!isEdit && (!existingQuestionAnswer  || existingQuestionAnswer?.length == 0)) {
     return null;
   }
 
