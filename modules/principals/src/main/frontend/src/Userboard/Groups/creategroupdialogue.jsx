@@ -78,7 +78,7 @@ class CreateGroupDialogue extends React.Component {
                     {this.state.error && <Typography color='error'>{this.state.error}</Typography>}
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
-                    <Button variant="outlined" size="small" onClick={this.props.handleClose}>Close</Button>
+                    <Button variant="outlined" size="small" onClick={this.props.handleClose}>Cancel</Button>
                     <Button color="primary" variant="contained" size="small" onClick={(event) => { event.preventDefault(); this.handleCreateGroup(); }}>Create Group</Button>
                 </DialogActions>
             </Dialog>

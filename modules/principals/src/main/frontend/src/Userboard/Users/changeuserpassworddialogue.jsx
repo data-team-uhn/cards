@@ -110,7 +110,7 @@ class FormFields extends React.Component {
           // Else just render the button
           <Button type="submit" variant="contained" color="primary" size="small" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
         }
-        <Button variant="outlined" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
+        <Button variant="outlined" size="small" className={classes.formAction} onClick={handleReset}>Cancel</Button>
       </form>
     );
   }
