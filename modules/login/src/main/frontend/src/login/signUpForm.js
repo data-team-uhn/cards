@@ -277,13 +277,14 @@ class SignUpForm extends React.Component {
         </ErrorDialog>
         <div className={classes.main}>
           <Formik
-            render={props => <FormFieldsComponent {...props} />}
             initialValues={values}
             validationSchema={validationSchema}
             onSubmit={this.submitValues}
             onReset={this.props.handleExit}
             innerRef={el => (this.form = el)}
-          />
+          >
+            {props => <FormFieldsComponent {...props} />}
+          </Formik>
         </div>
       </React.Fragment>
     );
