@@ -322,7 +322,7 @@ function FileQuestion(props) {
                 <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download underline="hover">{filepath}</Link>
                 <DeleteButton
                   entryName={filepath}
-                  entryType={"file"}
+                  entryType="file"
                   onComplete={() => deletePath(idx)}
                 />
                 { previewRenderer && previewRenderer(fixFileURL(uploadedFiles[filepath], filepath), filepath, idx) }

@@ -67,7 +67,7 @@ function DashboardSettingsConfiguration() {
   return (
       <AdminConfigScreen
         title="Clinic dashboard"
-        configPath={"/Survey/DashboardSettings"}
+        configPath="/Survey/DashboardSettings"
         configTemplate={fields.reduce((t, k) => ({...t, [k.key] : ""}), {})}
         onConfigFetched={readDashboardSettings}
         hasChanges={hasChanges}

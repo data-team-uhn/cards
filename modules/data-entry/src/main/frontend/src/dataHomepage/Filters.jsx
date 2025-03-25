@@ -460,13 +460,13 @@ function Filters(props) {
             variant="outlined"
             onClick={closeDialog}
             >
-            {'Cancel'}
+            Cancel
           </Button>
           <Button
             variant="contained"
             onClick={saveFilters}
             >
-            {'Apply'}
+            Apply
           </Button>
         </DialogActions>
       </ResponsiveDialog>

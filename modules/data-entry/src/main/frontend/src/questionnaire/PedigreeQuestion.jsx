@@ -136,8 +136,8 @@ function PedigreeQuestion(props) {
               </Grid>
               <Grid item>
                 <DeleteButton
-                  entryName={"pedigree"}
-                  entryType={"Pedigree"}
+                  entryName="pedigree"
+                  entryType="Pedigree"
                   onComplete={() => {setPedigree({});}}
                 />
               </Grid>
