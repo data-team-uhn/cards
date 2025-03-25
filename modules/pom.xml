@@ -77,5 +77,6 @@
     <module>error-tracking</module>
     <module>google-apis</module>
     <module>variants</module>
+    <module>locking</module>
   </modules>
 </project>
