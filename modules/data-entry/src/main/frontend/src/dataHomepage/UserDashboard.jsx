@@ -93,7 +93,7 @@ function UserDashboard(props) {
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
-            return <Grid size={{ xs: 12, xl: 6}} key={"extension-" + index} className={classes.dashboardEntry}>
+            return <Grid size={{ xs: 12, xl: dashboardExtensions.length > 1 ? 6 : 12}} key={"extension-" + index} className={classes.dashboardEntry}>
               <Extension />
             </Grid>
           })

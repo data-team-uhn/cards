@@ -161,7 +161,7 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
 function SubjectTimeline(props) {
   PropTypes.checkPropTypes(SubjectTimeline.propTypes, props, 'prop', 'SubjectTimeline');
   let { classes, subject } = props;
-  let [dateEntries, setDateEntries] = useState(null);
+  let [ dateEntries, setDateEntries ] = useState(null);
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   let globalLoginDisplay = useContext(GlobalLoginContext);
@@ -174,7 +174,8 @@ function SubjectTimeline(props) {
     .then(async (response) => {
       let json = await response.json();
       return response.ok ? {response: json, level: level, names: subjectNames} : Promise.reject(response)
-    }));
+    })
+    .catch(handleError));
   };
 
   // Recursively fetch all submitted forms for a subject and it's child subjects
@@ -227,7 +228,7 @@ function SubjectTimeline(props) {
     let results = await Promise.all(subjectDataPromises);
 
     // Get all the form data into a single array
-    results = results.map(formData =>
+    results = results.filter(formData => !!formData).map(formData =>
       Object.values(formData.response).filter(entry => Array.isArray(entry)).flat().filter(entry => entry["jcr:primaryType"] == "cards:Form").map(entry => {
         return {form: entry, level: formData.level, names: formData.names}
       })
@@ -358,6 +359,7 @@ function SubjectTimeline(props) {
 
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
+    setDateEntries([]);
     setError(response);
     console.log(response.statusText || response.message);
   };

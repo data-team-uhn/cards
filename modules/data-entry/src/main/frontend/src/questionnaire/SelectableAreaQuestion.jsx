@@ -334,6 +334,7 @@ function SelectableAreaQuestion(props) {
 
   return (
     <Question
+      currentAnswers={notApplicableChecked ? 1 : selection.length}
       {...props}
       preventDefaultView
       >
