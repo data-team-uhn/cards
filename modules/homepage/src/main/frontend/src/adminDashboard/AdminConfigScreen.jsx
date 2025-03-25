@@ -202,7 +202,6 @@ function AdminConfigScreen(props) {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
               disabled={!!configError || !hasChanges}
             >
               Save

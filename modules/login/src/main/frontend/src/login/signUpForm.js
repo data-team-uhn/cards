@@ -131,16 +131,16 @@ class FormFields extends React.Component {
             <Tooltip title="You must fill in all fields.">
               <div>
                 { loginOnSuccess ?
-                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
-                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
+                  <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
+                  <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
                 }
               </div>
             </Tooltip>
             :
             // Else just render the button
             ( loginOnSuccess ?
-              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
-              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
+              <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
+              <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
             )
           }
           </Grid>

@@ -187,7 +187,6 @@ class SignIn extends React.Component {
                     <Button
                       fullWidth
                       variant="contained"
-                      color="primary"
                       className={`${classes.actions} ${classes.submit}`}
                       onClick={nextButtonCallback}
                       disabled={this.state.username.length == 0}
@@ -224,7 +223,6 @@ class SignIn extends React.Component {
                         <Button
                           fullWidth
                           variant="outlined"
-                          color="primary"
                           className={classes.submit}
                           onClick={() => {
                             this.setState({
@@ -244,7 +242,6 @@ class SignIn extends React.Component {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        color="primary"
                         className={classes.submit}
                       >
                         Sign in

@@ -173,7 +173,6 @@ function OnboardNewClinicDialog(props) {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
             disabled={saveInProgress}
           >
             {isNewClinic ? "Create" : "Save"}

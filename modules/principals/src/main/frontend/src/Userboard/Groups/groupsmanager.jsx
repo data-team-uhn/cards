@@ -218,7 +218,6 @@ class GroupsManager extends React.Component {
                         <Grid container className={classes.cardActions}>
                           <Button
                             variant="contained"
-                            color="primary"
                             className={classes.containerButton}
                             onClick={() => { this.setState({currentGroupName: group.principalName,
                                                             deployAddGroupUsers: true,

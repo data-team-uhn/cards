@@ -140,7 +140,6 @@ export default function OwlInstaller(props) {
                   disabled={(phase == "installing")}
                   variant="contained"
                   onClick={() => {setPhase("install")}}
-                  color="primary"
                   component="span">
                     {owlSelected}
                 </Button>
@@ -205,7 +204,6 @@ export default function OwlInstaller(props) {
               <Tooltip title={(phase == "install") ? "Install this vocabulary" : ""}>
                 <Button
                    variant="contained"
-                   color="primary"
                    component="span"
                    disabled={(phase == "installing") || (phase == "install" && disableInstall)}
                    className={classes[phase]}

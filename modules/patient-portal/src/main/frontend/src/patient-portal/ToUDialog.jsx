@@ -189,10 +189,10 @@ function ToUDialog(props) {
       <DialogActions>
       { actionRequired && !error && !actionError ?
         <>
-          <Button color="primary" variant="outlined" onClick={() => setShowConfirmationTou(true)}>
+          <Button variant="outlined" onClick={() => setShowConfirmationTou(true)}>
             Decline
           </Button>
-          <Button color="primary" variant="contained" onClick={() => saveTouAccepted(tou.version)}>
+          <Button variant="contained" onClick={() => saveTouAccepted(tou.version)}>
             Accept
           </Button>
         </>
@@ -201,7 +201,7 @@ function ToUDialog(props) {
           { actionError &&
             <FormattedText color="error" className={classes.actionErrorMessage}>{actionError}</FormattedText>
           }
-          <Button color="primary" onClick={() => onClose(!!actionError)} variant="outlined">
+          <Button onClick={() => onClose(!!actionError)} variant="outlined">
             Close
           </Button>
         </>
@@ -214,13 +214,13 @@ function ToUDialog(props) {
           You can only fill out your surveys online after accepting the Terms of Use.
         </DialogContent>
         <DialogActions>
-          <Button color="primary" variant="outlined" onClick={() => setShowConfirmationTou(false)} className={classes.reviewButton}>
+          <Button variant="outlined" onClick={() => setShowConfirmationTou(false)} className={classes.reviewButton}>
             Review Terms
           </Button>
-          <Button color="primary" variant="outlined" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}}>
+          <Button variant="outlined" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}}>
             Decline
           </Button>
-          <Button color="primary" variant="contained" onClick={() => {setShowConfirmationTou(false); saveTouAccepted(tou?.version)}}>
+          <Button variant="contained" onClick={() => {setShowConfirmationTou(false); saveTouAccepted(tou?.version)}}>
             Accept
           </Button>
         </DialogActions>

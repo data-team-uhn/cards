@@ -360,7 +360,6 @@ function Filters(props) {
       }
       <Button
         size="small"
-        color="primary"
         className={classes.addFilterButton}
         disabled={disabled}
         onClick={() => {
@@ -465,7 +464,6 @@ function Filters(props) {
           </Button>
           <Button
             variant="contained"
-            color="primary"
             onClick={saveFilters}
             >
             {'Apply'}

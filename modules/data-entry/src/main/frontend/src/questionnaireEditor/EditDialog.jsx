@@ -220,7 +220,6 @@ let EditDialog = (props) => {
               ref={saveButtonRef}
               type='submit'
               variant='contained'
-              color='primary'
               disabled={saveInProgress || !!variableNameError}
             >
               {saveInProgress ? 'Saving' :

@@ -734,7 +734,6 @@ function QuestionnaireSet(props) {
             <Grid item alignSelf="center">
               <Button
                 variant="outlined"
-                color="primary"
                 onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
                   Change
               </Button>
@@ -815,14 +814,14 @@ function QuestionnaireSet(props) {
         { canSubmitIncomplete ?
           <Grid container spacing={2} direction="row">
             <Grid item>
-              <Button variant="contained" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
+              <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
             </Grid>
             <Grid item>
-              <Button variant="outlined" color="primary" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
+              <Button variant="outlined" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
             </Grid>
           </Grid>
           :
-          <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
+          <Fab variant="extended" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
         }
         </>
   ];

@@ -153,7 +153,7 @@ export function BioPortalApiKey(props) {
               { getBioportalKeyInfo(!bioPortalApiKey) }
             </Grid>
             <Grid item xs={2}>
-              <Button color="primary" variant="contained" onClick={() => {addNewKey()}}>Submit</Button>
+              <Button variant="contained" onClick={() => {addNewKey()}}>Submit</Button>
             </Grid>
           </Grid>
         </Grid>

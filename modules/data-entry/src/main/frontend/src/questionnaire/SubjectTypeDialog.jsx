@@ -293,7 +293,6 @@ function SubjectTypeDialog(props) {
                                 currentSubjectType?.["idPatternHint"] == idPatternHint
                                 )
           }
-          color="primary"
           variant="contained"
           onClick={(event) => { event.preventDefault(); handleSubjectType(); }}
          >

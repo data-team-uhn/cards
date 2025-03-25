@@ -214,7 +214,6 @@ function UnstyledNewSubjectDialog (props) {
           <Button
             onClick={() => {setNewSubjectType(""); onSubmit()}}
             variant="contained"
-            color="primary"
             disabled={disabled || continueDisabled || !isValid}
             >
             {requiresParents ? "Continue" : "Create"}
@@ -386,7 +385,6 @@ function UnstyledSelectParentDialog (props) {
         <Button
           onClick={onSubmit}
           variant="contained"
-          color="primary"
           disabled={disabled || continueDisabled}
           >
           { isLast ? "Create" : "Continue" }
@@ -823,7 +821,6 @@ function UnstyledSelectorDialog (props) {
         <Button
           onClick={handleSubmitExisting}
           variant="contained"
-          color="primary"
           disabled={disabled_controls}
           >
           Confirm
