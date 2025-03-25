@@ -41,7 +41,7 @@ class FormFields extends React.Component {
     const { classes } = this.props;
 
     const {
-      values: { username, email, password, confirmPassword, loginOnSuccess },
+      values: { username, email, password, confirmPassword, loginOnSuccess, closeButtonText, submitButtonText },
       errors,
       touched,
       handleSubmit,
@@ -122,7 +122,7 @@ class FormFields extends React.Component {
         <Grid container direction="row" justifyContent="flex-end" alignItems="center" className={classes.actions}>
           { !loginOnSuccess &&
             <Grid item>
-              <Button variant="outlined" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
+              <Button variant="outlined" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>{closeButtonText}</Button>
             </Grid>
           }
           <Grid item>
@@ -131,16 +131,16 @@ class FormFields extends React.Component {
             <Tooltip title="You must fill in all fields.">
               <div>
                 { loginOnSuccess ?
-                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
-                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
+                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
+                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">{submitButtonText}</Button>
                 }
               </div>
             </Tooltip>
             :
             // Else just render the button
             ( loginOnSuccess ?
-              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
-              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
+              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
+              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">{submitButtonText}</Button>
             )
           }
           </Grid>
@@ -245,7 +245,15 @@ class SignUpForm extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const values = { username: "", email: "", confirmPassword: "", password: "", loginOnSuccess: this.props.loginOnSuccess };
+    const values = {
+      username: "",
+      email: "",
+      confirmPassword: "",
+      password: "",
+      loginOnSuccess: this.props.loginOnSuccess,
+      closeButtonText: this.props.closeButtonText || "Close",
+      submitButtonText: this.props.submitButtonText || "Submit"
+    };
 
     const validationSchema = Yup.object({
       email: Yup.string("Enter your email")
@@ -269,13 +277,14 @@ class SignUpForm extends React.Component {
         </ErrorDialog>
         <div className={classes.main}>
           <Formik
-            render={props => <FormFieldsComponent {...props} />}
             initialValues={values}
             validationSchema={validationSchema}
             onSubmit={this.submitValues}
             onReset={this.props.handleExit}
             innerRef={el => (this.form = el)}
-          />
+          >
+            {props => <FormFieldsComponent {...props} />}
+          </Formik>
         </div>
       </React.Fragment>
     );
