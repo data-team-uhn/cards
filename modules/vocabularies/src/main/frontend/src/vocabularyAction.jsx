@@ -158,6 +158,11 @@ export default function VocabularyAction(props) {
 
   return(
     <React.Fragment>
+    {exit && (
+      <Tooltip title="Close">
+        <Button onClick={exit} variant="outlined" className={classes.vocabularyAction}>Close</Button>
+      </Tooltip>
+    )}
     {(phase == Phase["Not Installed"]) && (
       <Tooltip title="Install this vocabulary">
         <Button onClick={install} variant="contained" className={classes.vocabularyAction + " " + classes.install}>Install</Button>
@@ -188,11 +193,6 @@ export default function VocabularyAction(props) {
     {(phase == Phase["Latest"]) && (
       <Tooltip title="Remove this vocabulary">
         <Button onClick={handleOpen} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
-      </Tooltip>
-    )}
-    {exit && (
-      <Tooltip title="Close">
-        <Button onClick={exit} variant="outlined" className={classes.vocabularyAction}>Close</Button>
       </Tooltip>
     )}
     <Dialog onClose={handleClose} open={displayPopup}>
