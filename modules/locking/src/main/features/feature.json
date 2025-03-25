@@ -1,0 +1,44 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+{
+  "bundles":[
+    {
+      "id":"${project.groupId}:${project.artifactId}:${project.version}",
+      "start-order":"25"
+    }
+  ],
+  "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~locking":{
+      "service.ranking:Integer":300,
+      "scripts": [
+        "create path (cards:LockHomepage) /Locks",
+        // Locking and unlocking subjects and appropriate visits
+        "create service user locking \n set ACL for locking \n allow jcr:all on / \n end",
+        // One of these restrictions needs a placeholder value otherwise repoinit falsely believes the restrictions are duplicates
+        "set ACL for everyone \n deny rep:write on /Subjects,/Forms restriction(cards:locked, placeholder) \n deny rep:write on /Locks \n allow jcr:read on /Locks \n deny rep:write on /Subjects,/Forms restriction(rep:itemNames, cards:lock) \n end",
+        "create group LockUsers \n set ACL for LockUsers \n allow jcr:addChildNodes, rep:addProperties, jcr:nodeTypeManagement on /Locks \n end",
+        "create group UnlockUsers \n set ACL for UnlockUsers \n allow jcr:removeChildNodes, jcr:removeNode on /Locks \n end"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~locking":{
+      "user.mapping":[
+        "io.uhndata.cards.locking:locking=[locking]"
+      ]
+    }
+  }
+}
