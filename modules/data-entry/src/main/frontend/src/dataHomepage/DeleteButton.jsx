@@ -191,7 +191,7 @@ function DeleteButton(props) {
         <Button
           color="error"
           onClick={handleClick}
-          size={size ? size : "medium"}
+          size={size}
           startIcon={variant == "extended" ? <Delete /> : undefined}
         >
           {buttonText}

@@ -451,7 +451,7 @@ function ExportButton(props) {
         :
         <Button
           onClick={openDialog}
-          size={size ? size : "medium"}
+          size={size}
           startIcon={variant == "extended" ? <DownloadIcon /> : undefined}
         >
           {entryLabel}
