@@ -219,7 +219,6 @@ class GroupsManager extends React.Component {
                           <Button
                             variant="contained"
                             color="primary"
-                            size="small"
                             className={classes.containerButton}
                             onClick={() => { this.setState({currentGroupName: group.principalName,
                                                             deployAddGroupUsers: true,
@@ -232,7 +231,6 @@ class GroupsManager extends React.Component {
                           <Button
                             variant="contained"
                             color="secondary"
-                            size="small"
                             onClick={() => { this.handleRemoveUsers(group.principalName, groupUsers) }}
                           >
                             Remove User from Group

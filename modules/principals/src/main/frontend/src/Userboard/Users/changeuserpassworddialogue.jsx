@@ -103,14 +103,14 @@ class FormFields extends React.Component {
           <React.Fragment>
             <Tooltip title="You must fill in all fields.">
               <span>
-                <Button type="submit" variant="contained" color="primary" size="small" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
+                <Button type="submit" variant="contained" color="primary" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
               </span>
             </Tooltip>
           </React.Fragment> :
           // Else just render the button
-          <Button type="submit" variant="contained" color="primary" size="small" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
+          <Button type="submit" variant="contained" color="primary" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
         }
-        <Button variant="outlined" size="small" className={classes.formAction} onClick={handleReset}>Cancel</Button>
+        <Button variant="outlined" className={classes.formAction} onClick={handleReset}>Cancel</Button>
       </form>
     );
   }

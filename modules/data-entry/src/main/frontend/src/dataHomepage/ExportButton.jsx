@@ -432,10 +432,9 @@ function ExportButton(props) {
           </Grid>
         </DialogContent>
         <DialogActions>
-            <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>
+            <Button variant="outlined" onClick={closeDialog}>Cancel</Button>
             <Button
               variant="contained"
-              size="small"
               disabled={createdRangeIsInvalid || modifiedRangeIsInvalid}
               onClick={() => handleExport()}
             >

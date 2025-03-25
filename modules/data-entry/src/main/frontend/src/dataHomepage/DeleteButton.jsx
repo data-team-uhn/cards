@@ -170,11 +170,10 @@ function DeleteButton(props) {
             <Typography variant="body1">{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>
+            <Button variant="outlined" onClick={closeDialog}>Cancel</Button>
             <Button
               variant="contained"
               color="error"
-              size="small"
               onClick={() => handleDelete()}
               disabled={deletionInProgress}
             >

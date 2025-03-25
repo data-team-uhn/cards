@@ -321,7 +321,6 @@ function FileQuestion(props) {
               <li key={idx}>
                 <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download underline="hover">{filepath}</Link>
                 <DeleteButton
-                  size="small"
                   entryName={filepath}
                   entryType={"file"}
                   onComplete={() => deletePath(idx)}
