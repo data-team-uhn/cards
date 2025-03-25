@@ -61,7 +61,7 @@
 			<type>Long</type>
 		</property>
 	</node>
-	<node>
+	<!-- <node>
 		<name>monthyear</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -84,7 +84,7 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
-	</node>
+	</node> -->
 	<node>
 		<name>yearmonth</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
@@ -133,7 +133,7 @@
 			<type>Long</type>
 		</property>
 	</node>
-	<node>
+	<!-- <node>
 		<name>monthdayyear</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -156,7 +156,7 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
-	</node>
+	</node> -->
 	<node>
 		<name>yearmonthdayhourminute</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
@@ -181,7 +181,7 @@
 			<type>Long</type>
 		</property>
 	</node>
-	<node>
+	<!-- <node>
 		<name>yearmonthdayhourminutesecond</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -204,8 +204,8 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
-	</node>
-	<!-- <node>
+	</node> -->
+	<node>
 		<name>yearint</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -233,8 +233,8 @@
 			<value>interval</value>
 			<type>String</type>
 		</property>
-	</node> -->
-	<node>
+	</node>
+	<!-- <node>
 		<name>monthyearint</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -262,7 +262,7 @@
 			<value>interval</value>
 			<type>String</type>
 		</property>
-	</node>
+	</node> -->
 	<node>
 		<name>yearmonthint</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
@@ -321,7 +321,7 @@
 			<type>String</type>
 		</property>
 	</node>
-	<node>
+	<!-- <node>
 		<name>monthdayyearint</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -349,7 +349,7 @@
 			<value>interval</value>
 			<type>String</type>
 		</property>
-	</node>
+	</node> -->
 	<node>
 		<name>yearmonthdayhourminuteint</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
@@ -379,7 +379,7 @@
 			<type>String</type>
 		</property>
 	</node>
-	<node>
+	<!-- <node>
 		<name>yearmonthdayhourminutesecondint</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -407,7 +407,7 @@
 			<value>interval</value>
 			<type>String</type>
 		</property>
-	</node>
+	</node> -->
 	<node>
 		<name>absoluteyearupper</name>
 		<primaryNodeType>cards:Question</primaryNodeType>

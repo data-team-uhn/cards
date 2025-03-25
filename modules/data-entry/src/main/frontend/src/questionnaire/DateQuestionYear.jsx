@@ -41,8 +41,7 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //
 // Sample usage:
 //<DateQuestionYear
-//  text="Please enter a date-time in 2019"
-//  dateFormat="yyyy-MM-dd HH:mm:ss"
+//  text="Please enter a year"
 //  lowerLimit="2019"
 //  upperLimit="today"
 //  type="timestamp"

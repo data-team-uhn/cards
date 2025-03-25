@@ -806,7 +806,7 @@ return result;
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM/yyyy</value>
+				<value>yyyy/MM</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -845,7 +845,7 @@ return result;
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM/yyyy</value>
+				<value>yyyy/MM</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -884,7 +884,7 @@ return result;
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM/yyyy</value>
+				<value>yyyy/MM</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -986,11 +986,11 @@ return result;
 			</property>
 		</node>
 		<node>
-			<name>dateAnswerHourMinuteSecondInput</name>
+			<name>dateAnswerHourMinuteInput</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Pick a date and time down to seconds</value>
+				<value>Pick a date and time down to minutes</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1000,7 +1000,7 @@ return result;
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>yyyy-MM-dd HH:mm:ss</value>
+				<value>yyyy-MM-dd HH:mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1010,11 +1010,11 @@ return result;
 			</property>
 		</node>
 		<node>
-			<name>dateAnswerHourMinuteSecond</name>
+			<name>dateAnswerHourMinute</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Date, include time down to seconds</value>
+				<value>Date, include time down to minutes</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1034,21 +1034,21 @@ return result;
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return @{dateAnswerHourMinuteSecondInput}</value>
+				<value>return @{dateAnswerHourMinuteInput}</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>yyyy-MM-dd HH:mm:ss</value>
+				<value>yyyy-MM-dd HH:mm</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>dateAnswerHourMinuteSecondHidden</name>
+			<name>dateAnswerHourMinuteHidden</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Date, include time down to seconds hidden</value>
+				<value>Date, include time down to minutes hidden</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1073,12 +1073,12 @@ return result;
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return @{dateAnswerHourMinuteSecondInput}</value>
+				<value>return @{dateAnswerHourMinuteInput}</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>yyyy-MM-dd HH:mm:ss</value>
+				<value>yyyy-MM-dd HH:mm</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -1613,7 +1613,7 @@ return result;
 				<type>String</type>
 			</property>
 		</node>
-		<node>
+		<!-- <node>
 			<name>timeAnswerHourMinuteSecondInput</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
@@ -1670,7 +1670,7 @@ return result;
 				<value>hh:mm:ss</value>
 				<type>String</type>
 			</property>
-		</node>
+		</node> -->
 		<node>
 			<name>timeAnswerHourMinuteSecondHidden</name>
 			<primaryNodeType>cards:Question</primaryNodeType>

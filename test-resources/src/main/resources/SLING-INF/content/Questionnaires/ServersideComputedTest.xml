@@ -148,7 +148,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>MM/yyyy</value>
+			<value>yyyy/MM</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -176,7 +176,7 @@
 			<type>String</type>
 		</property>
 	</node>
-	<node>
+	<!-- <node>
 		<name>dateQuestionSeconds</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -199,7 +199,7 @@
 			<value>yyyy/MM/DD HH:mm:ss</value>
 			<type>String</type>
 		</property>
-	</node>
+	</node> -->
 	<node>
 		<name>longQuestion</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
@@ -307,7 +307,7 @@
 			<type>String</type>
 		</property>
 	</node>
-	<node>
+	<!-- <node>
 		<name>timeQuestionSeconds</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -330,7 +330,7 @@
 			<value>hh:mm:ss</value>
 			<type>String</type>
 		</property>
-	</node>
+	</node> -->
 	<node>
 		<name>timeQuestionMinutes</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
@@ -720,7 +720,7 @@ The entered month
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>MM/yyyy</value>
+				<value>yyyy/MM</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -767,7 +767,7 @@ The entered datetime
 				<type>String</type>
 			</property>
 		</node>
-		<node>
+		<!-- <node>
 			<name>conditionalQuestionDateSeconds</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
@@ -804,7 +804,7 @@ The entered datetime with seconds
 				<value>return @{dateQuestionSeconds}</value>
 				<type>String</type>
 			</property>
-		</node>
+		</node> -->
 		<node>
 			<name>conditionalQuestionLong</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -982,7 +982,7 @@ The entered time
 				<type>String</type>
 			</property>
 		</node>
-		<node>
+		<!-- <node>
 			<name>conditionalQuestionTimeSeconds</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
@@ -1019,7 +1019,7 @@ The entered time with seconds
 				<value>return @{timeQuestionSeconds}</value>
 				<type>String</type>
 			</property>
-		</node>
+		</node> -->
 		<node>
 			<name>conditionalQuestionTimeMinutes</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
