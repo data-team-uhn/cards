@@ -97,7 +97,13 @@ function NewQuestionnaireDialog(props) {
           >  
         </TextField>
         </DialogContent>
-         <DialogActions>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            onClick={onClose}
+            >
+            Cancel
+          </Button>
           <Button
             variant="contained"
             color="primary"
@@ -105,12 +111,6 @@ function NewQuestionnaireDialog(props) {
             disabled={!title}
             >
             Create
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={onClose}
-            >
-            Cancel
           </Button>
         </DialogActions>
       </Dialog>

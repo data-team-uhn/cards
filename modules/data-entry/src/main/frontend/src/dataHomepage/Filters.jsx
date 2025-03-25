@@ -458,17 +458,17 @@ function Filters(props) {
         </DialogContent>
         <DialogActions>
           <Button
+            variant="outlined"
+            onClick={closeDialog}
+            >
+            {'Cancel'}
+          </Button>
+          <Button
             variant="contained"
             color="primary"
             onClick={saveFilters}
             >
             {'Apply'}
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={closeDialog}
-            >
-            {'Cancel'}
           </Button>
         </DialogActions>
       </ResponsiveDialog>
