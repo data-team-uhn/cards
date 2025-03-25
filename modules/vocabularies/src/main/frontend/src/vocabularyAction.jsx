@@ -225,8 +225,8 @@ export default function VocabularyAction(props) {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleUninstall} variant="contained" color="primary" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
         <Button onClick={handleClose} variant="outlined" className={classes.vocabularyAction}>Cancel</Button>
+        <Button onClick={handleUninstall} variant="contained" color="primary" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
       </DialogActions>
 
     </Dialog>

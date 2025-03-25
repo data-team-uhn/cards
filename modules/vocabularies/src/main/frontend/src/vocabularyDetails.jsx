@@ -96,6 +96,9 @@ export default function VocabularyDetails(props) {
         </DialogContent>
 
         <DialogActions>
+          {(phase == Phase["Latest"] || phase == Phase["Update Available"]) && 
+            <Button onClick={() => {setBrowserOpened(true);}} variant="contained" className={classes.browseAction} color="primary">Browse</Button>
+          }
           <VocabularyAction
             install={install}
             uninstall={uninstall}
@@ -103,9 +106,6 @@ export default function VocabularyDetails(props) {
             exit={handleClose}
             vocabulary={vocabulary}
           />
-          {(phase == Phase["Latest"] || phase == Phase["Update Available"]) && 
-            <Button onClick={() => {setBrowserOpened(true);}} variant="contained" className={classes.browseAction} color="primary">Browse</Button>
-          }
         </DialogActions>
 
       </Dialog>
