@@ -812,7 +812,7 @@ function QuestionnaireSet(props) {
         <Typography color="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
         <>
         { canSubmitIncomplete ?
-          <Grid container spacing={2} direction="row">
+          <Grid container spacing={2}>
             <Grid item>
               <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
             </Grid>

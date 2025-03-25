@@ -217,7 +217,7 @@ class SignIn extends React.Component {
                       }
                     />
                   </FormControl>
-                  <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2} className={classes.actions}>
+                  <Grid container justifyContent="center" alignItems="center" spacing={2} className={classes.actions}>
                     {  (!this.state.singleStepEntry) &&
                       <Grid item>
                         <Button

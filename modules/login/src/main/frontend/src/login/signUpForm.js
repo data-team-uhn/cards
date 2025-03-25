@@ -119,7 +119,7 @@ class FormFields extends React.Component {
           required
 
         />
-        <Grid container direction="row" justifyContent="flex-end" alignItems="center" className={classes.actions}>
+        <Grid container justifyContent="flex-end" alignItems="center" className={classes.actions}>
           { !loginOnSuccess &&
             <Grid item>
               <Button variant="outlined" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>{closeButtonText}</Button>

@@ -122,7 +122,6 @@ export default function OwlInstaller(props) {
         onSubmit={handleSubmit}
       >
         <Grid container
-          direction="row"
           alignItems="center"
           spacing={1}
         >

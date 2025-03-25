@@ -80,7 +80,6 @@ export default function googleApiKeyAdminPage() {
         { error && <Grid item><Alert severity="error">{error}</Alert></Grid> }
         <Grid item>
           <Grid container
-            direction="row"
             alignItems="flex-start"
             justifyContent="space-between"
             alignContent="space-between"

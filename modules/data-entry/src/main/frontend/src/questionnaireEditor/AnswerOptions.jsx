@@ -277,7 +277,6 @@ let AnswerOptions = (props) => {
     let option = specialOptionsInfo[index];
     return (
     <Grid container
-       direction="row"
        justifyContent="space-between"
        alignItems="stretch"
        className={classes.answerOption}
