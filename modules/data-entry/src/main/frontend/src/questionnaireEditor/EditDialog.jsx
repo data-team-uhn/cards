@@ -214,7 +214,7 @@ let EditDialog = (props) => {
               variant='outlined'
               onClick={() => { setOpen(false); onCancel && onCancel();}}
             >
-              {'Cancel'}
+              Cancel
             </Button>
             <Button
               ref={saveButtonRef}

@@ -323,7 +323,7 @@ function FileQuestion(props) {
                 <DeleteButton
                   size="small"
                   entryName={filepath}
-                  entryType={"file"}
+                  entryType="file"
                   onComplete={() => deletePath(idx)}
                 />
                 { previewRenderer && previewRenderer(fixFileURL(uploadedFiles[filepath], filepath), filepath, idx) }

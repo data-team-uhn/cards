@@ -326,7 +326,7 @@ let AnswerOptions = (props) => {
       { option.data[option.label]
         ?
         <>
-          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
+          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value='cards:AnswerOption' />
           <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
           <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />

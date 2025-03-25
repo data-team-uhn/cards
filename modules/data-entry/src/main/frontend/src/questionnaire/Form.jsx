@@ -656,7 +656,7 @@ function Form (props) {
                   return <FormEntry
                     key={key}
                     entryDefinition={entryDefinition}
-                    path={"."}
+                    path="."
                     depth={0}
                     existingAnswers={data}
                     keyProp={key}

@@ -796,7 +796,7 @@ export default function VariantFilesContainer() {
 
             <div className={classes.dragAndDrop}>
               <DragAndDrop
-                accept={".csv"}
+                accept=".csv"
                 multifile={true}
                 handleDrop={onDrop}
                 error={error}
