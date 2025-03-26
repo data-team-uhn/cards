@@ -122,7 +122,7 @@ class FormFields extends React.Component {
         <Grid container direction="row" justifyContent="flex-end" alignItems="center" className={classes.actions}>
           { !loginOnSuccess &&
             <Grid item>
-              <Button variant="outlined" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>{closeButtonText}</Button>
+              <Button variant="outlined" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>{closeButtonText}</Button>
             </Grid>
           }
           <Grid item>
@@ -132,7 +132,7 @@ class FormFields extends React.Component {
               <div>
                 { loginOnSuccess ?
                   <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
-                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">{submitButtonText}</Button>
+                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
                 }
               </div>
             </Tooltip>
@@ -140,7 +140,7 @@ class FormFields extends React.Component {
             // Else just render the button
             ( loginOnSuccess ?
               <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
-              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">{submitButtonText}</Button>
+              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
             )
           }
           </Grid>

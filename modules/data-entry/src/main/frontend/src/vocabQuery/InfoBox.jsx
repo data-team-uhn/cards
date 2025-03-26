@@ -134,7 +134,7 @@ function InfoBox(props) {
                   </CardContent>
                   { !(browserOpened && infoAboveBackground) &&
                     <CardActions className={classes.infoPaper}>
-                      <Button size="small" onClick={onActionClick} variant='contained' color='primary'>Learn more</Button>
+                      <Button onClick={onActionClick} variant='contained' color='primary'>Learn more</Button>
                     </CardActions>
                   }
              </div></ClickAwayListener>
