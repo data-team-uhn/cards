@@ -102,7 +102,7 @@ function ToUConfiguration() {
                 label="Version"
                 value={version}
                 onChange={(event) => { setVersion(event.target.value); setHasChanges(true); }}
-                style={{'width' : '250px'}}
+                style={{width : '250px'}}
               />
             </ListItem>
             <ListItem key="text" className={classes.text}>

@@ -271,7 +271,6 @@ function StatisticDialog(props) {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
             disabled={saveInProgress}
             >
             {isNewStatistic ? "Create" : "Save"}

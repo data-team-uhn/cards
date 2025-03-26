@@ -16,58 +16,43 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import UsersManager from './Users/usersmanager.jsx';
 import GroupsManager from './Groups/groupsmanager.jsx';
 
-class PrincipalsContainer extends React.Component {
-  constructor(props) {
-    super(props);
+export default function PrincipalsContainer(props) {
+  const [ users, setUsers ] = useState([]);
+  const [ groups, setGroups ] = useState([]);
 
-    this.state = {
-      users: [],
-      groups: [],
-    };
-  }
+  useEffect(() => {
+    handleLoadUsers();
+  }, []);
 
-  handleLoadUsers () {
+  let handleLoadUsers = () => {
     fetch("/home/users.json",
       {
         method: 'GET',
         credentials: 'include'
     })
-    .then((response) => {
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((data) => {
-      data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?')
-
-      this.setState({ users: data.rows });
+      data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?');
+      setUsers(data.rows);
     })
-    .catch((error) => {
-      console.log(error);
-    })
-    .finally(() => 
-       this.handleLoadGroups()
-    )
+    .catch((error) => console.log(error?.statusText ? error.statusText : error))
+    .finally(() => handleLoadGroups());
   }
 
-  handleLoadGroups () {
+  let handleLoadGroups = () => {
     fetch("/home/groups.json",
       {
         method: 'GET',
         credentials: 'include'
     })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      this.setState({ groups: data.rows });
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+    .then((response) => response.json())
+    .then((data) => setGroups(data.rows))
+    .catch((error) => console.log(error?.statusText ? error.statusText : error))
     .finally(() => {
      // This event is needed in cases we do not want to collapse details panel after reload
       var reloadedEvent = new CustomEvent('principals-reloaded', {
@@ -78,22 +63,10 @@ class PrincipalsContainer extends React.Component {
     })
   }
 
-  componentWillMount () {
-    this.handleLoadUsers();
-  }
-
-  handleReload () {
-    this.handleLoadUsers();
-  }
-
-  render () {
-    return (
-      <div>
-        { this.props.isUserListPage ? <UsersManager users={this.state.users} groups={this.state.groups} reload={() => this.handleReload()}/>
-                                   : <GroupsManager users={this.state.users} groups={this.state.groups} reload={() => this.handleReload()}/> }
-      </div>
-    );
-  }
+  return (
+    <div>
+      { props.isUserListPage ? <UsersManager users={users} groups={groups} reload={() => handleLoadUsers()}/>
+                                 : <GroupsManager users={users} groups={groups} reload={() => handleLoadUsers()}/> }
+    </div>
+  );
 }
-
-export default PrincipalsContainer;

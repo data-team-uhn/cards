@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from 'prop-types';
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { ListItemButton, ListItemText, Popper, TextField } from "@mui/material";
@@ -129,7 +129,7 @@ let VariableAutocomplete = (props) => {
           <ListItemText
             sx={groupBy ? {marginLeft: !!groupBy(option) ? 1 : -1} : undefined}
             disableTypography
-            primary={<FormattedText variant="body1">{ getOptionLabel(option) }</FormattedText>}
+            primary={<FormattedText>{ getOptionLabel(option) }</FormattedText>}
             secondary={<FormattedText variant="body2" color="textSecondary">{ getOptionSecondaryLabel(option) }</FormattedText>}
           />
         </ListItemButton>

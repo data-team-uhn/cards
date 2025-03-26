@@ -143,7 +143,6 @@ function DroppableAnswerOption(props) {
     return (
       <Grid container
           data-option-id={value.value}
-          direction="row"
           justifyContent="space-between"
           alignItems="stretch"
           className={classes.answerOption + ' ' + (!isPerview && draggableState.type === "dragging" ? classes.optionDisabled : "")}
@@ -158,7 +157,7 @@ function DroppableAnswerOption(props) {
           </Grid>
           <Grid size={{xs: 8}}>
             {!isPerview && <span>
-            <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
+            <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value='cards:AnswerOption' />
             <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
             <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
             <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />
@@ -205,7 +204,7 @@ function DroppableAnswerOption(props) {
       <div className={classes.optionsList}>
         {generateOption(false)}
         {draggableState?.type === 'dragging-over' && draggableState?.closestEdge &&
-          (<DropIndicator edge={draggableState.closestEdge} gap={'8px'}/>)}
+          (<DropIndicator edge={draggableState.closestEdge} gap='8px'/>)}
       </div>
       { draggableState.type === "preview" &&
         createPortal(

@@ -123,7 +123,7 @@ function ClinicFormList (props) {
           customUrl={'/query?query=' + encodeURIComponent(finalQuery)}
           defaultLimit={10}
           questionnaire={questionnaireId}
-          entryType={"Form"}
+          entryType="Form"
           disableTopPagination={true}
         />
       </CardContent>

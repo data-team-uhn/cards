@@ -684,7 +684,7 @@ function Form (props) {
                   return <FormEntry
                     key={key}
                     entryDefinition={entryDefinition}
-                    path={"."}
+                    path="."
                     depth={0}
                     existingAnswers={data}
                     keyProp={key}
@@ -744,7 +744,7 @@ function Form (props) {
       </Grid>
       {errorDialogDisplayed && <ErrorDialog title="Failed to save" open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <Typography variant="h6">Your changes were not saved.</Typography>
-        <Typography variant="body1" component="p">Server responded with error code {errorCode}: {errorMessage}</Typography>
+        <Typography component="p">Server responded with error code {errorCode}: {errorMessage}</Typography>
         {lastSaveTimestamp &&
           <Typography variant="body1" component="p">
             {"The last successful save was "}

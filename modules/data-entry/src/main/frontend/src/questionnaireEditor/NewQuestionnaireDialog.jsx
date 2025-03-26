@@ -101,20 +101,19 @@ function NewQuestionnaireDialog(props) {
           >  
         </TextField>
         </DialogContent>
-         <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={createQuestionnaire}
-            disabled={!title}
-            >
-            Create
-          </Button>
+        <DialogActions>
           <Button
             variant="outlined"
             onClick={onClose}
             >
             Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={createQuestionnaire}
+            disabled={!title}
+            >
+            Create
           </Button>
         </DialogActions>
       </Dialog>

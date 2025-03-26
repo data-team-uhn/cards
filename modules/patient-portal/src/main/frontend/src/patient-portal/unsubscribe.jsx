@@ -108,7 +108,6 @@ function Unsubscribe (props) {
                 <Button
                   type="submit"
                   variant="contained"
-                  color="primary"
                   className={classes.submit}
                   onClick={() => unsubscribe(0)}
                   >
@@ -123,7 +122,6 @@ function Unsubscribe (props) {
                 <Button
                   type="submit"
                   variant="contained"
-                  color="primary"
                   className={classes.submit}
                   onClick={() => unsubscribe(1-confirmed)}
                   >
@@ -136,7 +134,6 @@ function Unsubscribe (props) {
                 <Button
                   type="submit"
                   variant="contained"
-                  color="primary"
                   className={classes.submit}
                   onClick={() => unsubscribe(1)}
                   >

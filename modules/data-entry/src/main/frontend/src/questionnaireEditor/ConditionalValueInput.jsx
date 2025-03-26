@@ -132,7 +132,7 @@ let ConditionalValueInput = (props) => {
       {/* Metadata to sent to the server */}
       { !!(values?.length) ?
         <>
-          <input type='hidden' name={`${path}/jcr:primaryType`} value={'cards:ConditionalValue'} />
+          <input type='hidden' name={`${path}/jcr:primaryType`} value='cards:ConditionalValue' />
           { values.map(v => <input type='hidden' key={v} name={`${path}/value`} value={v} />) }
           <input type="hidden" name={`${path}/value@TypeHint`} value="String[]" />
           <input type="hidden" name={`${path}/isReference`} value={isReference || false} />

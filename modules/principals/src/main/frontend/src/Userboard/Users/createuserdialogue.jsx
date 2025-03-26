@@ -16,44 +16,40 @@
 */
 
 import React from "react";
-import withStyles from '@mui/styles/withStyles';
+import PropTypes from "prop-types";
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import Grid from '@mui/material/Grid2';
-import userboardStyle from '../userboardStyle.jsx';
 
 import SignUpForm from "../../login/signUpForm.js";
 
-class CreateUserDialogue extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+function CreateUserDialogue(props) {
+  PropTypes.checkPropTypes(CreateUserDialogue.propTypes, props, 'prop', 'CreateUserDialogue');
+  const { reload, isOpen, handleClose } = props;
 
-    handleCreateUser() {
-        this.props.reload();
-        this.props.handleClose();
-    }
+  let handleCreateUser = () => {
+    reload();
+    handleClose();
+  }
 
-    handleError(error) {
-        console.log(error);
-    }
-
-    render() {
-        const { classes } = this.props;
-
-        return (
-            <Dialog
-                open={this.props.isOpen}
-                onClose={() => this.props.handleClose()}
-            >
-                <DialogTitle>Register a new user</DialogTitle>
-                <DialogContent>
-                  <Grid container>
-                    <SignUpForm loginOnSuccess={false} handleSuccess={() => this.handleCreateUser()} handleExit={() => this.props.handleClose()}/>
-                  </Grid>
-                </DialogContent>
-            </Dialog>
-        );
-    }
+  return (
+    <Dialog
+        open={isOpen}
+        onClose={() => handleClose()}
+    >
+        <DialogTitle>Register a new user</DialogTitle>
+        <DialogContent>
+          <Grid container>
+            <SignUpForm loginOnSuccess={false} handleSuccess={() => handleCreateUser()} handleExit={() => handleClose()}/>
+          </Grid>
+        </DialogContent>
+    </Dialog>
+  );
 }
 
-export default withStyles (userboardStyle)(CreateUserDialogue);
+CreateUserDialogue.propTypes = {
+  isOpen: PropTypes.bool,
+  handleClose: PropTypes.func.isRequired,
+  reload: PropTypes.func.isRequired
+}
+
+export default CreateUserDialogue;

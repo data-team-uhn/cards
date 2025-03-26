@@ -174,7 +174,7 @@ function DeleteButton(props) {
     <React.Fragment>
       {errorOpen &&
         <ErrorDialog open={errorOpen} onClose={closeError}>
-          <Typography variant="body1">{errorMessage}</Typography>
+          <Typography>{errorMessage}</Typography>
         </ErrorDialog>
       }
       <Dialog open={open} onClose={closeDialog}>
@@ -182,15 +182,14 @@ function DeleteButton(props) {
           Delete {entryLabel ? entryLabel.concat(' ') : entryType.concat(' ')}{deleteRecursive ? " and dependent items": null }
         </DialogTitle>
         <DialogContent>
-            <Typography variant="body1">{dialogMessage}</Typography>
-            <Typography variant="body1">{dialogAction}</Typography>
+            <Typography>{dialogMessage}</Typography>
+            <Typography>{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>
+            <Button variant="outlined" onClick={closeDialog}>Cancel</Button>
             <Button
               variant="contained"
               color="error"
-              size="small"
               onClick={() => handleDelete()}
               disabled={deletionInProgress}
             >
@@ -208,7 +207,7 @@ function DeleteButton(props) {
         <Button
           color="error"
           onClick={handleClick}
-          size={size ? size : "medium"}
+          size={size}
           startIcon={variant == "extended" ? <Delete /> : undefined}
         >
           {buttonText}

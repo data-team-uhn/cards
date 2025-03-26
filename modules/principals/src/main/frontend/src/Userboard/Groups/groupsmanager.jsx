@@ -15,8 +15,8 @@
   under the License.
 */
 
-import React from "react";
-
+import React, { useState, useRef } from "react";
+import PropTypes from "prop-types";
 import withStyles from '@mui/styles/withStyles';
 
 import { Avatar, Button, Card, CardContent, IconButton, Tooltip } from "@mui/material";
@@ -33,44 +33,36 @@ import MaterialReactTable from 'material-react-table';
 
 const GROUP_URL = "/system/userManager/group/";
 
-class GroupsManager extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentGroupUsers: [],
-      currentGroupName: "",
+function GroupsManager(props) {
+  PropTypes.checkPropTypes(GroupsManager.propTypes, props, 'prop', 'GroupsManager');
+  const { classes, groups, users, reload } = props;
 
-      deployCreateGroup: false,
-      deployDeleteGroup: false,
-      deployAddGroupUsers: false,
-      groupUsersLoaded: false
-    };
+  let [ currentGroupUsers, setCurrentGroupUsers ] = useState([]);
+  let [ currentGroupName, setCurrentGroupName ] = useState("");
+  let [ deployCreateGroup, setDeployCreateGroup ] = useState(false);
+  let [ deployDeleteGroup, setDeployDeleteGroup ] = useState(false);
+  let [ deployAddGroupUsers, setDeployAddGroupUsers ] = useState(false);
 
-    this.tableRef = React.createRef();
-  }
+  let tableRef = useRef();
 
-  getGroupUsers (groupName){
+  let getGroupUsers = (groupName) => {
     //Get groups filtering all users by group name
-    let users = this.props.users.filter( (user) => {
+    let groupUsers = users.filter( (user) => {
             let memberOf = user.memberOf.map((group) => group.name);
             return memberOf.indexOf(groupName) > -1;
         });
-    return users;
+    return groupUsers;
   }
 
-  clearSelectedGroup () {
-    this.setState(
-      {
-        currentGroupName: "",
-      }
-    );
+  let clearSelectedGroup = () => {
+    setCurrentGroupName("");
   }
 
-  handleRemoveUsers(currentGroupName, groupUsers) {
-	if (!this.tableRef.current) return;
+  let handleRemoveUsers = (currentGroupName, groupUsers) => {
+	if (!tableRef.current) return;
     let formData = new FormData();
 
-    let selectedUsers = Object.keys(this.tableRef.current?.getState().rowSelection);
+    let selectedUsers = Object.keys(tableRef.current?.getState().rowSelection);
     for (var i = 0; i < selectedUsers.length; ++i) {
       formData.append(':member@Delete', groupUsers[selectedUsers[i]].name);
     }
@@ -81,43 +73,46 @@ class GroupsManager extends React.Component {
         credentials: 'include',
         body: formData
       })
-      .then(() => {
-        this.handleReload();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then(() => handleReload())
+      .catch((error) => console.log(error?.statusText ? error.statusText : error));
   }
 
-  handleReload (doClear) {
-    doClear && this.clearSelectedGroup();
-    this.tableRef.current?.resetRowSelection();
-    this.props.reload();
+  let handleReload = (doClear) => {
+    doClear && clearSelectedGroup();
+    tableRef.current?.resetRowSelection();
+    reload();
   }
 
-  componentDidMount () {
-    document.addEventListener("principals-reloaded", this.openDetailsPanel);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("principals-reloaded", this.openDetailsPanel);
-  }
-
-  render() {
-    const { classes } = this.props;
-
-    return (
+  return (
       <AdminScreen
         title="Groups"
         action={
           <NewItemButton
             title="Create new group"
-            onClick={(event) => this.setState({deployCreateGroup: true})}
+            onClick={(event) => setDeployCreateGroup(true)}
           />
         }>
-        <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload(true)} />
-        <DeletePrincipalDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload(true)} url={GROUP_URL} type={"group"} />
-        <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} groupUsers={this.state.currentGroupUsers} allUsers={this.props.users}  reload={() => this.handleReload()} />
+        <CreateGroupDialogue
+          isOpen={deployCreateGroup}
+          handleClose={() => setDeployCreateGroup(false)}
+          reload={() => handleReload(true)}
+        />
+        <DeletePrincipalDialogue
+          isOpen={deployDeleteGroup}
+          handleClose={() => setDeployDeleteGroup(false)}
+          name={currentGroupName}
+          reload={() => handleReload(true)}
+          url={GROUP_URL}
+          type="group"
+        />
+        <AddUserToGroupDialogue
+          isOpen={deployAddGroupUsers}
+          handleClose={() => setDeployAddGroupUsers(false)}
+          name={currentGroupName}
+          groupUsers={currentGroupUsers}
+          allUsers={users}
+          reload={() => handleReload()}
+        />
         <div className={classes.root}>
           <MaterialReactTable
             enableColumnActions={false}
@@ -152,19 +147,22 @@ class GroupsManager extends React.Component {
               { header: 'Members', accessorKey: 'members', size: 10, },
               { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
             ]}
-            data={this.props.groups}
+            data={groups}
             enableRowActions
             positionActionsColumn="last"
             renderRowActions={({ row }) => (
               <Tooltip title="Delete Group">
-                <IconButton onClick={ () => this.setState({currentGroupName: row.original.name, deployDeleteGroup: true}) } >
+                <IconButton
+                  onClick={() => { setCurrentGroupName(row.original.name);
+                                   setDeployDeleteGroup(true); }}
+                >
                   <DeleteIcon />
                 </IconButton>
               </Tooltip>
             )}
             renderDetailPanel={({ row }) => {
                 const group = row.original;
-                const groupUsers = group.members > 0 ? this.getGroupUsers(group.name) : [];
+                const groupUsers = group.members > 0 ? getGroupUsers(group.name) : [];
                 const tableTitle = "Group " + group.name + " users";
 
                 return (
@@ -173,7 +171,7 @@ class GroupsManager extends React.Component {
                       <CardContent>
                         { groupUsers.length > 0 &&
                             <MaterialReactTable
-                              tableInstanceRef={this.tableRef}
+                              tableInstanceRef={tableRef}
                               enableColumnActions={false}
                               enableColumnFilters={false}
                               enableSorting={false}
@@ -219,22 +217,17 @@ class GroupsManager extends React.Component {
                         <Grid container className={classes.cardActions}>
                           <Button
                             variant="contained"
-                            color="primary"
-                            size="small"
                             className={classes.containerButton}
-                            onClick={() => { this.setState({currentGroupName: group.principalName,
-                                                            deployAddGroupUsers: true,
-                                                            currentGroupUsers: groupUsers});
-                                           }
-                            }
+                            onClick={() => { setCurrentGroupName(group.principalName);
+                                             setDeployAddGroupUsers(true);
+                                             setCurrentGroupUsers(groupUsers); }}
                           >
                             Add User to Group
                           </Button>
                           <Button
                             variant="contained"
                             color="secondary"
-                            size="small"
-                            onClick={() => { this.handleRemoveUsers(group.principalName, groupUsers) }}
+                            onClick={() => handleRemoveUsers(group.principalName, groupUsers)}
                           >
                             Remove User from Group
                           </Button>
@@ -248,7 +241,12 @@ class GroupsManager extends React.Component {
         </div>
       </AdminScreen>
     );
-  }
+}
+
+GroupsManager.propTypes = {
+  groups: PropTypes.array,
+  users: PropTypes.array,
+  reload: PropTypes.func.isRequired
 }
 
 export default withStyles (userboardStyle, {withTheme: true})(GroupsManager);

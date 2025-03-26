@@ -361,7 +361,6 @@ function Filters(props) {
       }
       <Button
         size="small"
-        color="primary"
         className={classes.addFilterButton}
         disabled={disabled}
         onClick={() => {
@@ -459,17 +458,16 @@ function Filters(props) {
         </DialogContent>
         <DialogActions>
           <Button
-            variant="contained"
-            color="primary"
-            onClick={saveFilters}
-            >
-            {'Apply'}
-          </Button>
-          <Button
             variant="outlined"
             onClick={closeDialog}
             >
-            {'Cancel'}
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={saveFilters}
+            >
+            Apply
           </Button>
         </DialogActions>
       </ResponsiveDialog>

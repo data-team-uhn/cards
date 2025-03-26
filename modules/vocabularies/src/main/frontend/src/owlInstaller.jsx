@@ -121,7 +121,6 @@ export default function OwlInstaller(props) {
         onSubmit={handleSubmit}
       >
         <Grid container
-          direction="row"
           alignItems="center"
           spacing={1}
         >
@@ -139,7 +138,6 @@ export default function OwlInstaller(props) {
                   disabled={(phase == "installing")}
                   variant="contained"
                   onClick={() => {setPhase("install")}}
-                  color="primary"
                   component="span">
                     {owlSelected}
                 </Button>
@@ -204,7 +202,6 @@ export default function OwlInstaller(props) {
               <Tooltip title={(phase == "install") ? "Install this vocabulary" : ""}>
                 <Button
                    variant="contained"
-                   color="primary"
                    component="span"
                    disabled={(phase == "installing") || (phase == "install" && disableInstall)}
                    className={classes[phase]}

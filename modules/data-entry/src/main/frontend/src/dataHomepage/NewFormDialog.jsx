@@ -453,7 +453,6 @@ function NewFormDialog(props) {
           </Button>
           <Button
             variant="contained"
-            color="primary"
             onClick={progressThroughDialog}
             >
             { progress == PROGRESS_SELECT_QUESTIONNAIRE ?

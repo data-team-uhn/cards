@@ -15,8 +15,8 @@
   under the License.
 */
 
-import React from "react";
-
+import React, { useState, useRef } from "react";
+import PropTypes from "prop-types";
 import withStyles from '@mui/styles/withStyles';
 import userboardStyle from '../userboardStyle.jsx';
 
@@ -28,115 +28,111 @@ import MaterialReactTable from 'material-react-table';
 
 const GROUP_URL="/system/userManager/group/";
 
-class AddUserToGroupDialogue extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        freeUsers: []
-      }
-      this.tableRef = React.createRef();
+function AddUserToGroupDialogue(props) {
+  PropTypes.checkPropTypes(AddUserToGroupDialogue.propTypes, props, 'prop', 'AddUserToGroupDialogue');
+  const { classes, name, allUsers, groupUsers, reload, isOpen, handleClose } = props;
+
+  let [ freeUsers, setFreeUsers ] = useState([]);
+
+  let tableRef = useRef();
+
+  let handleAddUsers = () => {
+    let formData = new FormData();
+
+    let selectedUsers = Object.keys(tableRef.current?.getState().rowSelection);
+    for (var i = 0; i < selectedUsers.length; ++i) {
+      formData.append(':member', freeUsers[selectedUsers[i]].name);
     }
 
-    handleAddUsers() {
-        let formData = new FormData();
-
-        let selectedUsers = Object.keys(this.tableRef.current?.getState().rowSelection);
-        for (var i = 0; i < selectedUsers.length; ++i) {
-            formData.append(':member', this.state.freeUsers[selectedUsers[i]].name);
-        }
-
-        fetch(GROUP_URL + this.props.name + ".update.html",
-            {
-                method: 'POST',
-                credentials: 'include',
-                body: formData
-            })
-            .then(() => {
-                this.props.reload();
-                this.handleExit();
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
-
-    handleEntering() {
-        this.setState({
-            freeUsers: this.props.allUsers
+    fetch(GROUP_URL + name + ".update.html",
+        {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+        })
+        .then(() => {
+            reload();
+            handleClose();
+        })
+        .catch((error) => {
+            console.log(error?.statusText ? error.statusText : error);
         });
-        if (this.props.groupUsers != "") {
-          var groupUsersArray = this.props.groupUsers?.map((n) => n.name);
-          let filtered = this.props.allUsers.filter( (el) => {
-              return !groupUsersArray.includes( el.name );
-            } );
-          this.setState({ freeUsers: filtered });
-        }
-    }
+  }
 
-    handleExit() {
-        this.props.handleClose();
+  let handleEntering = () => {
+    setFreeUsers(allUsers);
+    if (Array.isArray(groupUsers)) {
+      var groupUsersArray = groupUsers.map((n) => n.name);
+      let filtered = allUsers.filter(el => !groupUsersArray.includes( el.name ));
+      setFreeUsers(filtered);
     }
+  }
 
-    render() {
-        const { classes } = this.props;
+  return (
+    <Dialog
+      maxWidth="sm"
+      open={isOpen}
+      onClose={() => handleClose()}
+      TransitionProps={{
+          onEntering: () => handleEntering()
+      }}>
+      <DialogTitle>
+        Add Users to the {name} group
+      </DialogTitle>
+      <DialogContent>
+        <Grid container>
+          <div>
+            <MaterialReactTable
+              tableInstanceRef={tableRef}
+              enableColumnActions={false}
+              enableColumnFilters={false}
+              enableSorting={false}
+              enableTopToolbar={false}
+              muiTableHeadCellProps={{
+                sx: (theme) => ({
+                  background: theme.palette.grey['200'],
+                }),
+              }}
+              enableRowSelection
+              enableSelectAll={false}
+              muiSelectCheckboxProps={{ color: 'primary' }}
+              muiTableBodyRowProps={({ row }) => ({
+                onClick: row.getToggleSelectedHandler(),
+                sx: {
+                  cursor: 'pointer',
+                },
+              })}
+              columns={[
+                { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
+                  Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
+                { header: 'User Name', accessorKey: 'name' },
+                { header: 'Admin', accessorKey: 'isAdmin', size: 10,
+                  Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+                },
+                { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
+                  Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+                },
+              ]}
+              data={freeUsers}
+            />
+          </div>
+        </Grid>
+      </DialogContent>
+      <DialogActions className={classes.dialogActions}>
+        <Button variant="contained" onClick={() => handleAddUsers()}>Add</Button>
+        <Button variant="outlined" onClick={() => handleClose()}>Close</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
-        return (
-            <Dialog
-                maxWidth="sm"
-                open={this.props.isOpen}
-                onClose={() => this.handleExit()}
-                TransitionProps={{
-                    onEntering: () => this.handleEntering()
-                }}>
-                <DialogTitle>
-                    Add Users to the {this.props.name} group
-                </DialogTitle>
-                <DialogContent>
-                    <Grid container>
-                        <div>
-                            <MaterialReactTable
-                              tableInstanceRef={this.tableRef}
-                              enableColumnActions={false}
-                              enableColumnFilters={false}
-                              enableSorting={false}
-                              enableTopToolbar={false}
-                              muiTableHeadCellProps={{
-                                sx: (theme) => ({
-                                  background: theme.palette.grey['200'],
-                                }),
-                              }}
-                              enableRowSelection
-                              enableSelectAll={false}
-                              muiSelectCheckboxProps={{ color: 'primary' }}
-                              muiTableBodyRowProps={({ row }) => ({
-                                onClick: row.getToggleSelectedHandler(),
-                                sx: {
-                                  cursor: 'pointer',
-                                },
-                              })}
-                              columns={[
-                                { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
-                                  Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
-                                { header: 'User Name', accessorKey: 'name' },
-                                { header: 'Admin', accessorKey: 'isAdmin', size: 10,
-                                  Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
-                                },
-                                { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
-                                  Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
-                                },
-                              ]}
-                              data={this.state.freeUsers}
-                            />
-                        </div>
-                    </Grid>
-                </DialogContent>
-                <DialogActions className={classes.dialogActions}>
-                    <Button variant="contained" size="small" color="primary" onClick={() => this.handleAddUsers()}>Add</Button>
-                    <Button variant="outlined" size="small" onClick={() => this.handleExit()}>Close</Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
+AddUserToGroupDialogue.propTypes = {
+  name: PropTypes.string.isRequired,
+  allUsers: PropTypes.array,
+  groupUsers: PropTypes.array,
+  isOpen: PropTypes.bool.isRequired,
+  reload: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired
 }
 
 export default withStyles (userboardStyle, {withTheme: true})(AddUserToGroupDialogue);

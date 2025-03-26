@@ -15,7 +15,8 @@
   under the License.
 */
 
-import React from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Button, Dialog, DialogTitle, DialogContent, TextField, Tooltip, Typography } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
@@ -24,33 +25,27 @@ import * as Yup from "yup";
 
 import styles from "../../styling/styles";
 
-class FormFields extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+function FormFields(props) {
+  const { classes, requireOldPassword } = props;
 
-  render() {
+  const {
+    values: { newPwd, newPwdConfirm, oldPwd },
+    errors,
+    touched,
+    handleSubmit,
+    handleChange,
+    handleReset,
+    isValid,
+    setFieldTouched
+  } = props;
 
-    const { classes, requireOldPassword } = this.props;
+  let change = (name, e) => {
+    e.persist();
+    handleChange(e);
+    setFieldTouched(name, true, false);
+  };
 
-    const {
-      values: { newPwd, newPwdConfirm, oldPwd },
-      errors,
-      touched,
-      handleSubmit,
-      handleChange,
-      handleReset,
-      isValid,
-      setFieldTouched
-    } = this.props;
-
-    const change = (name, e) => {
-      e.persist();
-      handleChange(e);
-      setFieldTouched(name, true, false);
-    };
-
-    return (
+  return (
       <form
         onSubmit={handleSubmit}
         className={classes.form}
@@ -99,141 +94,124 @@ class FormFields extends React.Component {
           className={classes.form}
           required
         />
-        <Button variant="outlined" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
         { !isValid ?
           // Render hover over and button
           <React.Fragment>
             <Tooltip title="You must fill in all fields.">
               <span>
-                <Button type="submit" variant="contained" color="primary" size="small" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
+                <Button type="submit" variant="contained" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
               </span>
             </Tooltip>
           </React.Fragment> :
           // Else just render the button
-          <Button type="submit" variant="contained" color="primary" size="small" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
+          <Button type="submit" variant="contained" className={classes.formAction} disabled={!isValid}>Change User Password</Button>
         }
+        <Button variant="outlined" className={classes.formAction} onClick={handleReset}>Cancel</Button>
       </form>
     );
-  }
 }
 
 const FormFieldsComponent = withStyles(styles)(FormFields);
 
-class ChangeUserPasswordDialogue extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-          error: ""
-        };
+function ChangeUserPasswordDialogue(props) {
+  PropTypes.checkPropTypes(ChangeUserPasswordDialogue.propTypes, props, 'prop', 'ChangeUserPasswordDialogue');
+  const { classes, handleClose, isOpen, name, requireOldPassword } = props;
 
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handleCloseDialog = this.handleCloseDialog.bind(this);
+  const [ error, setError ] = useState("");
+  const values = { newPwd: "", newPwdConfirm: "" };
+
+  let handlePasswordChange = ({ newPwd, newPwdConfirm, oldPwd }) => {
+    // Build formData object.
+    // We need to do this because sling does not accept JSON, need url encoded data
+    let formData = new FormData();
+    formData.append('newPwd', newPwd);
+    formData.append('newPwdConfirm', newPwdConfirm);
+    if (oldPwd) {
+      formData.append('oldPwd', oldPwd);
     }
+    let url = "/system/userManager/user/" + name + ".changePassword.html";
 
-    handlePasswordChange({ newPwd, newPwdConfirm, oldPwd }) {
-        // Important note about native fetch, it does not reject failed
-        // HTTP codes, it'll only fail when network error
-        // Therefore, you must handle the error code yourself.
-        function handleErrors(response) {
-          if (!response.ok) {
-            return Promise.reject(response);
-          }
-          return response;
-        }
+    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
+    fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+    })
+    .then(response => response.ok ? response.json() : Promise.reject(response))
+    .then(() => handleCloseDialog(true))
+    .catch((error) => handleError(error));
+  }
 
-        // Build formData object.
-        // We need to do this because sling does not accept JSON, need url encoded data
-        let formData = new FormData();
-        formData.append('newPwd', newPwd);
-        formData.append('newPwdConfirm', newPwdConfirm);
-        if (oldPwd) {
-          formData.append('oldPwd', oldPwd);
-        }
-        let url = "/system/userManager/user/" + this.props.name + ".changePassword.html";
+  let handleError = (error) => {
+    if (error.status == "500") {
+      // Determine the exact error
+      error.text()
+        .then((text) => {
+          // There should be a line that looks like <td><div id="Message">javax.jcr.RepositoryException: ...</div></td>
+          // Parse it out
+          let msg_re = /div id="Message">(.+)<\/div/;
+          let match = msg_re.exec(text);
+          // Under most cases (invalid password, old password does not match),
+          // we can display a friendlier error by geting rid of the javax.jcr.RepositoryException
+          let friendly_re = /javax.jcr.RepositoryException:(.+)/;
+          let friendly_match = friendly_re.exec(match[1]);
 
-        // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
-        fetch(url, {
-            method: 'POST',
-            credentials: 'include',
-            body: formData
+          setError(friendly_match?.[1] || match?.[1] || error.statusText);
         })
-        .then(handleErrors) // Handle errors first
-        .then(() => {
-            this.handleCloseDialog(true);
-        })
-        .catch((error) => {
-            this.handleError(error);
-        });
+    } else {
+      setError(error.statusText);
     }
+  }
 
-    handleError(error) {
-      if (error.status == "500") {
-        // Determine the exact error
-        error.text()
-          .then((text) => {
-            // There should be a line that looks like <td><div id="Message">javax.jcr.RepositoryException: ...</div></td>
-            // Parse it out
-            let msg_re = /div id="Message">(.+)<\/div/;
-            let match = msg_re.exec(text);
-            // Under most cases (invalid password, old password does not match),
-            // we can display a friendlier error by geting rid of the javax.jcr.RepositoryException
-            let friendly_re = /javax.jcr.RepositoryException:(.+)/;
-            let friendly_match = friendly_re.exec(match[1]);
+  let handleCloseDialog = (success = false) => {
+    setError("");
+    handleClose && handleClose(success);
+  }
 
-            this.setState({error: friendly_match?.[1] || match?.[1]} || error.statusText);
-          })
-      } else {
-        this.setState({error: error.statusText});
-      }
-    }
-    
-    handleCloseDialog(success = false) {
-        this.setState({error: ""});
-        this.props.handleClose && this.props.handleClose(success);
-    }
+  let validationSchema = {
+    newPwd: Yup.string("")
+      .min(8, "Password must contain at least 8 characters")
+      .required("Enter new password"),
+    newPwdConfirm: Yup.string("Enter new password")
+      .required("Confirm new password")
+      .oneOf([Yup.ref("newPwd")], "New password does not match"),
+  };
 
-    render() {
-        const { classes, requireOldPassword } = this.props;
-        const values = { newPwd: "", newPwdConfirm: "" };
+  if (requireOldPassword) {
+    validationSchema['oldPwd'] = Yup.string("Enter old password")
+      .required("Enter old password");
+  }
 
-        let validationSchema = {
-          newPwd: Yup.string("")
-            .min(8, "Password must contain at least 8 characters")
-            .required("Enter new password"),
-          newPwdConfirm: Yup.string("Enter new password")
-            .required("Confirm new password")
-            .oneOf([Yup.ref("newPwd")], "New password does not match"),
-        };
+  const validationSchemaObj = Yup.object(validationSchema);
 
-        if (requireOldPassword) {
-          validationSchema['oldPwd'] = Yup.string("Enter old password")
-            .required("Enter old password");
-        }
+  return (
+    <Dialog
+        open={isOpen}
+        onClose={() => handleCloseDialog(false)}
+    >
+        <DialogTitle>Change User Password for {name}</DialogTitle>
+        <DialogContent>
+            <Grid container>
+                {error && <Typography component="h2" className={classes.errorMessage}>{error}</Typography>}
+                <Formik
+                  initialValues={values}
+                  validationSchema={validationSchemaObj}
+                  onSubmit={handlePasswordChange}
+                  onReset={() => handleCloseDialog(false)}
+                  >
+                  {props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
+                </Formik>
+            </Grid>
+        </DialogContent>
+    </Dialog>
+  );
+}
 
-        const validationSchemaObj = Yup.object(validationSchema);
-
-        return (
-            <Dialog
-                open={this.props.isOpen}
-                onClose={() => this.handleCloseDialog(false)}
-            >
-                <DialogTitle>Change User Password for {this.props.name}</DialogTitle>
-                <DialogContent>
-                    <Grid container>
-                        {this.state.error && <Typography component="h2" className={classes.errorMessage}>{this.state.error}</Typography>}
-                        <Formik
-                          initialValues={values}
-                          validationSchema={validationSchemaObj}
-                          onSubmit={this.handlePasswordChange}
-                          onReset={() => this.handleCloseDialog(false)}
-                          >
-                          {props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
-                        </Formik>
-                    </Grid>
-                </DialogContent>
-            </Dialog>
-        );
-    }
+ChangeUserPasswordDialogue.propTypes = {
+  handleClose: PropTypes.func,
+  isOpen: PropTypes.bool,
+  name: PropTypes.string,
+  requireOldPassword: PropTypes.bool
 }
 
 export default withStyles(styles)(ChangeUserPasswordDialogue);

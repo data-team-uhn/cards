@@ -92,12 +92,12 @@ export default function VocabularyDetails(props) {
 
         <DialogContent dividers>
           <Typography variant="subtitle1" component="p">{vocabulary.version}</Typography>
-          <Typography variant="body1"><span dangerouslySetInnerHTML={{__html: vocabulary.description}} /></Typography>
+          <Typography><span dangerouslySetInnerHTML={{__html: vocabulary.description}} /></Typography>
         </DialogContent>
 
         <DialogActions>
           {(phase == Phase["Latest"] || phase == Phase["Update Available"]) && 
-            <Button onClick={() => {setBrowserOpened(true);}} variant="contained" className={classes.browseAction} color="primary">Browse</Button>
+            <Button onClick={() => {setBrowserOpened(true);}} variant="contained" className={classes.browseAction}>Browse</Button>
           }
           <VocabularyAction
             install={install}

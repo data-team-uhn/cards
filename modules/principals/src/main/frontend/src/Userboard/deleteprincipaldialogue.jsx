@@ -16,54 +16,68 @@
 */
 
 import React from "react";
+import PropTypes from "prop-types";
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
 import userboardStyle from './userboardStyle.jsx';
 
-class DeletePrincipalDialogue extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+function DeletePrincipalDialogue(props) {
+  PropTypes.checkPropTypes(DeletePrincipalDialogue.propTypes, props, 'prop', 'DeletePrincipalDialogue');
+  const { classes, name, type, url, reload, isOpen, handleClose } = props;
 
-    handleDelete() {
-        let url = this.props.url + this.props.name + ".delete.html";
+  let handleDelete = () => {
+    let path = url + name + ".delete.html";
 
-        fetch(url, {
-            method: 'POST',
-            credentials: 'include'
-        })
-            .then(() => {
-                this.props.reload();
-                this.props.handleClose();
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
+    fetch(path, {
+        method: 'POST',
+        credentials: 'include'
+    })
+    .then(() => {
+        reload();
+        handleClose();
+    })
+    .catch((error) => console.log(error?.statusText ? error.statusText : error));
+  }
 
-    render() {
-        const { classes } = this.props;
+  return (
+    <Dialog
+      open={isOpen}
+      onClose={() => handleClose()}
+    >
+      <DialogTitle>
+        Delete {name}
+      </DialogTitle>
+      <DialogContent>
+        <Typography>Are you sure you want to delete {type} {name}?</Typography>
+      </DialogContent>
+      <DialogActions className={classes.dialogActions}>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => handleDelete()}
+        >
+          Delete
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={() => handleClose()}
+        >
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
-        return (
-            <Dialog
-                open={this.props.isOpen}
-                onClose={() => this.props.handleClose()}
-            >
-                <DialogTitle>
-                  Delete {this.props.name}
-                </DialogTitle>
-                <DialogContent>
-                    <Typography variant="body1">Are you sure you want to delete {this.props.type} {this.props.name}?</Typography>
-                </DialogContent>
-                <DialogActions className={classes.dialogActions}>
-                    <Button variant="contained" color="error" size="small" onClick={() => this.handleDelete()}>Delete</Button>
-                    <Button variant="outlined" size="small" onClick={() => this.props.handleClose()}>Close</Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
+DeletePrincipalDialogue.propTypes = {
+  isOpen: PropTypes.bool,
+  handleClose: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  reload: PropTypes.func.isRequired,
+  url: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired
 }
 
 export default withStyles(userboardStyle)(DeletePrincipalDialogue);

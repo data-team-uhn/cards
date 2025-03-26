@@ -272,8 +272,7 @@ function VocabularyTree(props) {
       </DialogContent>
       { enableSelection &&
         <DialogActions>
-          <Button color="primary"
-                  onClick={onDone}
+          <Button onClick={onDone}
                   variant="contained"
                   disabled={!selectionChanged || maxAnswers > 0 && selectedTerms.length > maxAnswers}
                   className={classes.browseAction} >

@@ -19,16 +19,8 @@
 import React from 'react';
 import PrincipalsContainer from '../principalsContainer.jsx';
 
-class UsersContainer extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render () {
-    return (
-      <PrincipalsContainer isUserListPage={true}/>
-    );
-  }
+export default function UsersContaine() {
+  return (
+    <PrincipalsContainer isUserListPage/>
+  );
 }
-
-export default UsersContainer;

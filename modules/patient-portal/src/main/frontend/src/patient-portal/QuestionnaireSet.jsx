@@ -731,7 +731,6 @@ function QuestionnaireSet(props) {
             <Grid alignSelf="center" key="change-button">
               <Button
                 variant="outlined"
-                color="primary"
                 onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
                   Change
               </Button>
@@ -810,16 +809,16 @@ function QuestionnaireSet(props) {
         <Typography color="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
         <>
         { canSubmitIncomplete ?
-          <Grid container spacing={2} direction="row">
+          <Grid container spacing={2}>
             <Grid>
-              <Button variant="contained" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
+              <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
             </Grid>
             <Grid>
-              <Button variant="outlined" color="primary" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
+              <Button variant="outlined" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
             </Grid>
           </Grid>
           :
-          <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
+          <Fab variant="extended" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
         }
         </>
   ];
