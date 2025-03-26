@@ -118,8 +118,6 @@ public class LockManagerImpl implements LockManager
         try {
             String reason = canLockWithReason(node, true);
             if (reason != null) {
-                // TODO: remove log
-                LOGGER.error("Cannot lock. Reason: {}", reason);
                 throw new LockError(reason);
             } else {
                 lockNode(node);
@@ -141,9 +139,6 @@ public class LockManagerImpl implements LockManager
                 // Warning thrown: ignore and force lock anyways
             }
             if (reason != null) {
-                // TODO: remove log
-                LOGGER.error("Cannot force lock. Reason: {}", reason);
-
                 throw new LockError(reason);
             } else {
                 lockNode(node);
@@ -174,9 +169,6 @@ public class LockManagerImpl implements LockManager
         try {
             String reason = canUnlockWithReason(node);
             if (reason != null) {
-                // TODO: remove log
-                LOGGER.error("Cannot unlock. Reason: {}", reason);
-
                 throw new LockError(reason);
             }
             unlockNode(node);
@@ -297,9 +289,6 @@ public class LockManagerImpl implements LockManager
             session.save();
             return lockNode;
         } catch (RepositoryException e) {
-            // TODO: remove log
-            LOGGER.error("Cannot creat lock");
-
             throw new LockError("Unable to create lock");
         }
     }
@@ -320,9 +309,6 @@ public class LockManagerImpl implements LockManager
                 && serviceNode.getProperty(LOCK_PROPERTY).getString().length() > 0) {
                 // This node is already locked: Error out if needed, otherwise exit quietly
                 if (root.length() > 0) {
-                    // TODO: remove log
-                    LOGGER.error("Node is locked");
-
                     throw new LockError("Node is already locked");
                 } else {
                     return;
@@ -374,16 +360,12 @@ public class LockManagerImpl implements LockManager
     {
         try {
             if (!node.hasProperty(LOCK_PROPERTY)) {
-                // TODO: remove log
-                LOGGER.error("Node is not locked");
                 throw new LockError("Node is not locked");
             }
             Node lockNode = node.getProperty(LOCK_PROPERTY).getNode();
             lockNode.remove();
             node.getSession().save();
         } catch (RepositoryException e) {
-            // TODO: remove log
-            LOGGER.error("Unable to delete lock");
             throw new LockError("Unable to delete lock");
         }
     }
