@@ -26,64 +26,24 @@ from os import path
 
 package_name = 'cards-aggregated-frontend'
 
-def update_dependency_version_map(dependencies, new_dependencies):
-    for key in new_dependencies:
-        if key not in dependencies:
-            dependencies[key] = new_dependencies[key]
-        else:
-            if dependencies[key] == new_dependencies[key]:
-                continue
-            else:
-                raise Exception("Conflicting versions of package {}".format(key))
-
-def merge_package_json_files(root, dir_name, project_to_name_map, package_merged):
-    fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'package.json')
-    if path.exists(fl):
-        with open(fl, "r") as f:
-            json_text = f.read()
-        package = json.loads(json_text)
-        project_to_name_map[dir_name] = package["name"]
-
-        if package_merged == {}:
-            for key,value in package.items():
-                package_merged[key] = value
-            package_merged["name"] = package_name
-            package_merged["description"] = 'Merged package.json'
-            package_merged["resolutions"] = {}
-        else:
-            # Merge contents
-            for i in package["babel"]["plugins"]:
-                if i not in package_merged["babel"]["plugins"]:
-                    package_merged["babel"]["plugins"].append(i)
-            update_dependency_version_map(package_merged["devDependencies"], package["devDependencies"])
-            update_dependency_version_map(package_merged["dependencies"], package["dependencies"])
-
-            if "resolutions" in package:
-                package_merged["resolutions"].update(package["resolutions"])
-
-
-def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name_map, webpack_config_entries):
+# Collect lines of webpack.config file into aggregated array
+def merge_webpack_files(root, dir_name, aggregated_frontend_dir, webpack_config_entries):
     fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'webpack.config.js')
     if path.exists(fl):
-
         with open(fl, 'rt') as ins:
             lines = ins.readlines()
-
-        entry_line_number = lines.index('  entry: {\n')
-        for i in range(entry_line_number + 1, len(lines)):
-            if re.fullmatch(r'\s*\},\n', lines[i]):
+        # Copy lines from webpack.config file
+        for i in range(0, len(lines)):
+            if len(lines[i]) < 1:
                 break
-            if lines[i].strip() == '{':
-                continue
-            if not lines[i].endswith(',\n'):
-                lines[i] = lines[i].replace('\n', ',\n')
-            if lines[i] in webpack_config_entries:
-                continue
-
-            module_name = project_to_name_map[dir_name] + "."
-            line = lines[i].replace('module_name + \'', '\'' + module_name)
+            # ensure each line ends with a comma and newline
+            line = lines[i].rstrip().rstrip(',') + ',\n'
             webpack_config_entries.append(line)
 
+# Copy all UI files from module to aggregated_frontend_dir
+def merge_ui_files(root, dir_name, aggregated_frontend_dir):
+    fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
+    if path.exists(fl):
         path_to_source = path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
         path_to_base_source = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'src')
         shutil.copytree(path_to_source, path_to_base_source, dirs_exist_ok=True)
@@ -100,9 +60,6 @@ def main(args=sys.argv[1:]):
     shutil.copy2(webpack_merged_template_file, webpack_merged_file)
     webpack_config_entries = []
 
-    package_json_file = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'package.json')
-
-    project_to_name_map = {}
     package_merged = {}
 
     for root, dirs, files in os.walk(root_dir):
@@ -111,21 +68,17 @@ def main(args=sys.argv[1:]):
 
             for name in dirs:
                 if not name == "aggregated-frontend":
-                    merge_package_json_files(root, name, project_to_name_map, package_merged)
-                    merge_webpack_files(root, name, aggregated_frontend_dir, project_to_name_map, webpack_config_entries)
+                    merge_webpack_files(root, name, aggregated_frontend_dir, webpack_config_entries)
+                    merge_ui_files(root, name, aggregated_frontend_dir)
 
-    # Write aggregated package.json file
-    with open(package_json_file, "w+") as f:
-        f.write(json.dumps(package_merged, indent=2, sort_keys=False))
-
-    # Write aggregated webpack file
+    # Write collected webpack config lines to the main aggregated webpack.config file
     # Remove last ',' in a last string
     webpack_config_entries[-1] = webpack_config_entries[-1].replace(',\n', '\n')
 
     with open(webpack_merged_file, 'r') as f:
         lines = f.readlines()
         entry_line_number = lines.index('ENTRY_CONTENT\n')
-        lines[entry_line_number] = lines[entry_line_number].replace('ENTRY_CONTENT\n', '      ' + '      '.join(webpack_config_entries))
+        lines[entry_line_number] = lines[entry_line_number].replace('ENTRY_CONTENT\n', '    ' + '    '.join(webpack_config_entries))
 
     with open(webpack_merged_file, "w") as f:
         for item in lines:
