@@ -1,12 +1,12 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-permissions-trusted";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'PendingView']: './src/permissions/PendingView.jsx'
+    [module_name + '.PendingView']: './src/permissions/PendingView.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

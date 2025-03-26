@@ -1,14 +1,14 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-statistics";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'statsIcon']: '@mui/icons-material/BarChart',
-    [module_name + 'AdminStatistics']: { 'dependOn': ['cards-dataentry.Forms', 'cards-dataentry.Questionnaires'], 'import': './src/Statistics/AdminStatistics.jsx' },
-    [module_name + 'UserStatistics']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/Statistics/UserStatistics.jsx' },
+    [module_name + '.statsIcon']: '@mui/icons-material/BarChart',
+    [module_name + '.AdminStatistics']: { 'dependOn': ['cards-dataentry.Forms', 'cards-dataentry.Questionnaires'], 'import': './src/Statistics/AdminStatistics.jsx' },
+    [module_name + '.UserStatistics']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/Statistics/UserStatistics.jsx' },
   },
   plugins: [
     new CleanWebpackPlugin(),

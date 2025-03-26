@@ -1,14 +1,14 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-downtime-warning-banner";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'downtimeBanner']: './src/downtimeBanner.jsx',
-    [module_name + 'DowntimeWarningConfigurationIcon']: '@mui/icons-material/Announcement',
-    [module_name + 'DowntimeWarningConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/DowntimeWarningConfiguration' },
+    [module_name + '.downtimeBanner']: './src/downtimeBanner.jsx',
+    [module_name + '.DowntimeWarningConfigurationIcon']: '@mui/icons-material/Announcement',
+    [module_name + '.DowntimeWarningConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/DowntimeWarningConfiguration' },
   },
   plugins: [
     new CleanWebpackPlugin(),

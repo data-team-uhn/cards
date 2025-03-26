@@ -1,12 +1,12 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-token-authentication";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'TokenExpired']: './src/tokenAuthentication/TokenExpired.jsx',
+    [module_name + '.TokenExpired']: './src/tokenAuthentication/TokenExpired.jsx',
   },
   plugins: [
     new CleanWebpackPlugin(),

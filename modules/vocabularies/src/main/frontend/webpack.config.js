@@ -1,13 +1,13 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-vocabularies";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'admin-page']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/vocabulariesAdminPage.jsx' },
-    [module_name + 'vocabulariesIcon']: '@mui/icons-material/AccountTree'
+    [module_name + '.page']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/vocabulariesAdminPage.jsx' },
+    [module_name + '.vocabulariesIcon']: '@mui/icons-material/AccountTree'
   },
   plugins: [
     new CleanWebpackPlugin(),

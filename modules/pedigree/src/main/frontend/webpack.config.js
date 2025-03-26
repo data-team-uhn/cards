@@ -1,12 +1,12 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-pedigree";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'Pedigree']: './src/pedigree/pedigree.js',
+    [module_name + '.Pedigree']: './src/pedigree/pedigree.js',
   },
   plugins: [
     new CleanWebpackPlugin(),

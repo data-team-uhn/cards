@@ -1,12 +1,12 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-embedded-view";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'index']: './src/embeddedView/index.jsx'
+    [module_name + '.index']: './src/embeddedView/index.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

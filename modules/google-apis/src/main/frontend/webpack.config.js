@@ -1,13 +1,13 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-google-apis";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'GoogleApiKey']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/googleApiKeyAdminPage.jsx' },
-    [module_name + 'googleIcon']: '@mui/icons-material/Google',
+    [module_name + '.GoogleApiKey']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/googleApiKeyAdminPage.jsx' },
+    [module_name + '.googleIcon']: '@mui/icons-material/Google',
   },
   plugins: [
     new CleanWebpackPlugin(),

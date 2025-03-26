@@ -1,13 +1,13 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-variants";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'variantsIcon']: '@mui/icons-material/Subtitles',
-    [module_name + 'variantFilesContainer']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/variantFilesContainer.jsx' },
+    [module_name + '.variantsIcon']: '@mui/icons-material/Subtitles',
+    [module_name + '.variantFilesContainer']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/variantFilesContainer.jsx' },
   },
   plugins: [
     new CleanWebpackPlugin(),

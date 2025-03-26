@@ -1,15 +1,15 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
-module_name = require("./package.json").name + ".";
+module_name = "cards-principals";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'userIcon']: '@mui/icons-material/Person',
-    [module_name + 'groupIcon']: '@mui/icons-material/Group',
-    [module_name + 'userscontainer']: './src/Userboard/Users/usersContainer.jsx',
-    [module_name + 'groupscontainer']: './src/Userboard/Groups/groupsContainer.jsx'
+    [module_name + '.userIcon']: '@mui/icons-material/Person',
+    [module_name + '.groupIcon']: '@mui/icons-material/Group',
+    [module_name + '.userscontainer']: './src/Userboard/Users/usersContainer.jsx',
+    [module_name + '.groupscontainer']: './src/Userboard/Groups/groupsContainer.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

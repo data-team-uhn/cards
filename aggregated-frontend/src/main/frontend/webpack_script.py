@@ -36,13 +36,12 @@ def update_dependency_version_map(dependencies, new_dependencies):
             else:
                 raise Exception("Conflicting versions of package {}".format(key))
 
-def merge_package_json_files(root, dir_name, project_to_name_map, package_merged):
+def merge_package_json_files(root, dir_name, package_merged):
     fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'package.json')
     if path.exists(fl):
         with open(fl, "r") as f:
             json_text = f.read()
         package = json.loads(json_text)
-        project_to_name_map[dir_name] = package["name"]
 
         if package_merged == {}:
             for key,value in package.items():
@@ -59,25 +58,31 @@ def merge_package_json_files(root, dir_name, project_to_name_map, package_merged
             update_dependency_version_map(package_merged["dependencies"], package["dependencies"])
 
 
-def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name_map, webpack_config_entries):
+def merge_webpack_files(root, dir_name, aggregated_frontend_dir, webpack_config_entries):
     fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'webpack.config.js')
     if path.exists(fl):
-
         with open(fl, 'rt') as ins:
             lines = ins.readlines()
 
         entry_line_number = lines.index('  entry: {\n')
+        # Read the module name
+        module_name = ''
+        for i in range(0, entry_line_number-2):
+            if lines[i].startswith('module_name'):
+                line_no_spaces = ''.join(lines[i].split())
+                # Extract the word between parentheses
+                pattern = r'module_name="([^"]+)";'
+                match = re.search(pattern, line_no_spaces)
+                if not match:
+                    return
+                module_name = match.group(1)
+        # Copy lines
         for i in range(entry_line_number + 1, len(lines)):
             if re.fullmatch(r'\s*\},\n', lines[i]):
                 break
-            if lines[i].strip() == '{':
-                continue
             if not lines[i].endswith(',\n'):
                 lines[i] = lines[i].replace('\n', ',\n')
-            if lines[i] in webpack_config_entries:
-                continue
 
-            module_name = project_to_name_map[dir_name] + "."
             line = lines[i].replace('module_name + \'', '\'' + module_name)
             webpack_config_entries.append(line)
 
@@ -97,9 +102,8 @@ def main(args=sys.argv[1:]):
     shutil.copy2(webpack_merged_template_file, webpack_merged_file)
     webpack_config_entries = []
 
-    package_json_file = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'package.json')
+    #package_json_file = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'package.json')
 
-    project_to_name_map = {}
     package_merged = {}
 
     for root, dirs, files in os.walk(root_dir):
@@ -108,12 +112,12 @@ def main(args=sys.argv[1:]):
 
             for name in dirs:
                 if not name == "aggregated-frontend":
-                    merge_package_json_files(root, name, project_to_name_map, package_merged)
-                    merge_webpack_files(root, name, aggregated_frontend_dir, project_to_name_map, webpack_config_entries)
+                    #merge_package_json_files(root, name, package_merged)
+                    merge_webpack_files(root, name, aggregated_frontend_dir, webpack_config_entries)
 
     # Write aggregated package.json file
-    with open(package_json_file, "w+") as f:
-        f.write(json.dumps(package_merged, indent=2, sort_keys=False))
+    #with open(package_json_file, "w+") as f:
+    #    f.write(json.dumps(package_merged, indent=2, sort_keys=False))
 
     # Write aggregated webpack file
     # Remove last ',' in a last string

@@ -1,11 +1,12 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
-module_name = require("./package.json").name + ".";
+
+module_name = "cards-uiextension";
 
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'extensionPoint']: './src/uiextension/extensionPoint.jsx'
+    [module_name + '.extensionPoint']: './src/uiextension/extensionPoint.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
