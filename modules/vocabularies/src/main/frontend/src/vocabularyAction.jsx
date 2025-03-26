@@ -204,7 +204,7 @@ export default function VocabularyAction(props) {
       <DialogContent dividers>
         {(linkedQuestions.length > 0) && (
           <span className={classes.wrapper}>
-          <Typography variant="body1">The following variables are linked to this vocabulary:</Typography>
+          <Typography>The following variables are linked to this vocabulary:</Typography>
           <ul>
             {linkedQuestions.map((question, index) => {
               return (
@@ -218,15 +218,15 @@ export default function VocabularyAction(props) {
           </span>
         )}
         {(linkedQuestions.length == 0) && (
-          <Typography variant="body1">No variables are linked to this vocabulary.</Typography>
+          <Typography>No variables are linked to this vocabulary.</Typography>
         )}
 
-        <Typography variant="body1">Uninstalling this vocabulary may result in data not being properly standardized. Proceed?</Typography>
+        <Typography>Uninstalling this vocabulary may result in data not being properly standardized. Proceed?</Typography>
       </DialogContent>
 
       <DialogActions>
         <Button onClick={handleClose} variant="outlined" className={classes.vocabularyAction}>Cancel</Button>
-        <Button onClick={handleUninstall} variant="contained" color="primary" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
+        <Button onClick={handleUninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
       </DialogActions>
 
     </Dialog>

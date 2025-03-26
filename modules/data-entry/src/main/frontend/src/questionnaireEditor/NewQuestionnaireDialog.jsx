@@ -106,7 +106,6 @@ function NewQuestionnaireDialog(props) {
           </Button>
           <Button
             variant="contained"
-            color="primary"
             onClick={createQuestionnaire}
             disabled={!title}
             >

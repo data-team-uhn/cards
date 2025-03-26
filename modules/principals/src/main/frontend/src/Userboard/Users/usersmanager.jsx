@@ -85,7 +85,8 @@ class UsersManager extends React.Component {
           handleClose={() => {this.setState({deployDeleteUser: false});}}
           name={this.state.currentUserName}
           reload={() => this.handleReload()}
-          url={USER_URL} type={"user"}
+          url={USER_URL}
+          type="user"
         />
         <ChangeUserPasswordDialogue 
           isOpen={this.state.deployChangeUserPassword}

@@ -146,7 +146,6 @@ function UserDashboard(props) {
           </Button>
           <Button
             variant="contained"
-            color="primary"
             onClick={ () => {
               setOpen(false);
               setSelectedCreation(creationExtensions.indexOf(selectedRow));

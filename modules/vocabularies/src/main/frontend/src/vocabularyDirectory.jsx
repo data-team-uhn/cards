@@ -129,7 +129,7 @@ export default function VocabularyDirectory(props) {
           </Typography>}
         </Grid>
         <Grid item>
-          <Button variant="contained" color="primary" onClick={getVocabList}>
+          <Button variant="contained" onClick={getVocabList}>
             <Typography variant="button">Retry</Typography>
           </Button>
         </Grid>

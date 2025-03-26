@@ -202,7 +202,6 @@ function AdminConfigScreen(props) {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
               disabled={!!configError || !hasChanges}
             >
               Save
@@ -236,7 +235,7 @@ function AdminConfigScreen(props) {
             <DialogActions>
               <Button variant="contained" onClick={handleReset}>Yes, Reset</Button>
               <Button variant="outlined" onClick={() => setResetConfirmationPending(false)}>No, Cancel</Button>
-              <Button variant="text" onClick={() => history.push("/content.html/admin/")}>No, go to Administration</Button>
+              <Button onClick={() => history.push("/content.html/admin/")}>No, go to Administration</Button>
             </DialogActions>
           </Dialog>
         </form>

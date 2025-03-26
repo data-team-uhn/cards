@@ -790,13 +790,13 @@ export default function VariantFilesContainer() {
           <Grid item xs={12} lg={6}>
           { uploadInProgress && (
               <Grid item className={classes.root}>
-                <LinearProgress color="primary" />
+                <LinearProgress />
               </Grid>
             ) }
 
             <div className={classes.dragAndDrop}>
               <DragAndDrop
-                accept={".csv"}
+                accept=".csv"
                 multifile={true}
                 handleDrop={onDrop}
                 error={error}
@@ -867,7 +867,7 @@ export default function VariantFilesContainer() {
                     helperText="Optional"
                   />
                   <label htmlFor="contained-button-file">
-                    <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} color="primary" disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file, true)}>
+                    <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file, true)}>
                       <span><BackupIcon className={classes.buttonIcon}/>
                         {file.uploading ? 'Uploading' : 'Upload'}
                       </span>
@@ -895,7 +895,7 @@ export default function VariantFilesContainer() {
           ) } ) }
       { showUploadAllButton ?
       <Grid item>
-      <Button type="submit" variant="contained" color="primary" disabled={showUploadDisabled} form="variantForm">
+      <Button type="submit" variant="contained" disabled={showUploadDisabled} form="variantForm">
         <span><BackupIcon className={classes.buttonIcon}/>
           {uploadAllComplete ? 'Uploaded' :
            uploadInProgress ? 'Uploading' : 'Upload all'}

@@ -458,7 +458,7 @@ function SubjectMemberInternal (props) {
     {
       level > 0 &&
         <Grid item className={classes.childSubjectHeader}>
-          <Grid container direction="row" spacing={1} justifyContent="flex-start">
+          <Grid container spacing={1} justifyContent="flex-start">
             <Grid item xs={false}>{expandAction}</Grid>
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item xs={true}>
@@ -551,7 +551,7 @@ function SubjectMemberInternal (props) {
                       },
                     },
                     Cell: ({ row }) => (
-                                   <Grid container direction="row" spacing={1} justifyContent="flex-start" wrap="nowrap">
+                                   <Grid container spacing={1} justifyContent="flex-start" wrap="nowrap">
                                      <Grid item xs={false}>
                                        <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
                                      </Grid>

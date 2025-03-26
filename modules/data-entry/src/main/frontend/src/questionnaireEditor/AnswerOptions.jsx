@@ -277,7 +277,6 @@ let AnswerOptions = (props) => {
     let option = specialOptionsInfo[index];
     return (
     <Grid container
-       direction="row"
        justifyContent="space-between"
        alignItems="stretch"
        className={classes.answerOption}
@@ -326,7 +325,7 @@ let AnswerOptions = (props) => {
       { option.data[option.label]
         ?
         <>
-          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
+          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value='cards:AnswerOption' />
           <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
           <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
@@ -428,7 +427,7 @@ let AnswerOptions = (props) => {
           </CardContent>
           <CardActions>
             <Button variant='outlined' onClick={handlePopoverClose}>Cancel</Button>
-            <Button variant='contained' color='primary' onClick={updateOptionDescription}>Done</Button>
+            <Button variant='contained' onClick={updateOptionDescription}>Done</Button>
           </CardActions>
         </Card>
       </Popover>

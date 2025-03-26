@@ -119,7 +119,7 @@ class FormFields extends React.Component {
           required
 
         />
-        <Grid container direction="row" justifyContent="flex-end" alignItems="center" className={classes.actions}>
+        <Grid container justifyContent="flex-end" alignItems="center" className={classes.actions}>
           { !loginOnSuccess &&
             <Grid item>
               <Button variant="outlined" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>{closeButtonText}</Button>
@@ -131,16 +131,16 @@ class FormFields extends React.Component {
             <Tooltip title="You must fill in all fields.">
               <div>
                 { loginOnSuccess ?
-                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
-                  <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
+                  <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
+                  <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
                 }
               </div>
             </Tooltip>
             :
             // Else just render the button
             ( loginOnSuccess ?
-              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
-              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
+              <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
+              <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
             )
           }
           </Grid>

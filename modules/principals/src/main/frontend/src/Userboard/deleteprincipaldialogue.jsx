@@ -55,7 +55,7 @@ class DeletePrincipalDialogue extends React.Component {
                   Delete {this.props.name}
                 </DialogTitle>
                 <DialogContent>
-                    <Typography variant="body1">Are you sure you want to delete {this.props.type} {this.props.name}?</Typography>
+                    <Typography>Are you sure you want to delete {this.props.type} {this.props.name}?</Typography>
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
                     <Button variant="outlined" onClick={() => this.props.handleClose()}>Cancel</Button>

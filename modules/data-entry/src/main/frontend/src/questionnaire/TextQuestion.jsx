@@ -54,9 +54,9 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //      ["Two", "2"],
 //      ["Three", "3"]
 //    ]}
-//    displayMode={"input"}
-//    validationRegexp={"^[a-z]+$"}
-//    validationErrorText={"Please enter a lowercase input"}
+//    displayMode="input"
+//    validationRegexp="^[a-z]+$"
+//    validationErrorText="Please enter a lowercase input"
 //    />
 function TextQuestion(props) {
   let { dataType, displayMode, validationRegexp, validationErrorText } = {validationErrorText: "Invalid input", ...props.questionDefinition, ...props};

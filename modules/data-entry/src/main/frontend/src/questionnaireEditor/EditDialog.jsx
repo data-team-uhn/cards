@@ -158,7 +158,7 @@ let EditDialog = (props) => {
 
   let targetIdField = () => {
     return (
-      <Grid container alignItems='baseline' spacing={2} direction="row">
+      <Grid container alignItems='baseline' spacing={2}>
         <Grid item xs={4}><Typography variant="subtitle2">{`${formattedType} id:` }</Typography></Grid>
         <Grid item xs={8}>{
           targetExists ?
@@ -214,13 +214,12 @@ let EditDialog = (props) => {
               variant='outlined'
               onClick={() => { setOpen(false); onCancel && onCancel();}}
             >
-              {'Cancel'}
+              Cancel
             </Button>
             <Button
               ref={saveButtonRef}
               type='submit'
               variant='contained'
-              color='primary'
               disabled={saveInProgress || !!variableNameError}
             >
               {saveInProgress ? 'Saving' :

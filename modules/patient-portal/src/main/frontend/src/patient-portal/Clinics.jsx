@@ -68,8 +68,8 @@ function Clinics(props) {
           },
         }}
         columns={columns}
-        entryType={"Survey/ClinicMapping"}
-        dataUrl={"Survey/ClinicMapping.paginate"}
+        entryType="Survey/ClinicMapping"
+        dataUrl="Survey/ClinicMapping.paginate"
       />
       <OnboardNewClinicDialog
         open={dialogOpen}
@@ -173,7 +173,6 @@ function OnboardNewClinicDialog(props) {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
             disabled={saveInProgress}
           >
             {isNewClinic ? "Create" : "Save"}

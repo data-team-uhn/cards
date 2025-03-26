@@ -126,7 +126,7 @@ function PedigreeQuestion(props) {
         pageActive && <>
           <div className={classes.answerField}>
           { pedigreeData.image ?
-            <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={0}>
+            <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
               <Grid item>
                 <Tooltip title="Edit Pedigree">
                   <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}} underline="hover">
@@ -136,8 +136,8 @@ function PedigreeQuestion(props) {
               </Grid>
               <Grid item>
                 <DeleteButton
-                  entryName={"pedigree"}
-                  entryType={"Pedigree"}
+                  entryName="pedigree"
+                  entryType="Pedigree"
                   onComplete={() => {setPedigree({});}}
                 />
               </Grid>

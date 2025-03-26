@@ -332,14 +332,13 @@ function PatientIdentification(props) {
             </div>
             <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
             <DropdownsDatePicker id="j_dob" name="j_dob" formatDate onDateChange={setDob} autoFocus fullWidth/>
-            <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>
+            <Grid container alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>
               <Grid item>
                 <FormControl variant="standard" margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
                   <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
                   <FormHelperText id="mrn_helper">
                   <Link
-                    color="primary"
                     variant="caption"
                     underline="hover"
                     onClick={() => {setMrnHelperOpen(true)}}
@@ -363,7 +362,6 @@ function PatientIdentification(props) {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
               className={classes.submit}
               >
               Continue
@@ -389,7 +387,6 @@ function PatientIdentification(props) {
                   <Button
                     fullWidth
                     variant="outlined"
-                    color="primary"
                     onClick={() => setVisit(v.subject)}
                     startIcon={<AppointmentIcon />}
                   >
@@ -414,7 +411,6 @@ function PatientIdentification(props) {
             </Grid>
             <Grid item>
               <Button
-                color="primary"
                 variant="contained" onClick={() => window.location = "/system/sling/logout"}
                 >
                 Close
