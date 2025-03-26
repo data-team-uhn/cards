@@ -286,6 +286,7 @@ function SubjectTypeDialog(props) {
         {error && <Typography color='error'>{error}</Typography>}
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
+        <Button variant="outlined" onClick={close}>Cancel</Button>
         <Button
           disabled={!isEdit && (!label || isDuplicateLabel)
                   || isEdit && (currentSubjectType["cards:defaultOrder"] == order &&
@@ -296,14 +297,11 @@ function SubjectTypeDialog(props) {
                                 currentSubjectType?.["idPatternHint"] == idPatternHint
                                 )
           }
-          color="primary"
           variant="contained"
-          size="small"
           onClick={(event) => { event.preventDefault(); handleSubjectType(); }}
          >
           { isEdit ? "Save" : "Create" }
         </Button>
-        <Button variant="outlined" size="small" onClick={close}>Close</Button>
       </DialogActions>
     </Dialog>
   );

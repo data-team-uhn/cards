@@ -261,7 +261,7 @@ function ExportButton(props) {
 
   let getUserSelector = (label, value, setter) => {
     return (
-          <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
+          <Grid container alignItems='center' className={classes.container + ' ' + classes.withSelect}>
             <Grid size={4}><Typography variant="subtitle2">{label}</Typography></Grid>
             <Grid size={8}>
                 <FormControl variant="standard" fullWidth>
@@ -295,7 +295,7 @@ function ExportButton(props) {
         onClose={closeDialog}
       >
         <DialogContent dividers>
-          <Grid container alignItems='center' direction="row" className={classes.container}>
+          <Grid container alignItems='center' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">File format:</Typography></Grid>
             <Grid size={8}>
               <RadioGroup
@@ -310,7 +310,7 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='center' direction="row" className={classes.container}>
+          <Grid container alignItems='center' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">Header format:</Typography></Grid>
             <Grid size={8}>
               <FormControlLabel
@@ -334,7 +334,7 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='center' direction="row" className={classes.container}>
+          <Grid container alignItems='center' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
             <Grid size={8}>
               <RadioGroup
@@ -353,7 +353,7 @@ function ExportButton(props) {
 
           <Typography variant="h6">Columns</Typography>
 
-          <Grid container alignItems='center' direction="row" className={classes.container}>
+          <Grid container alignItems='center' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">Column selection mode:</Typography></Grid>
             <Grid size={8}>
               <RadioGroup
@@ -368,7 +368,7 @@ function ExportButton(props) {
             </Grid>
           </Grid>
 
-          <Grid container alignItems='start' direction="row" className={classes.container + ' ' + classes.withMultiSelect}>
+          <Grid container alignItems='start' className={classes.container + ' ' + classes.withMultiSelect}>
             <Grid size={4}>
               <Typography variant="subtitle2">Columns to {columnSelectionMode}:</Typography>
             </Grid>
@@ -388,7 +388,7 @@ function ExportButton(props) {
 
           { getUserSelector("Created by:", createdBy, setCreatedBy) }
 
-          <Grid container alignItems='baseline' direction="row" className={classes.container}>
+          <Grid container alignItems='baseline' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">Created between:</Typography></Grid>
             <Grid size={8}>
               { getDateRange(createdAfter, setCreatedAfter, createdBefore, setCreatedBefore, createdRangeIsInvalid) }
@@ -397,14 +397,14 @@ function ExportButton(props) {
 
           { getUserSelector("Last modified by:", modifiedBy, setModifiedBy) }
 
-          <Grid container alignItems='baseline' direction="row" className={classes.container}>
+          <Grid container alignItems='baseline' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">Last modified between:</Typography></Grid>
             <Grid size={8}>
               { getDateRange(modifiedAfter, setModifiedAfter, modifiedBefore, setModifiedBefore, modifiedRangeIsInvalid) }
             </Grid>
           </Grid>
 
-          <Grid container alignItems='center' direction="row" className={classes.container}>
+          <Grid container alignItems='center' className={classes.container}>
               <Grid size={4}><Typography variant="subtitle2">Status flag selection mode:</Typography></Grid>
               <Grid size={8}>
                 <RadioGroup
@@ -419,7 +419,7 @@ function ExportButton(props) {
               </Grid>
           </Grid>
 
-          <Grid container alignItems='center' direction="row" className={classes.container + ' ' + classes.withSelect}>
+          <Grid container alignItems='center' className={classes.container + ' ' + classes.withSelect}>
             <Grid size={4}>
               <Typography variant="subtitle2">{statusSelectionMode == "status" ? "Include only forms with the status flag:" : "Exclude all forms with the status flag:"}</Typography>
             </Grid>
@@ -442,10 +442,9 @@ function ExportButton(props) {
           </Grid>
         </DialogContent>
         <DialogActions>
-            <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>
+            <Button variant="outlined" onClick={closeDialog}>Cancel</Button>
             <Button
               variant="contained"
-              size="small"
               disabled={createdRangeIsInvalid || modifiedRangeIsInvalid}
               onClick={() => handleExport()}
             >
@@ -462,7 +461,7 @@ function ExportButton(props) {
         :
         <Button
           onClick={openDialog}
-          size={size ? size : "medium"}
+          size={size}
           startIcon={variant == "extended" ? <DownloadIcon /> : undefined}
         >
           {entryLabel}

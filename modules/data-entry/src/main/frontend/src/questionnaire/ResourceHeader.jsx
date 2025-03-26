@@ -119,7 +119,7 @@ function ResourceHeader (props) {
   return (
     <>
     <Grid size={12} className={classes.resourceHeader} style={{top: contentOffset}} id="cards-resource-header">
-      <Grid container direction="row" justifyContent="space-between" alignItems="center" wrap="nowrap">
+      <Grid container justifyContent="space-between" alignItems="center" wrap="nowrap">
         <Grid>
           <Breadcrumbs separator={separator}>
             {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
@@ -134,9 +134,9 @@ function ResourceHeader (props) {
       </Grid>
     </Grid>
     <Grid size={12} className={classes.resourceTitle}>
-       <Grid container direction="row" justifyContent="space-between" alignItems="start" spacing={1}>
+       <Grid container justifyContent="space-between" alignItems="start" spacing={1}>
           <Grid>
-            <Grid container direction="row" spacing={1} alignItems="center">
+            <Grid container spacing={1} alignItems="center">
               <Grid><Typography component="h2" variant="h4">{title}</Typography></Grid>
               {tags?.map((t, i) => <Grid key={`resource-tag-${i}`}>{t}</Grid>)}
             </Grid>

@@ -309,7 +309,7 @@ function FileQuestion(props) {
         pageActive && <>
           { uploadInProgress && (
             <Grid className={classes.root}>
-              <LinearProgress color="primary" />
+              <LinearProgress/>
             </Grid>
           ) }
           <DragAndDrop
@@ -325,7 +325,7 @@ function FileQuestion(props) {
                 <DeleteButton
                   size="small"
                   entryName={filepath}
-                  entryType={"file"}
+                  entryType="file"
                   onComplete={() => deletePath(idx)}
                 />
                 { previewRenderer && previewRenderer(fixFileURL(uploadedFiles[filepath], filepath), filepath, idx) }

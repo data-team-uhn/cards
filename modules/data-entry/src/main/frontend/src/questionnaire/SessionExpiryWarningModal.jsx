@@ -124,7 +124,7 @@ PropTypes.checkPropTypes(SessionExpiryWarningModal.propTypes, props, 'prop', 'Se
       title={ getExpiryMessage() }
       >
         <DialogContent dividers>
-          <Typography variant="body1" component="p">
+          <Typography component="p">
           { expired ?
             "Your session has expired. Please refresh this page to keep editing."
             :

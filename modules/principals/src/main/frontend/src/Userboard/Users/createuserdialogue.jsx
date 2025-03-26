@@ -48,7 +48,13 @@ class CreateUserDialogue extends React.Component {
                 <DialogTitle>Register a new user</DialogTitle>
                 <DialogContent>
                   <Grid container>
-                    <SignUpForm loginOnSuccess={false} handleSuccess={() => this.handleCreateUser()} handleExit={() => this.props.handleClose()}/>
+                    <SignUpForm
+                      loginOnSuccess={false}
+                      handleSuccess={() => this.handleCreateUser()}
+                      handleExit={() => this.props.handleClose()}
+                      closeButtonText="Cancel"
+                      submitButtonText="Create account"
+                    />
                   </Grid>
                 </DialogContent>
             </Dialog>

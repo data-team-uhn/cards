@@ -203,8 +203,6 @@ function AdminConfigScreen(props) {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
-              size="small"
               disabled={!!configError || !hasChanges}
             >
               Save
@@ -212,7 +210,6 @@ function AdminConfigScreen(props) {
             <Button
               variant="outlined"
               color="error"
-              size="small"
               disabled={configIsInitial}
               onClick={() => setResetConfirmationPending(true)}
             >
@@ -237,9 +234,9 @@ function AdminConfigScreen(props) {
               </FormattedText>
             </DialogContent>
             <DialogActions>
-              <Button size="small" variant="contained" onClick={handleReset}>Yes, Reset</Button>
-              <Button size="small" variant="outlined" onClick={() => setResetConfirmationPending(false)}>No, Cancel</Button>
-              <Button size="small" variant="text" onClick={() => navigate("/content.html/admin/")}>No, go to Administration</Button>
+              <Button variant="contained" onClick={handleReset}>Yes, Reset</Button>
+              <Button variant="outlined" onClick={() => setResetConfirmationPending(false)}>No, Cancel</Button>
+              <Button onClick={() => navigate("/content.html/admin/")}>No, go to Administration</Button>
             </DialogActions>
           </Dialog>
         </form>

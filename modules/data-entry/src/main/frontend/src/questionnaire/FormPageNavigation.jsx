@@ -143,7 +143,7 @@ function FormPageNavigation (props) {
 
   // Render the expanded or condensed view depending on screen width
   return (
-    <Grid container direction="row" spacing={4} justifyContent="space-between" alignItems="center" flexWrap="nowrap">
+    <Grid container spacing={4} justifyContent="space-between" alignItems="center" flexWrap="nowrap">
       {backButton && <Grid>{backButton}</Grid>}
       <Grid>
         { condensedPageList ? pageSelector() : pageList() }

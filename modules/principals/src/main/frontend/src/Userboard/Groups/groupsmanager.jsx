@@ -116,7 +116,7 @@ class GroupsManager extends React.Component {
           />
         }>
         <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload(true)} />
-        <DeletePrincipalDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload(true)} url={GROUP_URL} type={"group"} />
+        <DeletePrincipalDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload(true)} url={GROUP_URL} type="group" />
         <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} groupUsers={this.state.currentGroupUsers} allUsers={this.props.users}  reload={() => this.handleReload()} />
         <div className={classes.root}>
           <MaterialReactTable
@@ -219,8 +219,6 @@ class GroupsManager extends React.Component {
                         <Grid container className={classes.cardActions}>
                           <Button
                             variant="contained"
-                            color="primary"
-                            size="small"
                             className={classes.containerButton}
                             onClick={() => { this.setState({currentGroupName: group.principalName,
                                                             deployAddGroupUsers: true,
@@ -233,7 +231,6 @@ class GroupsManager extends React.Component {
                           <Button
                             variant="contained"
                             color="secondary"
-                            size="small"
                             onClick={() => { this.handleRemoveUsers(group.principalName, groupUsers) }}
                           >
                             Remove User from Group

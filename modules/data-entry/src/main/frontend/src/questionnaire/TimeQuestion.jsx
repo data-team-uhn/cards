@@ -86,8 +86,8 @@ export class Time {
 // Sample usage:
 //<TimeQuestion
 //  text="Please enter a time after noon"
-//  lowerLimit={"12:01"}
-//  upperLimit={"23:59"}
+//  lowerLimit="12:01"
+//  upperLimit="23:59"
 //  />
 function TimeQuestion(props) {
   PropTypes.checkPropTypes(TimeQuestion.propTypes, props, 'prop', 'TimeQuestion');
