@@ -25,7 +25,7 @@ import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
 
 const filterUserOptions =  createFilterOptions({
   stringify: (option) => `${option.name} ${option.principalName}`

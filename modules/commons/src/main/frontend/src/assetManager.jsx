@@ -167,7 +167,7 @@ var loadModule = async function(assetURL) {
 // @return a Promise that will resolve to the actual component
 var loadAsset = async function(assetURL) {
   if (process.env.NODE_ENV == 'production') {
-    if (assetURL == 'asset:cards-login.loginDialogue.js') {
+    if (assetURL == 'asset:cards-login.loginDialog.js') {
       // In production mode, this is already embedded in the top level script and does not need to be loaded
       return;
     }

@@ -16,7 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   Alert,
   Button,
@@ -33,55 +34,39 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import styles from "../styling/styles";
 
-class SignIn extends React.Component {
-  constructor(props) {
-    super(props);
+function SignIn(props) {
+  PropTypes.checkPropTypes(SignIn.propTypes, props, 'prop', 'SignIn');
+  const { classes, handleLogin, redirectOnLogin } = props;
 
-    this.state = {
-      passwordIsMasked: false,
-      failedLogin: undefined,
-
-      username: "",
-      password: "",
-
-      phase: "USERNAME_ENTRY",
-
-      singleStepEntry: undefined
-    };
-
+  const [ username, setUsername ] = useState("");
+  const [ password, setPassword ] = useState("");
+  const [ failedLogin, setFailedLogin ] = useState(false);
+  const [ passwordIsMasked, setPasswordIsMasked ] = useState(false);
+  const [ phase, setPhase ] = useState("USERNAME_ENTRY");
+  const [ singleStepEntry, setSingleStepEntry ] = useState(undefined);
+ 
+  useEffect(() => {
     // Check to see if 1 or 2 step login should be used
     fetch(window.location.origin + "/apps/cards/SAMLDomains.json")
-    .then((resp) => {
-      if (resp.ok) {
-        this.setState({singleStepEntry: false});
-      } else {
-        this.setState({singleStepEntry: true});
-      }
-    });
-  }
+      .then((resp) => setSingleStepEntry(!!resp.ok));
+  }, []);
 
-  loginRedirectPath() {
+  let loginRedirectPath = () => {
     const currentPath = window.location.pathname.startsWith("/login") ? "/" : window.location.pathname;
     return new URLSearchParams(window.location.search).get("resource") || currentPath;
   };
 
-  loginValidationPOSTPath() {
-    return "/j_security_check";
-  };
-
-  togglePasswordMask = () => {
-    this.setState(prevState => ({
-      passwordIsMasked: !prevState.passwordIsMasked,
-    }));
+  let togglePasswordMask = () => {
+    setPasswordIsMasked(!passwordIsMasked);
   }
 
-  submitLogin() {
+  let submitLogin = () => {
     fetch('/j_security_check',
       {
         method: 'POST',
         body: new URLSearchParams({
-          "j_username": this.state.username,
-          "j_password": this.state.password,
+          "j_username": username,
+          "j_password": password,
           "j_validate": true
         }),
         headers: {
@@ -93,34 +78,31 @@ class SignIn extends React.Component {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      this.setState({failedLogin: undefined});
-      this.props.handleLogin?.(true);
-      if (this.props.redirectOnLogin) {
-        window.location = this.loginRedirectPath();
+      setFailedLogin(undefined);
+      handleLogin?.(true);
+      if (redirectOnLogin) {
+        window.location = loginRedirectPath();
       }
     })
     .catch((error) => {
-      this.setState({failedLogin: "Invalid username or password"});
-      this.props.handleLogin?.(false);
+      setFailedLogin("Invalid username or password");
+      handleLogin?.(false);
     });
   }
-
-  render() {
-    const { classes } = this.props;
-
-    const nextButtonCallback = () => {
-      if (this.state.username.split("@").length - 1 == 0) {
-        this.setState({phase: "PASSWORD_ENTRY"});
-      } else if (this.state.username.split("@").length - 1 == 1) {
-        let remoteDomain = this.state.username.split("@")[1];
+ 
+  let nextButtonCallback = () => {
+      if (username.split("@").length - 1 == 0) {
+        setPhase("PASSWORD_ENTRY");
+      } else if (username.split("@").length - 1 == 1) {
+        let remoteDomain = username.split("@")[1];
         // Do a fetch() to see if we have a SAML configuration for this domain
         fetch(window.location.origin + "/apps/cards/SAMLDomains/" + remoteDomain + ".json")
         .then((resp) => {
           if (resp.ok) {
-            this.setState({failedLogin: undefined});
+            setFailedLogin(undefined);
             return resp.json();
           } else {
-            this.setState({failedLogin: "Unrecognized email domain"});
+            setFailedLogin("Unrecognized email domain");
           }
         })
         .then((data) => {
@@ -145,114 +127,128 @@ class SignIn extends React.Component {
             let checkLoginTimer = setInterval(() => {
               if (loginPopup.closed === true) {
                 clearInterval(checkLoginTimer);
-                this.props.handleLogin && this.props.handleLogin(true);
+                handleLogin && handleLogin(true);
               }
             }, 1000);
           }
         })
-        .catch((err) => this.setState({failedLogin: "Error occurred while handling third-party identity provider"}))
+        .catch((err) => setFailedLogin("Error occurred while handling third-party identity provider"));
       } else {
-        this.setState({failedLogin: "Invalid email address"});
+        setFailedLogin("Invalid email address");
       }
-    }
+  }
 
-    if (this.state.singleStepEntry === undefined) {
-      return null;
-    }
+  if (singleStepEntry === undefined) {
+    return null;
+  }
 
-    return (
-        <div className={classes.main}>
-            {this.state.failedLogin && <Alert severity="error">{this.state.failedLogin}</Alert>}
+  return (
+    <div className={classes.main}>
+        {failedLogin && <Alert severity="error">{failedLogin}</Alert>}
 
-            <form
-              method="post"
-              className={classes.form}
-              onSubmit={(event)=> {
-                event.preventDefault();
-                if (this.state.phase == "PASSWORD_ENTRY" || this.state.singleStepEntry === true) {
-                  this.submitLogin();
-                } else if (this.state.phase == "USERNAME_ENTRY" && this.state.singleStepEntry === false) {
-                  nextButtonCallback();
-                }
-              }}
-            >
-              { (this.state.phase == "USERNAME_ENTRY" || this.state.singleStepEntry) &&
-                <React.Fragment>
-                  <FormControl variant="standard" margin="normal" required fullWidth>
-                    <InputLabel htmlFor="j_username">Username{this.state.singleStepEntry ? "" : " or email address"}</InputLabel>
-                    <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
-                  </FormControl>
-                  {  (!this.state.singleStepEntry) &&
+        <form
+          method="post"
+          className={classes.form}
+          onSubmit={(event)=> {
+            event.preventDefault();
+            if (phase == "PASSWORD_ENTRY" || singleStepEntry === true) {
+              submitLogin();
+            } else if (phase == "USERNAME_ENTRY" && singleStepEntry === false) {
+              nextButtonCallback();
+            }
+          }}
+        >
+          { (phase == "USERNAME_ENTRY" || singleStepEntry) &&
+            <React.Fragment>
+              <FormControl variant="standard" margin="normal" required fullWidth>
+                <InputLabel htmlFor="j_username">Username{singleStepEntry ? "" : " or email address"}</InputLabel>
+                <Input
+                  id="j_username"
+                  name="j_username"
+                  autoComplete="email"
+                  autoFocus
+                  onChange={(event) => setUsername(event.target.value)}
+                />
+              </FormControl>
+              {  (!singleStepEntry) &&
+                <Button
+                  fullWidth
+                  variant="contained"
+                  className={`${classes.actions} ${classes.submit}`}
+                  onClick={nextButtonCallback}
+                  disabled={username.length == 0}
+                >
+                  Next
+                </Button>
+              }
+            </React.Fragment>
+          }
+
+          { (phase == "PASSWORD_ENTRY" || singleStepEntry) &&
+            <React.Fragment>
+              <FormControl variant="standard" margin="normal" required fullWidth>
+                <InputLabel htmlFor="j_password">Password{singleStepEntry ? "" : (" for " + username)}</InputLabel>
+                <Input
+                  name="j_password"
+                  type={passwordIsMasked ? 'text' : 'password'}
+                  id="j_password" autoComplete="current-password"
+                  autoFocus={phase === "PASSWORD_ENTRY"}
+                  onChange={(event) => setPassword(event.target.value)}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <Tooltip title={passwordIsMasked ? "Mask Password" : "Show Password"}>
+                        <IconButton
+                          size="large"
+                          aria-label="Toggle password visibility"
+                          onClick={togglePasswordMask}
+                        >
+                          {passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
+              <Grid container justifyContent="center" alignItems="center" spacing={2} className={classes.actions}>
+                {  (!singleStepEntry) &&
+                  <Grid>
                     <Button
                       fullWidth
-                      variant="contained"
-                      className={`${classes.actions} ${classes.submit}`}
-                      onClick={nextButtonCallback}
-                      disabled={this.state.username.length == 0}
-                    >
-                      Next
-                    </Button>
-                  }
-                </React.Fragment>
-              }
-
-              { (this.state.phase == "PASSWORD_ENTRY" || this.state.singleStepEntry) &&
-                <React.Fragment>
-                  <FormControl variant="standard" margin="normal" required fullWidth>
-                    <InputLabel htmlFor="j_password">Password{this.state.singleStepEntry ? "" : (" for " + this.state.username)}</InputLabel>
-                    <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" autoFocus={this.state.phase === "PASSWORD_ENTRY"} onChange={(event) => {this.setState({password: event.target.value});}}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
-                            <IconButton
-                              size="large"
-                              aria-label="Toggle password visibility"
-                              onClick={this.togglePasswordMask}
-                            >
-                              {this.state.passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
-                            </IconButton>
-                          </Tooltip>
-                        </InputAdornment>
+                      variant="outlined"
+                      className={classes.submit}
+                      onClick={() => {
+                          setFailedLogin(undefined),
+                          setUsername(""),
+                          setPassword("");
+                          setPhase("USERNAME_ENTRY");
+                        }
                       }
-                    />
-                  </FormControl>
-                  <Grid container justifyContent="center" alignItems="center" spacing={2} className={classes.actions}>
-                    {  (!this.state.singleStepEntry) &&
-                      <Grid>
-                        <Button
-                          fullWidth
-                          variant="outlined"
-                          className={classes.submit}
-                          onClick={() => {
-                            this.setState({
-                              failedLogin: undefined,
-                              username: "",
-                              password: "",
-                              phase: "USERNAME_ENTRY"
-                            });
-                          }}
-                        >
-                          Back
-                        </Button>
-                      </Grid>
-                    }
-                    <Grid>
-                      <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        className={classes.submit}
-                      >
-                        Sign in
-                      </Button>
-                    </Grid>
+                    >
+                      Back
+                    </Button>
                   </Grid>
-                </React.Fragment>
-              }
-            </form>
-        </div>
-    );
-  }
+                }
+                <Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    className={classes.submit}
+                  >
+                    Sign in
+                  </Button>
+                </Grid>
+              </Grid>
+            </React.Fragment>
+          }
+        </form>
+    </div>
+  );
 }
+
+SignIn.propTypes = {
+  handleLogin: PropTypes.func,
+  redirectOnLogin: PropTypes.bool
+};
 
 export default withStyles(SignIn, styles);

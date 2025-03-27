@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
 
@@ -26,63 +26,56 @@ import Logo from "../components/Logo";
 import { withStyles } from 'tss-react/mui';
 import styles from "../styling/styles";
 
-class MainLoginContainer extends React.Component {
-  constructor(props, selfContained) {
-    super(props);
+function MainLoginContainer(props) {
+  const { classes, selfContained, handleLogin, redirectOnLogin } = props;
+  let [ signInShown, setSignInShow ] = useState(true);
 
-    this.state = {
-      signInShown: true,
-      signUpEnabled : false,
-      isLongForm: !!window.location.pathname.startsWith("/login"),
-      title: document.querySelector('meta[name="title"]').content
-    }
-  }
+  const isLongForm = !!window.location.pathname.startsWith("/login");
+  const title = document.querySelector('meta[name="title"]').content;
 
   // Toggle between sign in and sign up
-  handleSwap = () => {
-    this.setState(prevState => ({
-      signInShown: !prevState.signInShown,
-    }));
+  let handleSwap = () => {
+    setSignInShow(!signInShown);
   }
 
-  render () {
-    const { classes, selfContained } = this.props;
-
-    return (
-        <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
-          <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
-            <Logo maxWidth="200px" component={Grid}/>
-            <Grid>
-            { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
-            </Grid>
-            { this.state.isLongForm && (!this.state.signInShown || this.state.signUpEnabled) &&
-              <Grid>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  className={classes.main}
-                  onClick={this.handleSwap}
-                 >
-                  { this.state.signInShown ?  "Sign up" : "Sign In" }
-                </Button>
-              </Grid>
-            }
-            { this.state.isLongForm &&
-            <Grid>
-              <Breadcrumbs separator="by" className={classes.appInfo}>
-                <Typography variant="subtitle2">{this.state.title}</Typography>
-                <Tooltip title="DATA Team @ UHN">
-                  <a href="https://uhndata.io/" target="_blank">
-                    <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
-                  </a>
-                </Tooltip>
-              </Breadcrumbs>
-            </Grid>
-            }
+  return (
+    <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
+      <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
+        <Logo maxWidth="200px" component={Grid}/>
+        <Grid>
+        { signInShown ?
+          <SignIn handleLogin={handleLogin} redirectOnLogin={redirectOnLogin}/>
+          :
+          <SignUpForm loginOnSuccess={true} handleLogin={handleLogin} />
+        }
+        </Grid>
+        { isLongForm && !signInShown &&
+          <Grid>
+            <Button
+              variant="outlined"
+              fullWidth
+              className={classes.main}
+              onClick={handleSwap}
+             >
+              { signInShown ?  "Sign up" : "Sign In" }
+            </Button>
           </Grid>
-        </Paper>
-    );
-  }
+        }
+        { isLongForm &&
+        <Grid>
+          <Breadcrumbs separator="by" className={classes.appInfo}>
+            <Typography variant="subtitle2">{title}</Typography>
+            <Tooltip title="DATA Team @ UHN">
+              <a href="https://uhndata.io/" target="_blank">
+                <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
+              </a>
+            </Tooltip>
+          </Breadcrumbs>
+        </Grid>
+        }
+      </Grid>
+    </Paper>
+  );
 }
 
 const MainLoginComponent = withStyles(MainLoginContainer, styles);

@@ -16,48 +16,52 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import {
-    Button,
-    Grid,
-    TextField,
-    Tooltip,
-    Typography
+  Button,
+  Grid,
+  TextField,
+  Tooltip,
+  Typography
 } from '@mui/material';
 import { withStyles } from 'tss-react/mui';
+import PropTypes from 'prop-types';
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import ErrorDialog from "../components/ErrorDialog";
 import styles from "../styling/styles";
 
-class FormFields extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+function FormFields(props) {
+  const {
+	classes,
+    values: { username, email, password, confirmPassword, loginOnSuccess, closeButtonText, submitButtonText },
+    errors,
+    touched,
+    handleSubmit,
+    handleChange,
+    handleReset,
+    isValid,
+    setFieldTouched
+  } = props;
 
-  render() {
+  const change = (name, e) => {
+    e.persist();
+    handleChange(e);
+    setFieldTouched(name, true, false);
+  };
 
-    const { classes } = this.props;
+  let getButton = () => <Button
+                          type="submit"
+                          variant="contained"
+                          disabled={!isValid}
+                          className={`${classes.submit}${!loginOnSuccess ? ' ' + classes.closeButton : ''}`}
+                          fullWidth={loginOnSuccess}
+                        >
+                          {submitButtonText}
+                        </Button>;
 
-    const {
-      values: { username, email, password, confirmPassword, loginOnSuccess, closeButtonText, submitButtonText },
-      errors,
-      touched,
-      handleSubmit,
-      handleChange,
-      handleReset,
-      isValid,
-      setFieldTouched
-    } = this.props;
-
-    const change = (name, e) => {
-      e.persist();
-      handleChange(e);
-      setFieldTouched(name, true, false);
-    };
-
-    return (
+  return (
       <form
         onSubmit={handleSubmit}
         className={classes.form}
@@ -122,7 +126,13 @@ class FormFields extends React.Component {
         <Grid container justifyContent="flex-end" alignItems="center" className={classes.actions}>
           { !loginOnSuccess &&
             <Grid>
-              <Button variant="outlined" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>{closeButtonText}</Button>
+              <Button
+                variant="outlined"
+                onClick={handleReset}
+                className={classes.submit + " " + classes.closeButton}
+              >
+                {closeButtonText}
+              </Button>
             </Grid>
           }
           <Grid>
@@ -130,41 +140,31 @@ class FormFields extends React.Component {
             // Render tooltip and button
             <Tooltip title="You must fill in all fields.">
               <div>
-                { loginOnSuccess ?
-                  <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
-                  <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
-                }
+                { getButton() }
               </div>
             </Tooltip>
             :
             // Else just render the button
-            ( loginOnSuccess ?
-              <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit} fullWidth >{submitButtonText}</Button> :
-              <Button type="submit" variant="contained" disabled={!isValid} className={classes.submit + " " + classes.closeButton}>{submitButtonText}</Button>
-            )
+            getButton()
           }
           </Grid>
         </Grid>
       </form>
     );
-  }
 }
 
 const FormFieldsComponent = withStyles(FormFields, styles);
 
-class SignUpForm extends React.Component {
-  constructor(props) {
-    super(props);
+function SignUpForm(props) {
+  PropTypes.checkPropTypes(SignUpForm.propTypes, props, 'prop', 'SignUpForm');
+  const { classes, handleLogin, handleSuccess, loginOnSuccess, handleExit, closeButtonText, submitButtonText } = props;
 
-    this.state = {
-      errorOpen: false,
-      errorMsg: ""
-    };
+  let [ errorOpen, setErrorOpen ] = useState(false);
+  let [ errorMsg, setErrorMsg ] = useState("");
 
-    this.submitValues = this.submitValues.bind(this);
-  }
+  let form = useRef();
 
-  signIn(username, password) {
+  let signIn = (username, password) => {
     fetch('/j_security_check',
       {
         method: 'POST',
@@ -178,8 +178,8 @@ class SignUpForm extends React.Component {
         }
       }
     ).then(() => {
-      if (this.props.handleLogin) {
-        this.props.handleLogin(true);
+      if (handleLogin) {
+        handleLogin(true);
       } else {
         window.location = new URLSearchParams(window.location.search).get('resource') || '/';
       }
@@ -187,7 +187,7 @@ class SignUpForm extends React.Component {
   }
 
   // submit function
-  submitValues({ username, email, confirmPassword, password }) {
+  let submitValues = ({ username, email, confirmPassword, password }) => {
 
     // Build formData object.
     // We need to do this because sling does not accept JSON, need
@@ -214,48 +214,42 @@ class SignUpForm extends React.Component {
         // HTTP codes, it'll only fail when network error
         // Therefore, you must handle the error code yourself.
         if (!response.ok) {
-          this.props.handleLogin && this.props.handleLogin(false);
+          handleLogin && handleLogin(false);
           response.json().then((data) => {
             let errMsg = data?.error?.message;
             errMsg = (errMsg || "Unknown Error");
-            this.setState({
-              errorOpen: true,
-              errorMsg: errMsg
-            });
-            this.form.setFieldError("username", errMsg);
+            setErrorOpen(true);
+            setErrorMsg(errMsg);
+            form.current.setFieldError("username", errMsg);
           })
           .catch(error => {
-            this.setState({
-              errorOpen: true,
-              errorMsg: "Unknown Error (JSON Parsing Failed)"
-            });
-            this.form.setFieldError("username", "Unknown Error (JSON Parsing Failed)");
+            setErrorOpen(true);
+            setErrorMsg("Unknown Error (JSON Parsing Failed)");
+            form.current.setFieldError("username", "Unknown Error (JSON Parsing Failed)");
           });
           throw Error(response.statusText);
         }
 
-        this.props.handleSuccess && this.props.handleSuccess();
-        this.props.loginOnSuccess && this.signIn(username, password);
+        handleSuccess && handleSuccess();
+        loginOnSuccess && signIn(username, password);
       })
       .catch(error => {
         console.log(error);
-        this.props.handleLogin && this.props.handleLogin(false);
+        handleLogin && handleLogin(false);
       });
   }
 
-  render() {
-    const { classes } = this.props;
-    const values = {
+  const values = {
       username: "",
       email: "",
       confirmPassword: "",
       password: "",
-      loginOnSuccess: this.props.loginOnSuccess,
-      closeButtonText: this.props.closeButtonText || "Close",
-      submitButtonText: this.props.submitButtonText || "Submit"
-    };
+      loginOnSuccess: loginOnSuccess,
+      closeButtonText: closeButtonText || "Close",
+      submitButtonText: submitButtonText || "Submit"
+  };
 
-    const validationSchema = Yup.object({
+  const validationSchema = Yup.object({
       email: Yup.string("Enter your email")
         .email("Enter a valid email")
         .required("Email is required"),
@@ -269,26 +263,33 @@ class SignUpForm extends React.Component {
         .oneOf([Yup.ref("password")], "Password does not match"),
     });
 
-    // Hooks only work inside functional components
-    return (
+  return (
       <React.Fragment>
-        <ErrorDialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
-          <Typography variant="body1">{this.state.errorMsg}</Typography>
+        <ErrorDialog open={errorOpen} onClose={() => setErrorOpen(false)}>
+          <Typography>{errorMsg}</Typography>
         </ErrorDialog>
         <div className={classes.main}>
           <Formik
             initialValues={values}
             validationSchema={validationSchema}
-            onSubmit={this.submitValues}
-            onReset={this.props.handleExit}
-            innerRef={el => (this.form = el)}
+            onSubmit={submitValues}
+            onReset={handleExit}
+            innerRef={el => (form = el)}
           >
             {props => <FormFieldsComponent {...props} />}
           </Formik>
         </div>
       </React.Fragment>
-    );
-  }
+  );
 }
+
+SignUpForm.propTypes = {
+  handleLogin: PropTypes.func,
+  handleSuccess: PropTypes.func,
+  loginOnSuccess: PropTypes.bool,
+  handleExit: PropTypes.func,
+  closeButtonText: PropTypes.string,
+  submitButtonText: PropTypes.string
+};
 
 export default withStyles(SignUpForm, styles);

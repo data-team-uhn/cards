@@ -1,16 +1,16 @@
 {
-  "cards-dataentry.LiveTable.js": ["asset:cards-login.loginDialogue.js"],
-  "cards-dataentry.Form.js": ["asset:cards-login.loginDialogue.js", "asset:cards-pedigree.Pedigree.js", "asset:cards-dataentry.SubjectSelector.js"],
+  "cards-dataentry.LiveTable.js": ["asset:cards-login.loginDialog.js"],
+  "cards-dataentry.Form.js": ["asset:cards-login.loginDialog.js", "asset:cards-pedigree.Pedigree.js", "asset:cards-dataentry.SubjectSelector.js"],
   "cards-dataentry.FormView.js": ["asset:cards-dataentry.Form.js"],
-  "cards-dataentry.Questionnaire.js": ["asset:cards-login.loginDialogue.js", "asset:cards-pedigree.Pedigree.js"],
+  "cards-dataentry.Questionnaire.js": ["asset:cards-login.loginDialog.js", "asset:cards-pedigree.Pedigree.js"],
   "cards-dataentry.Questionnaires.js": ["asset:cards-dataentry.Forms.js"],
   "cards-dataentry.Subjects.js": ["asset:cards-dataentry.LiveTable.js", "asset:cards-dataentry.Forms.js"],
   "cards-dataentry.SubjectTypes.js": ["asset:cards-dataentry.LiveTable.js"],
   "cards-dataentry.FormList.js": ["asset:cards-dataentry.LiveTable.js"],
   "cards-dataentry.Forms.js": ["asset:cards-dataentry.LiveTable.js", "asset:cards-dataentry.FormList.js"],
-  "cards-dataentry.Subject.js": ["asset:cards-login.loginDialogue.js", "asset:cards-dataentry.NewFormDialog.js", "asset:cards-dataentry.Form.js", "asset:cards-pedigree.Pedigree.js", "asset:cards-dataentry.SubjectSelector.js"],
+  "cards-dataentry.Subject.js": ["asset:cards-login.loginDialog.js", "asset:cards-dataentry.NewFormDialog.js", "asset:cards-dataentry.Form.js", "asset:cards-pedigree.Pedigree.js", "asset:cards-dataentry.SubjectSelector.js"],
   "cards-dataentry.SubjectView.js": ["asset:cards-dataentry.Subjects.js"],
-  "cards-dataentry.SubjectSelector.js": ["asset:cards-login.loginDialogue.js"],
-  "cards-dataentry.NewFormDialog.js": ["asset:cards-login.loginDialogue.js", "asset:cards-dataentry.SubjectSelector.js"],
-  "cards-dataentry.userDashboard.js": ["asset:cards-login.loginDialogue.js", "asset:cards-dataentry.SubjectSelector.js", "asset:cards-dataentry.NewFormDialog.js"]
+  "cards-dataentry.SubjectSelector.js": ["asset:cards-login.loginDialog.js"],
+  "cards-dataentry.NewFormDialog.js": ["asset:cards-login.loginDialog.js", "asset:cards-dataentry.SubjectSelector.js"],
+  "cards-dataentry.userDashboard.js": ["asset:cards-login.loginDialog.js", "asset:cards-dataentry.SubjectSelector.js", "asset:cards-dataentry.NewFormDialog.js"]
 }
