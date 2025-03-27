@@ -64,11 +64,6 @@
 			<name>cpesic_intro</name>
 			<primaryNodeType>cards:Information</primaryNodeType>
 			<property>
-				<name>dataType</name>
-				<value>info</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>text</name>
 				<value>You should fill out this questionnaire only if you are the patient who received the invitation email. You may need to get help from a family member or friend to answer the questions. That’s okay.
 

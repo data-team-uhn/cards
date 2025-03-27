@@ -3864,11 +3864,6 @@
 				<name>reminder_biannual_phonecall</name>
 				<primaryNodeType>cards:Information</primaryNodeType>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
 					<name>text</name>
 					<value>Complete a bi-annual phone follow-up with this participant in 6 months</value>
 					<type>String</type>
@@ -4214,11 +4209,6 @@
 			<node>
 				<name>reminder_long_phonecall</name>
 				<primaryNodeType>cards:Information</primaryNodeType>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
 				<property>
 					<name>text</name>
 					<value>Complete a phone follow-up with this participant in 1-2 months</value>

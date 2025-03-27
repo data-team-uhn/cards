@@ -16778,16 +16778,6 @@
 				<name>medication_change_reminder</name>
 				<primaryNodeType>cards:Information</primaryNodeType>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>info</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>text</name>
 					<value>### Fill out Medication Change Forms
 
