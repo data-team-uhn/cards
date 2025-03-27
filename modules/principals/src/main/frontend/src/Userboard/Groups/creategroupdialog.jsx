@@ -23,8 +23,8 @@ import { withStyles } from 'tss-react/mui';
 
 import userboardStyle from '../userboardStyle.jsx';
 
-function CreateGroupDialogue(props) {
-  checkPropTypes(CreateGroupDialogue, props);
+function CreateGroupDialog(props) {
+  checkPropTypes(CreateGroupDialog, props);
   const { classes, reload, isOpen, handleClose } = props;
 
   const [ error, setError ] = useState("");
@@ -77,8 +77,8 @@ function CreateGroupDialogue(props) {
           variant="outlined"
           onClick={handleClose}
         >
-            Cancel
-          </Button>
+          Cancel
+        </Button>
         <Button
           variant="contained"
           onClick={(event) => { event.preventDefault(); handleCreateGroup(); }}
@@ -90,10 +90,10 @@ function CreateGroupDialogue(props) {
   );
 }
 
-CreateGroupDialogue.propTypes = {
+CreateGroupDialog.propTypes = {
   isOpen: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
   reload: PropTypes.func.isRequired
 }
 
-export default withStyles(CreateGroupDialogue, userboardStyle);
+export default withStyles(CreateGroupDialog, userboardStyle);

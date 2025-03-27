@@ -133,8 +133,8 @@ function FormFields(props) {
 
 const FormFieldsComponent = withStyles(FormFields, styles);
 
-function ChangeUserPasswordDialogue(props) {
-  checkPropTypes(ChangeUserPasswordDialogue, props);
+function ChangeUserPasswordDialog(props) {
+  checkPropTypes(ChangeUserPasswordDialog, props);
   const { handleClose, isOpen, name, requireOldPassword } = props;
 
   const [ error, setError ] = useState("");
@@ -212,24 +212,24 @@ function ChangeUserPasswordDialogue(props) {
       <DialogTitle>Change User Password for {name}</DialogTitle>
       <DialogContent>
         {error && <Alert severity="error">{error}</Alert>}
-        <Formik
-          initialValues={values}
-          validationSchema={validationSchemaObj}
-          onSubmit={handlePasswordChange}
-          onReset={() => handleCloseDialog(false)}
-        >
-          {props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
-        </Formik>
+          <Formik
+            initialValues={values}
+            validationSchema={validationSchemaObj}
+            onSubmit={handlePasswordChange}
+            onReset={() => handleCloseDialog(false)}
+            >
+            {props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
+          </Formik>
       </DialogContent>
     </Dialog>
   );
 }
 
-ChangeUserPasswordDialogue.propTypes = {
+ChangeUserPasswordDialog.propTypes = {
   handleClose: PropTypes.func,
   isOpen: PropTypes.bool,
   name: PropTypes.string,
   requireOldPassword: PropTypes.bool
 }
 
-export default withStyles(ChangeUserPasswordDialogue, styles);
+export default withStyles(ChangeUserPasswordDialog, styles);

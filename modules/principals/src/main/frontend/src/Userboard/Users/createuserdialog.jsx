@@ -21,8 +21,8 @@ import { Grid, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import RegistrationForm from "../../login/RegistrationForm.js";
 import { checkPropTypes } from "../../propTypes";
 
-function CreateUserDialogue(props) {
-  checkPropTypes(CreateUserDialogue, props);
+function CreateUserDialog(props) {
+  checkPropTypes(CreateUserDialog, props);
   const { reload, isOpen, handleClose } = props;
 
   let handleCreateUser = () => {
@@ -51,10 +51,10 @@ function CreateUserDialogue(props) {
   );
 }
 
-CreateUserDialogue.propTypes = {
+CreateUserDialog.propTypes = {
   isOpen: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
   reload: PropTypes.func.isRequired
 }
 
-export default CreateUserDialogue;
+export default CreateUserDialog;

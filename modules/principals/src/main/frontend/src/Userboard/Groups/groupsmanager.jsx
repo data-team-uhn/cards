@@ -21,9 +21,9 @@ import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui'
 import { Avatar, Button, Card, CardContent, Grid, IconButton, Tooltip } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
-import CreateGroupDialogue from "./creategroupdialogue.jsx";
-import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
-import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
+import CreateGroupDialog from "./creategroupdialog.jsx";
+import DeletePrincipalDialog from "../deleteprincipaldialog.jsx";
+import AddUserToGroupDialog from "./addusertogroupdialog.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx"
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -91,12 +91,12 @@ function GroupsManager(props) {
             onClick={(event) => setDeployCreateGroup(true)}
           />
         }>
-        <CreateGroupDialogue
+        <CreateGroupDialog
           isOpen={deployCreateGroup}
           handleClose={() => setDeployCreateGroup(false)}
           reload={() => handleReload(true)}
         />
-        <DeletePrincipalDialogue
+        <DeletePrincipalDialog
           isOpen={deployDeleteGroup}
           handleClose={() => setDeployDeleteGroup(false)}
           name={currentGroupName}
@@ -104,7 +104,7 @@ function GroupsManager(props) {
           url={GROUP_URL}
           type="group"
         />
-        <AddUserToGroupDialogue
+        <AddUserToGroupDialog
           isOpen={deployAddGroupUsers}
           handleClose={() => setDeployAddGroupUsers(false)}
           name={currentGroupName}

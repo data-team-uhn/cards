@@ -21,9 +21,9 @@ import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui';
 import { Avatar, Box, Card, CardContent, IconButton, Tooltip } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
-import CreateUserDialogue from "./createuserdialogue.jsx";
-import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
-import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
+import CreateUserDialog from "./createuserdialog.jsx";
+import DeletePrincipalDialog from "../deleteprincipaldialog.jsx";
+import ChangeUserPasswordDialog from "./changeuserpassworddialog.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx";
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import MaterialReactTable from 'material-react-table';
@@ -64,12 +64,12 @@ function UsersManager(props) {
             onClick={() => setDeployCreateUser(true)}
           />
         }>
-        <CreateUserDialogue
+        <CreateUserDialog
           isOpen={deployCreateUser}
           handleClose={() => setDeployCreateUser(false)}
           reload={() => handleReload()}
         />
-        <DeletePrincipalDialogue
+        <DeletePrincipalDialog
           isOpen={deployDeleteUser}
           handleClose={() => setDeployDeleteUser(false)}
           name={currentUserName}
@@ -77,7 +77,7 @@ function UsersManager(props) {
           url={USER_URL}
           type="user"
         />
-        <ChangeUserPasswordDialogue
+        <ChangeUserPasswordDialog 
           isOpen={deployChangeUserPassword}
           handleClose={() => setDeployChangeUserPassword(false)}
           name={currentUserName}

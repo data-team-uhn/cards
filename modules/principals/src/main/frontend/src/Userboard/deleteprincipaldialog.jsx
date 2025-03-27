@@ -24,8 +24,8 @@ import { withStyles } from 'tss-react/mui';
 
 import userboardStyle from './userboardStyle.jsx';
 
-function DeletePrincipalDialogue(props) {
-  checkPropTypes(DeletePrincipalDialogue, props);
+function DeletePrincipalDialog(props) {
+  checkPropTypes(DeletePrincipalDialog, props);
   const { classes, name, type, url, reload, isOpen, handleClose } = props;
 
   let handleDelete = () => {
@@ -72,7 +72,7 @@ function DeletePrincipalDialogue(props) {
   );
 }
 
-DeletePrincipalDialogue.propTypes = {
+DeletePrincipalDialog.propTypes = {
   isOpen: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
@@ -81,4 +81,4 @@ DeletePrincipalDialogue.propTypes = {
   type: PropTypes.string.isRequired
 }
 
-export default withStyles(DeletePrincipalDialogue, userboardStyle);
+export default withStyles(DeletePrincipalDialog, userboardStyle);
