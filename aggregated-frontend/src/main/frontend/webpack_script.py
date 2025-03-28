@@ -52,9 +52,10 @@ def merge_package_json_files(root, dir_name, project_to_name_map, package_merged
             package_merged["resolutions"] = {}
         else:
             # Merge contents
-            for i in package["babel"]["plugins"]:
-                if i not in package_merged["babel"]["plugins"]:
-                    package_merged["babel"]["plugins"].append(i)
+            if "plugins" in package["babel"]:
+                for i in package["babel"]["plugins"]:
+                    if i not in package_merged["babel"]["plugins"]:
+                        package_merged["babel"]["plugins"].append(i)
             update_dependency_version_map(package_merged["devDependencies"], package["devDependencies"])
             update_dependency_version_map(package_merged["dependencies"], package["dependencies"])
 
