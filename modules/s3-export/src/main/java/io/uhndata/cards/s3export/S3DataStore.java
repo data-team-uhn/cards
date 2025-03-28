@@ -45,6 +45,17 @@ import com.amazonaws.services.s3.model.UploadPartResult;
 import io.uhndata.cards.export.ExportConfigDefinition;
 import io.uhndata.cards.export.spi.DataStore;
 
+/**
+ * Stores files on a remote S3 server. The connection to the S3 store is configured using the following
+ * {@link ExportConfigDefinition#storageParameters() storage configuration parameter}: {@code endpoint}, {@code region},
+ * {@code bucket}, {@code accessKey}, {@code secretKey}. If the S3 store forbids uploading files with an
+ * {@code application/*} MIME type, it is possible to use {@code text/plain} as the MIME type to work around that
+ * restriction by using {@code blockedApplicationMimeTypeWorkaround=true} as a storage configuration. For large files,
+ * it is possible to use chunked uploads by specifying {@code chunkSizeInMB=5} as a storage configuration.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true, service = DataStore.class)
 @SuppressWarnings("checkstyle:ClassDataAbstractionCoupling")
 public class S3DataStore implements DataStore

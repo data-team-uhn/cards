@@ -36,6 +36,19 @@ import io.uhndata.cards.export.ExportConfigDefinition;
 import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.utils.DateUtils;
 
+/**
+ * Export all subjects with forms modified in the given time interval. The returned list of resources only includes
+ * subjects, exporting the forms relies on the {@code data} processor for subjects. The name of this data retriever is
+ * {@code Subjects with modified forms}. The list of subject types to export may be specified using
+ * {@code subjectTypes=/SubjectTypes/Patient} {@link ExportConfigDefinition#retrieverParameters() retriever
+ * configurations}, one for each targeted subject type. The produced {@link ResourceIdentifier}s are paths to subject
+ * nodes with the right selectors. The selectors may be further customized using the {@code selectors}
+ * {@link ExportConfigDefinition#retrieverParameters() retriever configuration}, for example
+ * {@code selectors=.dataFilter:status=SUBMITTED.labels}.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true, service = DataRetriever.class)
 public class SubjectsWithModifiedFormsRetriever implements DataRetriever
 {

@@ -43,6 +43,20 @@ import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.export.spi.DataStore;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
+/**
+ * URL endpoint for triggering an export. This only works for the admin user, and the export to trigger must be a known
+ * configured export. It works on any type of resource homepage by adding the {@code .export} suffix, for example
+ * {@code /Subjects.export}. The export to trigger must be specified if there is more than one export configured, for
+ * example {@code /Subjects.export?config=DailyBackup}, with the name being the {@link ExportConfigDefinition#name()
+ * configuration name}. The triggered export doesn't follow the scheduled export timeframe, by default it exports all
+ * the relevant data modified today, but a different time range may be specified with the {@code dateLowerBound} and
+ * {@code dateUpperBound} parameters, using ISO dates, for example
+ * {@code /Subjects.export?dateLowerBound=2024-01-01&dateUpperBound=2025-01-01} for a given time range or
+ * {@code /Subjects.export?dateLowerBound=2025-01-01} for all data modified since a given date.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/ResourceHomepage" },

@@ -33,6 +33,13 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.export.ExportConfigDefinition;
 import io.uhndata.cards.export.spi.DataFormatter;
 
+/**
+ * Exports data as a JSON file. This doesn't do the actual serialization, but relies on the JSON formatter of the
+ * underlying resources.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true, service = DataFormatter.class)
 public class JSONDataFormatter implements DataFormatter
 {

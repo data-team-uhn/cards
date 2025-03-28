@@ -32,6 +32,12 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.export.ExportConfigDefinition;
 import io.uhndata.cards.export.spi.DataFormatter;
 
+/**
+ * Exports file nodes as a raw input stream. This only works for {@code nt:file} and {@code nt:resource} nodes.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true, service = DataFormatter.class)
 public class RawFileDataFormatter implements DataFormatter
 {

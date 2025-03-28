@@ -22,6 +22,14 @@ import io.uhndata.cards.export.spi.DataFormatter;
 import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.export.spi.DataStore;
 
+/**
+ * A data export pipeline simply combines different parts of the export process: gathering data to be exported,
+ * formatting it, and storing it. It is a convenience class that makes it easier to pass all three parts between
+ * functions.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 public final class DataPipeline
 {
     private final DataRetriever retriever;
@@ -30,6 +38,13 @@ public final class DataPipeline
 
     private final DataStore store;
 
+    /**
+     * Simple constructor passing all the pipeline parts.
+     *
+     * @param retriever the data retriever to be used
+     * @param formatter the data formatter to be used
+     * @param store the storage to be used
+     */
     public DataPipeline(final DataRetriever retriever, final DataFormatter formatter, final DataStore store)
     {
         this.retriever = retriever;
@@ -37,16 +52,31 @@ public final class DataPipeline
         this.store = store;
     }
 
+    /**
+     * The retriever to be used.
+     *
+     * @return a configured data retriever
+     */
     public DataRetriever getRetriever()
     {
         return this.retriever;
     }
 
+    /**
+     * The data formatter to be used.
+     *
+     * @return a configured data formatter
+     */
     public DataFormatter getFormatter()
     {
         return this.formatter;
     }
 
+    /**
+     * The storage to be used for the exported files.
+     *
+     * @return a configured data store
+     */
     public DataStore getStore()
     {
         return this.store;

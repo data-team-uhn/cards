@@ -23,6 +23,12 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.metatype.annotations.Designate;
 
+/**
+ * OSGi configuration wrapper for data export pipelines.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true, service = ExportConfig.class)
 @Designate(ocd = ExportConfigDefinition.class, factory = true)
 public class ExportConfig

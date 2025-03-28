@@ -38,6 +38,12 @@ import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.export.spi.DataStore;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
+/**
+ * Utility service responsible for scheduling periodic exports according to the OSGi configurations.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true)
 public class PeriodicExportManager
 {
@@ -110,8 +116,6 @@ public class PeriodicExportManager
 
     private DataPipeline buildPipeline(ExportConfigDefinition config)
     {
-        LOGGER.error("Scheduling! s={}, r={}, f={}, s={}", this.scheduler, this.retrievers, this.formatters,
-            this.stores);
         final DataRetriever retriever =
             this.retrievers.stream().filter(r -> StringUtils.equals(config.retriever(), r.getName())).findFirst()
                 .orElse(null);
@@ -139,7 +143,7 @@ public class PeriodicExportManager
         return new DataPipeline(retriever, formatter, store);
     }
 
-    public void configRemoved(final ExportConfig removedConfig)
+    private void configRemoved(final ExportConfig removedConfig)
     {
         LOGGER.debug("Removed exporter config {}", removedConfig.getConfig().name());
         try {
@@ -152,7 +156,8 @@ public class PeriodicExportManager
         }
     }
 
-    public void retrieverAdded(final DataRetriever retriever)
+    @SuppressWarnings("unused")
+    private void retrieverAdded(final DataRetriever retriever)
     {
         final String name = retriever.getName();
         this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().retriever())).forEach(c -> {
@@ -161,14 +166,16 @@ public class PeriodicExportManager
         });
     }
 
-    public void retrieverRemoved(final DataRetriever retriever)
+    @SuppressWarnings("unused")
+    private void retrieverRemoved(final DataRetriever retriever)
     {
         final String name = retriever.getName();
         this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().retriever()))
-            .forEach(this::configAdded);
+            .forEach(this::configRemoved);
     }
 
-    public void formatterAdded(final DataFormatter formatter)
+    @SuppressWarnings("unused")
+    private void formatterAdded(final DataFormatter formatter)
     {
         final String name = formatter.getName();
         this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().formatter())).forEach(c -> {
@@ -177,14 +184,16 @@ public class PeriodicExportManager
         });
     }
 
-    public void formatterRemoved(final DataFormatter formatter)
+    @SuppressWarnings("unused")
+    private void formatterRemoved(final DataFormatter formatter)
     {
         final String name = formatter.getName();
         this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().formatter()))
-            .forEach(this::configAdded);
+            .forEach(this::configRemoved);
     }
 
-    public void storeAdded(final DataStore store)
+    @SuppressWarnings("unused")
+    private void storeAdded(final DataStore store)
     {
         final String name = store.getName();
         this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().storage())).forEach(c -> {
@@ -193,15 +202,16 @@ public class PeriodicExportManager
         });
     }
 
-    public void storeRemoved(final DataStore store)
+    @SuppressWarnings("unused")
+    private void storeRemoved(final DataStore store)
     {
         final String name = store.getName();
         this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().storage()))
-            .forEach(this::configAdded);
+            .forEach(this::configRemoved);
     }
 
     @Activate
-    protected void activate(ComponentContext componentContext) throws Exception
+    private void activate(ComponentContext componentContext) throws Exception
     {
         LOGGER.info("ScheduledExport activating");
         this.configs.forEach(this::configAdded);

@@ -27,8 +27,28 @@ import org.apache.sling.api.resource.ResourceResolver;
 
 import io.uhndata.cards.export.ExportConfigDefinition;
 
+/**
+ * The first step of the data export is finding the resources to be exported. Implementations of this service will do
+ * that, usually by querying the repository for resources modified during the target interval, and returning a list of
+ * {@link ResourceIdentifier resource identifiers}.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 public interface DataRetriever extends DataPipelineStep
 {
+    /**
+     * Find resources to export, with a relevant change within the given time frame, according to the given export
+     * configuration.
+     *
+     * @param config the export process configuration, which may hold further customization for the resources to find in
+     *            the {@link ExportConfigDefinition#retrieverParameters()} settings
+     * @param startDate the start date to consider for relevant changes, inclusive
+     * @param endDate the end date to consider for relevant changes, exclusive
+     * @param resolver a valid resource resolver with access to the data
+     * @return a list of matching resources to export
+     * @throws RepositoryException if accessing the data fails
+     */
     List<ResourceIdentifier> getResourcesToExport(ExportConfigDefinition config, ZonedDateTime startDate,
         ZonedDateTime endDate, ResourceResolver resolver) throws RepositoryException;
 }
