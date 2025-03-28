@@ -363,6 +363,10 @@ function PatientIdentification(props) {
                                  placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`
                                },
                              },
+                             field: {
+                               clearable: true,
+                               onClear: () => setDob(null),
+                             },
                 }}
               />
             </LocalizationProvider>

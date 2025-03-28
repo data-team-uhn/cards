@@ -69,6 +69,10 @@ const DateFilter = forwardRef((props, ref) => {
                        variant: 'standard',
                        className: classes.answerDateField,
                      },
+                     field: {
+                       clearable: true,
+                       onClear: () => setDisplayedDate(""),
+                     },
         }}
       />
     </LocalizationProvider>

@@ -144,6 +144,10 @@ function DateQuestion(props) {
                          }
                        },
                      },
+                     field: {
+                       clearable: true,
+                       onClear: () => setDate("", isEnd),
+                     },
         }}
       />
     </LocalizationProvider>);

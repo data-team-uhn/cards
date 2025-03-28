@@ -92,6 +92,10 @@ function DowntimeWarningConfiguration() {
                          className: classes.textField
                        },
                      },
+                     field: {
+                       clearable: true,
+                       onClear: () => onDateChange("", null),
+                     },
         }}
       />
     </LocalizationProvider>);

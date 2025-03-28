@@ -113,6 +113,10 @@ function TimeQuestion(props) {
                                }
                              },
                            },
+                           field: {
+                             clearable: true,
+                             onClear: () => changeTime(null),
+                           },
               }}
             />
           </LocalizationProvider>
