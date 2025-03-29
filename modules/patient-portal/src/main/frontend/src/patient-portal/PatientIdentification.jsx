@@ -40,7 +40,7 @@ import ErrorPage from "../components/ErrorPage.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import ToUDialog from "./ToUDialog.jsx";
 
-import DateTimeUtilities from "../questionnaire/DateTimeUtilities";
+import DateTimeUtilities from "../components/DateTimeUtilities";
 
 import { DateTime } from "luxon";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";

@@ -37,7 +37,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { DateTime } from "luxon";
-import DateTimeUtilities from "./DateTimeUtilities";
+import DateTimeUtilities from "../components/DateTimeUtilities";
 
 // Component that renders a time question
 // Selected answers are placed in a series of <input type="hidden"> tags for submission.

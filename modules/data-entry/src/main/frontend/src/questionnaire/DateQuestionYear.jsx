@@ -23,7 +23,7 @@ import { checkPropTypes } from "../propTypes";
 import NumberQuestion from "./NumberQuestion";
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateTimeUtilities from "./DateTimeUtilities";
+import DateTimeUtilities from "../components/DateTimeUtilities";
 
 // Component that renders a year only date question
 // Selected answers are placed in a series of <input type="hidden"> tags for

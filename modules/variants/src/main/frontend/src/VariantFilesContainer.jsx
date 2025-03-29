@@ -45,7 +45,7 @@ import { DateTime } from "luxon";
 import DragAndDrop from "./components/DragAndDrop";
 import { escapeJQL } from "./escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
-import DateTimeUtilities from "./questionnaire/DateTimeUtilities";
+import DateTimeUtilities from "./components/DateTimeUtilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {

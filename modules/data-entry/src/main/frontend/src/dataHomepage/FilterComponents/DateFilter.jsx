@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
-import DateTimeUtilities from "../../questionnaire/DateTimeUtilities.jsx";
+import DateTimeUtilities from "../../components/DateTimeUtilities.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";

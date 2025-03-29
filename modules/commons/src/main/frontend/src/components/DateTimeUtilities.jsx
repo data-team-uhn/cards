@@ -25,6 +25,7 @@ export default class DateTimeUtilities {
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
   static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss";
+  static defaultDateFormat = "yyyy-MM-dd";
   static VIEW_DATE_FORMAT = "yyyy/MM/dd";
 
   static YEAR_DATE_TYPE = "year";

@@ -36,7 +36,7 @@ import {
   TimelineOppositeContent
 } from "@mui/lab";
 
-import DateTimeUtilities from "./DateTimeUtilities.jsx";
+import DateTimeUtilities from "../components/DateTimeUtilities";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion } from "./Subject.jsx";

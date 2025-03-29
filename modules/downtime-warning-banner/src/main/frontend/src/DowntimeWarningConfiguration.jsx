@@ -31,7 +31,7 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DateTime } from "luxon";
-import DateTimeUtilities from "./questionnaire/DateTimeUtilities";
+import DateTimeUtilities from "./components/DateTimeUtilities";
 
 const useStyles = makeStyles()(theme => ({
   textField: {

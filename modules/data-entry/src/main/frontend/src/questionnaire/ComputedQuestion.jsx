@@ -26,7 +26,7 @@ import { withStyles } from 'tss-react/mui';
 
 import Answer, {VALUE_POS} from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateTimeUtilities from "./DateTimeUtilities";
+import DateTimeUtilities from "../components/DateTimeUtilities";
 import Question from "./Question";
 
 import FormattedText from "../components/FormattedText";

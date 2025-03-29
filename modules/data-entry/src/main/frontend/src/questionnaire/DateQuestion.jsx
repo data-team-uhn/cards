@@ -28,7 +28,7 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateTimeUtilities from "./DateTimeUtilities";
+import DateTimeUtilities from "../components/DateTimeUtilities";
 
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
