@@ -31,6 +31,13 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.export.ExportConfigDefinition;
 import io.uhndata.cards.export.spi.DataStore;
 
+/**
+ * Stores files on the disk. The path where files are to be stored is configured using a
+ * {@link ExportConfigDefinition#storageParameters() storage configuration parameter} named {@code savePath}.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true, service = DataStore.class)
 public class FilesystemDataStore implements DataStore
 {

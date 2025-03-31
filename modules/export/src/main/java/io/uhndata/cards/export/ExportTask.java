@@ -46,6 +46,12 @@ import io.uhndata.cards.export.spi.DataStore;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
+/**
+ * A process for running a data export according to the specified configuration.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 public class ExportTask implements Runnable
 {
     /** Default log. */
@@ -147,15 +153,19 @@ public class ExportTask implements Runnable
             this.rrp.push(resolver);
             mustPopResolver = true;
 
+            // Step 1: Find resources to be exported
             List<ResourceIdentifier> resourcesToExport =
                 this.retriever.getResourcesToExport(this.config, startDate, endDate, resolver);
 
             for (ResourceIdentifier identifier : resourcesToExport) {
+                // Step 2: Format the resources into the desired format
                 ResourceRepresentation resourceContents =
                     this.formatter.format(identifier, startDate, endDate, this.config, resolver);
                 if (resourceContents != null) {
+                    // Step 3: Generate the file name according to the specified format
                     String filename =
                         getTargetFileName(identifier, startDate, endDate);
+                    // Step 4: Store the generated file
                     this.output(resourceContents, filename);
                 }
             }

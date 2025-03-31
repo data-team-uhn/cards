@@ -37,6 +37,16 @@ import io.uhndata.cards.export.ExportConfigDefinition;
 import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.utils.DateUtils;
 
+/**
+ * Export all File Answers belonging to forms modified in the given time interval. The name of this data retriever is
+ * {@code Modified file answers}. It is possible to restrict this to only forms for a specific questionnaire using
+ * {@code questionnaire=/Questionnaires/ABC} {@link ExportConfigDefinition#retrieverParameters() retriever
+ * configurations}, one for each targeted questionnaire. The produced {@link ResourceIdentifier}s are paths to the
+ * attached file nodes.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true, service = DataRetriever.class)
 public class ModifiedFileAnswersRetriever implements DataRetriever
 {

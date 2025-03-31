@@ -21,6 +21,12 @@ package io.uhndata.cards.export;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
+/**
+ * OSGi configuration for a data export pipeline.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @ObjectClassDefinition(name = "Data export", description = "Configuration for periodic or triggered data exports")
 public @interface ExportConfigDefinition
 {

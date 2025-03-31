@@ -33,6 +33,13 @@ import io.uhndata.cards.export.ExportConfigDefinition;
 import io.uhndata.cards.export.spi.DataFormatter;
 import io.uhndata.cards.serialize.CSVString;
 
+/**
+ * Exports data as a CSV file. This doesn't do the actual serialization, but relies on the CSV formatter of the
+ * underlying resources.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true, service = DataFormatter.class)
 public class CSVDataFormatter implements DataFormatter
 {

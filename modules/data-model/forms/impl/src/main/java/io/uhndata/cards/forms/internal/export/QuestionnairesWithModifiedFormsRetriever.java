@@ -33,6 +33,20 @@ import io.uhndata.cards.export.ExportConfigDefinition;
 import io.uhndata.cards.export.spi.DataRetriever;
 import io.uhndata.cards.utils.DateUtils;
 
+/**
+ * Export all the forms modified in the given time interval for the specified questionnaires, grouped by questionnaire.
+ * This does not actually look for any data, instead it relies on the {@code data} processor for questionnaires, simply
+ * returning a list of Questionnaire paths with the right selectors that will result in the right forms being included
+ * in the questionnaire serialization. The name of this data retriever is {@code Questionnaires with modified forms}.
+ * The list of questionnaires to export must be specified using {@code questionnaire=/Questionnaires/ABC}
+ * {@link ExportConfigDefinition#retrieverParameters() retriever configurations}, one for each targeted questionnaire.
+ * The produced {@link ResourceIdentifier}s are paths to questionnaire nodes with the right selectors. The selectors may
+ * be further customized using the {@code selectors} {@link ExportConfigDefinition#retrieverParameters() retriever
+ * configuration}, for example {@code selectors=.dataFilter:status=SUBMITTED.labels}.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 @Component(immediate = true, service = DataRetriever.class)
 public class QuestionnairesWithModifiedFormsRetriever implements DataRetriever
 {

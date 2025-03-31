@@ -28,16 +28,47 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import io.uhndata.cards.export.ExportConfigDefinition;
 
+/**
+ * The second step of the data export is serializing the resources to be exported into a byte stream. Implementations of
+ * this service will do that, usually by {@link Resource#adaptTo(Class) adapting} each {@link ResourceIdentifier
+ * resource identifier} to a format.
+ *
+ * @version $Id$
+ * @since 0.9.26
+ */
 public interface DataFormatter extends DataPipelineStep
 {
+    /**
+     * Serialize a resource into the desired representation.
+     *
+     * @param what the resource to serialize
+     * @param startDate the requested start date for the export time frame
+     * @param endDate the requested end date for the export time frame
+     * @param config the export process configuration, which may hold further customization for the serialization
+     *            process in the {@link ExportConfigDefinition#formatterParameters()} settings
+     * @param resolver a valid resource resolver with access to the data
+     * @return a resource representation with a valid input stream holding the data
+     * @throws RepositoryException if accessing the data fails
+     */
     ResourceRepresentation format(ResourceIdentifier what, ZonedDateTime startDate,
         ZonedDateTime endDate, ExportConfigDefinition config, ResourceResolver resolver)
         throws RepositoryException;
 
+    /**
+     * Helper method for extracting a listing of sub-resources contained within the serialization, useful when the
+     * export produces an aggregate of related data, e.g. modified forms for a subject.
+     *
+     * @param what the identifier for the resource being exported
+     * @param config the export process configuration
+     * @param resolver a valid resource resolver with access to the data
+     * @return a list of JCR paths to secondary resources contained within the representation
+     * @see ResourceRepresentation#getDataContents()
+     */
     default List<String> getContentsSummary(ResourceIdentifier what, ExportConfigDefinition config,
         ResourceResolver resolver)
     {
