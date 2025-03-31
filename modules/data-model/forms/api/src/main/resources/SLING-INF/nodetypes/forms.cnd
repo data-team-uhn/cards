@@ -251,7 +251,7 @@
 //-----------------------------------------------------------------------------
 // An informative formatted text (markdown). Can be displayed in edit mode to guide
 // the user through filling out a form, or in view mode to explain the data.
-[cards:Information] > cards:ResourcePart
+[cards:Information] > cards:ResourcePart, mix:referenceable
   // Attributes
 
   // The main sub-item of a section is its text.
