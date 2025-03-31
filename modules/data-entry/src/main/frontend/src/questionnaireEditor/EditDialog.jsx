@@ -33,9 +33,10 @@ import {
 import Fields from './Fields';
 import { camelCaseToWords } from './LabeledField';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import ErrorDialog from "../components/ErrorDialog.jsx";
+
 
 // Dialog for editing or creating questions or sections
-
 let EditDialog = (props) => {
   const { data, type, targetExists, isOpen, onSaved, onCancel, id, model } = props;
   let [ targetId, setTargetId ] = useState('');
@@ -142,14 +143,30 @@ let EditDialog = (props) => {
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
     return (
-      <Grid container justifyContent='center'>
-        <Grid item>
-          <Typography variant='h2' color='error'>
-            Error obtaining form data: {error.status} {error.statusText}
-          </Typography>
-        </Grid>
-      </Grid>
+      <ErrorDialog
+        open={true}
+        onClose={() => setError('')}
+        refreshable={true}
+        message={
+          <>
+          Error obtaining form data
+          </>
+        }
+        details={
+          <>
+          {JSON.stringify(error)}
+          </>
+        }
+
+      />
     );
+    // return (
+    //   <Grid container justifyContent='center'>
+    //     <Grid item>
+    //       {error.status} {error.statusText}
+    //     </Grid>
+    //   </Grid>
+    // );
   }
 
   let dialogTitle = () => {
