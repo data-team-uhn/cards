@@ -127,7 +127,7 @@ function SignIn(props) {
             let checkLoginTimer = setInterval(() => {
               if (loginPopup.closed === true) {
                 clearInterval(checkLoginTimer);
-                handleLogin && handleLogin(true);
+                handleLogin?.(true);
               }
             }, 1000);
           }

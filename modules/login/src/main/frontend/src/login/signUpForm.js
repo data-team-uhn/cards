@@ -214,7 +214,7 @@ function SignUpForm(props) {
         // HTTP codes, it'll only fail when network error
         // Therefore, you must handle the error code yourself.
         if (!response.ok) {
-          handleLogin && handleLogin(false);
+          handleLogin?.(false);
           response.json().then((data) => {
             let errMsg = data?.error?.message;
             errMsg = (errMsg || "Unknown Error");
@@ -234,8 +234,8 @@ function SignUpForm(props) {
         loginOnSuccess && signIn(username, password);
       })
       .catch(error => {
-        console.log(error);
-        handleLogin && handleLogin(false);
+        console.log(error?.statusText ?? error);
+        handleLogin?.(false);
       });
   }
 
