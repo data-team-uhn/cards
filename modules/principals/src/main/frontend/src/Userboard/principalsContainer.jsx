@@ -41,7 +41,7 @@ export default function PrincipalsContainer(props) {
       data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?');
       setUsers(data.rows);
     })
-    .catch((error) => console.log(error?.statusText ? error.statusText : error))
+    .catch((error) => console.log(error?.statusText ?? error))
     .finally(() => handleLoadGroups());
   }
 
@@ -53,7 +53,7 @@ export default function PrincipalsContainer(props) {
     })
     .then((response) => response.json())
     .then((data) => setGroups(data.rows))
-    .catch((error) => console.log(error?.statusText ? error.statusText : error))
+    .catch((error) => console.log(error?.statusText ?? error))
     .finally(() => {
      // This event is needed in cases we do not want to collapse details panel after reload
       var reloadedEvent = new CustomEvent('principals-reloaded', {
@@ -66,8 +66,8 @@ export default function PrincipalsContainer(props) {
 
   return (
     <div>
-      { props.isUserListPage ? <UsersManager users={users} groups={groups} reload={() => handleLoadUsers()}/>
-                                 : <GroupsManager users={users} groups={groups} reload={() => handleLoadUsers()}/> }
+      { props.isUserListPage ? <UsersManager users={users} groups={groups} reload={handleLoadUsers}/>
+                                 : <GroupsManager users={users} groups={groups} reload={handleLoadUsers}/> }
     </div>
   );
 }

@@ -53,7 +53,7 @@ function AddUserToGroupDialog(props) {
             handleClose();
         })
         .catch((error) => {
-            console.log(error?.statusText ? error.statusText : error);
+            console.log(error?.statusText ?? error);
         });
   }
 
@@ -70,7 +70,7 @@ function AddUserToGroupDialog(props) {
     <Dialog
       maxWidth="sm"
       open={isOpen}
-      onClose={() => handleClose()}
+      onClose={handleClose}
       slotProps={{ transition: {
                      onEntering: () => handleEntering(),
                    },
@@ -119,8 +119,8 @@ function AddUserToGroupDialog(props) {
         </Grid>
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
-        <Button variant="outlined" onClick={() => handleClose()}>Cancel</Button>
-        <Button variant="contained" onClick={() => handleAddUsers()}>Add</Button>
+        <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+        <Button variant="contained" onClick={handleAddUsers}>Add</Button>
       </DialogActions>
     </Dialog>
   );

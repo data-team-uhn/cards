@@ -33,7 +33,7 @@ function CreateUserDialog(props) {
   return (
     <Dialog
       open={isOpen}
-      onClose={() => handleClose()}
+      onClose={handleClose}
     >
       <DialogTitle>Register a new user</DialogTitle>
       <DialogContent>

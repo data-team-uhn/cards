@@ -72,8 +72,8 @@ function GroupsManager(props) {
         credentials: 'include',
         body: formData
       })
-      .then(() => handleReload())
-      .catch((error) => console.log(error?.statusText ? error.statusText : error));
+      .then(handleReload)
+      .catch((error) => console.log(error?.statusText ?? error));
   }
 
   let handleReload = (doClear) => {
@@ -110,7 +110,7 @@ function GroupsManager(props) {
           name={currentGroupName}
           groupUsers={currentGroupUsers}
           allUsers={users}
-          reload={() => handleReload()}
+          reload={handleReload}
         />
         <div className={classes.root}>
           <MaterialReactTable

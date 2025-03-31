@@ -39,13 +39,13 @@ function DeletePrincipalDialog(props) {
         reload();
         handleClose();
     })
-    .catch((error) => console.log(error?.statusText ? error.statusText : error));
+    .catch((error) => console.log(error?.statusText ?? error));
   }
 
   return (
     <Dialog
       open={isOpen}
-      onClose={() => handleClose()}
+      onClose={handleClose}
     >
       <DialogTitle>
         Delete {name}
@@ -56,14 +56,14 @@ function DeletePrincipalDialog(props) {
       <DialogActions className={classes.dialogActions}>
         <Button
           variant="outlined"
-          onClick={() => handleClose()}
+          onClick={handleClose}
         >
           Cancel
         </Button>
         <Button
           variant="contained"
           color="error"
-          onClick={() => handleDelete()}
+          onClick={handleDelete}
         >
           Delete
         </Button>
