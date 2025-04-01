@@ -251,15 +251,15 @@ function SelectableAreaQuestion(props) {
   // Create the SVG of possible areas
   useEffect(()=> {
     // Calculate the desired width of the SVG container
-    let width = (variant.maxWidth == null || variant.maxWidth > currentWidth)
+    let width = (variant?.maxWidth == null || variant?.maxWidth > currentWidth)
       ? currentWidth
       : variant?.maxWidth;
 
     // Determine how the base image and child elements should be scaled
-    let scale = width / variant.imageWidth;
-    let height = variant.imageHeight * scale;
+    let scale = width / variant?.imageWidth;
+    let height = variant?.imageHeight * scale;
 
-    let viewBox = variant.viewBox || null;
+    let viewBox = variant?.viewBox || null;
     if (viewBox) {
       // Viewbox is a set of 4 space seperated numbers "<min-x> <min-y> <width> <height>".
       // These numbers must be scaled by the same factor as other coordinates then recombined.

@@ -486,7 +486,8 @@
           "saveType": "Reference",
           "displayProperty": "name",
           "orderProperty": "cards:SelectableAreaVariant",
-          "identifierProperty": "jcr:uuid"
+          "identifierProperty": "jcr:uuid",
+          "isRequired": true
         },
         "answerOptions" : {
           "type": "textOptions",
