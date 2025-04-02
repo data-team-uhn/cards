@@ -48,7 +48,7 @@ function AdminResourceListing(props) {
     const response = await fetchWithReLogin(globalLoginDisplay, url);
     const json = await response.json();
     setData(json["rows"]);
-    onDataReceived && onDataReceived(json.rows);
+    onDataReceived?.(json.rows);
 
     setIsLoading(false);
     setIsRefetching(false);

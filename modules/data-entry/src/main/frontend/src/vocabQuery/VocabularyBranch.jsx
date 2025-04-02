@@ -137,7 +137,7 @@ function VocabularyBranch(props) {
       onTermClick(path);
     } else {
       toggleShowChildren();
-      onCloseInfoBox && onCloseInfoBox();
+      onCloseInfoBox?.();
     }
   }
 

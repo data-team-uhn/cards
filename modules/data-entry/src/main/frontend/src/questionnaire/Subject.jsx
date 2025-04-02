@@ -444,7 +444,7 @@ function SubjectMemberInternal (props) {
     );
   }
 
-  let identifier = data && data.identifier ? data.identifier : id;
+  let identifier = data?.identifier ? data.identifier : id;
   let label = data?.type?.label;
   let statusFlags = data?.statusFlags;
   let title = `${label || "Subject"} ${identifier}`;
@@ -509,7 +509,7 @@ function SubjectMemberInternal (props) {
         </Grid>
       }
       { /* If we finished all fetching and have no data or child subjects to display for this subject, inform the user */ }
-      { expanded && childSubjects && childSubjects.length == 0 && subjectGroups && Object.keys(subjectGroups).length == 0 &&
+      { expanded && childSubjects?.length == 0 && subjectGroups && Object.keys(subjectGroups).length == 0 &&
         <Grid>
           <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
         </Grid>
@@ -732,7 +732,7 @@ function FormData(props) {
     return result;
   }
 
-  if (data && data.questionnaire) {
+  if (data?.questionnaire) {
     return (
       <div className={classes.formPreview}>
         {

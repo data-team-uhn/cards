@@ -131,7 +131,7 @@ function AdminConfigScreen(props) {
   const handleSubmit = (event) => {
 
     // This stops the normal browser form submission
-    event && event.preventDefault();
+    event?.preventDefault();
 
     // Abort if there's a data sanity error
     if (configError) return;
@@ -181,7 +181,7 @@ function AdminConfigScreen(props) {
 
   const handleReset = (event) => {
     // This stops the click event from reaching the parent form
-    event && event.preventDefault();
+    event?.preventDefault();
     // Record the fact that we're back to the initial config
     setConfigIsInitial(true);
     // Load the initial config in the form (dropping any changes)

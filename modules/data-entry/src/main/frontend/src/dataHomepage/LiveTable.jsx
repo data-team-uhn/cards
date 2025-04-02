@@ -177,7 +177,7 @@ function LiveTable(props) {
       return;
     }
     setTableData(json.rows);
-    onDataReceived && onDataReceived(json.rows);
+    onDataReceived?.(json.rows);
     setPaginationData(
       {
         "offset": json.offset,
@@ -347,7 +347,7 @@ function LiveTable(props) {
       setCachedFilters(filter_obj);
       // Store entire new filters JSON object as a Base64-encoded ASCII string to pass on in case we need to expand a table
       // via a callback "onFiltersChange()" from upper component that contains a table and expand element
-      onFiltersChange && onFiltersChange(window.btoa(encodeURIComponent(JSON.stringify(newFilters))));
+      onFiltersChange?.(window.btoa(encodeURIComponent(JSON.stringify(newFilters))));
       fetchData({
         "filters": filter_obj
       });

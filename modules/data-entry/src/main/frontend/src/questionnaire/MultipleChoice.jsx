@@ -252,7 +252,7 @@ function MultipleChoice(props) {
 
   // Remove a non-default option
   let removeOption = (id, name) => {
-    onChange && onChange(id); // will trigger callback in Form.jsx
+    onChange?.(id); // will trigger callback in Form.jsx
     setOptions( (old) => {
       return old.filter(
         (option) => {
@@ -286,7 +286,7 @@ function MultipleChoice(props) {
   let acceptOption = (valToAccept, labelToAccept) => {
     if (isRadio || isBare) {
       selectOption(valToAccept, labelToAccept) && setGhostName("");
-      inputEl && inputEl.blur();
+      inputEl?.blur();
     } else if (maxAnswers !== 1 && !error && valToAccept !== "") {
       // If we can select multiple and are not in error, add this option (if not already available) and ensure it's selected
       addOption(valToAccept, labelToAccept);
@@ -348,7 +348,7 @@ function MultipleChoice(props) {
       } else {
         setGhostName(option);
         updateGhost(ghostValue, option);
-        onUpdate && onUpdate(option);
+        onUpdate?.(option);
       }
     });
 
@@ -365,7 +365,7 @@ function MultipleChoice(props) {
     setGhostValue(event.target.value);
     updateGhost(event.target.value, event.target.value);
     checkForSeparators(event.target);
-    onUpdate && onUpdate(event.target.value);
+    onUpdate?.(event.target.value);
   }
 
   // Certain classes that implement MultipleChoice might add options of their own
@@ -387,7 +387,7 @@ function MultipleChoice(props) {
     }
     updateGhost(value, label);
     acceptOption(value, label);
-    onUpdate && onUpdate(value);
+    onUpdate?.(value);
   }
 
   // Hold the input box for either multiple choice type
@@ -457,7 +457,7 @@ function MultipleChoice(props) {
 
   let selectNonGhostOption = (...args) => {
     // Clear the ghost input
-    onUpdate && onUpdate(ghostSelected && !isRadio ? ghostName : undefined);
+    onUpdate?.(ghostSelected && !isRadio ? ghostName : undefined);
     selectOption(...args);
   }
 
@@ -561,7 +561,7 @@ function MultipleChoice(props) {
                     checked={ghostSelected}
                     onChange={() => {
                       selectOption(ghostValue, ghostName);
-                      onUpdate && onUpdate(ghostSelected ? undefined : ghostName);
+                      onUpdate?.(ghostSelected ? undefined : ghostName);
                     }}
                     onClick={() => {inputEl && inputEl.select();}}
                     disabled={!ghostSelected && disabled}

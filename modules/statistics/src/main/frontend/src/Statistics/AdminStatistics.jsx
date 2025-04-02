@@ -236,7 +236,7 @@ function StatisticDialog(props) {
       .then((response) => {
         if (response.ok) {
           setSaveInProgress(false);
-          onSuccess && onSuccess();
+          onSuccess?.();
           onClose();
         } else {
           setError(response);

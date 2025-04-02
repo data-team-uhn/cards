@@ -191,7 +191,7 @@ function SearchBar(props) {
         value={search}
         ref={searchBar}
         onChange={(event) => {
-          onChange && onChange(event);
+          onChange?.(event);
           changeSearch(event.target.value);
         }}
         onFocus={(event) => {
@@ -249,7 +249,7 @@ function SearchBar(props) {
               <ClickAwayListener onClickAway={(event) => {
                 // Ignore clickaway events if they're just clicking on the input box or search button
                 if (!searchBar?.current?.contains(event.target)) {
-                  onPopperClose && onPopperClose();
+                  onPopperClose?.();
                   setPopperOpen(false);
                 }}}>
                 <MenuList role="menu" className={classes.suggestions} ref={suggestionMenu}>
@@ -280,7 +280,7 @@ function SearchBar(props) {
                       onClick={(e) => {
                         disableDropdownItemLink && setSearch(result.entityIdentifier);
                         onSelect(e, result, props);
-                        onSelectFinish && onSelectFinish();
+                        onSelectFinish?.();
                         setPopperOpen(false);
                         }}
                       >

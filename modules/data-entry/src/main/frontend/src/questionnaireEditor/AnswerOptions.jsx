@@ -208,8 +208,8 @@ let AnswerOptions = (props) => {
       setter(false);
       let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
       let allOptions = options.slice();
-      specialOption != notApplicableOption && notApplicableOption.notApplicable && allOptions.push(notApplicableOption);
-      specialOption != noneOfTheAboveOption && noneOfTheAboveOption.noneOfTheAbove && allOptions.push(noneOfTheAboveOption);
+      specialOption != notApplicableOption?.notApplicable && allOptions.push(notApplicableOption);
+      specialOption != noneOfTheAboveOption?.noneOfTheAbove && allOptions.push(noneOfTheAboveOption);
       let duplicateOption = allOptions.find( option => option.value === inputs[0] || inputs[1] && (option.label === inputs[1]));
       duplicateOption && setter(true);
       return !!duplicateOption;

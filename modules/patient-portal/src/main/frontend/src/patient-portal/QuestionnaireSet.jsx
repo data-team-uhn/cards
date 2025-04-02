@@ -604,7 +604,7 @@ function QuestionnaireSet(props) {
     const time = appointmentDate();
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
-    provider = provider && provider.length > 1 ? provider.join(", ") : provider;
+    provider = provider?.length > 1 ? provider.join(", ") : provider;
     return (eventLabel && (time || location || provider)) ?
       <Alert severity="info" key="appointment-notification">
         {eventLabel}

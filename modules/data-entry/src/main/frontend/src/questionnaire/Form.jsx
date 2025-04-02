@@ -162,7 +162,7 @@ function Form (props) {
       incompleteQuestionEl.classList.add(classes.questionnaireItemWithError);
       incompleteQuestionEl.scrollIntoView({block: "center"});
     } else {
-      lastSaveStatus && endReached && onDone && onDone();
+      lastSaveStatus && endReached && onDone?.();
     }
   }, [lastSaveStatus, endReached, incompleteQuestionEl]);
 
@@ -412,13 +412,13 @@ function Form (props) {
     // Redirect the user to the view form mode
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
-        removeWindowHandlers && removeWindowHandlers();
+        removeWindowHandlers?.();
         navigate(urlBase + formURL);
     });
   }
 
   let onDelete = () => {
-    removeWindowHandlers && removeWindowHandlers();
+    removeWindowHandlers?.();
     navigate(urlBase + (data?.subject?.['@path'] || ''));
   }
 

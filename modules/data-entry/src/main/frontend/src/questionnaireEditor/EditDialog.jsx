@@ -88,7 +88,7 @@ let EditDialog = (props) => {
           if (response.ok) {
             setSaveInProgress(false);
             setOpen(false);
-            onSaved && onSaved();
+            onSaved?.();
           } else {
             handleError(response);
           }
@@ -117,7 +117,7 @@ let EditDialog = (props) => {
                 newData[targetId].doHighlight = true;
                 setSaveInProgress(false);
                 setOpen(false);
-                onSaved && onSaved(newData);
+                onSaved?.(newData);
               })
               .catch(handleError);
           } else {
@@ -193,7 +193,7 @@ let EditDialog = (props) => {
 
   return (
     <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
-       <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onCancel && onCancel();} } fullWidth maxWidth='md'>
+       <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onCancel?.();} } fullWidth maxWidth='md'>
           <DialogTitle>
             { dialogTitle() }
           </DialogTitle>
@@ -214,7 +214,7 @@ let EditDialog = (props) => {
           <DialogActions>
             <Button
               variant='outlined'
-              onClick={() => { setOpen(false); onCancel && onCancel();}}
+              onClick={() => { setOpen(false); onCancel?.();}}
             >
               Cancel
             </Button>

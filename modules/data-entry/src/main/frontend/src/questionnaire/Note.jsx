@@ -56,7 +56,7 @@ function Note (props) {
     }
   }, [value]);
 
-  useEffect(() => onChangeNote && onChangeNote(note), [note]);
+  useEffect(() => onChangeNote?.(note), [note]);
 
   const noteIsEmpty = (note == null || note == "");
 

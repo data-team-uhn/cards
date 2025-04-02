@@ -109,7 +109,7 @@ function Filters(props) {
       });
       setEditingFilters(newFilters);
       setActiveFilters(newFilters);
-      onChangeFilters && onChangeFilters(newFilters);
+      onChangeFilters?.(newFilters);
     }
   }, [filtersJsonString, questionDefinitions]);
 
@@ -281,7 +281,7 @@ function Filters(props) {
         :
         {...toCheck, comparator: (toCheck.comparator == "=" ? "is empty" : "is not empty")}));
     setActiveFilters(newFilters);
-    onChangeFilters && onChangeFilters(newFilters);
+    onChangeFilters?.(newFilters);
     setDialogOpen(false);
   }
 
@@ -348,7 +348,7 @@ function Filters(props) {
                 const newFilters = activeFilters.slice();
                 newFilters.splice(index, 1);
                 setActiveFilters(newFilters);
-                onChangeFilters && onChangeFilters(newFilters);
+                onChangeFilters?.(newFilters);
                 }
               }
               onClick={() => {

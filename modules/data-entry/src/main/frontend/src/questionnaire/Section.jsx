@@ -255,8 +255,8 @@ function Section(props) {
                     }
 
                     {/* Title & description */}
-                    {titleEl && titleEl(idx)}
-                    {descEl && descEl()}
+                    {titleEl?.(idx)}
+                    {descEl?.()}
                   </Grid>
               }
               <Collapse

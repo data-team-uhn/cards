@@ -169,7 +169,7 @@ function FormPagination (props) {
       handlePageChange(changeDirection);
       if (activePage === lastValidPage() && changeDirection === DIRECTION_NEXT) {
         setSavedLastPage(true);
-        onDone && onDone();
+        onDone?.();
       }
     }
   }
@@ -199,7 +199,7 @@ function FormPagination (props) {
       setPendingSubmission(false);
       if (activePage === lastValidPage() && direction === DIRECTION_NEXT) {
         setSavedLastPage(true);
-        onDone && onDone();
+        onDone?.();
       } else {
         setSavedLastPage(false);
         typeof(nextActivePage) != 'undefined' ? activatePage() : handlePageChange();

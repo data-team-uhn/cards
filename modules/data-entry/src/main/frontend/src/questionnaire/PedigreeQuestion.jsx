@@ -72,7 +72,7 @@ function PedigreeQuestion(props) {
   var pedigreeSVG  = null;
   var displayedImage = '';
 
-  if (pedigreeData && pedigreeData.image && pedigreeData.pedigreeJSON) {
+  if (pedigreeData?.image && pedigreeData?.pedigreeJSON) {
     // use pedigree stored in React component state:
     // default value for that state is the pedigree loaded from CARDS, but it gets overwritten each time pedigree is saved
     // from the pedigree editor, even if that data is not yet saved to CARDS

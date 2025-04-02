@@ -85,7 +85,7 @@ function DeleteButton(props) {
     }
     if (entryNotFound) {
       // Can't delete. Assume already deleted and exit if required
-      if (onComplete) {onComplete();}
+      onComplete?.();
     }
   }
 
@@ -137,7 +137,7 @@ function DeleteButton(props) {
     // If no path is provided, display the button but don't do any delete calls
     // and consider deletion successful since there's nothing to do
     if (!entryPath) {
-      if (onComplete) {onComplete();}
+      onComplete?.();
       closeDialog();
       return;
     }
@@ -155,7 +155,7 @@ function DeleteButton(props) {
       setDeletionInProgress(false);
       if (response.ok)  {
         closeDialog();
-        if (onComplete) {onComplete();}
+        onComplete?.();
       } else {
         handleError(response.status, response);
       }

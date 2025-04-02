@@ -198,9 +198,7 @@ function NewFormDialog(props) {
     // Exit the dialog if we're at the first page or if there is a preset path
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
       setDialogOpen(false);
-      if (onClose) {
-        onClose();
-      }
+      onClose?.();
     } else {
       setProgress(PROGRESS_SELECT_QUESTIONNAIRE);
       setSelectedSubject(null);
@@ -357,9 +355,7 @@ function NewFormDialog(props) {
         onClose={() => {
           resetDialogState();
           closeAllDialogs();
-          if (onClose) {
-            onClose();
-          }
+          onClose?.();
         }}
       >
         <DialogContent dividers className={classes.dialogContentWithTable}>
@@ -468,7 +464,7 @@ function NewFormDialog(props) {
         onClose={() => {
           resetDialogState();
           closeAllDialogs();
-          onClose && onClose();
+          onClose?.();
         }}
         currentSubject={currentSubject}
         onSubmit={createForm}

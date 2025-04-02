@@ -315,7 +315,7 @@ let QuestionMatrix = (props) => {
             path={sectionAnswerPath}
             answers={selection[question[0]]}
             questionDefinition={question[1]}
-            existingAnswer={existingAnswers && existingAnswers.find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
+            existingAnswer={existingAnswers?.find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
                                                                    && value["question"]["jcr:uuid"] === question[1]["jcr:uuid"])}
             answerNodeType={DATA_TO_NODE_TYPE[sectionDefinition.dataType]}
             valueType={valueType}

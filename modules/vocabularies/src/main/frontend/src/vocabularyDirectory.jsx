@@ -67,7 +67,7 @@ export default function VocabularyDirectory(props) {
     fetch(props.listLink)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then(function(data) {
-      if (data && data.length > 0) {
+      if (data?.length > 0) {
         filteredVocabs = data.map( item => item.acronym );
       }
     })
