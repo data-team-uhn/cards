@@ -92,7 +92,7 @@ function DeleteButton(props) {
   let handleError = (status, response) => {
     if (status === 404) {
       // NOT FOUND
-      setErrorMessage(`${entryName} could not be found. This ${entryType ? entryType : "item"} may have already been deleted.`);
+      setErrorMessage(`${entryName} could not be found. This ${entryType || "item"} may have already been deleted.`);
       setEntryNotFound(true);
       openError();
     } else if (status === 403) {

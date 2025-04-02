@@ -285,7 +285,7 @@ export default function VariantFilesContainer() {
         file.tumor = generateSubject(file.tumor, fileEl.tumor.path, fileEl.tumor.existed, fileEl.tumor.uuid, fileEl.tumor.type);
       }
 
-      if (fileEl.subject.id === file.subject.id && fileEl.tumor.id === file.tumor.id && fileEl.region.id === file.region.id) {
+      if (fileEl.region.id && file.region.id && fileEl.subject.id === file.subject.id && fileEl.tumor.id === file.tumor.id && fileEl.region.id === file.region.id) {
         file.region = generateSubject(file.region, fileEl.region.path, fileEl.region.existed, fileEl.region.uuid, fileEl.region.type);
       }
     }
