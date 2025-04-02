@@ -64,27 +64,14 @@ def merge_webpack_files(root, dir_name, aggregated_frontend_dir, webpack_config_
         with open(fl, 'rt') as ins:
             lines = ins.readlines()
 
-        entry_line_number = lines.index('  entry: {\n')
-        # Read the module name
-        module_name = ''
-        for i in range(0, entry_line_number-2):
-            if lines[i].startswith('module_name'):
-                line_no_spaces = ''.join(lines[i].split())
-                # Extract the word between parentheses
-                pattern = r'module_name="([^"]+)";'
-                match = re.search(pattern, line_no_spaces)
-                if not match:
-                    return
-                module_name = match.group(1)
         # Copy lines
-        for i in range(entry_line_number + 1, len(lines)):
-            if re.fullmatch(r'\s*\},\n', lines[i]):
-                break
-            if not lines[i].endswith(',\n'):
-                lines[i] = lines[i].replace('\n', ',\n')
+        for i in range(0, len(lines)):
+            if bool(re.match(r'^\s*\[', lines[i])):
+                # Append end of line `,` if missing
+                if not lines[i].endswith(',\n'):
+                    lines[i] = lines[i].replace('\n', ',\n')
 
-            line = lines[i].replace('module_name + \'', '\'' + module_name)
-            webpack_config_entries.append(line)
+                webpack_config_entries.append(lines[i])
 
         path_to_source = path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
         path_to_base_source = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'src')

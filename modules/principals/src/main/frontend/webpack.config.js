@@ -1,37 +1,6 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WebpackAssetsManifest = require('webpack-assets-manifest');
-
-module_name = "cards-principals";
-
 module.exports = {
-  mode: 'development',
-  entry: {
-    [module_name + '.userIcon']: '@mui/icons-material/Person',
-    [module_name + '.groupIcon']: '@mui/icons-material/Group',
-    [module_name + '.userscontainer']: './src/Userboard/Users/usersContainer.jsx',
-    [module_name + '.groupscontainer']: './src/Userboard/Groups/groupsContainer.jsx'
-  },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new WebpackAssetsManifest({
-      output: "assets.json"
-    })
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader']
-      }
-    ]
-  },
-  resolve: {
-    extensions: ['*', '.js', '.jsx']
-  },
-  output: {
-    path: __dirname + '/dist/SLING-INF/content/libs/cards/resources/',
-    publicPath: '/',
-    filename: '[name].[contenthash].js',
-  }
+  ['cards-principals.userIcon']: '@mui/icons-material/Person',
+  ['cards-principals.groupIcon']: '@mui/icons-material/Group',
+  ['cards-principals.userscontainer']: './src/Userboard/Users/usersContainer.jsx',
+  ['cards-principals.groupscontainer']: './src/Userboard/Groups/groupsContainer.jsx',
 };

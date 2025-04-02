@@ -1,52 +1,21 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WebpackAssetsManifest = require('webpack-assets-manifest');
-
-module_name = "patient-portal";
-
 module.exports = {
-  mode: 'development',
-  entry: {
-    [module_name + '.LandingPage']: './src/patient-portal/LandingPage.jsx',
-    [module_name + '.index']: './src/patient-portal/index.jsx',
-    [module_name + '.unsubscribe']: './src/patient-portal/unsubscribe.jsx',
-    [module_name + '.ToULink']: './src/patient-portal/ToULink.jsx',
-    [module_name + '.UnsubscribeLink']: './src/patient-portal/UnsubscribeLink.jsx',
-    [module_name + '.ClinicForms']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/patient-portal/ClinicForms.jsx' },
-    [module_name + '.ClinicVisits']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/patient-portal/ClinicVisits.jsx' },
-    [module_name + '.ClinicDashboard']: { 'dependOn': ['cards-dataentry.Questionnaires', 'patient-portal.ClinicForms', 'patient-portal.ClinicVisits'], 'import': './src/patient-portal/ClinicDashboard.jsx' },
-    [module_name + '.clinicIcon']: '@mui/icons-material/Event',
-    [module_name + '.Clinics']: { 'dependOn': ['cards-dataentry.Questionnaires'], 'import': './src/patient-portal/Clinics.jsx' },
-    [module_name + '.PrintHeader']: './src/patient-portal/PrintHeader.jsx',
-    [module_name + '.PatientAccessConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/PatientAccessConfiguration.jsx' },
-    [module_name + '.PatientAccessConfigurationIcon']: '@mui/icons-material/MedicalInformation',
-    [module_name + '.ToUConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/ToUConfiguration.jsx' },
-    [module_name + '.ToUConfigurationIcon']: '@mui/icons-material/Handshake',
-    [module_name + '.SurveyInstructionsConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/SurveyInstructionsConfiguration.jsx' },
-    [module_name + '.SurveyInstructionsConfigurationIcon']: '@mui/icons-material/Quiz',
-    [module_name + '.DashboardSettingsConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/DashboardSettingsConfiguration.jsx' },
-    [module_name + '.DashboardSettingsConfigurationIcon']: '@mui/icons-material/Dashboard'
-  },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new WebpackAssetsManifest({
-      output: "assets.json"
-    })
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader']
-      }
-    ]
-  },
-  resolve: {
-    extensions: ['*', '.js', '.jsx']
-  },
-  output: {
-    path: __dirname + '/dist/SLING-INF/content/libs/cards/resources/',
-    publicPath: '/',
-    filename: '[name].[contenthash].js',
-  }
+  ['patient-portal.LandingPage']: './src/patient-portal/LandingPage.jsx',
+  ['patient-portal.index']: './src/patient-portal/index.jsx',
+  ['patient-portal.unsubscribe']: './src/patient-portal/unsubscribe.jsx',
+  ['patient-portal.ToULink']: './src/patient-portal/ToULink.jsx',
+  ['patient-portal.UnsubscribeLink']: './src/patient-portal/UnsubscribeLink.jsx',
+  ['patient-portal.ClinicForms']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/patient-portal/ClinicForms.jsx' },
+  ['patient-portal.ClinicVisits']: { 'dependOn': ['cards-dataentry.LiveTable'], 'import': './src/patient-portal/ClinicVisits.jsx' },
+  ['patient-portal.ClinicDashboard']: { 'dependOn': ['cards-dataentry.Questionnaires', 'patient-portal.ClinicForms', 'patient-portal.ClinicVisits'], 'import': './src/patient-portal/ClinicDashboard.jsx' },
+  ['patient-portal.clinicIcon']: '@mui/icons-material/Event',
+  ['patient-portal.Clinics']: { 'dependOn': ['cards-dataentry.Questionnaires'], 'import': './src/patient-portal/Clinics.jsx' },
+  ['patient-portal.PrintHeader']: './src/patient-portal/PrintHeader.jsx',
+  ['patient-portal.PatientAccessConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/PatientAccessConfiguration.jsx' },
+  ['patient-portal.PatientAccessConfigurationIcon']: '@mui/icons-material/MedicalInformation',
+  ['patient-portal.ToUConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/ToUConfiguration.jsx' },
+  ['patient-portal.ToUConfigurationIcon']: '@mui/icons-material/Handshake',
+  ['patient-portal.SurveyInstructionsConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/SurveyInstructionsConfiguration.jsx' },
+  ['patient-portal.SurveyInstructionsConfigurationIcon']: '@mui/icons-material/Quiz',
+  ['patient-portal.DashboardSettingsConfiguration']: { 'dependOn': ['cards-login.loginDialogue'], 'import': './src/patient-portal/DashboardSettingsConfiguration.jsx' },
+  ['patient-portal.DashboardSettingsConfigurationIcon']: '@mui/icons-material/Dashboard'
 };

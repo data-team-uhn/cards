@@ -1,35 +1,4 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WebpackAssetsManifest = require('webpack-assets-manifest');
-
-module_name = "cards-login";
-
 module.exports = {
-  mode: 'development',
-  entry: {
-    [module_name + '.login']: './src/login/loginMain.js',
-    [module_name + '.loginDialogue']: './src/login/loginDialogue.js'
-  },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new WebpackAssetsManifest({
-      output: "assets.json"
-    })
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader']
-      }
-    ]
-  },
-  resolve: {
-    extensions: ['*', '.js', '.jsx']
-  },
-  output: {
-    path: __dirname + '/dist/SLING-INF/content/libs/cards/resources/',
-    publicPath: '/',
-    filename: '[name].[contenthash].js'
-  }
+  ['cards-login.login']: './src/login/loginMain.js',
+  ['cards-login.loginDialogue']: './src/login/loginDialogue.js',
 };
