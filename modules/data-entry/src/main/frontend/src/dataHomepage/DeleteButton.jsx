@@ -190,7 +190,7 @@ function DeleteButton(props) {
             <Button
               variant="contained"
               color="error"
-              onClick={() => handleDelete()}
+              onClick={handleDelete}
               disabled={deletionInProgress}
             >
               { deletionInProgress ? "Deleting..." : deleteRecursive ? "Delete All" : "Delete" }
@@ -230,6 +230,5 @@ DeleteButton.propTypes = {
   size: PropTypes.oneOf(["small", "medium", "large"]),
   className: PropTypes.string,
 }
-
 
 export default withStyles(DeleteButton, QuestionnaireStyle);

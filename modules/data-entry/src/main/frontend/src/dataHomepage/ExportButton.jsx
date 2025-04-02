@@ -447,7 +447,7 @@ function ExportButton(props) {
             <Button
               variant="contained"
               disabled={createdRangeIsInvalid || modifiedRangeIsInvalid}
-              onClick={() => handleExport()}
+              onClick={handleExport}
             >
               Export
             </Button>
@@ -482,3 +482,4 @@ ExportButton.propTypes = {
 }
 
 export default ExportButton;
+

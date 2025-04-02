@@ -72,8 +72,8 @@ import style from "./style.jsx";
 //  variant={hint-secondary}
 //  title="Separator detected"
 //  actionLabel="Separate and add"
-//  onAction={() => separateAndAdd()}
-//  onIgnore={() => disableSeparatorDetection()}
+//  onAction={separateAndAdd}
+//  onIgnore={disableSeparatorDetection}
 //  >
 //  Don't use comma, press ENTER!
 //</UserInputAssistant>
