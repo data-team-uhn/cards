@@ -24,7 +24,7 @@ import withStyles from '@mui/styles/withStyles';
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
 function SubjectTypeDialog(props) {
-  const { open, onClose, onSuccess, data, isEdit, currentSubjectType, classes } = props;
+  const { onClose, onSuccess, data, isEdit, currentSubjectType, classes } = props;
   const initialParent = currentSubjectType?.["@path"].replace("/" + currentSubjectType["@name"], "") || "/SubjectTypes";
   const subjectTypes = !isEdit ? data : data.filter(item => item["jcr:uuid"] != currentSubjectType["jcr:uuid"]);
 
@@ -98,7 +98,7 @@ function SubjectTypeDialog(props) {
           moveSubjectType();
           return;
         } else {
-          close();
+          onClose();
           return;
         }
       } else {
@@ -132,7 +132,7 @@ function SubjectTypeDialog(props) {
           } else {
             onSuccess();
           }
-          close();
+          onClose();
         }
     });
   }
@@ -154,27 +154,14 @@ function SubjectTypeDialog(props) {
         }
 
         onSuccess();
-        close();
+        onClose();
     });
-  }
-
-  let close = () => {
-    setError("");
-    setLabel("");
-    setParent("/SubjectTypes");
-    setOrder(0);
-    setSubjectListLabel("");
-    setIdPattern("");
-    setIdPatternHint("");
-    setIsDuplicateLabel(false);
-    onClose();
   }
 
   return (
     <Dialog
+      open
       maxWidth="sm"
-      open={open}
-      onClose={close}
     >
       <DialogTitle>{isEdit ? "Modify " + currentSubjectType.label : "Create New Subject Type"}</DialogTitle>
       <DialogContent>
@@ -286,7 +273,7 @@ function SubjectTypeDialog(props) {
         {error && <Typography color='error'>{error}</Typography>}
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
-        <Button variant="outlined" onClick={close}>Cancel</Button>
+        <Button variant="outlined" onClick={onClose}>Cancel</Button>
         <Button
           disabled={!isEdit && (!label || isDuplicateLabel)
                   || isEdit && (currentSubjectType["cards:defaultOrder"] == order &&
