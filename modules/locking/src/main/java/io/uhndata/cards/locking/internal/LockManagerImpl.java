@@ -105,7 +105,7 @@ public class LockManagerImpl implements LockManager
         boolean mustCloseResolver = initializeServiceResolver();
         try {
             String reason = canLockWithReason(node, true);
-            return reason != null;
+            return reason == null;
         } finally {
             closeResolverIfNeeded(mustCloseResolver);
         }
@@ -155,7 +155,7 @@ public class LockManagerImpl implements LockManager
         boolean mustCloseResolver = initializeServiceResolver();
         try {
             String reason = canUnlockWithReason(node);
-            return reason != null;
+            return reason == null;
         } finally {
             closeResolverIfNeeded(mustCloseResolver);
         }
@@ -265,9 +265,9 @@ public class LockManagerImpl implements LockManager
         throws LockError
     {
         try {
-            VersionManager versionManager
-                = this.serviceResolver.adaptTo(Session.class).getWorkspace().getVersionManager();
-            Node serviceNode = getServiceNode(node);
+            Session serviceSession = this.serviceResolver.adaptTo(Session.class);
+            VersionManager versionManager = serviceSession.getWorkspace().getVersionManager();
+            Node serviceNode = getServiceNode(node, serviceSession);
             Node lockNode = createLockNode();
             applyLockNode(serviceNode, lockNode, versionManager);
         } catch (RepositoryException e) {
@@ -343,9 +343,9 @@ public class LockManagerImpl implements LockManager
         throws LockError
     {
         try {
-            VersionManager versionManager
-                = this.serviceResolver.adaptTo(Session.class).getWorkspace().getVersionManager();
-            Node serviceNode = getServiceNode(node);
+            Session serviceSession = this.serviceResolver.adaptTo(Session.class);
+            VersionManager versionManager = serviceSession.getWorkspace().getVersionManager();
+            Node serviceNode = getServiceNode(node, serviceSession);
 
             deleteLockNode(node);
             removeLockNode(serviceNode, versionManager);
@@ -502,7 +502,13 @@ public class LockManagerImpl implements LockManager
     private Node getServiceNode(Node node)
         throws RepositoryException
     {
-        return this.serviceResolver.adaptTo(Session.class).getNode(node.getPath());
+        return getServiceNode(node, this.serviceResolver.adaptTo(Session.class));
+    }
+
+    private Node getServiceNode(Node node, Session serviceSession)
+        throws RepositoryException
+    {
+        return serviceSession.getNode(node.getPath());
     }
 
     private interface NodeLockHandler

@@ -78,18 +78,10 @@ public class LockedRestrictionPattern implements RestrictionPattern
 
     protected static boolean isSubjectOrForm(final Tree node)
     {
-        return isForm(node) || isSubject(node);
-    }
-
-    protected static boolean isForm(final Tree node)
-    {
-        return node.hasProperty("jcr:primaryType")
-            && "cards:Form".equals(node.getProperty("jcr:primaryType").getValue(Type.STRING));
-    }
-
-    protected static boolean isSubject(final Tree node)
-    {
-        return node.hasProperty("jcr:primaryType")
-            && "cards:Subject".equals(node.getProperty("jcr:primaryType").getValue(Type.STRING));
+        if (node.hasProperty("jcr:primaryType")) {
+            String type = node.getProperty("jcr:primaryType").getValue(Type.STRING);
+            return type.matches("cards:Form|cards:Subject");
+        }
+        return false;
     }
 }
