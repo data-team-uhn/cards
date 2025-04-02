@@ -25,28 +25,34 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.locking.api.LockError;
 import io.uhndata.cards.locking.api.LockWarning;
 import io.uhndata.cards.locking.spi.LockPrecondition;
+import io.uhndata.cards.subjects.api.SubjectUtils;
 
 @Component
 public class IncompleteFormsPrecondition implements LockPrecondition
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LockManagerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IncompleteFormsPrecondition.class);
 
-    private static final String SUBJECT_NODE_TYPE = "cards:Subject";
-    private static final String FORM_NODE_TYPE = "cards:Form";
+    @Reference
+    private FormUtils formUtils;
+
+    @Reference
+    private SubjectUtils subjectUtils;
 
     @Override
     public boolean canLock(Node node) throws LockWarning, LockError
     {
         try {
-            if (node.isNodeType(SUBJECT_NODE_TYPE)) {
+            if (this.subjectUtils.isSubject(node)) {
                 checkSubject(node);
-            } else if (node.isNodeType(FORM_NODE_TYPE)) {
+            } else if (this.formUtils.isForm(node)) {
                 checkForm(node);
             }
             return true;
@@ -62,7 +68,7 @@ public class IncompleteFormsPrecondition implements LockPrecondition
         final NodeIterator childNodes = node.getNodes();
         while (childNodes.hasNext()) {
             Node childNode = childNodes.nextNode();
-            if (childNode.isNodeType(SUBJECT_NODE_TYPE)) {
+            if (this.subjectUtils.isSubject(childNode)) {
                 canLock(childNode);
             }
         }
@@ -70,7 +76,7 @@ public class IncompleteFormsPrecondition implements LockPrecondition
         final PropertyIterator references = node.getReferences();
         while (references.hasNext()) {
             Node referenceNode = references.nextProperty().getParent();
-            if (referenceNode.isNodeType(FORM_NODE_TYPE)) {
+            if (this.formUtils.isForm(referenceNode)) {
                 canLock(referenceNode);
             }
         }

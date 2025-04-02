@@ -84,7 +84,7 @@ function Subject(props) {
   let { classes, maxDisplayed = 4, pageSize = 10 } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ activeTab, setActiveTab ] = useState(0);
-  const fetchRelated = useRef();
+  const fetchRelatedRef = useRef();
 
   // TODO: These tabs should be extensible.
   // This will involve moving SubjectContainer to it's own file and moving
@@ -124,11 +124,11 @@ function Subject(props) {
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader
           id={currentSubjectId}
-          key={"SubjectHeader"}
+          key="SubjectHeader"
           pageTitle={pageTitle}
           classes={classes}
           getSubject={handleSubject}
-          reloadSubject={fetchRelated}
+          reloadSubject={fetchRelatedRef}
           contentOffset={props.contentOffset}/>
         <Grid>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
@@ -149,7 +149,7 @@ function Subject(props) {
               maxDisplayed={maxDisplayed}
               pageSize={pageSize}
               subject={currentSubject}
-              fetchSubjectData={fetchRelated.current}
+              fetchSubjectData={fetchRelatedRef.current}
             />
           : <Grid>
             <SubjectTimeline
@@ -230,7 +230,8 @@ function SubjectContainer(props) {
     subject && <React.Fragment>
       <SubjectMember
         classes={classes}
-        id={id} level={currentLevel}
+        id={id}
+        level={currentLevel}
         data={subject}
         maxDisplayed={maxDisplayed}
         pageSize={pageSize}
@@ -251,17 +252,13 @@ function SubjectHeader(props) {
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   let [ statusFlags, setStatusFlags ] = useState([]);
-  let [ initialized, setInitialized ] = useState(false);
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (!initialized) {
-      reloadSubject.current = fetchSubjectData;
-      setInitialized(true);
-    }
-  }, [initialized]);
+    reloadSubject.current = fetchSubjectData;
+  }, []);
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,

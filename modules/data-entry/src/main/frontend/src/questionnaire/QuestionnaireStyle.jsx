@@ -746,7 +746,7 @@ const questionnaireStyle = theme => ({
       border: "1px solid " + theme.palette.action.disabled,
       background: "transparent",
       color: theme.palette.text.disabled,
-        zoom: .75,
+      zoom: .75,
     },
     dialogActions: {
       flexWrap: "wrap"

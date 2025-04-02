@@ -17,7 +17,6 @@
 //  under the License.
 //
 import React, { useState, useEffect, useContext } from "react";
-import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {
@@ -48,7 +47,14 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 import ErrorDialog from "../components/ErrorDialog.jsx";
 
 function SubjectLockAction(props) {
-  const { classes, subject, reloadSubject, size, variant, className } = props;
+  const {
+    classes,
+    subject,
+    reloadSubject,
+    size = "large",
+    variant = "icon",
+    className
+  } = props;
 
   const METHOD_LOCK = "LOCK";
   const METHOD_UNLOCK = "UNLOCK";
@@ -61,7 +67,6 @@ function SubjectLockAction(props) {
   const [ dialogHeader, setDialogHeader ] = useState(null);
   const [ dialogContent, setDialogContent ] = useState(null);
   const [ nextAction, setNextAction ] = useState(ACTION_CONTINUE);
-  const [ errorOpen, setErrorOpen ] = useState(false);
   const [ errorMessage, setErrorMessage ] = useState("");
   const [ requestInProgress, setRequestInProgress ] = useState(false);
   const [ isLocked, setLocked ] = useState(false);
@@ -74,7 +79,7 @@ function SubjectLockAction(props) {
   let entryPath = subject?.["@path"];
 
   useEffect(() => {
-    setLocked(subject?.statusFlags && subject.statusFlags.includes("LOCKED"))
+    setLocked(subject?.statusFlags && subject.statusFlags.includes("LOCKED"));
   }, [subject])
 
   let openDialog = () => {
@@ -98,18 +103,17 @@ function SubjectLockAction(props) {
   let openError = (message) => {
     closeDialog();
     setErrorMessage(message);
-    setErrorOpen(true);
   }
 
   let closeError = () => {
-    setErrorOpen(false);
+    setErrorMessage("");
   }
 
   let handleOpenDialogUnlocked = () => {
-    setDialogTitle(`Sign off and Lock ${entryType} "${subject?.identifier}"`)
+    setDialogTitle(`Sign off and Lock ${entryType} "${subject?.identifier}"`);
     setNextAction(ACTION_CONTINUE);
     setDialogContent(null);
-    fetchIncompleteForms()
+    fetchIncompleteForms();
   }
 
   let getLockWarning = () => {
@@ -149,8 +153,8 @@ function SubjectLockAction(props) {
   }
 
   let handleOpenDialogLocked = () => {
-    setDialogTitle(`Unlock ${entryType} "${subject?.identifier}"`)
-    setNextAction(ACTION_UNLOCK)
+    setDialogTitle(`Unlock ${entryType} "${subject?.identifier}"`);
+    setNextAction(ACTION_UNLOCK);
     setDialogContent(
       <Alert severity="warning">
         If you unlock this {subject?.type?.label} all the associated data forms
@@ -184,7 +188,7 @@ function SubjectLockAction(props) {
   let handleIncompleteForms = (rows) => {
     setNextAction(ACTION_CONTINUE);
     setActionContent(getLockWarning());
-    setDialogHeader(<Typography variant="body1">{rows.length} form{rows.length > 1 ? "s are" : " is"} incomplete:</Typography>)
+    setDialogHeader(<Typography>{rows.length} form{rows.length > 1 ? "s are" : " is"} incomplete:</Typography>)
     setDialogContent(
       <List dense>
         {rows.map((row, index) => {
@@ -267,8 +271,8 @@ function SubjectLockAction(props) {
   let buttonText = isLocked ? `Unlock ${entryType}` : "Sign off";
 
   return( <>
-    <ErrorDialog open={errorOpen} onClose={closeError}>
-      <Typography variant="body1">{errorMessage}</Typography>
+    <ErrorDialog open={errorMessage} onClose={closeError}>
+      <Typography>{errorMessage}</Typography>
     </ErrorDialog>
     <Dialog open={open} onClose={closeDialog}>
       <DialogTitle>{dialogTitle}{dialogHeader}</DialogTitle>
@@ -277,10 +281,14 @@ function SubjectLockAction(props) {
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
           {actionContent}
-          <Button variant="outlined" size="small" onClick={closeDialog}>Cancel</Button>
+          <Button
+            variant="outlined"
+            onClick={closeDialog}
+          >
+            Cancel
+          </Button>
           <Button
             variant="contained"
-            size="small"
             onClick={handleActionClicked}
             disabled={requestInProgress}
           >
@@ -317,9 +325,4 @@ SubjectLockAction.propTypes = {
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
 }
 
-SubjectLockAction.defaultProps = {
-  variant: "icon",
-  size: "large",
-}
-
-export default withStyles(QuestionnaireStyle)(withRouter(SubjectLockAction));
+export default withStyles(QuestionnaireStyle)(SubjectLockAction);
