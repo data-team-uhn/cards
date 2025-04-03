@@ -139,14 +139,13 @@ function SubjectTypes(props) {
       customFilter={customFilterFn}
     />
 
-    <SubjectTypeDialog
-      open={dialogOpen}
+    {dialogOpen && <SubjectTypeDialog
       onClose={onClose}
       onSuccess={dialogSuccess}
       data={subjectTypeData}
       isEdit={isEdit}
       currentSubjectType={currentSubjectType}
-    />
+    />}
   </>
   );
 }
