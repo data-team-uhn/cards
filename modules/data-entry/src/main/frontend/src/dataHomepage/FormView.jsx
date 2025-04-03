@@ -42,6 +42,7 @@ import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { useRenderCount } from "../RenderCount.jsx";
 
 function FormView(props) {
   const { questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
@@ -50,7 +51,7 @@ function FormView(props) {
   const [ subtitle, setSubtitle ] = useState(props.subtitle);
   const [ qFilter, setQFilter ] = useState();
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
-
+  const count = useRenderCount("FormView");
   // Column configuration for the LiveTables
   const columns = [
     {

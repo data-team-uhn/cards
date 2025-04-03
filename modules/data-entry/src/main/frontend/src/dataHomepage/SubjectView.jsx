@@ -19,7 +19,7 @@
 import React, { useState, useContext } from "react";
 import { useTheme } from '@mui/material/styles';
 import LiveTable from "./LiveTable.jsx";
-
+import { useRenderCount } from "../RenderCount.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 import {
@@ -56,7 +56,7 @@ function SubjectView(props) {
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
   const theme = useTheme();
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("subjects:activeTab");
-
+  const count = useRenderCount("SubjectView");
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Default column configuration for the LiveTables to be used from User Dashboard

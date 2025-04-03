@@ -31,7 +31,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy, getHomepageLink } from "./SubjectIdentifier";
 import MaterialReactTable from 'material-react-table';
 import { Box } from '@mui/material';
-
+import { useRenderCount } from "../RenderCount.jsx";
 import {
   Avatar,
   CircularProgress,
@@ -82,7 +82,7 @@ function Subject(props) {
   let { classes, maxDisplayed = 4, pageSize = 10 } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ activeTab, setActiveTab ] = useState(0);
-
+  const count = useRenderCount("Subject");
   // TODO: These tabs should be extensible.
   // This will involve moving SubjectContainer to it's own file and moving
   // handleDisplay() to a utility file for SubjectContainer and SubjectTimeline.

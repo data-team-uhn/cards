@@ -24,7 +24,7 @@ import { Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
-
+import { useRenderCount } from "../RenderCount.jsx";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -63,7 +63,7 @@ function TextQuestion(props) {
   let { dataType, displayMode, validationRegexp, validationErrorText = "Invalid input" } = { ...props.questionDefinition, ...props};
   const regexp = new RegExp(validationRegexp);
   const answerNodeType = "cards:" + dataType.charAt(0).toUpperCase() + dataType.slice(1) + "Answer";
-
+  const count = useRenderCount("TextQuestion");
   // Validation against the regular expression if one is provided
   // Empty inputs are considered valid
   // If no regexp is provided, all inputs are valid

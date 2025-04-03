@@ -24,13 +24,14 @@ import { useLocation } from 'react-router';
 import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
-
+import { useRenderCount } from "../RenderCount.jsx";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerInstructions from "./AnswerInstructions";
 import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
+  const count = useRenderCount("Question");
   PropTypes.checkPropTypes(Question.propTypes, props, 'prop', 'Question');
   let { classes, children, questionDefinition, existingAnswer, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
   let { compact } = { ...questionDefinition };

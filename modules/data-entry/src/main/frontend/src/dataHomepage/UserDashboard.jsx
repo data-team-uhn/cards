@@ -19,7 +19,7 @@
 import React, { useState, useEffect } from "react";
 
 import MaterialReactTable from "material-react-table";
-
+import { useRenderCount } from "../RenderCount.jsx";
 import { loadExtensions } from "../uiextension/extensionManager";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
@@ -60,7 +60,7 @@ function UserDashboard(props) {
   let [ selectedCreation, setSelectedCreation ] = useState(-1);
   let [ selectedRow, setSelectedRow ] = useState(undefined);
   let [ open, setOpen ] = useState(false);
-
+  const count = useRenderCount("UserDashboard");
   let onClose = () => {
     setSelectedCreation(-1);
     setSelectedRow(undefined);

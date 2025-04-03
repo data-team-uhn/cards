@@ -23,7 +23,7 @@ import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
-
+import { useRenderCount } from "../RenderCount.jsx";
 
 // Get a flat list of subject type parents as labels separated by " / "
 function getTextHierarchy (path, subjectTypes) {
@@ -42,7 +42,7 @@ function SubjectTypes(props) {
   const [ subjectTypeData, setSubjectTypeData ] = useState([]);
   const [ currentSubjectType, setCurrentSubjectType ] = useState(null);
   const [ isEdit, setIsEdit ] = useState(false);
-
+  const count = useRenderCount("SubjectTypes");
   const entryType = "Subject Type";
   const columns = [
     {

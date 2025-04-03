@@ -24,12 +24,12 @@ import withStyles from '@mui/styles/withStyles';
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import FormView from "./FormView.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-
+import { useRenderCount } from "../RenderCount.jsx";
 function Forms(props) {
   const { classes } = props;
   const location = useLocation();
   const questionnaire = /questionnaire=([^&]+)/.exec(location.search)?.[1];
-
+  const count = useRenderCount("Forms");
   const columns = [
     {
       "key": "@name",

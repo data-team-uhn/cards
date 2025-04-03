@@ -24,10 +24,10 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-
+import { useRenderCount } from "../RenderCount.jsx";
 function Subjects(props) {
   const { classes } = props;
-
+  const count = useRenderCount("Subjects");
   const columns = [
     {
       "key": "identifier",

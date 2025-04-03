@@ -23,7 +23,7 @@ import { Card, CardHeader, CardContent, CardActions, Typography, Button, LinearP
 import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router';
 import { DateTime } from "luxon";
-
+import { useRenderCount } from "../RenderCount.jsx";
 import Filters from "./Filters.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -43,7 +43,7 @@ let _formatDate = (date, formatString) => {
 function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
-
+  const count = useRenderCount("LiveTable");
   const {
     customUrl,
     resourceSelectors,

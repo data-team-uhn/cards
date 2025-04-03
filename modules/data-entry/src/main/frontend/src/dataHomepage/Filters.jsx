@@ -23,7 +23,7 @@ import Grid from '@mui/material/Grid2';
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
-
+import { useRenderCount } from "../RenderCount.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import VariableAutocomplete from "./VariableAutocomplete";
 import LiveTableStyle from "./tableStyle.jsx";
@@ -59,7 +59,7 @@ function Filters(props) {
 
   const [filterComparators, setFilterComparators] = useState({});
   const [textFilterComponent, setTextFilterComponent] = useState({});
-
+  const count = useRenderCount("Filters");
   // Other state variables
   const [error, setError] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);

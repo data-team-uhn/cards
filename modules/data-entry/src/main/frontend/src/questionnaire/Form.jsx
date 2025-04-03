@@ -60,7 +60,7 @@ import ResourceHeader from "./ResourceHeader.jsx";
 import { getFirstIncompleteQuestionEl, hasWarningFlags } from "./FormUtilities.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
-
+import { useRenderCount } from "../RenderCount.jsx";
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
 // TODO Try to move the save-failed code somewhere more generic instead of the Form component
@@ -72,6 +72,7 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  * <Form />
  */
 function Form (props) {
+	  const count = useRenderCount("Form");
   let { classes, contentOffset } = props;
   let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab

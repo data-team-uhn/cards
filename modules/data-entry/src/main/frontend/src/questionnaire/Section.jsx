@@ -25,7 +25,7 @@ import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
 import UnfoldMore from '@mui/icons-material/UnfoldMore';
-
+import { useRenderCount } from "../RenderCount.jsx";
 import ConditionalComponentManager from "./ConditionalComponentManager";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
@@ -68,7 +68,7 @@ function Section(props) {
   const isRecurrent = sectionDefinition['recurrent'];
   const isCompact = sectionDefinition['compact'];
   const { displayMode } = sectionDefinition;
-
+  const count = useRenderCount("Section");
   const headerVariant = "h5";
   const titleEl = sectionDefinition["label"] &&
     (idx =>
