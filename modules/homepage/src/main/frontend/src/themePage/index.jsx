@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { Suspense } from "react";
+import React, { StrictMode, Suspense } from "react";
 import { useState, useEffect } from "react";
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@mui/material/styles';
@@ -171,6 +171,7 @@ const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#main-container'));
 root.render(
+  <StrictMode>
   <CacheProvider value={cache}>
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
@@ -182,6 +183,7 @@ root.render(
       </Router>
     </ThemeProvider>
   </CacheProvider>
+  </StrictMode>
 );
 
 export default MainComponent;

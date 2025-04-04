@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from "react";
+import React, { StrictMode, useState, useEffect } from "react";
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import { createBrowserHistory } from "history";
@@ -102,6 +102,7 @@ const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#patient-portal-container'));
 root.render(
+  <StrictMode>
   <CacheProvider value={cache}>
     <ThemeProvider theme={portalTheme}>
       <Router history={hist}>
@@ -113,6 +114,7 @@ root.render(
       </Router>
     </ThemeProvider>
   </CacheProvider>
+  </StrictMode>
 );
 
 export default PatientPortalHomepage;

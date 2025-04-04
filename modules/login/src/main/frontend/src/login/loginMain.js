@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
+import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import MainLoginContainer from './MainLoginContainer';
 import PageStart from '../PageStart';
@@ -25,10 +25,12 @@ import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 
 const root = createRoot(document.getElementById('main-login-container'));
 root.render(
+  <StrictMode>
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <PageStart extensionsName="LoginPageStart" />
       <MainLoginContainer selfContained redirectOnLogin={true} />
     </ThemeProvider>
   </StyledEngineProvider>
+  </StrictMode>
 );
