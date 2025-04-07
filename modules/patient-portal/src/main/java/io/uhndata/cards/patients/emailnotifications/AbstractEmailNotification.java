@@ -194,6 +194,10 @@ abstract class AbstractEmailNotification
         valuesMap.put("unsubscribeLink", unsubscribeLink);
         final DateFormat sdf = DateFormat.getDateInstance(DateFormat.LONG);
         sdf.setTimeZone(tokenExpiryDate.getTimeZone());
+        // TokenExpiryDate is set to 00:00 on the day after the survey expires.
+        // To better match what patients understand by "survey available until Date",
+        // modify it to be right before midnight on the day before.
+        tokenExpiryDate.add(Calendar.MILLISECOND, -1);
         valuesMap.put("expirationDate", sdf.format(tokenExpiryDate.getTime()));
         return template.getEmailBuilderForSubject(visitSubject, valuesMap, this.formUtils)
             .withRecipient(patientEmailAddress, patientFullName)
