@@ -75,7 +75,7 @@ STRING_GROUPS = {
 }
 
 CONDITION_SPLIT = ["="]
-
+REPEATED_KEY_PLACEHOLDER = "{$}"
 
 
 #=======================
@@ -113,9 +113,6 @@ def repeated_section_handler(self, questionnaire, row):
     section_start_handler(self, questionnaire, row)
     questionnaire.parent['repeated'] = True
     parent_label = questionnaire.parent['title' if 'title' in questionnaire.parent else 'label']
-    parent_label_trimmed = parent_label.strip()
-    if parent_label_trimmed[-1] == "_":
-        parent_label_trimmed = parent_label_trimmed[:-1]
     isStatic = Headers['OPTIONS'].has_value(row)
 
     if isStatic:
@@ -127,7 +124,7 @@ def repeated_section_handler(self, questionnaire, row):
                 label = split_value[1]
             else:
                 value, label = option
-            section_title = parent_label_trimmed + "_" + clean_name(value)
+            section_title = clean_name(value)
             new_section = create_new_section(section_title)
             new_section['label'] = clean_title(label)
             new_section['repeated_parent'] = parent_label
@@ -152,14 +149,10 @@ def repeated_section_handler(self, questionnaire, row):
                         and ('noneOfTheAbove' not in entry.keys() or not entry['noneOfTheAbove'])
                         and ('notApplicable' not in entry.keys() or not entry['notApplicable'])):
 
-                    section_title = parent_label
-                    if (section_title.startswith("section_")):
-                        section_title = section_title[len("section_"):]
-                    section_title = section_title + "_" + clean_name(entry['value'])
-                    new_section = create_new_section(section_title)
+                    new_section = create_new_section(clean_name(entry['value']))
                     new_section['label'] = clean_title(entry['label'])
                     new_section['repeated_parent'] = parent_label
-                    new_section['title'] = clean_title(section_title)
+                    new_section['title'] = clean_title(clean_name(entry['value']))
                     questionnaire.push_section(new_section)
                     condition_handle_brackets(questionnaire, new_section, referenced_question_key + " includes \"" + entry['value'] + "\"")
                     questionnaire.complete_section()
@@ -184,20 +177,27 @@ def process_repeated_child_section(section, repeated_key):
         if type(child) == dict:
             if is_section(child):
                 new_key = key
-                if (new_key.startswith("section_")):
+                if (REPEATED_KEY_PLACEHOLDER in new_key):
+                    new_key = new_key.replace(REPEATED_KEY_PLACEHOLDER, repeated_key)
+                elif (new_key.startswith("section_")):
                     new_key = "section_" + repeated_key + new_key[len("section"):]
                 else:
                     new_key = repeated_key + "_" + new_key
                 section[new_key] = process_repeated_child_section(section.pop(key), repeated_key)
             elif is_question(child):
-                section[repeated_key + "_" + key] = section.pop(key)
+                if (REPEATED_KEY_PLACEHOLDER in key):
+                    section[key.replace(REPEATED_KEY_PLACEHOLDER, repeated_key)] = section.pop(key)
+                else:
+                    section[repeated_key + "_" + key] = section.pop(key)
     return section
 
 
 def process_repeated(self, questionnaire, child, repeated_conditionals, non_repeated_key):
     for repeated_key in repeated_conditionals:
         repeated_child_name = non_repeated_key
-        if (repeated_child_name.startswith("section_")):
+        if (REPEATED_KEY_PLACEHOLDER in repeated_child_name):
+            repeated_child_name = repeated_child_name.replace(REPEATED_KEY_PLACEHOLDER, repeated_key)
+        elif (repeated_child_name.startswith("section_")):
             repeated_child_name = "section_" + repeated_key + repeated_child_name[len("section"):]
         else:
             repeated_child_name = repeated_key + "_" + repeated_child_name
@@ -230,6 +230,16 @@ def end_repeated_section(self, questionnaire, row):
     for non_repeated_key in non_repeated_children:
         non_repeated_child = questionnaire.parent.pop(non_repeated_key)
         process_repeated(self, questionnaire, non_repeated_child, repeated_conditionals, non_repeated_key)
+
+    for repeated_key in repeated_conditionals:
+        new_key = parent_label
+        if (REPEATED_KEY_PLACEHOLDER in new_key):
+            new_key = new_key.replace(REPEATED_KEY_PLACEHOLDER, repeated_key)
+        else:
+            if (new_key.startswith("section_")):
+                new_key = new_key[len("section_"):]
+            new_key = new_key + "_" + repeated_key
+        questionnaire.parents[-2][new_key] = questionnaire.parents[-2].pop(repeated_key)
 
     questionnaire.parents.pop()
     questionnaire.parent = questionnaire.parents[-1]
