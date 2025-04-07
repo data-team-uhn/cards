@@ -20,7 +20,9 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 
+import { IconButton, Tooltip } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
@@ -38,6 +40,20 @@ let AutocreatedQuestion = (props) => {
 
   const [isFormatted, changeIsFormatted] = useState(false);
 
+  const [ text, setText ] = useState("Copy to Clipboard")
+
+  const initialValue = existingAnswer?.[1]?.value || "";
+  const answer = initialValue === "" ? [] : [["value", initialValue]];
+
+  const handleClick = () => {
+    navigator.clipboard.writeText(initialValue);
+    setText("Copied");
+  }
+
+  const handleClose = () => {
+    setText("Copy to Clipboard");
+  }
+
 
   // If we are in edit mode, upon loading the pre-filled answers, place them
   // in the form context where they can be accessed by computed answers
@@ -54,7 +70,7 @@ let AutocreatedQuestion = (props) => {
   }, []);
 
   useEffect(() => {
-    let formatted = (displayMode === "formatted" || displayMode === "summary");
+    let formatted = (displayMode?.startsWith("formatted") || displayMode === "summary");
     if (formatted !== isFormatted) {
       changeIsFormatted(formatted)
     };
@@ -65,7 +81,14 @@ let AutocreatedQuestion = (props) => {
   return (
     <Question
       isEdit={false}
-      defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : (label, idx) => label}
+      defaultDisplayFormatter={(label, idx) => { console.log(label, idx, isFormatted, displayMode); return (isFormatted ? <FormattedText>{label}</FormattedText> : label) + ( displayMode.endsWith("+copy") ?
+            <Tooltip title={text} onClose={handleClose} className={classes.autocreatedQuestionButton}>
+              <IconButton onClick={handleClick}>
+                <ContentCopyIcon />
+              </IconButton>
+            </Tooltip>
+            : "" )
+      }}
       disableInstructions
       {...rest}
     />
@@ -77,7 +100,7 @@ AutocreatedQuestion.propTypes = {
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     description: PropTypes.string,
-    displayMode: PropTypes.oneOf(['plain', 'formatted', 'hidden', 'summary']),
+    displayMode: PropTypes.oneOf(['plain', 'plain+copy', 'formatted', 'formatted+copy', 'hidden', 'summary']),
     unitOfMeasurement: PropTypes.string
   }).isRequired
 };

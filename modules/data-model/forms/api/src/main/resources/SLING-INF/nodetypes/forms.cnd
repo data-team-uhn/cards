@@ -623,7 +623,7 @@
 //-----------------------------------------------------------------------------
 // Time
 [cards:TimeAnswer] > cards:Answer
-  - value (string)
+  - value (string) autocreated
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/TimeAnswer" mandatory autocreated protected
@@ -756,10 +756,10 @@
 //-----------------------------------------------------------------------------
 // Identifier answers, stored as strings
 [cards:IdentifierAnswer] > cards:Answer
-  - value (string)
+  - value (string) autocreated
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/SelectableAreaAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/IdentifierAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected

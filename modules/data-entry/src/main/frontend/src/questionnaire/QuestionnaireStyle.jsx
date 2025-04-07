@@ -733,10 +733,10 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
-    identifierQuestionText : {
+    autocreatedQuestionText : {
       float: "left",
     },
-    identifierQuestionButton : {
+    autocreatedQuestionButton : {
       float: "right",
       position: "relative",
       top: theme.spacing(-1),
