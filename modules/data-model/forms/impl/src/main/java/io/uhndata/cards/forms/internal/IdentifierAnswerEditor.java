@@ -38,7 +38,7 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
- * An {@link Editor} that fills out any reference answers for a new form.
+ * An {@link Editor} that fills out any identifier answers for a new form.
  *
  * @version $Id$
  */
@@ -56,7 +56,6 @@ public class IdentifierAnswerEditor extends DefaultEditor
 
     /**
      * Simple constructor.
-     *ms-appid:W~com.squirrel.slack.slack
      * @param nodeBuilder the builder for the current node
      * @param userSession the current user session
      * @param formUtils for working with form data

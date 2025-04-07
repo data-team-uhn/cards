@@ -38,7 +38,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  *
  * @version $Id$
  */
-@Component(property = "service.ranking:Integer=10")
+@Component(property = "service.ranking:Integer=60")
 public class IdentifierAnswerEditorProvider implements EditorProvider
 {
     @Reference
@@ -59,7 +59,7 @@ public class IdentifierAnswerEditorProvider implements EditorProvider
     {
         final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
         if (resolver != null) {
-            // Each QuestionMatrixEditor maintains a state, so a new instance must be returned each time
+            // Each IdentifierAnswerEditor maintains a state, so a new instance must be returned each time
             return new IdentifierAnswerEditor(builder, resolver.adaptTo(Session.class),
                 this.formUtils, this.formUpdateUtils, this.questionnaireUtils, false);
         }

@@ -17,18 +17,16 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { IconButton, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { Button, Tooltip } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { v4 as uuidv4 } from 'uuid';
 
 import PropTypes from "prop-types";
 
 import Answer from "./Answer";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
-import FormattedText from "../components/FormattedText.jsx";
 import AnswerComponentManager from "./AnswerComponentManager";
 
 // Component that renders an identifier question, with optional copy button.
@@ -42,21 +40,34 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //             Defaults to "plain".
 //
 // Sample usage:
-// <NumberQuestion
+// <IdentifierQuestion
 //    text="Visit Identifier"
-//    displayMode="plain+copy"
-//    dataType="identifier"
 //    />
-function IdentifierQuestion(props) {
-  const { existingAnswer, classes, pageActive, isEdit, ...rest} = props;
-  const { displayMode } = {...props.questionDefinition };
+
+export default function IdentifierQuestion(props) {
+  const { existingAnswer, pageActive, isEdit, ...rest} = props;
+  const {
+    displayMode = "plain",
+    identifierType = "uuid"
+  } = {...props.questionDefinition };
   const [ text, setText ] = useState("Copy to Clipboard")
 
-  const initialValue = existingAnswer?.[1]?.value || "";
-  const answer = initialValue === "" ? [] : [["value", initialValue]];
+  const [value, setValue] = useState(existingAnswer?.[1]?.value || "");
+  const answer = [["value", value]];
+
+  useEffect(() => {
+    if (isEdit && (!value || value.length == 0)) {
+      switch (identifierType) {
+        case "uuid":
+        default:
+          setValue(uuidv4());
+          break;
+      }
+    }
+  }, [identifierType, isEdit])
 
   const handleClick = () => {
-    navigator.clipboard.writeText(initialValue);
+    navigator.clipboard.writeText(value);
     setText("Copied");
   }
 
@@ -70,17 +81,17 @@ function IdentifierQuestion(props) {
       preventDefaultView
       {...props}
       >
-        { pageActive && <>
-          <FormattedText className={classes.identifierQuestionText}>{initialValue}</FormattedText>
-          { displayMode.endsWith("+copy") &&
-            <Tooltip title={text} onClose={handleClose} className={classes.identifierQuestionButton}>
-              <IconButton onClick={handleClick}>
-                <ContentCopyIcon />
-              </IconButton>
-            </Tooltip>
-          }
-          <div style={{clear: "both"}}></div>
-        </> }
+        { pageActive &&
+          <Tooltip title={text} onClose={handleClose}>
+            <Button
+              onClick={handleClick}
+              endIcon={ displayMode.endsWith("+copy") ? <ContentCopyIcon /> : null}
+              sx={{padding: 0, textTransform: "none"}}
+            >
+            { value}
+            </Button>
+          </Tooltip>
+        }
         { isEdit &&
         <Answer
           answers={answer}
@@ -94,24 +105,14 @@ function IdentifierQuestion(props) {
 }
 
 IdentifierQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     displayMode: PropTypes.oneOf(["plain", "plain+copy"]),
   }).isRequired
 };
 
-IdentifierQuestion.defaultProps = {
-  questionDefinition: PropTypes.shape({
-    displayMode: "plain"
-  })
-};
-
-const StyledIdentifierQuestion = withStyles(QuestionnaireStyle)(IdentifierQuestion)
-export default StyledIdentifierQuestion;
-
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (["identifier"].includes(questionDefinition.dataType)) {
-    return [StyledIdentifierQuestion, 50];
+    return [IdentifierQuestion, 50];
   }
 });

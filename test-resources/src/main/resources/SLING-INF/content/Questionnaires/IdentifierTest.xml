@@ -62,27 +62,79 @@
 		</property>
 	</node>
 	<node>
-		<name>q2</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
+		<name>section_1</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>UUID, Copyable</value>
+			<name>label</name>
+			<value>Recurrent Section</value>
 			<type>String</type>
 		</property>
 		<property>
-			<name>dataType</name>
-			<value>identifier</value>
-			<type>String</type>
+			<name>recurrent</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
-			<name>identifierType</name>
-			<value>uuid</value>
-			<type>String</type>
+			<name>initialNumberOfInstances</name>
+			<value>3</value>
+			<type>Long</type>
 		</property>
+		<node>
+			<name>q2</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>UUID, Copyable</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>identifier</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>identifierType</name>
+				<value>uuid</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>plain+copy</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>section_2</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
-			<name>displayMode</name>
-			<value>plain+copy</value>
+			<name>label</name>
+			<value>Regular Section</value>
 			<type>String</type>
 		</property>
+		<node>
+			<name>q3</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>UUID, Copyable</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>identifier</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>identifierType</name>
+				<value>uuid</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>plain+copy</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 </node>
