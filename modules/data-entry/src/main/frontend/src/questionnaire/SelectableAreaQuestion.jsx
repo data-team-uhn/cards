@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 
-import { Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { Alert, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import { useTheme, alpha } from '@mui/material/styles';
 import Tooltip from "@mui/material/Tooltip";
@@ -53,6 +53,13 @@ import FormattedText from "../components/FormattedText.jsx";
 function SelectableAreaQuestion(props) {
   let { classes, errorText, existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
   let { variant, maxAnswers } = {...props.questionDefinition, ...props};
+
+  if (!variant) {
+    return <Alert severity="warning">
+            The selectable areas cannot be displayed due to incorrect configuration: "variant" is not defined or invalid
+          </Alert>
+  }
+
   const [ map, setMap ] = useState(null);
   const [ initialized, setInitialized ] = useState(false);
 
