@@ -33,7 +33,7 @@ import ValueComponentManager from "./ValueComponentManager";
 let NumberInput = (props) => {
   let { objectKey, data, hint } = props;
   const type = props.value?.charAt(0).toUpperCase() + props.value?.slice(1).toLowerCase();
-  const defaultValue = type === "Long" ? (objectKey == "maxAnswers" ? 1 : 0) : '';
+  const defaultValue = type === "Long" ? (objectKey == "maxAnswers" ? 1 : objectKey == "minAnswers" ? 0 : '') : '';
   const minValue = type === "Long" ? 0 : '';
   const isMax = type === "Long" && objectKey.startsWith('max');
 

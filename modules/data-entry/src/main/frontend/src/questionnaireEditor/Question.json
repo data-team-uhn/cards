@@ -197,6 +197,7 @@
           "user": {
             "minAnswers": "long",
             "maxAnswers": "long",
+            "decimalScale": "long",
             "minValue": "double",
             "maxValue": "double",
             "disableMinMaxValueEnforcement" : "boolean",
@@ -261,6 +262,7 @@
           "user": {
             "minAnswers": "long",
             "maxAnswers": "long",
+            "decimalScale": "long",
             "minValue": "double",
             "maxValue": "double",
             "disableMinMaxValueEnforcement" : "boolean",
