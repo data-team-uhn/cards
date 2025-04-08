@@ -15,13 +15,14 @@
   under the License.
 */
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { Alert, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 
 import userboardStyle from '../userboardStyle.jsx';
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
 
 function CreateGroupDialog(props) {
   checkPropTypes(CreateGroupDialog, props);
@@ -29,6 +30,7 @@ function CreateGroupDialog(props) {
 
   const [ error, setError ] = useState("");
   const [ newName, setNewName ] = useState("");
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let handleCreateGroup = () => {
     setError("");
@@ -36,7 +38,7 @@ function CreateGroupDialog(props) {
     formData.append(':name', newName);
     let url = "/system/userManager/group.create.json";
 
-    fetch(url, {
+    fetchWithReLogin(globalLoginDisplay, url, {
         method: 'POST',
         credentials: 'include',
         body: formData

@@ -15,13 +15,14 @@
   under the License.
 */
 
-import React from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { Alert, Button, Dialog, DialogTitle, DialogContent, TextField, Tooltip } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
 
 import styles from "../../styling/styles";
 
@@ -139,6 +140,7 @@ function ChangeUserPasswordDialog(props) {
 
   const [ error, setError ] = useState("");
   const values = { newPwd: "", newPwdConfirm: "" };
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let handlePasswordChange = ({ newPwd, newPwdConfirm, oldPwd }) => {
     // Build formData object.
@@ -151,8 +153,7 @@ function ChangeUserPasswordDialog(props) {
     }
     let url = "/system/userManager/user/" + name + ".changePassword.html";
 
-    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
-    fetch(url, {
+    fetchWithReLogin(globalLoginDisplay, url, {
         method: 'POST',
         credentials: 'include',
         body: formData

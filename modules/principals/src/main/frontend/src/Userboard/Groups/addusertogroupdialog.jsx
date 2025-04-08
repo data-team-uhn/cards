@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui';
@@ -23,6 +23,7 @@ import userboardStyle from '../userboardStyle.jsx';
 import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 import MaterialReactTable from 'material-react-table';
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
 
 const GROUP_URL="/system/userManager/group/";
 
@@ -33,6 +34,7 @@ function AddUserToGroupDialog(props) {
   let [ freeUsers, setFreeUsers ] = useState([]);
 
   let tableRef = useRef();
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let handleAddUsers = () => {
     let formData = new FormData();
@@ -42,7 +44,7 @@ function AddUserToGroupDialog(props) {
       formData.append(':member', freeUsers[selectedUsers[i]].name);
     }
 
-    fetch(GROUP_URL + name + ".update.html",
+    fetchWithReLogin(globalLoginDisplay, GROUP_URL + name + ".update.html",
         {
             method: 'POST',
             credentials: 'include',

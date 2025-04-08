@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui'
@@ -29,6 +29,7 @@ import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import MaterialReactTable from 'material-react-table';
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
 
 const GROUP_URL = "/system/userManager/group/";
 
@@ -43,6 +44,7 @@ function GroupsManager(props) {
   let [ deployAddGroupUsers, setDeployAddGroupUsers ] = useState(false);
 
   let tableRef = useRef();
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let getGroupUsers = (groupName) => {
     //Get groups filtering all users by group name
@@ -66,7 +68,7 @@ function GroupsManager(props) {
       formData.append(':member@Delete', groupUsers[selectedUsers[i]].name);
     }
 
-    fetch(GROUP_URL + currentGroupName + ".update.html",
+    fetchWithReLogin(globalLoginDisplay, GROUP_URL + currentGroupName + ".update.html",
       {
         method: 'POST',
         credentials: 'include',

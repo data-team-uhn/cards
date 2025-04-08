@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../propTypes";
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography } from "@mui/material";
@@ -23,15 +23,17 @@ import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography }
 import { withStyles } from 'tss-react/mui';
 
 import userboardStyle from './userboardStyle.jsx';
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
 
 function DeletePrincipalDialog(props) {
   checkPropTypes(DeletePrincipalDialog, props);
   const { classes, name, type, url, reload, isOpen, handleClose } = props;
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let handleDelete = () => {
     let path = url + name + ".delete.html";
 
-    fetch(path, {
+    fetchWithReLogin(globalLoginDisplay, path, {
         method: 'POST',
         credentials: 'include'
     })

@@ -17,21 +17,24 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useContext } from 'react';
 
 import UsersManager from './Users/usersmanager.jsx';
 import GroupsManager from './Groups/groupsmanager.jsx';
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
 
 export default function PrincipalsContainer(props) {
   const [ users, setUsers ] = useState([]);
   const [ groups, setGroups ] = useState([]);
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
     handleLoadUsers();
   }, []);
 
   let handleLoadUsers = () => {
-    fetch("/home/users.json",
+    fetchWithReLogin(globalLoginDisplay, "/home/users.json",
       {
         method: 'GET',
         credentials: 'include'
@@ -46,7 +49,7 @@ export default function PrincipalsContainer(props) {
   }
 
   let handleLoadGroups = () => {
-    fetch("/home/groups.json",
+    fetchWithReLogin(globalLoginDisplay, "/home/groups.json",
       {
         method: 'GET',
         credentials: 'include'
