@@ -29,7 +29,7 @@ import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./SubjectIdentifier.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
 
 /***
  * Create a URL that checks for the existence of a subject

@@ -21,7 +21,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from 'react-router';
 
 import { loadExtensions } from "../uiextension/extensionManager";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
 
 import {
   CircularProgress,

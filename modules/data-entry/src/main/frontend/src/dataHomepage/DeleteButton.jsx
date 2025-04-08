@@ -25,7 +25,7 @@ import { withStyles } from 'tss-react/mui';
 import { Delete } from "@mui/icons-material";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
 import ErrorDialog from "../components/ErrorDialog.jsx";
 
 /**

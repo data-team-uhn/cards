@@ -33,7 +33,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 
 import fetchBioPortalApiKey from "./bioportalApiKey";
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialog.js";
 
 const vocabLinks = require('./vocabularyLinks.json');
 

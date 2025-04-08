@@ -26,7 +26,7 @@ import {
 import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"
 import ErrorDialog from "./components/ErrorDialog";
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialog.js";
 
 const vocabLinks = require('./vocabularyLinks.json');
 const Phase = require("./phaseCodes.json");

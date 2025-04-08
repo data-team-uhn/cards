@@ -42,8 +42,8 @@ export function fetchWithReLogin(displayLoginCtx, url, fetchArgs, discardOnFailu
     });
 }
 
-function DialogueLoginContainer(props) {
-  PropTypes.checkPropTypes(DialogueLoginContainer.propTypes, props, 'prop', 'DialogueLoginContainer');
+function DialogLoginContainer(props) {
+  PropTypes.checkPropTypes(DialogLoginContainer.propTypes, props, 'prop', 'DialogLoginContainer');
   const { isOpen, handleLogin } = props;
 
   return (
@@ -55,9 +55,9 @@ function DialogueLoginContainer(props) {
   );
 }
 
-DialogueLoginContainer.propTypes = {
+DialogLoginContainer.propTypes = {
   isOpen: PropTypes.bool,
   handleLogin: PropTypes.func.isRequired,
 };
 
-export default DialogueLoginContainer;
+export default DialogLoginContainer;

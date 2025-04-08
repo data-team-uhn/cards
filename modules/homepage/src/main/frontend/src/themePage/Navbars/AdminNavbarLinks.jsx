@@ -39,7 +39,7 @@ import SearchBar from "../../SearchBar.jsx"; // In the commons module
 import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
 import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
 import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassworddialogue.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
 
 function HeaderLinks (props) {
   checkPropTypes(HeaderLinks, props);

@@ -30,7 +30,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import QuestionnaireAutocomplete from "../questionnaire/QuestionnaireAutocomplete";
 import { findQuestionnaireEntries } from "../questionnaire/QuestionnaireUtilities";

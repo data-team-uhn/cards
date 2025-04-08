@@ -45,7 +45,7 @@ import { makeStyles } from 'tss-react/mui';
 import { useTheme } from '@mui/material/styles';
 
 import FormattedText from "../components/FormattedText.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
 import { loadExtensions } from "../uiextension/extensionManager";
 import { useReactToPrint } from 'react-to-print';
 

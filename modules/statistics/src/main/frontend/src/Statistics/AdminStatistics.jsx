@@ -34,7 +34,7 @@ import EditButton from "../dataHomepage/EditButton.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
 
 /**
  * Create the MaterialTable cell contents for a given node. This generates a link to the

@@ -30,7 +30,7 @@ import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
 import PageStart from "../PageStart";
 import IndexStyle from "./indexStyle.jsx";
-import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
+import DialogLoginContainer, { GlobalLoginContext } from "../login/loginDialog.js";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
@@ -119,7 +119,7 @@ function Main(props) {
             }
           }
         />
-        <DialogueLoginContainer
+        <DialogLoginContainer
           isOpen={loginDialogOpen}
           handleLogin={(success) => {
             if (success) {

@@ -27,7 +27,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import AdminScreen from "./AdminScreen.jsx";
 import FormattedText from "../components/FormattedText.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
 
 const useStyles = makeStyles()(theme => ({
   root: {
