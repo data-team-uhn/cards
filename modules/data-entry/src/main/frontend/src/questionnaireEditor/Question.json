@@ -197,13 +197,13 @@
           "user": {
             "minAnswers": "long",
             "maxAnswers": "long",
-            "decimalScale": "long",
             "minValue": "double",
             "maxValue": "double",
             "disableMinMaxValueEnforcement" : "boolean",
             "messageForValuesOutsideMinMax" : "markdown",
             "displayMode": {
               "input": {
+                "decimalScale": "long",
                 "isRange" : "boolean"
               },
               "list": {
@@ -214,6 +214,7 @@
                 }
               },
               "list+input" : {
+                "decimalScale": "long",
                 "compact" : "boolean",
                 "answerOptions" : {
                   "type": "numberOptions",
@@ -262,13 +263,13 @@
           "user": {
             "minAnswers": "long",
             "maxAnswers": "long",
-            "decimalScale": "long",
             "minValue": "double",
             "maxValue": "double",
             "disableMinMaxValueEnforcement" : "boolean",
             "messageForValuesOutsideMinMax" : "markdown",
             "displayMode": {
               "input": {
+                "decimalScale": "long",
                 "isRange" : "boolean"
               },
               "slider": {
