@@ -16,26 +16,18 @@
  */
 package io.uhndata.cards.forms.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
+import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.forms.api.FormUpdateUtils;
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
  * An {@link Editor} that fills out any identifier answers for a new form.
@@ -44,106 +36,65 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
  */
 public class IdentifierAnswerEditor extends DefaultEditor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IdentifierAnswerEditor.class);
-
     private final FormUtils formUtils;
-    private final FormUpdateUtils formUpdateUtils;
-    private final QuestionnaireUtils questionnaireUtils;
     private final NodeBuilder currentNodeBuilder;
-    private final Session userSession;
-    private final boolean isNew;
-    private final boolean isForm;
 
     /**
      * Simple constructor.
      * @param nodeBuilder the builder for the current node
-     * @param userSession the current user session
      * @param formUtils for working with form data
-     * @param formUpdateUtils to help generate missing answers
-     * @param questionnaireUtils for working with questionnaire data
-     * @param isNew if the node the editor is operating on is newly created
      */
-    public IdentifierAnswerEditor(final NodeBuilder nodeBuilder, final Session userSession,
-        final FormUtils formUtils, final FormUpdateUtils formUpdateUtils, final QuestionnaireUtils questionnaireUtils,
-        final boolean isNew)
+    public IdentifierAnswerEditor(final NodeBuilder nodeBuilder, final FormUtils formUtils)
     {
         this.currentNodeBuilder = nodeBuilder;
-        this.userSession = userSession;
         this.formUtils = formUtils;
-        this.formUpdateUtils = formUpdateUtils;
-        this.questionnaireUtils = questionnaireUtils;
-        this.isNew = isNew;
-        this.isForm = formUtils.isForm(this.currentNodeBuilder);
     }
 
     @Override
     public Editor childNodeAdded(final String name, final NodeState after)
     {
-        if (this.isForm) {
-            return null;
+        if (this.formUtils.isFormsHomepage(after) || this.formUtils.isForm(after)) {
+            return new IdentifierAnswerEditor(this.currentNodeBuilder.child(name), this.formUtils);
         } else {
-            return new IdentifierAnswerEditor(this.currentNodeBuilder.child(name), this.userSession,
-                this.formUtils, this.formUpdateUtils, this.questionnaireUtils, true);
+            return null;
         }
     }
 
     @Override
     public Editor childNodeChanged(final String name, final NodeState before, final NodeState after)
     {
-        if (this.isForm) {
-            return null;
-        } else {
-            return new IdentifierAnswerEditor(this.currentNodeBuilder.child(name), this.userSession,
-                this.formUtils, this.formUpdateUtils, this.questionnaireUtils, false);
-        }
+        return childNodeAdded(name, after);
     }
 
     @Override
     public void leave(final NodeState before, final NodeState after)
     {
-        // Only process new forms
-        if (this.isNew && this.formUtils.isForm(after)) {
-            try {
-                // Found a new form: check for any identifier questions
-                Map<String, String> identifierQuestions = new HashMap<>();
-                Node questionnaireNode = this.formUtils.getQuestionnaire(after);
-                getIdentifierQuestionPaths(identifierQuestions, questionnaireNode,
-                    questionnaireNode.getPath().length());
+        if (this.formUtils.isForm(after)) {
+            // Found a form: search for and handle any incomplete identifier answers
+            searchNode(this.currentNodeBuilder);
+        }
+    }
 
-                for (Entry<String, String> entry : identifierQuestions.entrySet()) {
-                    NodeBuilder answer = this.formUpdateUtils.getOrGeneratePath(this.currentNodeBuilder,
-                        entry.getKey(), questionnaireNode);
-                    if (answer != null) {
-                        answer.setProperty(FormUtils.VALUE_PROPERTY, entry.getValue());
-                    }
-                }
-            } catch (RepositoryException e) {
-                // Unable to determine questionnaire path so cannot determine relative path
+    private void searchNode(NodeBuilder nodeBuilder)
+    {
+        for (String name : nodeBuilder.getChildNodeNames()) {
+            NodeBuilder child = nodeBuilder.getChildNode(name);
+            if (this.formUtils.isAnswerSection(child)) {
+                searchNode(child);
+            } else if (this.formUtils.isAnswer(child)) {
+                handleAnswer(child);
             }
         }
     }
 
-    private void getIdentifierQuestionPaths(Map<String, String> identifierQuestions, Node node,
-        int questionnairePathLength)
+    private void handleAnswer(NodeBuilder nodeBuilder)
     {
-        try {
-            if (this.questionnaireUtils.isSection(node) || this.questionnaireUtils.isQuestionnaire(node)) {
-                NodeIterator childNodes = node.getNodes();
-                while (childNodes.hasNext()) {
-                    getIdentifierQuestionPaths(identifierQuestions, childNodes.nextNode(), questionnairePathLength);
-                }
-            } else if (this.questionnaireUtils.isQuestion(node)
-                && "identifier".equals(node.getProperty("dataType").getString()))
-            {
-                String answer = generateIdentifier(node);
-                String path = node.getPath().substring(questionnairePathLength + 1);
-                if (answer != null) {
-                    identifierQuestions.put(path, answer);
-                }
+        if ("cards:IdentifierAnswer".equals(nodeBuilder.getProperty("jcr:primaryType").getValue(Type.STRING))) {
+            String value = (String) this.formUtils.getValue(nodeBuilder);
+            if (value == null || value.length() == 0) {
+                nodeBuilder.setProperty(FormUtils.VALUE_PROPERTY,
+                    generateIdentifier(this.formUtils.getQuestion(nodeBuilder)));
             }
-        } catch (RepositoryException e) {
-            // Unable to handle this particular node:
-            // Catch so other nodes can be handled.
         }
     }
 

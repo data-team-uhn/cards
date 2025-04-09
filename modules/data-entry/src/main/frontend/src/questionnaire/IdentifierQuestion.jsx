@@ -30,8 +30,6 @@ import Question from "./Question";
 import AnswerComponentManager from "./AnswerComponentManager";
 
 // Component that renders an identifier question, with optional copy button.
-// Selected answers are placed in a series of <input type="hidden"> tags for
-// submission.
 //
 // Optional props:
 //  text: String containing text to show alongside the identifier
@@ -50,7 +48,8 @@ export default function IdentifierQuestion(props) {
     displayMode = "plain",
     identifierType = "uuid"
   } = {...props.questionDefinition };
-  const [ text, setText ] = useState("Copy to Clipboard")
+  const COPY_TO_CLIPBOARD = "Copy to clipboard";
+  const [ text, setText ] = useState(COPY_TO_CLIPBOARD);
 
   const [value, setValue] = useState(existingAnswer?.[1]?.value || "");
   const answer = [["value", value]];
@@ -72,7 +71,7 @@ export default function IdentifierQuestion(props) {
   }
 
   const handleClose = () => {
-    setText("Copy to Clipboard");
+    setText(COPY_TO_CLIPBOARD);
   }
 
   return (
