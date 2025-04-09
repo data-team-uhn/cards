@@ -86,6 +86,8 @@ def merge_webpack_files(root, dir_name, aggregated_frontend_dir, webpack_config_
             line = lines[i].replace('module_name + \'', '\'' + module_name)
             webpack_config_entries.append(line)
 
+    fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
+    if path.exists(fl):
         path_to_source = path.join(root, dir_name, 'src', 'main', 'frontend', 'src')
         path_to_base_source = path.join(aggregated_frontend_dir, 'src', 'main', 'frontend', 'src')
         shutil.copytree(path_to_source, path_to_base_source, dirs_exist_ok=True)
