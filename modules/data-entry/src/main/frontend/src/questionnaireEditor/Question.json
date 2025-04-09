@@ -203,6 +203,7 @@
             "messageForValuesOutsideMinMax" : "markdown",
             "displayMode": {
               "input": {
+                "decimalScale": "long",
                 "isRange" : "boolean"
               },
               "list": {
@@ -213,6 +214,7 @@
                 }
               },
               "list+input" : {
+                "decimalScale": "long",
                 "compact" : "boolean",
                 "answerOptions" : {
                   "type": "numberOptions",
@@ -267,6 +269,7 @@
             "messageForValuesOutsideMinMax" : "markdown",
             "displayMode": {
               "input": {
+                "decimalScale": "long",
                 "isRange" : "boolean"
               },
               "slider": {

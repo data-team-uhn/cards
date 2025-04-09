@@ -179,6 +179,9 @@
   // This will be displayed as an input end adornment.
   - unitOfMeasurement (string)
 
+  // For decimal and double answers, the number of digits allowed after the decimal point
+  - decimalScale (long)
+
   // For date answers, the format in which to display (and accept as input) the date.
   // This is a SimpleDateFormat compatible string.
   - dateFormat (string)
