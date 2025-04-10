@@ -47,12 +47,8 @@
     "formik": "2.2.9",
     "history": "4.10.1",
     "jss": "10.9.2",
-    "semantic-ui-css": "2.5.0",
-    "semantic-ui-react": "2.1.4",
-    "set-blocking": "2.0.0",
     "yup": "0.32.11",
     "raphael": "2.3.0",
-    "formik-material-fields": "0.0.6",
     "google-palette": "1.1.0",
     "recharts": "2.12.7"
   },
