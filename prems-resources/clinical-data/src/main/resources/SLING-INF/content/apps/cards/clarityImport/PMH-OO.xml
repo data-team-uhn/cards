@@ -63,7 +63,7 @@
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
-            <value>PAT_FIRST_NAME</value>
+            <value>FIRST_NAME</value>
             <type>String</type>
           </property>
           <property>
@@ -77,7 +77,7 @@
           <primaryNodeType>cards:ClarityQuestionMapping</primaryNodeType>
           <property>
             <name>column</name>
-            <value>PAT_LAST_NAME</value>
+            <value>LAST_NAME</value>
             <type>String</type>
           </property>
           <property>
