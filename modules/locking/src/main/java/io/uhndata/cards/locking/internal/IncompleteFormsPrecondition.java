@@ -30,14 +30,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.locking.api.LockError;
+import io.uhndata.cards.locking.api.LockException;
 import io.uhndata.cards.locking.api.LockWarning;
 import io.uhndata.cards.locking.spi.LockPrecondition;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
+/**
+ * A {@code LockPrecondition} that throws a warning if an incomplete form would be locked.
+ *
+ * @version $Id$
+ */
 @Component
 public class IncompleteFormsPrecondition implements LockPrecondition
 {
+    private static final String NAME = "IncompleteForms";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(IncompleteFormsPrecondition.class);
 
     @Reference
@@ -47,7 +54,7 @@ public class IncompleteFormsPrecondition implements LockPrecondition
     private SubjectUtils subjectUtils;
 
     @Override
-    public boolean canLock(Node node) throws LockWarning, LockError
+    public boolean canLock(Node node) throws LockWarning, LockException
     {
         try {
             if (this.subjectUtils.isSubject(node)) {
@@ -55,17 +62,19 @@ public class IncompleteFormsPrecondition implements LockPrecondition
             } else if (this.formUtils.isForm(node)) {
                 checkForm(node);
             }
+            // Other node types cannot contain incomplete forms
             return true;
         } catch (RepositoryException e) {
             LOGGER.error("Unexpected error checking for incomplete forms", e);
-            throw new LockError("Unable to check for incomplete forms");
+            throw new LockException("Unable to check for incomplete forms");
         }
     }
 
-    private void checkSubject(Node node)
-        throws RepositoryException, LockError, LockWarning
+    // Check this subject and any child subjects or forms
+    private void checkSubject(Node subject)
+        throws RepositoryException, LockWarning, LockException
     {
-        final NodeIterator childNodes = node.getNodes();
+        final NodeIterator childNodes = subject.getNodes();
         while (childNodes.hasNext()) {
             Node childNode = childNodes.nextNode();
             if (this.subjectUtils.isSubject(childNode)) {
@@ -73,7 +82,7 @@ public class IncompleteFormsPrecondition implements LockPrecondition
             }
         }
 
-        final PropertyIterator references = node.getReferences();
+        final PropertyIterator references = subject.getReferences();
         while (references.hasNext()) {
             Node referenceNode = references.nextProperty().getParent();
             if (this.formUtils.isForm(referenceNode)) {
@@ -82,16 +91,23 @@ public class IncompleteFormsPrecondition implements LockPrecondition
         }
     }
 
-    private void checkForm(Node node)
+    // Check to see if this form is incomplete
+    private void checkForm(Node form)
         throws RepositoryException, LockWarning
     {
         // Check if the form is incomplete
-        if (node.hasProperty("statusFlags")) {
-            for (Value value : node.getProperty("statusFlags").getValues()) {
+        if (form.hasProperty("statusFlags")) {
+            for (Value value : form.getProperty("statusFlags").getValues()) {
                 if ("INCOMPLETE".equals(value.getString())) {
                     throw new LockWarning("Incomplete form detected");
                 }
             }
         }
+    }
+
+    @Override
+    public String getName()
+    {
+        return NAME;
     }
 }

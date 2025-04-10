@@ -19,20 +19,20 @@
 package io.uhndata.cards.locking.api;
 
 /**
- * An exception that is thrown if a lock or unlock request cannot be performed due to a locking error.
+ * An exception that is thrown if a lock or unlock request cannot be performed due to an internal error.
  *
  * @version $Id$
  */
-public class LockError extends Exception
+public class LockException extends Exception
 {
     private static final long serialVersionUID = 0L;
 
-    public LockError()
+    public LockException()
     {
         super();
     }
 
-    public LockError(String message)
+    public LockException(String message)
     {
         super(message);
     }

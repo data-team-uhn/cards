@@ -24,6 +24,7 @@ import javax.jcr.Node;
  * Interface for locking and unlocking forms and subjects.
  *
  * @version $Id$
+ * @since 0.9.30
  */
 public interface LockManager
 {
@@ -33,8 +34,6 @@ public interface LockManager
     String LOCK_NODE_PATH = "lock";
     /** The primary node type for a lock information node. */
     String LOCK_NODE_TYPE = "cards:Lock";
-    /** The relative path that contains a node's status flags. */
-    String STATUS_PROPERTY = "statusFlags";
     /** The name of the property containing a reference to a lock node. */
     String LOCK_PROPERTY = "cards:Lock";
 
@@ -43,42 +42,38 @@ public interface LockManager
      *
      * @param node the form or subject node to check
      * @return {@code true} if the node is a locked form or subject
-     * @throws LockError if the locked status of the node could not be determined
+     * @throws LockException if the locked status of the node could not be determined
      */
-    boolean isLocked(Node node) throws LockError;
+    boolean isLocked(Node node) throws LockException;
 
     /**
      * Check if a subject satisfies all conditions to be locked.
-     * - Not already locked
-     * - Does not have any other conditions meaning that it cannot be locked
      *
      * @param node the subject node to check
      * @return {@code true} if the node can be locked
      * @throws LockWarning if the node cannot be locked with {@code tryLock}
-     * @throws LockError if it can not be determined if the node can be locked
+     * @throws LockException if it can not be determined if the node can be locked
      */
-    boolean canLock(Node node) throws LockWarning, LockError;
+    boolean canLock(Node node) throws LockWarning, LockException;
 
     /**
      * Try to lock a subject node.
-     * Will fail if:
-     * - The node is already locked
-     * - There are any other conditions preventing it from being locked
      *
      * @param node the subject node to try to lock
-     * @throws LockWarning if the node cannot be locked due to a precondition
-     * @throws LockError if the node cannot be locked for another reason
+     * @throws LockWarning if the node cannot be locked with {@code tryLock} but may be lockable with {@code forceLock}
+     * @throws LockError if the node cannot be locked
+     * @throws LockException if an internal error occurs
      */
-    void tryLock(Node node) throws LockWarning, LockError;
+    void tryLock(Node node) throws LockWarning, LockError, LockException;
 
     /**
-     * Try to lock a subject node.
-     * Will fail if the node is already locked
+     * Try to lock a subject node, ignoring all warning-only precondition.
      *
      * @param node the subject node to try to lock
-     * @throws LockError if the node could not be locked
+     * @throws LockError if the node can not be locked
+     * @throws LockExcpetion if an internal error occurs
      */
-    void forceLock(Node node) throws LockError;
+    void forceLock(Node node) throws LockError, LockException;
 
     /**
      * Check if a subject node can be unlocked.
@@ -88,9 +83,9 @@ public interface LockManager
      *
      * @param node the subject node to check
      * @return {@code true} if the node can be unlocked
-     * @throws LockError if it can not be determined if the node can be unlocked
+     * @throws LockException if it can not be determined if the node can be unlocked
      */
-    boolean canUnlock(Node node) throws LockError;
+    boolean canUnlock(Node node) throws LockException;
 
 
     /**
@@ -101,6 +96,7 @@ public interface LockManager
      *
      * @param node the subject node to unlock
      * @throws LockError if the node cannot be unlocked
+     * @throws LockExcepttion if an internal error occurs
      */
-    void unlock(Node node) throws LockError;
+    void unlock(Node node) throws LockError, LockException;
 }

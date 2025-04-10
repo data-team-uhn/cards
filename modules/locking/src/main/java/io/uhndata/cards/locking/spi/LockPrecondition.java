@@ -20,22 +20,33 @@ package io.uhndata.cards.locking.spi;
 
 import javax.jcr.Node;
 
-import io.uhndata.cards.locking.api.LockError;
+import io.uhndata.cards.locking.api.LockException;
 import io.uhndata.cards.locking.api.LockWarning;
 
+/**
+ * A restriction that may prevent a node from being locked based on the current node state.
+ * Can allow locking, prevent all locking or prevent non-forced locking.
+ *
+ * @version $Id$
+ * @since 0.9.30
+ */
 public interface LockPrecondition
 {
     /**
-     * A restriction that may prevent a node from being locked.
-     * Can either:
-     * - Prevent all locking
-     * - Prevent locking by non-forced locks
+     * Check if the node can be locked in it's current state.
      *
-     * @param node the subject node to be locked
+     * @param node the node to be locked
      * @return {@code true} if this precondition does not prevent locking.
-     *         {@code false} if this condition prevents all locking     *
+     *         {@code false} if this condition prevents all locking
      * @throws LockWarning if this precondition should prevent non-forced locking
-     * @throws LockError if this precondition could not be evaluated
+     * @throws LockException if this precondition could not be evaluated
      */
-    boolean canLock(Node node) throws LockWarning, LockError;
+    boolean canLock(Node node) throws LockWarning, LockException;
+
+    /**
+     * The name of this precondition.
+     *
+     * @return the name of this precondition
+     */
+    String getName();
 }
