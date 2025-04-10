@@ -19,7 +19,7 @@
 
 const RuntimeGlobals = require("webpack/lib/RuntimeGlobals");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WebpackAssetsManifest = require('webpack-assets-manifest');
+const { WebpackAssetsManifest } = require('webpack-assets-manifest');
 const TerserPlugin = require('terser-webpack-plugin');
 
 /*

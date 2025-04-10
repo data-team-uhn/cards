@@ -1633,8 +1633,8 @@
             </execution>
           </executions>
           <configuration>
-            <nodeVersion>v16.14.0</nodeVersion>
-            <yarnVersion>v1.22.17</yarnVersion>
+            <nodeVersion>v23.11.0</nodeVersion>
+            <yarnVersion>v1.22.22</yarnVersion>
             <workingDirectory>src/main/frontend</workingDirectory>
           </configuration>
         </plugin>
