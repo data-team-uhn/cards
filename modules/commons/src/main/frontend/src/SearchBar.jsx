@@ -22,7 +22,7 @@ import { withRouter } from "react-router-dom";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
 import { MenuList, Paper, Popper } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -346,4 +346,4 @@ SearchBar.defaultProps = {
   onSelect: defaultRedirect
 }
 
-export default withStyles(HeaderStyle)(withRouter(SearchBar));
+export default withStyles(withRouter(SearchBar), HeaderStyle);

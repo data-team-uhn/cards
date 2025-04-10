@@ -21,7 +21,7 @@ import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Button, Collapse, Grid, TextField, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import AddIcon from "@mui/icons-material/Add";
 import UnfoldMore from "@mui/icons-material/UnfoldMore";
 import UnfoldLess from "@mui/icons-material/UnfoldLess";
@@ -122,4 +122,4 @@ Note.defaultProps = {
   placeholder: "Please place any additional notes here.",
 };
 
-export default withStyles(QuestionnaireStyle)(Note);
+export default withStyles(Note, QuestionnaireStyle);

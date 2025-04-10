@@ -21,7 +21,7 @@ import React, { useState } from "react";
 
 import { TextField, Tooltip, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import Answer from "./Answer";
 import Question from "./Question";
@@ -203,7 +203,7 @@ function DateQuestionFull(props) {
 
 DateQuestionFull.propTypes = DateQuestionUtilities.PROP_TYPES;
 
-const StyledDateQuestionFull = withStyles(QuestionnaireStyle)(DateQuestionFull);
+const StyledDateQuestionFull = withStyles(DateQuestionFull, QuestionnaireStyle);
 export default StyledDateQuestionFull;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

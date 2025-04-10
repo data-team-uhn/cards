@@ -29,11 +29,11 @@ import {
   Typography
 } from '@mui/material';
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import Logo from '../components/Logo';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   paper: {
     display: 'flex',
     flexDirection: 'column',
@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
 
 function LandingPage(props) {
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const [ isOpen, setIsOpen ] = useState(true);
 

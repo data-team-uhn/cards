@@ -28,11 +28,11 @@ import {
   Typography
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   buttonProgress: {
     top: "50%",
     left: "50%",
@@ -71,7 +71,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function OwlInstaller(props) {
 
-  const classes = useStyles();
+  const { classes } = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let [ phase, setPhase ] = useState("install");

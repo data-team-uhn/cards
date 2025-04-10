@@ -12,7 +12,7 @@
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { AppBar, Box, Toolbar, IconButton } from "@mui/material";
 // @mui/icons-material
 import Menu from "@mui/icons-material/Menu";
@@ -56,4 +56,4 @@ Header.propTypes = {
   color: PropTypes.oneOf(["primary", "info", "success", "warning", "danger", "blue", "teal", "rose", "bronze", "red", "orange", "green", "purple"])
 };
 
-export default withStyles(headerStyle)(Header);
+export default withStyles(Header, headerStyle);

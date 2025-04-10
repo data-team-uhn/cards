@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { Tooltip, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Delete } from "@mui/icons-material";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -223,4 +223,4 @@ DeleteButton.defaultProps = {
   size: "large",
 }
 
-export default withStyles(QuestionnaireStyle)(DeleteButton);
+export default withStyles(DeleteButton, QuestionnaireStyle);

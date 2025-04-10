@@ -19,12 +19,11 @@
 import React from 'react';
 
 import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
-import { withStyles } from '@mui/styles';
 
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 import Logo from "../components/Logo";
-
+import { withStyles } from 'tss-react/mui';
 import styles from "../styling/styles";
 
 class MainLoginContainer extends React.Component {
@@ -86,6 +85,6 @@ class MainLoginContainer extends React.Component {
   }
 }
 
-const MainLoginComponent = withStyles(styles)(MainLoginContainer);
+const MainLoginComponent = withStyles(MainLoginContainer, styles);
 
 export default MainLoginComponent;

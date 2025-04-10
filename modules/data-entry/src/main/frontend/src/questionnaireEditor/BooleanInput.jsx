@@ -21,7 +21,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
@@ -55,7 +55,7 @@ BooleanInput.propTypes = {
   hint: PropTypes.string,
 };
 
-const StyledBooleanInput = withStyles(QuestionnaireStyle)(BooleanInput);
+const StyledBooleanInput = withStyles(BooleanInput, QuestionnaireStyle);
 export default StyledBooleanInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {

@@ -20,7 +20,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
@@ -82,7 +82,7 @@ AutocreatedQuestion.propTypes = {
   }).isRequired
 };
 
-const StyledAutocreatedQuestion = withStyles(QuestionnaireStyle)(AutocreatedQuestion);
+const StyledAutocreatedQuestion = withStyles(AutocreatedQuestion, QuestionnaireStyle);
 export default StyledAutocreatedQuestion;
 
 AnswerComponentManager.registerAnswerComponent((definition) => {

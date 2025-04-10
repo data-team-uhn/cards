@@ -19,7 +19,7 @@
 
 import React, { forwardRef } from "react";
 import { TextField } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -68,7 +68,7 @@ NumericFilter.propTypes = {
   })
 }
 
-const StyledNumericFilter = withStyles(QuestionnaireStyle)(NumericFilter)
+const StyledNumericFilter = withStyles(NumericFilter, QuestionnaireStyle)
 
 export default StyledNumericFilter;
 

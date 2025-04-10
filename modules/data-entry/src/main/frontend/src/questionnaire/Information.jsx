@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 
 import { Alert, Card, CardContent } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import FormattedText from "../components/FormattedText.jsx";
@@ -60,4 +60,4 @@ Information.defaultProps = {
   type: "plain",
 };
 
-export default withStyles(QuestionnaireStyle)(Information);
+export default withStyles(Information, QuestionnaireStyle);

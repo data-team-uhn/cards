@@ -21,7 +21,7 @@ import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import { TextField } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
@@ -69,7 +69,7 @@ NumberInput.propTypes = {
   hint: PropTypes.string,
 };
 
-const StyledNumberInput = withStyles(QuestionnaireStyle)(NumberInput);
+const StyledNumberInput = withStyles(NumberInput, QuestionnaireStyle);
 export default NumberInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {

@@ -19,7 +19,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import HeaderStyle from "../../headerStyle.jsx";
 import SearchBar from "../../SearchBar.jsx"; // In the commons module
 import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
@@ -42,4 +42,4 @@ HeaderSearchBar.propTypes = {
   doNotEscapeQuery: PropTypes.bool
 }
 
-export default withStyles(HeaderStyle)(HeaderSearchBar);
+export default withStyles(HeaderSearchBar, HeaderStyle);

@@ -19,7 +19,7 @@
 
 import React, { forwardRef, useState } from "react";
 import { Select, MenuItem } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -84,7 +84,7 @@ ListFilter.propTypes = {
   questionDefinition: PropTypes.object
 }
 
-const StyledListFilter = withStyles(QuestionnaireStyle)(ListFilter)
+const StyledListFilter = withStyles(ListFilter, QuestionnaireStyle)
 
 export default StyledListFilter;
 

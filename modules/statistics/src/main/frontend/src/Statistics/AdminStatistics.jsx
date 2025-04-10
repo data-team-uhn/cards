@@ -28,7 +28,7 @@ import {
   Grid,
   Typography
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import statisticsStyle from "./statisticsStyle.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
@@ -281,4 +281,4 @@ function StatisticDialog(props) {
   )
 }
 
-export default withStyles(statisticsStyle)(AdminStatistics);
+export default withStyles(AdminStatistics, statisticsStyle);

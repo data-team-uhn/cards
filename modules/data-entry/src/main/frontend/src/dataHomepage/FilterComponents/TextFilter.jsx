@@ -19,7 +19,7 @@
 
 import React, { forwardRef, useState } from "react";
 import { TextField } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -77,8 +77,8 @@ TextFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledTextFilter = withStyles(QuestionnaireStyle)(TextFilter)
-const StyledNotesContainFilter = withStyles(QuestionnaireStyleNotesContain)(TextFilter)
+const StyledTextFilter = withStyles(TextFilter, QuestionnaireStyle)
+const StyledNotesContainFilter = withStyles(TextFilter, QuestionnaireStyleNotesContain)
 export default { StyledTextFilter, StyledNotesContainFilter }
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {

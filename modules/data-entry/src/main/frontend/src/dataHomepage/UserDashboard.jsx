@@ -32,7 +32,7 @@ import {
   DialogContent,
   Grid,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 async function getDashboardExtensions() {
   return loadExtensions("DashboardViews")
@@ -177,4 +177,4 @@ function UserDashboard(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(UserDashboard);
+export default withStyles(UserDashboard, QuestionnaireStyle);

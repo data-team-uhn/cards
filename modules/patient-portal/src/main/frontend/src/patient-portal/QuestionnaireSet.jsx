@@ -33,7 +33,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import NextStepIcon from '@mui/icons-material/ChevronRight';
@@ -51,7 +51,7 @@ import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   mainContainer: {
     margin: theme.spacing(2),
     "& #cards-resource-footer > .MuiMobileStepper-root" : {
@@ -185,7 +185,7 @@ function QuestionnaireSet(props) {
   // Subtype for non-survey screens
   const [screenSubtype, setScreenSubtype ] = useState();
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -860,7 +860,7 @@ function QuestionnaireSet(props) {
 function QuestionnaireSetScreen (props) {
   let { children, ...rest } = props;
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
   <Paper elevation={0} className={classes.mainContainer}>

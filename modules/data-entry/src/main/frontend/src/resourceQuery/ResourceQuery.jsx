@@ -21,7 +21,7 @@ import React, { useRef, useState, useContext } from "react";
 import PropTypes from "prop-types";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@mui/material";
 
 import Search from "@mui/icons-material/Search";
@@ -544,4 +544,4 @@ ResourceQuery.defaultProps = {
   variant: 'default'
 };
 
-export default withStyles(QueryStyle)(ResourceQuery);
+export default withStyles(ResourceQuery, QueryStyle);

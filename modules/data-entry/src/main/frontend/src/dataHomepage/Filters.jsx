@@ -19,7 +19,7 @@
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
 import { Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
 import { DialogActions, DialogContent, Grid, Select, MenuItem, TextField } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -474,4 +474,4 @@ function Filters(props) {
   );
 }
 
-export default withStyles(LiveTableStyle)(Filters);
+export default withStyles(Filters, LiveTableStyle);

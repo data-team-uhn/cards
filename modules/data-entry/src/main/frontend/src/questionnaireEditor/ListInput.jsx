@@ -20,7 +20,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Chip, Input, MenuItem, Select, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
@@ -130,7 +130,7 @@ ListInput.propTypes = {
   hint: PropTypes.string,
 };
 
-var StyledListInput = withStyles(QuestionnaireStyle)(ListInput);
+var StyledListInput = withStyles(ListInput, QuestionnaireStyle);
 export default StyledListInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {

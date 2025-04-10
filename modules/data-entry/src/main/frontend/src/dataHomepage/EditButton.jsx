@@ -20,7 +20,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { IconButton, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from 'react-router-dom';
 
@@ -65,4 +65,4 @@ EditButton.defaultProps = {
   size: "large",
 }
 
-export default withStyles(QuestionnaireStyle)(EditButton);
+export default withStyles(EditButton, QuestionnaireStyle);

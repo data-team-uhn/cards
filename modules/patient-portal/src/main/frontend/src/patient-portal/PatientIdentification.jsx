@@ -32,7 +32,7 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import AppointmentIcon from '@mui/icons-material/Event';
 
 import Logo from "../components/Logo.jsx";
@@ -43,7 +43,7 @@ import ToUDialog from "./ToUDialog.jsx";
 import DropdownsDatePicker from "../components/DropdownsDatePicker.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   form : {
     maxWidth: "500px",
     margin: "auto",
@@ -134,7 +134,7 @@ function PatientIdentification(props) {
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const sanitizeHC = (str) => {
     return str?.toUpperCase().replaceAll(/[^A-Z0-9]*/g, "") || "";

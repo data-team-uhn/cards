@@ -18,7 +18,7 @@
 //
 
 import React, { forwardRef } from "react";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -68,7 +68,7 @@ ResourceFilter.propTypes = {
   })
 }
 
-const StyledResourceFilter = withStyles(QuestionnaireStyle)(ResourceFilter)
+const StyledResourceFilter = withStyles(ResourceFilter, QuestionnaireStyle)
 
 export default StyledResourceFilter;
 

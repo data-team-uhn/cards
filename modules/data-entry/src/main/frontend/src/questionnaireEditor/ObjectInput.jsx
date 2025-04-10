@@ -26,7 +26,7 @@ import {
   Typography
 } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
 import BooleanInput from "./BooleanInput";
@@ -92,7 +92,7 @@ ObjectInput.propTypes = {
   hints: PropTypes.object,
 };
 
-const StyledObjectInput = withStyles(QuestionnaireStyle)(ObjectInput);
+const StyledObjectInput = withStyles(ObjectInput, QuestionnaireStyle);
 export default StyledObjectInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {

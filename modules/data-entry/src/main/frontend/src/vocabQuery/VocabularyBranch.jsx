@@ -19,7 +19,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
 
 import Info from "@mui/icons-material/Info";
@@ -339,4 +339,4 @@ VocabularyBranch.defaultProps = {
   parentId: ""
 };
 
-export default withStyles(BrowseTheme)(VocabularyBranch);
+export default withStyles(VocabularyBranch, BrowseTheme);

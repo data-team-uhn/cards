@@ -24,7 +24,7 @@ import {
   MobileStepper
 } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
@@ -292,4 +292,4 @@ FormPagination.defaultProps = {
   lastSaveStatus: true
 };
 
-export default withStyles(QuestionnaireStyle)(FormPagination);
+export default withStyles(FormPagination, QuestionnaireStyle);

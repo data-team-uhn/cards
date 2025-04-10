@@ -25,7 +25,7 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
-import { makeStyles, withStyles } from '@mui/styles';
+import { makeStyles, withStyles } from 'tss-react/mui';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -50,7 +50,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 
 import DICOM_TAG_DICT from "../dicom/dicomDataDictionary";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   advancedHelp : {
     background: theme.palette.action.hover,
     "&.Mui-expanded" : {
@@ -279,7 +279,7 @@ function DicomQuestion(props) {
     }
   }
 
-  const styles = useStyles();
+  const { classes } = useStyles();
 
   // Render a customized FileQuestion
   return (
@@ -299,7 +299,7 @@ function DicomQuestion(props) {
             {errorDialogText}
           </Typography>
         </DialogContent>
-        <Accordion className={styles.advancedHelp} slotProps={{ heading: { component: 'h4' } }}>
+        <Accordion className={classes.advancedHelp} slotProps={{ heading: { component: 'h4' } }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography component="span" variant="subtitle2">Advanced help</Typography>
           </AccordionSummary>
@@ -330,13 +330,12 @@ function DicomQuestion(props) {
 }
 
 DicomQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
   }).isRequired,
 };
 
-const StyledDicomQuestion = withStyles(QuestionnaireStyle)(DicomQuestion)
+const StyledDicomQuestion = withStyles(DicomQuestion, QuestionnaireStyle)
 export default StyledDicomQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

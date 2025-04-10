@@ -17,7 +17,7 @@
 
 import React from "react";
 import { Button, Grid, Dialog, DialogTitle, DialogContent, TextField, Tooltip, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -116,7 +116,7 @@ class FormFields extends React.Component {
   }
 }
 
-const FormFieldsComponent = withStyles(styles)(FormFields);
+const FormFieldsComponent = withStyles(FormFields, styles);
 
 class ChangeUserPasswordDialogue extends React.Component {
     constructor(props) {
@@ -235,4 +235,4 @@ class ChangeUserPasswordDialogue extends React.Component {
     }
 }
 
-export default withStyles(styles)(ChangeUserPasswordDialogue);
+export default withStyles(ChangeUserPasswordDialogue, styles);

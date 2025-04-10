@@ -19,14 +19,14 @@
 import React from 'react';
 
 import { Fab, Grid, Paper, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import NavigationIcon from '@mui/icons-material/Navigation';
 
 import Logo from "./Logo";
 import FormattedText from "./FormattedText";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   paper: {
     display: 'flex',
     flexDirection: 'column',
@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ErrorPage(props) {
   const { errorCode, errorCodeColor, title, titleColor, message, messageColor, buttonLink, buttonLabel, ...rest } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
       <Paper className={classes.paper} elevation={0} {...rest}>

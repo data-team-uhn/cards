@@ -35,7 +35,7 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
@@ -57,7 +57,7 @@ let extractSortedOptions = (data) => {
                             .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
     answerOption: {
       border: "1px solid " + theme.palette.divider,
       background: theme.palette.background.paper,
@@ -112,7 +112,7 @@ const useStyles = makeStyles(theme => ({
 
 let AnswerOptions = (props) => {
   const { objectKey, value, data, path, saveButtonRef, hint } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options

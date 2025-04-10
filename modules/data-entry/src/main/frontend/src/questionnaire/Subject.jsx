@@ -45,7 +45,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import FileIcon from "@mui/icons-material/InsertDriveFile";
 import CollapsedIcon from "@mui/icons-material/ChevronRight";
 import ExpandedIcon from "@mui/icons-material/ExpandMore";
@@ -813,4 +813,4 @@ Subject.defaultProps = {
   pageSize: 10,
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(Subject));
+export default withStyles(withRouter(Subject), QuestionnaireStyle);

@@ -22,7 +22,7 @@ import {
   Toolbar,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { loadExtensions } from "../uiextension/extensionManager";
 
@@ -33,7 +33,7 @@ async function getFooterExtensions() {
     )
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   footer : {
     color: theme.palette.text.secondary,
     justifyContent: "center",
@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
 export default function Footer (props) {
   let [ footerExtensions, setFooterExtensions ] = useState([]);
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   useEffect(() => {
     getFooterExtensions()

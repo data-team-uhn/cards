@@ -34,7 +34,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Link } from 'react-router-dom';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -164,4 +164,4 @@ function FormView(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(FormView);
+export default withStyles(FormView, QuestionnaireStyle);

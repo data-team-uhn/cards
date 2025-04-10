@@ -18,7 +18,7 @@
 //
 
 import React from "react";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
@@ -88,7 +88,7 @@ VocabularyQuestion.propTypes = {
 };
 
 
-const StyledVocabularyQuestion = withStyles(QuestionnaireStyle)(VocabularyQuestion)
+const StyledVocabularyQuestion = withStyles(VocabularyQuestion, QuestionnaireStyle)
 export default StyledVocabularyQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

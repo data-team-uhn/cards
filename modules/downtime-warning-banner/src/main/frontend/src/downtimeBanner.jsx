@@ -18,7 +18,6 @@
 //
 
 import React, { useState, useEffect } from "react";
-
 import {
   AppBar,
   Avatar,
@@ -26,9 +25,7 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
-
-import { withStyles } from '@mui/styles';
-
+import { withStyles } from 'tss-react/mui';
 import BuildIcon from '@mui/icons-material/Build';
 
 const appbarStyle = theme => ({
@@ -47,7 +44,7 @@ const appbarStyle = theme => ({
 });
 
 export default function DowntimeWarning(props) {
-  const StyledAppBar = withStyles(appbarStyle)(AppBar);
+  const StyledAppBar = withStyles(AppBar, appbarStyle);
   const appName = document.querySelector('meta[name="title"]')?.content;
 
   // The the configuration values specified by the Administration

@@ -22,11 +22,11 @@ import {
   Typography
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { DateTime } from "luxon";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   container : {
     display: "flex",
     justifyContent: "space-between",
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 function PrintHeader (props) {
   const { resourceData } = props;
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const hasData = (
     resourceData?.last_name ||

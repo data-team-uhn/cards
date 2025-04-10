@@ -18,7 +18,7 @@
 //
 import React from 'react';
 import PropTypes from "prop-types";
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 import { deepPurple, orange } from '@mui/material/colors';
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
@@ -40,7 +40,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 import FormattedText from "../components/FormattedText";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   selectionList: {
     "& .MuiListItem-root": {
       paddingLeft: 0,
@@ -93,7 +93,7 @@ function QuestionnaireAutocomplete(props) {
     stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
   });
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   let unselectEntity = (index) => {
     onSelectionChanged(oldValues => {

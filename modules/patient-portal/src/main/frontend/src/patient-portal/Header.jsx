@@ -29,11 +29,11 @@ import {
   useScrollTrigger,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import Logo from "../components/Logo";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   appbar : {
     margin: theme.spacing(-1, -1, 4),
     padding: theme.spacing(0, 1),
@@ -110,7 +110,7 @@ const useStyles = makeStyles(theme => ({
 function Header (props) {
   const { title, greeting, withSignout, progress, subtitle, step } = props;
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const scrollTrigger = useScrollTrigger({
     target: window,

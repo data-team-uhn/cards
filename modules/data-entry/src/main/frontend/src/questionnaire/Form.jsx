@@ -33,7 +33,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DoneIcon from "@mui/icons-material/Done";
@@ -738,4 +738,4 @@ function Form (props) {
   );
 };
 
-export default withStyles(QuestionnaireStyle)(withRouter(Form));
+export default withStyles(withRouter(Form), QuestionnaireStyle);

@@ -16,11 +16,8 @@
 */
 
 import React from "react";
-
-import withStyles from '@mui/styles/withStyles';
-
+import { withStyles } from 'tss-react/mui';
 import { Avatar, Button, Card, CardContent, Grid, IconButton, Tooltip } from "@mui/material";
-
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
@@ -247,4 +244,4 @@ class GroupsManager extends React.Component {
   }
 }
 
-export default withStyles (userboardStyle, {withTheme: true})(GroupsManager);
+export default withStyles (GroupsManager, userboardStyle);

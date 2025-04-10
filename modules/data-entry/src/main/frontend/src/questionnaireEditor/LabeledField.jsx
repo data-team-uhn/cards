@@ -23,9 +23,9 @@ import {
   Grid,
   Typography
 } from "@mui/material";
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   value: {
     fontWeight: 300,
   },
@@ -38,7 +38,7 @@ export function camelCaseToWords(str) {
 let LabeledField = (props) => {
   let {name, condensed, children } = props;
 
-  let classes = useStyles();
+  let { classes } = useStyles();
 
   return (
     <Grid container alignItems='flex-start' spacing={2}>

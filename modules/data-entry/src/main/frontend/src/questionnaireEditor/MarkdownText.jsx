@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import MDEditor, { commands } from '@uiw/react-md-editor';
@@ -67,4 +67,4 @@ MarkdownText.defaultProps = {
   preview: "live"
 }
 
-export default withStyles(QuestionnaireStyle)(MarkdownText);
+export default withStyles(MarkdownText, QuestionnaireStyle);

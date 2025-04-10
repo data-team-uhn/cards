@@ -19,7 +19,7 @@ import React from "react";
 
 import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import userboardStyle from '../userboardStyle.jsx';
 
@@ -86,4 +86,4 @@ class CreateGroupDialogue extends React.Component {
     }
 }
 
-export default withStyles(userboardStyle)(CreateGroupDialogue);
+export default withStyles(CreateGroupDialogue, userboardStyle);

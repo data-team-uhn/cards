@@ -25,8 +25,8 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import withStyles from '@mui/styles/withStyles';
+import { makeStyles } from 'tss-react/mui';
+import { withStyles } from 'tss-react/mui';
 
 import { NumericFormat } from 'react-number-format';
 
@@ -54,7 +54,7 @@ const DATA_TO_VALUE_TYPE = {
   "decimal": "Decimal",
 };
 
-const useSliderStyles = makeStyles(theme => ({
+const useSliderStyles = makeStyles()(theme => ({
   verticalSliderContainer: {
     display: "flex",
     flexDirection: "column-reverse",
@@ -509,7 +509,7 @@ NumberQuestion.defaultProps = {
   errorText: "",
 };
 
-const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)
+const StyledNumberQuestion = withStyles(NumberQuestion, QuestionnaireStyle)
 export default StyledNumberQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

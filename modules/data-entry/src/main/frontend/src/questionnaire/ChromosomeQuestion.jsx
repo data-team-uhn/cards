@@ -19,7 +19,7 @@
 
 import React from "react";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
@@ -106,7 +106,7 @@ ChromosomeQuestion.propTypes = {
   chromosomeNumber: PropTypes.number
 };
 
-const StyledChromosomeQuestion = withStyles(QuestionnaireStyle)(ChromosomeQuestion)
+const StyledChromosomeQuestion = withStyles(ChromosomeQuestion, QuestionnaireStyle)
 export default StyledChromosomeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

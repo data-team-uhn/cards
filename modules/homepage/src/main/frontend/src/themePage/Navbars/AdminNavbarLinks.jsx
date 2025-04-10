@@ -27,7 +27,8 @@ import {
   Snackbar,
   Tooltip,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
+import { appTheme } from "../../themePalette.jsx";
 import CloseIcon from '@mui/icons-material/Close';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -39,7 +40,7 @@ import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassword
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
 
 function HeaderLinks (props) {
-  const { classes, closeSidebar, theme, color } = props;
+  const { classes, closeSidebar, color } = props;
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ passwordDialogOpen, setPasswordDialogOpen ] = useState(false);
   const [ pwdResetSuccessSnackbarOpen, setPwdResetSuccessSnackbarOpen ] = useState(false);
@@ -80,7 +81,7 @@ function HeaderLinks (props) {
   // When the screen is larger than "MdUp" size, we alter some menu items
   // so that they show up white in the sidebar (rather than black on the
   // main page)
-  const expand = window.innerWidth >= theme.breakpoints.values.md;
+  const expand = window.innerWidth >= appTheme.breakpoints.values.md;
 
   // Helper component to automatically enclose any children in a ListItemIcon if necessary
   let ExpandableIcon = (props) => {
@@ -199,4 +200,4 @@ HeaderLinks.propTypes = {
   closeSidebar: PropTypes.func
 }
 
-export default withStyles(sidebarStyle, {withTheme: true})(HeaderLinks);
+export default withStyles(HeaderLinks, sidebarStyle);

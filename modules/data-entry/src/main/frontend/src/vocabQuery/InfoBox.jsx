@@ -20,7 +20,7 @@ import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
 
 import BrowseTheme from "./browseStyle.jsx";
@@ -158,4 +158,4 @@ InfoBox.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(BrowseTheme)(InfoBox);
+export default withStyles(InfoBox, BrowseTheme);

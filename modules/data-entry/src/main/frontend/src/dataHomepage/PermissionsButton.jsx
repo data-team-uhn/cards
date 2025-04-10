@@ -19,7 +19,7 @@
 import React from "react";
 
 import { IconButton, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Lock } from "@mui/icons-material"
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -41,4 +41,4 @@ function PermissionsButton(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(PermissionsButton);
+export default withStyles(PermissionsButton, QuestionnaireStyle);

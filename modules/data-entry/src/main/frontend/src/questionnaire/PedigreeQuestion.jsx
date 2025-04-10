@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
@@ -180,7 +180,7 @@ PedigreeQuestion.propTypes = {
   existingAnswer: PropTypes.array,
 }
 
-const StyledPedigreeQuestion = withStyles(QuestionnaireStyle)(PedigreeQuestion)
+const StyledPedigreeQuestion = withStyles(PedigreeQuestion, QuestionnaireStyle)
 export default StyledPedigreeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
