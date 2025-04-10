@@ -222,7 +222,7 @@ let Questionnaire = (props) => {
       ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
         <Grid container direction="column" spacing={4} wrap="nowrap">
           { questionnaireHeader }
-          <Grid item>
+          <Grid>
             { !isEdit ?
               <QuestionnairePreview
                 data={data}
@@ -341,7 +341,7 @@ let QuestionnaireItemSet = (props) => {
     { Object.entries(data)
       .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
       .map(([key, value]) => (
-        EntryType => <Grid item key={key}>
+        EntryType => <Grid key={key}>
                        <EntryType
                          data={value}
                          model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
@@ -370,7 +370,7 @@ let QuestionnaireItemSet = (props) => {
         { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
         { listEntries(generalModels, generalEntryTypes) }
         </>
-        : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
+        : <Grid><Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
   );
@@ -687,7 +687,7 @@ let QuestionnaireEntry = (props) => {
           onActionDone={handleDataChange}
           models={childModels}
         >
-          <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
+          <Grid className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
         </QuestionnaireItemSet>
         : <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
       }

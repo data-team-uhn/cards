@@ -44,7 +44,7 @@ export default function _____DEFAULT_FUNCTION_NAME_____(props) {
       {
         extensionPointComponents.map((ThisComp, index) => {
           return (
-            <Grid item key={index}>
+            <Grid key={index}>
               <ThisComp />
             </Grid>
           );

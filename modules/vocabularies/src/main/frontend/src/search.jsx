@@ -127,7 +127,7 @@ export default function Search(props) {
 
   return(
     <React.Fragment>
-      <Grid item>
+      <Grid>
         <TextField
           fullWidth
           helperText={(error ? "Request Failed" : "Search BioPortal for vocabularies mentioning a specific concept, e.g. “Microcephaly”")}

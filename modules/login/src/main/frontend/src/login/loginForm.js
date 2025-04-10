@@ -219,7 +219,7 @@ class SignIn extends React.Component {
                   </FormControl>
                   <Grid container justifyContent="center" alignItems="center" spacing={2} className={classes.actions}>
                     {  (!this.state.singleStepEntry) &&
-                      <Grid item>
+                      <Grid>
                         <Button
                           fullWidth
                           variant="outlined"
@@ -237,7 +237,7 @@ class SignIn extends React.Component {
                         </Button>
                       </Grid>
                     }
-                    <Grid item>
+                    <Grid>
                       <Button
                         type="submit"
                         fullWidth

@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
     textAlign: "center",
-    "& .MuiGrid-item" : {
+    "& .MuiGrid-root" : {
       textAlign: "center",
     },
   },
@@ -94,8 +94,8 @@ function Unsubscribe (props) {
           alignItems="center"
           alignContent="center"
         >
-          <Logo component={Grid} item xs={12} />
-          <Grid item>
+          <Logo component={Grid} size={12} />
+          <Grid>
             { error && <Alert severity="error">
               <AlertTitle>An error occurred</AlertTitle>
                {error}

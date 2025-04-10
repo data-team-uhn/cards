@@ -121,11 +121,11 @@ class FormFields extends React.Component {
         />
         <Grid container justifyContent="flex-end" alignItems="center" className={classes.actions}>
           { !loginOnSuccess &&
-            <Grid item>
+            <Grid>
               <Button variant="outlined" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>{closeButtonText}</Button>
             </Grid>
           }
-          <Grid item>
+          <Grid>
           {!isValid ?
             // Render tooltip and button
             <Tooltip title="You must fill in all fields.">

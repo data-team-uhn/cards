@@ -76,7 +76,7 @@ function Note (props) {
       onEntered = {() => inputRef?.current?.focus()}
       >
       <Grid container spacing={2}>
-        <Grid item xs={fullSize ? 12 : 6}>
+        <Grid size={fullSize ? 12 : 6}>
           <TextField
             value = {note}
             onChange = {(event) => setNote(event?.target?.value)}
@@ -92,7 +92,7 @@ function Note (props) {
             {...rest}
             />
           </Grid>
-          <Grid item xs={fullSize ? 12 : 6}>
+          <Grid size={fullSize ? 12 : 6}>
             {children}
           </Grid>
         </Grid>

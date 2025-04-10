@@ -52,7 +52,7 @@ function AdminDashboard(props) {
 
   if (loading) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -62,9 +62,9 @@ function AdminDashboard(props) {
         { adminRoutes.map((route) => {
             const EntryIcon = route["cards:icon"];
             return (
-              <Grid item
+              <Grid
                 key={route["cards:targetURL"]}
-                xs={12} md={6} xl={4}
+                size={{xs:12, md:6, xl:4}}
               >
                 <ListItemButton
                   onClick={() => history.push(route["cards:targetURL"])}

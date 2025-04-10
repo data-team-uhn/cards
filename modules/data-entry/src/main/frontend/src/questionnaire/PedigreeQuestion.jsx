@@ -127,14 +127,14 @@ function PedigreeQuestion(props) {
           <div className={classes.answerField}>
           { pedigreeData.image ?
             <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
-              <Grid item>
+              <Grid>
                 <Tooltip title="Edit Pedigree">
                   <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}} underline="hover">
                     {image_div}
                   </Link>
                 </Tooltip>
               </Grid>
-              <Grid item>
+              <Grid>
                 <DeleteButton
                   entryName="pedigree"
                   entryType="Pedigree"

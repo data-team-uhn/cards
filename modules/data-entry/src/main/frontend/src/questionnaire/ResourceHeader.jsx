@@ -110,9 +110,9 @@ function ResourceHeader (props) {
 
   return (
     <>
-    <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
+    <Grid size={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
       <Grid container justifyContent="space-between" alignItems="center" wrap="nowrap">
-        <Grid item>
+        <Grid>
           <Breadcrumbs separator={separator}>
             {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
             <Collapse in={fullBreadcrumbTrigger}>
@@ -120,20 +120,20 @@ function ResourceHeader (props) {
             </Collapse>
           </Breadcrumbs>
         </Grid>
-        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid} item>
+        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid}>
           { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }
         </Collapse>
       </Grid>
     </Grid>
-    <Grid item xs={12} className={classes.resourceTitle}>
+    <Grid size={12} className={classes.resourceTitle}>
        <Grid container justifyContent="space-between" alignItems="start" spacing={1}>
-          <Grid item>
+          <Grid>
             <Grid container spacing={1} alignItems="center">
-              <Grid item><Typography component="h2" variant="h4">{title}</Typography></Grid>
-              {tags?.map((t, i) => <Grid item key={`resource-tag-${i}`}>{t}</Grid>)}
+              <Grid><Typography component="h2" variant="h4">{title}</Typography></Grid>
+              {tags?.map((t, i) => <Grid key={`resource-tag-${i}`}>{t}</Grid>)}
             </Grid>
           </Grid>
-          {action && !fullBreadcrumbTrigger && <Grid item>{action}</Grid>}
+          {action && !fullBreadcrumbTrigger && <Grid>{action}</Grid>}
        </Grid>
        {children}
     </Grid>

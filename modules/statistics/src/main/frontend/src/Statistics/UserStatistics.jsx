@@ -67,7 +67,7 @@ function UserStatistics(props) {
   if (error) {
     return (
       <Grid container justifyContent="center" alignItems="center" className={classes.statsContainer}>
-        <Grid item>
+        <Grid>
           <Typography color="textSecondary">{error}</Typography>
         </Grid>
       </Grid>
