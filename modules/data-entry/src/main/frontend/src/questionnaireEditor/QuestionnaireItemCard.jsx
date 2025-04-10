@@ -73,7 +73,7 @@ const useStyles = makeStyles(theme => ({
     "& .cards-questionnaire-entry-props": {
       display: "none",
     },
-    "& .MuiCardContent-root > .MuiGrid-container > .MuiGrid-item:last-child": {
+    "& .MuiCardContent-root > .MuiGrid-container > .MuiGrid-root:last-child": {
       marginBottom: theme.spacing(2),
     },
     "& .MuiCardHeader-content .MuiIconButton-root": {
@@ -89,10 +89,10 @@ const useStyles = makeStyles(theme => ({
     "&.MuiCardContent-root > .cards-questionnaire-entry-props": {
       paddingLeft: theme.spacing(5.5),
     },
-    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-item": {
+    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root": {
       paddingLeft: theme.spacing(5.5),
     },
-    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-item.cards-questionnaire-entry-props": {
+    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root.cards-questionnaire-entry-props": {
       paddingLeft: theme.spacing(7.5),
     },
   }

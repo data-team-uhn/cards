@@ -64,7 +64,7 @@ class CreateGroupDialogue extends React.Component {
                 <DialogTitle>Create New Group</DialogTitle>
                 <DialogContent>
                     <Grid container>
-                        <Grid item>
+                        <Grid>
                             <TextField
                                 variant="standard"
                                 id="name"

@@ -94,8 +94,8 @@ export default function DowntimeWarning(props) {
       <Toolbar>
       {error && <Typography color='error'>{errorText}</Typography>}
       <Grid container spacing={1} alignItems="center" wrap="nowrap">
-        <Grid item><Avatar><BuildIcon/></Avatar></Grid>
-        <Grid item>
+        <Grid><Avatar><BuildIcon/></Avatar></Grid>
+        <Grid>
         <Typography variant="body2">
           {appName} will be down for maintenance from <b>{fromDate}</b> to <b>{toDate}</b>. We appologize for the inconvenience this may cause.
         </Typography>

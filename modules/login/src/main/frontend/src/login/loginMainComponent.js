@@ -52,12 +52,12 @@ class MainLoginContainer extends React.Component {
     return (
         <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
           <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
-            <Logo maxWidth="200px" component={Grid} item />
-            <Grid item>
+            <Logo maxWidth="200px" component={Grid}/>
+            <Grid>
             { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
             </Grid>
             { this.state.isLongForm && (!this.state.signInShown || this.state.signUpEnabled) &&
-              <Grid item>
+              <Grid>
                 <Button
                   variant="outlined"
                   fullWidth
@@ -69,7 +69,7 @@ class MainLoginContainer extends React.Component {
               </Grid>
             }
             { this.state.isLongForm &&
-            <Grid item>
+            <Grid>
               <Breadcrumbs separator="by" className={classes.appInfo}>
                 <Typography variant="subtitle2">{this.state.title}</Typography>
                 <Tooltip title="DATA Team @ UHN">

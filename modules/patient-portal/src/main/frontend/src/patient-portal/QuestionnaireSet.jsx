@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     margin: "auto",
     maxWidth: "780px",
     width: "100%",
-    "& > .MuiGrid-item" : {
+    "& > .mainItem" : {
       paddingLeft: 0,
     },
     "& h4, h6, .MuiTypography-paragraph" : {
@@ -715,7 +715,7 @@ function QuestionnaireSet(props) {
 
   let reviewScreen = !enableReviewScreen ? [
     <Grid alignItems="center" justifyContent="center">
-      <Grid item key="review-loading"><CircularProgress/></Grid>
+      <Grid key="review-loading"><CircularProgress/></Grid>
     </Grid>
   ] : [
     <Typography variant="h4" key="review-title">Review and Submit</Typography>,
@@ -724,14 +724,14 @@ function QuestionnaireSet(props) {
     <Divider/>,
     <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
-      <Grid item key={q+"Review"}>
+      <Grid key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
         <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
           <Grid container direction="column" spacing={2}>
-            <Grid item>
+            <Grid>
               <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
             </Grid>
-            <Grid item alignSelf="center">
+            <Grid alignSelf="center">
               <Button
                 variant="outlined"
                 onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
@@ -774,7 +774,7 @@ function QuestionnaireSet(props) {
       displayText("interpretationInstructions", Typography, {color: "textSecondary", key: "summary-interpretation-instructions"}),
       <Grid container direction="column" spacing={3} key="summary-list">
       { (questionnaireIds || []).map((q, i) => (
-        <Grid item key={q+"Summary"}>
+        <Grid key={q+"Summary"}>
         {
           questionnaires?.[q]?.hasInterpretation ? <Form
               id={subjectData?.[q]?.['@name']}
@@ -813,10 +813,10 @@ function QuestionnaireSet(props) {
         <>
         { canSubmitIncomplete ?
           <Grid container spacing={2}>
-            <Grid item>
+            <Grid>
               <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
             </Grid>
-            <Grid item>
+            <Grid>
               <Button variant="outlined" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
             </Grid>
           </Grid>
@@ -865,7 +865,7 @@ function QuestionnaireSetScreen (props) {
   return (
   <Paper elevation={0} className={classes.mainContainer}>
     <Grid container direction="column" spacing={4} {...rest}>
-      {Array.from(children || []).filter(c => c).map((c, i) => <Grid item key={i+"MainItem"} xs={12}>{c}</Grid>)}
+      {Array.from(children || []).filter(c => c).map((c, i) => <Grid key={i+"MainItem"} className={classes.mainItem} size={12}>{c}</Grid>)}
     </Grid>
   </Paper>
   );

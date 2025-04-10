@@ -85,7 +85,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
 
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
-    <Grid item key={key} className={gridClasses.join(" ")} {...gridProps}>
+    <Grid key={key} className={gridClasses.join(" ")} {...gridProps}>
       <QuestionDisplay
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
@@ -155,7 +155,7 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit, grid
   );
   return (
     isVisible && pageActive && infoDefinition.text &&
-    <Grid item key={key} {...gridProps}>
+    <Grid key={key} {...gridProps}>
       <Information infoDefinition={infoDefinition} />
     </Grid>
     || null
@@ -197,7 +197,7 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
   }
 
   return (
-    <Grid item key={key} className={gridClasses.join(" ")} {...gridProps}>
+    <Grid key={key} className={gridClasses.join(" ")} {...gridProps}>
       <QuestionMatrix
         sectionDefinition={sectionDefinition}
         existingSectionAnswer={existingSectionAnswer}

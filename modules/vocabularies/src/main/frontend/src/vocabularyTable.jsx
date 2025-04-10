@@ -60,7 +60,7 @@ export default function VocabularyTable(props) {
       }
 
       {(vocabList.length > 0) &&
-      <Grid item>
+      <Grid>
         <MaterialReactTable
             enableColumnActions={false}
             enableSorting={false}

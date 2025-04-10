@@ -225,7 +225,7 @@ function Statistic(props) {
     return null;
   };
 
-  return <Grid item xs={12} lg={6}>
+  return <Grid size={{xs:12, lg:6}}>
     <Card className={classes.statsCard}>
       <CardHeader
         disableTypography
@@ -235,7 +235,7 @@ function Statistic(props) {
       <CardContent>
       { allFields.length == 0 ?
         <Grid container justifyContent="center" alignItems="center" style={{height: widgetHeight}}>
-          <Grid item>
+          <Grid>
             <Typography color="textSecondary" variant="caption">No data available for this statistic</Typography>
           </Grid>
         </Grid>

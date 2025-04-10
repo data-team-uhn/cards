@@ -74,7 +74,7 @@ function Subjects(props) {
 
   return (
     <Grid container className={classes.dashboardContainer}>
-      <Grid item className={classes.dashboardEntry} xs={12}>
+      <Grid className={classes.dashboardEntry} size={12}>
         <SubjectView
           expanded
           columns={columns}

@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
       background: theme.palette.background.paper,
       borderRadius: theme.spacing(.5, 3, 3, .5),
       margin: theme.spacing(1, 0),
-      "& > .MuiGrid-item" : {
+      "& > .MuiGrid-root" : {
         display: "flex",
       },
       "& .MuiFormControl-root" : {
@@ -282,8 +282,8 @@ let AnswerOptions = (props) => {
        className={classes.answerOption}
        onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
        >
-      <Grid item xs={1}></Grid>
-      <Grid item xs={8}>
+      <Grid size={1}></Grid>
+      <Grid size={8}>
       <Tooltip title="Selected by default">
         <Checkbox
           color="secondary"
@@ -308,7 +308,7 @@ let AnswerOptions = (props) => {
         />
       </Tooltip>
       </Grid>
-      <Grid item xs={3} className={classes.answerOptionActions}>
+      <Grid size={3} className={classes.answerOptionActions}>
       {generateDescriptionIcon(option.data, index, true)}
       <Tooltip title={option.switchTooltip} className={classes.answerOptionSwitch}>
         <FormControlLabel

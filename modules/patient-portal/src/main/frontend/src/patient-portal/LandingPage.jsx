@@ -86,13 +86,13 @@ function LandingPage(props) {
     >
           <DialogContent className={classes.paper}>
             <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
-              <Logo component={Grid} item className={classes.logo} maxWidth="200px" />
-              <Grid item>
+              <Logo component={Grid} className={classes.logo} maxWidth="200px" />
+              <Grid>
                 <Typography variant="h6">I am a...</Typography>
               </Grid>
-              <Grid item>
+              <Grid>
                 <Grid container spacing={3} direction="column" justifyContent="center" alignItems="center">
-                  <Grid item>
+                  <Grid>
                     <Button
                       fullWidth
                       variant="contained"
@@ -104,7 +104,7 @@ function LandingPage(props) {
                       <Typography variant="h6">Patient</Typography>
                     </Button>
                   </Grid>
-                  <Grid item>
+                  <Grid>
                     <Button
                       fullWidth
                       variant="contained"
@@ -121,7 +121,7 @@ function LandingPage(props) {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item>
+              <Grid>
                 <Breadcrumbs separator="by" className={classes.appInfo}>
                   <Typography variant="subtitle2">{appInfo}</Typography>
                   <Tooltip title="DATA Team @ UHN">

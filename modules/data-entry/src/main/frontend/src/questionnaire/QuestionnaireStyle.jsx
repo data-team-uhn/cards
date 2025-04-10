@@ -289,7 +289,7 @@ const questionnaireStyle = theme => ({
         flexFlow: "row",
         flexWrap: "wrap",
       },
-      "& > .MuiGrid-item > .MuiCard-root" : {
+      "& > .MuiGrid-root > .MuiCard-root" : {
         [theme.breakpoints.up('md')]: {
           height: "100%",
         },
@@ -406,13 +406,13 @@ const questionnaireStyle = theme => ({
       "& > .MuiCollapse-wrapper" : {
         border: "1px solid " + theme.palette.primary.light,
       },
-      "& .MuiGrid-item:not(:first-child)": {
+      "& .MuiGrid-root:not(:first-child)": {
         paddingTop: 0,
       },
-      "& .MuiGrid-item:not(:last-child)": {
+      "& .MuiGrid-root:not(:last-child)": {
         paddingBottom: 0,
       },
-      "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
+      "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
         background: grey[100],
       },
       "& .MuiCard-root" : {
@@ -428,13 +428,13 @@ const questionnaireStyle = theme => ({
       "& > .MuiCollapse-wrapper" : {
         border: "1px solid " + theme.palette.primary.light,
       },
-      "& .MuiGrid-item:not(:first-child)": {
+      "& .MuiGrid-root:not(:first-child)": {
         paddingTop: 0,
       },
-      "& .MuiGrid-item:not(:last-child)": {
+      "& .MuiGrid-root:not(:last-child)": {
         paddingBottom: 0,
       },
-      "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
+      "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
         background: grey[100],
       },
       "& .MuiCard-root" : {
@@ -450,7 +450,7 @@ const questionnaireStyle = theme => ({
     },
     // When the user is deleting a section, highlight it with a border
     highlightedSection: {
-        "& .MuiGrid-item > .MuiCard-root, .MuiGrid-item > .MuiTypography-h5": {
+        "& .MuiGrid-root > .MuiCard-root, .MuiGrid-root > .MuiTypography-h5": {
           borderColor: theme.palette.warning.main,
           boxShadow: `1px 1px 2px ${theme.palette.warning.main}`,
         },

@@ -121,7 +121,7 @@ function Subject(props) {
       <NewFormDialog currentSubject={currentSubject} withButton buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") } />
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader id={currentSubjectId} key={"SubjectHeader"} pageTitle={pageTitle} classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
-        <Grid item>
+        <Grid>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
           }}
@@ -141,7 +141,7 @@ function Subject(props) {
               pageSize={pageSize}
               subject={currentSubject}
             />
-          : <Grid item>
+          : <Grid>
             <SubjectTimeline
               classes={classes}
               subject={currentSubject}
@@ -200,14 +200,14 @@ function SubjectContainer(props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!relatedSubjects) {
     return (
-      <Grid container justifyContent="center" className={classes.circularProgressContainer}><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center" className={classes.circularProgressContainer}><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
   if (error) {
     return (
       <Grid container justifyContent="center">
-        <Grid item>
+        <Grid>
           <Typography variant="h2" color="error">
             Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
           </Typography>
@@ -275,13 +275,13 @@ function SubjectHeader(props) {
 
   if (!subject) {
     return (
-      <Grid item><CircularProgress/></Grid>
+      <Grid><CircularProgress/></Grid>
     );
   }
 
   if (error) {
     return (
-      <Grid item>
+      <Grid>
         <Typography variant="h2" color="error">
           Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
         </Typography>
@@ -395,7 +395,7 @@ function SubjectMemberInternal (props) {
   // If the subjectGroups data has not yet been fetched, return an in-progress symbol
   if (!subjectGroups) {
     return (
-      <Grid container justifyContent="center" className={classes.circularProgressContainer}><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center" className={classes.circularProgressContainer}><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -403,7 +403,7 @@ function SubjectMemberInternal (props) {
   if (error) {
     return (
       <Grid container justifyContent="center">
-        <Grid item>
+        <Grid>
           <Typography variant="h2" color="error">
             Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
           </Typography>
@@ -457,30 +457,30 @@ function SubjectMemberInternal (props) {
     <>
     {
       level > 0 &&
-        <Grid item className={classes.childSubjectHeader}>
+        <Grid className={classes.childSubjectHeader}>
           <Grid container spacing={1} justifyContent="flex-start">
-            <Grid item xs={false}>{expandAction}</Grid>
-            <Grid item xs={false}>{avatar}</Grid>
-            <Grid item xs={true}>
+            <Grid size="auto">{expandAction}</Grid>
+            <Grid size="auto">{avatar}</Grid>
+            <Grid size="auto">
               <Typography variant="overline">
                  {label} <Link to={"/content.html" + path} underline="hover">{identifier}</Link>
               </Typography>
             </Grid>
-            <Grid item xs="3.5">{tags}</Grid>
-            <Grid item className={classes.childSubjectActions}>{action}</Grid>
+            <Grid xs="3.5">{tags}</Grid>
+            <Grid className={classes.childSubjectActions}>{action}</Grid>
           </Grid>
         </Grid>
       }
       { /* If we finished all fetching and have no data or child subjects to display for this subject, inform the user */ }
       { expanded && childSubjects && childSubjects.length == 0 && subjectGroups && Object.keys(subjectGroups).length == 0 &&
-        <Grid item>
+        <Grid>
           <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
         </Grid>
       }
       { expanded && subjectGroups && <>
         {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => (
-            <Grid item key={questionnaireTitle}>
+            <Grid key={questionnaireTitle}>
               <MaterialReactTable
                 data={subjectGroups[questionnaireTitle]}
                 enableTopToolbar={false}
@@ -552,10 +552,10 @@ function SubjectMemberInternal (props) {
                     },
                     Cell: ({ row }) => (
                                    <Grid container spacing={1} justifyContent="flex-start" wrap="nowrap">
-                                     <Grid item xs={false}>
+                                     <Grid size="auto">
                                        <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
                                      </Grid>
-                                     <Grid item xs={false}>
+                                     <Grid size="auto">
                                        <Link to={"/content.html" + row.original["@path"]} underline="hover">
                                          {questionnaireTitle}
                                        </Link>
@@ -612,7 +612,7 @@ function SubjectMemberInternal (props) {
       }
       { /* Render child subjects at the bottom when the current subject is expanded */ }
       { expanded && childSubjects?.length ?
-        (<Grid item xs={12} className={classes.subjectNestedContainer}>
+        (<Grid size={12} className={classes.subjectNestedContainer}>
           {childSubjects.map( (subject, i) => {
             // Render the container again for each child subject
             return(
@@ -663,7 +663,7 @@ function FormData(props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
     );
   }
 

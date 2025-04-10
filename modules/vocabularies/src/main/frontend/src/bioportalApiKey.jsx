@@ -123,7 +123,7 @@ export function BioPortalApiKey(props) {
 
   return(
     <React.Fragment>
-      <Grid item>
+      <Grid>
         <Typography variant="h6">
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
           { bioPortalApiKey &&
@@ -137,21 +137,21 @@ export function BioPortalApiKey(props) {
       </Grid>
 
       { !bioPortalApiKey && <>
-         <Grid item className={classes.noKeyInfo}>
+         <Grid className={classes.noKeyInfo}>
            <Typography>Your system does not have a <a href="https://bioportal.bioontology.org/help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
            <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
          </Grid>
-        <Grid item>
+        <Grid>
           <Grid container
             alignItems="center"
             justifyContent="space-between"
             alignContent="space-between"
             spacing={2}
           >
-            <Grid item xs={10}>
+            <Grid size={10}>
               { getBioportalKeyInfo(!bioPortalApiKey) }
             </Grid>
-            <Grid item xs={2}>
+            <Grid size={2}>
               <Button variant="contained" onClick={() => {addNewKey()}}>Submit</Button>
             </Grid>
           </Grid>
