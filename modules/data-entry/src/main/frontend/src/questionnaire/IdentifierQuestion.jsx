@@ -52,7 +52,7 @@ export default function IdentifierQuestion(props) {
   const [ text, setText ] = useState(COPY_TO_CLIPBOARD);
 
   const [value, setValue] = useState(existingAnswer?.[1]?.value || "");
-  const answer = [["value", value]];
+  const answer = [[value, value]];
 
   useEffect(() => {
     if (isEdit && (!value || value.length == 0)) {
