@@ -29,18 +29,12 @@ import Answer from "./Answer";
 import Question from "./Question";
 import AnswerComponentManager from "./AnswerComponentManager";
 
-// Component that renders an identifier question, with optional copy button.
+// Component that renders an identifier question as a plain, read-only string copyable on click, with an optional copy button.
 //
-// Optional props:
-//  text: String containing text to show alongside the identifier
-//  displayMode: "plain", "plain+copy", or undefined denoting how the identifier is presented
-//             to the user. "+copy" adds a button the user can press to copy the value to clipboard.
-//             Defaults to "plain".
+// The expected displayMode is either "plain" or "plain+copy", the latter adding a visible button the user can press to copy the value to clipboard.
 //
 // Sample usage:
-// <IdentifierQuestion
-//    text="Visit Identifier"
-//    />
+// <IdentifierQuestion questionDefinition={{ text: "Identifier", displayMode: "plain+copy", ... }} />
 
 export default function IdentifierQuestion(props) {
   const { existingAnswer, pageActive, isEdit, ...rest} = props;
