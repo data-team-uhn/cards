@@ -48,7 +48,7 @@
 
 //-----------------------------------------------------------------------------
 // Simple nodetype for holding information about a locked node.
-[cards:Lock] > sling:Folder, mix:referenceable
+[cards:Lock] > cards:Item, mix:referenceable
   // No attributes
 
   // Properties:
@@ -61,3 +61,6 @@
 
   // The author who locked the parent node
   - author (STRING) mandatory
+
+  // The reason that the node was locked
+  - reason (STRING)

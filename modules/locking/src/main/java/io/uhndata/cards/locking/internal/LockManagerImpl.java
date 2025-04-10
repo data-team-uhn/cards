@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.locking.api.LockError;
+import io.uhndata.cards.locking.api.LockException;
 import io.uhndata.cards.locking.api.LockManager;
 import io.uhndata.cards.locking.api.LockWarning;
 import io.uhndata.cards.locking.spi.LockPrecondition;
@@ -57,6 +58,7 @@ public class LockManagerImpl implements LockManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(LockManagerImpl.class);
     private static final String SUBJECT_NODE_TYPE = "cards:Subject";
+    private static final String STATUS_PROPERTY = "statusFlags";
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -72,39 +74,34 @@ public class LockManagerImpl implements LockManager
     /** The nodes that should be checked in. */
     private final ThreadLocal<Set<String>> nodesToCheckin = ThreadLocal.withInitial(() -> new TreeSet<>());
 
-    private ResourceResolver serviceResolver;
+    private ThreadLocal<ResourceResolver> serviceResolver = new ThreadLocal<>();
 
     @Override
-    public boolean isLocked(Node node) throws LockError
+    public boolean isLocked(Node node) throws LockException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
             return isServiceNodeLocked(getServiceNode(node));
         } catch (RepositoryException e) {
-            LOGGER.error("Unexpected error checking if node is locked", e);
-            throw new LockError("Could not determine lock status");
+            LOGGER.error("Cannot determine if node is locked", e);
+            throw new LockException("Could not determine lock status");
         } finally {
             closeResolverIfNeeded(mustCloseResolver);
         }
     }
 
-    private boolean isServiceNodeLocked(Node serviceNode) throws LockError
+    private boolean isServiceNodeLocked(Node serviceNode) throws RepositoryException
     {
-        try {
-            return serviceNode.hasProperty(LOCK_PROPERTY) && serviceNode.getProperty(LOCK_PROPERTY).getLength() > 0;
-        } catch (RepositoryException e) {
-            LOGGER.error("Unexpected error checking if node is locked", e);
-            throw new LockError("Could not determine lock status");
-        }
+        return serviceNode.hasProperty(LOCK_PROPERTY) && serviceNode.getProperty(LOCK_PROPERTY).getLength() > 0;
     }
 
 
     @Override
-    public boolean canLock(Node node) throws LockWarning, LockError
+    public boolean canLock(Node node) throws LockWarning, LockException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
-            String reason = canLockWithReason(node, true);
+            String reason = canLockWithReason(node);
             return reason == null;
         } finally {
             closeResolverIfNeeded(mustCloseResolver);
@@ -112,11 +109,11 @@ public class LockManagerImpl implements LockManager
     }
 
     @Override
-    public void tryLock(Node node) throws LockWarning, LockError
+    public void tryLock(Node node) throws LockWarning, LockError, LockException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
-            String reason = canLockWithReason(node, true);
+            String reason = canLockWithReason(node);
             if (reason != null) {
                 throw new LockError(reason);
             } else {
@@ -128,13 +125,13 @@ public class LockManagerImpl implements LockManager
     }
 
     @Override
-    public void forceLock(Node node) throws LockError
+    public void forceLock(Node node) throws LockError, LockException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
             String reason = null;
             try {
-                reason = canLockWithReason(node, false);
+                reason = canLockWithReason(node);
             } catch (LockWarning e) {
                 // Warning thrown: ignore and force lock anyways
             }
@@ -150,7 +147,7 @@ public class LockManagerImpl implements LockManager
 
 
     @Override
-    public boolean canUnlock(Node node) throws LockError
+    public boolean canUnlock(Node node) throws LockException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
@@ -163,7 +160,7 @@ public class LockManagerImpl implements LockManager
 
 
     @Override
-    public void unlock(Node node) throws LockError
+    public void unlock(Node node) throws LockError, LockException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
@@ -178,19 +175,19 @@ public class LockManagerImpl implements LockManager
     }
 
     private boolean initializeServiceResolver()
-        throws LockError
+        throws LockException
     {
-        if (this.serviceResolver == null) {
+        if (this.serviceResolver.get() == null) {
             if (this.resolverFactory == null) {
                 LOGGER.error("Resolver factory is null");
-                throw new LockError("Unable to initialize lock manager");
+                throw new LockException("Unable to initialize lock manager");
             }
             try {
-                this.serviceResolver = this.resolverFactory.getServiceResourceResolver(
-                    Map.of(ResourceResolverFactory.SUBSERVICE, "locking"));
+                this.serviceResolver.set(this.resolverFactory.getServiceResourceResolver(
+                    Map.of(ResourceResolverFactory.SUBSERVICE, "locking")));
             } catch (LoginException e) {
-                LOGGER.error("Could not get service resolver", e);
-                throw new LockError("Unable to initialize lock manager");
+                LOGGER.error("Could not log in to locking service user", e);
+                throw new LockException("Unable to sign into locking service user");
             }
             return true;
         } else {
@@ -201,12 +198,12 @@ public class LockManagerImpl implements LockManager
     private void closeResolverIfNeeded(boolean mustCloseResolver)
     {
         if (mustCloseResolver) {
-            this.serviceResolver.close();
-            this.serviceResolver = null;
+            this.serviceResolver.get().close();
+            this.serviceResolver.set(null);
         }
     }
 
-    private String canLockWithReason(Node node, boolean checkPreconditions) throws LockWarning, LockError
+    private String canLockWithReason(Node node) throws LockWarning, LockException
     {
         try {
             Node serviceNode = getServiceNode(node);
@@ -220,22 +217,33 @@ public class LockManagerImpl implements LockManager
                 return "Only subjects can be locked";
             }
 
-            if (checkPreconditions) {
-                for (LockPrecondition precondition : this.lockPreconditions) {
+            LockWarning warning = null;
+            for (LockPrecondition precondition : this.lockPreconditions) {
+                try {
                     if (!precondition.canLock(serviceNode)) {
-                        return "Precondition failed";
+                        // If there's a hard failure that will prevent all locking, exit immediately
+                        return precondition.getName() + " precondition failed";
                     }
+                } catch (LockWarning w) {
+                    // Temporarily catch any warnings to avoid any hard failures being hidden
+                    warning = w;
                 }
             }
 
+            // No hard failures. If there were any warnings, allow them to be sent onwards
+            if (warning != null) {
+                throw warning;
+            }
+
+            // No hard failures, no warnings
             return null;
         } catch (RepositoryException e) {
-            LOGGER.error("Unexpected error determining if node can be locked", e);
-            throw new LockError();
+            LOGGER.error("Cannot determine if node can be locked", e);
+            throw new LockException();
         }
     }
 
-    private String canUnlockWithReason(Node node) throws LockError
+    private String canUnlockWithReason(Node node) throws LockException
     {
         try {
             Node serviceNode = getServiceNode(node);
@@ -256,28 +264,28 @@ public class LockManagerImpl implements LockManager
 
             return null;
         } catch (RepositoryException e) {
-            LOGGER.error("Unexpected error determining if node can be unlocked", e);
-            throw new LockError();
+            LOGGER.error("Cannot determine if node can be unlocked", e);
+            throw new LockException();
         }
     }
 
     private void lockNode(Node node)
-        throws LockError
+        throws LockError, LockException
     {
         try {
-            Session serviceSession = this.serviceResolver.adaptTo(Session.class);
+            Session serviceSession = this.serviceResolver.get().adaptTo(Session.class);
             VersionManager versionManager = serviceSession.getWorkspace().getVersionManager();
             Node serviceNode = getServiceNode(node, serviceSession);
             Node lockNode = createLockNode();
             applyLockNode(serviceNode, lockNode, versionManager);
         } catch (RepositoryException e) {
             LOGGER.error("Unable to retrieve service user", e);
-            throw new LockError("Unable to retrieve service user");
+            throw new LockException("Unable to retrieve service user");
         }
     }
 
     private Node createLockNode()
-        throws LockError
+        throws LockException
     {
         try {
             Session session = getSession(this.rrp);
@@ -289,18 +297,18 @@ public class LockManagerImpl implements LockManager
             session.save();
             return lockNode;
         } catch (RepositoryException e) {
-            throw new LockError("Unable to create lock");
+            throw new LockException("Unable to create lock");
         }
     }
 
     private void applyLockNode(Node serviceNode, Node lockNode, VersionManager versionManager)
-        throws LockError
+        throws LockError, LockException
     {
         applyLockNode(serviceNode, versionManager, lockNode, "root");
     }
 
     private void applyLockNode(Node serviceNode, VersionManager versionManager, Node lockNode, String root)
-        throws LockError
+        throws LockError, LockException
     {
 
         try {
@@ -309,6 +317,8 @@ public class LockManagerImpl implements LockManager
                 && serviceNode.getProperty(LOCK_PROPERTY).getString().length() > 0) {
                 // This node is already locked: Error out if needed, otherwise exit quietly
                 if (root.length() > 0) {
+                    // TODO: Add better message
+                    // Could not lock as <> has already been locked by <> on <>
                     throw new LockError("Node is already locked");
                 } else {
                     return;
@@ -327,7 +337,7 @@ public class LockManagerImpl implements LockManager
             }
         } catch (RepositoryException e) {
             LOGGER.error("Unable to apply lock", e);
-            throw new LockError("Unable to apply lock");
+            throw new LockException("Unable to apply lock");
         } finally {
             try {
                 checkinIfNeeded(versionManager);
@@ -340,10 +350,10 @@ public class LockManagerImpl implements LockManager
     }
 
     private void unlockNode(Node node)
-        throws LockError
+        throws LockError, LockException
     {
         try {
-            Session serviceSession = this.serviceResolver.adaptTo(Session.class);
+            Session serviceSession = this.serviceResolver.get().adaptTo(Session.class);
             VersionManager versionManager = serviceSession.getWorkspace().getVersionManager();
             Node serviceNode = getServiceNode(node, serviceSession);
 
@@ -351,38 +361,39 @@ public class LockManagerImpl implements LockManager
             removeLockNode(serviceNode, versionManager);
         } catch (RepositoryException e) {
             LOGGER.error("Unable to retrieve service user", e);
-            throw new LockError("Unable to retrieve service user");
+            throw new LockException("Unable to retrieve service user");
         }
     }
 
     private void deleteLockNode(Node node)
-        throws LockError
+        throws LockException
     {
         try {
-            if (!node.hasProperty(LOCK_PROPERTY)) {
-                throw new LockError("Node is not locked");
+            // If the node is locked, unlock it.
+            // Otherwise, silently do nothing.
+            if (node.hasProperty(LOCK_PROPERTY)) {
+                Node lockNode = node.getProperty(LOCK_PROPERTY).getNode();
+                lockNode.remove();
+                node.getSession().save();
             }
-            Node lockNode = node.getProperty(LOCK_PROPERTY).getNode();
-            lockNode.remove();
-            node.getSession().save();
         } catch (RepositoryException e) {
-            throw new LockError("Unable to delete lock");
+            throw new LockException("Unable to delete lock");
         }
     }
 
     private void removeLockNode(Node serviceNode, VersionManager versionManager)
-        throws LockError
+        throws LockError, LockException
     {
         removeLockNode(serviceNode, versionManager, null, null);
     }
+
     private void removeLockNode(Node serviceNode, VersionManager versionManager, Node unused, String parentLockString)
-        throws LockError
+        throws LockError, LockException
     {
         try {
             checkoutIfNeeded(serviceNode, versionManager);
-            String lockString = serviceNode.getProperty(LOCK_PROPERTY).getString();
+            String lockString = serviceNode.getProperty(LockManager.LOCK_PROPERTY).getString();
             if (parentLockString == null || parentLockString.equals(lockString)) {
-                LOGGER.error("parentLock: {}, lockString: {}", parentLockString, lockString);
                 serviceNode.getProperty(LOCK_PROPERTY).remove();
 
                 final Set<String> statusFlags = getStatusFlags(serviceNode);
@@ -399,24 +410,25 @@ public class LockManagerImpl implements LockManager
             }
         } catch (RepositoryException e) {
             LOGGER.error("Unable to remove lock", e);
-            throw new LockError("Unable to remove lock");
+            throw new LockException("Unable to remove lock");
         } finally {
             try {
                 checkinIfNeeded(versionManager);
             } catch (RepositoryException e) {
-                // Should not happen
+                // Should not happen.
                 LOGGER.error("Cannot checkin");
+                throw new LockException("Unable to check in removed lock");
             }
         }
     }
 
-    private void handleChildNodes(NodeLockHandler handler,
+    private void handleChildNodes(NodeLockAction handler,
         VersionManager versionManager,
         Node serviceNode,
         Node lockNode,
         String str)
 
-        throws RepositoryException, LockError
+        throws RepositoryException, LockError, LockException
     {
         if (!serviceNode.isNodeType(SUBJECT_NODE_TYPE)) {
             // Only check for subject children
@@ -428,7 +440,7 @@ public class LockManagerImpl implements LockManager
         while (childNodes.hasNext()) {
             Node childNode = childNodes.nextNode();
             if (childNode.isNodeType(SUBJECT_NODE_TYPE)) {
-                handler.handle(childNode, versionManager, lockNode, str);
+                handler.perform(childNode, versionManager, lockNode, str);
             }
         }
 
@@ -437,13 +449,13 @@ public class LockManagerImpl implements LockManager
         while (references.hasNext()) {
             Node referenceNode = references.nextProperty().getParent();
             if (referenceNode.isNodeType("cards:Form")) {
-                handler.handle(referenceNode, versionManager, lockNode, str);
+                handler.perform(referenceNode, versionManager, lockNode, str);
             }
         }
     }
 
     private boolean isParentLocked(Node serviceNode)
-        throws RepositoryException, LockError
+        throws RepositoryException
     {
         Node parent = serviceNode.getParent();
         return parent.isNodeType(SUBJECT_NODE_TYPE) && isServiceNodeLocked(parent);
@@ -502,7 +514,7 @@ public class LockManagerImpl implements LockManager
     private Node getServiceNode(Node node)
         throws RepositoryException
     {
-        return getServiceNode(node, this.serviceResolver.adaptTo(Session.class));
+        return getServiceNode(node, this.serviceResolver.get().adaptTo(Session.class));
     }
 
     private Node getServiceNode(Node node, Session serviceSession)
@@ -511,8 +523,9 @@ public class LockManagerImpl implements LockManager
         return serviceSession.getNode(node.getPath());
     }
 
-    private interface NodeLockHandler
+    private interface NodeLockAction
     {
-        void handle(Node node, VersionManager versionManager, Node secondNode, String str) throws LockError;
+        void perform(Node node, VersionManager versionManager, Node secondNode, String str)
+            throws LockError, LockException;
     }
 }
