@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import withStyles from '@mui/styles/withStyles';
 import { loadExtensions } from "../../uiextension/extensionManager";
-import { Drawer, List, ListItem, ListItemText } from "@mui/material";
+import { Drawer, List, ListItemButton, ListItemText } from "@mui/material";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
@@ -67,7 +67,7 @@ const Sidebar = ({ ...props }) => {
         activeClassName="active"
         key={key}
       >
-        <ListItem button className={classes.itemLink + listBackground}>
+        <ListItemButton className={classes.itemLink + listBackground}>
           <EntryIcon
               className={classNames(classes.itemIcon, listItemFont)}
             />
@@ -76,7 +76,7 @@ const Sidebar = ({ ...props }) => {
             className={classNames(classes.itemText, listItemFont)}
             disableTypography={true}
           />
-        </ListItem>
+        </ListItemButton>
       </NavLink>
     );
   }
@@ -86,11 +86,11 @@ const Sidebar = ({ ...props }) => {
       {loading ?
         /* Add some skeleton UI of varying heights */
         [...Array(5)].map((_, index) => (
-        <ListItem button className={classNames(classes.itemLink, classes.skeletonItem)} key={index}>
+        <ListItemButton className={classNames(classes.itemLink, classes.skeletonItem)} key={index}>
           <div className={classNames(classes.itemIcon, classes.skeletonButton)}></div>
           {/* The primary text here is a random amount of spaces between 1 and 30*/}
           <ListItemText primary="&nbsp;" className={classNames(classes.itemText, classes.skeletonText)}/>
-        </ListItem>
+        </ListItemButton>
         ))
       : entries.filter(entry => !_isAdministrativeButton(entry["cards:defaultOrder"]))
           .map((entry, key) => {
