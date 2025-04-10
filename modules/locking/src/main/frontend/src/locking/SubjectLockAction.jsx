@@ -59,7 +59,7 @@ function SubjectLockAction(props) {
   const METHOD_LOCK = "LOCK";
   const METHOD_UNLOCK = "UNLOCK";
   const ACTION_CONTINUE = "CONTINUE";
-  const ACTION_LOCK = "SIGN OFF";
+  const ACTION_LOCK = "LOCK";
   const ACTION_UNLOCK = "UNLOCK";
 
   const [ open, setOpen ] = useState(false);
@@ -71,6 +71,7 @@ function SubjectLockAction(props) {
   const [ requestInProgress, setRequestInProgress ] = useState(false);
   const [ isLocked, setLocked ] = useState(false);
   const [ actionContent, setActionContent ] = useState(null);
+  const [ actionLabel, setActionLabel ] = useState("");
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -270,6 +271,23 @@ function SubjectLockAction(props) {
 
   let buttonText = isLocked ? `Unlock ${entryType}` : "Sign off";
 
+  useEffect(() => {
+    switch (nextAction) {
+      case ACTION_CONTINUE:
+        setActionLabel("Continue");
+        break;
+      case ACTION_LOCK:
+        setActionLabel("Sign Off");
+        break;
+      case ACTION_UNLOCK:
+        setActionLabel("Unlock");
+        break;
+      default:
+        setActionLabel("");
+        break;
+    }
+  }, [nextAction])
+
   return( <>
     <ErrorDialog open={errorMessage} onClose={closeError}>
       <Typography>{errorMessage}</Typography>
@@ -292,7 +310,7 @@ function SubjectLockAction(props) {
             onClick={handleActionClicked}
             disabled={requestInProgress}
           >
-            {nextAction}
+            {actionLabel}
           </Button>
       </DialogActions>
     </Dialog>

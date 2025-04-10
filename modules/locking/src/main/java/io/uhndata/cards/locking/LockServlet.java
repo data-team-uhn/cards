@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.locking.api.LockError;
+import io.uhndata.cards.locking.api.LockException;
 import io.uhndata.cards.locking.api.LockManager;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -117,7 +118,11 @@ public class LockServlet extends SlingAllMethodsServlet
             }
             writeSuccess(response);
         } catch (LockError e) {
-            writeError(this.response, 409, e.getMessage());
+            writeError(response, SlingHttpServletResponse.SC_CONFLICT,
+                String.format("Cannot {} node: {}", isLockRequest ? "lock" : "unlock", e.getMessage()));
+        } catch (LockException e) {
+            writeError(response, SlingHttpServletResponse.SC_CONFLICT,
+                String.format("Unexpected error {} requested node", isLockRequest ? "locking" : "unlocking"));
         } catch (RepositoryException e) {
             LOGGER.error("Unable to write response", e);
         } finally {
