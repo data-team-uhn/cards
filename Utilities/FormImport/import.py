@@ -53,6 +53,7 @@ class RowTypes(enum.Enum):
     ADDRESS = 17
     PHONE = 18
     SELECTABLE_AREAS = 19
+    IDENTIFIER = 20
 
 # Basic logging support
 class Logging:
@@ -323,7 +324,8 @@ RowTypesMappings = [
     RowTypeMap(RowTypes.SECTION_REPEATED, "repeated section", True, "", repeated_section_handler),
     RowTypeMap(RowTypes.ADDRESS, "address"),
     RowTypeMap(RowTypes.PHONE, "phone"),
-    RowTypeMap(RowTypes.SELECTABLE_AREAS, "selectablearea", True, "selectableArea")
+    RowTypeMap(RowTypes.SELECTABLE_AREAS, "selectablearea", True, "selectableArea"),
+    RowTypeMap(RowTypes.IDENTIFIER, "identifier"),
 ]
 DefaultRowTypeMap = RowTypeMap(RowTypes.DEFAULT, "", True, "text")
 
@@ -595,6 +597,7 @@ DefaultHeaders["TYPE_PROPERTY"] = HeaderColumn("type", "type")
 DefaultHeaders["FORM_MODE_PROPERTY"] = HeaderColumn("formMode", "formMode")
 DefaultHeaders["VALIDATION_ERROR_TEXT"] = HeaderColumn("validationErrorText", "validationErrorText")
 DefaultHeaders["IS_RANGE"] = HeaderColumn("isRange", "isRange", boolean_handler)
+DefaultHeaders["IDENTIFIER_TYPE"] = HeaderColumn("identifierType", "identifierType")
 
 #==================
 # Utility functions

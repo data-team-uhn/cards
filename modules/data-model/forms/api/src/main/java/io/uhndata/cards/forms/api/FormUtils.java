@@ -41,6 +41,12 @@ public interface FormUtils
     /** The Sling resource type of a Form. */
     String FORM_RESOURCE = "cards/Form";
 
+    /** The primary node type for the FormsHomepage, the parent of all forms. */
+    String FORMS_HOMEPAGE_NODETYPE = "cards:FormsHomepage";
+
+    /** The Sling resource type of the FormsHomepage. */
+    String FORMS_HOMEPAGE_RESOURCE = "cards/FormsHomepage";
+
     /** The name of the property of a Form node that links to the Questionnaire being answered. */
     String QUESTIONNAIRE_PROPERTY = "questionnaire";
 
@@ -58,6 +64,9 @@ public interface FormUtils
 
     /** The Sling resource type of an AnswerSection. */
     String ANSWER_SECTION_RESOURCE = "cards/AnswerSection";
+
+    /** The Sling resource super type of an AnswerSection. */
+    String ANSWER_SECTION_SUPERTYPE = "cards/ResourcePart";
 
     /** The name of the property of an AnswerSection node that links to the Section being answered. */
     String SECTION_PROPERTY = "section";
@@ -115,6 +124,33 @@ public interface FormUtils
      * @return {@code true} if the node is not {@code null} and is of type {@code cards:Form}, {@code false} otherwise
      */
     boolean isForm(NodeState node);
+
+    /**
+     * Check if the given node is the FormsHomepage node.
+     *
+     * @param node the node to check, a JCR Node, may be {@code null}
+     * @return {@code true} if the node is not {@code null} and is of type {@code cards:FormsHomepage},
+     *         {@code false} otherwise
+     */
+    boolean isFormsHomepage(Node node);
+
+    /**
+     * Check if the given node is the FormsHomepage node.
+     *
+     * @param node the node to check, a node builder, may be {@code null}
+     * @return {@code true} if the node is not {@code null} and is of type {@code cards:FormsHomepage},
+     *         {@code false} otherwise
+     */
+    boolean isFormsHomepage(NodeBuilder node);
+
+    /**
+     * Check if the given node is the FormsHomepage node.
+     *
+     * @param node the node to check, a node state, may be {@code null}
+     * @return {@code true} if the node is not {@code null} and is of type {@code cards:FormsHomepage},
+     *         {@code false} otherwise
+     */
+    boolean isFormsHomepage(NodeState node);
 
     /**
      * Look up the form that a node belongs to. The given node must be a descendant of a form node, i.e. an answer or

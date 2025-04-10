@@ -94,6 +94,24 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     }
 
     @Override
+    public boolean isFormsHomepage(final Node node)
+    {
+        return isNodeType(node, FORMS_HOMEPAGE_NODETYPE);
+    }
+
+    @Override
+    public boolean isFormsHomepage(final NodeBuilder node)
+    {
+        return node == null ? false : isFormsHomepage(node.getNodeState());
+    }
+
+    @Override
+    public boolean isFormsHomepage(final NodeState node)
+    {
+        return isNodeType(node, FORMS_HOMEPAGE_NODETYPE, getSession(this.rrp));
+    }
+
+    @Override
     public Node getForm(final Node answer)
     {
         try {
