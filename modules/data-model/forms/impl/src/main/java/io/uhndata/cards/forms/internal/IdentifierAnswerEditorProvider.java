@@ -32,6 +32,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
  * A {@link EditorProvider} returning {@link IdentifierAnswerEditor}.
  *
  * @version $Id$
+ * @since 0.9.30
  */
 @Component(property = "service.ranking:Integer=60")
 public class IdentifierAnswerEditorProvider implements EditorProvider
