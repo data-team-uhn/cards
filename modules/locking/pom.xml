@@ -26,7 +26,7 @@
 
   <artifactId>cards-locking</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Resource locking module</name>
+  <name>CARDS - Resource Locking</name>
   <build>
     <plugins>
       <plugin>
@@ -43,7 +43,9 @@
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/locking.cnd</Sling-Nodetypes>
-            <Sling-Initial-Content>SLING-INF/content/</Sling-Initial-Content>
+            <Sling-Initial-Content>
+              SLING-INF/content/,
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
