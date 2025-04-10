@@ -32,7 +32,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 
@@ -57,7 +57,7 @@ fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
   .catch(errorHandler);
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   vocabularyAction: {
     margin: theme.spacing(1)
   },
@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
 export function BioPortalApiKey(props) {
   const { bioPortalApiKey, updateKey } = props;
   const globalLoginDisplay = useContext(GlobalLoginContext);
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   /* User input api key */
   const [customApiKey, setCustomApiKey] = React.useState('');

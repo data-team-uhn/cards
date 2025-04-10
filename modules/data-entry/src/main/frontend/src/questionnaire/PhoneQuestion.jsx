@@ -18,7 +18,7 @@
 //
 
 import React, { useState } from "react";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import 'react-phone-input-2/lib/style.css';
 import PropTypes from "prop-types";
@@ -87,7 +87,7 @@ PhoneQuestion.propTypes = {
 };
 
 
-const StyledPhoneQuestion = withStyles(QuestionnaireStyle)(PhoneQuestion)
+const StyledPhoneQuestion = withStyles(PhoneQuestion, QuestionnaireStyle)
 export default StyledPhoneQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

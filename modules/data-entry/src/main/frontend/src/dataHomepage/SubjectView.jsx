@@ -34,7 +34,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -179,4 +179,4 @@ function SubjectView(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(SubjectView);
+export default withStyles(SubjectView, QuestionnaireStyle);

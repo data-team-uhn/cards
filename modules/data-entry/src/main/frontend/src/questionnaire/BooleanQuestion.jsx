@@ -18,7 +18,7 @@
 //
 
 import React from "react";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
@@ -93,7 +93,7 @@ BooleanQuestion.propTypes = {
   unknownLabel: PropTypes.string
 };
 
-const StyledBooleanQuestion = withStyles(QuestionnaireStyle)(BooleanQuestion)
+const StyledBooleanQuestion = withStyles(BooleanQuestion, QuestionnaireStyle)
 export default StyledBooleanQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

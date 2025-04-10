@@ -25,13 +25,11 @@ import {
   Grid,
   Typography
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LineChartIcon from '@mui/icons-material/ShowChart';
 import { deepPurple, indigo } from '@mui/material/colors';
-
 import { useHistory } from 'react-router-dom';
-
 import palette from "google-palette";
 import {
    BarChart, Bar, CartesianGrid, Line, LineChart, Label, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
@@ -286,4 +284,4 @@ function Statistic(props) {
   </Grid>
 }
 
-export default withStyles(statisticsStyle, {withTheme: true})(Statistic);
+export default withStyles(Statistic, statisticsStyle);

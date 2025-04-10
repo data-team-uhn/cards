@@ -18,7 +18,7 @@
 //
 
 import React, { useState, forwardRef } from "react";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -84,7 +84,7 @@ DateFilter.propTypes = {
   })
 }
 
-const StyledDateFilter = withStyles(QuestionnaireStyle)(DateFilter)
+const StyledDateFilter = withStyles(DateFilter, QuestionnaireStyle)
 
 export default StyledDateFilter;
 

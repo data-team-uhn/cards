@@ -27,12 +27,12 @@ import {
   IconButton,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   titleBar: {
     color: theme.palette.error.main,
     paddingRight: theme.spacing(5),
@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
 const ErrorDialog = (props) => {
   const { title, children, onClose, ...rest } = props;
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
     <Dialog onClose={onClose} {...rest}>

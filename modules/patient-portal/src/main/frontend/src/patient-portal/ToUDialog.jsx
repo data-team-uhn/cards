@@ -26,7 +26,7 @@ import {
   DialogContent
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -34,7 +34,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import FormattedText from "../components/FormattedText.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   touDialog : {
     "& .MuiDialogTitle-root > .MuiTypography-root" : {
       fontSize: "1.75rem",
@@ -93,7 +93,7 @@ function ToUDialog(props) {
   const [ error, setError ] = useState();
   const [ actionError, setActionError ] = useState();
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const fetchTouAccepted = () => {
     fetch("/Survey.termsOfUse")

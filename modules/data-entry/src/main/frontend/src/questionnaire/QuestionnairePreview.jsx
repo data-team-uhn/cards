@@ -25,7 +25,7 @@ import {
   Grid
 } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -126,4 +126,4 @@ function QuestionnairePreview (props) {
   </div>);
 };
 
-export default withStyles(QuestionnaireStyle)(QuestionnairePreview);
+export default withStyles(QuestionnairePreview, QuestionnaireStyle);

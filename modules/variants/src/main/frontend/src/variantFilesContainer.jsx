@@ -33,7 +33,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import BackupIcon from '@mui/icons-material/Backup';
@@ -46,7 +46,7 @@ import DragAndDrop from "./components/dragAndDrop.jsx";
 import { escapeJQL } from "./escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     flexGrow: 1,
   },
@@ -114,7 +114,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function VariantFilesContainer() {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 

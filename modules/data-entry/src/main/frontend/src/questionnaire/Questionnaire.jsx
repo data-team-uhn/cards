@@ -33,7 +33,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import { DateTime } from "luxon";
 
@@ -251,7 +251,7 @@ Questionnaire.propTypes = {
   id: PropTypes.string.isRequired
 };
 
-export default withStyles(QuestionnaireStyle)(Questionnaire);
+export default withStyles(Questionnaire, QuestionnaireStyle);
 
 
 let QuestionnaireItemSet = (props) => {
@@ -662,7 +662,7 @@ let QuestionnaireEntry = (props) => {
         moreInfo={renderFields({condensed: true})}
         data={entryData}
         type={type}
-        classes={classes}
+        upperClasses={classes}
         doHighlight={doHighlight}
         action={
             menuItems?.length > 0 ?

@@ -20,9 +20,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Box } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   logo : {
     "& > img" : {
       maxWidth: "240px",
@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Logo(props) {
   const { component, mode, className, maxWidth, disableAffiliation, ...rest } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const appName = document.querySelector('meta[name="title"]')?.content;
   const logo = document.querySelector(`meta[name="logo${mode}"]`).content;

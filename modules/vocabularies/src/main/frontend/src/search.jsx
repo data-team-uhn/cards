@@ -27,7 +27,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
@@ -49,7 +49,7 @@ function extractList(data) {
   return acronymList;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   searchAdornmentWrapper: {
     marginRight: theme.spacing(-1),
     position: 'relative',
@@ -66,7 +66,7 @@ export default function Search(props) {
   const [error, setError] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 

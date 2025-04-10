@@ -46,7 +46,7 @@ import {
   Typography
 } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 const NUM_QUESTIONS = 2;
 const STRIPPING_REGEX = [/^date of +/i, / +date$/i]
@@ -389,4 +389,4 @@ SubjectTimeline.defaultProps = {
   maxDisplayed: 4,
 }
 
-export default withStyles(QuestionnaireStyle)(SubjectTimeline);
+export default withStyles(SubjectTimeline, QuestionnaireStyle);

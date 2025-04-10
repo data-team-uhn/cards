@@ -25,18 +25,18 @@ import {
     ListItem,
     TextField,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   text: {
     display: "block",
   },
 }));
 
 function ToUConfiguration() {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [ acceptanceRequired, setAcceptanceRequired ] = useState(false);
   const [ title, setTitle ] = useState();
   const [ text, setText ] = useState();

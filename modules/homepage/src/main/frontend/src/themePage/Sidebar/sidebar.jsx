@@ -13,7 +13,7 @@ import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { loadExtensions } from "../../uiextension/extensionManager";
 import { Drawer, List, ListItemButton, ListItemText } from "@mui/material";
 
@@ -185,4 +185,4 @@ Sidebar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(sidebarStyle)(Sidebar);
+export default withStyles(Sidebar, sidebarStyle);

@@ -21,7 +21,7 @@ import React, { useState } from "react";
 
 import { FormHelperText, TextField, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import Answer from "./Answer";
 import Question from "./Question";
@@ -228,7 +228,7 @@ function DateQuestionMonth(props) {
 
 DateQuestionMonth.propTypes = DateQuestionUtilities.PROP_TYPES;
 
-const StyledDateQuestionMonth = withStyles(QuestionnaireStyle)(DateQuestionMonth);
+const StyledDateQuestionMonth = withStyles(DateQuestionMonth, QuestionnaireStyle);
 export default StyledDateQuestionMonth;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

@@ -24,7 +24,7 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -150,7 +150,7 @@ class FormFields extends React.Component {
   }
 }
 
-const FormFieldsComponent = withStyles(styles)(FormFields);
+const FormFieldsComponent = withStyles(FormFields, styles);
 
 class SignUpForm extends React.Component {
   constructor(props) {
@@ -291,4 +291,4 @@ class SignUpForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(SignUpForm);
+export default withStyles(SignUpForm, styles);

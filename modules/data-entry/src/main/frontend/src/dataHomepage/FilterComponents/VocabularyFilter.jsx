@@ -18,7 +18,7 @@
 //
 
 import React, { forwardRef } from "react";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -64,7 +64,7 @@ VocabularyFilter.propTypes = {
   })
 }
 
-const StyledVocabularyFilter = withStyles(QuestionnaireStyle)(VocabularyFilter)
+const StyledVocabularyFilter = withStyles(VocabularyFilter, QuestionnaireStyle)
 
 export default StyledVocabularyFilter;
 

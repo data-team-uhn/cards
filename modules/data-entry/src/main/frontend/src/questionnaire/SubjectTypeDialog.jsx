@@ -19,7 +19,7 @@ import React, { useState, useEffect } from "react";
 
 import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, MenuItem, TextField, Typography, Select, FormHelperText } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
@@ -303,4 +303,4 @@ function SubjectTypeDialog(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(SubjectTypeDialog);
+export default withStyles(SubjectTypeDialog, QuestionnaireStyle);

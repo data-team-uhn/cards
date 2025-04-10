@@ -26,7 +26,7 @@ import {
   Typography
 } from '@mui/material';
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import WarningIcon from '@mui/icons-material/Warning';
 
@@ -37,7 +37,7 @@ const appbarStyle = theme => ({
 });
 
 export default function DemoBanner(props) {
-  const StyledAppBar = withStyles(appbarStyle)(AppBar);
+  const StyledAppBar = withStyles(AppBar, appbarStyle);
 
   return (
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>

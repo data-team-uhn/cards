@@ -18,7 +18,7 @@
 import React from "react";
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import userboardStyle from './userboardStyle.jsx';
 
@@ -66,4 +66,4 @@ class DeletePrincipalDialogue extends React.Component {
     }
 }
 
-export default withStyles(userboardStyle)(DeletePrincipalDialogue);
+export default withStyles(DeletePrincipalDialogue, userboardStyle);

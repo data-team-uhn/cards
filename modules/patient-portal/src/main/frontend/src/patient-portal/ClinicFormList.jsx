@@ -32,10 +32,10 @@ import {
 } from "@mui/material";
 
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 
-const useStyles = color => makeStyles(theme => ({
+const useStyles = makeStyles()((theme, props) => ({
   clinicFormList : {
     border: "1px solid " + theme.palette.divider,
     "& .MuiTab-root": {
@@ -44,14 +44,14 @@ const useStyles = color => makeStyles(theme => ({
       fontWeight: "300",
     },
     "& .MuiTab-root.Mui-selected" : {
-      color: color,
+      color: props.color,
     },
     "& .MuiTabs-indicator": {
-      background: color,
+      background: props.color,
     },
   },
   clinicFormListAvatar: {
-    background: color,
+    background: props.color,
   },
   clinicFormListTitle: {
     fontWeight: "600",
@@ -103,7 +103,7 @@ function ClinicFormList (props) {
   let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", timeFilter[tabs[activeTab]].dateFilter)
                         .replaceAll("__SORT_ORDER_PLACEHOLDER__", timeFilter[tabs[activeTab]].order);
 
-  const classes = useStyles(color)();
+  const { classes } = useStyles({ color: color });
 
   return (
     <Card className={classes.clinicFormList + (className ? ` ${className}` : '')}>

@@ -39,7 +39,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { useTheme } from '@mui/material/styles';
 
@@ -92,7 +92,7 @@ getHeaderExtensions()
 //  />
 //
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   printPreview : {
     "& .wmde-markdown h1, .wmde-markdown h2" : {
       borderBottom: "0 none",
@@ -131,7 +131,7 @@ function PrintPreview(props) {
   const [ content, setContent ] = useState();
   const [ error, setError ] = useState();
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const width = "sm";
   const theme = useTheme();

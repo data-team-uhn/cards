@@ -31,7 +31,7 @@ import {
   Fade,
   Popper,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import WarningIcon from "@mui/icons-material/Warning";
 
@@ -155,4 +155,4 @@ UserInputAssistant.propTypes = {
 UserInputAssistant.defaultProps = {
   variant: 'hint',
 }
-export default withStyles(style)(UserInputAssistant);
+export default withStyles(UserInputAssistant, style);

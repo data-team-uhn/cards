@@ -19,7 +19,7 @@
 
 import React from "react";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import NumberQuestion from "./NumberQuestion";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -69,7 +69,7 @@ function DateQuestionYear(props) {
 
 DateQuestionYear.propTypes = DateQuestionUtilities.PROP_TYPES;
 
-const StyledDateQuestionYear = withStyles(QuestionnaireStyle)(DateQuestionYear);
+const StyledDateQuestionYear = withStyles(DateQuestionYear, QuestionnaireStyle);
 export default StyledDateQuestionYear;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

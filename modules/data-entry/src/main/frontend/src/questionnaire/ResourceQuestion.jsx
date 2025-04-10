@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { CircularProgress} from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
@@ -116,7 +116,7 @@ ResourceQuestion.propTypes = {
   }).isRequired,
 };
 
-const StyledResourceQuestion = withStyles(QuestionnaireStyle)(ResourceQuestion)
+const StyledResourceQuestion = withStyles(ResourceQuestion, QuestionnaireStyle)
 export default StyledResourceQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

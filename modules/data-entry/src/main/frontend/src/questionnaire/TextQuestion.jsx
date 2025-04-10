@@ -21,7 +21,7 @@ import React from "react";
 
 import { Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
@@ -119,7 +119,7 @@ TextQuestion.propTypes = {
   defaults: PropTypes.array,
 };
 
-const StyledTextQuestion = withStyles(QuestionnaireStyle)(TextQuestion)
+const StyledTextQuestion = withStyles(TextQuestion, QuestionnaireStyle)
 export default StyledTextQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

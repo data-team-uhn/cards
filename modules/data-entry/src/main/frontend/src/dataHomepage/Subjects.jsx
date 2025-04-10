@@ -23,7 +23,7 @@ import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/SubjectIden
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 import { Grid } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
@@ -84,4 +84,4 @@ function Subjects(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(Subjects);
+export default withStyles(Subjects, QuestionnaireStyle);

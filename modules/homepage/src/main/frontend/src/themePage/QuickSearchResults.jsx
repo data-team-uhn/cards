@@ -23,7 +23,7 @@ import { QuickSearchMatch, QuickSearchIdentifier } from "./Navbars/QuickSearchId
 
 import { Button, Card, CardContent, CardHeader } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const CARDS_QUERY_MATCH_KEY = "cards:queryMatch";
@@ -77,5 +77,5 @@ function QuickSearchResults(props) {
   );
 }
 
-export default withStyles(HeaderStyle)(QuickSearchResults);
+export default withStyles(QuickSearchResults, HeaderStyle);
 

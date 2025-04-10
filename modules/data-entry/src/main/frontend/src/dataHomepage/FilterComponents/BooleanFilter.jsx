@@ -19,7 +19,7 @@
 
 import React, { forwardRef, useState } from "react";
 import { Select, MenuItem } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -80,7 +80,7 @@ BooleanFilter.propTypes = {
   questionDefinition: PropTypes.object
 }
 
-const StyledBooleanFilter = withStyles(QuestionnaireStyle)(BooleanFilter)
+const StyledBooleanFilter = withStyles(BooleanFilter, QuestionnaireStyle)
 
 export default StyledBooleanFilter;
 

@@ -20,7 +20,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Snackbar, SnackbarContent } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import VocabularyTree from "./VocabularyTree.jsx";
 import InfoBox from "./InfoBox.jsx";
@@ -253,4 +253,4 @@ VocabularyBrowser.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(BrowseTheme)(VocabularyBrowser);
+export default withStyles(VocabularyBrowser, BrowseTheme);

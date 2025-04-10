@@ -30,7 +30,7 @@ import {
   useMediaQuery
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { useTheme } from '@mui/material/styles';
 
@@ -45,7 +45,7 @@ async function getDashboardExtensions(name) {
   // To do: also load the default dashboard if the extension point is invalid
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   dashboardTitle: {
     marginTop: theme.spacing(-4),
     marginRight: theme.spacing(4),
@@ -163,7 +163,7 @@ function ClinicDashboard(props) {
       .finally(() => setDefaultsLoading(false));
   }, [surveysId]);
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   // Colors assigned to the dashboard widgets
   // If we have more widgets than colors, start reusing colors from the top

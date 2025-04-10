@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { v4 as uuidv4 } from 'uuid';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -117,4 +117,4 @@ function NewQuestionnaireDialog(props) {
   )
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(NewQuestionnaireDialog));
+export default withStyles(withRouter(NewQuestionnaireDialog), QuestionnaireStyle);

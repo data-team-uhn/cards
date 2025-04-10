@@ -30,14 +30,14 @@ import {
   Zoom,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import VocabularyAction from "./vocabularyAction";
 import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";
 
 const Phase = require("./phaseCodes.json");
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   about: {
     background: "#007bff",
     "&:hover": {
@@ -71,7 +71,7 @@ export default function VocabularyDetails(props) {
   let infoboxRef = useRef();
   let browserRef = useRef();
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   let closeBrowser = (event) => {
     setBrowserOpened(false);

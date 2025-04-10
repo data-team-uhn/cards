@@ -16,17 +16,14 @@
 */
 
 import React from "react";
-import withStyles from '@mui/styles/withStyles';
-
+import { withStyles } from 'tss-react/mui';
 import { Avatar, Box, Card, CardContent, IconButton, Tooltip } from "@mui/material";
-
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialogue from "./createuserdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx";
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
-
 import MaterialReactTable from 'material-react-table';
 import LockIcon from '@mui/icons-material/Lock';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -196,4 +193,4 @@ class UsersManager extends React.Component {
   }
 }
 
-export default withStyles (userboardStyle, {withTheme: true})(UsersManager);
+export default withStyles (UsersManager, userboardStyle);

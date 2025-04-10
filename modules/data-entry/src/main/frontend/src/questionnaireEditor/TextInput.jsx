@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 
 import { TextField } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
@@ -54,7 +54,7 @@ TextInput.propTypes = {
   hint: PropTypes.string,
 };
 
-const StyledTextInput = withStyles(QuestionnaireStyle)(TextInput);
+const StyledTextInput = withStyles(TextInput, QuestionnaireStyle);
 export default StyledTextInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {

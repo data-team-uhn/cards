@@ -23,8 +23,7 @@ import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
-import withStyles from '@mui/styles/withStyles';
-import GlobalStyles from '@mui/material/GlobalStyles';
+import { withStyles } from 'tss-react/mui';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
@@ -60,7 +59,7 @@ class Main extends React.Component {
   // Close the mobile menu if the window size changes
   // so that the mobile menu is out of place
   autoCloseMobileMenus = event => {
-    if (window.innerWidth >= this.props.theme.breakpoints.values.md) {
+    if (window.innerWidth >= appTheme.breakpoints.values.md) {
       this.setState({ mobileOpen: false });
     }
   }
@@ -178,7 +177,7 @@ class Main extends React.Component {
 Main.propTypes = {
   classes: PropTypes.object.isRequired
 };
-const MainComponent = (withStyles(IndexStyle, {withTheme: true})(Main));
+const MainComponent = withStyles(Main, IndexStyle);
 
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));

@@ -20,7 +20,7 @@
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button, Collapse, Grid, IconButton, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import Add from "@mui/icons-material/Add";
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
 import UnfoldMore from '@mui/icons-material/UnfoldMore';
@@ -342,4 +342,4 @@ Section.propTypes = {
   }).isRequired,
 }
 
-export default withStyles(QuestionnaireStyle)(Section);
+export default withStyles(Section, QuestionnaireStyle);

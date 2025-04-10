@@ -20,7 +20,7 @@
 import React, { forwardRef, useState, useEffect, useContext } from "react";
 import { TextField } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -88,7 +88,7 @@ UserFilter.propTypes = {
   questionDefinition: PropTypes.object
 }
 
-const StyledUserFilter = withStyles(QuestionnaireStyle)(UserFilter)
+const StyledUserFilter = withStyles(UserFilter, QuestionnaireStyle)
 
 export default StyledUserFilter;
 

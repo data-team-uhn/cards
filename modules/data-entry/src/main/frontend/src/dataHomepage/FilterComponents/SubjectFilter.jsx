@@ -19,7 +19,7 @@
 
 import React, { forwardRef, useState } from "react";
 import { InputAdornment, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import ErrorIcon from "@mui/icons-material/Error";
 import PropTypes from "prop-types";
 
@@ -102,7 +102,7 @@ SubjectFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledSubjectFilter = withStyles(QuestionnaireStyle)(SubjectFilter)
+const StyledSubjectFilter = withStyles(SubjectFilter, QuestionnaireStyle)
 
 export default StyledSubjectFilter;
 

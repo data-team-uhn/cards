@@ -25,7 +25,7 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete, Stack, TextField } from "@mui/material";
 import { createFilterOptions } from "@mui/material/Autocomplete";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 import { Info } from "luxon";
 
@@ -42,7 +42,7 @@ const getDaysInMonth = (year, month) => {
   return new Date(year, month, 0).getDate();
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   container : {
     overflow: "hidden",
     "& > *:not(:first-child)" : {
@@ -93,7 +93,7 @@ const useStyles = makeStyles(theme => ({
 
 function DropdownsDatePicker(props) {
   const { startDate, endDate, selectedDate, order, onDateChange, yearReverse, disabled, monthShort, formatDate, autoFocus, fullWidth, ...rest } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const sDate = new Date(startDate);
   const eDate = endDate ? new Date(endDate) : new Date();

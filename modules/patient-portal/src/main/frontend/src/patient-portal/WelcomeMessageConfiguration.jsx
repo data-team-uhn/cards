@@ -25,11 +25,11 @@ import {
     CardHeader,
     Grid,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   editorContainer: {
     padding: theme.spacing(2, 0, 0),
     "& > .MuiGrid-root > *": {
@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
 
 function WelcomeMessageConfiguration(props) {
   const { welcomeMessage, onChange } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const appName = document.querySelector('meta[name="title"]')?.content;
 

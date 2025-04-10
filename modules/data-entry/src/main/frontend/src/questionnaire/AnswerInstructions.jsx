@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 
 import { Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
@@ -87,4 +87,4 @@ AnswerInstructions.defaultProps = {
     answerLabel: "value",
 };
 
-export default withStyles(QuestionnaireStyle)(AnswerInstructions);
+export default withStyles(AnswerInstructions, QuestionnaireStyle);

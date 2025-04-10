@@ -20,7 +20,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Button, IconButton, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PrintIcon from "@mui/icons-material/Print";
 import PrintPreview from "../questionnaire/PrintPreview.jsx";
 
@@ -143,4 +143,4 @@ PrintButton.defaultProps = {
   fullScreen: true,
 }
 
-export default withStyles(QuestionnaireStyle)(PrintButton);
+export default withStyles(PrintButton, QuestionnaireStyle);

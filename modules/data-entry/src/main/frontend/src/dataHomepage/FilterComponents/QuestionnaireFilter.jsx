@@ -19,7 +19,7 @@
 
 import React, { forwardRef, useState } from "react";
 import { Select, MenuItem, Card, CardHeader, CardContent, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import ErrorIcon from "@mui/icons-material/Error";
 import PropTypes from "prop-types";
 
@@ -121,7 +121,7 @@ QuestionnaireFilter.propTypes = {
   onChangeInput: PropTypes.func
 }
 
-const StyledQuestionnaireFilter = withStyles(QuestionnaireStyle)(QuestionnaireFilter)
+const StyledQuestionnaireFilter = withStyles(QuestionnaireFilter, QuestionnaireStyle)
 
 export default StyledQuestionnaireFilter;
 

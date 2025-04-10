@@ -21,7 +21,7 @@ import React, { useState } from "react";
 
 import { CircularProgress, Chip, Tooltip, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import Note from "./Note.jsx";
@@ -179,4 +179,4 @@ function NCRNote (props) {
     );
 }
 
-export default withStyles(QuestionnaireStyle)(NCRNote);
+export default withStyles(NCRNote, QuestionnaireStyle);

@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from "prop-types";
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Grid, Radio, RadioGroup,
@@ -34,7 +34,7 @@ import ResponsiveDialog from "../components/ResponsiveDialog";
 import QuestionnaireAutocomplete from "../questionnaire/QuestionnaireAutocomplete";
 import { findQuestionnaireEntries } from "../questionnaire/QuestionnaireUtilities";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   container: {
     marginBottom: theme.spacing(1.5),
     "& + .MuiDivider-root" : {
@@ -123,7 +123,7 @@ function ExportButton(props) {
   const [ statusSelectionMode, setStatusSelectionMode ] = useState(DEFAULTS.statusSelectionMode);
   const [ status, setStatus ] = useState(null);
 
-  const classes = useStyles();
+  const { classes } = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {

@@ -25,7 +25,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 import WelcomeMessageConfiguration from "./WelcomeMessageConfiguration.jsx";
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
@@ -37,7 +37,7 @@ export const DEFAULT_INSTRUCTIONS = {
   surveyDraftInfo: "If you close your browser window before finishing the survey, your answers will be automatically saved.  \nYou can return to the survey to complete and submit it by following the link you received in your invitation email."
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   formEntries: {
     "& .MuiListItem-root:not(:first-child) .MuiTypography-h6": {
       marginTop: theme.spacing(3),
@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function SurveyInstructionsConfiguration() {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);

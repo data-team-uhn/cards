@@ -18,7 +18,7 @@
 //
 
 import React, { useState } from "react";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import { TextField } from "@mui/material";
 
@@ -171,7 +171,7 @@ AddressQuestion.propTypes = {
 };
 
 
-const StyledAddressQuestion = withStyles(QuestionnaireStyle)(AddressQuestion)
+const StyledAddressQuestion = withStyles(AddressQuestion, QuestionnaireStyle)
 export default StyledAddressQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

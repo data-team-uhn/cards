@@ -28,13 +28,13 @@ import {
   useScrollTrigger
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { grey } from '@mui/material/colors';
 
 import { GRID_SPACE_UNIT } from "./QuestionnaireStyle";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
     resourceHeader: {
       position: "sticky",
       top: 0,
@@ -99,7 +99,7 @@ const useStyles = makeStyles(theme => ({
 function ResourceHeader (props) {
   let { title, breadcrumbs, separator, tags, action, children } = props;
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   // Scroll trigger for collapsing the Title and action into the breadcrumbs
   const fullBreadcrumbTrigger = useScrollTrigger({
