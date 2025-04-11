@@ -61,18 +61,6 @@ try:
 except FileExistsError:
   pass
 
-# Add a webpack.config.js
-with open(os.path.join(THIS_OSGI_MODULE_DIRECTORY, "src/main/frontend/webpack.config.js"), 'w') as f_webpack_config_js:
-  with open("Utilities/Development/ExtensionPointResources/webpack.config.js.head", 'r') as f_head:
-    f_webpack_config_js.write(f_head.read().rstrip())
-
-  f_webpack_config_js.write("\n")
-  f_webpack_config_js.write("    [module_name + '{}']: './src/{}.jsx'".format(THIS_EXTENSION_JSX_SRC, THIS_EXTENSION_JSX_SRC))
-  f_webpack_config_js.write("\n")
-
-  with open("Utilities/Development/ExtensionPointResources/webpack.config.js.tail", 'r') as f_tail:
-    f_webpack_config_js.write(f_tail.read())
-
 extension_properties = {}
 extension_properties[ATTACHING_EXTENSION_POINT_NAME] = {}
 extension_properties[ATTACHING_EXTENSION_POINT_NAME]['jcr:primaryType'] = 'sling:Folder'

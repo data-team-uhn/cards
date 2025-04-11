@@ -26,19 +26,18 @@ from os import path
 
 package_name = 'cards-aggregated-frontend'
 
-# Collect lines of webpack.config file into aggregated array
+# Collect lines of assets.config file into aggregated array
 def merge_webpack_files(root, dir_name, aggregated_frontend_dir, webpack_config_entries):
-    fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'webpack.config.js')
+    fl = path.join(root, dir_name, 'src', 'main', 'frontend', 'assets.config')
     if path.exists(fl):
         with open(fl, 'rt') as ins:
             lines = ins.readlines()
-        # Copy lines from webpack.config file
+        # Copy lines from assets.config file
         for i in range(0, len(lines)):
-            if len(lines[i]) < 1:
-                break
-            # ensure each line ends with a comma and newline
-            line = lines[i].rstrip().rstrip(',') + ',\n'
-            webpack_config_entries.append(line)
+            if lines[i].strip().startswith("["):
+                # ensure each line ends with a comma and newline
+                line = lines[i].rstrip().rstrip(',') + ',\n'
+                webpack_config_entries.append(line)
 
 # Copy all UI files from module to aggregated_frontend_dir
 def merge_ui_files(root, dir_name, aggregated_frontend_dir):
