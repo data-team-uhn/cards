@@ -42,13 +42,11 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { DateTime } from "luxon";
 
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ErrorDialog from "../components/ErrorDialog.jsx";
 
 function SubjectLockAction(props) {
   const {
-    classes,
     subject,
     reloadSubject,
     size = "large",
@@ -137,14 +135,14 @@ function SubjectLockAction(props) {
               id="user"
               label="Signing User"
               defaultValue={json["userID"]}
-              className={classes.lockDialogInput}
+              sx={{mt: 3, mr: 3}}
               />
             <TextField
               inputProps={{readonly:true}}
               id="date"
               label="Date"
               defaultValue={new Date().toDateString()}
-              className={classes.lockDialogInput}
+              sx={{mt: 3}}
               />
           </>
         )
@@ -199,7 +197,16 @@ function SubjectLockAction(props) {
             date = dateObj.toFormat("yyyy-MM-dd");
           }
           return <ListItem key={index}>
-              <ListItemAvatar><Avatar className={classes.lockDialogAvatar}><AssignmentIcon/></Avatar></ListItemAvatar>
+              <ListItemAvatar>
+                <Avatar sx={theme => ({
+                  border: "1px solid " + theme.palette.action.disabled,
+                  background: "transparent",
+                  color: theme.palette.text.disabled,
+                  zoom: .75
+                })}>
+                  <AssignmentIcon/>
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText primary={row.questionnaire.title}></ListItemText>
             </ListItem>
         })}
@@ -297,8 +304,10 @@ function SubjectLockAction(props) {
       <DialogContent>
         {dialogContent}
       </DialogContent>
-      <DialogActions className={classes.dialogActions}>
+      <DialogActions sx={{pl: 3}}>
           {actionContent}
+      </DialogActions>
+      <DialogActions>
           <Button
             variant="outlined"
             onClick={closeDialog}
@@ -343,4 +352,4 @@ SubjectLockAction.propTypes = {
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
 }
 
-export default withStyles(QuestionnaireStyle)(SubjectLockAction);
+export default SubjectLockAction;

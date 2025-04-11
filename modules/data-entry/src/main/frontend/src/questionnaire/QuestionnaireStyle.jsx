@@ -737,20 +737,6 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
-    lockDialogInput: {
-      marginTop: theme.spacing(3),
-      marginRight: theme.spacing(3),
-      marginBottom: theme.spacing(3),
-    },
-    lockDialogAvatar: {
-      border: "1px solid " + theme.palette.action.disabled,
-      background: "transparent",
-      color: theme.palette.text.disabled,
-      zoom: .75,
-    },
-    dialogActions: {
-      flexWrap: "wrap"
-    }
 });
 
 export default questionnaireStyle;
