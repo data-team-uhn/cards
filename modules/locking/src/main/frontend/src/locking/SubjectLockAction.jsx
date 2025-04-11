@@ -296,7 +296,7 @@ function SubjectLockAction(props) {
   }, [nextAction])
 
   return( <>
-    <ErrorDialog open={errorMessage} onClose={closeError}>
+    <ErrorDialog open={!!errorMessage} onClose={closeError}>
       <Typography>{errorMessage}</Typography>
     </ErrorDialog>
     <Dialog open={open} onClose={closeDialog}>
