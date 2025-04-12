@@ -97,7 +97,7 @@ root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={portalTheme}>
       <Router history={hist}>
-        <Switch color="secondary">
+        <Switch>
           <Route path="/Survey.html/" component={PatientPortalHomepage} />
           <Redirect from="/Survey" to="/Survey.html/"/>
           <Redirect from="/" to="/Survey.html/"/>

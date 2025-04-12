@@ -74,7 +74,7 @@ class Main extends React.Component {
   };
 
   switchRoutes = (routes) => {
-    return (<Switch color="secondary">
+    return (<Switch>
       {routes.map((route, key) => {
         return (
           <Route
@@ -186,7 +186,7 @@ root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
-        <Switch color="secondary">
+        <Switch>
           <Route path="/content.html/" component={MainComponent} />
           <Redirect from="/" to="/content.html/Questionnaires/User"/>
           <Redirect from="/content" to="/content.html/Questionnaires/User" />
