@@ -125,7 +125,7 @@ export default function VocabularyActions(props) {
         <ErrorDialog title={`Failed to ${action}`} open={error} onClose={handleClose}>
           <Typography variant="h6">{vocabulary.name}</Typography>
           <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
-          <Typography paragraph color="error">{errorMessage}</Typography>
+          <Typography component="p" color="error">{errorMessage}</Typography>
         </ErrorDialog>
       </React.Fragment>
   );

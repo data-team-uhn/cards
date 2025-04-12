@@ -86,8 +86,10 @@ function Note (props) {
             multiline
             rows = {fullSize ? 16 : 4}
             className = {classes.noteSection}
-            InputProps = {{
-              className: classes.noteTextField
+            slotProps={{
+              input: {
+                className: classes.noteTextField,
+              },
             }}
             placeholder = {placeholder}
             inputRef = {inputRef}

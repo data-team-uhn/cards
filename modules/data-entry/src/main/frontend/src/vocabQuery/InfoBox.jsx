@@ -103,7 +103,7 @@ function InfoBox(props) {
                 }
                 title={term.name}
                 subheader={term.id}
-                titleTypographyProps={{variant: 'h5'}}
+                slotProps={{ title: {variant: "h5"} }}
               />
               <CardContent className={classes.infoPaper}>
                 <div className={classes.infoSection}>

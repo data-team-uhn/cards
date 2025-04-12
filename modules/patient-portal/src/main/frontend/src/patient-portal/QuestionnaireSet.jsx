@@ -684,7 +684,7 @@ function QuestionnaireSet(props) {
     ))}
     </List>,
     nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>,
-    <Typography paragraph key="expiry-message" color="textSecondary">
+    <Typography component="p" key="expiry-message" color="textSecondary">
         {expiryDate()}
     </Typography>,
     displayText("surveyDraftInfo", FormattedText, {variant: "body2", key: "draft-info"}),

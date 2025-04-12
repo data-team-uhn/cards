@@ -54,11 +54,13 @@ const TextFilter = forwardRef((props, ref) => {
     <TextField
       variant="standard"
       className={classes.answerField}
-      InputLabelProps={{
-      shrink: true,
-      }}
-      InputProps={{
-      className: classes.answerField
+      slotProps={{
+        input: {
+          className: classes.answerField,
+        },
+        inputLabel: {
+          shrink: true,
+        },
       }}
       defaultValue={defaultValue}
       onChange={(event) => {

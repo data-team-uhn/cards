@@ -173,11 +173,13 @@ function DateQuestionMonth(props) {
         variant="standard"
         type="text"
         className={classes.textField + isEnd ? "" : (" " + classes.answerField)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        InputProps={{
-          className: classes.textField
+        slotProps={{
+          input: {
+            className: classes.textField,
+          },
+          inputLabel: {
+            shrink: true,
+          },
         }}
         error={error}
         onChange={(event) => setDate(event.target.value, isEnd)}

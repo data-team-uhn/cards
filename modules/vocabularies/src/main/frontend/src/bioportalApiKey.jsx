@@ -108,8 +108,10 @@ export function BioPortalApiKey(props) {
   let getBioportalKeyInfo = (enableEdit) => {
     return (
         <TextField
-          InputProps={{
-            readOnly: !enableEdit,
+          slotProps={{
+            input: {
+              readOnly: !enableEdit,
+            },
           }}
           variant={enableEdit ? "outlined" : "filled" }
           onChange={(evt) => {setCustomApiKey(evt.target.value)}}

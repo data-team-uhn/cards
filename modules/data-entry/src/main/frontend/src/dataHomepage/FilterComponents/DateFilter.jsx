@@ -66,10 +66,10 @@ const DateFilter = forwardRef((props, ref) => {
           setDisplayedDate(value);
           onChangeInput(value ? DateQuestionUtilities.toPrecision(value, dateFormat).toISO() : null, value ? value.toFormat(dateFormat) : null);
         }}
-        componentsProps={{ textField: {
-                             variant: 'standard',
-                             className: classes.answerDateField,
-                           }
+        slotProps={{ textField: {
+                       variant: 'standard',
+                       className: classes.answerDateField,
+                     },
         }}
       />
     </LocalizationProvider>

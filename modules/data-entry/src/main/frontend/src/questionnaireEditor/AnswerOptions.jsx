@@ -387,18 +387,20 @@ let AnswerOptions = (props) => {
         helperText={isDuplicate ? 'Duplicated value or label' : 'Press ENTER to add a new line'}
         onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value, setIsDuplicate); }}
         onBlur={(event) => { handleInputOption(event); }}
-        inputProps={Object.assign({
-          onKeyDown: (event) => {
-            if (event.key == 'Enter') {
-              // We need to stop the event so that it doesn't trigger a form submission
-              event.preventDefault();
-              event.stopPropagation();
-              handleInputOption(event);
+        slotProps={{
+          htmlInput: Object.assign({
+            onKeyDown: (event) => {
+              if (event.key == 'Enter') {
+                // We need to stop the event so that it doesn't trigger a form submission
+                event.preventDefault();
+                event.stopPropagation();
+                handleInputOption(event);
+              }
             }
-          }
-        })}
+          })
+        }}
         multiline
-        />
+      />
       { generateSpecialOptions(1) }
       <Popover
         open={Boolean(descriptionAnchorEl)}
@@ -419,7 +421,7 @@ let AnswerOptions = (props) => {
         className={classes.descriptionPopover}
       >
         <Card>
-          <CardHeader title={`Description for "${descriptionLabel}"`} titleTypographyProps={{variant: "h6"}}/>
+          <CardHeader title={`Description for "${descriptionLabel}"`} slotProps={{ title: {variant: "h6"}}}/>
           <CardContent>
           { descriptionIndex != null &&
             <MarkdownText value={description} onChange={setDescription} />

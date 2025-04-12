@@ -96,7 +96,11 @@ function DowntimeWarningConfiguration() {
                 variant="standard"
                 label="Start of maintenance"
                 type="datetime-local"
-                InputLabelProps={{ shrink: true }}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
                 className={classes.textField}
                 onChange={(event) => { setFromDate(event.target.value); setHasChanges(true); } }
                 onBlur={(event) => setFromDate(event.target.value) }
@@ -109,7 +113,11 @@ function DowntimeWarningConfiguration() {
                 variant="standard"
                 label="End of maintenance"
                 type="datetime-local"
-                InputLabelProps={{ shrink: true }}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
                 className={classes.textField}
                 onChange={(event) => { setToDate(event.target.value); setHasChanges(true); } }
                 onBlur={(event) => setToDate(event.target.value) }

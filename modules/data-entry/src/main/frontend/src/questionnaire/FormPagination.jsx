@@ -251,13 +251,15 @@ function FormPagination (props) {
           // If the final page has been saved, progress the front bar to complete
           activeStep={activePage + progressAdjustment(lastSaveStatus && savedLastPage)}
           // Change the color of the back bar
-          LinearProgressProps={{ 
+          slotProps={{
+            progress: {
               classes: {
-                         bar2Buffer: classes.formStepperBufferBar,
-                         dashed: classes.formStepperBackgroundBar
-                       },
+                bar2Buffer: classes.formStepperBufferBar,
+                dashed: classes.formStepperBackgroundBar,
+              },
               variant: "buffer",
-              valueBuffer: (activePage + 1) / (lastValidPage() + 1) * 100
+              valueBuffer: (activePage + 1) / (lastValidPage() + 1) * 100,
+            }
           }}
           className={stepperClasses}
           // base 0 to base 1, plus 1 for the "current page" region when variant is "progress"

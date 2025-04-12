@@ -123,10 +123,12 @@ function PatientAccessConfiguration() {
             value={patientAccessConfig?.[key] || ""}
             error={error[key]}
             helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
-            InputProps={{
-              endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
+            slotProps={{
+              input: {
+                endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
+              },
+              htmlInput: LIMITS[key],
             }}
-            inputProps={LIMITS[key]}
           />
         </FormGroup>
       </ListItem>
