@@ -178,8 +178,10 @@ function DroppableAnswerOption(props) {
             </Tooltip>
             <TextField
               variant="standard"
-              InputProps={{
-                readOnly: true,
+              slotProps={{
+                input: {
+                  readOnly: true,
+                },
               }}
               className={classes.answerOptionReadonly}
               defaultValue={value.label? value.value + " = " + value.label : value.value}
@@ -195,7 +197,7 @@ function DroppableAnswerOption(props) {
             </Tooltip>
           </Grid>
         </Grid>
-	)
+    )
   }
 
   return (

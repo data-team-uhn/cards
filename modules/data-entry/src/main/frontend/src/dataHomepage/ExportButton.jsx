@@ -224,11 +224,11 @@ function ExportButton(props) {
                 onChange={(value) => {
                   setter(value);
                 }}
-                componentsProps={{ textField: {
-                                     variant: 'standard',
-                                     error: rangeIsInvalid,
-                                     helperText: rangeIsInvalid ? " " : DATE_FORMAT
-                                   }
+                slotProps={{ textField: {
+                               variant: 'standard',
+                               error: rangeIsInvalid,
+                               helperText: rangeIsInvalid ? " " : DATE_FORMAT,
+                             },
                 }}
               />
             </LocalizationProvider>

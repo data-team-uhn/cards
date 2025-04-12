@@ -109,8 +109,10 @@ function ResourceQuery(props) {
     <Input
       disabled={disabled}
       variant='outlined'
-      inputProps={{
-        "aria-label": "Search"
+      slotProps={{
+        htmlInput: {
+          "aria-label": "Search",
+        },
       }}
       onChange={(event) => {
         delayLookup(event.target.value);

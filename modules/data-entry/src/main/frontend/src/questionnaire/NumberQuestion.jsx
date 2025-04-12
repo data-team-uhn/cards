@@ -25,8 +25,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { makeStyles } from 'tss-react/mui';
-import { withStyles } from 'tss-react/mui';
+import { makeStyles, withStyles } from 'tss-react/mui';
 
 import { NumericFormat } from 'react-number-format';
 
@@ -386,8 +385,13 @@ function NumberQuestion(props) {
               value={lowerLimit}
               placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
               onChange={event => setValue(setLowerLimit, event.target.value)}
-              inputProps={textFieldProps}
-              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              slotProps={{
+                input: muiInputProps,
+                htmlInput: textFieldProps,
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
               />
             <span className="separator">&mdash;</span>
             <TextField
@@ -396,8 +400,13 @@ function NumberQuestion(props) {
               value={upperLimit}
               placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
               onChange={event => setValue(setUpperLimit, event.target.value)}
-              inputProps={textFieldProps}
-              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              slotProps={{
+                input: muiInputProps,
+                htmlInput: textFieldProps,
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
               />
           </div>)
         }

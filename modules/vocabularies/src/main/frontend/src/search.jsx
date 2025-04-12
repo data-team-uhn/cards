@@ -131,8 +131,9 @@ export default function Search(props) {
         <TextField
           fullWidth
           helperText={(error ? "Request Failed" : "Search BioPortal for vocabularies mentioning a specific concept, e.g. “Microcephaly”")}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">
+          slotProps={{
+            input: {
+              endAdornment: <InputAdornment position="end">
                             { keywords &&
                               <IconButton onClick={reset} size="small">
                                 <CloseIcon/>
@@ -144,7 +145,8 @@ export default function Search(props) {
                               </IconButton>
                               {loading && <CircularProgress className={classes.searchProgress} />}
                             </div>
-                          </InputAdornment>
+                          </InputAdornment>,
+             },
           }}
           label="Search BioPortal by keywords"
           onChange={(event) => setKeywords(event.target.value)}

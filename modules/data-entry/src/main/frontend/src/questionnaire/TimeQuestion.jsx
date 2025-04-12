@@ -135,15 +135,17 @@ function TimeQuestion(props) {
             /* time input is hh:mm or hh:mm:ss only */
             type={Time.timeQuestionFieldType(dateFormat)}
             className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            InputProps={{
-              className: classes.textField
-            }}
-            inputProps={{
-              max: upperLimit,
-              min: lowerLimit
+            slotProps={{
+              input: {
+                className: classes.textField,
+              },
+              inputLabel: {
+                shrink: true,
+              },
+              htmlInput: {
+                max: upperLimit,
+                min: lowerLimit
+              },
             }}
             onChange={(event) => {
               checkError(event.target.value);

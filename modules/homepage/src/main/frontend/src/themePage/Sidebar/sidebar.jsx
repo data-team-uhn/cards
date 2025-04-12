@@ -141,7 +141,7 @@ const Sidebar = ({ ...props }) => {
           ModalProps={{
             keepMounted: true // Better open performance on mobile.
           }}
-          PaperProps={ { style: { top: contentOffset + 'px', height: 'calc(100% - ' + contentOffset + 'px)' } } }
+          slotProps={{ paper: { style: { top: contentOffset + 'px', height: 'calc(100% - ' + contentOffset + 'px)' } } }}
         >
           {brand}
           <div className={classes.sidebarWrapper}>
@@ -163,7 +163,7 @@ const Sidebar = ({ ...props }) => {
           variant="permanent"
           open
           classes={{paper: classes.drawerPaper}}
-          PaperProps={ { style: { top: contentOffset + 'px', height: 'calc(100vh - ' + contentOffset + 'px)' } } }
+          slotProps={{ paper: { style: { top: contentOffset + 'px', height: 'calc(100vh - ' + contentOffset + 'px)' } } }}
         >
           {brand}
           <div className={classes.sidebarWrapper}>

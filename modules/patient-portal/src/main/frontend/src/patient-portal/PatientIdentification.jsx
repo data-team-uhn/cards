@@ -285,11 +285,11 @@ function PatientIdentification(props) {
       onClose={() => {setMrnHelperOpen(false)}}
     >
       <DialogContent>
-        <Typography paragraph>
+        <Typography component="p">
           1. Check the top right-hand corner of your Patient Itinerary.
         </Typography>
         <img src="/libs/cards/resources/media/patient-portal/mrn_helper_1.png" alt="MRN location within the Appointment Itinerary" className={classes.mrnHelperImage} />
-        <Typography paragraph>
+        <Typography component="p">
           2. Check your account page on the myUHN PatientPortal.
         </Typography>
         <img src="/libs/cards/resources/media/patient-portal/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />

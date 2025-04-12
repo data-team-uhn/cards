@@ -347,7 +347,9 @@ let ComputedQuestion = (props) => {
             disabled={true}
             className={classes.textField + " " + classes.answerField}
             value={displayValue}
-            InputProps={muiInputProps}
+            slotProps={{
+              input: muiInputProps
+            }}
           />
           }
         </>

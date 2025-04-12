@@ -103,23 +103,25 @@ let ConditionalValueInput = (props) => {
               placeholder="Enter a value"
               error={valueExists}
               helperText={valueExists ? "This value has already been added" : "Press ENTER to add the value"}
-              inputProps={{
-                ...params.inputProps,
-                onKeyDown: (event) => {
-                  if (event.key == 'Enter') {
+              slotProps={{
+                htmlInput: {
+                  ...params.inputProps,
+                  onKeyDown: (event) => {
+                    if (event.key == 'Enter') {
+                      if (checkValueExists(event.target.value)) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                      }
+                    }
+                  },
+                  onBlur: (event) => {
                     if (checkValueExists(event.target.value)) {
                       event.preventDefault();
                       event.stopPropagation();
                     }
-                  }
+                    params.inputProps?.onBlur?.(event);
+                  },
                 },
-                onBlur: (event) => {
-                  if (checkValueExists(event.target.value)) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                  }
-                  params.inputProps?.onBlur?.(event);
-                }
               }}
             />
           )}

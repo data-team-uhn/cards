@@ -737,9 +737,9 @@ function Form (props) {
       </Grid>
       <ErrorDialog title="Failed to save" open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <Typography variant="h6">Your changes were not saved.</Typography>
-        <Typography paragraph>Server responded with error code {errorCode}: {errorMessage}</Typography>
+        <Typography component="p">Server responded with error code {errorCode}: {errorMessage}</Typography>
         {lastSaveTimestamp &&
-          <Typography paragraph>
+          <Typography component="p">
             {"The last successful save was "}
             <Tooltip title={lastSaveTimestamp.toISOString()}>
               <span>{getTimestampString(lastSaveTimestamp.toISOString())}.</span>
