@@ -42,12 +42,12 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   withMultiSelect: {
-    "& > .MuiGrid-root:first-child" : {
+    "& > .MuiGrid-root:first-of-type" : {
       marginTop: theme.spacing(1),
     },
   },
   withSelect: {
-    "& > .MuiGrid-root:first-child" : {
+    "& > .MuiGrid-root:first-of-type" : {
       marginTop: theme.spacing(.5),
     },
   },

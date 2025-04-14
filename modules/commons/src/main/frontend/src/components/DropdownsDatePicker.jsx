@@ -45,7 +45,7 @@ const getDaysInMonth = (year, month) => {
 const useStyles = makeStyles()(theme => ({
   container : {
     overflow: "hidden",
-    "& > *:not(:first-child)" : {
+    "& > *:not(:first-of-type)" : {
       paddingLeft: theme.spacing(2),
     },
     "& .MuiAutocomplete-root" : {

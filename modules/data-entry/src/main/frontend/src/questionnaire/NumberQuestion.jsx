@@ -59,7 +59,7 @@ const useSliderStyles = makeStyles()(theme => ({
     flexDirection: "column-reverse",
     alignItems: "center",
     width: "fit-content",
-    "& > .MuiTypography-root:first-child" : {
+    "& > .MuiTypography-root:first-of-type" : {
       marginTop: theme.spacing(1.5),
     },
     "& > .MuiTypography-root:last-child" : {
@@ -79,7 +79,7 @@ const useSliderStyles = makeStyles()(theme => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    "& > .MuiTypography-root:first-child" : {
+    "& > .MuiTypography-root:first-of-type" : {
       marginRight: theme.spacing(1.5),
       textAlign: "right",
     },
