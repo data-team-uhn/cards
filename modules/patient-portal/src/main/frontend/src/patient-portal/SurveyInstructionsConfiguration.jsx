@@ -39,7 +39,7 @@ export const DEFAULT_INSTRUCTIONS = {
 
 const useStyles = makeStyles()(theme => ({
   formEntries: {
-    "& .MuiListItem-root:not(:first-child) .MuiTypography-h6": {
+    "& .MuiListItem-root:not(:first-of-type) .MuiTypography-h6": {
       marginTop: theme.spacing(3),
     },
   },

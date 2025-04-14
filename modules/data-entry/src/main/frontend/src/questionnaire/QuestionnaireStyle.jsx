@@ -280,7 +280,7 @@ const questionnaireStyle = theme => ({
           width: "auto",
         },
       },
-      "& .MuiListItem-root > div:first-child > .MuiTextField-root" : {
+      "& .MuiListItem-root > div:first-of-type > .MuiTextField-root" : {
         [theme.breakpoints.up('sm')]: {
           minWidth: "100px",
           marginTop: theme.spacing(-1.5),
@@ -408,7 +408,7 @@ const questionnaireStyle = theme => ({
       "& > .MuiCollapse-wrapper" : {
         border: "1px solid " + theme.palette.primary.light,
       },
-      "& .MuiGrid-root:not(:first-child)": {
+      "& .MuiGrid-root:not(:first-of-type)": {
         paddingTop: 0,
       },
       "& .MuiGrid-root:not(:last-child)": {
@@ -430,7 +430,7 @@ const questionnaireStyle = theme => ({
       "& > .MuiCollapse-wrapper" : {
         border: "1px solid " + theme.palette.primary.light,
       },
-      "& .MuiGrid-root:not(:first-child)": {
+      "& .MuiGrid-root:not(:first-of-type)": {
         paddingTop: 0,
       },
       "& .MuiGrid-root:not(:last-child)": {
@@ -710,7 +710,7 @@ const questionnaireStyle = theme => ({
       },
     },
     questionMatrixStackedAnswer : {
-      "&:not(:first-child) th" : {
+      "&:not(:first-of-type) th" : {
         paddingTop: theme.spacing(3),
       },
       "& td" : {
@@ -731,7 +731,7 @@ const questionnaireStyle = theme => ({
       "&:not(:last-child) td:last-child" : {
         paddingBottom: theme.spacing(4),
       },
-      "&:not(:first-child) th": {
+      "&:not(:first-of-type) th": {
         paddingTop: theme.spacing(4),
       },
     },
