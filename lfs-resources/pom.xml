@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.uhndata.cards</groupId>
     <artifactId>cards-parent</artifactId>
-    <version>0.9.30-SNAPSHOT</version>
+    <version>0.9.30</version>
   </parent>
 
   <artifactId>lfs-resources</artifactId>
