@@ -24,6 +24,7 @@ import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.json.Json;
@@ -59,7 +60,6 @@ public class LockServlet extends SlingAllMethodsServlet
     private static final String METHOD_UNLOCK = "UNLOCK";
 
     private SlingHttpServletRequest request;
-    private SlingHttpServletResponse response;
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -102,7 +102,6 @@ public class LockServlet extends SlingAllMethodsServlet
         throws IOException, IllegalArgumentException
     {
         this.request = request;
-        this.response = response;
 
         boolean mustPopResolver = false;
         try {
@@ -119,10 +118,12 @@ public class LockServlet extends SlingAllMethodsServlet
             writeSuccess(response);
         } catch (LockError e) {
             writeError(response, SlingHttpServletResponse.SC_CONFLICT,
-                String.format("Cannot {} node: {}", isLockRequest ? "lock" : "unlock", e.getMessage()));
+                String.format("Cannot %s node: %s", isLockRequest ? "lock" : "unlock", e.getMessage()));
         } catch (LockException e) {
             writeError(response, SlingHttpServletResponse.SC_CONFLICT,
-                String.format("Unexpected error {} requested node", isLockRequest ? "locking" : "unlocking"));
+                String.format("Unexpected error %s requested node", isLockRequest ? "locking" : "unlocking"));
+        } catch (AccessDeniedException e) {
+            writeError(response, SlingHttpServletResponse.SC_FORBIDDEN, "Access Denied");
         } catch (RepositoryException e) {
             LOGGER.error("Unable to write response", e);
         } finally {

@@ -231,6 +231,9 @@ function SubjectLockAction(props) {
     } else if (status === 403) {
       // FORBIDDEN
       openError(`You do not have permission to ${lockUnlockText.toLowerCase()} this item.`);
+    } else if (status === 409) {
+      // CONFLICT
+      response.json().then(json => openError(json.error));
     } else {
       openError(`Could not ${lockUnlockText.toLowerCase()} the item. The server returned response code ${status}`);
     }
