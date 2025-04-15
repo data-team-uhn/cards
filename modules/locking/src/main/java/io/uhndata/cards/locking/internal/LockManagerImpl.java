@@ -219,7 +219,7 @@ public class LockManagerImpl implements LockManager
                 String author = existingLock.getProperty("author").getString();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String time = format.format(existingLock.getProperty("time").getDate().getTime());
-                return String.format("Node has already been locked by locked by %s on %s", author, time);
+                return String.format("Node has already been locked by %s on %s", author, time);
             }
 
             // Can only lock subjects
@@ -304,7 +304,7 @@ public class LockManagerImpl implements LockManager
         try {
             Session session = getSession(this.rrp);
             String userID = session.getUserID();
-            Node lockHomePage = session.getNode("/Locks");
+            Node lockHomePage = session.getNode("/jcr:system/cards:locks");
             Node lockNode = lockHomePage.addNode(UUID.randomUUID().toString(), LOCK_NODE_TYPE);
             lockNode.setProperty("time", Calendar.getInstance());
             lockNode.setProperty("author", userID);
