@@ -54,12 +54,6 @@ function SelectableAreaQuestion(props) {
   let { classes, errorText, existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
   let { variant, maxAnswers } = {...props.questionDefinition, ...props};
 
-  if (!variant) {
-    return <Alert severity="warning">
-            The selectable areas cannot be displayed due to incorrect configuration: "variant" is not defined or invalid
-          </Alert>
-  }
-
   const [ map, setMap ] = useState(null);
   const [ initialized, setInitialized ] = useState(false);
 
@@ -376,7 +370,13 @@ function SelectableAreaQuestion(props) {
           <div ref={questionRef}>
             <Tooltip title={tooltipTitle} open={hoveredIndex >= 0} followCursor>
               <div style={{position: 'relative', float:"left", cursor: (hoveredIndex >= 0 && isEdit ? "pointer" : "auto")}}>
-                {imageMap}
+                {variant ?
+                  imageMap
+                  :
+                  <Alert severity="warning">
+                    The selectable areas cannot be displayed due to incorrect configuration: "variant" is not defined or invalid
+                  </Alert>
+                }
               </div>
             </Tooltip>
             {selectionDisplay}
