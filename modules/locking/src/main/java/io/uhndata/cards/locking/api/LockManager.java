@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.locking.api;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 
 /**
@@ -63,8 +64,9 @@ public interface LockManager
      * @throws LockWarning if the node cannot be locked with {@code tryLock} but may be lockable with {@code forceLock}
      * @throws LockError if the node cannot be locked
      * @throws LockException if an internal error occurs
+     * @throws AccessDeniedException if the user does not have permission to lock this node
      */
-    void tryLock(Node node) throws LockWarning, LockError, LockException;
+    void tryLock(Node node) throws LockWarning, LockError, LockException, AccessDeniedException;
 
     /**
      * Try to lock a subject node, ignoring all warning-only precondition.
@@ -72,8 +74,9 @@ public interface LockManager
      * @param node the subject node to try to lock
      * @throws LockError if the node can not be locked
      * @throws LockExcpetion if an internal error occurs
+     * @throws AccessDeniedException if the user does not have permission to lock this node
      */
-    void forceLock(Node node) throws LockError, LockException;
+    void forceLock(Node node) throws LockError, LockException, AccessDeniedException;
 
     /**
      * Check if a subject node can be unlocked.
@@ -97,6 +100,7 @@ public interface LockManager
      * @param node the subject node to unlock
      * @throws LockError if the node cannot be unlocked
      * @throws LockExcepttion if an internal error occurs
+     * @throws AccessDeniedException if the user does not have permission to unlock this node
      */
-    void unlock(Node node) throws LockError, LockException;
+    void unlock(Node node) throws LockError, LockException, AccessDeniedException;
 }
