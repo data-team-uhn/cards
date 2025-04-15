@@ -26,12 +26,12 @@
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~locking":{
       "service.ranking:Integer":300,
       "scripts": [
-        "create path (cards:LockHomepage) /Locks",
+        "create path (cards:LockHomepage) /jcr:system/cards:locks",
         // Locking and unlocking subjects and appropriate visits
         "create service user locking \n set ACL for locking \n allow jcr:all on / \n end",
-        "set ACL for everyone \n deny rep:write on /Subjects,/Forms restriction(cards:locked) \n deny rep:write on /Locks \n allow jcr:read on /Locks \n deny rep:write on /Subjects,/Forms restriction(rep:itemNames, cards:lock) \n end",
-        "create group LockUsers \n set ACL for LockUsers \n allow jcr:addChildNodes, rep:addProperties, jcr:nodeTypeManagement on /Locks \n end",
-        "create group UnlockUsers \n set ACL for UnlockUsers \n allow jcr:removeChildNodes, jcr:removeNode on /Locks \n end"
+        "set ACL for everyone \n deny rep:write on /Subjects,/Forms restriction(cards:locked) \n deny rep:write on /jcr:system/cards:locks \n allow jcr:read on /jcr:system/cards:locks \n deny rep:write on /Subjects,/Forms restriction(rep:itemNames, cards:lock) \n end",
+        "create group LockUsers \n set ACL for LockUsers \n allow jcr:addChildNodes, rep:addProperties, jcr:nodeTypeManagement on /jcr:system/cards:locks \n end",
+        "create group UnlockUsers \n set ACL for UnlockUsers \n allow jcr:removeChildNodes, jcr:removeNode on /jcr:system/cards:locks \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~locking":{
