@@ -24,10 +24,11 @@ export default function SubjectActions(props) {
   let { subject, reloadSubject, className, size, variant } = props;
 
   const [ extensionPointComponents, setExtensionPointComponents ] = useState([]);
-  const [ isInitialized, setIsInitialized ] = useState(false);
+  let initialized = false;
 
   useEffect(() => {
-    if (!isInitialized) {
+    if (!initialized) {
+      initialized = true;
       loadExtensions("SubjectActions")
       .then((resp) => {
         let loadedComponents = [];
@@ -35,7 +36,6 @@ export default function SubjectActions(props) {
           loadedComponents.push(resp[i]["cards:extensionRender"]);
         }
         setExtensionPointComponents(loadedComponents);
-        setIsInitialized(true);
       });
     }
   }, []);

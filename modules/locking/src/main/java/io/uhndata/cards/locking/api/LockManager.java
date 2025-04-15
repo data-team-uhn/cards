@@ -86,9 +86,10 @@ public interface LockManager
      *
      * @param node the subject node to check
      * @return {@code true} if the node can be unlocked
+     * @throws LockWarning if the node cannot be unlocked but attempting to do so will silently no-op
      * @throws LockException if it can not be determined if the node can be unlocked
      */
-    boolean canUnlock(Node node) throws LockException;
+    boolean canUnlock(Node node) throws LockWarning, LockException;
 
 
     /**
