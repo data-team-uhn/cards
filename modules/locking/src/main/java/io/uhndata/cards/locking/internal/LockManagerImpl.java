@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
@@ -109,7 +110,7 @@ public class LockManagerImpl implements LockManager
     }
 
     @Override
-    public void tryLock(Node node) throws LockWarning, LockError, LockException
+    public void tryLock(Node node) throws LockWarning, LockError, LockException, AccessDeniedException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
@@ -125,7 +126,7 @@ public class LockManagerImpl implements LockManager
     }
 
     @Override
-    public void forceLock(Node node) throws LockError, LockException
+    public void forceLock(Node node) throws LockError, LockException, AccessDeniedException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
@@ -160,7 +161,7 @@ public class LockManagerImpl implements LockManager
 
 
     @Override
-    public void unlock(Node node) throws LockError, LockException
+    public void unlock(Node node) throws LockError, LockException, AccessDeniedException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
@@ -270,7 +271,7 @@ public class LockManagerImpl implements LockManager
     }
 
     private void lockNode(Node node)
-        throws LockError, LockException
+        throws LockError, LockException, AccessDeniedException
     {
         try {
             Session serviceSession = this.serviceResolver.get().adaptTo(Session.class);
@@ -279,13 +280,17 @@ public class LockManagerImpl implements LockManager
             Node lockNode = createLockNode();
             applyLockNode(serviceNode, lockNode, versionManager);
         } catch (RepositoryException e) {
-            LOGGER.error("Unable to retrieve service user", e);
-            throw new LockException("Unable to retrieve service user");
+            if (e instanceof AccessDeniedException) {
+                throw (AccessDeniedException) e;
+            } else {
+                LOGGER.error("Unable to retrieve service user", e);
+                throw new LockException("Unable to retrieve service user");
+            }
         }
     }
 
     private Node createLockNode()
-        throws LockException
+        throws LockException, AccessDeniedException
     {
         try {
             Session session = getSession(this.rrp);
@@ -297,7 +302,11 @@ public class LockManagerImpl implements LockManager
             session.save();
             return lockNode;
         } catch (RepositoryException e) {
-            throw new LockException("Unable to create lock");
+            if (e instanceof AccessDeniedException) {
+                throw (AccessDeniedException) e;
+            } else {
+                throw new LockException("Unable to create lock");
+            }
         }
     }
 
@@ -338,19 +347,11 @@ public class LockManagerImpl implements LockManager
         } catch (RepositoryException e) {
             LOGGER.error("Unable to apply lock", e);
             throw new LockException("Unable to apply lock");
-        } finally {
-            try {
-                checkinIfNeeded(versionManager);
-            } catch (RepositoryException e) {
-                // Should not happen
-                LOGGER.error("Cannot checkin", e);
-
-            }
         }
     }
 
     private void unlockNode(Node node)
-        throws LockError, LockException
+        throws LockError, LockException, AccessDeniedException
     {
         try {
             Session serviceSession = this.serviceResolver.get().adaptTo(Session.class);
@@ -360,13 +361,17 @@ public class LockManagerImpl implements LockManager
             deleteLockNode(node);
             removeLockNode(serviceNode, versionManager);
         } catch (RepositoryException e) {
-            LOGGER.error("Unable to retrieve service user", e);
-            throw new LockException("Unable to retrieve service user");
+            if (e instanceof AccessDeniedException) {
+                throw (AccessDeniedException) e;
+            } else {
+                LOGGER.error("Unable to retrieve service user", e);
+                throw new LockException("Unable to retrieve service user");
+            }
         }
     }
 
     private void deleteLockNode(Node node)
-        throws LockException
+        throws LockException, AccessDeniedException
     {
         try {
             // If the node is locked, unlock it.
@@ -377,7 +382,11 @@ public class LockManagerImpl implements LockManager
                 node.getSession().save();
             }
         } catch (RepositoryException e) {
-            throw new LockException("Unable to delete lock");
+            if (e instanceof AccessDeniedException) {
+                throw (AccessDeniedException) e;
+            } else {
+                throw new LockException("Unable to delete lock");
+            }
         }
     }
 
@@ -411,14 +420,6 @@ public class LockManagerImpl implements LockManager
         } catch (RepositoryException e) {
             LOGGER.error("Unable to remove lock", e);
             throw new LockException("Unable to remove lock");
-        } finally {
-            try {
-                checkinIfNeeded(versionManager);
-            } catch (RepositoryException e) {
-                // Should not happen.
-                LOGGER.error("Cannot checkin");
-                throw new LockException("Unable to check in removed lock");
-            }
         }
     }
 
