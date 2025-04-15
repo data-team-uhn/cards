@@ -449,7 +449,7 @@
             <exclude>**/frontend/node/**</exclude>
             <exclude>**/node_modules/**</exclude>
             <exclude>**/frontend/dist/**</exclude>
-            <exclude>**/webpack.config.js</exclude>
+            <exclude>**/assets.config</exclude>
             <exclude>**/yarn.lock</exclude>
             <!-- Exclude JSON files since comments are not supported -->
             <exclude>**/*.json</exclude>

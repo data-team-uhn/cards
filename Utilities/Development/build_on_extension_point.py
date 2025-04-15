@@ -61,31 +61,6 @@ try:
 except FileExistsError:
   pass
 
-# Add a package.json file
-with open("Utilities/Development/ExtensionPointResources/package.json", 'r') as f_package_json:
-  package_json = json.loads(f_package_json.read())
-package_json['name'] = PROJECT_NAME_PREFIX + "-" + THIS_OSGI_MODULE_NAME
-package_json['version'] = THIS_EXTENSION_VERSION
-package_json['description'] = THIS_EXTENSION_DESCRIPTION
-package_json['author'] = THIS_EXTENSION_AUTHOR
-package_json['license'] = THIS_EXTENSION_LICENSE
-package_json['repository']['url'] = THIS_EXTENSION_REPO_URL
-package_json['repository']['directory'] = THIS_EXTENSION_REPO_DIRECTORY
-with open(os.path.join(THIS_OSGI_MODULE_DIRECTORY, "src/main/frontend/package.json"), 'w') as f_package_json:
-  f_package_json.write(json.dumps(package_json, indent=4))
-
-# Add a webpack.config.js
-with open(os.path.join(THIS_OSGI_MODULE_DIRECTORY, "src/main/frontend/webpack.config.js"), 'w') as f_webpack_config_js:
-  with open("Utilities/Development/ExtensionPointResources/webpack.config.js.head", 'r') as f_head:
-    f_webpack_config_js.write(f_head.read().rstrip())
-
-  f_webpack_config_js.write("\n")
-  f_webpack_config_js.write("    [module_name + '{}']: './src/{}.jsx'".format(THIS_EXTENSION_JSX_SRC, THIS_EXTENSION_JSX_SRC))
-  f_webpack_config_js.write("\n")
-
-  with open("Utilities/Development/ExtensionPointResources/webpack.config.js.tail", 'r') as f_tail:
-    f_webpack_config_js.write(f_tail.read())
-
 extension_properties = {}
 extension_properties[ATTACHING_EXTENSION_POINT_NAME] = {}
 extension_properties[ATTACHING_EXTENSION_POINT_NAME]['jcr:primaryType'] = 'sling:Folder'
