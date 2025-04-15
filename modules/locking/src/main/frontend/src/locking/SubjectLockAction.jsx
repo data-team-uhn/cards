@@ -36,7 +36,6 @@ import {
   Typography
 } from "@mui/material";
 import Alert from '@mui/material/Alert';
-import withStyles from '@mui/styles/withStyles';
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -49,7 +48,7 @@ function SubjectLockAction(props) {
   const {
     subject,
     reloadSubject,
-    size = "large",
+    size,
     variant = "icon",
     className
   } = props;
@@ -159,7 +158,7 @@ function SubjectLockAction(props) {
         If you unlock this {subject?.type?.label} all the associated data forms
         will be unlocked as well unless they were seperately locked. Proceed?
       </Alert>
-    )
+    );
   }
 
   let handleContinue = () => {
@@ -187,7 +186,7 @@ function SubjectLockAction(props) {
   let handleIncompleteForms = (rows) => {
     setNextAction(ACTION_CONTINUE);
     setActionContent(getLockWarning());
-    setDialogHeader(<Typography>{rows.length} form{rows.length > 1 ? "s are" : " is"} incomplete:</Typography>)
+    setDialogHeader(<Typography>{rows.length} form{rows.length > 1 ? "s are" : " is"} incomplete:</Typography>);
     setDialogContent(
       <List dense>
         {rows.map((row, index) => {
@@ -211,7 +210,7 @@ function SubjectLockAction(props) {
             </ListItem>
         })}
       </List>
-    )
+    );
   }
 
   let getChildSubjects = (subject, subjects) => {
@@ -220,7 +219,7 @@ function SubjectLockAction(props) {
         subjects.push(child["jcr:uuid"]);
         getChildSubjects(child, subjects);
       }
-    })
+    });
   }
 
   let handleError = (status, response) => {
@@ -330,8 +329,8 @@ function SubjectLockAction(props) {
         <Tooltip title={buttonText}>
           <IconButton component="span" onClick={openDialog} className={className} size={size}>
             { isLocked
-              ? <LockOpenIcon fontSize={size == "small" ? size : undefined}/>
-              : <LockIcon fontSize={size == "small" ? size : undefined}/>
+              ? <LockOpenIcon fontSize={size}/>
+              : <LockIcon fontSize={size}/>
             }
           </IconButton>
         </Tooltip>

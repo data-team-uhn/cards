@@ -82,7 +82,7 @@ public class IncompleteFormsPrecondition implements LockPrecondition
             }
         }
 
-        final PropertyIterator references = subject.getReferences();
+        final PropertyIterator references = subject.getReferences("subject");
         while (references.hasNext()) {
             Node referenceNode = references.nextProperty().getParent();
             if (this.formUtils.isForm(referenceNode)) {
