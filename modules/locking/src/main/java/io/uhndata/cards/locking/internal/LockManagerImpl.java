@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.locking.internal;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -148,7 +149,7 @@ public class LockManagerImpl implements LockManager
 
 
     @Override
-    public boolean canUnlock(Node node) throws LockException
+    public boolean canUnlock(Node node) throws LockWarning, LockException
     {
         boolean mustCloseResolver = initializeServiceResolver();
         try {
@@ -170,6 +171,9 @@ public class LockManagerImpl implements LockManager
                 throw new LockError(reason);
             }
             unlockNode(node);
+        } catch (LockWarning e) {
+            LOGGER.warn("Warning encountered trying to unlock a node: " + e.getMessage());
+            // Exit silently without doing anything
         } finally {
             closeResolverIfNeeded(mustCloseResolver);
         }
@@ -210,7 +214,12 @@ public class LockManagerImpl implements LockManager
             Node serviceNode = getServiceNode(node);
             // Cannot lock nodes that are already locked
             if (isServiceNodeLocked(serviceNode)) {
-                return "The node is already locked";
+                // Node is already locked
+                Node existingLock = serviceNode.getProperty(LOCK_PROPERTY).getNode();
+                String author = existingLock.getProperty("author").getString();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                String time = format.format(existingLock.getProperty("time").getDate().getTime());
+                return String.format("Node has already been locked by locked by %s on %s", author, time);
             }
 
             // Can only lock subjects
@@ -244,13 +253,13 @@ public class LockManagerImpl implements LockManager
         }
     }
 
-    private String canUnlockWithReason(Node node) throws LockException
+    private String canUnlockWithReason(Node node) throws LockWarning, LockException
     {
         try {
             Node serviceNode = getServiceNode(node);
             // Cannot unlock nodes that are not locked
             if (!isServiceNodeLocked(serviceNode)) {
-                return "The node is not locked";
+                throw new LockWarning("The node is not locked");
             }
 
             // Can only unlock subjects
@@ -326,8 +335,7 @@ public class LockManagerImpl implements LockManager
                 && serviceNode.getProperty(LOCK_PROPERTY).getString().length() > 0) {
                 // This node is already locked: Error out if needed, otherwise exit quietly
                 if (root.length() > 0) {
-                    // TODO: Add better message
-                    // Could not lock as <> has already been locked by <> on <>
+                    // This node is already locked: skip
                     throw new LockError("Node is already locked");
                 } else {
                     return;
