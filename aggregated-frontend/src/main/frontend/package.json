@@ -1,6 +1,7 @@
 {
   "license": "Apache-2.0",
   "name": "cards-aggregated-frontend",
+  "description": "CARDS is a software tool providing an easy-to-use Web interface and standardized database back-end for collecting medical data.",
   "repository": {
     "url": "https://github.com/data-team-uhn/cards.git",
     "directory": "modules/commons/src/main/frontend",
@@ -71,6 +72,5 @@
   },
   "resolutions": {
     "@babel/runtime": "^7.26.10"
-  },
-  "description": "Aggregated package.json"
+  }
 }
