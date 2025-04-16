@@ -180,7 +180,7 @@ function UnstyledNewSubjectDialog (props) {
             ]}
             data={ allowedTypes?.length ? allowedTypes : data }
             renderTopToolbarCustomActions={() => {
-              return <Typography variant="h6" sx={(theme) => ({ paddingLeft: theme.spacing(2) })}>Select a type</Typography>;
+              return <Typography variant="h6" sx={{pl: 2}}>Select a type</Typography>;
             }}
             positionToolbarAlertBanner="none"
             muiTableHeadCellProps={{

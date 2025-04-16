@@ -427,7 +427,7 @@ function LiveTable(props) {
               ( tableData.map(makeRow) )
               :
               ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>
-                  <Typography className={classes.dashboardEntry}>Please wait...</Typography>
+                  <Typography>Please wait...</Typography>
                 </TableCell></TableRow> )
           }
         </TableBody>

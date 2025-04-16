@@ -91,7 +91,7 @@ function LandingPage(props) {
                 <Typography variant="h6">I am a...</Typography>
               </Grid>
               <Grid>
-                <Grid container spacing={3} direction="column" justifyContent="center" alignItems="center">
+                <Grid container spacing={3} direction="column" justifyContent="center" alignItems="stretch">
                   <Grid>
                     <Button
                       fullWidth
