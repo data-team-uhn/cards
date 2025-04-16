@@ -19,7 +19,7 @@
 import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import { createRoot } from 'react-dom/client';
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
@@ -31,6 +31,8 @@ import Page from "./Page";
 import PageStart from "../PageStart";
 import IndexStyle from "./indexStyle.jsx";
 import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
 
 class Main extends React.Component {
   constructor(props) {
@@ -179,11 +181,17 @@ Main.propTypes = {
 };
 const MainComponent = withStyles(Main, IndexStyle);
 
+const cache = createCache({
+  key: 'tss',
+  // Enable style speedy insertion mode
+  speedy: true
+});
+
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#main-container'));
 root.render(
-  <StyledEngineProvider injectFirst>
+  <CacheProvider value={cache}>
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
         <Switch>
@@ -193,7 +201,7 @@ root.render(
         </Switch>
       </Router>
     </ThemeProvider>
-  </StyledEngineProvider>
+  </CacheProvider>
 );
 
 export default MainComponent;
