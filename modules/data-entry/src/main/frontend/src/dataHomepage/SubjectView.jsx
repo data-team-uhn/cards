@@ -161,7 +161,7 @@ function SubjectView(props) {
               onFiltersChange={(str) => setFiltersJsonString(str)}
               filtersJsonString={filtersJsonString}
             />
-          : <Typography style={{ paddingLeft: theme.spacing(1)}}>No results</Typography>
+          : <Typography sx={{pl: 1}}>No results</Typography>
       }
       </CardContent>
       {expanded &&

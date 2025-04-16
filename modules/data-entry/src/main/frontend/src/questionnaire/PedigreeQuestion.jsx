@@ -150,6 +150,7 @@ function PedigreeQuestion(props) {
             onClose={() => { setExpanded(false); }}
             slotProps={{
               transition: {
+                onEntering: () => openPedigree(),
                 onExit: () => closePedigree(),
               },
             }}>

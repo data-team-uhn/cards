@@ -306,7 +306,7 @@ function FileQuestion(props) {
       {
         pageActive && <>
           { uploadInProgress && (
-            <Grid className={classes.root}>
+            <Grid>
               <LinearProgress/>
             </Grid>
           ) }
