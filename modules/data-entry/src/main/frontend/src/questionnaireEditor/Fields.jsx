@@ -19,10 +19,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'tss-react/mui';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 
 // Unused imports required for the component manager
 import AnswerOptions from "./AnswerOptions";
@@ -39,7 +37,7 @@ import LabeledField from "./LabeledField";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
 let Fields = (props) => {
-  let { data, hints, JSON, edit, classes, condensed, ...rest } = props;
+  let { data, hints, JSON, edit, condensed, ...rest } = props;
 
   /**
    * Method responsible for displaying a question from the questionnaire
@@ -107,4 +105,4 @@ Fields.propTypes = {
   hints: PropTypes.object,
 };
 
-export default withStyles(Fields, QuestionnaireStyle);
+export default Fields;

@@ -20,10 +20,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Chip, Input, MenuItem, Select, Typography } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
 import { useFieldsWriterContext } from "./FieldsContext";
@@ -133,12 +131,11 @@ ListInput.propTypes = {
   hint: PropTypes.string,
 };
 
-var StyledListInput = withStyles(ListInput, QuestionnaireStyle);
-export default StyledListInput;
+export default ListInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
   if (definition.type && definition.type === "list") {
-    return [StyledListInput, 50];
+    return [ListInput, 50];
   }
 });
 

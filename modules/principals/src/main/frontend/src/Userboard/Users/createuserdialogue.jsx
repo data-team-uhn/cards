@@ -16,9 +16,7 @@
 */
 
 import React from "react";
-import { withStyles } from 'tss-react/mui';
 import { Grid, Dialog, DialogTitle, DialogContent } from "@mui/material";
-import userboardStyle from '../userboardStyle.jsx';
 import SignUpForm from "../../login/signUpForm.js";
 
 class CreateUserDialogue extends React.Component {
@@ -36,8 +34,6 @@ class CreateUserDialogue extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
-
         return (
             <Dialog
                 open={this.props.isOpen}
@@ -60,4 +56,4 @@ class CreateUserDialogue extends React.Component {
     }
 }
 
-export default withStyles(CreateUserDialogue, userboardStyle);
+export default CreateUserDialogue;

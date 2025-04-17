@@ -751,7 +751,7 @@ function Form (props) {
         <SessionExpiryWarningModal
           lastActivityTimestamp={lastSaveTimestamp}
           onStay={() => setAutosaveOptions({})}
-          onExit={() => props.history.push("/")}
+          onExit={() => navigate("/")}
           onExpired={() => { removeWindowHandlers(); setAutosaveOptions({performCheckin: true}); } }
         />
       }
@@ -759,4 +759,4 @@ function Form (props) {
   );
 };
 
-export default withStyles(withRouter(Form), QuestionnaireStyle);
+export default withStyles(Form, QuestionnaireStyle);

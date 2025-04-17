@@ -19,10 +19,8 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 import MarkdownText from "./MarkdownText";
@@ -48,12 +46,11 @@ MarkdownTextField.propTypes = {
   hint: PropTypes.string,
 };
 
-const StyledMarkdownTextField = withStyles(MarkdownTextField, QuestionnaireStyle);
-export default StyledMarkdownTextField;
+export default MarkdownTextField;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
   if (definition === 'markdown') {
-    return [StyledMarkdownTextField, 50];
+    return [MarkdownTextField, 50];
   }
 });
 

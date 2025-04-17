@@ -18,13 +18,11 @@
 //
 
 import React, { forwardRef } from "react";
-import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import ResourceQuery from "../../resourceQuery/ResourceQuery.jsx";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
@@ -68,12 +66,10 @@ ResourceFilter.propTypes = {
   })
 }
 
-const StyledResourceFilter = withStyles(ResourceFilter, QuestionnaireStyle)
-
-export default StyledResourceFilter;
+export default ResourceFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "resource") {
-    return [COMPARATORS, StyledResourceFilter, 70];
+    return [COMPARATORS, ResourceFilter, 70];
   }
 });

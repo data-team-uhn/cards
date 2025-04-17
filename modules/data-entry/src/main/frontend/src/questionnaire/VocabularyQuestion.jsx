@@ -18,12 +18,10 @@
 //
 
 import React from "react";
-import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
@@ -79,7 +77,6 @@ function VocabularyQuestion(props) {
 }
 
 VocabularyQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     sourceVocabularies: PropTypes.array.isRequired
@@ -87,12 +84,10 @@ VocabularyQuestion.propTypes = {
   text: PropTypes.string
 };
 
-
-const StyledVocabularyQuestion = withStyles(VocabularyQuestion, QuestionnaireStyle)
-export default StyledVocabularyQuestion;
+export default VocabularyQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "vocabulary") {
-    return [StyledVocabularyQuestion, 50];
+    return [VocabularyQuestion, 50];
   }
 });

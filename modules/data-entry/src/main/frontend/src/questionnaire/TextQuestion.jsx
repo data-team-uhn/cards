@@ -21,13 +21,10 @@ import React from "react";
 
 import { Typography } from "@mui/material";
 
-import { withStyles } from 'tss-react/mui';
-
 import PropTypes from "prop-types";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
@@ -103,7 +100,6 @@ function TextQuestion(props) {
 }
 
 TextQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     minAnswers: PropTypes.number,
@@ -119,9 +115,8 @@ TextQuestion.propTypes = {
   defaults: PropTypes.array,
 };
 
-const StyledTextQuestion = withStyles(TextQuestion, QuestionnaireStyle)
-export default StyledTextQuestion;
+export default TextQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
-  return [StyledTextQuestion, 0];
+  return [TextQuestion, 0];
 });
