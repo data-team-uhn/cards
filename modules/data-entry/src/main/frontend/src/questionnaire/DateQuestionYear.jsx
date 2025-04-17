@@ -19,10 +19,7 @@
 
 import React from "react";
 
-import { withStyles } from 'tss-react/mui';
-
 import NumberQuestion from "./NumberQuestion";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import DateQuestionUtilities from "./DateQuestionUtilities";
@@ -48,7 +45,7 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  type="timestamp"
 //  />
 function DateQuestionYear(props) {
-  let {existingAnswer, classes, ...rest} = props;
+  let {existingAnswer, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
   return (
     <NumberQuestion
@@ -69,13 +66,12 @@ function DateQuestionYear(props) {
 
 DateQuestionYear.propTypes = DateQuestionUtilities.PROP_TYPES;
 
-const StyledDateQuestionYear = withStyles(DateQuestionYear, QuestionnaireStyle);
-export default StyledDateQuestionYear;
+export default DateQuestionYear;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date"
     && DateQuestionUtilities.getDateType(questionDefinition.dateFormat) === DateQuestionUtilities.YEAR_DATE_TYPE)
   {
-    return [StyledDateQuestionYear, 60];
+    return [DateQuestionYear, 60];
   }
 });

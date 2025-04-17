@@ -20,9 +20,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
 import { v4 as uuidv4 } from 'uuid';
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function NewQuestionnaireDialog(props) {
   const { open, onClose, questionnaires } = props;
@@ -119,4 +117,4 @@ function NewQuestionnaireDialog(props) {
   )
 }
 
-export default withStyles(withRouter(NewQuestionnaireDialog), QuestionnaireStyle);
+export default withRouter(NewQuestionnaireDialog);

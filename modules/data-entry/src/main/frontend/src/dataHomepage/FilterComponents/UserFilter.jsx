@@ -20,12 +20,10 @@
 import React, { forwardRef, useState, useEffect, useContext } from "react";
 import { TextField } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
 
 const filterUserOptions =  createFilterOptions({
@@ -88,12 +86,10 @@ UserFilter.propTypes = {
   questionDefinition: PropTypes.object
 }
 
-const StyledUserFilter = withStyles(UserFilter, QuestionnaireStyle)
-
-export default StyledUserFilter;
+export default UserFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "user") {
-    return [DEFAULT_COMPARATORS, StyledUserFilter, 60];
+    return [DEFAULT_COMPARATORS, UserFilter, 60];
   }
 });

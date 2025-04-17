@@ -18,13 +18,11 @@
 //
 
 import React, { forwardRef } from "react";
-import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import VocabularyQuery from "../../vocabQuery/VocabularyQuery.jsx";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
@@ -39,7 +37,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  */
 const VocabularyFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
+  const { defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
 
   return (
     <VocabularyQuery
@@ -64,12 +62,10 @@ VocabularyFilter.propTypes = {
   })
 }
 
-const StyledVocabularyFilter = withStyles(VocabularyFilter, QuestionnaireStyle)
-
-export default StyledVocabularyFilter;
+export default VocabularyFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "vocabulary") {
-    return [COMPARATORS, StyledVocabularyFilter, 50];
+    return [COMPARATORS, VocabularyFilter, 50];
   }
 });

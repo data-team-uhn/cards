@@ -18,13 +18,11 @@
 //
 
 import React from "react";
-import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
@@ -56,7 +54,6 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  const {classes, ...rest} = props;
   const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
 
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
@@ -76,13 +73,12 @@ function BooleanQuestion(props) {
         valueType="Long" /* Notably not "Boolean", since we need it to be stored as a long in the backend */
         maxAnswers={1}
         defaults={options}
-        {...rest}
+        {...props}
         />
     </Question>);
 }
 
 BooleanQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
   }).isRequired,
@@ -93,11 +89,10 @@ BooleanQuestion.propTypes = {
   unknownLabel: PropTypes.string
 };
 
-const StyledBooleanQuestion = withStyles(BooleanQuestion, QuestionnaireStyle)
-export default StyledBooleanQuestion;
+export default BooleanQuestion = BooleanQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "boolean") {
-    return [StyledBooleanQuestion, 50];
+    return [BooleanQuestion, 50];
   }
 });

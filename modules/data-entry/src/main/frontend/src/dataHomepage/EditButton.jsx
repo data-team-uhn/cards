@@ -20,11 +20,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { IconButton, Tooltip } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from 'react-router-dom';
-
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 /**
  * A component that renders an icon to open the edit URL for an entry or to use local edit dialog.
@@ -65,4 +62,4 @@ EditButton.defaultProps = {
   size: "large",
 }
 
-export default withStyles(EditButton, QuestionnaireStyle);
+export default EditButton;
