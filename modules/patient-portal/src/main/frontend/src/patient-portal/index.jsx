@@ -20,11 +20,13 @@ import React, { useState, useEffect } from "react";
 import { createRoot } from 'react-dom/client';
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { portalTheme } from "./portalTheme.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import Footer from "./Footer.jsx";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
@@ -90,11 +92,17 @@ function PatientPortalHomepage (props) {
   </>);
 }
 
+const cache = createCache({
+  key: 'tss',
+  // Enable style speedy insertion mode
+  speedy: true
+});
+
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#patient-portal-container'));
 root.render(
-  <StyledEngineProvider injectFirst>
+  <CacheProvider value={cache}>
     <ThemeProvider theme={portalTheme}>
       <Router history={hist}>
         <Switch>
@@ -104,7 +112,7 @@ root.render(
         </Switch>
       </Router>
     </ThemeProvider>
-  </StyledEngineProvider>
+  </CacheProvider>
 );
 
 export default PatientPortalHomepage;
