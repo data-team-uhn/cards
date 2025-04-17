@@ -39,14 +39,14 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  * Other props will be forwarded to the SearchBar component
  */
 const QuestionnaireFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
   const [ error, setError ] = useState();
   // Store information about each questionnaire and whether or not we have
   // initialized
   let [ questionnaires, setQuestionnaires ] = useState([]);
   let [ initialized, setInitialized ] = useState(false);
   // Store selected questionnaire uuid
-  let [ selection, setSelection ] = useState(defaultValue);
+  let [ selection, setSelection ] = useState(defaultValue || "");
   let [ uuidToTitle, setUuidToTitle ] = useState({});
 
   // Obtain information about the questionnaires available to the user
@@ -109,7 +109,7 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
       {...rest}
       >
       {questionnaires.map((uuid) => (
-        <MenuItem value={uuid} key={uuid} selected={selection && selection == uuid}>{uuidToTitle[uuid]}</MenuItem>
+        <MenuItem value={uuid} key={uuid} selected={!!selection && selection == uuid}>{uuidToTitle[uuid]}</MenuItem>
       ))
       }
     </Select>
