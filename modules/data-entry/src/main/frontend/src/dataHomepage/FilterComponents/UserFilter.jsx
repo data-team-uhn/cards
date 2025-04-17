@@ -41,7 +41,7 @@ const filterUserOptions =  createFilterOptions({
  *
  */
 const UserFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(defaultValue || "");
   const [ users, setUsers ] = useState();
