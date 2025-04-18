@@ -304,7 +304,7 @@ function NumberQuestion(props) {
 
   let makeSlider = (options) => {
     return (
-      <div className={sliderClasses[`${sliderOrientation}SliderContainer`]}>
+      <div className={sliderClasses.classes[`${sliderOrientation}SliderContainer`]}>
       { minValueLabel &&
         <Typography variant="caption" color="textSecondary">{minValueLabel}</Typography>
       }
