@@ -1,0 +1,36 @@
+name: Code Review
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened]
+  pull_request_review_comment:
+    types: [ created ]
+
+concurrency:
+  group:
+    ${{ github.repository }}-${{ github.event.number || github.head_ref ||
+    github.sha }}-${{ github.workflow }}-${{ github.event_name ==
+    'pull_request_review_comment' && 'pr_comment' || 'pr' }}
+  cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
+
+jobs:
+  review:
+    if: |
+      (github.event_name == 'pull_request' && github.event.sender.type != 'Bot') ||
+      (github.event_name == 'issue_comment' &&
+      contains(github.event.comment.body, '@redrover') &&
+      github.event.issue && github.event.issue.pull_request)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: bankrate/red-rover@main
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          debug: false
+          disable_release_notes: true
+          language: ru-RU
