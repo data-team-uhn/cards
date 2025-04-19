@@ -25,7 +25,7 @@ jobs:
       github.event.issue && github.event.issue.pull_request)
     runs-on: ubuntu-latest
     steps:
-      - uses: veronikaslc/ai-code-reviewer@dev
+      - uses: veronikaslc/cards@dev
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
