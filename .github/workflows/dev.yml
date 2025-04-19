@@ -33,4 +33,3 @@ jobs:
         with:
           debug: false
           disable_release_notes: true
-          language: ru-RU
