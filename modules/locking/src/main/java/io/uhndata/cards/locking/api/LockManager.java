@@ -29,8 +29,6 @@ import javax.jcr.Node;
  */
 public interface LockManager
 {
-    /** The status flag that indicates that a node is locked. */
-    String LOCKED_FLAG = "LOCKED";
     /** The relative path that contains the lock information node if present. */
     String LOCK_NODE_PATH = "lock";
     /** The primary node type for a lock information node. */

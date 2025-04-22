@@ -32,7 +32,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 import javax.jcr.version.VersionManager;
 
 import org.apache.jackrabbit.value.WeakReferenceValue;
@@ -60,7 +59,6 @@ public class LockManagerImpl implements LockManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(LockManagerImpl.class);
     private static final String SUBJECT_NODE_TYPE = "cards:Subject";
-    private static final String STATUS_PROPERTY = "statusFlags";
 
     @Reference
     private ThreadResourceResolverProvider rrp;
@@ -343,10 +341,6 @@ public class LockManagerImpl implements LockManager
             }
             serviceNode.setProperty(LOCK_PROPERTY, new WeakReferenceValue(lockNode));
 
-            final Set<String> statusFlags = getStatusFlags(serviceNode);
-            statusFlags.add(LOCKED_FLAG);
-            serviceNode.setProperty(STATUS_PROPERTY, statusFlags.toArray(new String[0]));
-
             handleChildNodes(this::applyLockNode, versionManager, serviceNode, lockNode, "");
             if (root.length() > 0) {
                 serviceNode.getSession().save();
@@ -413,10 +407,6 @@ public class LockManagerImpl implements LockManager
             if (parentLockString == null || parentLockString.equals(lockString)) {
                 serviceNode.getProperty(LOCK_PROPERTY).remove();
 
-                final Set<String> statusFlags = getStatusFlags(serviceNode);
-                statusFlags.remove(LOCKED_FLAG);
-                serviceNode.setProperty(STATUS_PROPERTY, statusFlags.toArray(new String[0]));
-
                 String passString = parentLockString == null ? lockString : parentLockString;
                 handleChildNodes(this::removeLockNode, versionManager, serviceNode, null, passString);
             }
@@ -468,18 +458,6 @@ public class LockManagerImpl implements LockManager
     {
         Node parent = serviceNode.getParent();
         return parent.isNodeType(SUBJECT_NODE_TYPE) && isServiceNodeLocked(parent);
-    }
-
-    private static Set<String> getStatusFlags(Node node)
-        throws RepositoryException
-    {
-        final Set<String> statusFlags = new TreeSet<>();
-        if (node.hasProperty(STATUS_PROPERTY)) {
-            for (Value value : node.getProperty(STATUS_PROPERTY).getValues()) {
-                statusFlags.add(value.getString());
-            }
-        }
-        return statusFlags;
     }
 
     private void checkoutIfNeeded(Node node, VersionManager versionManager)

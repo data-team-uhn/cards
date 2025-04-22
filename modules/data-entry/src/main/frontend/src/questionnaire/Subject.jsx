@@ -420,7 +420,7 @@ function SubjectMemberInternal (props) {
     if (data['jcr:uuid']) {
       fetchTableData();
     }
-  }, [data['jcr:uuid']]);
+  }, [data['jcr:lastModified']]);
 
   // If the subjectGroups data has not yet been fetched, return an in-progress symbol
   if (!subjectGroups) {
