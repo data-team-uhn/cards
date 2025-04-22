@@ -25,7 +25,7 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
-import { makeStyles, withStyles } from 'tss-react/mui';
+import { makeStyles } from 'tss-react/mui';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -42,7 +42,6 @@ cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 import PropTypes from "prop-types";
 
 import FileQuestion from "./FileQuestion";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import FormattedText from "../components/FormattedText";
 
@@ -335,11 +334,10 @@ DicomQuestion.propTypes = {
   }).isRequired,
 };
 
-const StyledDicomQuestion = withStyles(DicomQuestion, QuestionnaireStyle)
-export default StyledDicomQuestion;
+export default DicomQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "dicom") {
-    return [StyledDicomQuestion, 50];
+    return [DicomQuestion, 50];
   }
 });
