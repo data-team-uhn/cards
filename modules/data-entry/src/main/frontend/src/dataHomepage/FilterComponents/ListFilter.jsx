@@ -32,16 +32,16 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * Display a filter on a list answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {object} current Object containing the initial value and label to place in the list
+ * @param {object} initial Object containing the initial value and label to place in the list
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  * Other props are forwarded to the Select component
  *
  */
 const ListFilter = forwardRef((props, ref) => {
-  const { classes, current, onChangeInput, questionDefinition } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
   // Manage our own state inside here as well
-  const [ selection, setSelection ] = useState(current?.value || "");
+  const [ selection, setSelection ] = useState(initial?.value || "");
 
   // Populate our our map of options and labels if questionDefinition changes
   let valueToLabel = {};
@@ -79,7 +79,7 @@ const ListFilter = forwardRef((props, ref) => {
 });
 
 ListFilter.propTypes = {
-  current: PropTypes.shape({
+  initial: PropTypes.shape({
     value: PropTypes.string,
     label: PropTypes.string,
   }),

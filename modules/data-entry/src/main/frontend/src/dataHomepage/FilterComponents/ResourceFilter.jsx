@@ -32,14 +32,14 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * Display a filter on a resource answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {object} current Object containing the initial value and label to place in the filter
+ * @param {object} initial Object containing the initial value and label to place in the filter
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include "primaryType", "labelProperty", and "propertiesToSearch" children.
  * Other props are forwarded to the VocabularyQuery component
  *
  */
 const ResourceFilter = forwardRef((props, ref) => {
-  const { classes, current, onChangeInput, questionDefinition } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
   const enableUserEntry = !!!questionDefinition?.displayMode || questionDefinition?.displayMode?.includes("input");
 
   return (
@@ -51,7 +51,7 @@ const ResourceFilter = forwardRef((props, ref) => {
       questionDefinition={questionDefinition}
       placeholder="empty"
       inputRef={ref}
-      value={current?.label}
+      value={initial?.label}
       enableUserEntry={enableUserEntry}
       className={classes.answerField}
       />
@@ -59,7 +59,7 @@ const ResourceFilter = forwardRef((props, ref) => {
 });
 
 ResourceFilter.propTypes = {
-  current: PropTypes.shape({
+  initial: PropTypes.shape({
     value: PropTypes.string,
     label: PropTypes.string,
   }),

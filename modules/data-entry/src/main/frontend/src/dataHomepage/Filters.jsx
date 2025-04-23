@@ -313,7 +313,7 @@ function Filters(props) {
       <CachedComponent
         ref={focusRef}
         questionDefinition={questionDefinitions[filterDatum.name]}
-        current={{
+        initial={{
                   value: editingFilters[index].value,
                   label: editingFilters[index].label
                 }}

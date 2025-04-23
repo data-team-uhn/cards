@@ -33,14 +33,14 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  * Display a filter on a numeric answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {object} current Object containing the initial value and label to place in the text field
+ * @param {object} initial Object containing the initial value and label to place in the text field
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  * Other props are forwarded to the TextField component
  *
  */
 const NumericFilter = forwardRef((props, ref) => {
-  const { classes, current, onChangeInput, questionDefinition } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
   return (
     <TextField
       variant="standard"
@@ -57,7 +57,7 @@ const NumericFilter = forwardRef((props, ref) => {
           decimalScale: questionDefinition["dataType"] === "long" ? 0 : undefined
         },
       }}
-      defaultValue={current?.value}
+      defaultValue={initial?.value}
       onChange={(event) => {onChangeInput(event.target.value)}}
       placeholder="empty"
       inputRef={ref}
@@ -66,7 +66,7 @@ const NumericFilter = forwardRef((props, ref) => {
 });
 
 NumericFilter.propTypes = {
-  current: PropTypes.shape({
+  initial: PropTypes.shape({
     value: PropTypes.string,
     label: PropTypes.string,
   }),

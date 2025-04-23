@@ -35,13 +35,13 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  * Display a filter on the associated subject of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {object} current Object containing the initial value and label to place in the subject filter
+ * @param {object} initial Object containing the initial value and label to place in the subject filter
  * @param {func} onChangeInput Function to call when this filter has chosen a new subject
  * @param {func} questionDefinition Unused, here to stop a warning when it is passed to the SearchBar component
  * Other props will be forwarded to the SearchBar component
  */
 const SubjectFilter = forwardRef((props, ref) => {
-  const { classes, current, onChangeInput, questionDefinition } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
   const [ error, setError ] = useState();
   const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
 
@@ -78,7 +78,7 @@ const SubjectFilter = forwardRef((props, ref) => {
 
   return (
     <SearchBar
-      defaultValue={current?.label}
+      defaultValue={initial?.label}
       onChange={invalidateInput}
       onPopperClose={closePopper}
       onSelect={selectSubject}
@@ -102,7 +102,7 @@ const SubjectFilter = forwardRef((props, ref) => {
 });
 
 SubjectFilter.propTypes = {
-  current: PropTypes.shape({
+  initial: PropTypes.shape({
     value: PropTypes.string,
     label: PropTypes.string,
   }),

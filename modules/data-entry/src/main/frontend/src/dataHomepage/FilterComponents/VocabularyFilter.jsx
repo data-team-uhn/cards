@@ -32,14 +32,14 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * Display a filter on a vocabulary answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {object} current Object containing the initial value and label to place in the vocabulary filter
+ * @param {object} initial Object containing the initial value and label to place in the vocabulary filter
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabularies" and "vocabularyFilters" children.
  * Other props are forwarded to the VocabularyQuery component
  *
  */
 const VocabularyFilter = forwardRef((props, ref) => {
-  const { classes, current, onChangeInput, questionDefinition } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
 
   return (
     <VocabularyQuery
@@ -50,14 +50,14 @@ const VocabularyFilter = forwardRef((props, ref) => {
       questionDefinition={questionDefinition}
       placeholder="empty"
       inputRef={ref}
-      value={current?.label}
+      value={initial?.label}
       className={classes.answerField}
       />
   )
 });
 
 VocabularyFilter.propTypes = {
-  current: PropTypes.shape({
+  initial: PropTypes.shape({
     value: PropTypes.string,
     label: PropTypes.string,
   }),

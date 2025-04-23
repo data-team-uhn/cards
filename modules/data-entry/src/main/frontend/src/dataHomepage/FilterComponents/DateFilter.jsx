@@ -37,16 +37,16 @@ const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPAR
  * Display a filter on a date answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {object} current Object containing the initial value and label to place in the textfield
+ * @param {object} initial Object containing the initial value and label to place in the textfield
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. May include a dateFormat
  * Other props are forwarded to the TextField component
  *
  */
 const DateFilter = forwardRef((props, ref) => {
-  const { classes, current, onChangeInput, questionDefinition } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
 
-  const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(current?.value)));
+  const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(initial?.value)));
 
   // Dates should have a dateFormat, or default to "yyyy/MM/dd"
   const dateFormat = questionDefinition["dateFormat"] || DateQuestionUtilities.VIEW_DATE_FORMAT;
@@ -76,7 +76,7 @@ const DateFilter = forwardRef((props, ref) => {
 });
 
 DateFilter.propTypes = {
-  current: PropTypes.shape({
+  initial: PropTypes.shape({
     value: PropTypes.string,
     label: PropTypes.string,
   }),
