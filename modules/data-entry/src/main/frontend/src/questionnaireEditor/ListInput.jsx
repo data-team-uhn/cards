@@ -27,6 +27,7 @@ import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
 import { useFieldsWriterContext } from "./FieldsContext";
+import FormControl from '@mui/material/FormControl';
 
 let ListInput = (props) => {
   let { objectKey, data, value: type, hint } = props;
@@ -99,6 +100,7 @@ let ListInput = (props) => {
         // Delete the current values within this list if nothing is selected
         selection.length == 0 && <input type="hidden" name={objectKey + "@Delete"} value="" />
       }
+      <FormControl required={type.isRequired} >
       <Select
         variant="standard"
         id={objectKey}
@@ -120,6 +122,7 @@ let ListInput = (props) => {
         </MenuItem>
       ))}
     </Select>
+    </FormControl>
   </EditorInput>
   )
 }
