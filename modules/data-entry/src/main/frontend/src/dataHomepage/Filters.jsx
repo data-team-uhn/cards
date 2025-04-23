@@ -313,8 +313,10 @@ function Filters(props) {
       <CachedComponent
         ref={focusRef}
         questionDefinition={questionDefinitions[filterDatum.name]}
-        defaultValue={editingFilters[index].value}
-        defaultLabel={editingFilters[index].label}
+        current={{
+                  value: editingFilters[index].value,
+                  label: editingFilters[index].label
+                }}
         onChangeInput={(newValue, label) => {handleChangeOutput(index, newValue, label, dataType);}}
         />);
   }

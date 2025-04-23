@@ -33,20 +33,20 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  * Display a filter on the associated questionnaire of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {string} defaultValue The default value to place in the questionnaire filter
+ * @param {object} current Object containing the initial value and label to place in the questionnaire filter
  * @param {func} onChangeInput Function to call when this filter has chosen a new questionnaire
  * @param {func} questionDefinition Unused, here to stop a warning when it is passed to the SearchBar component
  * Other props will be forwarded to the SearchBar component
  */
 const QuestionnaireFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, current, onChangeInput, questionDefinition } = props;
   const [ error, setError ] = useState();
   // Store information about each questionnaire and whether or not we have
   // initialized
   let [ questionnaires, setQuestionnaires ] = useState([]);
   let [ initialized, setInitialized ] = useState(false);
   // Store selected questionnaire uuid
-  let [ selection, setSelection ] = useState(defaultValue || "");
+  let [ selection, setSelection ] = useState(current?.value || "");
   let [ uuidToTitle, setUuidToTitle ] = useState({});
 
   // Obtain information about the questionnaires available to the user
@@ -106,7 +106,6 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
       }}
       className={classes.answerField}
       ref={ref}
-      {...rest}
       >
       {questionnaires.map((uuid) => (
         <MenuItem value={uuid} key={uuid} selected={!!selection && selection == uuid}>{uuidToTitle[uuid]}</MenuItem>
@@ -117,7 +116,10 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
 });
 
 QuestionnaireFilter.propTypes = {
-  defaultValue: PropTypes.string,
+  current: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   onChangeInput: PropTypes.func
 }
 

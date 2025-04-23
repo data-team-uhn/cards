@@ -22,7 +22,7 @@ import { InputAdornment, Tooltip } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import ErrorIcon from "@mui/icons-material/Error";
 import PropTypes from "prop-types";
-
+import classNames from "classnames";
 import SearchBar from "../../SearchBar.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
@@ -34,13 +34,14 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
 /**
  * Display a filter on the associated subject of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
- * 
+ *
+ * @param {object} current Object containing the initial value and label to place in the subject filter
  * @param {func} onChangeInput Function to call when this filter has chosen a new subject
  * @param {func} questionDefinition Unused, here to stop a warning when it is passed to the SearchBar component
  * Other props will be forwarded to the SearchBar component
  */
 const SubjectFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, current, onChangeInput, questionDefinition } = props;
   const [ error, setError ] = useState();
   const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
 
@@ -77,7 +78,7 @@ const SubjectFilter = forwardRef((props, ref) => {
 
   return (
     <SearchBar
-      defaultValue={defaultLabel}
+      defaultValue={current?.label}
       onChange={invalidateInput}
       onPopperClose={closePopper}
       onSelect={selectSubject}
@@ -85,7 +86,10 @@ const SubjectFilter = forwardRef((props, ref) => {
       resultConstructor={QuickSearchIdentifier}
       disableDropdownItemLink={true}
       error={!!error /* Turn into a boolean to prevent PropTypes warnings */}
-      className={classes.answerField + ' ' + (hasSelectedValidSubject ? classes.subjectFilter : classes.invalidSubjectText)}
+      className={classNames(classes.answerField,
+                            {[classes.subjectFilter]: hasSelectedValidSubject,
+                            [classes.invalidSubjectText]: !hasSelectedValidSubject,}
+                           )}
       startAdornment={
         error && <InputAdornment position="end">
           <Tooltip title={error}>
@@ -93,12 +97,15 @@ const SubjectFilter = forwardRef((props, ref) => {
           </Tooltip>
         </InputAdornment> || undefined
         }
-      {...rest}
       />
   )
 });
 
 SubjectFilter.propTypes = {
+  current: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   onChangeInput: PropTypes.func
 }
 

@@ -19,7 +19,6 @@
 import PropTypes from "prop-types";
 import React, { useState, useContext, useEffect } from "react";
 import { withRouter } from "react-router-dom";
-
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
 import { MenuList, Paper, Popper } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
@@ -195,7 +194,7 @@ function SearchBar(props) {
           <InputAdornment position="end">
             <IconButton
               size="large"
-              className={invertColors ? classes.invertedColors : ""}
+              className={(invertColors ? classes.invertedColors + " " : "") + classes.searchIcon}
               onClick={(event) => {
                 input?.current?.focus();
               }}
@@ -204,11 +203,7 @@ function SearchBar(props) {
             </IconButton>
           </InputAdornment>
         }
-        className={
-          classes.search
-          + " " + (invertColors ? classes.invertedColors : "")
-          + " " + (className ? className : "")
-        }
+        className={(invertColors ? classes.invertedColors + " " : "") + className}
         inputRef={input}
         {...rest}
         />

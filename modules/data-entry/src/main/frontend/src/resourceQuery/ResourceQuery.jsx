@@ -72,7 +72,7 @@ export const MAX_RESULTS = 10;
 //
 function ResourceQuery(props) {
   const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
-    value, questionDefinition, onChange, enableSelection, initialSelection, onRemoveOption, classes } = props;
+    value, questionDefinition, onChange, enableSelection, initialSelection, onRemoveOption, className, classes } = props;
   const { maxAnswers, primaryType, labelProperty, propertiesToSearch, enableUserEntry } = questionDefinition;
   const { fetchSuggestions, formatSuggestionData, infoDisplayer } = props;
 
@@ -142,7 +142,7 @@ function ResourceQuery(props) {
         setSuggestionsVisible(false);
         setResourcePath("");
       }}
-      className={variant == "labeled" ? classes.searchInput : ""}
+      className={variant == "labeled" ? classes.searchInput : "" + className}
       multiline={true}
       endAdornment={(
         <InputAdornment position="end" ref={searchButtonRef} onClick={() => {

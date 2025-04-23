@@ -34,16 +34,16 @@ const filterUserOptions =  createFilterOptions({
  * Display a filter on a user creator or editor of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {string} defaultValue The default value to place in the list
+ * @param {object} current Object containing the initial value and label to place in the list
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  * Other props are forwarded to the Select component
  *
  */
 const UserFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, current, onChangeInput, questionDefinition } = props;
   // Manage our own state inside here as well
-  const [ selection, setSelection ] = useState(defaultValue || "");
+  const [ selection, setSelection ] = useState(current?.value || "");
   const [ users, setUsers ] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -81,7 +81,10 @@ const UserFilter = forwardRef((props, ref) => {
 });
 
 UserFilter.propTypes = {
-  defaultValue: PropTypes.string,
+  current: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.object
 }

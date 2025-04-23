@@ -18,11 +18,13 @@
 //
 
 import React, { forwardRef } from "react";
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import ResourceQuery from "../../resourceQuery/ResourceQuery.jsx";
+import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
@@ -30,14 +32,14 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * Display a filter on a resource answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {string} defaultValue The default value to place in the filter
+ * @param {object} current Object containing the initial value and label to place in the filter
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include "primaryType", "labelProperty", and "propertiesToSearch" children.
  * Other props are forwarded to the VocabularyQuery component
  *
  */
 const ResourceFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, current, onChangeInput, questionDefinition } = props;
   const enableUserEntry = !!!questionDefinition?.displayMode || questionDefinition?.displayMode?.includes("input");
 
   return (
@@ -49,15 +51,18 @@ const ResourceFilter = forwardRef((props, ref) => {
       questionDefinition={questionDefinition}
       placeholder="empty"
       inputRef={ref}
-      value={defaultLabel}
+      value={current?.label}
       enableUserEntry={enableUserEntry}
-      {...rest}
+      className={classes.answerField}
       />
   )
 });
 
 ResourceFilter.propTypes = {
-  defaultValue: PropTypes.string,
+  current: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
     primaryType: PropTypes.string,
@@ -66,10 +71,12 @@ ResourceFilter.propTypes = {
   })
 }
 
-export default ResourceFilter;
+const StyledResourceFilter = withStyles(ResourceFilter, QuestionnaireStyle)
+
+export default StyledResourceFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "resource") {
-    return [COMPARATORS, ResourceFilter, 70];
+    return [COMPARATORS, StyledResourceFilter, 70];
   }
 });

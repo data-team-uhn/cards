@@ -18,11 +18,13 @@
 //
 
 import React, { forwardRef } from "react";
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import VocabularyQuery from "../../vocabQuery/VocabularyQuery.jsx";
+import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
@@ -30,14 +32,14 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * Display a filter on a vocabulary answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {string} defaultValue The default value to place in the vocabulary filter
+ * @param {object} current Object containing the initial value and label to place in the vocabulary filter
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabularies" and "vocabularyFilters" children.
  * Other props are forwarded to the VocabularyQuery component
  *
  */
 const VocabularyFilter = forwardRef((props, ref) => {
-  const { defaultValue, defaultLabel, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, current, onChangeInput, questionDefinition } = props;
 
   return (
     <VocabularyQuery
@@ -48,24 +50,29 @@ const VocabularyFilter = forwardRef((props, ref) => {
       questionDefinition={questionDefinition}
       placeholder="empty"
       inputRef={ref}
-      value={defaultLabel}
-      {...rest}
+      value={current?.label}
+      className={classes.answerField}
       />
   )
 });
 
 VocabularyFilter.propTypes = {
-  defaultValue: PropTypes.string,
+  current: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
     sourceVocabularies: PropTypes.array,
   })
 }
 
-export default VocabularyFilter;
+const StyledVocabularyFilter = withStyles(VocabularyFilter, QuestionnaireStyle)
+
+export default StyledVocabularyFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "vocabulary") {
-    return [COMPARATORS, VocabularyFilter, 50];
+    return [COMPARATORS, StyledVocabularyFilter, 50];
   }
 });

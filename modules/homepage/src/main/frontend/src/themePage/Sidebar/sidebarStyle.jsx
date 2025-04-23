@@ -413,6 +413,9 @@ import {
         }
       }
     },
+    search: {
+      marginTop: theme.spacing(1)
+    },
   });
 
   export default sidebarStyle;

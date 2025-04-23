@@ -80,8 +80,8 @@ const headerStyle = theme => ({
     borderRadius: "15px",
     width: theme.spacing(32)
   },
-  search: {
-    marginTop: theme.spacing(1)
+  searchIcon: {
+    marginRight: "-12px"
   },
   dropdownItem: {
     whiteSpace: "normal",

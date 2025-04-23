@@ -34,7 +34,8 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import classNames from "classnames";
 
-import HeaderSearchBar from "./HeaderSearchBar.jsx";
+import SearchBar from "../../SearchBar.jsx"; // In the commons module
+import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
 import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
 import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassworddialogue.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
@@ -114,10 +115,13 @@ function HeaderLinks (props) {
     <div ref={headerRef} id="adminnavbar">
       {  // Hide the global search bar in all admin screens
         !window.location.pathname.startsWith("/content.html/admin") &&
-        <HeaderSearchBar
+        <SearchBar
           invertColors={!expand}
           onSelectFinish={expand ? undefined : closeSidebar}
-          className={expand ? undefined : classes.buttonLink}
+          className={classNames(classes.search, {[classes.buttonLink]: !expand})}
+          resultConstructor={QuickSearchIdentifier}
+          onSelect={() => {}}
+          showAllResultsLink={true}
         />
       }
       {/* Avatar + sign out link */}
