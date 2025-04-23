@@ -21,7 +21,6 @@ import React, { useEffect, useState, useContext } from "react";
 import { Link, withRouter } from "react-router-dom";
 
 import {
-  Backdrop,
   Breadcrumbs,
   Button,
   Chip,
@@ -35,7 +34,6 @@ import {
   Typography,
 } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import { alpha } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DoneIcon from "@mui/icons-material/Done";
@@ -86,7 +84,6 @@ function Form (props) {
   let [ error, setError ] = useState();
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
-  let [ fetchInProgress, setFetchInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
   // - undefined -> no save performed yet, or the form has been modified since the last save
   // - true -> data has been successfully saved
@@ -189,10 +186,6 @@ function Form (props) {
   }, [isEdit]);
 
   useEffect(() => {
-    setFetchInProgress(true);
-  }, [isEdit]);
-
-  useEffect(() => {
     // If `requireCompletion` is set, stop any advancing progress until check that all required
     // questions are completed
     requireCompletion && paginationEnabled && setDisableProgress(true);
@@ -228,8 +221,7 @@ function Form (props) {
     fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
-      .catch(handleFetchError)
-      .finally(() => setFetchInProgress(false));
+      .catch(handleFetchError);
   };
 
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
@@ -651,18 +643,6 @@ function Form (props) {
                 disableRedirect
               />
             }
-            {fetchInProgress &&
-              <Backdrop
-               open={fetchInProgress}
-               sx={(theme) => ({
-                 backgroundColor: alpha(theme.palette.background.paper, .5),
-                 marginLeft: {md : "260px"},
-                 zIndex: theme.zIndex.drawer + 1
-               })}
-             >
-               <CircularProgress />
-             </Backdrop>
-            }
             {changedSubject &&
               <React.Fragment>
                 <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
@@ -751,7 +731,7 @@ function Form (props) {
         <SessionExpiryWarningModal
           lastActivityTimestamp={lastSaveTimestamp}
           onStay={() => setAutosaveOptions({})}
-          onExit={() => navigate("/")}
+          onExit={() => props.history.push("/")}
           onExpired={() => { removeWindowHandlers(); setAutosaveOptions({performCheckin: true}); } }
         />
       }
@@ -759,4 +739,4 @@ function Form (props) {
   );
 };
 
-export default withStyles(Form, QuestionnaireStyle);
+export default withStyles(withRouter(Form), QuestionnaireStyle);
