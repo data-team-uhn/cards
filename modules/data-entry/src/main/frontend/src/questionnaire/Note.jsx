@@ -78,19 +78,13 @@ function Note (props) {
       onEntered = {() => inputRef?.current?.focus()}
       >
       <Grid container spacing={2}>
-        <Grid size={fullSize ? 12 : 6}>
+        <Grid size={fullSize ? 12 : 6} className = {classes.noteSection}>
           <TextField
             value = {note}
             onChange = {(event) => setNote(event?.target?.value)}
             variant = "outlined"
             multiline
             rows = {fullSize ? 16 : 4}
-            className = {classes.noteSection}
-            slotProps={{
-              input: {
-                className: classes.noteTextField,
-              },
-            }}
             placeholder = {placeholder}
             inputRef = {inputRef}
             {...rest}

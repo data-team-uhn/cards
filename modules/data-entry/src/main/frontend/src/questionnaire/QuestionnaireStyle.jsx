@@ -124,9 +124,6 @@ const questionnaireStyle = theme => ({
           margin: "1px",
         },
     },
-    noteTextField: {
-        width: "100%",
-    },
     optionsList: {
         padding: theme.spacing(0),
     },
@@ -465,8 +462,9 @@ const questionnaireStyle = theme => ({
         textTransform: "none"
     },
     noteSection: {
-        display: "block",
-        marginLeft: theme.spacing(0)
+        "& .MuiTextField-root" :{
+            width: "100%",
+        }
     },
     formFooter: {
         position: "relative",
