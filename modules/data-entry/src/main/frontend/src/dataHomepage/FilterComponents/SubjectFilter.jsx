@@ -82,6 +82,7 @@ const SubjectFilter = forwardRef((props, ref) => {
       onChange={invalidateInput}
       onPopperClose={closePopper}
       onSelect={selectSubject}
+      disableButton
       queryConstructor={constructQuery}
       resultConstructor={QuickSearchIdentifier}
       disableDropdownItemLink={true}

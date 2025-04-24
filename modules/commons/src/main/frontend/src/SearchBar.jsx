@@ -49,11 +49,12 @@ const CARDS_QUERY_MATCH_PATH_KEY = "@path";
  * @param {func} resultConstructor Function that constructs a DOM element from a row of results.
  * @param {bool} showAllResultsLink If true, show the link “See all results” of the bottom of the results dropdown
  * @param {bool} disableDropdownItemLink If true, disable links for results dropdown items
+ * @param {bool} disableButton If true, puts just the search icon at the end instead o the functional search button
  * @param {object} staticContext Unused, defined here to trap the inserted prop from being passed on with ...rest to the Input, where it is invalid
  * Other props will be forwarded to the Input element
  */
 function SearchBar(props) {
-  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, queryConstructor, resultConstructor, staticContext, showAllResultsLink, disableDropdownItemLink, ...rest } = props;
+  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, disableButton, queryConstructor, resultConstructor, staticContext, showAllResultsLink, disableDropdownItemLink, ...rest } = props;
   const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
   const [ moreResults, setMoreResults ] = useState(0);
@@ -192,13 +193,17 @@ function SearchBar(props) {
         }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton
-              size="small"
-              className={invertColors ? classes.invertedColors : ""}
-              onClick={(event) => input?.current?.focus()}
-            >
-              <Search />
-            </IconButton>
+            {disableButton
+              ? <Search/>
+              : <IconButton
+                  size="small"
+                  sx={{mr: 0.5}}
+                  className={invertColors ? classes.invertedColors : ""}
+                  onClick={(event) => input?.current?.focus()}
+                >
+                  <Search />
+                </IconButton>
+            }
           </InputAdornment>
         }
         className={(invertColors ? classes.invertedColors + " " : "") + className}
@@ -327,7 +332,8 @@ SearchBar.propTypes = {
   onPopperClose: PropTypes.func,
   onSelect: PropTypes.func,
   queryConstructor: PropTypes.func,
-  resultConstructor: PropTypes.func
+  resultConstructor: PropTypes.func,
+  disableButton: PropTypes.bool,
 }
 
 SearchBar.defaultProps = {
