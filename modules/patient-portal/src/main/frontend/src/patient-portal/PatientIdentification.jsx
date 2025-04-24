@@ -81,9 +81,6 @@ const useStyles = makeStyles()(theme => ({
   identifierDivider : {
     marginTop: '35px',
   },
-  identifierContainer : {
-    alignItems: "start",
-  },
   mrnHelperImage: {
     maxWidth: '100%',
   },
@@ -332,7 +329,7 @@ function PatientIdentification(props) {
             </div>
             <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
             <DropdownsDatePicker id="j_dob" name="j_dob" formatDate onDateChange={setDob} autoFocus fullWidth/>
-            <Grid container alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>
+            <Grid container alignItems="flex-start" wrap="nowrap" justifyContent="space-between">
               <Grid>
                 <FormControl variant="standard" margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
