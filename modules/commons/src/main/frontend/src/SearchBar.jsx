@@ -193,11 +193,9 @@ function SearchBar(props) {
         endAdornment={
           <InputAdornment position="end">
             <IconButton
-              size="large"
-              className={(invertColors ? classes.invertedColors + " " : "") + classes.searchIcon}
-              onClick={(event) => {
-                input?.current?.focus();
-              }}
+              size="small"
+              className={invertColors ? classes.invertedColors : ""}
+              onClick={(event) => input?.current?.focus()}
             >
               <Search />
             </IconButton>
