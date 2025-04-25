@@ -83,7 +83,6 @@ function Questionnaires(props) {
               <ExportButton
                 entryPath={row.original["@path"]}
                 entryName={row.original.title}
-                entityData={row.original}
                 entryType={entryType}
                 size="medium"
               />
