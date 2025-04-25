@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { loadExtensions } from "../uiextension/extensionManager";
 
 import SubjectActionContext from "./SubjectActionContext";
@@ -25,40 +25,44 @@ import SubjectActionContext from "./SubjectActionContext";
 export default function SubjectActions(props) {
   let { subject, reloadSubject, className, size, variant } = props;
 
+  // Store the list of actions locally as re-rendering doesn't seem to trigger properly
+  // if the list of actions from SubjectActionContext is used directly for rendering.
+  let [ actions, setActions ] = useState([]);
+
   const FETCHING = "Fetching"
   const LOADED = "Loaded"
 
   useEffect(() => {
-    if (SubjectActionContext.status != FETCHING && SubjectActionContext.status != LOADED) {
+    if (SubjectActionContext.status == LOADED) {
+      // Actions are already loaded: display them
+      setActions(SubjectActionContext.value);
+    } else if (SubjectActionContext.status != FETCHING) {
+      // Actions are not loaded and are not already being loadedy: load them
       SubjectActionContext.status = FETCHING;
       loadExtensions("SubjectActions")
         .then((resp) => {
+          // Once loaded, save them for other SubjectActions to use and display them
           let loadedComponents = [];
           for (let i = 0; i < resp.length; i++) {
             loadedComponents.push(resp[i]["cards:extensionRender"]);
           }
           SubjectActionContext.value = loadedComponents;
           SubjectActionContext.status = LOADED;
+          setActions(loadedComponents);
         });
       }
   }, []);
 
-  return (
-    <>
-      { SubjectActionContext.status == LOADED &&
-        SubjectActionContext.value.map((ThisComp, index) => {
-          return (
-            <ThisComp
-              key={`SubjectAction-${index}`}
-              subject={subject}
-              reloadSubject={reloadSubject}
-              className={className}
-              size={size}
-              variant={variant}
-            />
-          );
-        })
-      }
-    </>
-  );
+  return actions.map((ThisComp, index) => {
+    return (
+      <ThisComp
+        key={`SubjectAction-${index}`}
+        subject={subject}
+        reloadSubject={reloadSubject}
+        className={className}
+        size={size}
+        variant={variant}
+      />
+    );
+  });
 }

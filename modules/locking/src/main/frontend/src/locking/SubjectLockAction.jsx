@@ -60,6 +60,7 @@ function SubjectLockAction(props) {
   const ACTION_UNLOCK = "UNLOCK";
 
   const [ open, setOpen ] = useState(false);
+  const [ displayButton, setDisplayButton ] = useState(true);
   const [ dialogTitle, setDialogTitle ] = useState(null);
   const [ dialogHeader, setDialogHeader ] = useState(null);
   const [ dialogContent, setDialogContent ] = useState(null);
@@ -78,7 +79,13 @@ function SubjectLockAction(props) {
 
   useEffect(() => {
     setLocked(subject?.statusFlags && subject.statusFlags.includes("LOCKED"));
-  }, [subject])
+  }, [subject['jcr:lastModified']])
+
+  useEffect(() => {
+    // Hide this button if this subject has a parent and the parent is locked since
+    //  current subject can't be locked or unlocked
+    setDisplayButton(!subject?.parents?.["cards:lock"]);
+  }, [subject?.parents?.['jcr:lastModified']])
 
   let openDialog = () => {
     setDialogContent(null);
@@ -324,7 +331,8 @@ function SubjectLockAction(props) {
           </Button>
       </DialogActions>
     </Dialog>
-    { variant == "icon" ?
+    { displayButton ? (
+      variant == "icon" ?
         <Tooltip title={buttonText}>
           <IconButton component="span" onClick={openDialog} className={className} size={size}>
             { isLocked
@@ -341,6 +349,8 @@ function SubjectLockAction(props) {
         >
           {buttonText}
         </Button>
+      )
+      : <></>
     }
   </>)
 }
