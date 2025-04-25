@@ -129,7 +129,8 @@ function Subject(props) {
           classes={classes}
           getSubject={handleSubject}
           reloadSubject={fetchRelatedRef}
-          contentOffset={props.contentOffset}/>
+          contentOffset={props.contentOffset}
+        />
         <Grid>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
@@ -237,7 +238,8 @@ function SubjectContainer(props) {
         pageSize={pageSize}
         onDelete={() => {setDeleted(true)}}
         childSubjects={relatedSubjects}
-        fetchSubjectData={fetchSubjectData}/>
+        fetchSubjectData={fetchSubjectData}
+      />
     </React.Fragment>
   );
 }
@@ -660,7 +662,8 @@ function SubjectMemberInternal (props) {
                 maxDisplayed={maxDisplayed}
                 pageSize={pageSize}
                 subject={subject}
-                fetchSubjectData={fetchSubjectData}/>
+                fetchSubjectData={fetchSubjectData}
+              />
             )
           })}
         </Grid>

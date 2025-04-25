@@ -121,8 +121,12 @@ function SubjectLockAction(props) {
   }
 
   let getLockWarning = () => {
-    return <Alert severity="warning">Once you sign off on this {entryType}, it will be locked along with
-            all the associated data forms and no further edits will be possible. Proceed?</Alert>
+    return (
+      <Alert severity="warning">
+        Once you sign off on this {entryType}, it will be locked along with
+        all the associated data forms and no further edits will be possible. Proceed?
+      </Alert>
+    );
   }
 
   let fetchUsername = () => {

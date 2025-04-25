@@ -29,16 +29,16 @@ export default function SubjectActions(props) {
   // if the list of actions from SubjectActionContext is used directly for rendering.
   let [ actions, setActions ] = useState([]);
 
-  const FETCHING = "Fetching"
-  const LOADED = "Loaded"
+  const STATUS_FETCHING = "Fetching"
+  const STATUS_LOADED = "Loaded"
 
   useEffect(() => {
-    if (SubjectActionContext.status == LOADED) {
+    if (SubjectActionContext.status == STATUS_LOADED) {
       // Actions are already loaded: display them
       setActions(SubjectActionContext.value);
-    } else if (SubjectActionContext.status != FETCHING) {
+    } else if (SubjectActionContext.status != STATUS_FETCHING) {
       // Actions are not loaded and are not already being loadedy: load them
-      SubjectActionContext.status = FETCHING;
+      SubjectActionContext.status = STATUS_FETCHING;
       loadExtensions("SubjectActions")
         .then((resp) => {
           // Once loaded, save them for other SubjectActions to use and display them
@@ -47,7 +47,7 @@ export default function SubjectActions(props) {
             loadedComponents.push(resp[i]["cards:extensionRender"]);
           }
           SubjectActionContext.value = loadedComponents;
-          SubjectActionContext.status = LOADED;
+          SubjectActionContext.status = STATUS_LOADED;
           setActions(loadedComponents);
         });
       }
