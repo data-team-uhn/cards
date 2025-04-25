@@ -78,9 +78,6 @@ const useStyles = makeStyles()(theme => ({
   dateLabel : {
       paddingTop: theme.spacing(1),
   },
-  identifierDivider : {
-    marginTop: '35px',
-  },
   mrnHelperImage: {
     maxWidth: '100%',
   },
@@ -346,7 +343,7 @@ function PatientIdentification(props) {
                   </FormHelperText>
                  </FormControl>
               </Grid>
-              <Grid className={classes.identifierDivider}>or</Grid>
+              <Grid alignSelf="center">or</Grid>
               <Grid>
                 <FormControl variant="standard" margin="normal" fullWidth>
                   <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
