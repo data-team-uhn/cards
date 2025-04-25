@@ -79,13 +79,13 @@ if ("application/json".equals(request.getHeader("Accept"))) {
       let colorProps = colors.getProperties();
       for (let i in colorProps) {
         if (!i.startsWith("jcr:")) {
-          out.println('    <meta name="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(i) + '" content="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(colorProps[i]) + '"/>');
+          out.println('    <meta name="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(i) + '" content="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(colorProps[i].getString()) + '"/>');
         }
       }
       let mediaProps = media.getProperties();
       for (let i in mediaProps) {
         if (!i.startsWith("jcr:")) {
-          out.println('    <meta name="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(i) + '" content="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(mediaProps[i]) + '"/>');
+          out.println('    <meta name="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(i) + '" content="' + Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(mediaProps[i].getString()) + '"/>');
         }
       }
 %>
