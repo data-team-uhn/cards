@@ -142,7 +142,7 @@ function ResourceQuery(props) {
         setSuggestionsVisible(false);
         setResourcePath("");
       }}
-      className={variant == "labeled" ? classes.searchInput : "" + className}
+      className={(variant == "labeled" ? (classes.searchInput + " ") : "") + className}
       multiline={true}
       endAdornment={(
         <InputAdornment position="end" ref={searchButtonRef} onClick={() => {

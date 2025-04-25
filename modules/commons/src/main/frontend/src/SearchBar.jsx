@@ -197,7 +197,7 @@ function SearchBar(props) {
               ? <Search/>
               : <IconButton
                   size="small"
-                  sx={{mr: 0.5}}
+                  sx={{mr: -0.5}}
                   className={invertColors ? classes.invertedColors : ""}
                   onClick={(event) => input?.current?.focus()}
                 >
