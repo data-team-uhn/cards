@@ -184,8 +184,10 @@ function HeaderLinks (props) {
         />
       <Snackbar
         open={pwdResetSuccessSnackbarOpen}
-        ContentProps={{
-          className: classes.successSnackbar
+        slotProps={{
+          content: {
+            className: classes.successSnackbar,
+          },
         }}
         autoHideDuration={6000}
         onClose={() => setPwdResetSuccessSnackbarOpen(false)}
