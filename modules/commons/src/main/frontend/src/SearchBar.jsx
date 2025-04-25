@@ -49,7 +49,7 @@ const CARDS_QUERY_MATCH_PATH_KEY = "@path";
  * @param {func} resultConstructor Function that constructs a DOM element from a row of results.
  * @param {bool} showAllResultsLink If true, show the link “See all results” of the bottom of the results dropdown
  * @param {bool} disableDropdownItemLink If true, disable links for results dropdown items
- * @param {bool} disableButton If true, puts just the search icon at the end instead o the functional search button
+ * @param {bool} disableButton If true, puts just the search icon at the end instead of the functional search button
  * @param {object} staticContext Unused, defined here to trap the inserted prop from being passed on with ...rest to the Input, where it is invalid
  * Other props will be forwarded to the Input element
  */
