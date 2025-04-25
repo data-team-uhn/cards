@@ -189,8 +189,7 @@ function HeaderLinks (props) {
             className: classes.successSnackbar,
           },
         }}
-        sx={{ ml: "130px" }}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         autoHideDuration={6000}
         onClose={() => setPwdResetSuccessSnackbarOpen(false)}
         message="Password successfully changed"
