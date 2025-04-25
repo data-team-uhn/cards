@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.locking.api.LockManager;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
@@ -43,8 +44,6 @@ public class LockedStatusFlagEditor extends DefaultEditor
 
     // The property that contains a node's status flags
     private static final String STATUS_FLAGS = "statusFlags";
-    // The property that contains a reference to a lock node if a node is locked
-    private static final String LOCK_PROPERTY = "cards:Lock";
     // The status flag that indicates that a node is locked.
     private static final String LOCKED_FLAG = "LOCKED";
 
@@ -105,8 +104,8 @@ public class LockedStatusFlagEditor extends DefaultEditor
                 Iterable<String> flags = this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS);
                 flags.forEach(flag -> statusFlags.add(flag));
             }
-            final String lockValue = this.currentNodeBuilder.hasProperty(LOCK_PROPERTY)
-                ? this.currentNodeBuilder.getProperty(LOCK_PROPERTY).toString()
+            final String lockValue = this.currentNodeBuilder.hasProperty(LockManager.LOCK_PROPERTY)
+                ? this.currentNodeBuilder.getProperty(LockManager.LOCK_PROPERTY).toString()
                 : "";
 
             boolean flagsChanged = false;

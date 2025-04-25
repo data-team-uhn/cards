@@ -25,6 +25,8 @@ import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
 
+import io.uhndata.cards.locking.api.LockManager;
+
 /**
  * A restriction that matches locked subjects, forms and their children.
  *
@@ -66,8 +68,8 @@ public class LockedRestrictionPattern implements RestrictionPattern
         while (!currentTree.isRoot())
         {
             if (isSubjectOrForm(currentTree)) {
-                String lock = currentTree.hasProperty("cards:Lock")
-                    ? currentTree.getProperty("cards:Lock").getValue(Type.REFERENCE)
+                String lock = currentTree.hasProperty(LockManager.LOCK_PROPERTY)
+                    ? currentTree.getProperty(LockManager.LOCK_PROPERTY).getValue(Type.REFERENCE)
                     : null;
                 return lock != null && lock.length() > 0;
             }

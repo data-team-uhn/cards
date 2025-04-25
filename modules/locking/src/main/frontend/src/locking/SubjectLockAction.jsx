@@ -87,7 +87,6 @@ function SubjectLockAction(props) {
       handleOpenDialogLocked();
     } else {
       handleOpenDialogUnlocked();
-      fetchIncompleteForms();
     }
     // TODO: move to a global context?
     // See: AdminNavbarLinks
@@ -130,14 +129,14 @@ function SubjectLockAction(props) {
         setDialogContent(
           <>
             <TextField
-              inputProps={{readonly:true}}
+              inputProps={{readOnly:true}}
               id="user"
               label="Signing User"
               defaultValue={json["userID"]}
               sx={{mt: 3, mr: 3}}
               />
             <TextField
-              inputProps={{readonly:true}}
+              inputProps={{readOnly:true}}
               id="date"
               label="Date"
               defaultValue={new Date().toDateString()}

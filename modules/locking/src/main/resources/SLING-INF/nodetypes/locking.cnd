@@ -27,25 +27,6 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-// The homepage for Locks.
-[cards:LockHomepage] > cards:ResourceHomepage
-  // Attributes:
-
-  // We can use this homepage in a query.
-  query
-
-  // Properties:
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/LockHomepage" mandatory autocreated protected
-
-  - childNodeType (String) = "cards:Lock" mandatory autocreated
-
-  // Children
-
-  // The list of forms.
-  + * (cards:Lock) = cards:Lock
-
 //-----------------------------------------------------------------------------
 // Simple nodetype for holding information about a locked node.
 [cards:Lock] > cards:Item, mix:referenceable

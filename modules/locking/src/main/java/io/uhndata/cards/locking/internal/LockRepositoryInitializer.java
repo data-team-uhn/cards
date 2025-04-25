@@ -38,6 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.locking.api.LockManager;
 import io.uhndata.cards.permissions.spi.PermissionsManager;
 
 @Component(immediate = true, property = "service.ranking:Integer=300")
@@ -80,21 +81,23 @@ public class LockRepositoryInitializer
                     new String[] { repWrite },
                     Collections.singletonMap("cards:locked", valueFactory.createValue("")),
                     session);
-                // Deny write permissions to form cards:Lock properties
+                // Deny write permissions to form lock reference properties
                 this.permissionsManager.addAccessControlEntry(
                     "/Forms",
                     false,
                     trustedUser.getPrincipal(),
                     new String[] { repWrite },
-                    Collections.singletonMap("rep:ntNames", valueFactory.createValue("cards:lock", PropertyType.NAME)),
+                    Collections.singletonMap("rep:ntNames",
+                        valueFactory.createValue(LockManager.LOCK_PROPERTY, PropertyType.NAME)),
                     session);
-                // Deny write permissions to subject cards:Lock properties
+                // Deny write permissions to subject lock reference properties
                 this.permissionsManager.addAccessControlEntry(
                     "/Subjects",
                     false,
                     trustedUser.getPrincipal(),
                     new String[] { repWrite },
-                    Collections.singletonMap("rep:ntNames", valueFactory.createValue("cards:lock", PropertyType.NAME)),
+                    Collections.singletonMap("rep:ntNames",
+                        valueFactory.createValue(LockManager.LOCK_PROPERTY, PropertyType.NAME)),
                     session);
                 session.save();
             }

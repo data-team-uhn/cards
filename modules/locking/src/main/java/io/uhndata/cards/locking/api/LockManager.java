@@ -34,7 +34,13 @@ public interface LockManager
     /** The primary node type for a lock information node. */
     String LOCK_NODE_TYPE = "cards:Lock";
     /** The name of the property containing a reference to a lock node. */
-    String LOCK_PROPERTY = "cards:Lock";
+    String LOCK_PROPERTY = "cards:lock";
+    /** The name of the group of users who can lock nodes. */
+    String LOCK_USERS = "LockUsers";
+    /** The name of the group of users who can unlock nodes. */
+    String UNLOCK_USERS = "UnlockUsers";
+    /** The node type for the parent cards:lock nodes where locks are stored. */
+    String LOCKS_NT_NAME = "rep:Unstructured";
 
     /**
      * Check if a form or subject is locked.

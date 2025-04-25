@@ -17,33 +17,36 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { loadExtensions } from "../uiextension/extensionManager";
+
+import SubjectActionContext from "./SubjectActionContext";
 
 export default function SubjectActions(props) {
   let { subject, reloadSubject, className, size, variant } = props;
 
-  const [ extensionPointComponents, setExtensionPointComponents ] = useState([]);
-  let initialized = false;
+  const FETCHING = "Fetching"
+  const LOADED = "Loaded"
 
   useEffect(() => {
-    if (!initialized) {
-      initialized = true;
+    if (SubjectActionContext.status != FETCHING && SubjectActionContext.status != LOADED) {
+      SubjectActionContext.status = FETCHING;
       loadExtensions("SubjectActions")
-      .then((resp) => {
-        let loadedComponents = [];
-        for (let i = 0; i < resp.length; i++) {
-          loadedComponents.push(resp[i]["cards:extensionRender"]);
-        }
-        setExtensionPointComponents(loadedComponents);
-      });
-    }
+        .then((resp) => {
+          let loadedComponents = [];
+          for (let i = 0; i < resp.length; i++) {
+            loadedComponents.push(resp[i]["cards:extensionRender"]);
+          }
+          SubjectActionContext.value = loadedComponents;
+          SubjectActionContext.status = LOADED;
+        });
+      }
   }, []);
 
   return (
     <>
-      {
-        extensionPointComponents.map((ThisComp, index) => {
+      { SubjectActionContext.status == LOADED &&
+        SubjectActionContext.value.map((ThisComp, index) => {
           return (
             <ThisComp
               key={`SubjectAction-${index}`}

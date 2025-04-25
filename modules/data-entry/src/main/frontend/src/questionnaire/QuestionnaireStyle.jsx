@@ -578,8 +578,8 @@ const questionnaireStyle = theme => ({
         color: theme.palette.error.main,
     },
     LOCKEDFlag:{
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.background.paper
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.background.paper
     },
     DefaultFlag: {
     },
