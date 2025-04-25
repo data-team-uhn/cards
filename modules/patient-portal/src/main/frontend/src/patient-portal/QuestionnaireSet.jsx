@@ -70,7 +70,7 @@ const useStyles = makeStyles()(theme => ({
     "& > .mainItem" : {
       paddingLeft: 0,
     },
-    "& h4, h6, .MuiTypography-paragraph" : {
+    "& h4, h6, .patient-portal-instructions" : {
       textAlign: "center",
     }
   },
@@ -669,7 +669,10 @@ function QuestionnaireSet(props) {
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    introMessage ? <FormattedText key="intro-message">{introMessage}</FormattedText> : displayText("surveyIntro", Typography, {key: "welcome-message"}),
+    (introMessage
+      ? <FormattedText key="intro-message" className="patient-portal-instructions">{introMessage}</FormattedText>
+      : displayText("surveyIntro", Typography, {key: "welcome-message", className: "patient-portal-instructions"})
+    ),
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -687,7 +690,7 @@ function QuestionnaireSet(props) {
     <Typography component="p" key="expiry-message" color="textSecondary">
         {expiryDate()}
     </Typography>,
-    displayText("surveyDraftInfo", FormattedText, {variant: "body2", key: "draft-info"}),
+    displayText("surveyDraftInfo", FormattedText, {variant: "body2", key: "draft-info", className: "patient-portal-instructions"}),
   ];
 
   let formScreen = [
@@ -755,8 +758,8 @@ function QuestionnaireSet(props) {
   let endingMessage = ending.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
   let finalInstructions = (
-      endingMessage ? <FormattedText key="summary-instructions">{endingMessage}</FormattedText> :
-      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions"})
+      endingMessage ? <FormattedText key="summary-instructions" className="patient-portal-instructions">{endingMessage}</FormattedText> :
+      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions", className: "patient-portal-instructions"})
   );
 
   let disclaimer = (
