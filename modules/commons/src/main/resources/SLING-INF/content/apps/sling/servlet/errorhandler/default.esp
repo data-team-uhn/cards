@@ -97,9 +97,7 @@ if ("application/json".equals(request.getHeader("Accept"))) {
   </head>
   <body>
     <div id="main-error-container"></div>
-    <sly data-sly-use.assets="/libs/cards/resources/assets">
-      <script src="/libs/cards/resources/${assets['cards-commons.GenericErrorPage.js']}"></script>
-    </sly>
+    <script src="/libs/cards/resources/${assets['cards-commons.GenericErrorPage.js']}"></script>
   </body>
 </html>
 <%
