@@ -66,7 +66,6 @@ function SearchBar(props) {
   const [ limit, setLimit ] = useState(5);
   const [ allowedResourceTypes, setAllowedResourceTypes ] = useState([]);
   const [ showTotalRows, setShowTotalRows ] = useState(true);
-  const [ fetched, setFetched ] = useState(false);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -76,16 +75,13 @@ function SearchBar(props) {
 
   // Fetch saved admin config settings
   useEffect(() => {
-    if (!fetched) {
-      fetchWithReLogin(globalLoginDisplay, '/apps/cards/config/QuickSearch.json')
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setFetched(true);
-        setLimit(json["limit"] || DEFAULT_MAX_RESULTS);
-        setAllowedResourceTypes(json["allowedResourceTypes"]);
-        setShowTotalRows(json["showTotalRows"]  == 'true');
-      });
-    }
+    fetchWithReLogin(globalLoginDisplay, '/apps/cards/config/QuickSearch.json')
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then((json) => {
+      setLimit(json["limit"] || DEFAULT_MAX_RESULTS);
+      setAllowedResourceTypes(json["allowedResourceTypes"]);
+      setShowTotalRows(json["showTotalRows"]  == 'true');
+    });
   }, []);
 
   // Callback to update the value of the search bar. Sends off a delayed fulltext request
