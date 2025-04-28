@@ -60,7 +60,7 @@ function SubjectLockAction(props) {
   const ACTION_UNLOCK = "UNLOCK";
 
   const [ open, setOpen ] = useState(false);
-  const [ displayButton, setDisplayButton ] = useState(true);
+  const [ displayAction, setDisplayAction ] = useState(true);
   const [ dialogTitle, setDialogTitle ] = useState(null);
   const [ dialogHeader, setDialogHeader ] = useState(null);
   const [ dialogContent, setDialogContent ] = useState(null);
@@ -84,7 +84,7 @@ function SubjectLockAction(props) {
   useEffect(() => {
     // Hide this button if this subject has a parent and the parent is locked since
     //  current subject can't be locked or unlocked
-    setDisplayButton(!subject?.parents?.["cards:lock"]);
+    setDisplayAction(!subject?.parents?.["cards:lock"]);
   }, [subject?.parents?.['jcr:lastModified']])
 
   let openDialog = () => {
@@ -307,56 +307,55 @@ function SubjectLockAction(props) {
     }
   }, [nextAction])
 
-  return( <>
-    <ErrorDialog open={!!errorMessage} onClose={closeError}>
-      <Typography>{errorMessage}</Typography>
-    </ErrorDialog>
-    <Dialog open={open} onClose={closeDialog}>
-      <DialogTitle>{dialogTitle}{dialogHeader}</DialogTitle>
-      <DialogContent>
-        {dialogContent}
-      </DialogContent>
-      <DialogActions sx={{pl: 3}}>
-          {actionContent}
-      </DialogActions>
-      <DialogActions>
+  return displayAction ? (
+    <>
+      <ErrorDialog open={!!errorMessage} onClose={closeError}>
+        <Typography>{errorMessage}</Typography>
+      </ErrorDialog>
+      <Dialog open={open} onClose={closeDialog}>
+        <DialogTitle>{dialogTitle}{dialogHeader}</DialogTitle>
+        <DialogContent>
+          {dialogContent}
+        </DialogContent>
+        <DialogActions sx={{pl: 3}}>
+            {actionContent}
+        </DialogActions>
+        <DialogActions>
+            <Button
+              variant="outlined"
+              onClick={closeDialog}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleActionClicked}
+              disabled={requestInProgress}
+            >
+              {actionLabel}
+            </Button>
+        </DialogActions>
+      </Dialog>
+      { variant == "icon" ?
+          <Tooltip title={buttonText}>
+            <IconButton component="span" onClick={openDialog} className={className} size={size}>
+              { isLocked
+                ? <LockOpenIcon fontSize={size}/>
+                : <LockIcon fontSize={size}/>
+              }
+            </IconButton>
+          </Tooltip>
+          :
           <Button
-            variant="outlined"
-            onClick={closeDialog}
+            onClick={openDialog}
+            size={size}
+            startIcon={variant == "extended" ? (isLocked ? <LockOpenIcon /> : <LockIcon />) : undefined}
           >
-            Cancel
+            {buttonText}
           </Button>
-          <Button
-            variant="contained"
-            onClick={handleActionClicked}
-            disabled={requestInProgress}
-          >
-            {actionLabel}
-          </Button>
-      </DialogActions>
-    </Dialog>
-    { displayButton ? (
-      variant == "icon" ?
-        <Tooltip title={buttonText}>
-          <IconButton component="span" onClick={openDialog} className={className} size={size}>
-            { isLocked
-              ? <LockOpenIcon fontSize={size}/>
-              : <LockIcon fontSize={size}/>
-            }
-          </IconButton>
-        </Tooltip>
-        :
-        <Button
-          onClick={openDialog}
-          size={size}
-          startIcon={variant == "extended" ? (isLocked ? <LockOpenIcon /> : <LockIcon />) : undefined}
-        >
-          {buttonText}
-        </Button>
-      )
-      : <></>
-    }
-  </>)
+      }
+    </>)
+  : <></>
 }
 
 SubjectLockAction.propTypes = {
