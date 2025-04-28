@@ -16,7 +16,7 @@
 */
 
 import React from "react";
-import { Button, Grid, Dialog, DialogTitle, DialogContent, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Button, Dialog, DialogTitle, DialogContent, TextField, Tooltip } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -218,17 +218,15 @@ class ChangeUserPasswordDialogue extends React.Component {
             >
                 <DialogTitle>Change User Password for {this.props.name}</DialogTitle>
                 <DialogContent>
-                    <Grid container>
-                        {this.state.error && <Typography component="h2" className={classes.errorMessage}>{this.state.error}</Typography>}
-                        <Formik
-                          initialValues={values}
-                          validationSchema={validationSchemaObj}
-                          onSubmit={this.handlePasswordChange}
-                          onReset={() => this.handleCloseDialog(false)}
-                          >
-                          {props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
-                        </Formik>
-                    </Grid>
+                    {this.state.error && <Alert severity="error">{this.state.error}</Alert>}
+                    <Formik
+                      initialValues={values}
+                      validationSchema={validationSchemaObj}
+                      onSubmit={this.handlePasswordChange}
+                      onReset={() => this.handleCloseDialog(false)}
+                      >
+                      {props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
+                    </Formik>
                 </DialogContent>
             </Dialog>
         );
