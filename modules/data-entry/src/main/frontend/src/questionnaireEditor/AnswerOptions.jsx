@@ -37,7 +37,7 @@ import {
 } from "@mui/material";
 
 import { makeStyles } from 'tss-react/mui';
-
+import { useFieldsReaderContext } from "./FieldsContext";
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
@@ -116,6 +116,7 @@ let AnswerOptions = (props) => {
   const { objectKey, value, data, path, saveButtonRef, hint } = props;
   const { classes } = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
+  let [ optionsLoaded, setOptionsLoaded ] = useState(false);
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
@@ -126,6 +127,8 @@ let AnswerOptions = (props) => {
   let [ descriptionAnchorEl, setDescriptionAnchorEl ] = useState(null);
   let [ descriptionLabel, setDescriptionLabel ] = useState('');
   let [ isSpecialOption, setIsSpecialOption ] = useState(false);
+
+  const fieldsReader = useFieldsReaderContext();
 
   const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
@@ -157,6 +160,25 @@ let AnswerOptions = (props) => {
       return newOptions;
     });
   }, [path])
+
+  // Pre-populate selectableQuestion answer options with body parts according to the selected variant if any selected
+  let bodyParts = require("./bodyParts.json");
+  useEffect(() => {
+    if (optionsLoaded && fieldsReader?.variant && fieldsReader.variant.length > 0) {
+      let bodyPartName = fieldsReader.variant[0]["@name"];
+      let variantOptions = bodyParts[bodyPartName];
+      let bodyOptions = Object.entries(variantOptions).map(([key, value]) => ({
+        label: value,
+        value: key,
+        noneOfTheAbove : false,
+        "@path": path + "/AnswerOption" + stringToHash(key)
+      }));
+
+      setOptions(bodyOptions);
+    }
+    fieldsReader.variant && !optionsLoaded && setOptionsLoaded(true);
+  },
+  [fieldsReader.variant]);
 
   let specialOptionsInfo = [
     {
