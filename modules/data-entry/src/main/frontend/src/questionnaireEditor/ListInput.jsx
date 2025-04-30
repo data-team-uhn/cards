@@ -34,8 +34,9 @@ let ListInput = (props) => {
   const changeFieldsContext = useFieldsWriterContext();
 
   let changeValue = (val) => {
-    changeFieldsContext((oldContext) => ({...oldContext, [objectKey]: val}));
-    setSelection(Array.of(val ?? []).flat().filter(v => v?.[type.identifierProperty] != ''));
+    let value = Array.of(val ?? []).flat();
+    changeFieldsContext((oldContext) => ({...oldContext, [objectKey]: value}));
+    setSelection(value.filter(v => v?.[type.identifierProperty] != ''));
   }
 
   useEffect(() => {
