@@ -43,6 +43,7 @@ import { makeStyles } from 'tss-react/mui';
 import { checkPropTypes } from "../propTypes";
 import DroppableAnswerOptionList from "./DroppableAnswerOptionList.jsx";
 import EditorInput from "./EditorInput";
+import { useFieldsReaderContext } from "./FieldsContext";
 import MarkdownText from "./MarkdownText";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
@@ -116,6 +117,7 @@ let AnswerOptions = (props) => {
   const { objectKey, value, data, path, saveButtonRef, hint } = props;
   const { classes } = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
+  let [ optionsLoaded, setOptionsLoaded ] = useState(false);
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
@@ -128,10 +130,12 @@ let AnswerOptions = (props) => {
   let [ isSpecialOption, setIsSpecialOption ] = useState(false);
   const [clickSaveAfterBlur, setClickSaveAfterBlur] = useState(false);
 
+  const fieldsReader = useFieldsReaderContext();
+
   const notApplicable  = Object.values(data)
-    .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
+     .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data)
-    .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
+     .find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
 
   const DEFAULT_NA_NODE_NAME = "None";
   const DEFAULT_NONEOFTHEABOVE_NODE_NAME = "NoneOfTheAbove";
@@ -171,6 +175,25 @@ let AnswerOptions = (props) => {
     saveButtonRef.current?.click();
     setClickSaveAfterBlur(false);
   }, [clickSaveAfterBlur]);
+
+  // Pre-populate selectableQuestion answer options with body parts according to the selected variant if any selected
+  let bodyParts = require("./bodyParts.json");
+  useEffect(() => {
+    if (optionsLoaded && fieldsReader?.variant && fieldsReader.variant.length > 0) {
+      let bodyPartName = fieldsReader.variant[0]["@name"];
+      let variantOptions = bodyParts[bodyPartName];
+      let bodyOptions = Object.entries(variantOptions).map(([key, value]) => ({
+        label: value,
+        value: key,
+        noneOfTheAbove : false,
+        "@path": path + "/AnswerOption" + stringToHash(key)
+      }));
+
+      setOptions(bodyOptions);
+    }
+    fieldsReader.variant && !optionsLoaded && setOptionsLoaded(true);
+  },
+  [fieldsReader.variant]);
 
   let specialOptionsInfo = [
     {
