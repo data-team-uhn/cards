@@ -90,8 +90,12 @@ let entitySpecs = {
 
 function QuestionnaireAutocomplete(props) {
   const {
-    showSelection = true,
-    multiple, entities, selection, onSelectionChanged, getOptionValue, placeholderText = 'Select an option',
+    multiple,
+    entities,
+    selection,
+    onSelectionChanged,
+    getOptionValue,
+    placeholderText = 'Select an option',
     ...rest
   } = props;
   const filterOptions = createFilterOptions({
