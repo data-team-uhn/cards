@@ -181,7 +181,7 @@ function QuestionnaireAutocomplete(props) {
         renderInput={(params) =>
           <TextField
             variant="standard"
-            placeholder="Select questions/sections from this questionnaire"
+            placeholder={placeholderText}
             {...params}
           />
         }
