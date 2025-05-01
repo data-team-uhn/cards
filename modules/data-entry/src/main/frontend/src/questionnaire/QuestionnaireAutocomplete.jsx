@@ -86,9 +86,18 @@ let entitySpecs = {
 // * getOptionValue: a function that takes an option and retrieves its value; defaults to (option) => option.path
 // Any other props are passed directly to the Autocomplete component.
 
-function QuestionnaireAutocomplete(props) {
-  const { multiple, entities, selection, onSelectionChanged, getOptionValue, ...rest } = props;
+// TODO: Don't actually need entity.uuid ?
 
+function QuestionnaireAutocomplete(props) {
+  const {
+    multiple,
+    entities,
+    selection,
+    onSelectionChanged,
+    getOptionValue,
+    placeholderText = 'Select an option',
+    ...rest
+  } = props;
   const filterOptions = createFilterOptions({
     stringify: (option) => `${option.relativePath} ${option.name} ${option.text}`
   });
@@ -172,7 +181,7 @@ function QuestionnaireAutocomplete(props) {
         renderInput={(params) =>
           <TextField
             variant="standard"
-            placeholder="Select questions/sections from this questionnaire"
+            placeholder={placeholderText}
             {...params}
           />
         }
