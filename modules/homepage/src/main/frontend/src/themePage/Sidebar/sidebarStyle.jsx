@@ -379,7 +379,7 @@ import {
       height: "50px"
     },
     logout: {
-      paddingRight: theme.spacing(0.5)
+      marginRight: theme.spacing(-0.75)
     },
     aboveBackground: {
       zIndex: "1200"

@@ -33,7 +33,7 @@ const appStyle = theme => ({
   },
   content: {
     marginTop: theme.spacing(4),
-    padding: "30px 15px 15px"
+    padding: theme.spacing(4, 2, 2)
   },
   container,
   map: {
