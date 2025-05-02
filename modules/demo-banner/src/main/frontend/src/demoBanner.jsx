@@ -20,41 +20,18 @@
 import React from "react";
 
 import {
+  Alert,
   AppBar,
-  Grid,
-  Toolbar,
-  Typography
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-import { withStyles } from 'tss-react/mui';
-
-import WarningIcon from '@mui/icons-material/Warning';
-
-const appbarStyle = theme => ({
-  root: {
-    backgroundColor: theme.palette.warning.main
-  }
-});
 
 export default function DemoBanner(props) {
-  const StyledAppBar = withStyles(AppBar, appbarStyle);
-  const theme = useTheme();
 
   return (
-    <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
-      <Toolbar>
-      <Grid container spacing={1} justifyContent="center" alignItems="center" wrap="nowrap">
-        <Grid sx={{ minWidth: theme.spacing(6)}}><WarningIcon/></Grid>
-        <Grid>
-        <Typography variant="subtitle2">
-          This installation is for demo purposes only.
-          Data entered here can be accessed by anyone and is
-          periodically deleted. Do not enter any real
-          data / patient identifiable information.
-        </Typography>
-        </Grid>
-      </Grid>
-      </Toolbar>
-    </StyledAppBar>
+    <AppBar position="fixed" style={props.style} ref={props.onRender}>
+      <Alert variant="filled" square severity="warning" sx={{justifyContent: "center"}}>
+        This installation is for demo purposes only.
+        Do not enter any real data / patient identifiable information.
+      </Alert>
+    </AppBar>
   );
 }
