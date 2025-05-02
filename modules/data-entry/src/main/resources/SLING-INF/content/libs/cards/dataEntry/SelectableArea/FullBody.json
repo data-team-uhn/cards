@@ -3,6 +3,7 @@
     "name": "Full body",
     "image": "/libs/cards/resources/media/dataEntry/fullBody.svg",
     "jcr:path:map": "/libs/cards/resources/media/dataEntry/fullBodyMap.json",
+    "jcr:path:zones": "/libs/cards/resources/media/dataEntry/fullBodyZones.json",
     "maxWidth": 720,
     "imageWidth": 1280,
     "imageHeight": 1280
