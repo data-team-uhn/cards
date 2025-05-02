@@ -85,6 +85,10 @@ const headerStyle = theme => ({
     "& .MuiListItem-root" : {
       margin: theme.spacing(-1, -2),
       width: "auto",
+    },
+    "& .MuiListItemButton-root" : {
+      paddingLeft: 0,
+      paddingRight: 0,
     }
   },
   suggestions: {

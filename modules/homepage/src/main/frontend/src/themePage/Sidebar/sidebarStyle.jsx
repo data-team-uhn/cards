@@ -414,7 +414,7 @@ import {
       }
     },
     search: {
-      marginTop: theme.spacing(1)
+      width: theme.spacing(32)
     },
   });
 
