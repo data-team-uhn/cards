@@ -19,42 +19,18 @@
 
 import React, { useState, useEffect } from "react";
 import {
+  Alert,
   AppBar,
-  Avatar,
-  Grid,
-  Toolbar,
-  Typography,
 } from '@mui/material';
-import { withStyles } from 'tss-react/mui';
-import { useTheme } from '@mui/material/styles';
 import BuildIcon from '@mui/icons-material/Build';
 
-const appbarStyle = theme => ({
-  root: {
-    backgroundColor: theme.palette.info.main,
-    "& .MuiAvatar-root" : {
-      backgroundColor: theme.palette.background.paper,
-      color: theme.palette.info.main
-    },
-    "& b": {
-      backgroundColor: theme.palette.action.selected,
-      padding: "2px 4px",
-      borderRadius: "2px",
-    }
-  }
-});
-
 export default function DowntimeWarning(props) {
-  const StyledAppBar = withStyles(AppBar, appbarStyle);
-  const appName = document.querySelector('meta[name="title"]')?.content;
-
   // The the configuration values specified by the Administration
   const [ enabled, setEnabled ] = useState(false);
   const [ fromDate, setFromDate ] = useState();
   const [ toDate, setToDate ] = useState();
   // Error message set when fetching the data from the server fails
   const [ error, setError ] = useState();
-  const theme = useTheme();
 
   // Load the configurations only once, upon initialization
   useEffect(() => {
@@ -89,18 +65,13 @@ export default function DowntimeWarning(props) {
   }
 
   return (
-    <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
-      <Toolbar>
-      {error && <Typography color='error'>{errorText}</Typography>}
-      <Grid container spacing={1} justifyContent="center" alignItems="center" wrap="nowrap">
-        <Grid sx={{ minWidth: theme.spacing(6)}}><Avatar><BuildIcon/></Avatar></Grid>
-        <Grid>
-        <Typography variant="body2">
-          {appName} will be down for maintenance from <b>{fromDate}</b> to <b>{toDate}</b>. We appologize for the inconvenience this may cause.
-        </Typography>
-        </Grid>
-      </Grid>
-      </Toolbar>
-    </StyledAppBar>
+    <AppBar position="fixed" style={props.style} ref={props.onRender}>
+      { error &&
+        <Alert variant="filled" square severity="error" sx={{justifyContent: "center"}}>{error}</Alert>
+      }
+      <Alert variant="filled" square severity="info" icon={<BuildIcon/>} sx={{justifyContent: "center"}}>
+        Scheduled Maintenance: {fromDate} - {toDate}
+      </Alert>
+    </AppBar>
   );
 }
