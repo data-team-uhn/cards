@@ -129,7 +129,7 @@ function HeaderLinks (props) {
       <Tooltip title={username}>
         <Box sx={{ display: { xs: 'none', md: 'inline-flex' }}}>
           <IconButton
-            className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
+            className={classes.buttonLink + " " + classes.logout}
             onClick={() => setPopperOpen((open) => !open)}
             ref={avatarRef}
             size="large"
