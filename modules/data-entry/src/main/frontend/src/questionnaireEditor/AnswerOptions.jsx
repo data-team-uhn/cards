@@ -154,12 +154,12 @@ let AnswerOptions = (props) => {
     });
   }, [path])
 
-  // Pre-populate selectableQuestion answer options with body parts according to the selected variant if any selected
-  let bodyParts = require("./bodyParts.json");
+  // Pre-populate selectableQuestion answer options with selectable zones according to the selected variant if any selected
+  let selectableZones = require("./bodyParts.json");
   useEffect(() => {
     if (optionsLoaded && fieldsReader?.variant && fieldsReader.variant.length > 0) {
-      let bodyPartName = fieldsReader.variant[0]["@name"];
-      let variantOptions = bodyParts[bodyPartName];
+      let variantName = fieldsReader.variant[0]["@name"];
+      let variantOptions = selectableZones[variantName];
       let bodyOptions = Object.entries(variantOptions).map(([key, value]) => ({
         label: value,
         value: key,
