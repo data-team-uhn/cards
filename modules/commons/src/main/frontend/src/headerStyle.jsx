@@ -38,10 +38,13 @@ const headerStyle = theme => ({
     padding: "10px 0",
     transition: "all 150ms ease 0s",
     minHeight: "50px",
-    display: "block"
+    display: "block",
+    "& .MuiToolbar-root": {
+      padding: theme.spacing(0, 4)
+    }
   },
   drawerToggle: {
-    marginRight: theme.spacing(-0.75)
+    marginRight: theme.spacing(-1.5)
   },
   container: {
     ...container,
