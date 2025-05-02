@@ -72,7 +72,8 @@ function QuestionnairePreview (props) {
     );
   }
 
-  return (<React.Fragment>
+  return (<div className={data?.hideAnswerInstructions ? classes.hideAnswerInstructions : null}>
+    <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
       { /* Added dummy save functionality for mocking file and pedigree questions functionality. */ }
       <FormProvider additionalFormData={{
           ['/Save']: () => { return new Promise((resolve, reject) => {return;})},
@@ -93,7 +94,6 @@ function QuestionnairePreview (props) {
                 existingAnswers={data}
                 keyProp={key}
                 classes={classes}
-                className={data?.hideAnswerInstructions ? classes.hideAnswerInstructions : null}
                 onChange={()=>{}}
                 visibleCallback={pageResult.callback}
                 pageActive={pageResult.page.visible}
@@ -115,6 +115,7 @@ function QuestionnairePreview (props) {
             onDone={close}
         />
       </Grid>
+    </Grid>
     {!paginationEnabled &&
       <MainActionButton
         icon={<CloseIcon />}
@@ -122,7 +123,7 @@ function QuestionnairePreview (props) {
         label="Close"
       />
     }
-  </React.Fragment>);
+  </div>);
 };
 
 export default withStyles(QuestionnairePreview, QuestionnaireStyle);
