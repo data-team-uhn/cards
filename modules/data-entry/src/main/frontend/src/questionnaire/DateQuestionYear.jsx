@@ -64,7 +64,9 @@ function DateQuestionYear(props) {
   );
 }
 
-DateQuestionYear.propTypes = DateQuestionUtilities.PROP_TYPES;
+const utilitiesPropTypes = { ...DateQuestionUtilities.PROP_TYPES };
+delete utilitiesPropTypes.classes;
+DateQuestionYear.propTypes = utilitiesPropTypes;
 
 export default DateQuestionYear;
 
