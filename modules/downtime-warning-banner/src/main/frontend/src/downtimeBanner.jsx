@@ -26,6 +26,7 @@ import {
   Typography,
 } from '@mui/material';
 import { withStyles } from 'tss-react/mui';
+import { useTheme } from '@mui/material/styles';
 import BuildIcon from '@mui/icons-material/Build';
 
 const appbarStyle = theme => ({
@@ -53,6 +54,7 @@ export default function DowntimeWarning(props) {
   const [ toDate, setToDate ] = useState();
   // Error message set when fetching the data from the server fails
   const [ error, setError ] = useState();
+  const theme = useTheme();
 
   // Load the configurations only once, upon initialization
   useEffect(() => {
@@ -90,8 +92,8 @@ export default function DowntimeWarning(props) {
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       {error && <Typography color='error'>{errorText}</Typography>}
-      <Grid container spacing={1} alignItems="center" wrap="nowrap">
-        <Grid><Avatar><BuildIcon/></Avatar></Grid>
+      <Grid container spacing={1} justifyContent="center" alignItems="center" wrap="nowrap">
+        <Grid sx={{ minWidth: theme.spacing(6)}}><Avatar><BuildIcon/></Avatar></Grid>
         <Grid>
         <Typography variant="body2">
           {appName} will be down for maintenance from <b>{fromDate}</b> to <b>{toDate}</b>. We appologize for the inconvenience this may cause.
