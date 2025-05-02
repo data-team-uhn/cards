@@ -177,19 +177,17 @@ let AnswerOptions = (props) => {
   }, [clickSaveAfterBlur]);
 
   // Pre-populate selectableQuestion answer options with selectable zones according to the selected variant if any selected
-  let selectableZones = require("./bodyParts.json");
   useEffect(() => {
     if (optionsLoaded && fieldsReader?.variant && fieldsReader.variant.length > 0) {
-      let variantName = fieldsReader.variant[0]["@name"];
-      let variantOptions = selectableZones[variantName];
-      let bodyOptions = Object.entries(variantOptions).map(([key, value]) => ({
+      let selectableZones = {}; //here we get the zones json from the JCR node corresponding to variant
+      let variantOptions = Object.entries(selectableZones).map(([key, value]) => ({
         label: value,
         value: key,
         noneOfTheAbove : false,
         "@path": path + "/AnswerOption" + stringToHash(key)
       }));
 
-      setOptions(bodyOptions);
+      setOptions(variantOptions);
     }
     fieldsReader.variant && !optionsLoaded && setOptionsLoaded(true);
   },
