@@ -40,6 +40,9 @@ const headerStyle = theme => ({
     minHeight: "50px",
     display: "block"
   },
+  drawerToggle: {
+    marginRight: theme.spacing(-0.75)
+  },
   container: {
     ...container,
     minHeight: "50px"

@@ -42,6 +42,7 @@ function Header({ ...props }) {
             color="inherit"
             aria-label="open drawer"
             onClick={props.handleDrawerToggle}
+            className={classes.drawerToggle}
           >
             <Menu />
           </IconButton>
