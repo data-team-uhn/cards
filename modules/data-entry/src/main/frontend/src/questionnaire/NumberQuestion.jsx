@@ -132,7 +132,7 @@ const useSliderStyles = makeStyles(theme => ({
 //    />
 function NumberQuestion(props) {
   const { existingAnswer, errorText, classes, pageActive, disableValueInstructions, ...rest} = props;
-  const { dataType,displayMode, minAnswers, minValue, maxValue, disableMinMaxValueEnforcement, messageForValuesOutsideMinMax, isRange, unitOfMeasurement,
+  const { dataType,displayMode, minAnswers, minValue, maxValue, disallowNegatives, disableMinMaxValueEnforcement, messageForValuesOutsideMinMax, isRange, unitOfMeasurement,
     sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel, decimalScale }
     = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
@@ -242,7 +242,7 @@ function NumberQuestion(props) {
   const textFieldProps = {
     min: minValue,
     max: maxValue,
-    allowNegative: (typeof minValue === "undefined" || minValue < 0 || disableMinMaxValueEnforcement),
+    allowNegative: (typeof minValue === "undefined" || minValue < 0 || disableMinMaxValueEnforcement) && !disallowNegatives,
     decimalScale: dataType === "long" ? 0 : (decimalScale ?? undefined)
   };
   const muiInputProps = {
