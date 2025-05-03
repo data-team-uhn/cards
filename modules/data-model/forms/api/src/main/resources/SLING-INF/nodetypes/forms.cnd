@@ -165,6 +165,10 @@
   // pressing ENTER
   - enableSeparatorDetection (boolean)
 
+  // For number answers, disallow entering negative numbers in the inputs.
+  // This does not prevent saving negative numbers via answer options or APIs.
+  - disableNegativeInput (boolean)
+
   // For numeric answers, the minimum and maximum allowed values
   - minValue (double)
   - maxValue (double)

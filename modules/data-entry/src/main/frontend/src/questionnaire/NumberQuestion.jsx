@@ -135,6 +135,7 @@ function NumberQuestion(props) {
     dataType,
     displayMode,
     minAnswers,
+    disableNegativeInput,
     minValue,
     maxValue,
     disableMinMaxValueEnforcement,
@@ -256,7 +257,7 @@ function NumberQuestion(props) {
   const textFieldProps = {
     min: minValue,
     max: maxValue,
-    allowNegative: (typeof minValue === "undefined" || minValue < 0 || disableMinMaxValueEnforcement),
+    allowNegative: (typeof minValue === "undefined" || minValue < 0 || disableMinMaxValueEnforcement) && !disableNegativeInput,
     decimalScale: dataType === "long" ? 0 : (decimalScale ?? undefined)
   };
   const muiInputProps = {
