@@ -28,7 +28,7 @@
 	<property>
 		<name>description</name>
 		<value>CARDS-2531. Test if unary conditionals without a conditionB node will break the backend condition evaluation.</value>
-		<type>Boolean</type>
+		<type>String</type>
 	</property>
 	<node>
 		<name>something</name>
