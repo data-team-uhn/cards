@@ -35,6 +35,7 @@ import {
   Typography,
 } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
+import { alpha } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DoneIcon from "@mui/icons-material/Done";
@@ -765,4 +766,4 @@ function Form (props) {
   );
 };
 
-export default withStyles(withRouter(Form), QuestionnaireStyle);
+export default withStyles(Form, QuestionnaireStyle);
