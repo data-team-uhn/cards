@@ -18,13 +18,12 @@
 //
 
 import React, { useState } from "react";
-import withStyles from '@mui/styles/withStyles';
 
 import 'react-phone-input-2/lib/style.css';
 import PropTypes from "prop-types";
 
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
+
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import PhoneInput from 'react-phone-input-2';
@@ -39,7 +38,7 @@ import PhoneInput from 'react-phone-input-2';
 //   }}
 //   />
 function PhoneQuestion(props) {
-  const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
+  const { existingAnswer, pageActive, questionDefinition, ...rest} = props;
 
   let initialValue = existingAnswer && existingAnswer[1].value || "";
   const [phone, changePhone] = useState(initialValue);
@@ -77,7 +76,6 @@ function PhoneQuestion(props) {
 }
 
 PhoneQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     defaultCountry: PropTypes.string,
@@ -87,11 +85,10 @@ PhoneQuestion.propTypes = {
 };
 
 
-const StyledPhoneQuestion = withStyles(QuestionnaireStyle)(PhoneQuestion)
-export default StyledPhoneQuestion;
+export default PhoneQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "phone") {
-    return [StyledPhoneQuestion, 50];
+    return [PhoneQuestion, 50];
   }
 });

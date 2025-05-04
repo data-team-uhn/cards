@@ -77,7 +77,7 @@ ENTRY_CONTENT
     ]
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx']
+    extensions: ['.*', '.js', '.jsx']
   },
   optimization: {
     usedExports: false,

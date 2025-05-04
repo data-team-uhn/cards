@@ -25,14 +25,14 @@ import {
     CardHeader,
     Grid,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   editorContainer: {
     padding: theme.spacing(2, 0, 0),
-    "& > .MuiGrid-item > *": {
+    "& > .MuiGrid-root > *": {
       height: "100% !important",
     },
     "& .w-md-editor-content": {
@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
 
 function WelcomeMessageConfiguration(props) {
   const { welcomeMessage, onChange } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const appName = document.querySelector('meta[name="title"]')?.content;
 
@@ -71,15 +71,15 @@ function WelcomeMessageConfiguration(props) {
             alignItems="stretch"
             className={classes.editorContainer}
           >
-            <Grid item xs={12} md={6}>
+            <Grid size={{xs:12, md:6}} key="markdown-text">
               <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={onChange} />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{xs:12, md:6}} key="formatted-text">
               <Card>
                 <CardHeader
                   className={classes.previewHeader}
                   title="Preview"
-                  titleTypographyProps={{variant: "overline"}}
+                  slotProps={{ title: {variant: "overline"} }}
                 />
                 <CardContent>
                   <FormattedText variant="body2">

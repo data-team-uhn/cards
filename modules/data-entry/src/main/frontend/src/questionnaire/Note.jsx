@@ -21,7 +21,7 @@ import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Button, Collapse, Grid, TextField, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import AddIcon from "@mui/icons-material/Add";
 import UnfoldMore from "@mui/icons-material/UnfoldMore";
 import UnfoldLess from "@mui/icons-material/UnfoldLess";
@@ -29,7 +29,9 @@ import UnfoldLess from "@mui/icons-material/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, children, existingAnswer, classes, onChangeNote, pageActive, fullSize, placeholder, value, ...rest } = {...props};
+
+  const { answerPath, children, existingAnswer, classes, onChangeNote, pageActive, fullSize, placeholder, value, onAddSuggestion, ...rest } = {...props};
+
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();
@@ -76,23 +78,19 @@ function Note (props) {
       onEntered = {() => inputRef?.current?.focus()}
       >
       <Grid container spacing={2}>
-        <Grid item xs={fullSize ? 12 : 6}>
+        <Grid size={fullSize ? 12 : 6} className = {classes.noteSection}>
           <TextField
             value = {note}
             onChange = {(event) => setNote(event?.target?.value)}
             variant = "outlined"
             multiline
             rows = {fullSize ? 16 : 4}
-            className = {classes.noteSection}
-            InputProps = {{
-              className: classes.noteTextField
-            }}
             placeholder = {placeholder}
             inputRef = {inputRef}
             {...rest}
             />
           </Grid>
-          <Grid item xs={fullSize ? 12 : 6}>
+          <Grid size={fullSize ? 12 : 6}>
             {children}
           </Grid>
         </Grid>
@@ -122,4 +120,4 @@ Note.defaultProps = {
   placeholder: "Please place any additional notes here.",
 };
 
-export default withStyles(QuestionnaireStyle)(Note);
+export default withStyles(Note, QuestionnaireStyle);

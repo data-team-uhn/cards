@@ -24,7 +24,7 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -121,11 +121,11 @@ class FormFields extends React.Component {
         />
         <Grid container justifyContent="flex-end" alignItems="center" className={classes.actions}>
           { !loginOnSuccess &&
-            <Grid item>
+            <Grid>
               <Button variant="outlined" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>{closeButtonText}</Button>
             </Grid>
           }
-          <Grid item>
+          <Grid>
           {!isValid ?
             // Render tooltip and button
             <Tooltip title="You must fill in all fields.">
@@ -150,7 +150,7 @@ class FormFields extends React.Component {
   }
 }
 
-const FormFieldsComponent = withStyles(styles)(FormFields);
+const FormFieldsComponent = withStyles(FormFields, styles);
 
 class SignUpForm extends React.Component {
   constructor(props) {
@@ -291,4 +291,4 @@ class SignUpForm extends React.Component {
   }
 }
 
-export default withStyles(styles)(SignUpForm);
+export default withStyles(SignUpForm, styles);

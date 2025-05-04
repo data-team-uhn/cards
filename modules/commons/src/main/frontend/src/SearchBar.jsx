@@ -17,12 +17,11 @@
 //  under the License.
 //
 import PropTypes from "prop-types";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { withRouter } from "react-router-dom";
-
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
 import { MenuList, Paper, Popper } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -50,11 +49,12 @@ const CARDS_QUERY_MATCH_PATH_KEY = "@path";
  * @param {func} resultConstructor Function that constructs a DOM element from a row of results.
  * @param {bool} showAllResultsLink If true, show the link “See all results” of the bottom of the results dropdown
  * @param {bool} disableDropdownItemLink If true, disable links for results dropdown items
+ * @param {bool} disableButton If true, puts just the search icon at the end instead of the functional search button
  * @param {object} staticContext Unused, defined here to trap the inserted prop from being passed on with ...rest to the Input, where it is invalid
  * Other props will be forwarded to the Input element
  */
 function SearchBar(props) {
-  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, queryConstructor, resultConstructor, staticContext, showAllResultsLink, disableDropdownItemLink, ...rest } = props;
+  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, disableButton, queryConstructor, resultConstructor, staticContext, showAllResultsLink, disableDropdownItemLink, ...rest } = props;
   const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
   const [ moreResults, setMoreResults ] = useState(0);
@@ -66,7 +66,6 @@ function SearchBar(props) {
   const [ limit, setLimit ] = useState(5);
   const [ allowedResourceTypes, setAllowedResourceTypes ] = useState([]);
   const [ showTotalRows, setShowTotalRows ] = useState(true);
-  const [ fetched, setFetched ] = useState(false);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -75,16 +74,15 @@ function SearchBar(props) {
   let searchBar = React.useRef();
 
   // Fetch saved admin config settings
-  let getQuickSearchSettings = () => {
+  useEffect(() => {
     fetchWithReLogin(globalLoginDisplay, '/apps/cards/config/QuickSearch.json')
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setFetched(true);
-        setLimit(json["limit"] || DEFAULT_MAX_RESULTS);
-        setAllowedResourceTypes(json["allowedResourceTypes"]);
-        setShowTotalRows(json["showTotalRows"]  == 'true');
-      });
-  }
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then((json) => {
+      setLimit(json["limit"] || DEFAULT_MAX_RESULTS);
+      setAllowedResourceTypes(json["allowedResourceTypes"]);
+      setShowTotalRows(json["showTotalRows"]  == 'true');
+    });
+  }, []);
 
   // Callback to update the value of the search bar. Sends off a delayed fulltext request
   let changeSearch = (query) => {
@@ -167,10 +165,6 @@ function SearchBar(props) {
     )
   }
 
-  if (!fetched) {
-    getQuickSearchSettings();
-  }
-
   return(
     <React.Fragment>
       <Input
@@ -195,22 +189,20 @@ function SearchBar(props) {
         }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton
-              size="large"
-              className={invertColors ? classes.invertedColors : ""}
-              onClick={(event) => {
-                input?.current?.focus();
-              }}
-            >
-              <Search />
-            </IconButton>
+            {disableButton
+              ? <Search/>
+              : <IconButton
+                  size="small"
+                  sx={{mr: -0.5}}
+                  className={invertColors ? classes.invertedColors : ""}
+                  onClick={(event) => input?.current?.focus()}
+                >
+                  <Search />
+                </IconButton>
+            }
           </InputAdornment>
         }
-        className={
-          classes.search
-          + " " + (invertColors ? classes.invertedColors : "")
-          + " " + (className ? className : "")
-        }
+        className={(invertColors ? classes.invertedColors + " " : "") + className}
         inputRef={input}
         {...rest}
         />
@@ -254,8 +246,12 @@ function SearchBar(props) {
                       <ListItemText
                         primary={"Error: " + (error.statusText ? error.statusText : error.message)}
                         secondary={(error.status ? error.status : error.name)}
-                        primaryTypographyProps={{color: "error"}}
-                        />
+                        slotProps={{
+                          primary: {
+                            color: "error",
+                          },
+                        }}
+                      />
                     </MenuItem>
                   : results.map( (result, i) => (
                     /* Results if no errors occurred */
@@ -276,7 +272,7 @@ function SearchBar(props) {
                   { !results[0]?.disabled && showAllResultsLink &&
                   <Link to={"/content.html/QuickSearchResults?query=" + encodeURIComponent(search)
                               + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
-                          className={classes.root} underline="hover">
+                          underline="hover">
                     <MenuItem
                       className={classes.dropdownItem}
                       onClick={() => setPopperOpen(false)}
@@ -336,7 +332,8 @@ SearchBar.propTypes = {
   onPopperClose: PropTypes.func,
   onSelect: PropTypes.func,
   queryConstructor: PropTypes.func,
-  resultConstructor: PropTypes.func
+  resultConstructor: PropTypes.func,
+  disableButton: PropTypes.bool,
 }
 
 SearchBar.defaultProps = {
@@ -346,4 +343,4 @@ SearchBar.defaultProps = {
   onSelect: defaultRedirect
 }
 
-export default withStyles(HeaderStyle)(withRouter(SearchBar));
+export default withStyles(withRouter(SearchBar), HeaderStyle);

@@ -21,7 +21,7 @@ import React, { useState } from "react";
 
 import { TextField, Tooltip, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import Answer from "./Answer";
 import Question from "./Question";
@@ -134,15 +134,17 @@ function DateQuestionFull(props) {
         variant="standard"
         type={textFieldType}
         className={classes.textField + isEnd ? "" : (" " + classes.answerField)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        InputProps={{
-          className: classes.textField
-        }}
-        inputProps={{
-          max: DateQuestionUtilities.strip(absoluteUpperLimit, textFieldType),
-          min: DateQuestionUtilities.strip(absoluteLowerLimit, textFieldType)
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+          },
+          input: {
+            className: classes.textField,
+          },
+          htmlInput: {
+            max: DateQuestionUtilities.strip(absoluteUpperLimit, textFieldType),
+            min: DateQuestionUtilities.strip(absoluteLowerLimit, textFieldType),
+          },
         }}
         onChange={(event) => processChange(event.target.value, isEnd)}
         onBlur={(event) => processBlur(event.target.value, isEnd)}
@@ -203,7 +205,7 @@ function DateQuestionFull(props) {
 
 DateQuestionFull.propTypes = DateQuestionUtilities.PROP_TYPES;
 
-const StyledDateQuestionFull = withStyles(QuestionnaireStyle)(DateQuestionFull);
+const StyledDateQuestionFull = withStyles(DateQuestionFull, QuestionnaireStyle);
 export default StyledDateQuestionFull;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

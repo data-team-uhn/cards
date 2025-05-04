@@ -20,12 +20,10 @@
 import React, { forwardRef, useState, useEffect, useContext } from "react";
 import { TextField } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import withStyles from '@mui/styles/withStyles';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
 
 const filterUserOptions =  createFilterOptions({
@@ -36,16 +34,16 @@ const filterUserOptions =  createFilterOptions({
  * Display a filter on a user creator or editor of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {string} defaultValue The default value to place in the list
+ * @param {object} initial Object containing the initial value and label to place in the list
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  * Other props are forwarded to the Select component
  *
  */
 const UserFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
   // Manage our own state inside here as well
-  const [ selection, setSelection ] = useState(defaultValue || "");
+  const [ selection, setSelection ] = useState(initial?.value || "");
   const [ users, setUsers ] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -83,17 +81,18 @@ const UserFilter = forwardRef((props, ref) => {
 });
 
 UserFilter.propTypes = {
-  defaultValue: PropTypes.string,
+  initial: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.object
 }
 
-const StyledUserFilter = withStyles(QuestionnaireStyle)(UserFilter)
-
-export default StyledUserFilter;
+export default UserFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "user") {
-    return [DEFAULT_COMPARATORS, StyledUserFilter, 60];
+    return [DEFAULT_COMPARATORS, UserFilter, 60];
   }
 });

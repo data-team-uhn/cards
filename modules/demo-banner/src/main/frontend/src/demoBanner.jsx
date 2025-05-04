@@ -25,8 +25,8 @@ import {
   Toolbar,
   Typography
 } from '@mui/material';
-
-import withStyles from '@mui/styles/withStyles';
+import { useTheme } from '@mui/material/styles';
+import { withStyles } from 'tss-react/mui';
 
 import WarningIcon from '@mui/icons-material/Warning';
 
@@ -37,14 +37,15 @@ const appbarStyle = theme => ({
 });
 
 export default function DemoBanner(props) {
-  const StyledAppBar = withStyles(appbarStyle)(AppBar);
+  const StyledAppBar = withStyles(AppBar, appbarStyle);
+  const theme = useTheme();
 
   return (
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       <Grid container spacing={1} justifyContent="center" alignItems="center" wrap="nowrap">
-        <Grid item><WarningIcon/></Grid>
-        <Grid item>
+        <Grid sx={{ minWidth: theme.spacing(6)}}><WarningIcon/></Grid>
+        <Grid>
         <Typography variant="subtitle2">
           This installation is for demo purposes only.
           Data entered here can be accessed by anyone and is

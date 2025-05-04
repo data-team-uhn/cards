@@ -21,7 +21,7 @@ import React, { useState } from "react";
 
 import { FormHelperText, TextField, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import Answer from "./Answer";
 import Question from "./Question";
@@ -173,11 +173,13 @@ function DateQuestionMonth(props) {
         variant="standard"
         type="text"
         className={classes.textField + isEnd ? "" : (" " + classes.answerField)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        InputProps={{
-          className: classes.textField
+        slotProps={{
+          input: {
+            className: classes.textField,
+          },
+          inputLabel: {
+            shrink: true,
+          },
         }}
         error={error}
         onChange={(event) => setDate(event.target.value, isEnd)}
@@ -228,7 +230,7 @@ function DateQuestionMonth(props) {
 
 DateQuestionMonth.propTypes = DateQuestionUtilities.PROP_TYPES;
 
-const StyledDateQuestionMonth = withStyles(QuestionnaireStyle)(DateQuestionMonth);
+const StyledDateQuestionMonth = withStyles(DateQuestionMonth, QuestionnaireStyle);
 export default StyledDateQuestionMonth;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

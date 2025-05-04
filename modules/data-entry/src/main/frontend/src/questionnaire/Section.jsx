@@ -20,7 +20,7 @@
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button, Collapse, Grid, IconButton, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import Add from "@mui/icons-material/Add";
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
 import UnfoldMore from '@mui/icons-material/UnfoldMore';
@@ -188,7 +188,6 @@ function Section(props) {
       ? (<Collapse
       in={isDisplayed}
       component={Grid}
-      item
       {...gridProps}
       mountOnEnter
       unmountOnExit
@@ -216,7 +215,7 @@ function Section(props) {
               >
               {/* Section header */
                 (hasHeader || isRecurrent) &&
-                  <Grid item className={classes.sectionHeader}>
+                  <Grid className={classes.sectionHeader}>
                     {/* Delete this entry and expand this entry button */}
                     {isEdit && isRecurrent &&
                       <DeleteButton
@@ -263,7 +262,6 @@ function Section(props) {
                 unmountOnExit
                 in={!hiddenSection}
                 component={Grid}
-                item
                 >
                 <Grid container
                     {...FORM_ENTRY_CONTAINER_PROPS}
@@ -288,7 +286,7 @@ function Section(props) {
                         isEdit={isEdit}
                         isSummary={isSummary}
                         contentOffset={contentOffset}
-                        gridProps={isCompact && sectionEntries.length > 1 ? {xs: 12, sm: 12, md: 6, lg: (sectionEntries.length == 2 ? 6 : 4)} : undefined}
+                        gridProps={isCompact && sectionEntries.length > 1 ? {size : {xs: 12, sm: 12, md: 6, lg: (sectionEntries.length == 2 ? 6 : 4)}} : undefined}
                         pageActive={pageActive}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {
@@ -308,7 +306,7 @@ function Section(props) {
           })
         }
         {isEdit && isRecurrent &&
-        <Grid item className="addSectionContainer">
+        <Grid className="addSectionContainer">
           <Button
             size="small"
             variant="outlined"
@@ -344,4 +342,4 @@ Section.propTypes = {
   }).isRequired,
 }
 
-export default withStyles(QuestionnaireStyle)(Section);
+export default withStyles(Section, QuestionnaireStyle);

@@ -20,7 +20,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { Checkbox, Chip, FormControl, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import Close from "@mui/icons-material/Close";
 import PropTypes from 'prop-types';
 
@@ -402,23 +402,24 @@ function MultipleChoice(props) {
             disabled={disabled}
             onFocus={() => {maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}}
             onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
-            inputProps={Object.assign({
-              onKeyDown: (event) => {
-                if (event.key == 'Enter') {
-                  // We need to stop the event so that it doesn't trigger a form submission
-                  event.preventDefault();
-                  event.stopPropagation();
-                  acceptEnteredOption(!softValidation);
-                }
-              },
-              tabIndex: isRadio ? -1 : undefined
-            }, additionalInputProps)
-            }
+            slotProps={{
+              htmlInput: Object.assign({
+                onKeyDown: (event) => {
+                  if (event.key == 'Enter') {
+                    // We need to stop the event so that it doesn't trigger a form submission
+                    event.preventDefault();
+                    event.stopPropagation();
+                    acceptEnteredOption(!softValidation);
+                  }
+                },
+                tabIndex: isRadio ? -1 : undefined
+              }, additionalInputProps),
+              input: muiInputProps,
+            }}
             value={ghostName || ''}
             multiline={textbox}
-            InputProps={muiInputProps}
             inputRef={ref => {inputEl = ref}}
-            />
+          />
       }
       { maxAnswers !== 1 && separatorDetectionEnabled &&
         <UserInputAssistant
@@ -622,7 +623,7 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
   });
 }
 
-var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
+var StyledResponseChild = withStyles(ResponseChild, QuestionnaireStyle);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
@@ -707,4 +708,4 @@ MultipleChoice.propTypes = {
   error: PropTypes.bool
 };
 
-export default withStyles(QuestionnaireStyle)(MultipleChoice);
+export default withStyles(MultipleChoice, QuestionnaireStyle);

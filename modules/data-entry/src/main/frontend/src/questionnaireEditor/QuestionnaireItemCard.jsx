@@ -30,7 +30,7 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandIcon from '@mui/icons-material/UnfoldMore';
@@ -44,7 +44,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 import { camelCaseToWords }  from "./LabeledField";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   root : {
     border: "0 none",
     background: theme.palette.action.hover,
@@ -73,7 +73,7 @@ const useStyles = makeStyles(theme => ({
     "& .cards-questionnaire-entry-props": {
       display: "none",
     },
-    "& .MuiCardContent-root > .MuiGrid-container > .MuiGrid-item:last-child": {
+    "& .MuiCardContent-root > .MuiGrid-container > .MuiGrid-root:last-child": {
       marginBottom: theme.spacing(2),
     },
     "& .MuiCardHeader-content .MuiIconButton-root": {
@@ -89,10 +89,10 @@ const useStyles = makeStyles(theme => ({
     "&.MuiCardContent-root > .cards-questionnaire-entry-props": {
       paddingLeft: theme.spacing(5.5),
     },
-    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-item": {
+    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root": {
       paddingLeft: theme.spacing(5.5),
     },
-    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-item.cards-questionnaire-entry-props": {
+    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root.cards-questionnaire-entry-props": {
       paddingLeft: theme.spacing(7.5),
     },
   }
@@ -118,7 +118,7 @@ let QuestionnaireItemCard = (props) => {
     onActionDone,
     doHighlight,
     model,
-    classes
+    upperClasses
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
@@ -137,23 +137,23 @@ let QuestionnaireItemCard = (props) => {
     }
   }, [itemRef]);
 
-  const styles = useStyles();
+  const { classes } = useStyles();
 
-  let cardClasses = [styles.root];
+  let cardClasses = [classes.root];
   if (isCollapsed) {
-    cardClasses.push(styles.collapsed);
+    cardClasses.push(classes.collapsed);
   }
   if (highlight) {
-    cardClasses.push(classes.focusedQuestionnaireItem);
+    cardClasses.push(upperClasses.focusedQuestionnaireItem);
   }
 
   let formattedType = camelCaseToWords(type);
 
-  let titleClasses = [styles.title];
+  let titleClasses = [classes.title];
   let titleText = title || data[titleField];
   if (!titleText) {
     titleText = `${formattedType} ${data["@name"]}`;
-    titleClasses.push(styles.titlePlaceholder);
+    titleClasses.push(classes.titlePlaceholder);
   }
 
   return (
@@ -178,7 +178,7 @@ let QuestionnaireItemCard = (props) => {
             }
             { moreInfo && moreInfoAnchor &&
               <Popover
-               className={styles.moreInfo}
+               className={classes.moreInfo}
                open={Boolean(moreInfoAnchor)}
                anchorEl={moreInfoAnchor}
                onClose={() => setMoreInfoAnchor(null)}
@@ -224,7 +224,7 @@ let QuestionnaireItemCard = (props) => {
           </div>
         }
       />
-      <CardContent className={!plain ? styles.withAvatar : undefined}>
+      <CardContent className={!plain ? classes.withAvatar : undefined}>
         { children }
         { editDialogOpen && <EditDialog
                               targetExists={true}

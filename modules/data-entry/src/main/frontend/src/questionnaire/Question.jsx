@@ -23,7 +23,7 @@ import { useLocation } from 'react-router-dom';
 
 import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerInstructions from "./AnswerInstructions";
@@ -148,4 +148,4 @@ Question.defaultProps = {
     disableInstructions: false,
 };
 
-export default withStyles(QuestionnaireStyle)(Question);
+export default withStyles(Question, QuestionnaireStyle);

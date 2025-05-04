@@ -31,13 +31,13 @@ import {
   Tooltip
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const Phase = require("./phaseCodes.json");
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   vocabularyAction: {
     margin: theme.spacing(1),
     textTransform: "none"
@@ -85,7 +85,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function VocabularyAction(props) {
   const { install, uninstall, phase, vocabulary, exit } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [displayPopup, setDisplayPopup] = React.useState(false);
   const [linkedQuestions, setLinkedQuestions] = useState([]);
   const [questionnaires, setQuestionnaires] = useState([]);

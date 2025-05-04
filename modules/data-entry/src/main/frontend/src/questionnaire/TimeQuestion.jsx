@@ -21,7 +21,7 @@ import React, { useState } from "react";
 
 import { TextField, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
@@ -135,15 +135,17 @@ function TimeQuestion(props) {
             /* time input is hh:mm or hh:mm:ss only */
             type={Time.timeQuestionFieldType(dateFormat)}
             className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            InputProps={{
-              className: classes.textField
-            }}
-            inputProps={{
-              max: upperLimit,
-              min: lowerLimit
+            slotProps={{
+              input: {
+                className: classes.textField,
+              },
+              inputLabel: {
+                shrink: true,
+              },
+              htmlInput: {
+                max: upperLimit,
+                min: lowerLimit
+              },
             }}
             onChange={(event) => {
               checkError(event.target.value);
@@ -176,7 +178,7 @@ TimeQuestion.propTypes = {
   dateFormat: PropTypes.string
 };
 
-const StyledTimeQuestion = withStyles(QuestionnaireStyle)(TimeQuestion);
+const StyledTimeQuestion = withStyles(TimeQuestion, QuestionnaireStyle);
 export default StyledTimeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

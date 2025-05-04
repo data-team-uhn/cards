@@ -124,9 +124,6 @@ const questionnaireStyle = theme => ({
           margin: "1px",
         },
     },
-    noteTextField: {
-        width: "100%",
-    },
     optionsList: {
         padding: theme.spacing(0),
     },
@@ -202,6 +199,9 @@ const questionnaireStyle = theme => ({
          "& .MuiTableCell-body": {
             padding: theme.spacing(0, 2),
          },
+         "& .MuiTableCell-body:last-child": {
+            paddingRight: theme.spacing(.5),
+         },
     },
     subjectView : {
         "& .MuiTabs-indicator": {
@@ -257,7 +257,7 @@ const questionnaireStyle = theme => ({
         marginBottom: theme.spacing(4),
     },
     subjectNestedContainer: {
-        marginLeft: theme.spacing(5),
+        paddingLeft: theme.spacing(5),
         "& .MuiGrid-container:last-child" : {
           marginBottom: "0 !important",
         }
@@ -277,7 +277,7 @@ const questionnaireStyle = theme => ({
           width: "auto",
         },
       },
-      "& .MuiListItem-root > div:first-child > .MuiTextField-root" : {
+      "& .MuiListItem-root > div:first-of-type > .MuiTextField-root" : {
         [theme.breakpoints.up('sm')]: {
           minWidth: "100px",
           marginTop: theme.spacing(-1.5),
@@ -289,7 +289,7 @@ const questionnaireStyle = theme => ({
         flexFlow: "row",
         flexWrap: "wrap",
       },
-      "& > .MuiGrid-item > .MuiCard-root" : {
+      "& > .MuiGrid-root > .MuiCard-root" : {
         [theme.breakpoints.up('md')]: {
           height: "100%",
         },
@@ -400,19 +400,18 @@ const questionnaireStyle = theme => ({
         position: "sticky",
         top: 0,
         zIndex: 2,
-        marginTop: theme.spacing(2*GRID_SPACE_UNIT),
         paddingTop: 0,
       },
       "& > .MuiCollapse-wrapper" : {
         border: "1px solid " + theme.palette.primary.light,
       },
-      "& .MuiGrid-item:not(:first-child)": {
+      "& .MuiGrid-root:not(:first-of-type)": {
         paddingTop: 0,
       },
-      "& .MuiGrid-item:not(:last-child)": {
+      "& .MuiGrid-root:not(:last-child)": {
         paddingBottom: 0,
       },
-      "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
+      "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
         background: grey[100],
       },
       "& .MuiCard-root" : {
@@ -428,13 +427,13 @@ const questionnaireStyle = theme => ({
       "& > .MuiCollapse-wrapper" : {
         border: "1px solid " + theme.palette.primary.light,
       },
-      "& .MuiGrid-item:not(:first-child)": {
+      "& .MuiGrid-root:not(:first-of-type)": {
         paddingTop: 0,
       },
-      "& .MuiGrid-item:not(:last-child)": {
+      "& .MuiGrid-root:not(:last-child)": {
         paddingBottom: 0,
       },
-      "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
+      "& .MuiGrid-root:not(.MuiCollapse-container) > *": {
         background: grey[100],
       },
       "& .MuiCard-root" : {
@@ -450,7 +449,7 @@ const questionnaireStyle = theme => ({
     },
     // When the user is deleting a section, highlight it with a border
     highlightedSection: {
-        "& .MuiGrid-item > .MuiCard-root, .MuiGrid-item > .MuiTypography-h5": {
+        "& .MuiGrid-root > .MuiCard-root, .MuiGrid-root > .MuiTypography-h5": {
           borderColor: theme.palette.warning.main,
           boxShadow: `1px 1px 2px ${theme.palette.warning.main}`,
         },
@@ -463,8 +462,9 @@ const questionnaireStyle = theme => ({
         textTransform: "none"
     },
     noteSection: {
-        display: "block",
-        marginLeft: theme.spacing(0)
+        "& .MuiTextField-root" :{
+            width: "100%",
+        }
     },
     formFooter: {
         position: "relative",
@@ -708,7 +708,7 @@ const questionnaireStyle = theme => ({
       },
     },
     questionMatrixStackedAnswer : {
-      "&:not(:first-child) th" : {
+      "&:not(:first-of-type) th" : {
         paddingTop: theme.spacing(3),
       },
       "& td" : {
@@ -729,7 +729,7 @@ const questionnaireStyle = theme => ({
       "&:not(:last-child) td:last-child" : {
         paddingBottom: theme.spacing(4),
       },
-      "&:not(:first-child) th": {
+      "&:not(:first-of-type) th": {
         paddingTop: theme.spacing(4),
       },
     },

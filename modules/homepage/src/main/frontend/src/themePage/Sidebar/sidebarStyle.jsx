@@ -379,7 +379,7 @@ import {
       height: "50px"
     },
     logout: {
-      paddingRight: theme.spacing(2)
+      marginRight: theme.spacing(-1.5)
     },
     aboveBackground: {
       zIndex: "1200"
@@ -412,6 +412,9 @@ import {
           width: "100%"
         }
       }
+    },
+    search: {
+      width: theme.spacing(32)
     },
   });
 

@@ -20,10 +20,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import MDEditor from '@uiw/react-md-editor';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   markdown: {
     "&.wmde-markdown" : {
       background: "transparent",
@@ -42,11 +42,11 @@ const useStyles = makeStyles(theme => ({
 
 let FormattedText = (props) => {
   let { children, ...typographyProps } = props;
-  const mdClasses = useStyles();
+  const { classes } = useStyles();
 
   return (
     <Typography component="div" {...typographyProps} >
-      <MDEditor.Markdown classes={mdClasses} className={mdClasses.markdown} source={children} />
+      <MDEditor.Markdown classes={classes} className={classes.markdown} source={children} />
     </Typography>
   );
 }

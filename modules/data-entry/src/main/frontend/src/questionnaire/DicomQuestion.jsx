@@ -25,7 +25,7 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
-import { makeStyles, withStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -42,7 +42,6 @@ cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 import PropTypes from "prop-types";
 
 import FileQuestion from "./FileQuestion";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import FormattedText from "../components/FormattedText";
 
@@ -50,7 +49,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 
 import DICOM_TAG_DICT from "../dicom/dicomDataDictionary";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   advancedHelp : {
     background: theme.palette.action.hover,
     "&.Mui-expanded" : {
@@ -279,7 +278,7 @@ function DicomQuestion(props) {
     }
   }
 
-  const styles = useStyles();
+  const { classes } = useStyles();
 
   // Render a customized FileQuestion
   return (
@@ -299,9 +298,9 @@ function DicomQuestion(props) {
             {errorDialogText}
           </Typography>
         </DialogContent>
-        <Accordion className={styles.advancedHelp}>
+        <Accordion className={classes.advancedHelp} slotProps={{ heading: { component: 'h4' } }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle2">Advanced help</Typography>
+            <Typography component="span" variant="subtitle2">Advanced help</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <FormattedText variant="body2">{advancedErrorDialogText}</FormattedText>
@@ -330,17 +329,15 @@ function DicomQuestion(props) {
 }
 
 DicomQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
   }).isRequired,
 };
 
-const StyledDicomQuestion = withStyles(QuestionnaireStyle)(DicomQuestion)
-export default StyledDicomQuestion;
+export default DicomQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "dicom") {
-    return [StyledDicomQuestion, 50];
+    return [DicomQuestion, 50];
   }
 });

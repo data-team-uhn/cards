@@ -27,7 +27,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
@@ -49,7 +49,7 @@ function extractList(data) {
   return acronymList;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   searchAdornmentWrapper: {
     marginRight: theme.spacing(-1),
     position: 'relative',
@@ -66,7 +66,7 @@ export default function Search(props) {
   const [error, setError] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -127,12 +127,13 @@ export default function Search(props) {
 
   return(
     <React.Fragment>
-      <Grid item>
+      <Grid>
         <TextField
           fullWidth
           helperText={(error ? "Request Failed" : "Search BioPortal for vocabularies mentioning a specific concept, e.g. “Microcephaly”")}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">
+          slotProps={{
+            input: {
+              endAdornment: <InputAdornment position="end">
                             { keywords &&
                               <IconButton onClick={reset} size="small">
                                 <CloseIcon/>
@@ -144,7 +145,8 @@ export default function Search(props) {
                               </IconButton>
                               {loading && <CircularProgress className={classes.searchProgress} />}
                             </div>
-                          </InputAdornment>
+                          </InputAdornment>,
+             },
           }}
           label="Search BioPortal by keywords"
           onChange={(event) => setKeywords(event.target.value)}

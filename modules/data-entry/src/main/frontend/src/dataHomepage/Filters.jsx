@@ -19,7 +19,7 @@
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
 import { Chip, Typography, Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
 import { DialogActions, DialogContent, Grid, Select, MenuItem, TextField } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -313,8 +313,10 @@ function Filters(props) {
       <CachedComponent
         ref={focusRef}
         questionDefinition={questionDefinitions[filterDatum.name]}
-        defaultValue={editingFilters[index].value}
-        defaultLabel={editingFilters[index].label}
+        initial={{
+                  value: editingFilters[index].value,
+                  label: editingFilters[index].label
+                }}
         onChangeInput={(newValue, label) => {handleChangeOutput(index, newValue, label, dataType);}}
         />);
   }
@@ -373,7 +375,7 @@ function Filters(props) {
       <ResponsiveDialog
         open={dialogOpen}
         onClose={closeDialog}
-        BackdropProps={{invisible: true}}
+        slotProps={{ backdrop: { invisible: true } }}
         width="md"
         disableEnforceFocus
         title="Modify filters"
@@ -395,7 +397,7 @@ function Filters(props) {
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{xs:12, sm:6}}>
                     <VariableAutocomplete
                       disableClearable
                       selectedValue={filterDatum.name}
@@ -413,7 +415,7 @@ function Filters(props) {
                     />
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
-                  <Grid item xs={isUnary ? 11 : isNotesContain || isContain ? 3 : 1} sm={isUnary ? 5 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid size={{xs: isUnary ? 11 : isNotesContain || isContain ? 3 : 1, sm: isUnary ? 5 : (isNotesContain ? 3 : (isContain ? 2 : 1))}} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       variant="standard"
                       value={filterDatum.comparator || ""}
@@ -428,14 +430,14 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid item xs={isNotesContain || isContain ? 8 : 10} sm={isNotesContain ? 2 : (isContain ? 3 : 4)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                    <Grid size={{ xs: isNotesContain || isContain ? 8 : 10, sm: isNotesContain ? 2 : (isContain ? 3 : 4)}} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField variant="standard" disabled className={classes.answerField}></TextField>
                       }
                     </Grid>}
                   {/* Deletion button */}
-                  <Grid item xs={1} className={index == editingFilters.length-1 ? classes.hidden : classes.tableActions}>
+                  <Grid size={1} className={index == editingFilters.length-1 ? classes.hidden : classes.tableActions}>
                     <IconButton
                       size="small"
                       onClick={()=>{
@@ -474,4 +476,4 @@ function Filters(props) {
   );
 }
 
-export default withStyles(LiveTableStyle)(Filters);
+export default withStyles(Filters, LiveTableStyle);

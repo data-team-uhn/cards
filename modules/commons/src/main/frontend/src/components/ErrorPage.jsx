@@ -19,21 +19,21 @@
 import React from 'react';
 
 import { Fab, Grid, Paper, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import NavigationIcon from '@mui/icons-material/Navigation';
 
 import Logo from "./Logo";
 import FormattedText from "./FormattedText";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   paper: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
     textAlign: "center",
-    "& .MuiGrid-item" : {
+    "& .MuiGrid-root" : {
       textAlign: "center",
     },
   },
@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ErrorPage(props) {
   const { errorCode, errorCodeColor, title, titleColor, message, messageColor, buttonLink, buttonLabel, ...rest } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
       <Paper className={classes.paper} elevation={0} {...rest}>
@@ -55,8 +55,8 @@ export default function ErrorPage(props) {
           alignItems="center"
           alignContent="center"
         >
-          <Logo maxWidth="360px" component={Grid} item/>
-          <Grid item>
+          <Logo maxWidth="360px" component={Grid}/>
+          <Grid>
             {errorCode && <Typography variant="h1" color={errorCodeColor || "primary"}>
               {errorCode}
             </Typography> }
@@ -68,7 +68,7 @@ export default function ErrorPage(props) {
             </FormattedText> }
           </Grid>
           { buttonLabel &&
-            <Grid item>
+            <Grid>
               <Fab
                 variant="extended"
                 color="primary"

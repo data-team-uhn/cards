@@ -19,7 +19,7 @@
 import React from "react";
 
 import { useTheme } from '@mui/material/styles';
-import { Avatar, ListItem, ListItemText, ListItemAvatar }  from "@mui/material";
+import { Avatar, ListItemButton, ListItemText, ListItemAvatar }  from "@mui/material";
 import DescriptionIcon from "@mui/icons-material/Description";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -83,7 +83,7 @@ function MatchAvatar(props) {
 }
 
 function ListItemLink(props) {
-  return <ListItem alignItems="center" button component="a" {...props} />;
+  return <ListItemButton alignItems="center" component="a" {...props} />;
 }
 
   // Display a quick search result identifier with link to result section

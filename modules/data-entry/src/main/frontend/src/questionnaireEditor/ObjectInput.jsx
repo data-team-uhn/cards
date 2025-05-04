@@ -26,11 +26,8 @@ import {
   Typography
 } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
-
 import EditorInput from "./EditorInput";
 import BooleanInput from "./BooleanInput";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 
 // Object Input field used by Edit dialog component
@@ -92,11 +89,10 @@ ObjectInput.propTypes = {
   hints: PropTypes.object,
 };
 
-const StyledObjectInput = withStyles(QuestionnaireStyle)(ObjectInput);
-export default StyledObjectInput;
+export default ObjectInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
   if (typeof(definition) === 'object') {
-    return [StyledObjectInput, 50];
+    return [ObjectInput, 50];
   }
 });

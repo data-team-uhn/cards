@@ -19,12 +19,11 @@
 import React from 'react';
 
 import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
-import { withStyles } from '@mui/styles';
 
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 import Logo from "../components/Logo";
-
+import { withStyles } from 'tss-react/mui';
 import styles from "../styling/styles";
 
 class MainLoginContainer extends React.Component {
@@ -52,12 +51,12 @@ class MainLoginContainer extends React.Component {
     return (
         <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
           <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
-            <Logo maxWidth="200px" component={Grid} item />
-            <Grid item>
+            <Logo maxWidth="200px" component={Grid}/>
+            <Grid>
             { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
             </Grid>
             { this.state.isLongForm && (!this.state.signInShown || this.state.signUpEnabled) &&
-              <Grid item>
+              <Grid>
                 <Button
                   variant="outlined"
                   fullWidth
@@ -69,7 +68,7 @@ class MainLoginContainer extends React.Component {
               </Grid>
             }
             { this.state.isLongForm &&
-            <Grid item>
+            <Grid>
               <Breadcrumbs separator="by" className={classes.appInfo}>
                 <Typography variant="subtitle2">{this.state.title}</Typography>
                 <Tooltip title="DATA Team @ UHN">
@@ -86,6 +85,6 @@ class MainLoginContainer extends React.Component {
   }
 }
 
-const MainLoginComponent = withStyles(styles)(MainLoginContainer);
+const MainLoginComponent = withStyles(MainLoginContainer, styles);
 
 export default MainLoginComponent;

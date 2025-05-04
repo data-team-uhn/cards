@@ -25,7 +25,7 @@ import {
   Grid
 } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -68,7 +68,7 @@ function QuestionnairePreview (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -104,7 +104,7 @@ function QuestionnairePreview (props) {
         }
         </FormUpdateProvider>
       </FormProvider>
-      <Grid item xs={12} className={classes.formFooter} id="cards-resource-footer">
+      <Grid size={12} className={classes.formFooter} id="cards-resource-footer">
         <FormPagination
             variant={data?.paginationVariant}
             navMode={data?.paginationMode}
@@ -126,4 +126,4 @@ function QuestionnairePreview (props) {
   </div>);
 };
 
-export default withStyles(QuestionnaireStyle)(QuestionnairePreview);
+export default withStyles(QuestionnairePreview, QuestionnaireStyle);

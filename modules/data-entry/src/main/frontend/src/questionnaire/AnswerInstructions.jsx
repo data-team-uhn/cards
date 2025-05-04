@@ -21,18 +21,13 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Typography } from "@mui/material";
-
-import withStyles from '@mui/styles/withStyles';
-
-import QuestionnaireStyle from "./QuestionnaireStyle";
-
 import { hasWarningFlags } from "./FormUtilities";
 
 // Display instructions regarding how many answers must be provided to a question,
 // based on minAnswers and maxAnswers from the question definition
 
 function AnswerInstructions (props) {
-  let { classes, minAnswers, maxAnswers, currentAnswers, answerLabel } = props;
+  let { minAnswers, maxAnswers, currentAnswers, answerLabel } = props;
   let { isEdit, existingAnswer } = props;
   let [ answerIsAcceptable, setAnswerAcceptable] = useState();
 
@@ -73,7 +68,6 @@ function AnswerInstructions (props) {
 }
 
 AnswerInstructions.propTypes = {
-    classes: PropTypes.object.isRequired,
     minAnswers: PropTypes.number,
     maxAnswers: PropTypes.number,
     currentAnswers: PropTypes.number,
@@ -87,4 +81,4 @@ AnswerInstructions.defaultProps = {
     answerLabel: "value",
 };
 
-export default withStyles(QuestionnaireStyle)(AnswerInstructions);
+export default AnswerInstructions;

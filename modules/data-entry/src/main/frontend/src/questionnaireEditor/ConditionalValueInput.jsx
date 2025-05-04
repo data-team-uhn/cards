@@ -28,7 +28,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
@@ -36,7 +36,7 @@ import ValueComponentManager from "./ValueComponentManager";
 import QuestionnaireAutocomplete from "../questionnaire/QuestionnaireAutocomplete";
 import { useQuestionnaireReaderContext } from "../questionnaire/QuestionnaireContext";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   referenceToggle: {
     marginBottom: theme.spacing(2),
     "& .MuiToggleButton-root" : {
@@ -58,7 +58,7 @@ let ConditionalValueInput = (props) => {
 
   let path = (data?.['@path'] || props.path) + `/${objectKey}`;
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const checkValueExists = (inputValue) => {
     let isDuplicate = !!(values?.some(v => v == inputValue?.trim()));
@@ -103,23 +103,25 @@ let ConditionalValueInput = (props) => {
               placeholder="Enter a value"
               error={valueExists}
               helperText={valueExists ? "This value has already been added" : "Press ENTER to add the value"}
-              inputProps={{
-                ...params.inputProps,
-                onKeyDown: (event) => {
-                  if (event.key == 'Enter') {
+              slotProps={{
+                htmlInput: {
+                  ...params.inputProps,
+                  onKeyDown: (event) => {
+                    if (event.key == 'Enter') {
+                      if (checkValueExists(event.target.value)) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                      }
+                    }
+                  },
+                  onBlur: (event) => {
                     if (checkValueExists(event.target.value)) {
                       event.preventDefault();
                       event.stopPropagation();
                     }
-                  }
+                    params.inputProps?.onBlur?.(event);
+                  },
                 },
-                onBlur: (event) => {
-                  if (checkValueExists(event.target.value)) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                  }
-                  params.inputProps?.onBlur?.(event);
-                }
               }}
             />
           )}

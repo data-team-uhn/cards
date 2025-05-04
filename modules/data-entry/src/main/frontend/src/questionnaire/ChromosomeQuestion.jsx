@@ -19,13 +19,10 @@
 
 import React from "react";
 
-import withStyles from '@mui/styles/withStyles';
-
 import PropTypes from "prop-types";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
@@ -93,7 +90,6 @@ function ChromosomeQuestion(props) {
 }
 
 ChromosomeQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     minAnswers: PropTypes.number,
@@ -106,11 +102,10 @@ ChromosomeQuestion.propTypes = {
   chromosomeNumber: PropTypes.number
 };
 
-const StyledChromosomeQuestion = withStyles(QuestionnaireStyle)(ChromosomeQuestion)
-export default StyledChromosomeQuestion;
+export default ChromosomeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "chromosome") {
-    return [StyledChromosomeQuestion, 50];
+    return [ChromosomeQuestion, 50];
   }
 });

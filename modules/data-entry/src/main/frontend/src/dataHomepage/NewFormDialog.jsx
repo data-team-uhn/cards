@@ -26,7 +26,7 @@ import {
   DialogContent,
   Typography
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import MaterialReactTable from "material-react-table";
 import Alert from '@mui/material/Alert';
 
@@ -46,7 +46,7 @@ const PROGRESS_SELECT_SUBJECT = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { classes, presetPath, currentSubject, theme, open, onClose, withButton, buttonTitle } = {open: false, ...props };
+  const { classes, presetPath, currentSubject, open, onClose, withButton, buttonTitle } = {open: false, ...props };
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
@@ -395,10 +395,10 @@ function NewFormDialog(props) {
                   onClick: () => { onClickRow(row); },
                 })}
                 muiTableBodyCellProps={({ cell }) => ({
-                  sx: {
+                  sx: (theme) => ({
                     // grey out subjects that have already reached maxPerSubject
                     color: isRowDisabled(cell.row) ? theme.palette.text.disabled : theme.palette.text.primary,
-                  },
+                  }),
                 })}
               />
             }
@@ -477,4 +477,4 @@ function NewFormDialog(props) {
   )
 }
 
-export default withStyles(QuestionnaireStyle, {withTheme: true})(withRouter(NewFormDialog));
+export default withStyles(withRouter(NewFormDialog), QuestionnaireStyle);

@@ -32,7 +32,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 
@@ -57,7 +57,7 @@ fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
   .catch(errorHandler);
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   vocabularyAction: {
     margin: theme.spacing(1)
   },
@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
 export function BioPortalApiKey(props) {
   const { bioPortalApiKey, updateKey } = props;
   const globalLoginDisplay = useContext(GlobalLoginContext);
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   /* User input api key */
   const [customApiKey, setCustomApiKey] = React.useState('');
@@ -108,8 +108,10 @@ export function BioPortalApiKey(props) {
   let getBioportalKeyInfo = (enableEdit) => {
     return (
         <TextField
-          InputProps={{
-            readOnly: !enableEdit,
+          slotProps={{
+            input: {
+              readOnly: !enableEdit,
+            },
           }}
           variant={enableEdit ? "outlined" : "filled" }
           onChange={(evt) => {setCustomApiKey(evt.target.value)}}
@@ -123,7 +125,7 @@ export function BioPortalApiKey(props) {
 
   return(
     <React.Fragment>
-      <Grid item>
+      <Grid>
         <Typography variant="h6">
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
           { bioPortalApiKey &&
@@ -137,21 +139,21 @@ export function BioPortalApiKey(props) {
       </Grid>
 
       { !bioPortalApiKey && <>
-         <Grid item className={classes.noKeyInfo}>
+         <Grid className={classes.noKeyInfo}>
            <Typography>Your system does not have a <a href="https://bioportal.bioontology.org/help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
            <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
          </Grid>
-        <Grid item>
+        <Grid>
           <Grid container
             alignItems="center"
             justifyContent="space-between"
             alignContent="space-between"
             spacing={2}
           >
-            <Grid item xs={10}>
+            <Grid size={10}>
               { getBioportalKeyInfo(!bioPortalApiKey) }
             </Grid>
-            <Grid item xs={2}>
+            <Grid size={2}>
               <Button variant="contained" onClick={() => {addNewKey()}}>Submit</Button>
             </Grid>
           </Grid>

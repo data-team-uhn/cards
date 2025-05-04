@@ -19,7 +19,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { CircularProgress, Fab, Tooltip } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import style from './style.jsx';
 
@@ -102,4 +102,4 @@ MainActionButton.defaultProps = {
   style: {},
 };
 
-export default withStyles(style)(MainActionButton);
+export default withStyles(MainActionButton, style);

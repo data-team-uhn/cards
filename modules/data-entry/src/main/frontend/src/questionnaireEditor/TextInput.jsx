@@ -22,10 +22,7 @@ import PropTypes from 'prop-types';
 
 import { TextField } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
-
 import EditorInput from "./EditorInput";
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 
@@ -54,11 +51,10 @@ TextInput.propTypes = {
   hint: PropTypes.string,
 };
 
-const StyledTextInput = withStyles(QuestionnaireStyle)(TextInput);
-export default StyledTextInput;
+export default TextInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  return [StyledTextInput, 0];
+  return [TextInput, 0];
 });
 
 

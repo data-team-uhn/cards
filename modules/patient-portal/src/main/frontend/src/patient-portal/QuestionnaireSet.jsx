@@ -23,7 +23,6 @@ import {
   Avatar,
   Button,
   CircularProgress,
-  Divider,
   Fab,
   Grid,
   List,
@@ -33,7 +32,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import NextStepIcon from '@mui/icons-material/ChevronRight';
@@ -51,7 +50,7 @@ import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   mainContainer: {
     margin: theme.spacing(2),
     "& #cards-resource-footer > .MuiMobileStepper-root" : {
@@ -68,10 +67,10 @@ const useStyles = makeStyles(theme => ({
     margin: "auto",
     maxWidth: "780px",
     width: "100%",
-    "& > .MuiGrid-item" : {
+    "& > .mainItem" : {
       paddingLeft: 0,
     },
-    "& h4, h6, .MuiTypography-paragraph" : {
+    "& h4, h6, .patient-portal-instructions" : {
       textAlign: "center",
     }
   },
@@ -185,7 +184,7 @@ function QuestionnaireSet(props) {
   // Subtype for non-survey screens
   const [screenSubtype, setScreenSubtype ] = useState();
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -670,7 +669,10 @@ function QuestionnaireSet(props) {
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    introMessage ? <FormattedText paragraph key="intro-message">{introMessage}</FormattedText> : displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
+    (introMessage
+      ? <FormattedText key="intro-message" className="patient-portal-instructions">{introMessage}</FormattedText>
+      : displayText("surveyIntro", Typography, {key: "welcome-message", className: "patient-portal-instructions"})
+    ),
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -685,10 +687,10 @@ function QuestionnaireSet(props) {
     ))}
     </List>,
     nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>,
-    <Typography paragraph key="expiry-message" color="textSecondary">
+    <Typography component="p" key="expiry-message" color="textSecondary">
         {expiryDate()}
     </Typography>,
-    displayText("surveyDraftInfo", FormattedText, {paragraph: true, variant: "body2", key: "draft-info"}),
+    displayText("surveyDraftInfo", FormattedText, {variant: "body2", key: "draft-info", className: "patient-portal-instructions"}),
   ];
 
   let formScreen = [
@@ -708,30 +710,28 @@ function QuestionnaireSet(props) {
   ];
 
   let submitButton = (label) => (
-    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key="review-submit">
+    <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key={"review-submit"+label}>
       {submissionInProgress ? "Submitting...." : (label ?? "Submit")}
     </Fab>
   );
 
   let reviewScreen = !enableReviewScreen ? [
     <Grid alignItems="center" justifyContent="center">
-      <Grid item key="review-loading"><CircularProgress/></Grid>
+      <Grid key="review-loading"><CircularProgress/></Grid>
     </Grid>
   ] : [
     <Typography variant="h4" key="review-title">Review and Submit</Typography>,
-    <Divider/>,
     submitButton("Submit now"),
-    <Divider/>,
     <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
-      <Grid item key={q+"Review"}>
+      <Grid key={q+"Review"}>
       { previews?.[subjectData?.[q]?.["@name"]] ?
         <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
           <Grid container direction="column" spacing={2}>
-            <Grid item>
+            <Grid key="form-preview">
               <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
             </Grid>
-            <Grid item alignSelf="center">
+            <Grid alignSelf="center" key="change-button">
               <Button
                 variant="outlined"
                 onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
@@ -758,8 +758,8 @@ function QuestionnaireSet(props) {
   let endingMessage = ending.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
   let finalInstructions = (
-      endingMessage ? <FormattedText paragraph key="summary-instructions">{endingMessage}</FormattedText> :
-      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions", paragraph: true})
+      endingMessage ? <FormattedText key="summary-instructions" className="patient-portal-instructions">{endingMessage}</FormattedText> :
+      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions", className: "patient-portal-instructions"})
   );
 
   let disclaimer = (
@@ -774,7 +774,7 @@ function QuestionnaireSet(props) {
       displayText("interpretationInstructions", Typography, {color: "textSecondary", key: "summary-interpretation-instructions"}),
       <Grid container direction="column" spacing={3} key="summary-list">
       { (questionnaireIds || []).map((q, i) => (
-        <Grid item key={q+"Summary"}>
+        <Grid key={q+"Summary"}>
         {
           questionnaires?.[q]?.hasInterpretation ? <Form
               id={subjectData?.[q]?.['@name']}
@@ -813,10 +813,10 @@ function QuestionnaireSet(props) {
         <>
         { canSubmitIncomplete ?
           <Grid container spacing={2}>
-            <Grid item>
+            <Grid>
               <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
             </Grid>
-            <Grid item>
+            <Grid>
               <Button variant="outlined" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
             </Grid>
           </Grid>
@@ -860,12 +860,12 @@ function QuestionnaireSet(props) {
 function QuestionnaireSetScreen (props) {
   let { children, ...rest } = props;
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   return (
   <Paper elevation={0} className={classes.mainContainer}>
     <Grid container direction="column" spacing={4} {...rest}>
-      {Array.from(children || []).filter(c => c).map((c, i) => <Grid item key={i+"MainItem"} xs={12}>{c}</Grid>)}
+      {Array.from(children || []).filter(c => c).map((c, i) => <Grid key={i+"MainItem"} className={classes.mainItem}>{c}</Grid>)}
     </Grid>
   </Paper>
   );

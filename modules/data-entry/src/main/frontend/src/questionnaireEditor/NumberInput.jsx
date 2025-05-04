@@ -21,10 +21,7 @@ import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import { TextField } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
-
 import EditorInput from "./EditorInput";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
 
@@ -52,10 +49,10 @@ let NumberInput = (props) => {
         onChange={(event) => { setValue(event.target.value); }}
         onBlur={(event) => { setValue(event.target.value || defaultValue); }}
         helperText={isMax ? `0 means "Unlimited"` : ''}
-        InputProps={{
-          inputProps: { 
-            min: minValue
-          }
+        slotProps={{
+          htmlInput: {
+            min: minValue,
+          },
         }}
       />
       <input type="hidden" name={objectKey + "@TypeHint"} value={type} />
@@ -69,12 +66,11 @@ NumberInput.propTypes = {
   hint: PropTypes.string,
 };
 
-const StyledNumberInput = withStyles(QuestionnaireStyle)(NumberInput);
 export default NumberInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
   if (["long", "double", "decimal"].includes(definition)) {
-    return [StyledNumberInput, 50];
+    return [NumberInput, 50];
   }
 });
 

@@ -18,16 +18,16 @@
 //
 import React from "react";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import { Link } from 'react-router-dom';
 import EventIcon from '@mui/icons-material/Event';
 
 import ClinicFormList from "./ClinicFormList.jsx";
 
-const useStyles = color => makeStyles(theme => ({
+const useStyles = makeStyles()((theme, props) => ({
   visitList : {
     "&.MuiCard-root" : {
-       border: "2px solid " + color,
+       border: "2px solid " + props.color,
     },
   },
   statusUnassigned : {
@@ -48,7 +48,7 @@ const useStyles = color => makeStyles(theme => ({
 function ClinicVisits(props) {
   const { clinicId, color, visitInfo, dashboardConfig } = props;
 
-  const classes = useStyles(color)();
+  const { classes } = useStyles({ color: color });
 
   let query = (
 "select distinct visitInformation.* " +

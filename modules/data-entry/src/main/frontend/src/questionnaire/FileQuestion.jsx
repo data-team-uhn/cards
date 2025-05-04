@@ -20,7 +20,7 @@
 import React, { useContext, useState } from "react";
 
 import { Grid, LinearProgress, Link, TextField } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
@@ -306,7 +306,7 @@ function FileQuestion(props) {
       {
         pageActive && <>
           { uploadInProgress && (
-            <Grid item className={classes.root}>
+            <Grid>
               <LinearProgress/>
             </Grid>
           ) }
@@ -368,7 +368,7 @@ FileQuestion.propTypes = {
   namePattern: PropTypes.string
 };
 
-const StyledFileQuestion = withStyles(QuestionnaireStyle)(FileQuestion)
+const StyledFileQuestion = withStyles(FileQuestion, QuestionnaireStyle)
 export default StyledFileQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

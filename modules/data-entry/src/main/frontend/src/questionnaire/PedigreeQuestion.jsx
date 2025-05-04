@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
 
@@ -127,14 +127,14 @@ function PedigreeQuestion(props) {
           <div className={classes.answerField}>
           { pedigreeData.image ?
             <Grid container justifyContent="flex-start" alignItems="flex-start" spacing={0}>
-              <Grid item>
+              <Grid>
                 <Tooltip title="Edit Pedigree">
                   <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}} underline="hover">
                     {image_div}
                   </Link>
                 </Tooltip>
               </Grid>
-              <Grid item>
+              <Grid>
                 <DeleteButton
                   entryName="pedigree"
                   entryType="Pedigree"
@@ -148,9 +148,11 @@ function PedigreeQuestion(props) {
           </div>
           <Dialog fullScreen open={expanded}
             onClose={() => { setExpanded(false); }}
-            TransitionProps={{
-              onEntering: () => { openPedigree(); },
-              onExit: () => { closePedigree(); }
+            slotProps={{
+              transition: {
+                onEntering: () => openPedigree(),
+                onExit: () => closePedigree(),
+              },
             }}>
             <DialogContent>
               <div id="pedigreeEditor"></div>
@@ -180,7 +182,7 @@ PedigreeQuestion.propTypes = {
   existingAnswer: PropTypes.array,
 }
 
-const StyledPedigreeQuestion = withStyles(QuestionnaireStyle)(PedigreeQuestion)
+const StyledPedigreeQuestion = withStyles(PedigreeQuestion, QuestionnaireStyle)
 export default StyledPedigreeQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

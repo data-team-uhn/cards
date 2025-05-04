@@ -21,9 +21,9 @@ import PropTypes from "prop-types";
 
 import { Link } from 'react-router-dom';
 import { Breadcrumbs, Card, CardContent, CardHeader, Typography } from "@mui/material";
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     marginTop: theme.spacing(2),
   },
@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
 function AdminScreen(props) {
   const { title, action, disableBreadcrumb, className, children } = props;
 
-  const classes = useStyles();
+  const { classes } = useStyles();
   const appName = document.querySelector('meta[name="title"]')?.content;
 
   const heading = <Typography className={classes.title} variant="h4">{title}</Typography>;

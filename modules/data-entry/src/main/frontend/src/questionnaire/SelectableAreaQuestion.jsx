@@ -20,7 +20,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { Alert, Checkbox, FormControlLabel, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { useTheme, alpha } from '@mui/material/styles';
 import Tooltip from "@mui/material/Tooltip";
 
@@ -411,7 +411,7 @@ SelectableAreaQuestion.propTypes = {
   maxAnswers: PropTypes.number
 };
 
-const StyledSelectableAreaQuestion = withStyles(QuestionnaireStyle)(SelectableAreaQuestion)
+const StyledSelectableAreaQuestion = withStyles(SelectableAreaQuestion, QuestionnaireStyle)
 export default StyledSelectableAreaQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

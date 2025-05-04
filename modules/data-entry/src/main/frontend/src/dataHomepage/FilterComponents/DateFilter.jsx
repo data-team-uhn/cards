@@ -18,7 +18,7 @@
 //
 
 import React, { useState, forwardRef } from "react";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -37,17 +37,16 @@ const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPAR
  * Display a filter on a date answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {date} defaultValue Default value to place in the textfield
+ * @param {object} initial Object containing the initial value and label to place in the textfield
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. May include a dateFormat
  * Other props are forwarded to the TextField component
  *
  */
 const DateFilter = forwardRef((props, ref) => {
-  // DefaultLabel intentionally unused, since it needs to not be passed to TextField
-  const { classes, defaultLabel, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
 
-  const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(defaultValue)));
+  const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(initial?.value)));
 
   // Dates should have a dateFormat, or default to "yyyy/MM/dd"
   const dateFormat = questionDefinition["dateFormat"] || DateQuestionUtilities.VIEW_DATE_FORMAT;
@@ -66,10 +65,10 @@ const DateFilter = forwardRef((props, ref) => {
           setDisplayedDate(value);
           onChangeInput(value ? DateQuestionUtilities.toPrecision(value, dateFormat).toISO() : null, value ? value.toFormat(dateFormat) : null);
         }}
-        componentsProps={{ textField: {
-                             variant: 'standard',
-                             className: classes.answerDateField,
-                           }
+        slotProps={{ textField: {
+                       variant: 'standard',
+                       className: classes.answerDateField,
+                     },
         }}
       />
     </LocalizationProvider>
@@ -77,14 +76,17 @@ const DateFilter = forwardRef((props, ref) => {
 });
 
 DateFilter.propTypes = {
-  defaultValue: PropTypes.string,
+  initial: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
     dateFormat: PropTypes.string
   })
 }
 
-const StyledDateFilter = withStyles(QuestionnaireStyle)(DateFilter)
+const StyledDateFilter = withStyles(DateFilter, QuestionnaireStyle)
 
 export default StyledDateFilter;
 

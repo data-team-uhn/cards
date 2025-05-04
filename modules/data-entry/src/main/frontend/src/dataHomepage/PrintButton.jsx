@@ -20,11 +20,8 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Button, IconButton, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
 import PrintIcon from "@mui/icons-material/Print";
 import PrintPreview from "../questionnaire/PrintPreview.jsx";
-
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 /**
  * A component that renders a button to open the print preview for an entry.
@@ -143,4 +140,4 @@ PrintButton.defaultProps = {
   fullScreen: true,
 }
 
-export default withStyles(QuestionnaireStyle)(PrintButton);
+export default PrintButton;

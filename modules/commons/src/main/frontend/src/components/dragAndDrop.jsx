@@ -20,10 +20,10 @@
 import React, { useRef, useEffect, useState } from "react";
 
 import { IconButton, Typography } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import AttachFile from '@mui/icons-material/AttachFile';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   active: {
     display: "flex",
     justifyContent: "center",
@@ -61,7 +61,7 @@ export default function DragAndDrop(props) {
   const [drag, setDrag] = useState(false);
   const [dragCounter, setDragCounter] = useState(0);
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const dropRef = useRef();
   const inputRef = useRef();

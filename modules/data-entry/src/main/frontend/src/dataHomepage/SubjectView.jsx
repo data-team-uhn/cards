@@ -34,7 +34,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -53,7 +53,6 @@ function SubjectView(props) {
   const [ columns, setColumns ] = React.useState(props.columns || null);
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("subjects:filters"));
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
-
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("subjects:activeTab");
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -160,7 +159,7 @@ function SubjectView(props) {
               onFiltersChange={(str) => setFiltersJsonString(str)}
               filtersJsonString={filtersJsonString}
             />
-          : <Typography>No results</Typography>
+          : <Typography sx={{pl: 1}}>No results</Typography>
       }
       </CardContent>
       {expanded &&
@@ -179,4 +178,4 @@ function SubjectView(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(SubjectView);
+export default withStyles(SubjectView, QuestionnaireStyle);

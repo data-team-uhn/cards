@@ -182,7 +182,7 @@ export default function VocabulariesAdminPage() {
 
   let wrapSection = (content) => {
     return (
-      <Grid item>
+      <Grid>
         <Grid container direction="column" spacing={2} justifyContent="space-around">
           {content}
         </Grid>
@@ -195,13 +195,13 @@ export default function VocabulariesAdminPage() {
     <Grid container direction="column" spacing={6} justifyContent="space-around">
 
       {wrapSection(<>
-      <Grid item>
+      <Grid>
         <Typography variant="h6">
           Installed
         </Typography>
       </Grid>
       { localLoaded && localVocabList.length == 0 &&
-          <Grid item>
+          <Grid>
             <Typography color="textSecondary">No vocabularies have been installed yet.</Typography>
           </Grid>
       }

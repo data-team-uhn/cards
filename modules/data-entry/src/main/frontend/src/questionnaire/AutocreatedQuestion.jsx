@@ -20,12 +20,9 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 
-import withStyles from '@mui/styles/withStyles';
-
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 import FormattedText from "../components/FormattedText";
-import QuestionnaireStyle from './QuestionnaireStyle';
 import { useFormWriterContext } from "./FormContext";
 
 // Component that displays an autocreated question of any type.
@@ -33,7 +30,7 @@ import { useFormWriterContext } from "./FormContext";
 // Other options are passed to the <question> widget
 let AutocreatedQuestion = (props) => {
   const { isEdit, ...rest } = props;
-  const { existingAnswer, classes, pageActive, questionName} = rest;
+  const { existingAnswer, pageActive, questionName} = rest;
   const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...rest};
 
   const [isFormatted, changeIsFormatted] = useState(false);
@@ -73,7 +70,6 @@ let AutocreatedQuestion = (props) => {
 }
 
 AutocreatedQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     description: PropTypes.string,
@@ -82,11 +78,10 @@ AutocreatedQuestion.propTypes = {
   }).isRequired
 };
 
-const StyledAutocreatedQuestion = withStyles(QuestionnaireStyle)(AutocreatedQuestion);
-export default StyledAutocreatedQuestion;
+export default  AutocreatedQuestion;
 
 AnswerComponentManager.registerAnswerComponent((definition) => {
   if (definition.entryMode === "autocreated") {
-    return [StyledAutocreatedQuestion, 80];
+    return [AutocreatedQuestion, 80];
   }
 });

@@ -16,14 +16,10 @@
 */
 
 import React from "react";
-
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import userboardStyle from '../userboardStyle.jsx';
-
 import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@mui/material";
-
 import CheckIcon from '@mui/icons-material/Check';
-
 import MaterialReactTable from 'material-react-table';
 
 const GROUP_URL="/system/userManager/group/";
@@ -85,9 +81,8 @@ class AddUserToGroupDialogue extends React.Component {
                 maxWidth="sm"
                 open={this.props.isOpen}
                 onClose={() => this.handleExit()}
-                TransitionProps={{
-                    onEntering: () => this.handleEntering()
-                }}>
+                slotProps={{ transition: { onEntering: () => this.handleEntering() } }}
+                >
                 <DialogTitle>
                     Add Users to the {this.props.name} group
                 </DialogTitle>
@@ -139,4 +134,4 @@ class AddUserToGroupDialogue extends React.Component {
     }
 }
 
-export default withStyles (userboardStyle, {withTheme: true})(AddUserToGroupDialogue);
+export default withStyles (AddUserToGroupDialogue, userboardStyle);

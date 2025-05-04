@@ -24,11 +24,11 @@ import {
     List,
     ListItem,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 
 import AdminConfigScreen from "./adminDashboard/AdminConfigScreen.jsx";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   textField: {
     minWidth: "250px",
     paddingBottom: theme.spacing(2),
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function DowntimeWarningConfiguration() {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   // The configuration values
   const [ enabled, setEnabled ] = useState(false);
@@ -96,7 +96,11 @@ function DowntimeWarningConfiguration() {
                 variant="standard"
                 label="Start of maintenance"
                 type="datetime-local"
-                InputLabelProps={{ shrink: true }}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
                 className={classes.textField}
                 onChange={(event) => { setFromDate(event.target.value); setHasChanges(true); } }
                 onBlur={(event) => setFromDate(event.target.value) }
@@ -109,7 +113,11 @@ function DowntimeWarningConfiguration() {
                 variant="standard"
                 label="End of maintenance"
                 type="datetime-local"
-                InputLabelProps={{ shrink: true }}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
                 className={classes.textField}
                 onChange={(event) => { setToDate(event.target.value); setHasChanges(true); } }
                 onBlur={(event) => setToDate(event.target.value) }

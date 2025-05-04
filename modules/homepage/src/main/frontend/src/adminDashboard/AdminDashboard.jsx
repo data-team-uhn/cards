@@ -24,7 +24,7 @@ import AdminScreen from "./AdminScreen.jsx";
 import {
   CircularProgress,
   Grid,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText
 } from "@mui/material";
@@ -52,7 +52,7 @@ function AdminDashboard(props) {
 
   if (loading) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -62,11 +62,12 @@ function AdminDashboard(props) {
         { adminRoutes.map((route) => {
             const EntryIcon = route["cards:icon"];
             return (
-              <Grid item
+              <Grid
                 key={route["cards:targetURL"]}
-                xs={12} md={6} xl={4}
+                size={{xs:12, md:6, xl:4}}
+                alignContent="center"
               >
-                <ListItem button
+                <ListItemButton
                   onClick={() => history.push(route["cards:targetURL"])}
                 >
                     <ListItemIcon>
@@ -76,7 +77,7 @@ function AdminDashboard(props) {
                       primary={route["cards:extensionName"]}
                       secondary={route["cards:hint"]}
                     />
-                </ListItem>
+                </ListItemButton>
               </Grid>
             )
           })

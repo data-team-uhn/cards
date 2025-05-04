@@ -33,7 +33,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DoneIcon from "@mui/icons-material/Done";
@@ -136,6 +136,7 @@ function Form (props) {
       saveData(new Event("autosave"), performCheckin, onSuccess);
     }
   }, [autosaveOptions]);
+
   // When the save is completed (successfully or not), clear the autosave options
   useEffect(() => {
     if (saveInProgress === false) setAutosaveOptions(undefined);
@@ -426,7 +427,7 @@ function Form (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -434,7 +435,7 @@ function Form (props) {
   if (error) {
     return (
       <Grid container justifyContent="center">
-        <Grid item>
+        <Grid>
           <Typography variant="h2" color="error">
             Error obtaining form data: {error.status} {error.statusText}
           </Typography>
@@ -675,7 +676,7 @@ function Form (props) {
         {/* FormPagination must be called regardless of whether paginationEnabled is true or false,
             because it is what populates the contents of the form.
             However, it should only be displayed to the user in edit mode when paginationEnabled is true. */}
-        <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
+        <Grid size={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
               disableProgress={disableProgress}
@@ -698,7 +699,7 @@ function Form (props) {
           />
         </Grid>
         { !paginationEnabled && !disableButton &&
-        <Grid item xs={false} className={classes.formBottom}>
+        <Grid size="auto" className={classes.formBottom}>
           <div className={classes.mainPageAction}>
             { isEdit &&
               <MainActionButton
@@ -716,9 +717,9 @@ function Form (props) {
       </Grid>
       <ErrorDialog title="Failed to save" open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <Typography variant="h6">Your changes were not saved.</Typography>
-        <Typography paragraph>Server responded with error code {errorCode}: {errorMessage}</Typography>
+        <Typography component="p">Server responded with error code {errorCode}: {errorMessage}</Typography>
         {lastSaveTimestamp &&
-          <Typography paragraph>
+          <Typography component="p">
             {"The last successful save was "}
             <Tooltip title={lastSaveTimestamp.toISOString()}>
               <span>{getTimestampString(lastSaveTimestamp.toISOString())}.</span>
@@ -738,4 +739,4 @@ function Form (props) {
   );
 };
 
-export default withStyles(QuestionnaireStyle)(withRouter(Form));
+export default withStyles(withRouter(Form), QuestionnaireStyle);

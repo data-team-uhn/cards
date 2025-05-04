@@ -27,7 +27,7 @@ import {
   useMediaQuery
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import CloseIcon from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
@@ -60,7 +60,7 @@ import { useTheme } from '@mui/material/styles';
 //</ResponsiveDialog>
 //
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   withCloseButton: {
     "& .MuiDialogTitle-root" : {
       paddingRight: theme.spacing(5),
@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
 const ResponsiveDialog = forwardRef((props, ref) => {
   const { title, width, children, withCloseButton, className, onClose, ...rest } = props;
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down(width));

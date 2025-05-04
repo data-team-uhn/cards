@@ -22,11 +22,11 @@ import PropTypes from 'prop-types';
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { ListItemButton, ListItemText, Popper, TextField } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import FormattedText from "../components/FormattedText";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   autocompleteRoot: {
     "& .MuiFormHelperText-root" : {
         wordBreak: "break-word",
@@ -87,7 +87,7 @@ let VariableAutocomplete = (props) => {
     stringify: (option) => `${getOptionLabel?.(option)} ${getOptionSecondaryLabel?.(option) || ''}`
   });
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const classNames = [ classes.autocompleteRoot ];
   className && classNames.push(className);
@@ -95,9 +95,11 @@ let VariableAutocomplete = (props) => {
   return (
     <Autocomplete
       className={classNames.join(' ')}
-      PopperComponent={ groupBy ?
+      slots={{
+        popper: groupBy ?
         (props) => <Popper {...props} className={classes.autocompletePopper} placement="bottom" />
-      : undefined }
+        : undefined
+      }}
       value={selectedValue && options.find(o => getOptionValue(o) == selectedValue) || null}
       options={options}
       filterOptions={filterOptions}

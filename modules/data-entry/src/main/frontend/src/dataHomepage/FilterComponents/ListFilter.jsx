@@ -19,7 +19,7 @@
 
 import React, { forwardRef, useState } from "react";
 import { Select, MenuItem } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -32,16 +32,16 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * Display a filter on a list answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {string} defaultValue The default value to place in the list
+ * @param {object} initial Object containing the initial value and label to place in the list
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  * Other props are forwarded to the Select component
  *
  */
 const ListFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
   // Manage our own state inside here as well
-  const [ selection, setSelection ] = useState(defaultValue || "");
+  const [ selection, setSelection ] = useState(initial?.value || "");
 
   // Populate our our map of options and labels if questionDefinition changes
   let valueToLabel = {};
@@ -69,7 +69,7 @@ const ListFilter = forwardRef((props, ref) => {
       }}
       className={classes.answerField}
       ref={ref}
-      {...rest}>
+      >
       {options.map((value) => (
         <MenuItem value={value} key={value}>{valueToLabel[value]}</MenuItem>
       ))
@@ -79,12 +79,15 @@ const ListFilter = forwardRef((props, ref) => {
 });
 
 ListFilter.propTypes = {
-  defaultValue: PropTypes.string,
+  initial: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.object
 }
 
-const StyledListFilter = withStyles(QuestionnaireStyle)(ListFilter)
+const StyledListFilter = withStyles(ListFilter, QuestionnaireStyle)
 
 export default StyledListFilter;
 

@@ -27,19 +27,21 @@ import {
   Snackbar,
   Tooltip,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
+import { appTheme } from "../../themePalette.jsx";
 import CloseIcon from '@mui/icons-material/Close';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import classNames from "classnames";
 
-import HeaderSearchBar from "./HeaderSearchBar.jsx";
+import SearchBar from "../../SearchBar.jsx"; // In the commons module
+import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
 import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
 import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassworddialogue.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
 
 function HeaderLinks (props) {
-  const { classes, closeSidebar, theme, color } = props;
+  const { classes, closeSidebar, color } = props;
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ passwordDialogOpen, setPasswordDialogOpen ] = useState(false);
   const [ pwdResetSuccessSnackbarOpen, setPwdResetSuccessSnackbarOpen ] = useState(false);
@@ -80,7 +82,7 @@ function HeaderLinks (props) {
   // When the screen is larger than "MdUp" size, we alter some menu items
   // so that they show up white in the sidebar (rather than black on the
   // main page)
-  const expand = window.innerWidth >= theme.breakpoints.values.md;
+  const expand = window.innerWidth >= appTheme.breakpoints.values.md;
 
   // Helper component to automatically enclose any children in a ListItemIcon if necessary
   let ExpandableIcon = (props) => {
@@ -113,10 +115,13 @@ function HeaderLinks (props) {
     <div ref={headerRef} id="adminnavbar">
       {  // Hide the global search bar in all admin screens
         !window.location.pathname.startsWith("/content.html/admin") &&
-        <HeaderSearchBar
+        <SearchBar
           invertColors={!expand}
           onSelectFinish={expand ? undefined : closeSidebar}
-          className={expand ? undefined : classes.buttonLink}
+          className={classNames(classes.search, {[classes.buttonLink]: !expand})}
+          resultConstructor={QuickSearchIdentifier}
+          onSelect={() => {}}
+          showAllResultsLink={true}
         />
       }
       {/* Avatar + sign out link */}
@@ -124,7 +129,7 @@ function HeaderLinks (props) {
       <Tooltip title={username}>
         <Box sx={{ display: { xs: 'none', md: 'inline-flex' }}}>
           <IconButton
-            className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
+            className={classes.buttonLink + " " + classes.logout}
             onClick={() => setPopperOpen((open) => !open)}
             ref={avatarRef}
             size="large"
@@ -179,9 +184,12 @@ function HeaderLinks (props) {
         />
       <Snackbar
         open={pwdResetSuccessSnackbarOpen}
-        ContentProps={{
-          className: classes.successSnackbar
+        slotProps={{
+          content: {
+            className: classes.successSnackbar,
+          },
         }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         autoHideDuration={6000}
         onClose={() => setPwdResetSuccessSnackbarOpen(false)}
         message="Password successfully changed"
@@ -199,4 +207,4 @@ HeaderLinks.propTypes = {
   closeSidebar: PropTypes.func
 }
 
-export default withStyles(sidebarStyle, {withTheme: true})(HeaderLinks);
+export default withStyles(HeaderLinks, sidebarStyle);

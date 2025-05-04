@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { InputAdornment, TextField, Typography } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 
 import Answer, {VALUE_POS} from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -347,7 +347,9 @@ let ComputedQuestion = (props) => {
             disabled={true}
             className={classes.textField + " " + classes.answerField}
             value={displayValue}
-            InputProps={muiInputProps}
+            slotProps={{
+              input: muiInputProps
+            }}
           />
           }
         </>
@@ -376,7 +378,7 @@ ComputedQuestion.propTypes = {
   }).isRequired
 };
 
-const StyledComputedQuestion = withStyles(QuestionnaireStyle)(ComputedQuestion);
+const StyledComputedQuestion = withStyles(ComputedQuestion, QuestionnaireStyle);
 export default StyledComputedQuestion;
 
 AnswerComponentManager.registerAnswerComponent((definition) => {

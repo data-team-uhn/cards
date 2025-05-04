@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
 import { Paper, Grid, Button, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
@@ -27,14 +27,14 @@ import { appTheme } from "../themePalette.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
 import Logo from "../components/Logo.jsx";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   paper: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
     textAlign: "center",
-    "& .MuiGrid-item" : {
+    "& .MuiGrid-root" : {
       textAlign: "center",
     },
   },
@@ -48,7 +48,7 @@ function Unsubscribe (props) {
   const [ confirmed, setConfirmed ] = useState(null);
   const [ error, setError ] = useState();
   const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   useEffect(() => {
     fetch("/Survey.unsubscribe", {method: 'GET'})
@@ -94,8 +94,8 @@ function Unsubscribe (props) {
           alignItems="center"
           alignContent="center"
         >
-          <Logo component={Grid} item xs={12} />
-          <Grid item>
+          <Logo component={Grid} size={12} />
+          <Grid>
             { error && <Alert severity="error">
               <AlertTitle>An error occurred</AlertTitle>
                {error}

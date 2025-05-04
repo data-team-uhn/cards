@@ -18,7 +18,6 @@
 //
 
 import React, { useState, useEffect } from "react";
-
 import {
   AppBar,
   Avatar,
@@ -26,9 +25,8 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
-
-import { withStyles } from '@mui/styles';
-
+import { withStyles } from 'tss-react/mui';
+import { useTheme } from '@mui/material/styles';
 import BuildIcon from '@mui/icons-material/Build';
 
 const appbarStyle = theme => ({
@@ -47,7 +45,7 @@ const appbarStyle = theme => ({
 });
 
 export default function DowntimeWarning(props) {
-  const StyledAppBar = withStyles(appbarStyle)(AppBar);
+  const StyledAppBar = withStyles(AppBar, appbarStyle);
   const appName = document.querySelector('meta[name="title"]')?.content;
 
   // The the configuration values specified by the Administration
@@ -56,6 +54,7 @@ export default function DowntimeWarning(props) {
   const [ toDate, setToDate ] = useState();
   // Error message set when fetching the data from the server fails
   const [ error, setError ] = useState();
+  const theme = useTheme();
 
   // Load the configurations only once, upon initialization
   useEffect(() => {
@@ -93,9 +92,9 @@ export default function DowntimeWarning(props) {
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       {error && <Typography color='error'>{errorText}</Typography>}
-      <Grid container spacing={1} alignItems="center" wrap="nowrap">
-        <Grid item><Avatar><BuildIcon/></Avatar></Grid>
-        <Grid item>
+      <Grid container spacing={1} justifyContent="center" alignItems="center" wrap="nowrap">
+        <Grid sx={{ minWidth: theme.spacing(6)}}><Avatar><BuildIcon/></Avatar></Grid>
+        <Grid>
         <Typography variant="body2">
           {appName} will be down for maintenance from <b>{fromDate}</b> to <b>{toDate}</b>. We appologize for the inconvenience this may cause.
         </Typography>

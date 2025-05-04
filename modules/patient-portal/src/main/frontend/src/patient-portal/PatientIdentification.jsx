@@ -32,7 +32,7 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import AppointmentIcon from '@mui/icons-material/Event';
 
 import Logo from "../components/Logo.jsx";
@@ -43,7 +43,7 @@ import ToUDialog from "./ToUDialog.jsx";
 import DropdownsDatePicker from "../components/DropdownsDatePicker.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   form : {
     maxWidth: "500px",
     margin: "auto",
@@ -64,25 +64,19 @@ const useStyles = makeStyles(theme => ({
   },
   mrnInput : {
     '& input[type=number]': {
-        '-moz-appearance': 'textfield'
+        MozAppearance: 'textfield'
     },
     '& input[type=number]::-webkit-outer-spin-button': {
-        '-webkit-appearance': 'none',
+        WebkitAppearance: 'none',
         margin: 0
     },
     '& input[type=number]::-webkit-inner-spin-button': {
-        '-webkit-appearance': 'none',
+        WebkitAppearance: 'none',
         margin: 0
     }
   },
   dateLabel : {
       paddingTop: theme.spacing(1),
-  },
-  identifierDivider : {
-    marginTop: '35px',
-  },
-  identifierContainer : {
-    alignItems: "start",
   },
   mrnHelperImage: {
     maxWidth: '100%',
@@ -134,7 +128,7 @@ function PatientIdentification(props) {
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const sanitizeHC = (str) => {
     return str?.toUpperCase().replaceAll(/[^A-Z0-9]*/g, "") || "";
@@ -285,11 +279,11 @@ function PatientIdentification(props) {
       onClose={() => {setMrnHelperOpen(false)}}
     >
       <DialogContent>
-        <Typography paragraph>
+        <Typography component="p">
           1. Check the top right-hand corner of your Patient Itinerary.
         </Typography>
         <img src="/libs/cards/resources/media/patient-portal/mrn_helper_1.png" alt="MRN location within the Appointment Itinerary" className={classes.mrnHelperImage} />
-        <Typography paragraph>
+        <Typography component="p">
           2. Check your account page on the myUHN PatientPortal.
         </Typography>
         <img src="/libs/cards/resources/media/patient-portal/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
@@ -300,14 +294,14 @@ function PatientIdentification(props) {
 
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justifyContent="center">
-         <Logo component={Grid} item xs={12} />
+         <Logo component={Grid} size={12}/>
 
          { /* If we don't have the authentication token yet or we don't need the identification form,
              display a circular progress while we wait for the next step */ }
 
          { (typeof(canAuthenticate) == "undefined" || !showIdentificationForm) ?
 
-         <Grid item xs={12} className={classes.description}>
+         <Grid size={12} className={classes.description}>
             <CircularProgress />
          </Grid>
 
@@ -318,11 +312,11 @@ function PatientIdentification(props) {
              display the identification form */
          <>
          { welcomeMessage &&
-           <Grid item xs={12} className={classes.description}>
+           <Grid size={12} className={classes.description}>
              <FormattedText>{welcomeMessage}</FormattedText>
            </Grid>
          }
-         <Grid item xs={12} className={classes.formFields}>
+         <Grid size={12} className={classes.formFields}>
             <div className={classes.description}>
             { error ?
               <Typography color="error">{error}</Typography>
@@ -332,8 +326,8 @@ function PatientIdentification(props) {
             </div>
             <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
             <DropdownsDatePicker id="j_dob" name="j_dob" formatDate onDateChange={setDob} autoFocus fullWidth/>
-            <Grid container alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>
-              <Grid item>
+            <Grid container alignItems="flex-start" wrap="nowrap" justifyContent="space-between">
+              <Grid>
                 <FormControl variant="standard" margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
                   <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
@@ -349,8 +343,8 @@ function PatientIdentification(props) {
                   </FormHelperText>
                  </FormControl>
               </Grid>
-              <Grid item className={classes.identifierDivider}>or</Grid>
-              <Grid item>
+              <Grid alignSelf="center">or</Grid>
+              <Grid>
                 <FormControl variant="standard" margin="normal" fullWidth>
                   <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
                   <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
@@ -358,7 +352,7 @@ function PatientIdentification(props) {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item>
+          <Grid>
             <Button
               type="submit"
               variant="contained"
@@ -378,10 +372,10 @@ function PatientIdentification(props) {
 
           { visitListShown ?
             <>
-            <Grid item className={classes.description}>
+            <Grid className={classes.description}>
               {displayText("eventSelectionMessage", Typography)}
             </Grid>
-            <Grid item>
+            <Grid>
               <List>{ visitList.map((v,i) =>
                 <ListItem className={classes.appointmentEntry} key={`appointmentEntry-${i}`}>
                   <Button
@@ -395,7 +389,7 @@ function PatientIdentification(props) {
                 </ListItem>
               )}</List>
             </Grid>
-            <Grid item className={classes.description}>
+            <Grid className={classes.description}>
               <Typography variant="body2" color="textSecondary">
                 If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout" underline="hover">close this page</Link>.
               </Typography>
@@ -406,10 +400,10 @@ function PatientIdentification(props) {
 
             <>
             {/* Otherwise inform the user there are no known upcoming appointments that need survery responses */}
-            <Grid item className={classes.description}>
+            <Grid className={classes.description}>
               {displayText("noEventsMessage", Typography, {variant: "h6", color: "textSecondary"})}
             </Grid>
-            <Grid item>
+            <Grid>
               <Button
                 variant="contained" onClick={() => window.location = "/system/sling/logout"}
                 >

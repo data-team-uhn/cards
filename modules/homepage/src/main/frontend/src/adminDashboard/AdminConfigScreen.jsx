@@ -23,13 +23,13 @@ import PropTypes from "prop-types";
 import { useHistory } from 'react-router-dom';
 
 import { Alert, Button, CardActions, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 
 import AdminScreen from "./AdminScreen.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     "& .MuiCardContent-root > .MuiAlert-root": {
       margin: theme.spacing(0, 1, 1),
@@ -106,7 +106,7 @@ function AdminConfigScreen(props) {
 
   const globalContext = useContext(GlobalLoginContext);
   const history = useHistory();
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   useEffect(() => {getConfig()}, []);
   useEffect(() => {hasChanges && setConfigIsInitial(false)}, [hasChanges]);

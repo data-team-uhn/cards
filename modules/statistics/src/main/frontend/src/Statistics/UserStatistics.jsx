@@ -22,7 +22,7 @@ import {
   Grid,
   Typography
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import statisticsStyle from "./statisticsStyle.jsx";
 import Statistic from "./Statistic.jsx";
@@ -67,7 +67,7 @@ function UserStatistics(props) {
   if (error) {
     return (
       <Grid container justifyContent="center" alignItems="center" className={classes.statsContainer}>
-        <Grid item>
+        <Grid>
           <Typography color="textSecondary">{error}</Typography>
         </Grid>
       </Grid>
@@ -131,4 +131,4 @@ function UserStatistics(props) {
   );
 }
 
-export default withStyles(statisticsStyle)(UserStatistics);
+export default withStyles(UserStatistics, statisticsStyle);

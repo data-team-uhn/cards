@@ -22,7 +22,7 @@ import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Alert, Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import MaterialReactTable from "material-react-table";
 
 import { escapeJQL } from "../escape.jsx";
@@ -61,7 +61,7 @@ let createQueryURL = (query, type, order) => {
  * @param {string} subjectType The current type of the subject
  */
 function UnstyledNewSubjectDialog (props) {
-  const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value, subjectType } = props;
+  const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, value, subjectType } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
 
   const [ regexp, setRegexp ] = useState();
@@ -180,7 +180,7 @@ function UnstyledNewSubjectDialog (props) {
             ]}
             data={ allowedTypes?.length ? allowedTypes : data }
             renderTopToolbarCustomActions={() => {
-              return <Typography variant="h6" sx={{ paddingLeft: theme.spacing(2) }}>Select a type</Typography>;
+              return <Typography variant="h6" sx={{pl: 2}}>Select a type</Typography>;
             }}
             positionToolbarAlertBanner="none"
             muiTableHeadCellProps={{
@@ -224,7 +224,7 @@ function UnstyledNewSubjectDialog (props) {
   )
 }
 
-const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledNewSubjectDialog)
+const NewSubjectDialogChild = withStyles(UnstyledNewSubjectDialog, QuestionnaireStyle);
 
 /**
  * Component that displays a dialog to select parents for a new subject
@@ -246,7 +246,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * @param {object} value The currently selected parent
  */
 function UnstyledSelectParentDialog (props) {
-  const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType,  theme, value } = props;
+  const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, value } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -348,11 +348,11 @@ function UnstyledSelectParentDialog (props) {
                 },
               })}
               muiTableBodyCellProps={({ cell }) => ({
-                sx: {
+                sx: (theme) => ({
                   fontSize: '1rem',
                   // grey out subjects that already have something by this name
                   color: (hasChildWithId(cell.row.original, childName) ? theme.palette.text.disabled : theme.palette.text.primary)
-                },
+                }),
               })}
             />
         }
@@ -394,7 +394,7 @@ function UnstyledSelectParentDialog (props) {
   )
 }
 
-export const SelectParentDialog = withStyles(QuestionnaireStyle, {withTheme: true})(UnstyledSelectParentDialog)
+export const SelectParentDialog = withStyles(UnstyledSelectParentDialog, QuestionnaireStyle);
 
 // The value of a subjectType's parents are either an array, or if it is length 1 it will just be an object
 // We must cast each case into an array to handle it properly
@@ -830,7 +830,7 @@ function UnstyledSelectorDialog (props) {
   </React.Fragment>);
 }
 
-export const SelectorDialog = withStyles(QuestionnaireStyle)(UnstyledSelectorDialog)
+export const SelectorDialog = withStyles(UnstyledSelectorDialog, QuestionnaireStyle)
 
 /**
  * Create new subjects from an array of identifiers.
@@ -937,7 +937,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
  */
 function SubjectSelectorList(props) {
   const { allowedTypes, allowAddSubjects, allowDeleteSubjects, classes, disabled, onDelete, onEdit, onError, onSelect, selectedSubject, selectedQuestionnaire, disableProgress,
-    currentSubject, theme, ...rest } = props;
+    currentSubject, ...rest } = props;
 
   const [ relatedSubjects, setRelatedSubjects ] = useState();
   const [ data, setData ] = useState([]);
@@ -1076,20 +1076,20 @@ function SubjectSelectorList(props) {
           },
         })}
         muiTableBodyCellProps={({ cell }) => ({
-          sx: {
+          sx: (theme) => ({
             fontSize: '1rem',
             // grey out subjects that have already reached maxPerSubject
             color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["f.subject"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
             ? theme.palette.text.disabled
             : theme.palette.text.primary
             )
-          },
+          }),
         })}
       />
     </React.Fragment>
   )
 };
 
-const StyledSubjectSelectorList = withStyles(QuestionnaireStyle, {withTheme: true})(SubjectSelectorList)
+const StyledSubjectSelectorList = withStyles(SubjectSelectorList, QuestionnaireStyle);
 
 export default StyledSubjectSelectorList;

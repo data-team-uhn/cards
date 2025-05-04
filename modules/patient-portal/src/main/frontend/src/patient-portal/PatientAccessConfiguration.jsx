@@ -27,7 +27,7 @@ import {
     ListItem,
     TextField
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
 export const PATIENT_ACCESS_CONFIG_PATH = "/Survey/PatientAccess";
@@ -38,7 +38,7 @@ export const DEFAULT_PATIENT_ACCESS_CONFIG = {
     draftLifetime: "-1"
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   textField: {
     margin: theme.spacing(3, 0),
     "& .MuiFormLabel-root" : {
@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function PatientAccessConfiguration() {
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   const [ patientAccessConfig, setPatientAccessConfig ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);
@@ -123,10 +123,12 @@ function PatientAccessConfiguration() {
             value={patientAccessConfig?.[key] || ""}
             error={error[key]}
             helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
-            InputProps={{
-              endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
+            slotProps={{
+              input: {
+                endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
+              },
+              htmlInput: LIMITS[key],
             }}
-            inputProps={LIMITS[key]}
           />
         </FormGroup>
       </ListItem>

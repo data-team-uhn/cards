@@ -19,7 +19,7 @@
 
 import React, { forwardRef, useState } from "react";
 import { TextField } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -39,28 +39,30 @@ const QuestionnaireStyleNotesContain = theme => ({
  * Display a filter on a numeric answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {string} defaultValue The default value to place in the text field
+ * @param {object} initial Object containing the initial value and label to place in the text field
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  * Other props are forwarded to the TextField component
  *
  */
 const TextFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
+  const { classes, initial, onChangeInput, questionDefinition } = props;
   // Manage our own state inside here as well
-  const [ input, setInput ] = useState(defaultValue || "");
+  const [ input, setInput ] = useState(initial?.value || "");
 
   return (
     <TextField
       variant="standard"
       className={classes.answerField}
-      InputLabelProps={{
-      shrink: true,
+      slotProps={{
+        input: {
+          className: classes.answerField,
+        },
+        inputLabel: {
+          shrink: true,
+        },
       }}
-      InputProps={{
-      className: classes.answerField
-      }}
-      defaultValue={defaultValue}
+      defaultValue={initial?.value}
       onChange={(event) => {
         setInput(event.target.value);
         onChangeInput(event.target.value)
@@ -68,17 +70,20 @@ const TextFilter = forwardRef((props, ref) => {
       value={input}
       inputRef={ref}
       placeholder="empty"
-      {...rest}
       />
   );
 });
 
 TextFilter.propTypes = {
+  initial: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   onChangeInput: PropTypes.func
 }
 
-const StyledTextFilter = withStyles(QuestionnaireStyle)(TextFilter)
-const StyledNotesContainFilter = withStyles(QuestionnaireStyleNotesContain)(TextFilter)
+const StyledTextFilter = withStyles(TextFilter, QuestionnaireStyle)
+const StyledNotesContainFilter = withStyles(TextFilter, QuestionnaireStyleNotesContain)
 export default { StyledTextFilter, StyledNotesContainFilter }
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {

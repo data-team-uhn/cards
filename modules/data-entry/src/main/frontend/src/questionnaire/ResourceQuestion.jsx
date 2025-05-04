@@ -19,14 +19,12 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { CircularProgress} from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import ResourceQuery from "../resourceQuery/ResourceQuery";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
@@ -35,7 +33,6 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Component that renders a question, where the answer options are children of a given JCR node
 
 function ResourceQuestion(props) {
-  const {classes, ...rest} = props;
   const {primaryType, labelProperty, maxAnswers, displayMode} = { ...props.questionDefinition };
   const [options, setOptions] = useState();
 
@@ -97,7 +94,7 @@ function ResourceQuestion(props) {
           answerNodeType="cards:ResourceAnswer"
           valueType="String"
           defaults={props.defaults || (options.length > 0 ? options : undefined)}
-          {...rest}
+          {...props}
           />
         : <CircularProgress />
       }
@@ -105,7 +102,6 @@ function ResourceQuestion(props) {
 }
 
 ResourceQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     maxAnswers: PropTypes.number,
@@ -116,11 +112,10 @@ ResourceQuestion.propTypes = {
   }).isRequired,
 };
 
-const StyledResourceQuestion = withStyles(QuestionnaireStyle)(ResourceQuestion)
-export default StyledResourceQuestion;
+export default ResourceQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "resource") {
-    return [StyledResourceQuestion, 50];
+    return [ResourceQuestion, 50];
   }
 });

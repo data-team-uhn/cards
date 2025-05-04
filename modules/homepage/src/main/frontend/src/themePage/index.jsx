@@ -19,12 +19,11 @@
 import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import { createRoot } from 'react-dom/client';
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
-import withStyles from '@mui/styles/withStyles';
-import GlobalStyles from '@mui/material/GlobalStyles';
+import { withStyles } from 'tss-react/mui';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
@@ -32,6 +31,8 @@ import Page from "./Page";
 import PageStart from "../PageStart";
 import IndexStyle from "./indexStyle.jsx";
 import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
 
 class Main extends React.Component {
   constructor(props) {
@@ -60,7 +61,7 @@ class Main extends React.Component {
   // Close the mobile menu if the window size changes
   // so that the mobile menu is out of place
   autoCloseMobileMenus = event => {
-    if (window.innerWidth >= this.props.theme.breakpoints.values.md) {
+    if (window.innerWidth >= appTheme.breakpoints.values.md) {
       this.setState({ mobileOpen: false });
     }
   }
@@ -75,7 +76,7 @@ class Main extends React.Component {
   };
 
   switchRoutes = (routes) => {
-    return (<Switch color="secondary">
+    return (<Switch>
       {routes.map((route, key) => {
         return (
           <Route
@@ -178,23 +179,29 @@ class Main extends React.Component {
 Main.propTypes = {
   classes: PropTypes.object.isRequired
 };
-const MainComponent = (withStyles(IndexStyle, {withTheme: true})(Main));
+const MainComponent = withStyles(Main, IndexStyle);
+
+const cache = createCache({
+  key: 'tss',
+  // Enable style speedy insertion mode
+  speedy: true
+});
 
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#main-container'));
 root.render(
-  <StyledEngineProvider injectFirst>
+  <CacheProvider value={cache}>
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
-        <Switch color="secondary">
+        <Switch>
           <Route path="/content.html/" component={MainComponent} />
           <Redirect from="/" to="/content.html/Questionnaires/User"/>
           <Redirect from="/content" to="/content.html/Questionnaires/User" />
         </Switch>
       </Router>
     </ThemeProvider>
-  </StyledEngineProvider>
+  </CacheProvider>
 );
 
 export default MainComponent;

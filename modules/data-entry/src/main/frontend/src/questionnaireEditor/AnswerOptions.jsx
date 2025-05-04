@@ -35,7 +35,7 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
@@ -57,13 +57,13 @@ let extractSortedOptions = (data) => {
                             .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
     answerOption: {
       border: "1px solid " + theme.palette.divider,
       background: theme.palette.background.paper,
       borderRadius: theme.spacing(.5, 3, 3, .5),
       margin: theme.spacing(1, 0),
-      "& > .MuiGrid-item" : {
+      "& > .MuiGrid-root" : {
         display: "flex",
       },
       "& .MuiFormControl-root" : {
@@ -112,7 +112,7 @@ const useStyles = makeStyles(theme => ({
 
 let AnswerOptions = (props) => {
   const { objectKey, value, data, path, saveButtonRef, hint } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
@@ -282,8 +282,8 @@ let AnswerOptions = (props) => {
        className={classes.answerOption}
        onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
        >
-      <Grid item xs={1}></Grid>
-      <Grid item xs={8}>
+      <Grid size={1}></Grid>
+      <Grid size={8}>
       <Tooltip title="Selected by default">
         <Checkbox
           color="secondary"
@@ -308,7 +308,7 @@ let AnswerOptions = (props) => {
         />
       </Tooltip>
       </Grid>
-      <Grid item xs={3} className={classes.answerOptionActions}>
+      <Grid size={3} className={classes.answerOptionActions}>
       {generateDescriptionIcon(option.data, index, true)}
       <Tooltip title={option.switchTooltip} className={classes.answerOptionSwitch}>
         <FormControlLabel
@@ -387,18 +387,20 @@ let AnswerOptions = (props) => {
         helperText={isDuplicate ? 'Duplicated value or label' : 'Press ENTER to add a new line'}
         onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value, setIsDuplicate); }}
         onBlur={(event) => { handleInputOption(event); }}
-        inputProps={Object.assign({
-          onKeyDown: (event) => {
-            if (event.key == 'Enter') {
-              // We need to stop the event so that it doesn't trigger a form submission
-              event.preventDefault();
-              event.stopPropagation();
-              handleInputOption(event);
+        slotProps={{
+          htmlInput: Object.assign({
+            onKeyDown: (event) => {
+              if (event.key == 'Enter') {
+                // We need to stop the event so that it doesn't trigger a form submission
+                event.preventDefault();
+                event.stopPropagation();
+                handleInputOption(event);
+              }
             }
-          }
-        })}
+          })
+        }}
         multiline
-        />
+      />
       { generateSpecialOptions(1) }
       <Popover
         open={Boolean(descriptionAnchorEl)}
@@ -419,7 +421,7 @@ let AnswerOptions = (props) => {
         className={classes.descriptionPopover}
       >
         <Card>
-          <CardHeader title={`Description for "${descriptionLabel}"`} titleTypographyProps={{variant: "h6"}}/>
+          <CardHeader title={`Description for "${descriptionLabel}"`} slotProps={{ title: {variant: "h6"}}}/>
           <CardContent>
           { descriptionIndex != null &&
             <MarkdownText value={description} onChange={setDescription} />

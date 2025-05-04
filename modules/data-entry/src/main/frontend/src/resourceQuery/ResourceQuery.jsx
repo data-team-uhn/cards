@@ -21,7 +21,7 @@ import React, { useRef, useState, useContext } from "react";
 import PropTypes from "prop-types";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@mui/material";
 
 import Search from "@mui/icons-material/Search";
@@ -72,7 +72,7 @@ export const MAX_RESULTS = 10;
 //
 function ResourceQuery(props) {
   const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
-    value, questionDefinition, onChange, enableSelection, initialSelection, onRemoveOption, classes } = props;
+    value, questionDefinition, onChange, enableSelection, initialSelection, onRemoveOption, className, classes } = props;
   const { maxAnswers, primaryType, labelProperty, propertiesToSearch, enableUserEntry } = questionDefinition;
   const { fetchSuggestions, formatSuggestionData, infoDisplayer } = props;
 
@@ -109,8 +109,10 @@ function ResourceQuery(props) {
     <Input
       disabled={disabled}
       variant='outlined'
-      inputProps={{
-        "aria-label": "Search"
+      slotProps={{
+        htmlInput: {
+          "aria-label": "Search",
+        },
       }}
       onChange={(event) => {
         delayLookup(event.target.value);
@@ -140,7 +142,7 @@ function ResourceQuery(props) {
         setSuggestionsVisible(false);
         setResourcePath("");
       }}
-      className={variant == "labeled" ? classes.searchInput : ""}
+      className={(variant == "labeled" ? (classes.searchInput + " ") : "") + className}
       multiline={true}
       endAdornment={(
         <InputAdornment position="end" ref={searchButtonRef} onClick={() => {
@@ -544,4 +546,4 @@ ResourceQuery.defaultProps = {
   variant: 'default'
 };
 
-export default withStyles(QueryStyle)(ResourceQuery);
+export default withStyles(ResourceQuery, QueryStyle);

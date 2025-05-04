@@ -28,11 +28,11 @@ import {
   Typography
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   buttonProgress: {
     top: "50%",
     left: "50%",
@@ -71,7 +71,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function OwlInstaller(props) {
 
-  const classes = useStyles();
+  const { classes } = useStyles();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let [ phase, setPhase ] = useState("install");
@@ -109,12 +109,12 @@ export default function OwlInstaller(props) {
 
   return(
     <React.Fragment>
-      <Grid item>
+      <Grid>
         <Typography variant="h6">
           Install from local file
         </Typography>
       </Grid>
-      <Grid item>
+      <Grid>
       <form
         action="/Vocabularies?source=fileupload&overwrite=true"
         method="POST"
@@ -125,7 +125,7 @@ export default function OwlInstaller(props) {
           alignItems="center"
           spacing={1}
         >
-          <Grid item>
+          <Grid>
             <label htmlFor="owl-file">
               <input
                 style={{ display: 'none' }}
@@ -146,7 +146,7 @@ export default function OwlInstaller(props) {
             </label>
           </Grid>
 
-          <Grid item>
+          <Grid>
             <TextField
                  disabled={(phase == "installing") || (owlSelected == "Select File")}
                  variant="standard"
@@ -161,7 +161,7 @@ export default function OwlInstaller(props) {
                  size="small"
              />
           </Grid>
-          <Grid item>
+          <Grid>
             <TextField
                  disabled={(phase == "installing") || (owlSelected == "Select File")}
                  variant="standard"
@@ -176,7 +176,7 @@ export default function OwlInstaller(props) {
                  size="small"
              />
           </Grid>
-          <Grid item>
+          <Grid>
             <TextField
                  disabled={(phase == "installing") || (owlSelected == "Select File")}
                  variant="standard"
@@ -192,7 +192,7 @@ export default function OwlInstaller(props) {
              />
           </Grid>
 
-          <Grid item>
+          <Grid>
             <label htmlFor="owl-install">
               <input
                 style={{ display: 'none' }}

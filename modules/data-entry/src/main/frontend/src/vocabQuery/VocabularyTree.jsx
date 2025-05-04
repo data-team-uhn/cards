@@ -20,7 +20,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Button, Checkbox, DialogContent, DialogActions, Chip, Radio, Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import VocabularyBranch from "./VocabularyBranch.jsx";
 import AnswerInstructions from "../questionnaire/AnswerInstructions.jsx";
@@ -307,4 +307,4 @@ VocabularyTree.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(BrowseTheme)(VocabularyTree);
+export default withStyles(VocabularyTree, BrowseTheme);

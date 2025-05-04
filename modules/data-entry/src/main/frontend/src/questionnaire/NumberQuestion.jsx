@@ -25,8 +25,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import withStyles from '@mui/styles/withStyles';
+import { makeStyles, withStyles } from 'tss-react/mui';
 
 import { NumericFormat } from 'react-number-format';
 
@@ -54,13 +53,13 @@ const DATA_TO_VALUE_TYPE = {
   "decimal": "Decimal",
 };
 
-const useSliderStyles = makeStyles(theme => ({
+const useSliderStyles = makeStyles()(theme => ({
   verticalSliderContainer: {
     display: "flex",
     flexDirection: "column-reverse",
     alignItems: "center",
     width: "fit-content",
-    "& > .MuiTypography-root:first-child" : {
+    "& > .MuiTypography-root:first-of-type" : {
       marginTop: theme.spacing(1.5),
     },
     "& > .MuiTypography-root:last-child" : {
@@ -80,7 +79,7 @@ const useSliderStyles = makeStyles(theme => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    "& > .MuiTypography-root:first-child" : {
+    "& > .MuiTypography-root:first-of-type" : {
       marginRight: theme.spacing(1.5),
       textAlign: "right",
     },
@@ -305,7 +304,7 @@ function NumberQuestion(props) {
 
   let makeSlider = (options) => {
     return (
-      <div className={sliderClasses[`${sliderOrientation}SliderContainer`]}>
+      <div className={sliderClasses.classes[`${sliderOrientation}SliderContainer`]}>
       { minValueLabel &&
         <Typography variant="caption" color="textSecondary">{minValueLabel}</Typography>
       }
@@ -386,8 +385,13 @@ function NumberQuestion(props) {
               value={lowerLimit}
               placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
               onChange={event => setValue(setLowerLimit, event.target.value)}
-              inputProps={textFieldProps}
-              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              slotProps={{
+                input: muiInputProps,
+                htmlInput: textFieldProps,
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
               />
             <span className="separator">&mdash;</span>
             <TextField
@@ -396,8 +400,13 @@ function NumberQuestion(props) {
               value={upperLimit}
               placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
               onChange={event => setValue(setUpperLimit, event.target.value)}
-              inputProps={textFieldProps}
-              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              slotProps={{
+                input: muiInputProps,
+                htmlInput: textFieldProps,
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
               />
           </div>)
         }
@@ -509,7 +518,7 @@ NumberQuestion.defaultProps = {
   errorText: "",
 };
 
-const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)
+const StyledNumberQuestion = withStyles(NumberQuestion, QuestionnaireStyle)
 export default StyledNumberQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

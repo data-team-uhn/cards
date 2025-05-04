@@ -21,7 +21,7 @@ import Form from "../questionnaire/Form.jsx";
 import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 
 import { Grid } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import FormView from "./FormView.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
@@ -76,7 +76,7 @@ function Forms(props) {
 
   return (
     <Grid container className={classes.dashboardContainer}>
-      <Grid item className={classes.dashboardEntry} xs={12}>
+      <Grid className={classes.dashboardEntry} size={12}>
         <FormView
           expanded
           columns={columns}
@@ -87,4 +87,4 @@ function Forms(props) {
   );
 }
 
-export default withStyles(questionnaireStyle)(Forms);
+export default withStyles(Forms, questionnaireStyle);

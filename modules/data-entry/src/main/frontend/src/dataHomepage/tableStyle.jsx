@@ -62,7 +62,10 @@ const liveTableStyle = theme => ({
     },
     tableActions: {
         "& .MuiIconButton-root": {
-            float : "right"
+            float : "right",
+            padding: theme.spacing(1),
+            marginTop: theme.spacing(0.5),
+            marginBottom: theme.spacing(0.5),
         }
     },
 });

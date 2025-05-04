@@ -20,7 +20,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@mui/material";
 import { Card, CardHeader, CardContent, CardActions, Typography, Button, LinearProgress } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { withStyles } from 'tss-react/mui';
 import { Link } from 'react-router-dom';
 import { DateTime } from "luxon";
 
@@ -426,7 +426,9 @@ function LiveTable(props) {
             tableData ?
               ( tableData.map(makeRow) )
               :
-              ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>Please wait...</TableCell></TableRow> )
+              ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>
+                  <Typography>Please wait...</Typography>
+                </TableCell></TableRow> )
           }
         </TableBody>
       </Table>
@@ -441,4 +443,4 @@ LiveTable.defaultProps = {
   showTotalRows: false
 }
 
-export default withStyles(LiveTableStyle)(LiveTable);
+export default withStyles(LiveTable, LiveTableStyle);
