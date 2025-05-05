@@ -85,7 +85,7 @@ function ResourceQuery(props) {
     enableSelection,
     initialSelection,
     onRemoveOption,
-	className,
+    className,
     classes
   } = props;
 
