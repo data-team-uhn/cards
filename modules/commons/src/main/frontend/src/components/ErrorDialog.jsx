@@ -73,7 +73,7 @@ const ErrorDialog = (props) => {
   const { classes } = useStyles();
 
   return (
-    <Dialog onClose={onClose} title={title} maxWidth={maxWidth} fullWidth={fullWidth} {...rest}>
+    <Dialog onClose={onClose} maxWidth={maxWidth} fullWidth={fullWidth} {...rest}>
       <DialogTitle className={classes.titleBar}>
         {title}
         <IconButton onClick={onClose} className={classes.closeButton} size="large">
