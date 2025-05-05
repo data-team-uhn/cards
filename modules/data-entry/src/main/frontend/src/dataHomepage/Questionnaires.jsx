@@ -49,7 +49,7 @@ function Questionnaires(props) {
     {
       header: "Title",
       accessorKey: "title",
-      Cell: ({ row }) => (<Link to={"/content.html/admin" + row.original["@path"]} underline="hover">{row.original.title}</Link>),
+      Cell: ({ row }) => (<Link to={"../content.html/admin" + row.original["@path"]} underline="hover">{row.original.title}</Link>),
     },
     {
       header: "Created on",
