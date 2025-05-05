@@ -140,14 +140,18 @@ function SubjectLockAction(props) {
         setDialogContent(
           <>
             <TextField
-              inputProps={{readOnly:true}}
+              slotProps={{
+                htmlInput: {readOnly:true}
+              }}
               id="user"
               label="Signing User"
               defaultValue={json["userID"]}
               sx={{mt: 3, mr: 3}}
               />
             <TextField
-              inputProps={{readOnly:true}}
+              slotProps={{
+                htmlInput: {readOnly:true}
+              }}
               id="date"
               label="Date"
               defaultValue={new Date().toDateString()}
