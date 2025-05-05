@@ -17,11 +17,6 @@
 //  under the License.
 //
 
-// This is needed to support the `async` keyword,
-// since Babel will replace it with calls to the `regeneratorRuntime` method,
-// but it will not automatically detect that it needs to put it in the `vendor` bundle unless explicitly used.
-import regeneratorRuntime from "regenerator-runtime";
-
 const ASSET_PREFIX="asset:";
 
 // The assets map, from simple asset name to the contenthashed real path
