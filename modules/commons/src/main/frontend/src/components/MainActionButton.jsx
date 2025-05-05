@@ -58,10 +58,10 @@ function MainActionButton(props) {
     label,
     title,
     ariaLabel,
-    onClick,
-    inProgress = false,
-    disabled = false,
-    style = {}
+    inProgress,
+    disabled,
+    style,
+    onClick
   } = props;
 
   let extended = !!label;

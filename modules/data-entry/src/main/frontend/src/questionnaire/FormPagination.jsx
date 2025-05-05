@@ -56,7 +56,7 @@ function FormPagination (props) {
     enabled = true,
     variant = "progress",
     navMode = "back_next",
-    saveInProgress = false,
+    saveInProgress,
     lastSaveStatus = true,
     setPagesCallback,
     isPageCompleted,

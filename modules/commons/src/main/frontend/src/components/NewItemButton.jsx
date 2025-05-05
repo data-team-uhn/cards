@@ -44,7 +44,7 @@ import MainActionButton from './MainActionButton.jsx';
 function NewItemButton(props) {
   const {
     title = "New",
-    inProgress = false,
+    inProgress,
     ...rest
   } = props;
 
