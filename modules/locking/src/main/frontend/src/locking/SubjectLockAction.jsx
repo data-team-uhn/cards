@@ -322,22 +322,22 @@ function SubjectLockAction(props) {
           {dialogContent}
         </DialogContent>
         <DialogActions sx={{pl: 3}}>
-            {actionContent}
+          {actionContent}
         </DialogActions>
         <DialogActions>
-            <Button
-              variant="outlined"
-              onClick={closeDialog}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleActionClicked}
-              disabled={requestInProgress}
-            >
-              {actionLabel}
-            </Button>
+          <Button
+            variant="outlined"
+            onClick={closeDialog}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleActionClicked}
+            disabled={requestInProgress}
+          >
+            {actionLabel}
+          </Button>
         </DialogActions>
       </Dialog>
       { variant == "icon" ?
