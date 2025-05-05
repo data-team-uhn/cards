@@ -37,7 +37,13 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 function AdminScreen(props) {
-  const { title = "Administration", action, disableBreadcrumb, className, children } = props;
+  const {
+    title = "Administration",
+    action,
+    disableBreadcrumb,
+    className,
+    children
+  } = props;
 
   const { classes } = useStyles();
   const appName = document.querySelector('meta[name="title"]')?.content;
