@@ -43,6 +43,10 @@ function Page (props) {
   const { children, title, pageDefaultName } = props;
   const [ overrideName, setOverrideNameState ] = useState(DEFAULT_STATE);
 
+  useEffect(() => {
+    setOverrideNameState(DEFAULT_STATE);
+  }, [pageDefaultName])
+
   // When a page is loaded, change the title of the page
   useEffect(() => {
     document.title = (overrideName == "" ? pageDefaultName : overrideName) + title;
