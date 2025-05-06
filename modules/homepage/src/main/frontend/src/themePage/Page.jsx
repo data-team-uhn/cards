@@ -46,7 +46,7 @@ function Page (props) {
   // When a page is loaded, change the title of the page
   useEffect(() => {
     document.title = (overrideName == "" ? pageDefaultName : overrideName) + title;
-  }, [overrideName])
+  }, [overrideName, pageDefaultName])
 
   return (
     <PageNameWriterContext.Provider value={setOverrideNameState}>
