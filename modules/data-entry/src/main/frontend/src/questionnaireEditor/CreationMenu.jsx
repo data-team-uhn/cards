@@ -31,7 +31,13 @@ import NewItemButton from "../components/NewItemButton";
 // Menu for creating questions or sections
 
 let CreationMenu = (props) => {
-  const { isMainAction = false, data, menuItems, models, onCreated } = props;
+  const {
+    isMainAction,
+    data,
+    menuItems,
+    models,
+    onCreated
+  } = props;
   let [ anchorEl, setAnchorEl ] = useState(null);
   let [ entityType, setEntityType ] = useState('Question');
   let [ dialogOpen, setDialogOpen ] = useState(false);

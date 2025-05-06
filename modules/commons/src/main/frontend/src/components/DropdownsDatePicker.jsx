@@ -105,8 +105,7 @@ function DropdownsDatePicker(props) {
     autoFocus,
     fullWidth,
     ...rest
-    }
-    = props;
+  } = props;
   const { classes } = useStyles();
 
   const sDate = new Date(startDate);

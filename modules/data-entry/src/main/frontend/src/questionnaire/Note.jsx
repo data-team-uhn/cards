@@ -40,7 +40,8 @@ function Note (props) {
     value,
     onAddSuggestion,
     placeholder = "Please place any additional notes here.",
-    ...rest } = props;
+    ...rest
+  } = props;
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();

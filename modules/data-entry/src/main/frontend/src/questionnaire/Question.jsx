@@ -31,9 +31,22 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
-  let { classes, children, questionDefinition, existingAnswer, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
-  let { compact } = { ...questionDefinition };
-  let { text, description, disableInstructions = false } = { ...questionDefinition, ...props };
+  let {
+    classes,
+    children,
+    questionDefinition,
+    existingAnswer,
+    isEdit,
+    pageActive,
+    preventDefaultView,
+    defaultDisplayFormatter
+  } = props;
+  let {
+    text,
+    description,
+    compact,
+    disableInstructions
+  } = { ...questionDefinition, ...props };
 
   const [ doHighlight, setDoHighlight ] = useState();
   const [ anchor, setAnchor ] = useState();
