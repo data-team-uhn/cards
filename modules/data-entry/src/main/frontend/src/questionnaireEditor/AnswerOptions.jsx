@@ -128,18 +128,23 @@ let AnswerOptions = (props) => {
   const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
 
+  const DEFAULT_NA_NODE_NAME = "None";
+  const DEFAULT_NONEOFTHEABOVE_NODE_NAME = "NoneOfTheAbove";
+
   let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : (value == "numberOptions" ? "-1" : "notApplicable"),
                                                                                    "label" : "None",
                                                                                    "notApplicable" : false,
-                                                                                   "@path" : path + "/None"});
+                                                                                   "@name" : DEFAULT_NA_NODE_NAME,
+                                                                                   "@path" : path + "/" + DEFAULT_NA_NODE_NAME});
   let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": (value == "numberOptions" ? "0" : "noneOfTheAbove"),
                                                                                       "label" : "None of the above",
                                                                                       "noneOfTheAbove" : false,
-                                                                                      "@path" : path + "/NoneOfTheAbove"});
+                                                                                      "@name" : DEFAULT_NONEOFTHEABOVE_NODE_NAME,
+                                                                                      "@path" : path + "/" + DEFAULT_NONEOFTHEABOVE_NODE_NAME});
   // Update all options path on parent path change
   useEffect(() => {
-    setNotApplicableOption({ ...notApplicableOption, "@path" : path + "/None"});
-    setNoneOfTheAboveOption({ ...noneOfTheAboveOption, "@path" : path +  "/NoneOfTheAbove"});
+    setNotApplicableOption({ ...notApplicableOption, "@path" : path + "/" + notApplicableOption["@name"]});
+    setNoneOfTheAboveOption({ ...noneOfTheAboveOption, "@path" : path +  "/" + noneOfTheAboveOption["@name"]});
     setOptions(oldOptions => {
       let newOptions = oldOptions.slice();
       newOptions.map(opt => { if (opt.isNew) {
