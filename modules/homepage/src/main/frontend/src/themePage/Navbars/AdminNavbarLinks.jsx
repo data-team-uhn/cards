@@ -33,7 +33,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import classNames from "classnames";
-
+import { useLocation } from 'react-router';
 import SearchBar from "../../SearchBar.jsx"; // In the commons module
 import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
 import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
@@ -51,6 +51,7 @@ function HeaderLinks (props) {
   const avatarRef = useRef();
   const headerRef = useRef();
 
+  const location = useLocation();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
@@ -114,7 +115,7 @@ function HeaderLinks (props) {
   return (
     <div ref={headerRef} id="adminnavbar">
       {  // Hide the global search bar in all admin screens
-        !window.location.pathname.startsWith("/content.html/admin") &&
+        !location.pathname.startsWith("/content.html/admin") &&
         <SearchBar
           invertColors={!expand}
           onSelectFinish={expand ? undefined : closeSidebar}
