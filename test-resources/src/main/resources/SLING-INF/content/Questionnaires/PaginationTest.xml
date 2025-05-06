@@ -283,7 +283,7 @@ Page 4: **Follow-up and surveillance**, displayed when *Vital status* is *Alive 
 			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
-				<value>=</value>
+				<value>includes any</value>
 				<type>String</type>
 			</property>
 			<node>
