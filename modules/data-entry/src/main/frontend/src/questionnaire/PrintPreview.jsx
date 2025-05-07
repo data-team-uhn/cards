@@ -139,11 +139,9 @@ function PrintPreview(props) {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const ref = useRef(null);
+  const contentRef = useRef(null);
 
-  const handlePrint = useReactToPrint({
-    content: () => ref.current,
-  });
+  const handlePrint = useReactToPrint({ contentRef });
 
   useEffect(() => {
     open && fetchWithReLogin(globalLoginDisplay, resourcePath + '.md')
@@ -176,7 +174,7 @@ function PrintPreview(props) {
   return (<>
     { open && content &&
       <Card
-        ref={ref}
+        ref={contentRef}
         elevation={0}
         className={classes.printPreview + " " + classes.printTarget}
         >
