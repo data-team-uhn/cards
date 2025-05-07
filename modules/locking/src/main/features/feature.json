@@ -26,6 +26,9 @@
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~locking":{
       "service.ranking:Integer":300,
       "scripts": [
+        // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
+        "create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects",
+        // The location where locks are stored
         "create path (rep:Unstructured) /jcr:system/cards:locks",
         // Locking and unlocking subjects and appropriate visits
         "create service user locking \n set ACL for locking \n allow jcr:all on / \n end",
