@@ -16,7 +16,7 @@
  */
 package io.uhndata.cards.locking;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
@@ -99,7 +99,7 @@ public class LockedStatusFlagEditor extends DefaultEditor
         throws CommitFailedException
     {
         if (this.isLockableNode) {
-            final Set<String> statusFlags = new HashSet<>();
+            final Set<String> statusFlags = new LinkedHashSet<>();
             if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
                 Iterable<String> flags = this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS);
                 flags.forEach(flag -> statusFlags.add(flag));

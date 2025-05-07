@@ -114,7 +114,7 @@ function SubjectLockAction(props) {
   }
 
   let handleOpenDialogUnlocked = () => {
-    setDialogTitle(`Sign off and Lock ${entryType} "${subject?.identifier}"`);
+    setDialogTitle(`Sign off and lock ${entryType} "${subject?.identifier}"`);
     setNextAction(ACTION_CONTINUE);
     setDialogContent(null);
     fetchIncompleteForms();
