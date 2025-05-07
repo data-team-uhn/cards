@@ -18,7 +18,7 @@
 //
 
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useLocation, withRouter } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router';
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
 
@@ -72,16 +72,14 @@ let createQueryURL = (query, type) => {
  * Component that displays a Subject.
  *
  * @example
- * <Subject id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
+ * <Subject/>
  *
- * @param {string} id the identifier of a subject; this is the JCR node name
  * @param {int} maxDisplayed the maximum number of form question/answers to be displayed. defaults to 4
  */
 
 function Subject(props) {
-  let { id, classes, maxDisplayed, pageSize, history } = props;
+  let { classes, maxDisplayed = 4, pageSize = 10 } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
-  const [ currentSubjectId, setCurrentSubjectId ] = useState(id);
   const [ activeTab, setActiveTab ] = useState(0);
 
   // TODO: These tabs should be extensible.
@@ -89,10 +87,10 @@ function Subject(props) {
   // handleDisplay() to a utility file for SubjectContainer and SubjectTimeline.
   const tabs = ["Chart", "Timeline"]
   const location = useLocation();
+  const navigate = useNavigate();
+  const currentSubjectId = getSubjectIdFromPath(location.pathname);
 
   useEffect(() => {
-    let newId = getSubjectIdFromPath(location.pathname);
-    newId && setCurrentSubjectId(newId);
     if (location.hash.length > 0 && tabs.includes(location.hash.substring(1))) {
       setActiveTab(tabs.indexOf(location.hash.substring(1)));
     }
@@ -112,7 +110,7 @@ function Subject(props) {
   }
 
   function setTab(index) {
-    history.replace(location.pathname+location.search+"#"+tabs[index], location.state)
+    navigate(location.pathname+location.search+"#"+tabs[index]);
     setActiveTab(index);
   }
 
@@ -120,7 +118,7 @@ function Subject(props) {
     <React.Fragment>
       <NewFormDialog currentSubject={currentSubject} withButton buttonTitle={ "New questionnaire for this " + (currentSubject?.type?.label || "Subject") } />
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"} pageTitle={pageTitle} classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
+        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"} pageTitle={pageTitle} classes={classes} getSubject={handleSubject} contentOffset={props.contentOffset}/>
         <Grid>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
@@ -227,7 +225,7 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject, history, pageTitle } = props;
+  let { id, classes, getSubject, pageTitle } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
@@ -235,6 +233,7 @@ function SubjectHeader(props) {
   let [ statusFlags, setStatusFlags ] = useState([]);
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
+  let navigate = useNavigate();
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
@@ -265,7 +264,7 @@ function SubjectHeader(props) {
     let nodeName = id.substring(id.lastIndexOf("/") + 1);
     let parentNodePath = location.pathname.substring(0, location.pathname.lastIndexOf("/" + nodeName));
     let hasParentSubject = (id.indexOf("/") > 0);
-    history.push(parentNodePath + (hasParentSubject ? (location.search + location.hash) : ""));
+    navigate(parentNodePath + (hasParentSubject ? (location.search + location.hash) : ""));
   }
 
   // Fetch this Subject's data
@@ -463,7 +462,7 @@ function SubjectMemberInternal (props) {
             <Grid size="auto">{avatar}</Grid>
             <Grid size="grow">
               <Typography variant="overline">
-                 {label} <Link to={"/content.html" + path} underline="hover">{identifier}</Link>
+                 {label} <Link to={"../content.html" + path} underline="hover">{identifier}</Link>
               </Typography>
             </Grid>
             <Grid size={{xs: 3.5}}>{tags}</Grid>
@@ -557,7 +556,7 @@ function SubjectMemberInternal (props) {
                                        <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
                                      </Grid>
                                      <Grid size="auto">
-                                       <Link to={"/content.html" + row.original["@path"]} underline="hover">
+                                       <Link to={"../content.html" + row.original["@path"]} underline="hover">
                                          {questionnaireTitle}
                                        </Link>
                                        <Typography variant="caption" component="div" color="textSecondary">
@@ -628,7 +627,7 @@ function SubjectMemberInternal (props) {
   );
 };
 
-let SubjectMember = withRouter(SubjectMemberInternal);
+let SubjectMember = SubjectMemberInternal;
 
 // Component that displays a preview of the saved form answers
 function FormData(props) {
@@ -809,9 +808,4 @@ Subject.propTypes = {
   id: PropTypes.string
 }
 
-Subject.defaultProps = {
-  maxDisplayed: 4,
-  pageSize: 10,
-}
-
-export default withStyles(withRouter(Subject), QuestionnaireStyle);
+export default withStyles(Subject, QuestionnaireStyle);

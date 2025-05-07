@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -46,7 +46,16 @@ const PROGRESS_SELECT_SUBJECT = 1;
  * @param {presetPath} string The questionnaire to use automatically, if any.
  */
 function NewFormDialog(props) {
-  const { classes, presetPath, currentSubject, open, onClose, withButton, buttonTitle } = {open: false, ...props };
+  const {
+    classes,
+    presetPath,
+    currentSubject,
+    open = false,
+    onClose,
+    withButton,
+    buttonTitle
+  } = props;
+
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ newSubjectPopperOpen, setNewSubjectPopperOpen ] = useState(false);
   const [ initialized, setInitialized ] = useState(false);
@@ -72,6 +81,7 @@ function NewFormDialog(props) {
   const tableRef = useRef();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
+  const navigate = useNavigate();
 
   let resetDialogState = () => {
     setSelectedQuestionnaire(null);
@@ -108,7 +118,7 @@ function NewFormDialog(props) {
           // Redirect the user to the new uuid
           // FIXME: Would be better to somehow obtain the router prefix from props
           // but that is not currently possible
-          props.history.push("/content.html" + URL + '.edit');
+          navigate("/content.html" + URL + '.edit');
         } else {
           return(Promise.reject(response));
         }
@@ -477,4 +487,4 @@ function NewFormDialog(props) {
   )
 }
 
-export default withStyles(withRouter(NewFormDialog), QuestionnaireStyle);
+export default withStyles(NewFormDialog, QuestionnaireStyle);

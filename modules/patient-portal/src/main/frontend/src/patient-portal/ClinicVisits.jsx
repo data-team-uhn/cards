@@ -19,7 +19,7 @@
 import React from "react";
 
 import { makeStyles } from 'tss-react/mui';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import EventIcon from '@mui/icons-material/Event';
 
 import ClinicFormList from "./ClinicFormList.jsx";
@@ -101,7 +101,7 @@ function ClinicVisits(props) {
       "format" : (row) => (
          <Link
            className={classes["status" + (!row.has_surveys ? "Unassigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Unreviewed" : "Completed")))]}
-           to={`/content.html${row.subject['@path']}`}
+           to={`../content.html${row.subject['@path']}`}
            underline="hover">
            { row.email_unsubscribed ? "Unsubscribed" : (!row.has_surveys ? "No surveys assigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed"))) }
          </Link>

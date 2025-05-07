@@ -51,7 +51,23 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, enabled, variant, navMode, saveInProgress, lastSaveStatus, setPagesCallback, isPageCompleted, enableSave, onDone, doneLabel, doneIcon, questionnaireData, disableProgress, onPageChange } = props;
+  let {
+    classes,
+    enabled = true,
+    variant = "progress",
+    navMode = "back_next",
+    saveInProgress,
+    lastSaveStatus = true,
+    setPagesCallback,
+    isPageCompleted,
+    enableSave = true,
+    onDone,
+    doneLabel,
+    doneIcon,
+    questionnaireData,
+    disableProgress,
+    onPageChange
+  } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -283,15 +299,6 @@ FormPagination.propTypes = {
   isPageCompleted: PropTypes.func.isRequired,
   lastSaveStatus: PropTypes.bool,
   saveInProgress: PropTypes.bool
-};
-
-FormPagination.defaultProps = {
-  enableSave: true,
-  enabled: true,
-  variant: "progress",
-  navMode: "back_next",
-  saveInProgress: false,
-  lastSaveStatus: true
 };
 
 export default withStyles(FormPagination, QuestionnaireStyle);

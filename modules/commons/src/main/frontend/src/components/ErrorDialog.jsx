@@ -61,12 +61,19 @@ const useStyles = makeStyles()(theme => ({
 // </ErrorDialog>
 //
 const ErrorDialog = (props) => {
-  const { title, children, onClose, ...rest } = props;
+  const {
+    title = "Error",
+    children,
+    onClose,
+    maxWidth = "xs",
+    fullWidth = true,
+    ...rest
+  } = props;
 
   const { classes } = useStyles();
 
   return (
-    <Dialog onClose={onClose} {...rest}>
+    <Dialog onClose={onClose} maxWidth={maxWidth} fullWidth={fullWidth} {...rest}>
       <DialogTitle className={classes.titleBar}>
         {title}
         <IconButton onClick={onClose} className={classes.closeButton} size="large">
@@ -90,11 +97,5 @@ ErrorDialog.propTypes = {
   ]),
   onClose: PropTypes.func,
 }
-
-ErrorDialog.defaultProps = {
-  title: "Error",
-  maxWidth: "xs",
-  fullWidth: true,
-};
 
 export default ErrorDialog;

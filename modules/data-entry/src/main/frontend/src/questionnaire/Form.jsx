@@ -18,9 +18,10 @@
 //
 
 import React, { useEffect, useState, useContext } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 
 import {
+  Backdrop,
   Breadcrumbs,
   Button,
   Chip,
@@ -34,6 +35,7 @@ import {
   Typography,
 } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
+import { alpha } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DoneIcon from "@mui/icons-material/Done";
@@ -67,12 +69,10 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  * Component that displays an editable Form.
  *
  * @example
- * <Form id="9399ca39-ab9a-4db4-bf95-7760045945fe"/>
- *
- * @param {string} id the identifier of a form; this is the JCR node name
+ * <Form />
  */
 function Form (props) {
-  let { classes, id, contentOffset } = props;
+  let { classes, contentOffset } = props;
   let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
@@ -84,6 +84,7 @@ function Form (props) {
   let [ error, setError ] = useState();
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
+  let [ fetchInProgress, setFetchInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
   // - undefined -> no save performed yet, or the form has been modified since the last save
   // - true -> data has been successfully saved
@@ -110,6 +111,10 @@ function Form (props) {
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
   let [ classNames, setClassNames ] = useState(className ? [className] : []);
 
+  let id = props.id || /Forms\/([^.\/]+)/.exec(location.pathname)[1];
+  let isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
+  let isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
+
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
   // Check if the form is required to be complete before progressing
@@ -120,6 +125,12 @@ function Form (props) {
   // The first incomplete question, to be brought to the user's attention
   let [ incompleteQuestionEl, setIncompleteQuestionEl ] = useState(null);
   let [ disableProgress, setDisableProgress ] = useState();
+
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    setPaginationEnabled(isEdit && !!data?.['questionnaire']?.['paginate']);
+  }, [isEdit]);
 
   // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
@@ -159,8 +170,6 @@ function Form (props) {
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
   const urlBase = "/content.html";
-  const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
-  const isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
@@ -186,18 +195,22 @@ function Form (props) {
   }, [isEdit]);
 
   useEffect(() => {
+    setFetchInProgress(true);
+  }, [isEdit]);
+
+  useEffect(() => {
     // If `requireCompletion` is set, stop any advancing progress until check that all required
     // questions are completed
     requireCompletion && paginationEnabled && setDisableProgress(true);
   }, [requireCompletion, paginationEnabled]);
 
-  let checkoutIfNeededAndFetchData = () => {
+  let checkoutIfNeededAndFetchData = (callback) => {
     // Check if it was already checked out
     fetchWithReLogin(globalLoginDisplay, formURL + "/jcr:isCheckedOut")
       .then(response => response.text())
       .then(text => {
         setWasCheckedOut(text === "true");
-        if (isEdit) {
+        if (window.location.pathname.endsWith(".edit") || mode == "edit") {
           // Perform a JCR check-out of the Form
           let checkoutForm = new FormData();
           checkoutForm.set(":operation", "checkout");
@@ -208,7 +221,8 @@ function Form (props) {
         } else {
           fetchData();
         }
-      });
+      })
+      .finally(callback);
   };
 
   // Fetch the form's data as JSON from the server.
@@ -221,7 +235,8 @@ function Form (props) {
     fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(handleResponse)
-      .catch(handleFetchError);
+      .catch(handleFetchError)
+      .finally(() => setFetchInProgress(false));
   };
 
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
@@ -237,7 +252,7 @@ function Form (props) {
     setBaseVersion(json["jcr:baseVersion"]);
     setStatusFlags(json.statusFlags);
 
-    if (isEdit) {
+    if (window.location.pathname.endsWith(".edit") || mode == "edit") {
       setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
       typeof(paginationVariant) == "undefined" && setPaginationVariant(json?.questionnaire?.paginationVariant);
       typeof(paginationNavMode) == "undefined" && setPaginationNavMode(json?.questionnaire?.paginationMode);
@@ -390,7 +405,7 @@ function Form (props) {
 
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    props.history.push(urlBase + formURL + '.edit' + window.location.hash);
+    navigate(urlBase + formURL + '.edit' + window.location.hash);
   }
 
   let onClose = (event) => {
@@ -398,13 +413,13 @@ function Form (props) {
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        props.history.push(urlBase + formURL);
+        navigate(urlBase + formURL);
     });
   }
 
   let onDelete = () => {
     removeWindowHandlers && removeWindowHandlers();
-    props.history.push(urlBase + (data?.subject?.['@path'] || ''));
+    navigate(urlBase + (data?.subject?.['@path'] || ''));
   }
 
   let title = data?.questionnaire?.title || id || "";
@@ -422,7 +437,7 @@ function Form (props) {
   // Load the Form, only once, upon initialization
   useEffect(() => {
     checkoutIfNeededAndFetchData();
-  }, []);
+  }, [mode]);
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
@@ -538,10 +553,10 @@ function Form (props) {
         <Typography variant="overline">
           {"Related: "}
           {validLinks.length == 1 ?
-              validLinks.map(link => <Link key={link["@name"]} to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
+              validLinks.map(link => <Link key={link["@name"]} to={"../content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
               :
               <List dense disablePadding>
-              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"/content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
+              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"../content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
               </List>
           }
         </Typography>
@@ -643,13 +658,25 @@ function Form (props) {
                 disableRedirect
               />
             }
+            {fetchInProgress &&
+              <Backdrop
+               open={fetchInProgress}
+               sx={(theme) => ({
+                 backgroundColor: alpha(theme.palette.background.paper, .5),
+                 marginLeft: {md : "260px"},
+                 zIndex: theme.zIndex.drawer + 1
+               })}
+             >
+               <CircularProgress />
+             </Backdrop>
+            }
             {changedSubject &&
               <React.Fragment>
                 <input type="hidden" name={`${data["@path"]}/subject`} value={changedSubject["@path"]}></input>
                 <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
               </React.Fragment>
             }
-            {pages &&
+            {pages && !fetchInProgress &&
               Object.entries(data.questionnaire)
                 .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
                 .map(([key, entryDefinition]) => {
@@ -739,4 +766,4 @@ function Form (props) {
   );
 };
 
-export default withStyles(withRouter(Form), QuestionnaireStyle);
+export default withStyles(Form, QuestionnaireStyle);

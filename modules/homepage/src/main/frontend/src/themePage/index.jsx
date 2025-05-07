@@ -18,13 +18,14 @@
 //
 import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
+import { useState, useEffect } from "react";
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
 import { withStyles } from 'tss-react/mui';
-import { Redirect, Router, Route, Switch } from "react-router-dom";
+import { unstable_HistoryRouter as Router, Routes, Route, Navigate } from "react-router";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
@@ -34,137 +35,121 @@ import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialog
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
-class Main extends React.Component {
-  constructor(props) {
-    super(props);
+function Main(props) {
+  const { classes, ...rest } = props;
 
-    this.state = {
-      image: document.querySelector('meta[name="sidebarBackground"]').content,
-      hasImage: true,
-      fixedClasses: "dropdown show",
-      mobileOpen: false,
-      routes: [],
-      contentOffset: 0,
-      title: document.querySelector('meta[name="title"]').content,
-      color: document.querySelector('meta[name="themeColor"]')?.content || "blue",
-      loginDialogOpen: false,
-      loginHandlers: [],
-    };
+  let [ contentOffset, setContentOffset ] = useState(0);
+  let [ mobileOpen, setMobileOpen ] = useState(false);
+  let [ routes, setRoutes ] = useState([]);
+  let [ loginDialogOpen, setLoginDialogOpen ] = useState(false);
+  let [ loginHandlers, setLoginHandlers ] = useState([]);
 
-    getRoutes().then(routes => this.setState({routes: routes}));
-  }
+  const image = document.querySelector('meta[name="sidebarBackground"]').content;
+  const docTitle = document.querySelector('meta[name="title"]').content;
+  const color = document.querySelector('meta[name="themeColor"]')?.content || "blue";
 
-  handleDrawerToggle = () => {
-    this.setState({ mobileOpen: !this.state.mobileOpen });
-  };
+  useEffect(() => {
+    getRoutes().then(response => setRoutes(response));
+  }, []);
 
   // Close the mobile menu if the window size changes
   // so that the mobile menu is out of place
-  autoCloseMobileMenus = event => {
+  let autoCloseMobileMenus = (event) => {
     if (window.innerWidth >= appTheme.breakpoints.values.md) {
-      this.setState({ mobileOpen: false });
+      setMobileOpen(false);
     }
   }
 
   // Register/unregister autoCloseMobileMenus to window resizing
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.autoCloseMobileMenus);
-  }
+  useEffect(() => {
+    window.addEventListener("resize", autoCloseMobileMenus);
+    return () => {
+      window.removeEventListener("resize", autoCloseMobileMenus);
+    };
+  }, []);
 
-  componentDidMount() {
-    window.addEventListener("resize", this.autoCloseMobileMenus);
+  let getRenderElement = (route) => {
+    let ThisComponent = route["cards:extensionRender"];
+    let title = " | " + docTitle;
+    return (
+      <Page title={title} pageDefaultName={route["cards:extensionName"]}>
+        <ThisComponent contentOffset={contentOffset} />
+      </Page>
+      );
   };
 
-  switchRoutes = (routes) => {
-    return (<Switch>
+  let switchRoutes = () => {
+    return (<Routes>
       {routes.map((route, key) => {
         return (
           <Route
             path={route["cards:targetURL"]}
-            exact={Boolean(route["cards:exactURLMatch"])}
-            render={(props) => {
-                let ThisComponent = route["cards:extensionRender"];
-                let newProps = {...props, contentOffset: this.state.contentOffset };
-                let title = " | " + this.state.title;
-                return (
-                  <Page title={title} pageDefaultName={route["cards:extensionName"]}>
-                    <ThisComponent {...newProps} />
-                  </Page>
-                  );
-              }
-            }
+            element={getRenderElement(route)}
             key={key}
           />
         );
       })}
-    </Switch>)
+    </Routes>)
   };
 
-  render() {
-    const { classes, ...rest } = this.props;
+  let handleDrawerToggle = () => {
+    setMobileOpen(prevState => !prevState);
+  };
 
-    return (
-      <React.Fragment>
+ return (
+    <React.Fragment>
       <GlobalLoginContext.Provider
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {
             let handler = ((success) => {
-              success && this.setState({
-                loginDialogOpen: false
-              });
+              success && setLoginDialogOpen(false);
               success && loginHandlerFcn();
             });
-            (!this.state.loginDialogOpen) && this.setState({
-              loginDialogOpen: true
-            });
-            let shouldAddHandler = (!discardOnFailure) || (this.state.loginHandlers.length < 1);
-            shouldAddHandler && this.setState({
-              loginHandlers: this.state.loginHandlers.concat(handler)
-            });
+            !loginDialogOpen && setLoginDialogOpen(true);
+            let shouldAddHandler = !discardOnFailure || loginHandlers.length < 1;
+            shouldAddHandler && setLoginHandlers(prevState => prevState.concat(handler));
           },
-          getDialogOpenStatus: () => {
-            return this.state.loginDialogOpen;
-          }
+          getDialogOpenStatus: () => loginDialogOpen
         }}
       >
         <PageStart
           setTotalHeight={(th) => {
-              if (this.state.contentOffset != th) {
-                this.setState({contentOffset: th});
+              if (contentOffset != th) {
+                setContentOffset(th);
               }
             }
           }
         />
         <DialogueLoginContainer
-          isOpen={this.state.loginDialogOpen}
+          isOpen={loginDialogOpen}
           handleLogin={(success) => {
             if (success) {
-              for (let i = 0; i < this.state.loginHandlers.length; i++) {
-                this.state.loginHandlers[i](success);
-              }
-              this.setState({loginHandlers: []});
+              loginHandlers.forEach(handler => handler(success));
+              setLoginHandlers([]);
             }
           }}
         />
-        <div className={classes.wrapper} style={ { position: 'relative', top: this.state.contentOffset + 'px' } }>
+        <div className={classes.wrapper} style={ { position: 'relative', top: contentOffset + 'px' } }>
           <Suspense fallback={<div>Loading...</div>}>
             <Sidebar
-              contentOffset={this.state.contentOffset}
+              contentOffset={contentOffset}
               logoImage={document.querySelector('meta[name="logoDark"]').content}
-              image={this.state.image}
-              handleDrawerToggle={this.handleDrawerToggle}
-              open={this.state.mobileOpen}
-              color={ this.state.color }
+              image={image}
+              handleDrawerToggle={handleDrawerToggle}
+              open={mobileOpen}
+              color={color}
               {...rest}
             />
-            <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
+            <div className={classes.mainPanel} id="main-panel">
               <div className={classes.content}>
-                <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
+                <div className={classes.container}>
+                  {switchRoutes()}
+                </div>
               </div>
               <Navbar
-                routes={ this.state.routes }
-                handleDrawerToggle={this.handleDrawerToggle}
-                color={ this.state.color }
+                routes={routes}
+                handleDrawerToggle={handleDrawerToggle}
+                color={color}
                 {...rest}
               />
             </div>
@@ -173,7 +158,6 @@ class Main extends React.Component {
       </GlobalLoginContext.Provider>
       </React.Fragment>
     );
-  }
 }
 
 Main.propTypes = {
@@ -194,11 +178,11 @@ root.render(
   <CacheProvider value={cache}>
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
-        <Switch>
-          <Route path="/content.html/" component={MainComponent} />
-          <Redirect from="/" to="/content.html/Questionnaires/User"/>
-          <Redirect from="/content" to="/content.html/Questionnaires/User" />
-        </Switch>
+        <Routes>
+          <Route path="/*" element={<MainComponent />}/>
+          <Route path="/" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
+          <Route path="/content" element={<Navigate replace to="/content.html/Questionnaires/User" />}/>
+        </Routes>
       </Router>
     </ThemeProvider>
   </CacheProvider>

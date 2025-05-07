@@ -21,13 +21,20 @@ import PropTypes from "prop-types";
 
 import { IconButton, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 /**
  * A component that renders an icon to open the edit URL for an entry or to use local edit dialog.
  */
 function EditButton(props) {
-  const { entryPath, entryType, size, className, admin, onClick } = props;
+  const {
+    entryPath,
+    entryType = "",
+    size = "large",
+    className,
+    admin,
+    onClick
+  } = props;
 
   let innerButton =
         <IconButton className={className} size={size} onClick={onClick}>
@@ -40,7 +47,7 @@ function EditButton(props) {
         ?
         innerButton
         :
-        <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"} underline="hover">
+        <Link to={(admin ? "../content.html/admin" : "../content.html") + entryPath + ".edit"} underline="hover">
           {innerButton}
         </Link>
       }
@@ -57,9 +64,5 @@ EditButton.propTypes = {
   onClick: PropTypes.func
 }
 
-EditButton.defaultProps = {
-  entryType: "",
-  size: "large",
-}
 
 export default EditButton;

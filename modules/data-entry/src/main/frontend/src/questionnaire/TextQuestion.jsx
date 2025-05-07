@@ -56,7 +56,12 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    validationErrorText="Please enter a lowercase input"
 //    />
 function TextQuestion(props) {
-  let { dataType, displayMode, validationRegexp, validationErrorText } = {validationErrorText: "Invalid input", ...props.questionDefinition, ...props};
+  let {
+    dataType,
+    displayMode,
+    validationRegexp,
+    validationErrorText = "Invalid input"
+  } = { ...props.questionDefinition, ...props};
   const regexp = new RegExp(validationRegexp);
   const answerNodeType = "cards:" + dataType.charAt(0).toUpperCase() + dataType.slice(1) + "Answer";
 

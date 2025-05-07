@@ -17,9 +17,8 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Box } from "@mui/material";
-import Questionnaire from "../questionnaire/Questionnaire.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
@@ -44,18 +43,13 @@ function Questionnaires(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ updateData, setUpdateData ] = useState(0);
 
-  const entry = /Questionnaires\/([^.]+)/.exec(location.pathname);
   const entryType = "Questionnaire";
-
-  if (entry) {
-    return <Questionnaire id={entry[1]} key={location.pathname} contentOffset={props.contentOffset}/>;
-  }
 
   let columns = [
     {
       header: "Title",
       accessorKey: "title",
-      Cell: ({ row }) => (<Link to={"/content.html/admin" + row.original["@path"]} underline="hover">{row.original.title}</Link>),
+      Cell: ({ row }) => (<Link to={"../content.html/admin" + row.original["@path"]} underline="hover">{row.original.title}</Link>),
     },
     {
       header: "Created on",

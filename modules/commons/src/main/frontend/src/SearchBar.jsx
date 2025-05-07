@@ -18,11 +18,10 @@
 //
 import PropTypes from "prop-types";
 import React, { useState, useContext, useEffect } from "react";
-import { withRouter } from "react-router-dom";
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
 import { MenuList, Paper, Popper } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@mui/icons-material/Description";
 import Search from "@mui/icons-material/Search";
@@ -54,7 +53,24 @@ const CARDS_QUERY_MATCH_PATH_KEY = "@path";
  * Other props will be forwarded to the Input element
  */
 function SearchBar(props) {
-  const { classes, className, defaultValue, invertColors, onChange, onPopperClose, onSelect, onSelectFinish, disableButton, queryConstructor, resultConstructor, staticContext, showAllResultsLink, disableDropdownItemLink, ...rest } = props;
+  const {
+    classes,
+    className,
+    defaultValue = "",
+    invertColors,
+    onChange,
+    onPopperClose,
+    onSelect = defaultRedirect,
+    onSelectFinish,
+    disableButton,
+    queryConstructor = defaultQueryConstructor,
+    resultConstructor = defaultResultConstructor,
+    staticContext,
+    showAllResultsLink, 
+    disableDropdownItemLink,
+    ...rest
+  } =  props;
+
   const [ search, setSearch ] = useState(defaultValue);
   const [ results, setResults ] = useState([]);
   const [ moreResults, setMoreResults ] = useState(0);
@@ -230,7 +246,7 @@ function SearchBar(props) {
             <Paper square className={classes.suggestionContainer}>
               <ClickAwayListener onClickAway={(event) => {
                 // Ignore clickaway events if they're just clicking on the input box or search button
-                if (!searchBar.current.contains(event.target)) {
+                if (!searchBar?.current?.contains(event.target)) {
                   onPopperClose && onPopperClose();
                   setPopperOpen(false);
                 }}}>
@@ -270,7 +286,7 @@ function SearchBar(props) {
                     </MenuItem>
                   ))}
                   { !results[0]?.disabled && showAllResultsLink &&
-                  <Link to={"/content.html/QuickSearchResults?query=" + encodeURIComponent(search)
+                  <Link to={"../content.html/QuickSearchResults?query=" + encodeURIComponent(search)
                               + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
                           underline="hover">
                     <MenuItem
@@ -313,15 +329,12 @@ let defaultResultConstructor = (props) => (
 );
 
 let defaultRedirect = (event, row, props) => {
-
+  const navigate = useNavigate();
   // Redirect using React-router
   const anchor = row[CARDS_QUERY_MATCH_KEY][CARDS_QUERY_MATCH_PATH_KEY];
   const path = (row["jcr:primaryType"] == "cards:Questionnaire") ? "/content.html/admin" : "/content.html";
   if (row["@path"]) {
-    props.history.push({
-      pathname: path + row["@path"],
-      hash: anchor
-    });
+    navigate(path + row["@path"] + "#" + anchor);
   }
 }
 
@@ -336,11 +349,4 @@ SearchBar.propTypes = {
   disableButton: PropTypes.bool,
 }
 
-SearchBar.defaultProps = {
-  defaultValue: "",
-  queryConstructor: defaultQueryConstructor,
-  resultConstructor: defaultResultConstructor,
-  onSelect: defaultRedirect
-}
-
-export default withStyles(withRouter(SearchBar), HeaderStyle);
+export default withStyles(SearchBar, HeaderStyle);

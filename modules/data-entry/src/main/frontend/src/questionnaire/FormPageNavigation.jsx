@@ -43,7 +43,14 @@ import FormattedText from "../components/FormattedText";
  * Component that enables the navigation between different pages of a Form. Used in FormPagination when the paginationVariant is "navigable".
  */
 function FormPageNavigation (props) {
-  const { pages, activePage, saveButton, backButton, isPageCompleted, navigateTo } = props;
+  const {
+    pages,
+    activePage = 0,
+    saveButton,
+    backButton,
+    isPageCompleted,
+    navigateTo
+  } = props;
 
   const [pageSelectorAnchorEl, setPageSelectorAnchorEl] = useState();
 
@@ -153,10 +160,6 @@ FormPageNavigation.propTypes = {
   backButton: PropTypes.object,
   isPageCompleted: PropTypes.func,
   navigateTo: PropTypes.func.isRequired,
-};
-
-FormPageNavigation.defaultProps = {
-  activePage: 0,
 };
 
 export default FormPageNavigation;

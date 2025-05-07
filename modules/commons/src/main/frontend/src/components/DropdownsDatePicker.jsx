@@ -92,7 +92,20 @@ const useStyles = makeStyles()(theme => ({
  */
 
 function DropdownsDatePicker(props) {
-  const { startDate, endDate, selectedDate, order, onDateChange, yearReverse, disabled, monthShort, formatDate, autoFocus, fullWidth, ...rest } = props;
+  const {
+    startDate = "1900-01-01",
+    endDate,
+    selectedDate,
+    order = [DropdownDate.year, DropdownDate.month, DropdownDate.day],
+    onDateChange,
+    yearReverse = true,
+    disabled,
+    monthShort,
+    formatDate,
+    autoFocus,
+    fullWidth,
+    ...rest
+  } = props;
   const { classes } = useStyles();
 
   const sDate = new Date(startDate);
@@ -305,12 +318,6 @@ DropdownsDatePicker.propTypes = {
   formatDate: PropTypes.bool,
   autoFocus: PropTypes.bool,
   fullWidth: PropTypes.bool,
-};
-
-DropdownsDatePicker.defaultProps = {
-  startDate: "1900-01-01",
-  order: [DropdownDate.year, DropdownDate.month, DropdownDate.day],
-  yearReverse: true
 };
 
 export default DropdownsDatePicker;

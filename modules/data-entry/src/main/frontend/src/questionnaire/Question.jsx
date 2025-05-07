@@ -19,7 +19,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
 
@@ -31,9 +31,22 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
-  let { classes, children, questionDefinition, existingAnswer, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
-  let { compact } = { ...questionDefinition };
-  let { text, description, disableInstructions } = { ...questionDefinition, ...props }
+  let {
+    classes,
+    children,
+    questionDefinition,
+    existingAnswer,
+    isEdit,
+    pageActive,
+    preventDefaultView,
+    defaultDisplayFormatter
+  } = props;
+  let {
+    text,
+    description,
+    compact,
+    disableInstructions
+  } = { ...questionDefinition, ...props };
 
   const [ doHighlight, setDoHighlight ] = useState();
   const [ anchor, setAnchor ] = useState();
@@ -142,10 +155,6 @@ Question.propTypes = {
     text: PropTypes.string,
     description: PropTypes.string,
     disableInstructions: PropTypes.bool,
-};
-
-Question.defaultProps = {
-    disableInstructions: false,
 };
 
 export default withStyles(Question, QuestionnaireStyle);

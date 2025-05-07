@@ -87,14 +87,13 @@ let entitySpecs = {
 // Any other props are passed directly to the Autocomplete component.
 
 // TODO: Don't actually need entity.uuid ?
-
 function QuestionnaireAutocomplete(props) {
   const {
-    multiple,
+    multiple = false,
     entities,
-    selection,
-    onSelectionChanged,
-    getOptionValue,
+    selection = [],
+    onSelectionChanged = () => {},
+    getOptionValue = (option) => option?.path,
     placeholderText = 'Select an option',
     ...rest
   } = props;
@@ -218,12 +217,6 @@ QuestionnaireAutocomplete.propTypes = {
   selection: PropTypes.array,
   onSelectionChanged: PropTypes.func,
   getOptionValue: PropTypes.func,
-}
-QuestionnaireAutocomplete.defaultProps = {
-  multiple: false,
-  selection: [],
-  onSelectionChanged: () => {},
-  getOptionValue: (option) => option?.path,
 }
 
 export default QuestionnaireAutocomplete;

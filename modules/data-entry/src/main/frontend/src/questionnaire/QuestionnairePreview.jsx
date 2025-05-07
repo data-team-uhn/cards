@@ -18,7 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 
 import {
   CircularProgress,
@@ -60,9 +60,10 @@ function QuestionnairePreview (props) {
     paginationEnabled && setContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
   }, [pages])
 
-  let history = useHistory();
+  let navigate = useNavigate();
+  let location = useLocation();
   let close = () => {
-    history.push(/((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1]);
+    navigate(/((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1]);
   }
 
   // If the data has not yet been fetched, return an in-progress symbol

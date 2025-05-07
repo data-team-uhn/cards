@@ -21,9 +21,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@mui/material";
 import { Card, CardHeader, CardContent, CardActions, Typography, Button, LinearProgress } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { DateTime } from "luxon";
-
 import Filters from "./Filters.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -44,9 +43,26 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, resourceSelectors, columns, showTotalRows, defaultLimit, updateData, classes,
-    filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
-    onDataReceived, onFiltersChange, filtersJsonString, ...rest } = props;
+  const {
+    customUrl,
+    resourceSelectors,
+    columns,
+    showTotalRows = false,
+    defaultLimit = 20,
+    updateData,
+    classes,
+    filters,
+    entryType,
+    actions,
+    admin,
+    disableTopPagination,
+    disableBottomPagination,
+    onDataReceived,
+    onFiltersChange,
+    filtersJsonString,
+    ...rest
+  } = props;
+
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -219,7 +235,7 @@ function LiveTable(props) {
 
     // allow livetable to link to components in the admin dashboard
     // if livetable item must link to a component within the admin dashboard, set "admin": true
-    let pathPrefix = (admin ? "/content.html/admin" : "/content.html");
+    let pathPrefix = (admin ? "../content.html/admin" : "../content.html");
 
     if (column.link) {
       if (column.link === 'path') {
@@ -436,11 +452,6 @@ function LiveTable(props) {
       {!tableData && (<LinearProgress className={classes.progressIndicator}/>)}
     </Paper>
   );
-}
-
-LiveTable.defaultProps = {
-  defaultLimit: 20,
-  showTotalRows: false
 }
 
 export default withStyles(LiveTable, LiveTableStyle);

@@ -19,7 +19,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Breadcrumbs, Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
 
@@ -37,7 +37,13 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 function AdminScreen(props) {
-  const { title, action, disableBreadcrumb, className, children } = props;
+  const {
+    title = "Administration",
+    action,
+    disableBreadcrumb,
+    className,
+    children
+  } = props;
 
   const { classes } = useStyles();
   const appName = document.querySelector('meta[name="title"]')?.content;
@@ -45,8 +51,8 @@ function AdminScreen(props) {
   const heading = <Typography className={classes.title} variant="h4">{title}</Typography>;
   const breadcrumb = (
     <Breadcrumbs separator="/">
-      <Typography variant="overline"><Link to="/">{appName}</Link></Typography>
-      <Typography variant="overline"><Link to="/content.html/admin/">Administration</Link></Typography>
+      <Typography variant="overline"><Link to="../">{appName}</Link></Typography>
+      <Typography variant="overline"><Link to="../content.html/admin/">Administration</Link></Typography>
     </Breadcrumbs>
   );
 
@@ -77,10 +83,6 @@ AdminScreen.propTypes = {
   title: PropTypes.string,
   action: PropTypes.node,
   disableBreadcrumb: PropTypes.bool,
-};
-
-AdminScreen.defaultProps = {
-  title: "Administration",
 };
 
 export default AdminScreen;

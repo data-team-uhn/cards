@@ -20,7 +20,7 @@ import React, { useState, useEffect, useContext } from "react";
 
 import PropTypes from "prop-types";
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { Alert, Button, CardActions, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
@@ -105,9 +105,9 @@ function AdminConfigScreen(props) {
   const [ resetConfirmationPending, setResetConfirmationPending ] = useState(false);
 
   const globalContext = useContext(GlobalLoginContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { classes } = useStyles();
-
+  
   useEffect(() => {getConfig()}, []);
   useEffect(() => {hasChanges && setConfigIsInitial(false)}, [hasChanges]);
 
@@ -235,7 +235,7 @@ function AdminConfigScreen(props) {
             <DialogActions>
               <Button variant="contained" onClick={handleReset}>Yes, Reset</Button>
               <Button variant="outlined" onClick={() => setResetConfirmationPending(false)}>No, Cancel</Button>
-              <Button onClick={() => history.push("/content.html/admin/")}>No, go to Administration</Button>
+              <Button onClick={() => navigate("/content.html/admin/")}>No, go to Administration</Button>
             </DialogActions>
           </Dialog>
         </form>

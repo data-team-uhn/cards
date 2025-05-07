@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 import { createRoot } from 'react-dom/client';
-import { Router, Route, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import { createBrowserHistory } from "history";
 import { ThemeProvider } from '@mui/material/styles';
 import { portalTheme } from "./portalTheme.jsx";
@@ -105,11 +105,11 @@ root.render(
   <CacheProvider value={cache}>
     <ThemeProvider theme={portalTheme}>
       <Router history={hist}>
-        <Switch>
-          <Route path="/Survey.html/" component={PatientPortalHomepage} />
-          <Redirect from="/Survey" to="/Survey.html/"/>
-          <Redirect from="/" to="/Survey.html/"/>
-        </Switch>
+        <Routes>
+          <Route path="/Survey.html/" element={<PatientPortalHomepage />}/>
+          <Route path="/Survey" element={<Navigate replace to="/Survey.html/" />}/>
+          <Route path="/" element={<Navigate replace to="/Survey.html/" />}/>
+        </Routes>
       </Router>
     </ThemeProvider>
   </CacheProvider>

@@ -18,7 +18,7 @@
 //
 
 import React, { useEffect, useState, useContext } from "react";
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Alert, Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
@@ -436,7 +436,7 @@ export function NewSubjectDialog (props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   let curSubjectRequiresParents = newSubjectTypeParent?.["jcr:primaryType"] == "cards:SubjectType";
   let disabledControls = disabled || isPosting;
@@ -450,9 +450,7 @@ export function NewSubjectDialog (props) {
       // redirect to the new just created subject page
       let subjectId = getSubjectIdFromPath(subject);
       if (!disableRedirect && subjectId) {
-        history.push({
-          pathname: "/content.html/Subjects/" + subjectId
-        });
+        navigate("/content.html/Subjects/" + subjectId);
         return;
       } else {
         onSubmit(subject);

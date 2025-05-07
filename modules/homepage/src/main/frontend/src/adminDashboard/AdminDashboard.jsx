@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 import { loadExtensions } from "../uiextension/extensionManager";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router";
 import AdminScreen from "./AdminScreen.jsx";
 
 import {
@@ -41,7 +41,7 @@ function AdminDashboard(props) {
   let [ adminRoutes, setAdminRoutes ] = useState([]);
   let [ loading, setLoading ] = useState(true);
 
-  let history = useHistory();
+  let navigate = useNavigate();
 
   useEffect(() => {
     getAdminRoutes()
@@ -68,7 +68,7 @@ function AdminDashboard(props) {
                 alignContent="center"
               >
                 <ListItemButton
-                  onClick={() => history.push(route["cards:targetURL"])}
+                  onClick={() => navigate(route["cards:targetURL"])}
                 >
                     <ListItemIcon>
                       <EntryIcon fontSize="large"/>

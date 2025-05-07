@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React from "react";
-
+import { Link } from "react-router";
 import { useTheme } from '@mui/material/styles';
 import { Avatar, ListItemButton, ListItemText, ListItemAvatar }  from "@mui/material";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -83,7 +83,7 @@ function MatchAvatar(props) {
 }
 
 function ListItemLink(props) {
-  return <ListItemButton alignItems="center" component="a" {...props} />;
+  return <ListItemButton alignItems="center" component={Link} {...props} />;
 }
 
   // Display a quick search result identifier with link to result section
@@ -95,7 +95,7 @@ export function QuickSearchIdentifier(props) {
       fullPath = `/content.html/admin${resultData["@path"]}#${encodeURIComponent(anchorPath)}`;
     }
     let showMatchInfo = !hideMatchInfo && resultData[CARDS_QUERY_MATCH_KEY];
-    return (<ListItemLink href={disableLink ? '#' : fullPath}>
+    return (<ListItemLink to={disableLink ? '#' : fullPath}>
               <ListItemAvatar>
                 <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
               </ListItemAvatar>

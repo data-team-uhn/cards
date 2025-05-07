@@ -30,8 +30,8 @@ import { useFormWriterContext } from "./FormContext";
 // Other options are passed to the <question> widget
 let AutocreatedQuestion = (props) => {
   const { isEdit, ...rest } = props;
-  const { existingAnswer, pageActive, questionName} = rest;
-  const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...rest};
+  const { existingAnswer, questionName } = rest;
+  const { displayMode } = {...props.questionDefinition, ...rest};
 
   const [isFormatted, changeIsFormatted] = useState(false);
 
