@@ -40,7 +40,6 @@ const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPAR
  * @param {object} initial Object containing the initial value and label to place in the textfield
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. May include a dateFormat
- * Other props are forwarded to the TextField component
  *
  */
 const DateFilter = forwardRef((props, ref) => {

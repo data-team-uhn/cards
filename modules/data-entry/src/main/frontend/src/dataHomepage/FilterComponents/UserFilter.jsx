@@ -36,8 +36,7 @@ const filterUserOptions =  createFilterOptions({
  *
  * @param {object} initial Object containing the initial value and label to place in the list
  * @param {func} onChangeInput Callback for when the value select has changed
- * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
- * Other props are forwarded to the Select component
+ * Other props are forwarded to the TextField component
  *
  */
 const UserFilter = forwardRef((props, ref) => {

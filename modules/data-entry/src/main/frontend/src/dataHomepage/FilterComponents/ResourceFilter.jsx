@@ -35,7 +35,6 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * @param {object} initial Object containing the initial value and label to place in the filter
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include "primaryType", "labelProperty", and "propertiesToSearch" children.
- * Other props are forwarded to the VocabularyQuery component
  *
  */
 const ResourceFilter = forwardRef((props, ref) => {

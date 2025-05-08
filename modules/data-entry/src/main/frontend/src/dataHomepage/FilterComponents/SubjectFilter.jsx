@@ -37,8 +37,6 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  *
  * @param {object} initial Object containing the initial value and label to place in the subject filter
  * @param {func} onChangeInput Function to call when this filter has chosen a new subject
- * @param {func} questionDefinition Unused, here to stop a warning when it is passed to the SearchBar component
- * Other props will be forwarded to the SearchBar component
  */
 const SubjectFilter = forwardRef((props, ref) => {
   PropTypes.checkPropTypes(SubjectFilter.propTypes, props, 'prop', 'SubjectFilter');

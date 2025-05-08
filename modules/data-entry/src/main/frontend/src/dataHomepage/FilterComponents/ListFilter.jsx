@@ -35,7 +35,6 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * @param {object} initial Object containing the initial value and label to place in the list
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
- * Other props are forwarded to the Select component
  *
  */
 const ListFilter = forwardRef((props, ref) => {

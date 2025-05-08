@@ -35,8 +35,6 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  *
  * @param {object} initial Object containing the initial value and label to place in the questionnaire filter
  * @param {func} onChangeInput Function to call when this filter has chosen a new questionnaire
- * @param {func} questionDefinition Unused, here to stop a warning when it is passed to the SearchBar component
- * Other props will be forwarded to the SearchBar component
  */
 const QuestionnaireFilter = forwardRef((props, ref) => {
   PropTypes.checkPropTypes(QuestionnaireFilter.propTypes, props, 'prop', 'QuestionnaireFilter');
