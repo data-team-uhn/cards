@@ -102,7 +102,13 @@ var getAssetURL = async function(assetURL) {
 
   var assetName = getAssetName(assetURL);
   return getAssetsJson()
-    .then(json => "/libs/cards/resources/" + json[assetName]);
+    .then(json => {
+      if (!json[assetName]) {
+        console.error(`Unknown asset ${assetURL}`);
+        return "";
+      }
+      return "/libs/cards/resources/" + json[assetName];
+    });
 }
 
 // Get the (optional) dependencies needed by an asset.
@@ -165,6 +171,10 @@ var loadAsset = async function(assetURL) {
     await Promise.all(dependencies.map(dependency => loadAsset(dependency)));
     return loadModule(assetURL)
       .then(module => {
+        if (!module) {
+          console.error(`Failed to load module ${assetURL}`);
+          return null;
+        }
         let parameters = getURLParameters(assetURL);
         return assets[assetURL] = parameters.has("component") ? module[parameters.get("component")] : module.default;
       });
