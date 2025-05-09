@@ -152,7 +152,6 @@ function Question (props) {
 }
 
 Question.propTypes = {
-    classes: PropTypes.object.isRequired,
     text: PropTypes.string,
     description: PropTypes.string,
     disableInstructions: PropTypes.bool,

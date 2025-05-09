@@ -251,7 +251,6 @@ VocabularyBrowser.propTypes = {
   enableSelection: PropTypes.bool,
   initialSelection: PropTypes.array,
   questionDefinition: PropTypes.object,
-  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(VocabularyBrowser, BrowseTheme);

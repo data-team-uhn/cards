@@ -369,7 +369,6 @@ let ComputedQuestion = (props) => {
 }
 
 ComputedQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     expression: PropTypes.string.isRequired,

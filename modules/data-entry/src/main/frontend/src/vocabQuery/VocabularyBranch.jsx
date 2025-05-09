@@ -353,7 +353,6 @@ VocabularyBranch.propTypes = {
   currentSelection: PropTypes.array,
   maxAnswers: PropTypes.number,
   parentId: PropTypes.string,
-  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(VocabularyBranch, BrowseTheme);

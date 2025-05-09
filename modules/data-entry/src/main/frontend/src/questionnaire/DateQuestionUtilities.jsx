@@ -40,7 +40,6 @@ export default class DateQuestionUtilities {
   static minuteTag = "mm";
 
   static PROP_TYPES = {
-    classes: PropTypes.object.isRequired,
     questionDefinition: PropTypes.shape({
       text: PropTypes.string,
       dateFormat: PropTypes.string,

@@ -170,7 +170,6 @@ function TimeQuestion(props) {
 }
 
 TimeQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   text: PropTypes.string,
   minAnswers: PropTypes.number,
   lowerLimit: PropTypes.string,

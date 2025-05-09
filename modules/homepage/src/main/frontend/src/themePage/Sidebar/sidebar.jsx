@@ -11,7 +11,6 @@
 */
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
-import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 import { NavLink, useLocation } from "react-router";
 import { loadExtensions } from "../../uiextension/extensionManager";
@@ -22,7 +21,6 @@ import sidebarStyle from "./sidebarStyle.jsx";
 import AppInfo from "./AppInfo.jsx";
 
 const Sidebar = ({ ...props }) => {
-  PropTypes.checkPropTypes(Sidebar.propTypes, props, 'prop', 'Sidebar');
   let location = useLocation();
   // Verifies if routeName is the one active
   let isRouteActive = function(routeName) {
@@ -180,10 +178,6 @@ const Sidebar = ({ ...props }) => {
       </Drawer>
     </div>
   );
-};
-
-Sidebar.propTypes = {
-  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(Sidebar, sidebarStyle);

@@ -164,7 +164,6 @@ function AddressQuestion(props) {
 }
 
 AddressQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     countries: PropTypes.string,

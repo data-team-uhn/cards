@@ -698,7 +698,6 @@ function ResponseChild(props) {
 }
 
 MultipleChoice.propTypes = {
-  classes: PropTypes.object.isRequired,
   text: PropTypes.string,
   description: PropTypes.string,
   maxAnswers: PropTypes.number,

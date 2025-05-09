@@ -119,7 +119,6 @@ Note.propTypes = {
     PropTypes.node
   ]),
   existingAnswer: PropTypes.array,
-  classes: PropTypes.object.isRequired,
   onChangeNote: PropTypes.func,
   pageActive: PropTypes.bool,
   fullSize: PropTypes.bool,

@@ -508,7 +508,6 @@ NumberFormatCustom.propTypes = {
 };
 
 NumberQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     minAnswers: PropTypes.number,

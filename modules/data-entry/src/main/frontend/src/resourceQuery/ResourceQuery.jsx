@@ -58,11 +58,11 @@ export const MAX_RESULTS = 10;
 //    - labelProperty: what property of the resource is used as the label
 //    - propertiesToSearch: when searching for resources based on texted entered by the user, what other properties
 //      of the resource node, in addition to labelProperty, should be queried
+//    - enableUserEntry: whether the user can choose to select a text that does not match any resources to store as the answer
 //  onChange: Callback in term input change event
 //  enableSelection: Boolean enabler for selection from a resource browser
 //  initialSelection: Existing answers
 //  onRemoveOption: Function to remove added answer
-//  enableUserEntry: whether the user can choose to select a text that does not match any resources to store as the answer
 //  fetchSuggestions: a query function with the signature (inputText, onSuccessCallback, onFailure Callback) that implements
 //    a different way of obtaining suggestions for the given inputText.
 //    onSuccessCallback accepts the suggestion data as a parameter and displays the suggestions
@@ -86,12 +86,14 @@ function ResourceQuery(props) {
     enableSelection,
     initialSelection,
     onRemoveOption,
+    fetchSuggestions,
+    formatSuggestionData,
+    infoDisplayer,
     className,
     classes
   } = props;
 
   const { maxAnswers, primaryType, labelProperty, propertiesToSearch, enableUserEntry } = questionDefinition;
-  const { fetchSuggestions, formatSuggestionData, infoDisplayer } = props;
 
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
@@ -531,30 +533,29 @@ function ResourceQuery(props) {
 }
 
 ResourceQuery.propTypes = {
-    classes: PropTypes.object.isRequired,
-    clearOnClick: PropTypes.bool.isRequired,
-    onClick: PropTypes.func.isRequired,
-    focusAfterSelecting: PropTypes.bool.isRequired,
-    disabled: PropTypes.bool,
-    variant: PropTypes.string,
-    isNested: PropTypes.bool,
-    placeholder: PropTypes.string,
-    value: PropTypes.string,
-    questionDefinition: PropTypes.shape({
-      text: PropTypes.string,
-      maxAnswers: PropTypes.number,
-      primaryType: PropTypes.string,
-      labelProperty: PropTypes.string,
-      propertiesToSearch: PropTypes.string,
-      enableUserEntry: PropTypes.bool,
-    }).isRequired,
-    onChange: PropTypes.func,
-    enableSelection: PropTypes.bool,
-    initialSelection: PropTypes.array,
-    onRemoveOption: PropTypes.func,
-    infoDisplayer: PropTypes.object,
-    fetchSuggestions: PropTypes.func,
-    formatSuggestionData: PropTypes.func,
+  clearOnClick: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+  focusAfterSelecting: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
+  variant: PropTypes.string,
+  isNested: PropTypes.bool,
+  placeholder: PropTypes.string,
+  value: PropTypes.string,
+  questionDefinition: PropTypes.shape({
+    text: PropTypes.string,
+    maxAnswers: PropTypes.number,
+    primaryType: PropTypes.string,
+    labelProperty: PropTypes.string,
+    propertiesToSearch: PropTypes.string,
+    enableUserEntry: PropTypes.bool,
+  }).isRequired,
+  onChange: PropTypes.func,
+  enableSelection: PropTypes.bool,
+  initialSelection: PropTypes.array,
+  onRemoveOption: PropTypes.func,
+  infoDisplayer: PropTypes.object,
+  fetchSuggestions: PropTypes.func,
+  formatSuggestionData: PropTypes.func,
 };
 
 export default withStyles(ResourceQuery, QueryStyle);

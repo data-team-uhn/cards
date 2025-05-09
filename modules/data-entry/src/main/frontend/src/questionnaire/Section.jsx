@@ -333,7 +333,6 @@ function Section(props) {
 }
 
 Section.propTypes = {
-  classes: PropTypes.object.isRequired,
   depth: PropTypes.number.isRequired,
   existingAnswer: PropTypes.array,
   path: PropTypes.string.isRequired,

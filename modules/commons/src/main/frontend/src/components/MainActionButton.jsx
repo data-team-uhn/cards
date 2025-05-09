@@ -103,7 +103,6 @@ MainActionButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
   disabled: PropTypes.bool,
-  classes: PropTypes.object.isRequired,
   style: PropTypes.object,
 }
 

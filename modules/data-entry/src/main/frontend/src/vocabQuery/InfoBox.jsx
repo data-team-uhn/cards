@@ -156,7 +156,6 @@ InfoBox.propTypes = {
   onActionClick: PropTypes.func.isRequired,
   onClickAway: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(InfoBox, BrowseTheme);
