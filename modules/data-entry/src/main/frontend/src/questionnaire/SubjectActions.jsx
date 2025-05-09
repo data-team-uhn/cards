@@ -20,7 +20,7 @@
 import React, { useEffect, useState } from "react";
 import { loadExtensions } from "../uiextension/extensionManager";
 
-import SubjectActionContext from "./SubjectActionContext";
+import getActions from "./actionsManager";
 
 export default function SubjectActions(props) {
   let { subject, reloadSubject, className, size, variant } = props;
@@ -29,28 +29,8 @@ export default function SubjectActions(props) {
   // if the list of actions from SubjectActionContext is used directly for rendering.
   let [ actions, setActions ] = useState([]);
 
-  const STATUS_FETCHING = "Fetching"
-  const STATUS_LOADED = "Loaded"
-
   useEffect(() => {
-    if (SubjectActionContext.status == STATUS_LOADED) {
-      // Actions are already loaded: display them
-      setActions(SubjectActionContext.value);
-    } else if (SubjectActionContext.status != STATUS_FETCHING) {
-      // Actions are not loaded and are not already being loadedy: load them
-      SubjectActionContext.status = STATUS_FETCHING;
-      loadExtensions("SubjectActions")
-        .then((resp) => {
-          // Once loaded, save them for other SubjectActions to use and display them
-          let loadedComponents = [];
-          for (let i = 0; i < resp.length; i++) {
-            loadedComponents.push(resp[i]["cards:extensionRender"]);
-          }
-          SubjectActionContext.value = loadedComponents;
-          SubjectActionContext.status = STATUS_LOADED;
-          setActions(loadedComponents);
-        });
-      }
+    getActions("Subject").then(setActions);
   }, []);
 
   return actions.map((ThisComp, index) => {
