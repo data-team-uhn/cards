@@ -27,6 +27,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import Search from "@mui/icons-material/Search";
 import HeaderStyle from "./headerStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { checkPropTypes } from "./propTypes";
 
 export const DEFAULT_QUERY_URL = "/query";
 export const DEFAULT_MAX_RESULTS = 5;
@@ -53,7 +54,7 @@ const CARDS_QUERY_MATCH_PATH_KEY = "@path";
  * Other props will be forwarded to the Input element
  */
 function SearchBar(props) {
-  PropTypes.checkPropTypes(SearchBar.propTypes, props, 'prop', 'SearchBar');
+  checkPropTypes(SearchBar, props);
   const {
     classes,
     className,

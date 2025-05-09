@@ -18,6 +18,7 @@
 //
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 import { makeStyles } from 'tss-react/mui';
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
@@ -74,7 +75,7 @@ const filterUserOptions =  createFilterOptions({
  * A component that renders an icon or button to open the export dialog that generates an export URL for an entry.
  */
 function ExportButton(props) {
-  PropTypes.checkPropTypes(ExportButton.propTypes, props, 'prop', 'ExportButton');
+  checkPropTypes(ExportButton, props);
   const {
     entityData,
     entryLabel = "Export forms",

@@ -24,6 +24,7 @@ import { TextField, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import Answer from "./Answer";
 import Question from "./Question";
@@ -90,7 +91,7 @@ export class Time {
 //  upperLimit="23:59"
 //  />
 function TimeQuestion(props) {
-  PropTypes.checkPropTypes(TimeQuestion.propTypes, props, 'prop', 'TimeQuestion');
+  checkPropTypes(TimeQuestion, props);
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)

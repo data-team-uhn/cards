@@ -36,6 +36,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import FormattedText from "../components/FormattedText";
 
@@ -43,7 +44,7 @@ import FormattedText from "../components/FormattedText";
  * Component that enables the navigation between different pages of a Form. Used in FormPagination when the paginationVariant is "navigable".
  */
 function FormPageNavigation (props) {
-  PropTypes.checkPropTypes(FormPageNavigation.propTypes, props, 'prop', 'FormPageNavigation');
+  checkPropTypes(FormPageNavigation, props);
   const {
     pages,
     activePage = 0,

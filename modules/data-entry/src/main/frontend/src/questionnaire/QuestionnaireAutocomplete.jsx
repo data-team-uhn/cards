@@ -20,6 +20,7 @@ import React from 'react';
 import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 import { deepPurple, orange } from '@mui/material/colors';
+import { checkPropTypes } from "../propTypes";
 
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import {
@@ -88,7 +89,7 @@ let entitySpecs = {
 
 // TODO: Don't actually need entity.uuid ?
 function QuestionnaireAutocomplete(props) {
-  PropTypes.checkPropTypes(QuestionnaireAutocomplete.propTypes, props, 'prop', 'QuestionnaireAutocomplete');
+  checkPropTypes(QuestionnaireAutocomplete, props);
   const {
     multiple = false,
     entities,

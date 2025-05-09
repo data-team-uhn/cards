@@ -18,7 +18,8 @@
 //
 
 import React, { useState } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 import { TextField, Tooltip, Typography } from "@mui/material";
 
 import { withStyles } from 'tss-react/mui';
@@ -51,7 +52,7 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  type="timestamp"
 //  />
 function DateQuestionFull(props) {
-  PropTypes.checkPropTypes(DateQuestionFull.propTypes, props, 'prop', 'DateQuestionFull');
+  checkPropTypes(DateQuestionFull, props);
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {
     text,

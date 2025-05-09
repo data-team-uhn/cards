@@ -19,6 +19,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
@@ -35,7 +36,7 @@ let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 
 // Reference Input field used by Edit dialog component
 let ReferenceInput = (props) => {
-  PropTypes.checkPropTypes(ReferenceInput.propTypes, props, 'prop', 'ReferenceInput');
+  checkPropTypes(ReferenceInput, props);
   const { objectKey, data, value, hint } = props;
   const fieldsReader = useFieldsReaderContext();
   const fieldsWriter = useFieldsWriterContext();

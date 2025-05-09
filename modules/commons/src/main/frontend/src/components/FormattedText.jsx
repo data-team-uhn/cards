@@ -22,6 +22,7 @@ import PropTypes from 'prop-types';
 import { Typography } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
 import MDEditor from '@uiw/react-md-editor';
+import { checkPropTypes } from "../propTypes";
 
 const useStyles = makeStyles()(theme => ({
   markdown: {
@@ -41,7 +42,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 let FormattedText = (props) => {
-  PropTypes.checkPropTypes(FormattedText.propTypes, props, 'prop', 'FormattedText');
+  checkPropTypes(FormattedText, props);
   let { children, ...typographyProps } = props;
   const { classes } = useStyles();
 

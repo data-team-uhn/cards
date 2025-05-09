@@ -22,7 +22,7 @@ import React from "react";
 import { Typography } from "@mui/material";
 
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 
@@ -56,7 +56,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    validationErrorText="Please enter a lowercase input"
 //    />
 function TextQuestion(props) {
-  PropTypes.checkPropTypes(TextQuestion.propTypes, props, 'prop', 'TextQuestion');
+  checkPropTypes(TextQuestion, props);
   let {
     dataType,
     displayMode,

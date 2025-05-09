@@ -19,6 +19,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import {
   Dialog,
@@ -61,7 +62,7 @@ const useStyles = makeStyles()(theme => ({
 // </ErrorDialog>
 //
 const ErrorDialog = (props) => {
-  PropTypes.checkPropTypes(ErrorDialog.propTypes, props, 'prop', 'ErrorDialog');
+  checkPropTypes(ErrorDialog, props);
   const {
     title = "Error",
     children,

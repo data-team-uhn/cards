@@ -19,6 +19,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 
@@ -37,7 +38,7 @@ import LabeledField from "./LabeledField";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
 let Fields = (props) => {
-  PropTypes.checkPropTypes(Fields.propTypes, props, 'prop', 'Fields');
+  checkPropTypes(Fields, props);
   let { data, hints, JSON, edit, condensed, ...rest } = props;
 
   /**

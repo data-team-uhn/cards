@@ -20,7 +20,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from 'react-router';
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import {
   Button,
   CircularProgress,
@@ -251,7 +251,7 @@ export default withStyles(Questionnaire, QuestionnaireStyle);
 
 
 let QuestionnaireItemSet = (props) => {
-  PropTypes.checkPropTypes(QuestionnaireItemSet.propTypes, props, 'prop', 'QuestionnaireItemSet');
+  checkPropTypes(QuestionnaireItemSet, props);
   let { children, models, onActionDone, data, classes } = props;
 
   let prioritaryModels = {};
@@ -381,7 +381,7 @@ QuestionnaireItemSet.propTypes = {
 
 // Questionnaire contents: properties + entries
 let QuestionnaireContents = (props) => {
-  PropTypes.checkPropTypes(QuestionnaireContents.propTypes, props, 'prop', 'QuestionnaireContents');
+  checkPropTypes(QuestionnaireContents, props);
   let { data } = props;
 
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
@@ -524,7 +524,7 @@ ConditionalGroup.propTypes = {
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
 
 let QuestionnaireEntry = (props) => {
-  PropTypes.checkPropTypes(QuestionnaireEntry.propTypes, props, 'prop', 'QuestionnaireEntry');
+  checkPropTypes(QuestionnaireEntry, props);
   let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
   let [ menuItems, setMenuItems ] = useState([]);

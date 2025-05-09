@@ -20,6 +20,7 @@
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import { TextField } from "@mui/material";
+import { checkPropTypes } from "../propTypes";
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
@@ -28,7 +29,7 @@ import ValueComponentManager from "./ValueComponentManager";
 // Number Input field used by Edit dialog component
 
 let NumberInput = (props) => {
-  PropTypes.checkPropTypes(NumberInput.propTypes, props, 'prop', 'NumberInput');
+  checkPropTypes(NumberInput, props);
   let { objectKey, data, hint } = props;
   const type = props.value?.charAt(0).toUpperCase() + props.value?.slice(1).toLowerCase();
   const defaultValue = type === "Long" ? (objectKey == "maxAnswers" ? 1 : objectKey == "minAnswers" ? 0 : '') : '';

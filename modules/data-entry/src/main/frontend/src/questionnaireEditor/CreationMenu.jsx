@@ -19,6 +19,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import {
   Button,
   Menu,
@@ -31,7 +32,7 @@ import NewItemButton from "../components/NewItemButton";
 // Menu for creating questions or sections
 
 let CreationMenu = (props) => {
-  PropTypes.checkPropTypes(CreationMenu.propTypes, props, 'prop', 'CreationMenu');
+  checkPropTypes(CreationMenu, props);
   const {
     isMainAction,
     data,

@@ -24,6 +24,7 @@ import {
   Typography
 } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
+import { checkPropTypes } from "../propTypes";
 
 const useStyles = makeStyles()(theme => ({
   value: {
@@ -36,7 +37,7 @@ export function camelCaseToWords(str) {
 }
 
 let LabeledField = (props) => {
-  PropTypes.checkPropTypes(LabeledField.propTypes, props, 'prop', 'LabeledField');
+  checkPropTypes(LabeledField, props);
   let {name, condensed, children } = props;
 
   let { classes } = useStyles();

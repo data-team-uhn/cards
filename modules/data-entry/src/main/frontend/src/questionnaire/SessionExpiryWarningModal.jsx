@@ -18,6 +18,7 @@
 import React, { useEffect, useState } from "react";
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import { Backdrop, Button, DialogActions, DialogContent, Typography } from "@mui/material";
 
@@ -34,7 +35,7 @@ import ResponsiveDialog from "../components/ResponsiveDialog";
  * @param {func} onExpired Callback for when the countdown reaches 0 and the session expired
  */
 function SessionExpiryWarningModal(props) {
-PropTypes.checkPropTypes(SessionExpiryWarningModal.propTypes, props, 'prop', 'SessionExpiryWarningModal');
+  checkPropTypes(SessionExpiryWarningModal, props);
   const {
     activeLength = 29 * 60 * 1000,
     countdownLength = 2 * 60 * 1000,

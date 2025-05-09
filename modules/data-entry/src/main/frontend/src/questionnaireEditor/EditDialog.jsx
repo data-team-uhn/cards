@@ -19,6 +19,7 @@
 
 import React, { useState, useContext } from "react";
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import {
   Button,
   Dialog,
@@ -37,7 +38,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
-  PropTypes.checkPropTypes(EditDialog.propTypes, props, 'prop', 'EditDialog');
+  checkPropTypes(EditDialog, props);
   const { data, type, targetExists, isOpen, onSaved, onCancel, id, model } = props;
   let [ targetId, setTargetId ] = useState('');
   const dialogData = targetExists ? data : {};

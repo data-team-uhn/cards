@@ -18,6 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import { withStyles } from 'tss-react/mui';
 import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
@@ -58,7 +59,7 @@ import { VALUE_POS } from "../questionnaire/Answer";
 //  parentId: id of a parent brunch term
 //
 function VocabularyBranch(props) {
-  PropTypes.checkPropTypes(VocabularyBranch.propTypes, props, 'prop', 'VocabularyBranch');
+  checkPropTypes(VocabularyBranch, props);
   const {
     defaultOpen,
     id,

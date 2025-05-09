@@ -20,6 +20,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useLocation } from 'react-router';
+import { checkPropTypes } from "../propTypes";
 
 import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
 
@@ -31,7 +32,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
-  PropTypes.checkPropTypes(Question.propTypes, props, 'prop', 'Question');
+  checkPropTypes(Question, props);
   let {
     classes,
     children,

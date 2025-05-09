@@ -19,6 +19,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 
 import { TextField } from "@mui/material";
 
@@ -28,7 +29,7 @@ import ValueComponentManager from "../questionnaireEditor/ValueComponentManager"
 
 // Text Input field used by Edit dialog component
 let TextInput = (props) => {
-  PropTypes.checkPropTypes(TextInput.propTypes, props, 'prop', 'TextInput');
+  checkPropTypes(TextInput, props);
   let { objectKey, data, multiline, variant, hint } = props;
 
   return (

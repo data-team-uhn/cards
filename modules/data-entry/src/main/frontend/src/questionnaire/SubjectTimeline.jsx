@@ -47,6 +47,7 @@ import {
 } from "@mui/material";
 
 import { withStyles } from 'tss-react/mui';
+import { checkPropTypes } from "../propTypes";
 
 const NUM_QUESTIONS = 2;
 const STRIPPING_REGEX = [/^date of +/i, / +date$/i]
@@ -159,7 +160,7 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
  * @param {object} subject the subject
  */
 function SubjectTimeline(props) {
-  PropTypes.checkPropTypes(SubjectTimeline.propTypes, props, 'prop', 'SubjectTimeline');
+  checkPropTypes(SubjectTimeline, props);
   let { classes, subject } = props;
   let [ dateEntries, setDateEntries ] = useState(null);
   // Error message set when fetching the data from the server fails

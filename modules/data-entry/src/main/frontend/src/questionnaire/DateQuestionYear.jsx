@@ -20,6 +20,7 @@
 import React from "react";
 
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import NumberQuestion from "./NumberQuestion";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -46,7 +47,7 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  type="timestamp"
 //  />
 function DateQuestionYear(props) {
-  PropTypes.checkPropTypes(DateQuestionYear.propTypes, props, 'prop', 'DateQuestionYear');
+  checkPropTypes(DateQuestionYear, props);
   let {existingAnswer, ...rest} = props;
   let {
     text,

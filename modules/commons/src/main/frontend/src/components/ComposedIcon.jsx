@@ -26,6 +26,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
+import { checkPropTypes } from "../propTypes";
 
 const sizesMap = {
   'small': { size: 17, extraSize: 10 },
@@ -34,7 +35,7 @@ const sizesMap = {
 }
 
 const ComposedIcon = (props) => {
-  PropTypes.checkPropTypes(ComposedIcon.propTypes, props, 'prop', 'ComposedIcon');
+  checkPropTypes(ComposedIcon, props);
   const {
     MainIcon,
     ExtraIcon,

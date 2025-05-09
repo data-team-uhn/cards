@@ -18,6 +18,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { CircularProgress, Fab, Tooltip } from "@mui/material";
+import { checkPropTypes } from "../propTypes";
 
 import { withStyles } from 'tss-react/mui';
 
@@ -52,7 +53,7 @@ import style from './style.jsx';
 //
 
 function MainActionButton(props) {
-  PropTypes.checkPropTypes(MainActionButton.propTypes, props, 'prop', 'MainActionButton');
+  checkPropTypes(MainActionButton, props);
   const {
     classes,
     icon,

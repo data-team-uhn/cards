@@ -22,6 +22,7 @@ import { Select, MenuItem, Card, CardHeader, CardContent, Typography } from "@mu
 import { withStyles } from 'tss-react/mui';
 import ErrorIcon from "@mui/icons-material/Error";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
@@ -37,7 +38,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  * @param {func} onChangeInput Function to call when this filter has chosen a new questionnaire
  */
 const QuestionnaireFilter = forwardRef((props, ref) => {
-  PropTypes.checkPropTypes(QuestionnaireFilter.propTypes, props, 'prop', 'QuestionnaireFilter');
+  checkPropTypes(QuestionnaireFilter, props);
   const { classes, initial, onChangeInput } = props;
   const [ error, setError ] = useState();
   // Store information about each questionnaire and whether or not we have

@@ -18,6 +18,7 @@
 //
 import React from 'react';
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 
 import { Box } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
@@ -49,7 +50,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 export default function Logo(props) {
-  PropTypes.checkPropTypes(Logo.propTypes, props, 'prop', 'Logo');
+  checkPropTypes(Logo, props);
   const {
     component = Box,
     mode = "Light",

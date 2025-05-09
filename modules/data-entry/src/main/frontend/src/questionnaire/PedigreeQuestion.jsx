@@ -24,6 +24,7 @@ import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@mui/materia
 import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -49,7 +50,7 @@ import PedigreeEditor from "../pedigree/pedigree";
 //      }}
 //    />
 function PedigreeQuestion(props) {
-  PropTypes.checkPropTypes(PedigreeQuestion.propTypes, props, 'prop', 'PedigreeQuestion');
+  checkPropTypes(PedigreeQuestion, props);
   const { existingAnswer, classes, pageActive, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in CARDS:

@@ -20,7 +20,7 @@
 import React, { useState, forwardRef } from "react";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../../propTypes";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
 import DateQuestionUtilities from "../../questionnaire/DateQuestionUtilities.jsx";
@@ -43,7 +43,7 @@ const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPAR
  *
  */
 const DateFilter = forwardRef((props, ref) => {
-  PropTypes.checkPropTypes(DateFilter.propTypes, props, 'prop', 'DateFilter');
+  checkPropTypes(DateFilter, props);
   // DefaultLabel intentionally unused, since it needs to not be passed to TextField
   const { classes, initial, onChangeInput, questionDefinition } = props;
 

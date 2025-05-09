@@ -19,6 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import {
   Avatar,
@@ -79,7 +80,7 @@ import style from "./style.jsx";
 //
 
 function UserInputAssistant (props) {
-  PropTypes.checkPropTypes(UserInputAssistant.propTypes, props, 'prop', 'UserInputAssistant');
+  checkPropTypes(UserInputAssistant, props);
   const {
     anchorEl,
     variant = 'hint',

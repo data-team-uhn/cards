@@ -21,6 +21,7 @@ import React, { forwardRef, useState, useEffect, useContext } from "react";
 import { TextField } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
@@ -40,7 +41,7 @@ const filterUserOptions =  createFilterOptions({
  *
  */
 const UserFilter = forwardRef((props, ref) => {
-  PropTypes.checkPropTypes(UserFilter.propTypes, props, 'prop', 'UserFilter');
+  checkPropTypes(UserFilter, props);
   const { initial, onChangeInput } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");

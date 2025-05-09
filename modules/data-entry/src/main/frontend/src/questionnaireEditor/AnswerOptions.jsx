@@ -19,6 +19,7 @@
 
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 import {
   Button,
   Card,
@@ -111,7 +112,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 let AnswerOptions = (props) => {
-  PropTypes.checkPropTypes(AnswerOptions.propTypes, props, 'prop', 'AnswerOptions');
+  checkPropTypes(AnswerOptions, props);
   const { objectKey, value, data, path, saveButtonRef, hint } = props;
   const { classes } = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));

@@ -30,6 +30,7 @@ import { makeStyles, withStyles } from 'tss-react/mui';
 import { NumericFormat } from 'react-number-format';
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import Answer from "./Answer";
 import AnswerInstructions from "./AnswerInstructions";
@@ -130,7 +131,7 @@ const useSliderStyles = makeStyles()(theme => ({
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  PropTypes.checkPropTypes(NumberQuestion.propTypes, props, 'prop', 'NumberQuestion');
+  checkPropTypes(NumberQuestion, props);
   const { existingAnswer, errorText = "", classes, pageActive, disableValueInstructions, ...rest} = props;
   const {
     dataType,
@@ -485,7 +486,7 @@ function NumberQuestion(props) {
 
 // Helper function to bridge react-number-format with @material-ui
 export const NumberFormatCustom = forwardRef((props, ref) => {
-  PropTypes.checkPropTypes(NumberFormatCustom.propTypes, props, 'prop', 'NumberFormatCustom');
+  checkPropTypes(NumberFormatCustom, props);
   const { onChange, ...other } = props;
 
   return (

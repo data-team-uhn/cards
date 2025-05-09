@@ -18,6 +18,7 @@
 //
 import React from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import VocabularyBrowser from "./VocabularyBrowser.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
@@ -45,7 +46,7 @@ import QueryMatchingUtils from "../resourceQuery/QueryMatchingUtils";
 //  onRemoveOption: Function to remove added answer
 //
 function VocabularyQuery(props) {
-  PropTypes.checkPropTypes(VocabularyQuery.propTypes, props, 'prop', 'VocabularyQuery');
+  checkPropTypes(VocabularyQuery, props);
   const {
     questionDefinition,
     clearOnClick = true,

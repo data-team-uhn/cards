@@ -18,7 +18,7 @@
 //
 import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { Tooltip, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
@@ -32,7 +32,7 @@ import ErrorDialog from "../components/ErrorDialog.jsx";
  * A component that renders an icon to open a dialog to delete an entry.
  */
 function DeleteButton(props) {
-  PropTypes.checkPropTypes(DeleteButton.propTypes, props, 'prop', 'DeleteButton');
+  checkPropTypes(DeleteButton, props);
   const {
     classes,
     entryPath = "",

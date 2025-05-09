@@ -31,6 +31,7 @@ import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import FormPageNavigation from "./FormPageNavigation";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import { checkPropTypes } from "../propTypes";
 
 class Page {
   constructor(visible, title, key) {
@@ -51,7 +52,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  PropTypes.checkPropTypes(FormPagination.propTypes, props, 'prop', 'FormPagination');
+  checkPropTypes(FormPagination, props);
   let {
     classes,
     enabled = true,

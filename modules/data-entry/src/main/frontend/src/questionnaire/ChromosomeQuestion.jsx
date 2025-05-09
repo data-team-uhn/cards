@@ -20,6 +20,7 @@
 import React from "react";
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
@@ -49,7 +50,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //    text="Test text question (lowercase only)"
 //    />
 function ChromosomeQuestion(props) {
-  PropTypes.checkPropTypes(ChromosomeQuestion.propTypes, props, 'prop', 'ChromosomeQuestion');
+  checkPropTypes(ChromosomeQuestion, props);
   // By default we enable 22 numbered chromosomes plus X and Y
   const defaultValues = {
     chromosomeNumber : 22,

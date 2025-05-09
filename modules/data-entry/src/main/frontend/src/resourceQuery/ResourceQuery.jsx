@@ -19,7 +19,7 @@
 import classNames from "classnames";
 import React, { useRef, useState, useContext } from "react";
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@mui/material";
@@ -71,7 +71,7 @@ export const MAX_RESULTS = 10;
 //  infoDisplayer: a component used to display further information about the resource
 //
 function ResourceQuery(props) {
-  PropTypes.checkPropTypes(ResourceQuery.propTypes, props, 'prop', 'ResourceQuery');
+  checkPropTypes(ResourceQuery, props);
   const {
     onClick,
     clearOnClick = true,

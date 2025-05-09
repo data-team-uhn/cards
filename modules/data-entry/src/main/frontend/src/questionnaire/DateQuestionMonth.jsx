@@ -18,7 +18,7 @@
 //
 
 import React, { useState } from "react";
-import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import { FormHelperText, TextField, Typography } from "@mui/material";
 
 import { withStyles } from 'tss-react/mui';
@@ -51,7 +51,7 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  type="timestamp"
 //  />
 function DateQuestionMonth(props) {
-  PropTypes.checkPropTypes(DateQuestionMonth.propTypes, props, 'prop', 'DateQuestionMonth');
+  checkPropTypes(DateQuestionMonth, props);
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {
     text,

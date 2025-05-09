@@ -20,6 +20,7 @@
 import React, { forwardRef } from "react";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
@@ -38,7 +39,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  */
 const ResourceFilter = forwardRef((props, ref) => {
-  PropTypes.checkPropTypes(ResourceFilter.propTypes, props, 'prop', 'ResourceFilter');
+  checkPropTypes(ResourceFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
   const enableUserEntry = !!!questionDefinition?.displayMode || questionDefinition?.displayMode?.includes("input");
 

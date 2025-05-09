@@ -21,6 +21,7 @@ import React, { forwardRef, useState } from "react";
 import { TextField } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComparators.jsx";
@@ -44,7 +45,7 @@ const QuestionnaireStyleNotesContain = theme => ({
  *
  */
 const TextFilter = forwardRef((props, ref) => {
-  PropTypes.checkPropTypes(TextFilter.propTypes, props, 'prop', 'TextFilter');
+  checkPropTypes(TextFilter, props);
   const { classes, initial, onChangeInput } = props;
   // Manage our own state inside here as well
   const [ input, setInput ] = useState(initial?.value || "");

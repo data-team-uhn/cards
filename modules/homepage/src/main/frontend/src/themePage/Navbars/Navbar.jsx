@@ -18,11 +18,12 @@ import { AppBar, Box, Toolbar, IconButton } from "@mui/material";
 import Menu from "@mui/icons-material/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
+import { checkPropTypes } from "../../propTypes";
 
 import headerStyle from "../../headerStyle.jsx";
 
 function Header({ ...props }) {
-  PropTypes.checkPropTypes(Header.propTypes, props, 'prop', 'Header');
+  checkPropTypes(Header, props);
   const { classes, color } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color

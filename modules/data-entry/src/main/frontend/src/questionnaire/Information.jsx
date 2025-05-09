@@ -19,6 +19,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import { Alert, Card, CardContent } from "@mui/material";
 
@@ -29,7 +30,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying Information cards
 function Information (props) {
-  PropTypes.checkPropTypes(Information.propTypes, props, 'prop', 'Information');
+  checkPropTypes(Information, props);
   let { classes, infoDefinition, ...otherProps } = props;
   let { text, type = "plain" } = { ...otherProps, ...infoDefinition }
 

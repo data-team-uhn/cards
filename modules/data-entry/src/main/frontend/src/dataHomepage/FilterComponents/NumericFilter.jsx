@@ -21,6 +21,7 @@ import React, { forwardRef } from "react";
 import { TextField } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
@@ -39,7 +40,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  *
  */
 const NumericFilter = forwardRef((props, ref) => {
-  PropTypes.checkPropTypes(NumericFilter.propTypes, props, 'prop', 'NumericFilter');
+  checkPropTypes(NumericFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
   return (
     <TextField

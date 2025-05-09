@@ -20,6 +20,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from 'react-dom';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 import {
   Checkbox,
   Grid,
@@ -50,7 +51,7 @@ export function isOptionData(data) {
 }
 
 function DroppableAnswerOption(props) {
-  PropTypes.checkPropTypes(DroppableAnswerOption.propTypes, props, 'prop', 'DroppableAnswerOption');
+  checkPropTypes(DroppableAnswerOption, props);
   const { classes, value, index, deleteOption, generateDescriptionIcon } = props;
 
   const ref = useRef(null);

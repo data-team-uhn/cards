@@ -28,6 +28,7 @@ import { createFilterOptions } from "@mui/material/Autocomplete";
 import { makeStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 import { Info } from "luxon";
+import { checkPropTypes } from "../propTypes";
 
 const DropdownDate = {
   year: 'year',
@@ -92,7 +93,7 @@ const useStyles = makeStyles()(theme => ({
  */
 
 function DropdownsDatePicker(props) {
-  PropTypes.checkPropTypes(DropdownsDatePicker.propTypes, props, 'prop', 'DropdownsDatePicker');
+  checkPropTypes(DropdownsDatePicker, props);
   const {
     startDate = "1900-01-01",
     endDate,

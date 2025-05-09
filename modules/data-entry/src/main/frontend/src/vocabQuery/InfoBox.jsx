@@ -22,6 +22,7 @@ import PropTypes from "prop-types";
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
+import { checkPropTypes } from "../propTypes";
 
 import BrowseTheme from "./browseStyle.jsx";
 
@@ -39,7 +40,7 @@ import BrowseTheme from "./browseStyle.jsx";
 // onClose: Callback for the close event
 //
 function InfoBox(props) {
-  PropTypes.checkPropTypes(InfoBox.propTypes, props, 'prop', 'InfoBox');
+  checkPropTypes(InfoBox, props);
   const { open, infoboxRef, vocabulary, term, infoAboveBackground, browserOpened, onActionClick, onClickAway, onClose, classes } = props;
 
   if (!term?.infoAnchor) {

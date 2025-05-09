@@ -21,6 +21,7 @@ import React, { forwardRef, useState } from "react";
 import { Select, MenuItem } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
@@ -38,7 +39,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  */
 const ListFilter = forwardRef((props, ref) => {
-  PropTypes.checkPropTypes(ListFilter.propTypes, props, 'prop', 'ListFilter');
+  checkPropTypes(ListFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");

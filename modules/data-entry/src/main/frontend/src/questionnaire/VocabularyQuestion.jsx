@@ -20,6 +20,7 @@
 import React from "react";
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import Question from "./Question";
 
@@ -41,7 +42,7 @@ import NCRNote from "./NCRNote.jsx";
 //   }}
 //   />
 function VocabularyQuestion(props) {
-  PropTypes.checkPropTypes(VocabularyQuestion.propTypes, props, 'prop', 'VocabularyQuestion');
+  checkPropTypes(VocabularyQuestion, props);
   let { questionDefinition } = props;
   let { maxAnswers } = { ...questionDefinition, ...props };
 

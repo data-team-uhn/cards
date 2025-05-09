@@ -19,6 +19,7 @@
 
 import React from "react";
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { ListItemButton, ListItemText, Popper, TextField } from "@mui/material";
 
@@ -81,7 +82,7 @@ const useStyles = makeStyles()(theme => ({
 // Any other props are passed directly to the Autocomplete component.
 
 let VariableAutocomplete = (props) => {
-  PropTypes.checkPropTypes(VariableAutocomplete.propTypes, props, 'prop', 'VariableAutocomplete');
+  checkPropTypes(VariableAutocomplete, props);
   const {
     className,
     options,

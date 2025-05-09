@@ -21,6 +21,7 @@ import React, { forwardRef, useState } from "react";
 import { Select, MenuItem } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
@@ -37,7 +38,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  */
 const BooleanFilter = forwardRef((props, ref) => {
-  PropTypes.checkPropTypes(BooleanFilter.propTypes, props, 'prop', 'BooleanFilter');
+  checkPropTypes(BooleanFilter, props);
   const { classes, initial, onChangeInput } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");

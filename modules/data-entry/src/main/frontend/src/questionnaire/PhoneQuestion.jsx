@@ -21,6 +21,7 @@ import React, { useState } from "react";
 
 import 'react-phone-input-2/lib/style.css';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import Question from "./Question";
 
@@ -38,7 +39,7 @@ import PhoneInput from 'react-phone-input-2';
 //   }}
 //   />
 function PhoneQuestion(props) {
-  PropTypes.checkPropTypes(PhoneQuestion.propTypes, props, 'prop', 'PhoneQuestion');
+  checkPropTypes(PhoneQuestion, props);
   const { existingAnswer, pageActive, questionDefinition, ...rest} = props;
 
   let initialValue = existingAnswer && existingAnswer[1].value || "";

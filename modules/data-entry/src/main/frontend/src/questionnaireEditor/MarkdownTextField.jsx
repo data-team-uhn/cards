@@ -19,6 +19,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
@@ -28,7 +29,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // Markdown Text Input field used by Edit dialog component
 let MarkdownTextField = (props) => {
-  PropTypes.checkPropTypes(MarkdownTextField.propTypes, props, 'prop', 'MarkdownTextField');
+  checkPropTypes(MarkdownTextField, props);
   let { objectKey, data, onChange, hint } = props;
   const [value, setValue] = useState(data[objectKey] || '');
 
