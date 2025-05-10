@@ -18,7 +18,6 @@
 //
 
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { checkPropTypes } from "../propTypes";
 import { TextField, Tooltip, Typography } from "@mui/material";
 

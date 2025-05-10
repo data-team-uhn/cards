@@ -19,7 +19,6 @@
 
 import React from "react";
 
-import PropTypes from 'prop-types';
 import { checkPropTypes } from "../propTypes";
 import NumberQuestion from "./NumberQuestion";
 
@@ -75,9 +74,7 @@ function DateQuestionYear(props) {
   );
 }
 
-const utilitiesPropTypes = { ...DateQuestionUtilities.PROP_TYPES };
-delete utilitiesPropTypes.classes;
-DateQuestionYear.propTypes = utilitiesPropTypes;
+DateQuestionYear.propTypes = DateQuestionUtilities.PROP_TYPES;
 
 export default DateQuestionYear;
 
