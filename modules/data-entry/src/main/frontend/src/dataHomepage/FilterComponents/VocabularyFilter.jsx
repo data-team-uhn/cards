@@ -20,6 +20,7 @@
 import React, { forwardRef } from "react";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
@@ -35,10 +36,10 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * @param {object} initial Object containing the initial value and label to place in the vocabulary filter
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabularies" and "vocabularyFilters" children.
- * Other props are forwarded to the VocabularyQuery component
  *
  */
 const VocabularyFilter = forwardRef((props, ref) => {
+  checkPropTypes(VocabularyFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
 
   return (

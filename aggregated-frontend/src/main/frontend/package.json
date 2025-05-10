@@ -69,6 +69,7 @@
     "style-loader": "4.0.0"
   },
   "resolutions": {
-    "@babel/runtime": "^7.27.1"
+    "@babel/runtime": "^7.27.1",
+    "react-is": "^19.0.0"
   }
 }

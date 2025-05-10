@@ -19,7 +19,7 @@
 import React, { useState, useEffect, useContext } from "react";
 
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import { useNavigate } from 'react-router';
 
 import { Alert, Button, CardActions, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
@@ -98,6 +98,7 @@ const useStyles = makeStyles()(theme => ({
  */
 
 function AdminConfigScreen(props) {
+  checkPropTypes(AdminConfigScreen, props);
   const { title, configPath, configTemplate, onConfigFetched, hasChanges, configError, buildConfigData, onConfigSaved, children } = props;
   const [ config, setConfig ] = useState();
   const [ configIsInitial, setConfigIsInitial ] = useState(true);

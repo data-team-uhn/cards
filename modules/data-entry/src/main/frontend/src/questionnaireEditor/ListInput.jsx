@@ -20,6 +20,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Chip, Input, MenuItem, Select, Typography } from "@mui/material";
+import { checkPropTypes } from "../propTypes";
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
@@ -28,6 +29,7 @@ import { useFieldsWriterContext } from "./FieldsContext";
 import FormControl from '@mui/material/FormControl';
 
 let ListInput = (props) => {
+  checkPropTypes(ListInput, props);
   let { objectKey, data, value: type, hint } = props;
   let [ selection, setSelection ] = useState(Array.of(data[objectKey] ?? []).flat());
   const [ options, setOptions ] = useState([]);

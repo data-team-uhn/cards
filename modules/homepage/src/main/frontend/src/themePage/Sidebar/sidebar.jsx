@@ -11,7 +11,6 @@
 */
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
-import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 import { NavLink, useLocation } from "react-router";
 import { loadExtensions } from "../../uiextension/extensionManager";
@@ -179,10 +178,6 @@ const Sidebar = ({ ...props }) => {
       </Drawer>
     </div>
   );
-};
-
-Sidebar.propTypes = {
-  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(Sidebar, sidebarStyle);

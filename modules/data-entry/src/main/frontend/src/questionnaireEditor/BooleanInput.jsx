@@ -20,6 +20,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch } from "@mui/material";
+import { checkPropTypes } from "../propTypes";
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
@@ -28,6 +29,7 @@ import ValueComponentManager from "../questionnaireEditor/ValueComponentManager"
 // Boolean Input field used by Edit dialog component
 
 let BooleanInput = (props) => {
+  checkPropTypes(BooleanInput, props);
   let { objectKey, data, hint, onChange } = props;
   let [ checked, setChecked ] = useState(data?.[objectKey] == true);
 

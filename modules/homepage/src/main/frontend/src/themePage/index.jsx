@@ -16,7 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { createRoot } from 'react-dom/client';
@@ -160,9 +159,6 @@ function Main(props) {
     );
 }
 
-Main.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 const MainComponent = withStyles(Main, IndexStyle);
 
 const cache = createCache({

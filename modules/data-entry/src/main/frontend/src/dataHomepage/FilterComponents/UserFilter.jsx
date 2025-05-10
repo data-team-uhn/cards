@@ -21,6 +21,7 @@ import React, { forwardRef, useState, useEffect, useContext } from "react";
 import { TextField } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
@@ -36,12 +37,12 @@ const filterUserOptions =  createFilterOptions({
  *
  * @param {object} initial Object containing the initial value and label to place in the list
  * @param {func} onChangeInput Callback for when the value select has changed
- * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
- * Other props are forwarded to the Select component
+ * Other props are forwarded to the TextField component
  *
  */
 const UserFilter = forwardRef((props, ref) => {
-  const { classes, initial, onChangeInput, questionDefinition } = props;
+  checkPropTypes(UserFilter, props);
+  const { initial, onChangeInput } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");
   const [ users, setUsers ] = useState();

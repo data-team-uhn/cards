@@ -20,6 +20,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'tss-react/mui';
+import { checkPropTypes } from "../propTypes";
 
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import MDEditor, { commands } from '@uiw/react-md-editor';
@@ -40,6 +41,7 @@ const infoButton = {
 
 // Markdown Text Input field used by Edit dialog component
 let MarkdownText = (props) => {
+  checkPropTypes(MarkdownText, props);
   let {
     onChange,
     height = 200,

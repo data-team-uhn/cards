@@ -20,7 +20,7 @@
 import React, { useEffect } from "react";
 import { flushSync } from 'react-dom';
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import DroppableAnswerOption, { isOptionData } from './DroppableAnswerOption.jsx';
 
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
@@ -29,6 +29,7 @@ import { reorderWithEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/r
 import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash';
 
 function DroppableAnswerOptionList(props) {
+  checkPropTypes(DroppableAnswerOptionList, props);
   const { classes, options, setOptions, deleteOption, generateDescriptionIcon } = props;
 
   useEffect(() => {

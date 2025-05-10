@@ -21,6 +21,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Snackbar, SnackbarContent } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
+import { checkPropTypes } from "../propTypes";
 
 import VocabularyTree from "./VocabularyTree.jsx";
 import InfoBox from "./InfoBox.jsx";
@@ -44,6 +45,7 @@ import BrowseTheme from "./browseStyle.jsx";
 // questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 function VocabularyBrowser(props) {
+  checkPropTypes(VocabularyBrowser, props);
   const { browserOpen, onCloseInfo, onCloseBrowser, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots,
     vocabulary, enableSelection, initialSelection, questionDefinition, classes } = props;
 
@@ -250,7 +252,6 @@ VocabularyBrowser.propTypes = {
   enableSelection: PropTypes.bool,
   initialSelection: PropTypes.array,
   questionDefinition: PropTypes.object,
-  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(VocabularyBrowser, BrowseTheme);

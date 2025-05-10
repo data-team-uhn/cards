@@ -18,7 +18,7 @@
 //
 import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { Tooltip, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
@@ -32,6 +32,7 @@ import ErrorDialog from "../components/ErrorDialog.jsx";
  * A component that renders an icon to open a dialog to delete an entry.
  */
 function DeleteButton(props) {
+  checkPropTypes(DeleteButton, props);
   const {
     classes,
     entryPath = "",
@@ -171,9 +172,11 @@ function DeleteButton(props) {
 
   return (
     <React.Fragment>
-      <ErrorDialog open={errorOpen} onClose={closeError}>
-        <Typography>{errorMessage}</Typography>
-      </ErrorDialog>
+      {errorOpen &&
+        <ErrorDialog open={errorOpen} onClose={closeError}>
+          <Typography>{errorMessage}</Typography>
+        </ErrorDialog>
+      }
       <Dialog open={open} onClose={closeDialog}>
         <DialogTitle>
           Delete {entryLabel ? entryLabel.concat(' ') : entryType.concat(' ')}{deleteRecursive ? " and dependent items": null }

@@ -19,6 +19,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import {
   Avatar,
   Card,
@@ -101,6 +102,7 @@ const useStyles = makeStyles()(theme => ({
 // General class or Sections and Questions
 
 let QuestionnaireItemCard = (props) => {
+  checkPropTypes(QuestionnaireItemCard, props);
   let {
     children,
     avatar,

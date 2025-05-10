@@ -17,6 +17,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 import AddIcon from "@mui/icons-material/Add";
 import MainActionButton from './MainActionButton.jsx';
 
@@ -42,6 +43,7 @@ import MainActionButton from './MainActionButton.jsx';
 //  />
 //
 function NewItemButton(props) {
+  checkPropTypes(NewItemButton, props);
   const {
     title = "New",
     inProgress,

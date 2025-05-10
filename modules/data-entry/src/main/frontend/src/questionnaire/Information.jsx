@@ -19,6 +19,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import { Alert, Card, CardContent } from "@mui/material";
 
@@ -29,6 +30,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying Information cards
 function Information (props) {
+  checkPropTypes(Information, props);
   let { classes, infoDefinition, ...otherProps } = props;
   let { text, type = "plain" } = { ...otherProps, ...infoDefinition }
 
@@ -49,7 +51,6 @@ function Information (props) {
 }
 
 Information.propTypes = {
-  classes: PropTypes.object.isRequired,
   infoDefinition: PropTypes.shape({
     text: PropTypes.string,
     type: PropTypes.oneOf(["plain", "info", "warning", "error", "success"]),

@@ -21,6 +21,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { CircularProgress} from '@mui/material';
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
@@ -33,6 +34,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Component that renders a question, where the answer options are children of a given JCR node
 
 function ResourceQuestion(props) {
+  checkPropTypes(ResourceQuestion, props);
   const {primaryType, labelProperty, maxAnswers, displayMode} = { ...props.questionDefinition };
   const [options, setOptions] = useState();
 

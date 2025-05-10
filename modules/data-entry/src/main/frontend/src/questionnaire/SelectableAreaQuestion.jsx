@@ -25,6 +25,7 @@ import { useTheme, alpha } from '@mui/material/styles';
 import Tooltip from "@mui/material/Tooltip";
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import Answer, { LABEL_POS, VALUE_POS } from "./Answer";
 import Question from "./Question";
@@ -51,6 +52,7 @@ import FormattedText from "../components/FormattedText.jsx";
 //    variant="/libs/cards/dataEntry/SelectableArea/FullBody"
 //    />
 function SelectableAreaQuestion(props) {
+  checkPropTypes(SelectableAreaQuestion, props);
   let { classes, errorText, existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
   let { variant, maxAnswers } = {...props.questionDefinition, ...props};
 
@@ -399,7 +401,6 @@ function SelectableAreaQuestion(props) {
 }
 
 SelectableAreaQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     minAnswers: PropTypes.number,

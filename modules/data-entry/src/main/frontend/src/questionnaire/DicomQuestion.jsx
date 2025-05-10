@@ -40,6 +40,7 @@ cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
 cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import FileQuestion from "./FileQuestion";
 import ResponsiveDialog from "../components/ResponsiveDialog";
@@ -70,6 +71,7 @@ const useStyles = makeStyles()(theme => ({
 // submission.
 //
 function DicomQuestion(props) {
+  checkPropTypes(DicomQuestion, props);
   const { existingAnswer, questionDefinition, ...rest } = props;
 
   let [ dicomMetadataNote, setDicomMetadataNote ] = useState();

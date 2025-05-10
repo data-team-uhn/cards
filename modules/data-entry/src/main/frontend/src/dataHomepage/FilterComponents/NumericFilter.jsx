@@ -21,6 +21,7 @@ import React, { forwardRef } from "react";
 import { TextField } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
@@ -36,10 +37,10 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  * @param {object} initial Object containing the initial value and label to place in the text field
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
- * Other props are forwarded to the TextField component
  *
  */
 const NumericFilter = forwardRef((props, ref) => {
+  checkPropTypes(NumericFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
   return (
     <TextField

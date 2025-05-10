@@ -31,6 +31,7 @@ import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import FormPageNavigation from "./FormPageNavigation";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import { checkPropTypes } from "../propTypes";
 
 class Page {
   constructor(visible, title, key) {
@@ -51,6 +52,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
+  checkPropTypes(FormPagination, props);
   let {
     classes,
     enabled = true,
@@ -296,7 +298,7 @@ FormPagination.propTypes = {
   navMode: PropTypes.oneOf(['back_next', 'only_next']),
   questionnaireData: PropTypes.object.isRequired,
   setPagesCallback: PropTypes.func.isRequired,
-  isPageCompleted: PropTypes.func.isRequired,
+  isPageCompleted: PropTypes.func,
   lastSaveStatus: PropTypes.bool,
   saveInProgress: PropTypes.bool
 };

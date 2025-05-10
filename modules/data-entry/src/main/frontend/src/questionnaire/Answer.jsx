@@ -20,6 +20,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
+import { checkPropTypes } from "../propTypes";
 
 import Note from "./Note";
 import { useFormWriterContext } from "./FormContext";
@@ -35,6 +36,7 @@ export const IS_DEFAULT_ANSWER_POS = 4;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
+  checkPropTypes(Answer, props);
   let {
     answers,
     answerMetadata,

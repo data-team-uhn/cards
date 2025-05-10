@@ -19,11 +19,26 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Checkbox, Chip, FormControl, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from "@mui/material";
+import {
+  Checkbox,
+  Chip,
+  FormControl,
+  FormControlLabel,
+  IconButton,
+  List,
+  ListItem,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField,
+  Typography
+  } from "@mui/material";
+
 import { withStyles } from 'tss-react/mui';
 import Close from "@mui/icons-material/Close";
-import PropTypes from 'prop-types';
-
+import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -52,6 +67,7 @@ const GHOST_SENTINEL = "custom-input";
   * @param {bool} error indicates if the current selection is in a state of error
   */
 function MultipleChoice(props) {
+  checkPropTypes(MultipleChoice, props);
   let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let { validate, validationErrorText, liveValidation, softValidation } = {...props.questionDefinition, ...props};
@@ -697,7 +713,6 @@ function ResponseChild(props) {
 }
 
 MultipleChoice.propTypes = {
-  classes: PropTypes.object.isRequired,
   text: PropTypes.string,
   description: PropTypes.string,
   maxAnswers: PropTypes.number,

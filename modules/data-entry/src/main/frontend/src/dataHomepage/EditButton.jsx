@@ -18,7 +18,7 @@
 //
 import React from "react";
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import { IconButton, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from 'react-router';
@@ -27,6 +27,7 @@ import { Link } from 'react-router';
  * A component that renders an icon to open the edit URL for an entry or to use local edit dialog.
  */
 function EditButton(props) {
+  checkPropTypes(EditButton, props);
   const {
     entryPath,
     entryType = "",

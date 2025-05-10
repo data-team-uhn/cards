@@ -19,6 +19,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import {
   Dialog,
@@ -61,6 +62,7 @@ const useStyles = makeStyles()(theme => ({
 // </ErrorDialog>
 //
 const ErrorDialog = (props) => {
+  checkPropTypes(ErrorDialog, props);
   const {
     title = "Error",
     children,
@@ -88,9 +90,9 @@ const ErrorDialog = (props) => {
 }
 
 ErrorDialog.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   maxWidth: PropTypes.oneOf(["xs", "sm", "md", "lg", "xl"]),
-  fullWidth: PropTypes.bool.isRequired,
+  fullWidth: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node

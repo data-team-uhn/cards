@@ -20,7 +20,7 @@
 import React, { useState, forwardRef } from "react";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../../propTypes";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
 import DateQuestionUtilities from "../../questionnaire/DateQuestionUtilities.jsx";
@@ -40,10 +40,10 @@ const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPAR
  * @param {object} initial Object containing the initial value and label to place in the textfield
  * @param {func} onChangeInput Callback for when the value select has changed
  * @param {object} questionDefinition Object containing the definition of the question. May include a dateFormat
- * Other props are forwarded to the TextField component
  *
  */
 const DateFilter = forwardRef((props, ref) => {
+  checkPropTypes(DateFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
 
   const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(initial?.value)));

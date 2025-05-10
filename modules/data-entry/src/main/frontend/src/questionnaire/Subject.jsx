@@ -21,6 +21,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Link, useLocation, useNavigate } from 'react-router';
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
+import { checkPropTypes } from "../propTypes";
 
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -78,6 +79,7 @@ let createQueryURL = (query, type) => {
  */
 
 function Subject(props) {
+  checkPropTypes(Subject, props);
   let { classes, maxDisplayed = 4, pageSize = 10 } = props;
   const [ currentSubject, setCurrentSubject ] = useState();
   const [ activeTab, setActiveTab ] = useState(0);

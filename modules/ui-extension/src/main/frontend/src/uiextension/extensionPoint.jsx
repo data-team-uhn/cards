@@ -18,6 +18,7 @@
 //
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 const UIXP_FINDER_URL = "/uixp";
 
@@ -33,6 +34,7 @@ const UIXP_FINDER_URL = "/uixp";
 //    path="/testRig.js"
 //    />
 function ExtensionPoint(props) {
+  checkPropTypes(ExtensionPoint, props);
   const { path, callback } = props;
   const [ renderedResponse, setRenderedResponse ] = useState(null);
   const [ initialized, setInitialized ] = useState(false);

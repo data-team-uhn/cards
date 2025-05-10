@@ -11,6 +11,7 @@
 */
 import PropTypes from "prop-types";
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { checkPropTypes } from "../../propTypes";
 // @mui/material components
 import {
   Avatar,
@@ -41,6 +42,7 @@ import ChangeUserPasswordDialogue from "../../Userboard/Users/changeuserpassword
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialogue.js";
 
 function HeaderLinks (props) {
+  checkPropTypes(HeaderLinks, props);
   const { classes, closeSidebar, color } = props;
   const [ popperOpen, setPopperOpen ] = useState(false);
   const [ passwordDialogOpen, setPasswordDialogOpen ] = useState(false);

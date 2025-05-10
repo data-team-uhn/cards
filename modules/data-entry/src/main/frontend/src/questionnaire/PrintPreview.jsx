@@ -25,6 +25,7 @@ import React, {
 } from "react";
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import {
   Button,
@@ -126,6 +127,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 function PrintPreview(props) {
+  checkPropTypes(PrintPreview, props);
   const { open, resourcePath, resourceData, title, breadcrumb, date, subtitle, disablePreview, fullScreen, onClose, ...rest } = props;
 
   const [ content, setContent ] = useState();

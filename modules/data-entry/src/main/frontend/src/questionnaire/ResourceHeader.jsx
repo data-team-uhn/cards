@@ -19,6 +19,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import {
   Breadcrumbs,
@@ -97,6 +98,7 @@ const useStyles = makeStyles()(theme => ({
  *   the title and titleAction line
  */
 function ResourceHeader (props) {
+  checkPropTypes(ResourceHeader, props);
   let {
     title,
     breadcrumbs,

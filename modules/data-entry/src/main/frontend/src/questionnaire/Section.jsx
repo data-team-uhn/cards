@@ -37,6 +37,7 @@ import ConditionalGroup from "./ConditionalGroup";
 import ConditionalSingle from "./ConditionalSingle";
 import FormattedText from "../components/FormattedText.jsx";
 import { v4 as uuidv4 } from 'uuid';
+import { checkPropTypes } from "../propTypes";
 
 const ID_STATE_KEY = ":AccessCount";
 
@@ -62,6 +63,7 @@ function createTitle(label, idx, isRecurrent) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
+  checkPropTypes(Section, props);
   const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, gridProps } = props;
   const isRecurrent = sectionDefinition['recurrent'];
   const isCompact = sectionDefinition['compact'];
@@ -332,7 +334,6 @@ function Section(props) {
 }
 
 Section.propTypes = {
-  classes: PropTypes.object.isRequired,
   depth: PropTypes.number.isRequired,
   existingAnswer: PropTypes.array,
   path: PropTypes.string.isRequired,

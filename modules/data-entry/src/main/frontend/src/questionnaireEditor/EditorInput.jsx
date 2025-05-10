@@ -20,6 +20,7 @@
 import React from 'react';
 import { makeStyles } from 'tss-react/mui';
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import {
   Grid,
   Tooltip,
@@ -32,6 +33,7 @@ import { camelCaseToWords } from "./LabeledField";
 import FormattedText from "../components/FormattedText.jsx";
 
 let EditorInput = (props) => {
+  checkPropTypes(EditorInput, props);
   let { children, name, hint } = props;
 
   const classes = makeStyles((theme) => ({

@@ -23,7 +23,7 @@ import { withStyles } from 'tss-react/mui';
 import { TextField } from "@mui/material";
 
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import Answer from "./Answer";
@@ -95,6 +95,7 @@ const inputGlobalStyles = <GlobalStyles
 //   }}
 //   />
 function AddressQuestion(props) {
+  checkPropTypes(AddressQuestion, props);
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
 
   let currentStartValue = existingAnswer && existingAnswer[1].value || "";
@@ -163,7 +164,6 @@ function AddressQuestion(props) {
 }
 
 AddressQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     countries: PropTypes.string,

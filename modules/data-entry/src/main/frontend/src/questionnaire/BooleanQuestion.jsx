@@ -20,6 +20,7 @@
 import React from "react";
 
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
@@ -54,7 +55,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //   unknownLabel="Does not compute"
 //   />
 function BooleanQuestion(props) {
-  const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props }
+  checkPropTypes(BooleanQuestion, props);
+  const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props };
 
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
   // override them, and the props to be able to override the questionDefinition

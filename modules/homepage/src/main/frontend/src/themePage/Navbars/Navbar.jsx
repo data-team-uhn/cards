@@ -18,10 +18,12 @@ import { AppBar, Box, Toolbar, IconButton } from "@mui/material";
 import Menu from "@mui/icons-material/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
+import { checkPropTypes } from "../../propTypes";
 
 import headerStyle from "../../headerStyle.jsx";
 
 function Header({ ...props }) {
+  checkPropTypes(Header, props);
   const { classes, color } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color
@@ -53,7 +55,6 @@ function Header({ ...props }) {
 }
 
 Header.propTypes = {
-  classes: PropTypes.object.isRequired,
   color: PropTypes.oneOf(["primary", "info", "success", "warning", "danger", "blue", "teal", "rose", "bronze", "red", "orange", "green", "purple"])
 };
 

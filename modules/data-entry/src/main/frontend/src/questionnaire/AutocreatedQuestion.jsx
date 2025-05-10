@@ -19,6 +19,7 @@
 
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
@@ -29,6 +30,7 @@ import { useFormWriterContext } from "./FormContext";
 //
 // Other options are passed to the <question> widget
 let AutocreatedQuestion = (props) => {
+  checkPropTypes(AutocreatedQuestion, props);
   const { isEdit, ...rest } = props;
   const { existingAnswer, questionName } = rest;
   const { displayMode } = {...props.questionDefinition, ...rest};

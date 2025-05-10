@@ -122,11 +122,11 @@ export default function VocabularyActions(props) {
           vocabulary={vocabulary}
           type={props.type}
         />
-        <ErrorDialog title={`Failed to ${action}`} open={error} onClose={handleClose}>
+        {error && <ErrorDialog title={`Failed to ${action}`} open={error} onClose={handleClose}>
           <Typography variant="h6">{vocabulary.name}</Typography>
           <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
           <Typography component="p" color="error">{errorMessage}</Typography>
-        </ErrorDialog>
+        </ErrorDialog>}
       </React.Fragment>
   );
 }

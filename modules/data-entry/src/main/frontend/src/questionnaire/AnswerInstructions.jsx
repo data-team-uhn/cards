@@ -19,6 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import { Typography } from "@mui/material";
 import { hasWarningFlags } from "./FormUtilities";
@@ -27,6 +28,7 @@ import { hasWarningFlags } from "./FormUtilities";
 // based on minAnswers and maxAnswers from the question definition
 
 function AnswerInstructions (props) {
+  checkPropTypes(AnswerInstructions, props);
   let {
     minAnswers = 0,
     maxAnswers = 1,

@@ -19,6 +19,7 @@
 
 import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import {
   Dialog,
@@ -74,6 +75,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 const ResponsiveDialog = forwardRef((props, ref) => {
+  checkPropTypes(ResponsiveDialog, props);
   const {
     title,
     width = "sm",

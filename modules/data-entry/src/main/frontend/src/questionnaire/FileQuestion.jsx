@@ -23,7 +23,7 @@ import { Grid, LinearProgress, Link, TextField } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import DragAndDrop from "../components/dragAndDrop";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -46,6 +46,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Sample usage:
 // (TODO)
 function FileQuestion(props) {
+  checkPropTypes(FileQuestion, props);
   const { classes, existingAnswer, pageActive, ...rest } = props;
   const { maxAnswers, namePattern } = { ...props.questionDefinition, ...props }
   const { onBeforeUpload, onAfterUpload, onDelete, previewRenderer, answerNodeType } = props;
@@ -361,7 +362,6 @@ function FileQuestion(props) {
 }
 
 FileQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
   }).isRequired,

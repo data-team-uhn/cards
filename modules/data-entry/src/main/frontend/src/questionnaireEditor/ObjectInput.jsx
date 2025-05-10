@@ -20,6 +20,7 @@
 import React, { useState } from "react";
 import Fields from "./Fields"
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 import {
   MenuItem,
   Select,
@@ -33,6 +34,7 @@ import QuestionComponentManager from "../questionnaireEditor/QuestionComponentMa
 // Object Input field used by Edit dialog component
 
 let ObjectInput = (props) => {
+  checkPropTypes(ObjectInput, props);
   let { objectKey, value, data, hint, hints, onChange, ...rest } = props;
 
   let options = Object.keys(value || {});

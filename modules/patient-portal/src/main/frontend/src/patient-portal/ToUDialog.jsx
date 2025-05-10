@@ -19,6 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import {
   Button,
@@ -85,6 +86,7 @@ const useStyles = makeStyles()(theme => ({
 const TOU_ACCEPTED_VARNAME = 'tou_accepted';
 
 function ToUDialog(props) {
+  checkPropTypes(ToUDialog, props);
   const { open, actionRequired, onCleared, onDecline, onClose, ...rest } = props;
 
   const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);

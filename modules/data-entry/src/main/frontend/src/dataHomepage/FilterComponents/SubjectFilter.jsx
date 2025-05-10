@@ -22,6 +22,7 @@ import { InputAdornment, Tooltip } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import ErrorIcon from "@mui/icons-material/Error";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 import classNames from "classnames";
 import SearchBar from "../../SearchBar.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -37,11 +38,10 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
  *
  * @param {object} initial Object containing the initial value and label to place in the subject filter
  * @param {func} onChangeInput Function to call when this filter has chosen a new subject
- * @param {func} questionDefinition Unused, here to stop a warning when it is passed to the SearchBar component
- * Other props will be forwarded to the SearchBar component
  */
 const SubjectFilter = forwardRef((props, ref) => {
-  const { classes, initial, onChangeInput, questionDefinition } = props;
+  checkPropTypes(SubjectFilter, props);
+  const { classes, initial, onChangeInput } = props;
   const [ error, setError ] = useState();
   const [ hasSelectedValidSubject, setHasSelectedValidSubject ] = useState(true); // Default true since having nothing entered or a default value is valid
 

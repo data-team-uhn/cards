@@ -17,17 +17,16 @@
 //  under the License.
 //
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
-    Alert,
-    Button,
-    FormControl,
-    Grid,
-    IconButton,
-    Input,
-    InputAdornment,
-    InputLabel,
-    Tooltip,
+  Alert,
+  Button,
+  FormControl,
+  Grid,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+  Tooltip,
 } from '@mui/material';
 import { withStyles } from 'tss-react/mui';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -255,9 +254,5 @@ class SignIn extends React.Component {
     );
   }
 }
-
-SignIn.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(SignIn, styles);

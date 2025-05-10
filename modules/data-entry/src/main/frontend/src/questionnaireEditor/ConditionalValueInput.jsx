@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import {
   Autocomplete,
   ListItemText,
@@ -48,6 +48,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 let ConditionalValueInput = (props) => {
+  checkPropTypes(ConditionalValueInput, props);
   let { objectKey, data, hint } = props;
 
   let [ values, setValues ] = useState(data[objectKey]?.value || []);
@@ -160,6 +161,7 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
 
 // View mode component
 let ConditionalValue = (props) => {
+  checkPropTypes(ConditionalValue, props);
   let { objectKey, data } = props;
 
   let values = data[objectKey]?.value || [];

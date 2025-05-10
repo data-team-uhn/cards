@@ -20,6 +20,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useLocation } from 'react-router';
+import { checkPropTypes } from "../propTypes";
 
 import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
 
@@ -31,6 +32,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
+  checkPropTypes(Question, props);
   let {
     classes,
     children,
@@ -151,7 +153,6 @@ function Question (props) {
 }
 
 Question.propTypes = {
-    classes: PropTypes.object.isRequired,
     text: PropTypes.string,
     description: PropTypes.string,
     disableInstructions: PropTypes.bool,

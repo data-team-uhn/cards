@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
+import { checkPropTypes } from "../propTypes";
 import { Button, Checkbox, DialogContent, DialogActions, Chip, Radio, Typography } from '@mui/material';
 import { withStyles } from 'tss-react/mui';
 import ResponsiveDialog from "../components/ResponsiveDialog";
@@ -51,6 +51,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 function VocabularyTree(props) {
+  checkPropTypes(VocabularyTree, props);
   const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary,
     browseRoots, enableSelection, initialSelection, questionDefinition, infoAboveBackground, ...rest } = props;
 
@@ -304,7 +305,6 @@ VocabularyTree.propTypes = {
   enableSelection: PropTypes.bool,
   initialSelection: PropTypes.array,
   questionDefinition: PropTypes.object,
-  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(VocabularyTree, BrowseTheme);

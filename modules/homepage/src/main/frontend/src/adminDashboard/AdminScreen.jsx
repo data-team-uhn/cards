@@ -18,6 +18,7 @@
 //
 import React from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import { Link } from 'react-router';
 import { Breadcrumbs, Card, CardContent, CardHeader, Typography } from "@mui/material";
@@ -37,6 +38,7 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 function AdminScreen(props) {
+  checkPropTypes(AdminScreen, props);
   const {
     title = "Administration",
     action,

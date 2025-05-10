@@ -19,6 +19,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import { Button, Collapse, Grid, TextField, Tooltip } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
@@ -29,6 +30,7 @@ import UnfoldLess from "@mui/icons-material/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
+  checkPropTypes(Note, props);
   const {
     answerPath,
     children,
@@ -118,7 +120,6 @@ Note.propTypes = {
     PropTypes.node
   ]),
   existingAnswer: PropTypes.array,
-  classes: PropTypes.object.isRequired,
   onChangeNote: PropTypes.func,
   pageActive: PropTypes.bool,
   fullSize: PropTypes.bool,

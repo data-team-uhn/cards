@@ -21,6 +21,7 @@ import React, { forwardRef, useState } from "react";
 import { Select, MenuItem } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
@@ -34,12 +35,11 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  * @param {object} initial Object containing the initial value and label to place in the boolean filter
  * @param {func} onChangeInput Callback for when the value select has changed
- * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
- * Other props are forwarded to the Select component
  *
  */
 const BooleanFilter = forwardRef((props, ref) => {
-  const { classes, initial, onChangeInput, questionDefinition, ...rest } = props;
+  checkPropTypes(BooleanFilter, props);
+  const { classes, initial, onChangeInput } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");
 
@@ -78,8 +78,7 @@ BooleanFilter.propTypes = {
     value: PropTypes.string,
     label: PropTypes.string,
   }),
-  onChangeInput: PropTypes.func,
-  questionDefinition: PropTypes.object
+  onChangeInput: PropTypes.func
 }
 
 const StyledBooleanFilter = withStyles(BooleanFilter, QuestionnaireStyle)

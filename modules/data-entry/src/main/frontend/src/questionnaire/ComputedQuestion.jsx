@@ -20,6 +20,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { InputAdornment, TextField, Typography } from "@mui/material";
+import { checkPropTypes } from "../propTypes";
 
 import { withStyles } from 'tss-react/mui';
 
@@ -52,6 +53,7 @@ import { MakeRequest } from "../vocabQuery/util.jsx";
 //  expression="if (@{question_b} === 0) setError('Can not divide by 0'); return @{question_a}/@{question_b}"
 //  />
 let ComputedQuestion = (props) => {
+  checkPropTypes(ComputedQuestion, props);
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
   const { text, expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
@@ -368,7 +370,6 @@ let ComputedQuestion = (props) => {
 }
 
 ComputedQuestion.propTypes = {
-  classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string,
     expression: PropTypes.string.isRequired,
