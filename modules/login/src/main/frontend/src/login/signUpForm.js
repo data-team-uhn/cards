@@ -26,6 +26,7 @@ import {
 } from '@mui/material';
 import { withStyles } from 'tss-react/mui';
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -156,7 +157,7 @@ function FormFields(props) {
 const FormFieldsComponent = withStyles(FormFields, styles);
 
 function SignUpForm(props) {
-  PropTypes.checkPropTypes(SignUpForm.propTypes, props, 'prop', 'SignUpForm');
+  checkPropTypes(SignUpForm, props);
   const { classes, handleLogin, handleSuccess, loginOnSuccess, handleExit, closeButtonText, submitButtonText } = props;
 
   let [ errorOpen, setErrorOpen ] = useState(false);

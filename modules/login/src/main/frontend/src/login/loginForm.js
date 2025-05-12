@@ -18,6 +18,7 @@
 //
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { checkPropTypes } from "../propTypes";
 import {
   Alert,
   Button,
@@ -35,7 +36,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import styles from "../styling/styles";
 
 function SignIn(props) {
-  PropTypes.checkPropTypes(SignIn.propTypes, props, 'prop', 'SignIn');
+  checkPropTypes(SignIn, props);
   const { classes, handleLogin, redirectOnLogin } = props;
 
   const [ username, setUsername ] = useState("");
