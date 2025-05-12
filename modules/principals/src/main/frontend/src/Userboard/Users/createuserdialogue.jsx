@@ -16,44 +16,45 @@
 */
 
 import React from "react";
+import PropTypes from "prop-types";
 import { Grid, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import RegistrationForm from "../../login/RegistrationForm.js";
+import { checkPropTypes } from "../../propTypes";
 
-class CreateUserDialogue extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+function CreateUserDialogue(props) {
+  checkPropTypes(CreateUserDialogue, props);
+  const { reload, isOpen, handleClose } = props;
 
-    handleCreateUser() {
-        this.props.reload();
-        this.props.handleClose();
-    }
+  let handleCreateUser = () => {
+    reload();
+    handleClose();
+  }
 
-    handleError(error) {
-        console.log(error);
-    }
+  return (
+    <Dialog
+      open={isOpen}
+      onClose={() => handleClose()}
+    >
+      <DialogTitle>Register a new user</DialogTitle>
+      <DialogContent>
+        <Grid container>
+          <RegistrationForm
+            loginOnSuccess={false}
+            handleSuccess={() => handleCreateUser()}
+            handleExit={() => handleClose()}
+            closeButtonText="Cancel"
+            submitButtonText="Create account"
+          />
+        </Grid>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-    render() {
-        return (
-            <Dialog
-                open={this.props.isOpen}
-                onClose={() => this.props.handleClose()}
-            >
-                <DialogTitle>Register a new user</DialogTitle>
-                <DialogContent>
-                  <Grid container>
-                    <RegistrationForm
-                      loginOnSuccess={false}
-                      handleSuccess={() => this.handleCreateUser()}
-                      handleExit={() => this.props.handleClose()}
-                      closeButtonText="Cancel"
-                      submitButtonText="Create account"
-                    />
-                  </Grid>
-                </DialogContent>
-            </Dialog>
-        );
-    }
+CreateUserDialogue.propTypes = {
+  isOpen: PropTypes.bool,
+  handleClose: PropTypes.func.isRequired,
+  reload: PropTypes.func.isRequired
 }
 
 export default CreateUserDialogue;

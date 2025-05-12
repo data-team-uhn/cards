@@ -15,75 +15,85 @@
   under the License.
 */
 
-import React from "react";
-
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
-
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
+import { Alert, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 
 import userboardStyle from '../userboardStyle.jsx';
 
-class CreateGroupDialogue extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            newName: "",
-            error: ""
-        };
-    }
+function CreateGroupDialogue(props) {
+  checkPropTypes(CreateGroupDialogue, props);
+  const { classes, reload, isOpen, handleClose } = props;
 
-    handleCreateGroup() {
-        this.setState({ error: "" });
-        let formData = new FormData();
-        formData.append(':name', this.state.newName);
-        let url = "/system/userManager/group.create.json";
+  const [ error, setError ] = useState("");
+  const [ newName, setNewName ] = useState("");
 
-        fetch(url, {
-            method: 'POST',
-            credentials: 'include',
-            body: formData
-        })
-        .then((response) => {
-            if (!response.ok) {
-              this.setState({ error: response.statusText });
-              return;
-            }
-            this.props.reload();
-            this.props.handleClose();
-        });
-    }
+  let handleCreateGroup = () => {
+    setError("");
+    let formData = new FormData();
+    formData.append(':name', newName);
+    let url = "/system/userManager/group.create.json";
 
-    render() {
-        const { classes } = this.props;
+    fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+    })
+    .then((response) => {
+        if (!response.ok) {
+          setError(response.statusText);
+          return;
+        }
+        reload();
+        handleClose();
+    });
+  }
 
-        return (
-            <Dialog
-                open={this.props.isOpen}
-                onClose={this.props.handleClose}
-            >
-                <DialogTitle>Create New Group</DialogTitle>
-                <DialogContent>
-                    <Grid container>
-                        <Grid>
-                            <TextField
-                                variant="standard"
-                                id="name"
-                                name="name"
-                                label="Name"
-                                onChange={(event) => { this.setState({ newName: event.target.value, error: "" }); }}
-                                autoFocus
-                            />
-                        </Grid>
-                    </Grid>
-                    {this.state.error && <Typography color='error'>{this.state.error}</Typography>}
-                </DialogContent>
-                <DialogActions className={classes.dialogActions}>
-                    <Button variant="outlined" onClick={this.props.handleClose}>Cancel</Button>
-                    <Button variant="contained" onClick={(event) => { event.preventDefault(); this.handleCreateGroup(); }}>Create Group</Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
+  return (
+    <Dialog
+      open={isOpen}
+      onClose={handleClose}
+    >
+      <DialogTitle>Create New Group</DialogTitle>
+      <DialogContent>
+        {error && <Alert severity="error">{error}</Alert>}
+        <Grid container>
+          <Grid>
+            <TextField
+              variant="standard"
+              id="name"
+              name="name"
+              label="Name"
+              onChange={(event) => { setError(""); setNewName(event.target.value); }}
+              autoFocus
+            />
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions className={classes.dialogActions}>
+        <Button
+          variant="outlined"
+          onClick={handleClose}
+        >
+            Cancel
+          </Button>
+        <Button
+          variant="contained"
+          onClick={(event) => { event.preventDefault(); handleCreateGroup(); }}
+        >
+          Create Group
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+CreateGroupDialogue.propTypes = {
+  isOpen: PropTypes.bool,
+  handleClose: PropTypes.func.isRequired,
+  reload: PropTypes.func.isRequired
 }
 
 export default withStyles(CreateGroupDialogue, userboardStyle);
