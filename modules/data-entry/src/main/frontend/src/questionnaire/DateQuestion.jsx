@@ -18,7 +18,7 @@
 //
 
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 import { Typography } from "@mui/material";
 
 import { withStyles } from 'tss-react/mui';
@@ -63,7 +63,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 //  type="timestamp"
 //  />
 function DateQuestion(props) {
-  PropTypes.checkPropTypes(DateQuestion.propTypes, props, 'prop', 'DateQuestion');
+  checkPropTypes(DateQuestion, props);
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {dateFormat, type, lowerLimit, upperLimit} = {dateFormat: DateTimeUtilities.defaultDateFormat, type: DateTimeUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
