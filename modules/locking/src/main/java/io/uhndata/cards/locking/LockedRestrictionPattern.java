@@ -65,8 +65,7 @@ public class LockedRestrictionPattern implements RestrictionPattern
     public boolean matches(final Tree tree, final PropertyState property)
     {
         Tree currentTree = tree;
-        while (!currentTree.isRoot())
-        {
+        while (!currentTree.isRoot()) {
             if (isSubjectOrForm(currentTree)) {
                 String lock = currentTree.hasProperty(LockManager.LOCK_PROPERTY)
                     ? currentTree.getProperty(LockManager.LOCK_PROPERTY).getValue(Type.REFERENCE)

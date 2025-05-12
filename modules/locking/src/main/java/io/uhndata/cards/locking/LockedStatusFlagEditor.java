@@ -44,6 +44,7 @@ public class LockedStatusFlagEditor extends DefaultEditor
 
     // The property that contains a node's status flags
     private static final String STATUS_FLAGS = "statusFlags";
+
     // The status flag that indicates that a node is locked.
     private static final String LOCKED_FLAG = "LOCKED";
 

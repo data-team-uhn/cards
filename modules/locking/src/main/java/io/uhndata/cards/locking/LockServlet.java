@@ -31,6 +31,7 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -57,6 +58,7 @@ public class LockServlet extends SlingAllMethodsServlet
     private static final long serialVersionUID = 1L;
 
     private static final String METHOD_LOCK = "LOCK";
+
     private static final String METHOD_UNLOCK = "UNLOCK";
 
     private SlingHttpServletRequest request;
@@ -117,15 +119,17 @@ public class LockServlet extends SlingAllMethodsServlet
             }
             writeSuccess(response);
         } catch (LockError e) {
-            writeError(response, SlingHttpServletResponse.SC_CONFLICT,
+            writeError(response, HttpServletResponse.SC_CONFLICT,
                 String.format("Cannot %s node: %s", isLockRequest ? "lock" : "unlock", e.getMessage()));
         } catch (LockException e) {
-            writeError(response, SlingHttpServletResponse.SC_CONFLICT,
+            writeError(response, HttpServletResponse.SC_CONFLICT,
                 String.format("Unexpected error %s requested node", isLockRequest ? "locking" : "unlocking"));
         } catch (AccessDeniedException e) {
-            writeError(response, SlingHttpServletResponse.SC_FORBIDDEN, "Access Denied");
+            writeError(response, HttpServletResponse.SC_FORBIDDEN, "Access Denied");
         } catch (RepositoryException e) {
-            LOGGER.error("Unable to write response", e);
+            writeError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                "Unexpected error accessing the repository");
+            LOGGER.error("Unexpected error accessing the repository: {}", e.getMessage(), e);
         } finally {
             if (mustPopResolver) {
                 this.rrp.pop();
@@ -147,7 +151,7 @@ public class LockServlet extends SlingAllMethodsServlet
         throws IOException, RepositoryException
     {
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(SlingHttpServletResponse.SC_OK);
+        response.setStatus(HttpServletResponse.SC_OK);
         try (Writer out = response.getWriter()) {
             final JsonObjectBuilder result = Json.createObjectBuilder();
             result.add("status", "success");

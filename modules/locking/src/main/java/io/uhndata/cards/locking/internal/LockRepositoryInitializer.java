@@ -61,7 +61,7 @@ public class LockRepositoryInitializer
             Authorizable trustedUser = session.getUserManager().getAuthorizable("TrustedUsers");
 
             if (trustedUser != null && trustedUser.isGroup()) {
-                String repWrite = "rep:write";
+                String[] writePermission = { "rep:write" };
                 ValueFactory valueFactory = session.getValueFactory();
 
                 // Add permissions for trusted users if that user group exists
@@ -70,7 +70,7 @@ public class LockRepositoryInitializer
                     "/Forms",
                     false,
                     trustedUser.getPrincipal(),
-                    new String[] { repWrite },
+                    writePermission,
                     Collections.singletonMap("cards:locked", valueFactory.createValue("")),
                     session);
                 // Deny write permissions to locked subjects
@@ -78,7 +78,7 @@ public class LockRepositoryInitializer
                     "/Subjects",
                     false,
                     trustedUser.getPrincipal(),
-                    new String[] { repWrite },
+                    writePermission,
                     Collections.singletonMap("cards:locked", valueFactory.createValue("")),
                     session);
                 // Deny write permissions to form lock reference properties
@@ -86,7 +86,7 @@ public class LockRepositoryInitializer
                     "/Forms",
                     false,
                     trustedUser.getPrincipal(),
-                    new String[] { repWrite },
+                    writePermission,
                     Collections.singletonMap("rep:ntNames",
                         valueFactory.createValue(LockManager.LOCK_PROPERTY, PropertyType.NAME)),
                     session);
@@ -95,7 +95,7 @@ public class LockRepositoryInitializer
                     "/Subjects",
                     false,
                     trustedUser.getPrincipal(),
-                    new String[] { repWrite },
+                    writePermission,
                     Collections.singletonMap("rep:ntNames",
                         valueFactory.createValue(LockManager.LOCK_PROPERTY, PropertyType.NAME)),
                     session);
@@ -106,7 +106,6 @@ public class LockRepositoryInitializer
         } catch (RepositoryException e) {
             LOGGER.error("Unexpected error initializing locking permissions", e);
         }
-
 
     }
 }

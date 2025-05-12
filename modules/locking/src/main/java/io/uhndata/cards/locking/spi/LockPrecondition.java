@@ -24,11 +24,11 @@ import io.uhndata.cards.locking.api.LockException;
 import io.uhndata.cards.locking.api.LockWarning;
 
 /**
- * A restriction that may prevent a node from being locked based on the current node state.
- * Can allow locking, prevent all locking or prevent non-forced locking.
+ * A restriction that may prevent a node from being locked based on the current node state. Can allow locking, prevent
+ * all locking or prevent non-forced locking.
  *
  * @version $Id$
- * @since 0.9.30
+ * @since 0.9.31
  */
 public interface LockPrecondition
 {

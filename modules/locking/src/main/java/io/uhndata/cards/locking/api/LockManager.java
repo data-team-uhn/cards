@@ -25,20 +25,25 @@ import javax.jcr.Node;
  * Interface for locking and unlocking forms and subjects.
  *
  * @version $Id$
- * @since 0.9.30
+ * @since 0.9.31
  */
 public interface LockManager
 {
     /** The relative path that contains the lock information node if present. */
     String LOCK_NODE_PATH = "lock";
+
     /** The primary node type for a lock information node. */
     String LOCK_NODE_TYPE = "cards:Lock";
+
     /** The name of the property containing a reference to a lock node. */
     String LOCK_PROPERTY = "cards:lock";
+
     /** The name of the group of users who can lock nodes. */
     String LOCK_USERS = "LockUsers";
+
     /** The name of the group of users who can unlock nodes. */
     String UNLOCK_USERS = "UnlockUsers";
+
     /** The node type for the parent cards:lock nodes where locks are stored. */
     String LOCKS_NT_NAME = "rep:Unstructured";
 
@@ -77,7 +82,7 @@ public interface LockManager
      *
      * @param node the subject node to try to lock
      * @throws LockError if the node can not be locked
-     * @throws LockExcpetion if an internal error occurs
+     * @throws LockException if an internal error occurs
      * @throws AccessDeniedException if the user does not have permission to lock this node
      */
     void forceLock(Node node) throws LockError, LockException, AccessDeniedException;
@@ -95,7 +100,6 @@ public interface LockManager
      */
     boolean canUnlock(Node node) throws LockWarning, LockException;
 
-
     /**
      * Try to unlock a subject node.
      * Will fail if:
@@ -104,7 +108,7 @@ public interface LockManager
      *
      * @param node the subject node to unlock
      * @throws LockError if the node cannot be unlocked
-     * @throws LockExcepttion if an internal error occurs
+     * @throws LockException if an internal error occurs
      * @throws AccessDeniedException if the user does not have permission to unlock this node
      */
     void unlock(Node node) throws LockError, LockException, AccessDeniedException;

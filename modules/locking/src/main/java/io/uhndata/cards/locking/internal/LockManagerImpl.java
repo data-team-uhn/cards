@@ -62,6 +62,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 public class LockManagerImpl implements LockManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(LockManagerImpl.class);
+
     private static final String SUBJECT_NODE_TYPE = "cards:Subject";
 
     @Reference
@@ -76,7 +77,7 @@ public class LockManagerImpl implements LockManager
     private volatile List<LockPrecondition> lockPreconditions;
 
     /** The nodes that should be checked in. */
-    private final ThreadLocal<Set<String>> nodesToCheckin = ThreadLocal.withInitial(() -> new TreeSet<>());
+    private final ThreadLocal<Set<String>> nodesToCheckin = ThreadLocal.withInitial(TreeSet::new);
 
     private ThreadLocal<ResourceResolver> serviceResolver = new ThreadLocal<>();
 
@@ -98,7 +99,6 @@ public class LockManagerImpl implements LockManager
     {
         return serviceNode.hasProperty(LOCK_PROPERTY) && serviceNode.getProperty(LOCK_PROPERTY).getLength() > 0;
     }
-
 
     @Override
     public boolean canLock(Node node) throws LockWarning, LockException
@@ -149,7 +149,6 @@ public class LockManagerImpl implements LockManager
         }
     }
 
-
     @Override
     public boolean canUnlock(Node node) throws LockWarning, LockException
     {
@@ -161,7 +160,6 @@ public class LockManagerImpl implements LockManager
             closeResolverIfNeeded(mustCloseResolver);
         }
     }
-
 
     @Override
     public void unlock(Node node) throws LockError, LockException, AccessDeniedException
