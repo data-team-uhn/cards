@@ -228,6 +228,7 @@ function GroupsManager(props) {
                           <Button
                             variant="contained"
                             color="secondary"
+                            disabled={groupUsers.length == 0}
                             onClick={() => handleRemoveUsers(group.principalName, groupUsers)}
                           >
                             Remove User from Group
