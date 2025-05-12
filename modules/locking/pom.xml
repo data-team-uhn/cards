@@ -44,7 +44,8 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/locking.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/,
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
