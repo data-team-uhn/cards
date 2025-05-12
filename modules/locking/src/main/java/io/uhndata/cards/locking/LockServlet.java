@@ -91,10 +91,9 @@ public class LockServlet extends SlingAllMethodsServlet
     @Override
     protected StringBuffer getAllowedRequestMethods(Map<String, Method> declaredMethods)
     {
-        StringBuffer allowBuf = new StringBuffer();
+        StringBuffer allowBuf = super.getAllowedRequestMethods(declaredMethods);
 
-        allowBuf.append(METHOD_LOCK);
-        allowBuf.append(", ").append(METHOD_UNLOCK);
+        allowBuf.append(METHOD_LOCK).append(", ").append(METHOD_UNLOCK);
 
         return allowBuf;
     }
