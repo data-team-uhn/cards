@@ -18,6 +18,7 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
+import { checkPropTypes } from "../propTypes";
 
 import {
   Avatar,
@@ -45,6 +46,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 import ErrorDialog from "../components/ErrorDialog.jsx";
 
 function SubjectLockAction(props) {
+  checkPropTypes(SubjectLockAction, props);
   const {
     subject,
     reloadSubject,
