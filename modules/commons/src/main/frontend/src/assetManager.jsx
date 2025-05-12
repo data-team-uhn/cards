@@ -102,7 +102,13 @@ var getAssetURL = async function(assetURL) {
 
   var assetName = getAssetName(assetURL);
   return getAssetsJson()
-    .then(json => "/libs/cards/resources/" + json[assetName]);
+    .then(json => {
+      if (!json[assetName]) {
+        console.error(`Unknown asset ${assetURL}`);
+        return "";
+      }
+      return "/libs/cards/resources/" + json[assetName];
+    });
 }
 
 // Get the (optional) dependencies needed by an asset.
@@ -160,11 +166,21 @@ var loadModule = async function(assetURL) {
 // @param {string} assetURL the asset to load, may be an actual URL, or a special `asset:`-prefixed string followed by the asset name
 // @return a Promise that will resolve to the actual component
 var loadAsset = async function(assetURL) {
+  if (process.env.NODE_ENV == 'production') {
+    if (assetURL == 'asset:cards-login.loginDialogue.js') {
+      // In production mode, this is already embedded in the top level script and does not need to be loaded
+      return;
+    }
+  }
   if (!assets[assetURL]) {
     let dependencies = await getAssetDependencies(assetURL);
     await Promise.all(dependencies.map(dependency => loadAsset(dependency)));
     return loadModule(assetURL)
       .then(module => {
+        if (!module) {
+          console.error(`Failed to load module ${assetURL}`);
+          return null;
+        }
         let parameters = getURLParameters(assetURL);
         return assets[assetURL] = parameters.has("component") ? module[parameters.get("component")] : module.default;
       });
