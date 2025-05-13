@@ -35,6 +35,7 @@
       "service.ranking:Integer":300,
       "scripts":[
         "create user testuser with password testpassword",
+        "create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:QuestionnairesHomepage) /Questionnaires",
         "create user computedtestuser with password testpassword \n set ACL for computedtestuser \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,computedquestions) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/BackendComputedTest/question1computed,/Questionnaires/BackendComputedTest/question2computed,/Questionnaires/BackendComputedTest/question3computed) \n     end"
       ]
     }
