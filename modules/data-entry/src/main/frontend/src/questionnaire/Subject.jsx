@@ -260,7 +260,7 @@ function SubjectHeader(props) {
 
   useEffect(() => {
     reloadSubject.current = fetchSubjectData;
-  }, []);
+  }, [id]);
 
   // Fetch the subject's data as JSON from the server.
   // The data will contain the subject metadata,
