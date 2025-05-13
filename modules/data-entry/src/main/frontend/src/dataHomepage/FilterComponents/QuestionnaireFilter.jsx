@@ -98,7 +98,7 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
   return (
     <Select
       variant="standard"
-      value={selection}
+      value={questionnaires.length === 0 ? "" : selection}
       onChange={(event) => {
         let uuid = event.target.value;
         setSelection(uuid);
