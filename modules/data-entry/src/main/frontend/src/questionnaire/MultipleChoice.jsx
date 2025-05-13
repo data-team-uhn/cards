@@ -420,6 +420,7 @@ function MultipleChoice(props) {
             onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
             slotProps={{
               htmlInput: Object.assign({
+                style: isRadio && ghostName && !ghostSelected ? {opacity: 0} : undefined,
                 onKeyDown: (event) => {
                   if (event.key == 'Enter') {
                     // We need to stop the event so that it doesn't trigger a form submission
