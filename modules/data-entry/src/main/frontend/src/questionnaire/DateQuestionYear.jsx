@@ -74,7 +74,7 @@ function DateQuestionYear(props) {
   );
 }
 
-DateQuestionYear.propTypes = DateQuestionUtilities.PROP_TYPES;
+DateQuestionYear.propTypes = DateTimeUtilities.PROP_TYPES;
 
 export default DateQuestionYear;
 
