@@ -30,7 +30,7 @@ function Form(props) {
   }
 
   return (
-    <DefaultForm id={props.match.params.formId.replace(/\..*/, '')} key={props.match.params.formId} actionSwitches={actionSwitches} />
+    <DefaultForm key={window.location} actionSwitches={actionSwitches} />
   );
 }
 

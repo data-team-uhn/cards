@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 
-import { withRouter, useHistory } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import {
   Alert,
@@ -40,7 +40,7 @@ import { DateTime } from "luxon";
 
 import ResourceHeader from "../questionnaire/ResourceHeader.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
-import { getHierarchyAsList } from "../questionnaire/SubjectIdentifier";
+import { getSubjectIdFromPath, getHierarchyAsList } from "../questionnaire/SubjectIdentifier";
 import { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle.jsx";
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -91,7 +91,7 @@ const visitGridColumns = [
 ];
 
 function Patient(props) {
-  const patientUuid = props.match.params.patientId.replace(/\..*/, '');
+  const patientUuid = getSubjectIdFromPath(location.pathname);
 
   // Data already associated with the subject
   const [ patientData, setPatientData ] = useState();
@@ -102,7 +102,7 @@ function Patient(props) {
   // When something goes wrong:
   const [ error, setError ] = useState();
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -223,7 +223,7 @@ function Patient(props) {
             }}
             onRowClick={(params, event) => {
                event?.preventDefault();
-               history.push(`/content.html${params.row.path}`);
+               navigate(`/content.html${params.row.path}`);
             }}
             pageSizeOptions={[5]}
           />
@@ -233,4 +233,4 @@ function Patient(props) {
   );
 }
 
-export default withRouter(Patient);
+export default Patient;

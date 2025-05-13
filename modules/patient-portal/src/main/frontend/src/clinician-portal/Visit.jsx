@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 
-import { withRouter, useHistory } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import {
   Alert,
@@ -41,23 +41,21 @@ import SurveyIcon from '@mui/icons-material/Assignment';
 import LockIcon from '@mui/icons-material/Lock';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 
-import makeStyles from '@mui/styles/makeStyles';
-import withStyles from '@mui/styles/withStyles';
+import { makeStyles, withStyles } from 'tss-react/mui';
 
 import { DateTime } from "luxon";
-
 import SurveyLinkButton from "./SurveyLinkButton";
 import EditButton from "../dataHomepage/EditButton";
 import PrintButton from "../dataHomepage/PrintButton";
 import SubjectLockAction from "../locking/SubjectLockAction";
 import FormattedText from "../components/FormattedText";
 import ResourceHeader from "../questionnaire/ResourceHeader";
-import { getHierarchyAsList, getTextHierarchy } from "../questionnaire/SubjectIdentifier";
+import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy } from "../questionnaire/SubjectIdentifier";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "../questionnaire/QuestionnaireStyle";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles()(theme => ({
   stepIndicator : {
     border: "1px solid " + theme.palette.action.disabled,
     background: "transparent",
@@ -78,10 +76,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Visit(props) {
-  const { classes } = props;
-
-  const patientUuid = props.match.params.patientId;
-  const visitUuid = props.match.params.visitId;
+  const id = getSubjectIdFromPath(location.pathname);
+  const [ , patientUuid, visitUuid ] = /^([^\/]+)\/([^\/]+)$/.exec(id);
 
   // Identifier of the questionnaire set used for the visit
   const [ questionnaireSetId, setQuestionnaireSetId ] = useState();
@@ -110,9 +106,9 @@ function Visit(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
-  const styles = useStyles();
+  const { classes } = useStyles();
 
   // --------------------------------------------------------------------------------------------------------------------------
   // Loading and parsing:
@@ -258,10 +254,10 @@ function Visit(props) {
   // ---------------------------------------------------------------------------------------------------------------
   // Prepare the display of the survey list, including the status of each survey
 
-  const surveyIndicator = <Avatar className={styles.stepIndicator}><SurveyIcon /></Avatar>;
-  const doneIndicator = <Avatar className={styles.doneIndicator}><DoneIcon /></Avatar>;
-  const incompleteIndicator = <Avatar className={styles.incompleteIndicator}><WarningIcon /></Avatar>;
-  const lockedIndicator = <Avatar className={styles.stepIndicator}><LockIcon /></Avatar>;
+  const surveyIndicator = <Avatar className={classes.stepIndicator}><SurveyIcon /></Avatar>;
+  const doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
+  const incompleteIndicator = <Avatar className={classes.incompleteIndicator}><WarningIcon /></Avatar>;
+  const lockedIndicator = <Avatar className={classes.stepIndicator}><LockIcon /></Avatar>;
 
   const isFormComplete = (questionnaireId) => {
     return surveyData?.[questionnaireId] && !surveyData[questionnaireId].statusFlags?.includes("INCOMPLETE");
@@ -308,7 +304,7 @@ function Visit(props) {
           disablePadding
           secondaryAction={withAction && !isFormLocked(q) && <EditButton entryPath={surveyData?.[q]?.["@path"]}/>}
         >
-          <ListItemButton onClick={() => history.push(`/content.html${surveyData?.[q]?.["@path"]}`)}>
+          <ListItemButton onClick={() => navigate(`/content.html${surveyData?.[q]?.["@path"]}`)}>
             <ListItemAvatar sx={{alignSelf: "baseline", zoom: 1.2}}>
             { isFormLocked(q) ? lockedIndicator : (
                  isFormComplete(q) ? doneIndicator : (
@@ -363,7 +359,7 @@ function Visit(props) {
         title={`Visit ${visitNumber}`}
         breadcrumbs={(parents && getHierarchyAsList(parents, true) || "")}
         action={
-          <div className={classes.actionsMenu}>
+          <div className={props.classes.actionsMenu}>
             <SurveyLinkButton visitURL={`/Subjects/${patientUuid}/${visitUuid}`} />
             { !visit?.statusFlags?.includes("LOCKED") &&
               <SubjectLockAction subject={visit} reloadSubject={loadExistingData} />
@@ -386,4 +382,4 @@ function Visit(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(withRouter(Visit));
+export default withStyles(Visit, QuestionnaireStyle);
