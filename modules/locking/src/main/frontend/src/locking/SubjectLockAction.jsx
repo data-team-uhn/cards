@@ -287,7 +287,7 @@ function SubjectLockAction(props) {
       setRequestInProgress(false);
       if (response.ok)  {
         closeDialog();
-        reloadSubject && reloadSubject();
+        reloadSubject?.();
       } else {
         handleError(response.status, response);
       }
