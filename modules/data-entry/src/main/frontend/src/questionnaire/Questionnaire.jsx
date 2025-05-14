@@ -88,7 +88,7 @@ let Questionnaire = (props) => {
   // First, fetch the questionnaire data
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isEdit]);
 
   useEffect(() => {
     setQuestionnaireTitle(data?.title || decodeURI(id));
@@ -227,6 +227,7 @@ let Questionnaire = (props) => {
           { !isEdit ?
               <QuestionnairePreview
                 data={data}
+                key={id + data?.['jcr:lastModified']}
                 title={questionnaireTitle}
                 contentOffset={props.contentOffset}
               />
@@ -235,6 +236,7 @@ let Questionnaire = (props) => {
                 <QuestionnaireContents
                   disableDelete
                   data={data}
+                  key={id + data?.['jcr:lastModified']}
                   classes={classes}
                   onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
                   onActionDone={()=>{}}
