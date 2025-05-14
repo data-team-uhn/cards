@@ -293,10 +293,10 @@ function FileQuestion(props) {
       <div>
         <Link href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download underline="hover">{label}</Link>
         { previewRenderer?.(
-          fixFileURL(hrefs[idx], label),
-          label,
-          idx
-        ) }
+            fixFileURL(hrefs[idx], label),
+            label,
+            idx
+        )}
       </div>
     );
   }
@@ -332,10 +332,10 @@ function FileQuestion(props) {
                   onComplete={() => deletePath(idx)}
                 />
                 { previewRenderer?.(
-                  fixFileURL(uploadedFiles[filepath], filepath),
-                  filepath,
-                  idx
-                ) }
+                    fixFileURL(uploadedFiles[filepath], filepath),
+                    filepath,
+                    idx
+                )}
                 { namePattern &&
                   <span>
                     {varNames.map((name, nameIdx) => (
