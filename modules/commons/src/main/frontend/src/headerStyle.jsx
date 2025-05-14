@@ -129,9 +129,6 @@ const headerStyle = theme => ({
     padding: "1px 2px",
     borderRadius: "4px"
   },
-  quickSearchResultsTitle: {
-    display: "inline-block"
-  },
 });
 
 export default headerStyle;

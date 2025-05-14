@@ -21,7 +21,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
 import { QuickSearchMatch, QuickSearchIdentifier } from "./Navbars/QuickSearchIdentifier.jsx";
 
-import { Button, Card, CardContent, CardHeader } from "@mui/material";
+import { Card, CardContent, CardHeader, Typography } from "@mui/material";
 
 import { withStyles } from 'tss-react/mui';
 
@@ -60,9 +60,9 @@ function QuickSearchResults(props) {
       <Card>
         <CardHeader
           title={
-            <Button className={classes.quickSearchResultsTitle}>
+            <Typography variant="h6">
               Quick Search Results for <span className={classes.highlightedText}>{anchor}</span>
-            </Button>
+            </Typography>
           }
         />
         <CardContent>
