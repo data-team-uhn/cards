@@ -60,7 +60,7 @@ function QuickSearchResults(props) {
       <Card>
         <CardHeader
           title={
-            <Typography variant="h6">
+            <Typography variant="h4">
               Quick Search Results for <span className={classes.highlightedText}>{anchor}</span>
             </Typography>
           }
