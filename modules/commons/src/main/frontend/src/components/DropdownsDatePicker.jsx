@@ -323,4 +323,3 @@ DropdownsDatePicker.propTypes = {
 };
 
 export default DropdownsDatePicker;
-

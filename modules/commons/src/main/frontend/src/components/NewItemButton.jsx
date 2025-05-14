@@ -68,4 +68,3 @@ NewItemButton.propTypes = {
 }
 
 export default NewItemButton;
-
