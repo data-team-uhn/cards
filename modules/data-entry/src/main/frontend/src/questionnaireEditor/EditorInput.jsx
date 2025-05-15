@@ -59,7 +59,7 @@ let EditorInput = (props) => {
             <Tooltip enterTouchDelay={200} title={
               <FormattedText variant="caption">{hint}</FormattedText>
             }>
-              <Info color="primary" />
+              <Info color="primary" sx={{mb: "-2px", ml: "2px"}}/>
             </Tooltip>
           }
         </Typography>
