@@ -56,12 +56,14 @@ let ListInput = (props) => {
       return;
     }
 
-    fetch(
+    let url = new URL(
       '/query?query='
       + encodeURIComponent(
-        `select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`
-      )
-    )
+        `select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`),
+       window.location.origin
+    );
+    url.searchParams.set("resourceSelectors", ".includeDefaultOptions");
+    fetch(url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let listOptions = Array.from(json?.rows ?? []);
@@ -121,7 +123,7 @@ let ListInput = (props) => {
           variant="standard"
           id={objectKey}
           multiple={type.multiple}
-          value={type.multiple ? selection : (selection?.[0] ?? '')}
+          value={options.length === 0 ? "" : (type.multiple ? selection : (selection?.[0] ?? ''))}
           onChange={handleChange}
           input={<Input id={objectKey} />}
           renderValue={type.multiple ? () => (

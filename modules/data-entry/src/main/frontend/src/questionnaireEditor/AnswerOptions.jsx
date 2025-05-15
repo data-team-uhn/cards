@@ -117,7 +117,6 @@ let AnswerOptions = (props) => {
   const { objectKey, value, data, path, saveButtonRef, hint } = props;
   const { classes } = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
-  let [ optionsLoaded, setOptionsLoaded ] = useState(false);
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
@@ -178,18 +177,18 @@ let AnswerOptions = (props) => {
 
   // Pre-populate selectableQuestion answer options with selectable zones according to the selected variant if any selected
   useEffect(() => {
-    if (optionsLoaded && fieldsReader?.variant && fieldsReader.variant.length > 0) {
-      let selectableZones = {}; //here we get the zones json from the JCR node corresponding to variant
-      let variantOptions = Object.entries(selectableZones).map(([key, value]) => ({
-        label: value,
-        value: key,
-        noneOfTheAbove : false,
-        "@path": path + "/AnswerOption" + stringToHash(key)
-      }));
+    if (fieldsReader?.variant?.[0]?.defaultOptions) {
+      let variantOptions = Object.entries(fieldsReader?.variant?.[0]?.defaultOptions)
+        .filter(([key]) => !key.startsWith("@") && !key.startsWith("jcr:"))
+        .map(([key, value]) => ({
+          label: value,
+          value: key,
+          noneOfTheAbove : false,
+          "@path": path + "/AnswerOption" + stringToHash(key)
+     }));
 
       setOptions(variantOptions);
     }
-    fieldsReader.variant && !optionsLoaded && setOptionsLoaded(true);
   },
   [fieldsReader.variant]);
 
