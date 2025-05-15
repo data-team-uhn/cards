@@ -444,7 +444,7 @@ function SubjectMemberInternal (props) {
     );
   }
 
-  let identifier = data.identifier ?? id;
+  let identifier = data?.identifier ?? id;
   let label = data?.type?.label;
   let statusFlags = data?.statusFlags;
   let title = `${label || "Subject"} ${identifier}`;
