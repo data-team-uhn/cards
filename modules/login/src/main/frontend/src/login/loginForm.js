@@ -49,17 +49,13 @@ function SignIn(props) {
   useEffect(() => {
     // Check to see if 1 or 2 step login should be used
     fetch(window.location.origin + "/apps/cards/SAMLDomains.json")
-      .then((resp) => setSingleStepEntry(!!resp.ok));
+      .then((resp) => setSingleStepEntry(!resp.ok));
   }, []);
 
   let loginRedirectPath = () => {
     const currentPath = window.location.pathname.startsWith("/login") ? "/" : window.location.pathname;
     return new URLSearchParams(window.location.search).get("resource") || currentPath;
   };
-
-  let togglePasswordMask = () => {
-    setPasswordIsMasked(!passwordIsMasked);
-  }
 
   let submitLogin = () => {
     fetch('/j_security_check',
@@ -133,7 +129,7 @@ function SignIn(props) {
             }, 1000);
           }
         })
-        .catch((err) => setFailedLogin("Error occurred while handling third-party identity provider"));
+        .catch((err) => setFailedLogin("An error occurred while handling the third-party identity provider."));
       } else {
         setFailedLogin("Invalid email address");
       }
@@ -192,7 +188,8 @@ function SignIn(props) {
                 <Input
                   name="j_password"
                   type={passwordIsMasked ? 'text' : 'password'}
-                  id="j_password" autoComplete="current-password"
+                  id="j_password"
+                  autoComplete="current-password"
                   autoFocus={phase === "PASSWORD_ENTRY"}
                   onChange={(event) => setPassword(event.target.value)}
                   endAdornment={
@@ -201,7 +198,7 @@ function SignIn(props) {
                         <IconButton
                           size="large"
                           aria-label="Toggle password visibility"
-                          onClick={togglePasswordMask}
+                          onClick={() => setPasswordIsMasked(!passwordIsMasked)}
                         >
                           {passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
                         </IconButton>

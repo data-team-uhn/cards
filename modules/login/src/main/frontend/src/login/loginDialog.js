@@ -43,8 +43,8 @@ export function fetchWithReLogin(displayLoginCtx, url, fetchArgs, discardOnFailu
     });
 }
 
-function DialogLoginContainer(props) {
-  checkPropTypes(DialogLoginContainer, props);
+function ReLoginDialog(props) {
+  checkPropTypes(ReLoginDialog, props);
   const { isOpen, handleLogin } = props;
 
   return (
@@ -56,9 +56,9 @@ function DialogLoginContainer(props) {
   );
 }
 
-DialogLoginContainer.propTypes = {
+ReLoginDialog.propTypes = {
   isOpen: PropTypes.bool,
   handleLogin: PropTypes.func.isRequired,
 };
 
-export default DialogLoginContainer;
+export default ReLoginDialog;

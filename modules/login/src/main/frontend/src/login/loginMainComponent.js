@@ -33,11 +33,6 @@ function MainLoginContainer(props) {
   const isLongForm = !!window.location.pathname.startsWith("/login");
   const title = document.querySelector('meta[name="title"]').content;
 
-  // Toggle between sign in and sign up
-  let handleSwap = () => {
-    setSignInShow(!signInShown);
-  }
-
   return (
     <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
       <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
@@ -55,7 +50,7 @@ function MainLoginContainer(props) {
               variant="outlined"
               fullWidth
               className={classes.main}
-              onClick={handleSwap}
+              onClick={() => setSignInShow(!signInShown)}
              >
               { signInShown ?  "Sign up" : "Sign In" }
             </Button>

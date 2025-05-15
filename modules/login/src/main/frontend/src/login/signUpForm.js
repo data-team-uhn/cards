@@ -231,7 +231,7 @@ function SignUpForm(props) {
           throw Error(response.statusText);
         }
 
-        handleSuccess && handleSuccess();
+        handleSuccess?.();
         loginOnSuccess && signIn(username, password);
       })
       .catch(error => {
