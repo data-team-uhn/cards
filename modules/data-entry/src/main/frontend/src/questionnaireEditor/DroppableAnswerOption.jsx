@@ -167,7 +167,7 @@ function DroppableAnswerOption(props) {
             <Tooltip title="Selected by default">
               <Checkbox
                 color="secondary"
-                checked={value.isDefault}
+                checked={value.isDefault || false}
                 onChange={(event) => {
                   setOptions(old => {
                     var _new = old.slice();
