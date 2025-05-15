@@ -908,9 +908,6 @@
   // The data map that should be applied to this variant
   - map (PATH) mandatory
 
-  // The selectable zones names corresponding to the variant
-  - zones (PATH) mandatory
-
   // The maximum width that the svg area should be displayed with
   - maxWidth (long)
 
@@ -926,3 +923,8 @@
 
   // If the colors provided above should take priority over non-prioritized colors
   - overrideMapColors (boolean)
+
+  //Children
+
+  // Container for the selectable zones names corresponding to the variant
+  + defaultOptions (nt:unstructured)
