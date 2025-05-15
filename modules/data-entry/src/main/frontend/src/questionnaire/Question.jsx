@@ -131,7 +131,7 @@ function Question (props) {
                 { labels.map( (item, idx) => {
                   let value = defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item;
                   return(
-                    value ? <ListItem key={existingAnswer[0] + idx}> {value}</ListItem> : null
+                    value || value === 0 ? <ListItem key={existingAnswer[0] + idx}> {value}</ListItem> : null
                   )})
                 }
               </List>
