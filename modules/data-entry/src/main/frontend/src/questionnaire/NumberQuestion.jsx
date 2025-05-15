@@ -301,9 +301,16 @@ function NumberQuestion(props) {
   let rangeDisplayFormatter = function(label, idx) {
     if (idx != 1) return '';
     return (
-      <FormattedText>
-        { `${initialValue?.[0]} &mdash; ${label}` }
-      </FormattedText>
+      <div>
+        <FormattedText color={pageActive && (minMaxError || rangeError) ? "error" : ""}>
+          { `${initialValue?.[0]} &mdash; ${label}` }
+        </FormattedText>
+        { pageActive && (minMaxError || rangeError) &&
+          <Typography component="div" color="error" variant="caption">
+            Invalid input
+          </Typography>
+        }
+      </div>
     );
   }
 
