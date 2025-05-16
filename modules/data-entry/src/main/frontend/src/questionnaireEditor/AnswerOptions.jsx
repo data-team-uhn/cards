@@ -116,6 +116,9 @@ let AnswerOptions = (props) => {
   const { objectKey, value, data, path, saveButtonRef, hint } = props;
   const { classes } = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
+  // Whether the answer options are suggested / pre-filled for a certain
+  //   question type and props (true) or user-entered (false)
+  let [ usesDefaultOptions, setUsesDefaultOptions ] = useState();
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
@@ -160,22 +163,38 @@ let AnswerOptions = (props) => {
     });
   }, [path])
 
-  // Pre-populate selectableQuestion answer options with selectable zones according to the selected variant if any selected
+  // Pre-populate answer options with options suggested by the properties already filled in, if any.
+  // If more than one property suggests options, only use the first available.
   useEffect(() => {
-    if (fieldsReader?.variant?.[0]?.defaultOptions) {
-      let variantOptions = Object.entries(fieldsReader?.variant?.[0]?.defaultOptions)
-        .filter(([key]) => !key.startsWith("@") && !key.startsWith("jcr:"))
-        .map(([key, value]) => ({
-          label: value,
-          value: key,
-          noneOfTheAbove : false,
-          "@path": path + "/AnswerOption" + stringToHash(key)
-     }));
+    // Don't overwrite user-entered/currated options
+    if (options?.length > 0 && !usesDefaultOptions) return;
 
-      setOptions(variantOptions);
+    let prefilledOptions = [];
+    let optionSuggestions = Object.values(fieldsReader)
+      // Out of all properties available in the context,
+      //   find the first one that has `defaultOptions` present
+      //   as a field at least one of its values (stored as an array)
+      .find(
+        v => v.find(e => e?.defaultOptions)
+      )?.reduce(
+        // If found, consolidate all `defaultOptions` in one object
+        (obj, item) => Object.assign(obj, item?.defaultOptions || {}),
+        {}
+      );
+    if (optionSuggestions) {
+      prefilledOptions = Object.entries(optionSuggestions)
+        .filter(([key]) => !key.startsWith("@") && !key.startsWith("jcr:"))
+        .map(([key, label]) => ({
+          label: label,
+          value: key,
+          "@path": path + "/AnswerOption" + stringToHash(key),
+          isNew: true,
+      }));
     }
-  },
-  [fieldsReader.variant]);
+
+    setOptions(prefilledOptions);
+    setUsesDefaultOptions(true);
+  }, [fieldsReader, usesDefaultOptions]);
 
   let specialOptionsInfo = [
     {
@@ -203,6 +222,7 @@ let AnswerOptions = (props) => {
   // Clear local state when data changes
   useEffect(() => {
     setOptions(extractSortedOptions(data));
+    setUsesDefaultOptions(false);
     setDeletedOptions([]);
     setTempValue('');
     setIsDuplicate(false);
@@ -220,6 +240,7 @@ let AnswerOptions = (props) => {
       newOptions.splice(index, 1);
       return newOptions;
     });
+    setUsesDefaultOptions(false);
   }
 
   let validateOption = (optionInput, setter, specialOption) => {
@@ -261,6 +282,7 @@ let AnswerOptions = (props) => {
         value.push(newOption);
         return value;
       });
+      setUsesDefaultOptions(false)
     }
 
     tempValue && setTempValue('');
@@ -386,6 +408,7 @@ let AnswerOptions = (props) => {
         value[descriptionIndex].description = description;
         return value;
       });
+      setUsesDefaultOptions(false);
     }
     handlePopoverClose();
   }
