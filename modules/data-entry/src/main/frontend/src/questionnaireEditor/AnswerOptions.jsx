@@ -118,6 +118,7 @@ let AnswerOptions = (props) => {
   // Whether the answer options are suggested / pre-filled for a certain
   //   question type and props (true) or user-entered (false)
   let [ suggestedOptions, setSuggestedOptions ] = useState();
+  let [ newOptionsAvailable, setNewOptionsAvailable ] = useState();
   let [ suggestedOptionsAsString, setSuggestedOptionsAsString ] = useState();
   let [ suggestionDialogOpen, setSuggestionDialogOpen ] = useState(false);
   let [ deletedOptions, setDeletedOptions ] = useState([]);
@@ -159,10 +160,14 @@ let AnswerOptions = (props) => {
     });
   }, [path])
 
+  useEffect(() => {
+    setNewOptionsAvailable(false);
+  }, []);
+
   // Pre-populate answer options with options suggested by the properties already filled in, if any.
   // If more than one property suggests options, only use the first available.
   useEffect(() => {
-    let defaultOptions = 
+    let defaultOptions =
       Object.values(fieldsReader)
       // Out of all properties available in the context,
       //   find the first one that has `defaultOptions` present
@@ -176,14 +181,19 @@ let AnswerOptions = (props) => {
       );
     if (stringifyOptionsMap(defaultOptions) != suggestedOptionsAsString) {
       setSuggestedOptions(defaultOptions);
+      setNewOptionsAvailable(true);
       setSuggestedOptionsAsString(stringifyOptionsMap(defaultOptions));
     }
 
   }, [fieldsReader]);
 
   useEffect(() => {
-    !suggestionDialogOpen && suggestedOptionsAsString && setSuggestionDialogOpen(true);
-  }, [suggestedOptionsAsString, suggestionDialogOpen]);
+    suggestedOptionsAsString && setSuggestionDialogOpen(true);
+  }, [suggestedOptionsAsString]);
+
+  useEffect(() => {
+    !suggestionDialogOpen && setNewOptionsAvailable(false);
+  }, [suggestionDialogOpen]);
 
   let stringifyOptionsMap = map => Object.entries(map || {}).map(e => e.join("=")).sort((a, b) => a.localeCompare(b)).join(", ");
 
@@ -199,8 +209,6 @@ let AnswerOptions = (props) => {
           isNew: true,
       })));
     }
-
-    setSuggestedOptions();
   }
 
   let specialOptionsInfo = [
@@ -453,6 +461,14 @@ let AnswerOptions = (props) => {
         }}
         multiline
       />
+      { suggestedOptions &&
+        <Button
+          variant="contained"
+          onClick={() => setSuggestionDialogOpen(true)}
+        >
+          Load
+        </Button>
+      }
       { generateSpecialOptions(1) }
       <Popover
         open={Boolean(descriptionAnchorEl)}
