@@ -711,7 +711,7 @@ function QuestionnaireSet(props) {
 
   let submitButton = (label) => (
     <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key={"review-submit"+label}>
-      {submissionInProgress ? "Submitting...." : (label ?? "Submit")}
+      {submissionInProgress ? "Submitting...." : (label || "Submit")}
     </Fab>
   );
 
