@@ -21,10 +21,12 @@ package io.uhndata.cards.serialize.internal;
 import java.util.function.Function;
 
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
@@ -37,6 +39,8 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class DefaultOptionsProcessor implements ResourceJsonProcessor
 {
+    private ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
+
     @Override
     public String getName()
     {
@@ -50,34 +54,25 @@ public class DefaultOptionsProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public void start(final Resource resource)
+    {
+        this.resolver.set(resource.getResourceResolver());
+    }
+
+    @Override
+    public void end(final Resource resource)
+    {
+        this.resolver.remove();
+    }
+
+    @Override
     public JsonValue processChild(final Node node, final Node child, final JsonValue input,
         final Function<Node, JsonValue> serializeNode)
     {
         try {
             if (isDefaultOptionsList(child)) {
-                return serializeNode.apply(child);
+                return this.resolver.get().resolve(child.getPath() + ".-identify.bare").adaptTo(JsonObject.class);
             }
-        } catch (RepositoryException e) {
-            // Really shouldn't happen
-        }
-        return input;
-    }
-
-    @Override
-    public JsonValue processProperty(final Node node, final Property property, final JsonValue input,
-        final Function<Node, JsonValue> serializeNode)
-    {
-        try {
-            if (!isDefaultOptionsList(node)) {
-                return input;
-            }
-            if (property == null) {
-                return null;
-            }
-            final String name = property.getName();
-            JsonValue result = input;
-            result = removeSystemProperties(name, result);
-            return result;
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
@@ -87,13 +82,5 @@ public class DefaultOptionsProcessor implements ResourceJsonProcessor
     private boolean isDefaultOptionsList(final Node node) throws RepositoryException
     {
         return "defaultOptions".equals(node.getName());
-    }
-
-    private JsonValue removeSystemProperties(final String propertyName, final JsonValue input)
-    {
-        if (propertyName.startsWith("@") || propertyName.contains(":")) {
-            return null;
-        }
-        return input;
     }
 }
