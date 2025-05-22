@@ -48,6 +48,7 @@ import { stringToHash } from "../escape.jsx";
 
 import ComposedIcon from "../components/ComposedIcon.jsx";
 import DroppableAnswerOptionList from "./DroppableAnswerOptionList.jsx";
+import AnswerOptionSuggestions from "./AnswerOptionSuggestions.jsx";
 
 let extractSortedOptions = (data) => {
   return Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption'
@@ -116,7 +117,9 @@ let AnswerOptions = (props) => {
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   // Whether the answer options are suggested / pre-filled for a certain
   //   question type and props (true) or user-entered (false)
-  let [ usesDefaultOptions, setUsesDefaultOptions ] = useState();
+  let [ suggestedOptions, setSuggestedOptions ] = useState();
+  let [ suggestedOptionsAsString, setSuggestedOptionsAsString ] = useState();
+  let [ suggestionDialogOpen, setSuggestionDialogOpen ] = useState(false);
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
   let [ isDuplicate, setIsDuplicate ] = useState(false);
@@ -159,11 +162,8 @@ let AnswerOptions = (props) => {
   // Pre-populate answer options with options suggested by the properties already filled in, if any.
   // If more than one property suggests options, only use the first available.
   useEffect(() => {
-    // Don't overwrite user-entered/currated options
-    if (options?.length > 0 && !usesDefaultOptions) return;
-
-    let prefilledOptions = [];
-    let optionSuggestions = Object.values(fieldsReader)
+    let defaultOptions = 
+      Object.values(fieldsReader)
       // Out of all properties available in the context,
       //   find the first one that has `defaultOptions` present
       //   as a field at least one of its values (stored as an array)
@@ -174,20 +174,34 @@ let AnswerOptions = (props) => {
         (obj, item) => Object.assign(obj, item?.defaultOptions || {}),
         {}
       );
+    if (stringifyOptionsMap(defaultOptions) != suggestedOptionsAsString) {
+      setSuggestedOptions(defaultOptions);
+      setSuggestedOptionsAsString(stringifyOptionsMap(defaultOptions));
+    }
+
+  }, [fieldsReader]);
+
+  useEffect(() => {
+    !suggestionDialogOpen && suggestedOptionsAsString && setSuggestionDialogOpen(true);
+  }, [suggestedOptionsAsString, suggestionDialogOpen]);
+
+  let stringifyOptionsMap = map => Object.entries(map || {}).map(e => e.join("=")).sort((a, b) => a.localeCompare(b)).join(", ");
+
+  let useSelectedOptionSuggestions = optionSuggestions => {
     if (optionSuggestions) {
-      prefilledOptions = Object.entries(optionSuggestions)
-        .filter(([key]) => !key.startsWith("@") && !key.startsWith("jcr:"))
+      setOptions(
+        Object.entries(optionSuggestions)
+        .filter(([key, label]) => !!label)
         .map(([key, label]) => ({
           label: label,
           value: key,
           "@path": path + "/AnswerOption" + stringToHash(key),
           isNew: true,
-      }));
+      })));
     }
 
-    setOptions(prefilledOptions);
-    setUsesDefaultOptions(true);
-  }, [fieldsReader, usesDefaultOptions]);
+    setSuggestedOptions();
+  }
 
   let specialOptionsInfo = [
     {
@@ -215,7 +229,6 @@ let AnswerOptions = (props) => {
   // Clear local state when data changes
   useEffect(() => {
     setOptions(extractSortedOptions(data));
-    setUsesDefaultOptions(false);
     setDeletedOptions([]);
     setTempValue('');
     setIsDuplicate(false);
@@ -233,7 +246,6 @@ let AnswerOptions = (props) => {
       newOptions.splice(index, 1);
       return newOptions;
     });
-    setUsesDefaultOptions(false);
   }
 
   let validateOption = (optionInput, setter, specialOption) => {
@@ -275,7 +287,6 @@ let AnswerOptions = (props) => {
         value.push(newOption);
         return value;
       });
-      setUsesDefaultOptions(false)
     }
 
     tempValue && setTempValue('');
@@ -401,12 +412,11 @@ let AnswerOptions = (props) => {
         value[descriptionIndex].description = description;
         return value;
       });
-      setUsesDefaultOptions(false);
     }
     handlePopoverClose();
   }
 
-  return (
+  return (<>
     <EditorInput name={objectKey} hint={hint}>
       { deletedOptions.map((value, index) =>
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
@@ -476,7 +486,16 @@ let AnswerOptions = (props) => {
         </Card>
       </Popover>
     </EditorInput>
-  )
+    { suggestionDialogOpen && suggestedOptions &&
+      <AnswerOptionSuggestions
+        open={suggestionDialogOpen}
+        suggestions={suggestedOptions}
+        existingOptions={options}
+        onUpdate={useSelectedOptionSuggestions}
+        onClose={() => setSuggestionDialogOpen(false)}
+      />
+    }
+  </>)
 }
 
 AnswerOptions.propTypes = {
