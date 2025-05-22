@@ -442,7 +442,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Year and month with absolute lower and upper limits (`2005-01` - `2005-02`)</value>
+			<value>Year and month with absolute lower and upper limits (`2005-01` - `2025-02`)</value>
 			<type>String</type>
 		</property>
 		<property>
