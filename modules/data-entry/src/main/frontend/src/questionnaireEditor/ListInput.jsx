@@ -136,7 +136,7 @@ ListInput.propTypes = {
 export default ListInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (definition.type && definition.type === "list") {
+  if (definition?.type === "list") {
     return [ListInput, 50];
   }
 });
@@ -148,7 +148,7 @@ let ListValue = (props) => {
 };
 
 ValueComponentManager.registerValueComponent((definition) => {
-  if (definition.type && definition.type === "list") {
+  if (definition.type === "list") {
     return [ListValue, 50];
   }
 });

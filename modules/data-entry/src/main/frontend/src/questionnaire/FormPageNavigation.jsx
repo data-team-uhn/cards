@@ -76,7 +76,7 @@ function FormPageNavigation (props) {
   )
 
   // Format the title
-  let pageTitle = (page, index) => (<FormattedText variant="caption">{page?.title ? page.title : "Page " + (index + 1)}</FormattedText>)
+  let pageTitle = (page, index) => (<FormattedText variant="caption">{page?.title || "Page " + (index + 1)}</FormattedText>)
 
   // Individual page buttons
   let pageButton = (page, index) => (

@@ -217,7 +217,7 @@ class SignUpForm extends React.Component {
           this.props.handleLogin && this.props.handleLogin(false);
           response.json().then((data) => {
             let errMsg = data?.error?.message;
-            errMsg = (errMsg ? errMsg : "Unknown Error");
+            errMsg = (errMsg || "Unknown Error");
             this.setState({
               errorOpen: true,
               errorMsg: errMsg

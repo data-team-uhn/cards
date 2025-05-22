@@ -75,7 +75,7 @@ export default function DragAndDrop(props) {
     e.stopPropagation();
     let count = dragCounter + 1;
     setDragCounter(count);
-    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+    if (e.dataTransfer.items?.length > 0) {
       setDrag(true);
     }
   }
@@ -92,7 +92,7 @@ export default function DragAndDrop(props) {
     e.preventDefault();
     e.stopPropagation();
     setDrag(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    if (e.dataTransfer.files?.length > 0) {
       handleDrop(e.dataTransfer.files);
       e.dataTransfer.clearData();
       setDragCounter(0);

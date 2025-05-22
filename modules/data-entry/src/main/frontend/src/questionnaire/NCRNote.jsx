@@ -127,8 +127,8 @@ function NCRNote (props) {
   // Handle the user focusing away from our component by creating
   // the NCR request
   let handleBlur = (event) => {
-    // Call super if necessary
-    onBlur && onBlur(event);
+    // Call onBlur if necessary
+    onBlur?.(event);
 
     createNCRRequest(event);
   }
@@ -157,7 +157,8 @@ function NCRNote (props) {
 
   // Pass our changes to note upwards (to answer) and record it within ourselves
   let storeAndChangeNote = (text) => {
-    onChangeNote && onChangeNote(text);
+    // Call onChangeNote if provided
+    onChangeNote?.(text);
     setCachedText(text);
   }
 

@@ -47,7 +47,7 @@ import style from './style.jsx';
 //  icon={<CreateIcon />}
 //  title="Compose a new message"
 //  label="Compose"
-//  onClick={() => openComposeDialog()}
+//  onClick={openComposeDialog}
 //  inProgress={dialogIsLoading}
 //  />
 //

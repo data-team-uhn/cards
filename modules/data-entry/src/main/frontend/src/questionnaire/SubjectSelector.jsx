@@ -94,7 +94,7 @@ function UnstyledNewSubjectDialog (props) {
   }
 
   let changeType = (type) => {
-    onChangeType && onChangeType(type);
+    onChangeType?.(type);
     setNewSubjectType(type);
     type?.idPattern && setRegexp(new RegExp(type.idPattern));
     validateSubjectId(type, value);
@@ -342,7 +342,7 @@ function UnstyledSelectParentDialog (props) {
               positionToolbarAlertBanner="none"
               muiSearchTextFieldProps={{ autoFocus: true }}
               muiTableBodyRowProps={({ row }) => ({
-                onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent && onChangeParent(row.original); },
+                onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent?.(row.original); },
                 sx: {
                   cursor: 'pointer',
                 },

@@ -312,7 +312,7 @@ export default function VariantFilesContainer() {
             .then((response) => response.ok ? response.json() : reject(response))
             .then((json) => {
               // If a patient subject is found
-              if (json.rows && json.rows.length > 0) {
+              if (json.rows?.length > 0) {
                 let subject = json.rows[0];
                 // get the path
                 file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"], subject.type);
@@ -324,7 +324,7 @@ export default function VariantFilesContainer() {
                     .then((response) => response.ok ? response.json() : reject(response))
                     .then((json) => {
                       // If a tumor subject is found and region subject is defined
-                      if (json.rows && json.rows.length > 0) {
+                      if (json.rows?.length > 0) {
                         let subject = json.rows[0];
                         // get the path
                         file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
@@ -338,7 +338,7 @@ export default function VariantFilesContainer() {
                             .then((response) => response.ok ? response.json() : reject(response))
                             .then((json) => {
                               // If a region subject is found
-                              if (json.rows && json.rows.length > 0) {
+                              if (json.rows?.length > 0) {
                                 let subject = json.rows[0];
                                 // get the path
                                 file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
@@ -385,7 +385,7 @@ export default function VariantFilesContainer() {
                 .then((response) => response.ok ? response.json() : reject(response))
                 .then((json) => {
                   // If a tumor subject is found and region subject is defined
-                  if (json.rows && json.rows.length > 0) {
+                  if (json.rows?.length > 0) {
                     let subject = json.rows[0];
                     // get the path
                     file.tumor = generateSubject(file.tumor, subject["@path"], true, subject["jcr:uuid"], subject.type);
@@ -399,7 +399,7 @@ export default function VariantFilesContainer() {
                         .then((response) => response.ok ? response.json() : reject(response))
                         .then((json) => {
                           // If a region subject is found
-                          if (json.rows && json.rows.length > 0) {
+                          if (json.rows?.length > 0) {
                             let subject = json.rows[0];
                             // get the path
                             file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
@@ -434,7 +434,7 @@ export default function VariantFilesContainer() {
                 .then((response) => response.ok ? response.json() : reject(response))
                 .then((json) => {
                   // If a region subject is found
-                  if (json.rows && json.rows.length > 0) {
+                  if (json.rows?.length > 0) {
                     let subject = json.rows[0];
                     // get the path
                     file.region = generateSubject(file.region, subject["@path"], true, subject["jcr:uuid"], subject.type);
@@ -808,7 +808,7 @@ export default function VariantFilesContainer() {
         </Grid>
       </form>
 
-      { selectedFiles && selectedFiles.length > 0 && <Grid container direction="column" spacing={4} className={classes.fileList}>
+      { selectedFiles?.length > 0 && <Grid container direction="column" spacing={4} className={classes.fileList}>
         { selectedFiles.map( (file, i) => {
             const upprogress = uploadProgress ? uploadProgress[file.name] : null;
             let subjectPath = file.subject.path?.replace("/Subjects", "Subjects");
@@ -819,7 +819,7 @@ export default function VariantFilesContainer() {
             return (
               <Grid key={file.name}>
                 <Typography variant="h6">{file.name}</Typography>
-                { upprogress && upprogress.state != "error" &&
+                { upprogress?.state != "error" &&
                   <Box display="flex" alignItems="center" className={classes.fileProgress}>
                     <Box width="100%" mr={1}>
                       <LinearProgress variant="determinate" value={upprogress.percentage} />
@@ -829,7 +829,7 @@ export default function VariantFilesContainer() {
                     </Box>
                   </Box>
                 }
-                { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
+                { upprogress?.state == "error" && <Typography color='error'>Error uploading file</Typography> }
                 { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
                   <Typography variant="overline" component="div">
                     {patientSubjectLabel} <Link href={subjectPath} target="_blank" underline="hover"> {file.subject.id} </Link> /&nbsp;

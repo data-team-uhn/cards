@@ -214,7 +214,7 @@ function FileQuestion(props) {
       })
     }
 
-    onBeforeUpload && onBeforeUpload(file);
+    onBeforeUpload?.(file);
     // TODO: Handle duplicate filenames
     // NB: A lot of the info here is duplicated from Answer. Is a fix possible?
     // Also NB: Since we save before this, we're guaranteed to have the parent created
@@ -251,7 +251,7 @@ function FileQuestion(props) {
         setAnswers([[file["name"], fileURL]]);
       }
       onChange?.();
-      onAfterUpload && onAfterUpload(file);
+      onAfterUpload?.(file);
     }).catch((errorObj) => {
       // Backend did not allow this file to be uploaded
       console.log(errorObj);
@@ -261,7 +261,7 @@ function FileQuestion(props) {
 
   // Delete an answer by its index
   let deletePath = (index) => {
-    onDelete && onDelete(index);
+    onDelete?.(index);
     setError("");
     // Rather than waiting to delete, we'll just delete it immediately
     let data = new FormData();
@@ -292,7 +292,11 @@ function FileQuestion(props) {
     return (
       <div>
         <Link href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download underline="hover">{label}</Link>
-        { previewRenderer && previewRenderer(fixFileURL(hrefs[idx], label), label, idx) }
+        { previewRenderer?.(
+            fixFileURL(hrefs[idx], label),
+            label,
+            idx
+        )}
       </div>
     );
   }
@@ -327,7 +331,11 @@ function FileQuestion(props) {
                   entryType="file"
                   onComplete={() => deletePath(idx)}
                 />
-                { previewRenderer && previewRenderer(fixFileURL(uploadedFiles[filepath], filepath), filepath, idx) }
+                { previewRenderer?.(
+                    fixFileURL(uploadedFiles[filepath], filepath),
+                    filepath,
+                    idx
+                )}
                 { namePattern &&
                   <span>
                     {varNames.map((name, nameIdx) => (

@@ -136,12 +136,12 @@ function ResourceQuery(props) {
       onChange={(event) => {
         delayLookup(event.target.value);
         setInputValue(event.target.value);
-        (maxAnswers != 1 || event.target.value == "") && onChange && onChange(event);
+        (maxAnswers != 1 || event.target.value == "") && onChange?.(event);
       }}
       inputRef={anchorEl}
       onKeyDown={(event) => {
         if (event.key == 'Enter') {
-          onChange && onChange(event);
+          onChange?.(event);
           closeAutocomplete(event);
           event.preventDefault();
         } else if (event.key == 'ArrowDown' || event.key == 'ArrowUp') {
@@ -416,8 +416,8 @@ function ResourceQuery(props) {
   }
 
   let updateSelection = (selectedEntries, removedEntries) => {
-    selectedEntries && selectedEntries.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
-    removedEntries && removedEntries.map(item => onRemoveOption(item[VALUE_POS], item[LABEL_POS]));
+    selectedEntries?.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
+    removedEntries?.map(item => onRemoveOption(item[VALUE_POS], item[LABEL_POS]));
 
     // Set input value to selected term label or initial selection label if single answer question
     if (maxAnswers === 1) {

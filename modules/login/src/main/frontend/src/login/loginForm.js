@@ -94,14 +94,14 @@ class SignIn extends React.Component {
         throw Error(response.statusText);
       }
       this.setState({failedLogin: undefined});
-      this.props.handleLogin && this.props.handleLogin(true);
+      this.props.handleLogin?.(true);
       if (this.props.redirectOnLogin) {
         window.location = this.loginRedirectPath();
       }
     })
     .catch((error) => {
       this.setState({failedLogin: "Invalid username or password"});
-      this.props.handleLogin && this.props.handleLogin(false);
+      this.props.handleLogin?.(false);
     });
   }
 

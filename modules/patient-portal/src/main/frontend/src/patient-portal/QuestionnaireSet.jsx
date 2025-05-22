@@ -604,7 +604,7 @@ function QuestionnaireSet(props) {
     const time = appointmentDate();
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
-    provider = provider && provider.length > 1 ? provider.join(", ") : provider;
+    provider = provider?.length > 1 ? provider.join(", ") : provider;
     return (eventLabel && (time || location || provider)) ?
       <Alert severity="info" key="appointment-notification">
         {eventLabel}
@@ -711,7 +711,7 @@ function QuestionnaireSet(props) {
 
   let submitButton = (label) => (
     <Fab variant="extended" disabled={submissionInProgress} color="primary" onClick={() => {onSubmit()}} key={"review-submit"+label}>
-      {submissionInProgress ? "Submitting...." : (label ?? "Submit")}
+      {submissionInProgress ? "Submitting...." : (label || "Submit")}
     </Fab>
   );
 

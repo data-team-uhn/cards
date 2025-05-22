@@ -78,7 +78,7 @@ function Answer (props) {
 
   // Update any listeners what our final output path will be
   useEffect(() => {
-    onDecidedOutputPath && onDecidedOutputPath(answerPath);
+    onDecidedOutputPath?.(answerPath);
   }, [answerPath]);
 
   // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
@@ -99,7 +99,7 @@ function Answer (props) {
       <input type="hidden" name={`${answerPath}/question@TypeHint`} value="Reference"></input>
 
       {/* Add the answers, if any exist, or otherwise delete them */}
-      {(answers && answers.length) ?
+      {answers?.length ?
         (<React.Fragment>
           <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType + (isMultivalued ? '[]' : '')}></input>
           {answers.map( (element, index) => {

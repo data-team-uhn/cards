@@ -187,7 +187,7 @@ function VocabularyTree(props) {
 
   let onCancel = (event) => {
     if (event.key == "Escape" && infoAboveBackground) {
-      onCloseInfoBox && onCloseInfoBox();
+      onCloseInfoBox?.();
       return;
     }
     onClose();

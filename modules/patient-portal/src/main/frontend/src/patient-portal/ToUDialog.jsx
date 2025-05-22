@@ -130,7 +130,7 @@ function ToUDialog(props) {
 
   useEffect(() => {
     if (tou && (!tou.acceptanceRequired || touAcceptedVersion && tou.version == touAcceptedVersion) ) {
-      onCleared && onCleared();
+      onCleared?.();
     }
   }, [tou?.acceptanceRequired, tou?.version, touAcceptedVersion]);
 
@@ -147,7 +147,7 @@ function ToUDialog(props) {
     // Update the Patient information form
     fetch("/Survey.termsOfUse", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
-      .then( json => json.status == "success" ? onCleared && onCleared() : Promise.reject(json.error))
+      .then( json => json.status == "success" ? onCleared?.() : Promise.reject(json.error))
       .catch((response) => {
         let errMsg = "Recording acceptance of Terms of Use failed";
         console.log(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));

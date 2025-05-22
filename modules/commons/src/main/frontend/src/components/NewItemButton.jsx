@@ -38,7 +38,7 @@ import MainActionButton from './MainActionButton.jsx';
 // Sample usage:
 //<NewItemButton
 //  title="Create new chart"
-//  onClick={() => openNewChartDialog()}
+//  onClick={openNewChartDialog}
 //  inProgress={dialogIsLoading}
 //  />
 //

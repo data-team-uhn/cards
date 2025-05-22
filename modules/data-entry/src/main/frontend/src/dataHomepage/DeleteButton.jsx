@@ -85,14 +85,14 @@ function DeleteButton(props) {
     }
     if (entryNotFound) {
       // Can't delete. Assume already deleted and exit if required
-      if (onComplete) {onComplete();}
+      onComplete?.();
     }
   }
 
   let handleError = (status, response) => {
     if (status === 404) {
       // NOT FOUND
-      setErrorMessage(`${entryName} could not be found. This ${entryType ? entryType : "item"} may have already been deleted.`);
+      setErrorMessage(`${entryName} could not be found. This ${entryType || "item"} may have already been deleted.`);
       setEntryNotFound(true);
       openError();
     } else if (status === 403) {
@@ -137,7 +137,7 @@ function DeleteButton(props) {
     // If no path is provided, display the button but don't do any delete calls
     // and consider deletion successful since there's nothing to do
     if (!entryPath) {
-      if (onComplete) {onComplete();}
+      onComplete?.();
       closeDialog();
       return;
     }
@@ -155,7 +155,7 @@ function DeleteButton(props) {
       setDeletionInProgress(false);
       if (response.ok)  {
         closeDialog();
-        if (onComplete) {onComplete();}
+        onComplete?.();
       } else {
         handleError(response.status, response);
       }
@@ -190,7 +190,7 @@ function DeleteButton(props) {
             <Button
               variant="contained"
               color="error"
-              onClick={() => handleDelete()}
+              onClick={handleDelete}
               disabled={deletionInProgress}
             >
               { deletionInProgress ? "Deleting..." : deleteRecursive ? "Delete All" : "Delete" }
@@ -230,6 +230,5 @@ DeleteButton.propTypes = {
   size: PropTypes.oneOf(["small", "medium", "large"]),
   className: PropTypes.string,
 }
-
 
 export default withStyles(DeleteButton, QuestionnaireStyle);

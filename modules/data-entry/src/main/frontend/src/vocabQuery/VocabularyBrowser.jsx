@@ -157,7 +157,7 @@ function VocabularyBrowser(props) {
     setCloseupTimer(setTimeout(() => {setTermInfoVisible(false);
     setTerm({});
     setInfoAboveBackground(false);
-    onCloseInfo && onCloseInfo();}, 300));
+    onCloseInfo?.();}, 300));
   }
 
   let openBrowser = () => {
@@ -174,7 +174,7 @@ function VocabularyBrowser(props) {
 
     setCloseupTimer(setTimeout(() => {
       setBrowserOpened(false);
-      onCloseBrowser && onCloseBrowser(selectedTerms, removedTerms);
+      onCloseBrowser?.(selectedTerms, removedTerms);
     }, 300));
   }
 

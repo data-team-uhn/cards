@@ -83,7 +83,7 @@ let CreationMenu = (props) => {
                         type={entityType}
                         model={models?.[entityType]}
                         isOpen={dialogOpen}
-                        onSaved={(newData) => { setDialogOpen(false); onCreated && onCreated(newData); }}
+                        onSaved={(newData) => { setDialogOpen(false); onCreated?.(newData); }}
                         onCancel={() => { setDialogOpen(false); }}
                       />
       }

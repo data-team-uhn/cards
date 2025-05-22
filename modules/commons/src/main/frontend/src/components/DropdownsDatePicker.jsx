@@ -236,7 +236,7 @@ function DropdownsDatePicker(props) {
       variant="standard"
       placeholder={dateComponent.charAt(0).toUpperCase() + dateComponent.slice(1)}
       autoFocus={hasAutoFocus(dateComponent)}
-      onFocus={() => setFocusedDateComponent()}
+      onFocus={setFocusedDateComponent}
       inputRef={focusedDateComponent == dateComponent ? (input) => input?.focus() : null}
     />
 

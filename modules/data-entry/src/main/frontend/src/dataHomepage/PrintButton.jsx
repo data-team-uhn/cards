@@ -94,12 +94,12 @@ function PrintButton(props) {
   }
 
   let onOpenView = () => {
-    onOpen && onOpen();
+    onOpen?.();
     setOpen(true);
   }
 
   let onCloseView = () => {
-    onClose && onClose();
+    onClose?.();
     setOpen(false);
   }
 
