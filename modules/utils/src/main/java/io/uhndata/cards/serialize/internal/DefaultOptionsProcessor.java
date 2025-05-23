@@ -21,6 +21,7 @@ package io.uhndata.cards.serialize.internal;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
@@ -71,8 +72,30 @@ public class DefaultOptionsProcessor implements ResourceJsonProcessor
     {
         try {
             if (isDefaultOptionsList(child)) {
-                return this.resolver.get().resolve(child.getPath() + ".-identify.bare").adaptTo(JsonObject.class);
+                return this.resolver.get().resolve(child.getPath() + ".-identify." + getName())
+                    .adaptTo(JsonObject.class);
             }
+        } catch (RepositoryException e) {
+            // Really shouldn't happen
+        }
+        return input;
+    }
+
+    @Override
+    public JsonValue processProperty(final Node node, final Property property, final JsonValue input,
+         final Function<Node, JsonValue> serializeNode)
+    {
+        try {
+            if (!isDefaultOptionsList(node)) {
+                return input;
+            }
+            if (property == null) {
+                return null;
+            }
+            final String name = property.getName();
+            JsonValue result = input;
+            result = removeSystemProperties(name, result);
+            return result;
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
@@ -82,5 +105,13 @@ public class DefaultOptionsProcessor implements ResourceJsonProcessor
     private boolean isDefaultOptionsList(final Node node) throws RepositoryException
     {
         return "defaultOptions".equals(node.getName());
+    }
+
+    private JsonValue removeSystemProperties(final String propertyName, final JsonValue input)
+    {
+        if (propertyName.contains(":")) {
+            return null;
+        }
+        return input;
     }
 }

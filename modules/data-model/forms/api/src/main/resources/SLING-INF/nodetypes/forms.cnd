@@ -923,4 +923,4 @@
   //Children
 
   // Container for the selectable zones names corresponding to the variant
-  + defaultOptions (nt:unstructured)
+  + defaultOptions (sling:OrderedFolder)

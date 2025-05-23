@@ -4,7 +4,7 @@
     "image": "/libs/cards/resources/media/dataEntry/fullBody.svg",
     "jcr:path:map": "/libs/cards/resources/media/dataEntry/fullBodyMap.json",
     "defaultOptions": {
-      "jcr:primaryType" : "nt:unstructured",
+      "jcr:primaryType" : "sling:OrderedFolder",
       "head": "Head",
       "face": "Face",
       "leftjaw": "Left Jaw",
