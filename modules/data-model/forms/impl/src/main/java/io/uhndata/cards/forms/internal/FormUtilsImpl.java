@@ -324,19 +324,31 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
         if (answer == null) {
             return null;
         }
-        Object result = null;
         try {
             final Property value = answer.getProperty(VALUE_PROPERTY);
-            if (value != null) {
-                if (value.isMultiple()) {
-                    final Value[] values = value.getValues();
-                    result = new Object[values.length];
-                    for (int i = 0; i < values.length; i++) {
-                        ((Object[]) result)[i] = getValue(values[i]);
-                    }
-                } else {
-                    result = getValue(value.getValue());
+            return getValue(value);
+        } catch (final RepositoryException e) {
+            // Shouldn't happen
+        }
+        return null;
+    }
+
+    @Override
+    public Object getValue(final Property value)
+    {
+        if (value == null) {
+            return null;
+        }
+        Object result = null;
+        try {
+            if (value.isMultiple()) {
+                final Value[] values = value.getValues();
+                result = new Object[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    ((Object[]) result)[i] = getValue(values[i]);
                 }
+            } else {
+                result = getValue(value.getValue());
             }
         } catch (final RepositoryException e) {
             // Shouldn't happen
@@ -373,16 +385,12 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
         return result;
     }
 
-    // Internal helper methods
-
-    /**
-     * Extract the actual value from a Value object.
-     *
-     * @param value a Value object
-     * @return the actual value stored in the object
-     */
-    private Object getValue(final Value value)
+    @Override
+    public Object getValue(final Value value)
     {
+        if (value == null) {
+            return null;
+        }
         Object result = null;
         try {
             switch (value.getType()) {
@@ -532,6 +540,8 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
         }
         return JsonValue.NULL;
     }
+
+    // Internal helper methods
 
     private Node findNode(final Node parent, final String property, final String value)
     {
