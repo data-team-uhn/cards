@@ -327,7 +327,7 @@
   - minAnswers (long) = '0'
 
   // Same as for cards:Question.
-  - maxAnswers (long) = '0'
+  - maxAnswers (long) = '1'
 
   // Which type of data is being recorded?
   // The possible values are limited to:
