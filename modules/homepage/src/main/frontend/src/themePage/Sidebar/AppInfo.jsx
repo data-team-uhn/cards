@@ -24,13 +24,17 @@ function AppInfo (props) {
   const { textVariant, showTeamInfo } = props;
   let variant = textVariant || "subtitle2";
 
-  let platformName = document.querySelector('meta[name="platformName"]')?.content;
   let appName = document.querySelector('meta[name="title"]')?.content;
-  let version = document.querySelector('meta[name="version"]')?.content;
+  let appVersion = document.querySelector('meta[name="appVersion"]')?.content;
+  let platformName = document.querySelector('meta[name="platformName"]')?.content;
+  let platformVersion = document.querySelector('meta[name="version"]')?.content;
 
   return (
     <>
-      <Typography variant={variant} component="div">{appName ?  appName + " | " : ''} {platformName} {version ? "v" + version : ''}</Typography>
+      {appName &&
+        <Typography variant={variant} component="div">{appName} {appVersion ? "v" + appVersion : ''}</Typography>
+      }
+      <Typography variant={variant} component="div">{platformName} {platformVersion ? "v" + platformVersion : ''}</Typography>
       {showTeamInfo &&
         <Typography variant={variant} component="div">
           by
@@ -42,7 +46,7 @@ function AppInfo (props) {
         </Typography>
       }
     </>
-    );
+  );
 }
 
 export default AppInfo;
