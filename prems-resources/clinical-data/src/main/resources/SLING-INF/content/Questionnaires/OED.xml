@@ -1483,6 +1483,15 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>description</name>
+				<value>
+Please do not add any personal information (e.g your name, email address or phone number) when answering this question.
+This survey is meant to be anonymous and the information is being used for quality improvement.
+If you have a personal care concern or need help please speak directly to your care team.
+				</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>textbox</value>
 				<type>String</type>
