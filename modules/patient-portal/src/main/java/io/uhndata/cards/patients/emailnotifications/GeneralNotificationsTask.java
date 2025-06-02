@@ -94,7 +94,7 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
         if (this.emailTemplate == null) {
             this.emailTemplate = buildTemplate(this.emailTemplatePath);
         }
-        long emailsSent = sendNotification(this.daysToVisit, this.emailTemplate, this.clinicId);
+        long emailsSent = sendNotification(this.daysToVisit, this.emailTemplate, this.clinicId, this.notificationType);
         Metrics.increment(this.resolverFactory, this.taskName, emailsSent);
     }
 

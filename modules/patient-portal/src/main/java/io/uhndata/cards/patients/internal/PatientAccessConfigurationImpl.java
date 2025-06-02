@@ -143,19 +143,23 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
     @Override
     public int getDaysRelativeToEventWhileSurveyIsValid(Node visitInformationNode)
     {
-        final int defaultTokenLifetime = getDaysRelativeToEventWhileSurveyIsValid();
+        Node visitSubject = this.formUtils.getSubject(visitInformationNode, "/SubjectTypes/Patient/Visit");
+        Node clinicNode = AppointmentUtils.getValidClinicNode(this.formUtils, visitSubject);
+        return getClinicDaysRelativeToEventWhileSurveyIsValid(clinicNode);
+    }
+
+    @Override
+    public int getClinicDaysRelativeToEventWhileSurveyIsValid(Node clinicNode)
+    {
         try
         {
-            Node visitSubject = this.formUtils.getSubject(visitInformationNode, "/SubjectTypes/Patient/Visit");
-            Node clinicNode = AppointmentUtils.getValidClinicNode(this.formUtils, visitSubject);
-
             if (clinicNode != null && clinicNode.hasProperty(TOKEN_LIFETIME_PROP)) {
                 return (int) clinicNode.getProperty(TOKEN_LIFETIME_PROP).getLong();
             }
         } catch (RepositoryException e) {
             // TODO Auto-generated catch block
         }
-        return defaultTokenLifetime;
+        return getDaysRelativeToEventWhileSurveyIsValid();
     }
 
     @Override
