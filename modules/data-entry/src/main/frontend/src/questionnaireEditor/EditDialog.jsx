@@ -33,7 +33,7 @@ import {
 
 import Fields from './Fields';
 import { camelCaseToWords } from './LabeledField';
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 // Dialog for editing or creating questions or sections
 

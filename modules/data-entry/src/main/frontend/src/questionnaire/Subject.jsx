@@ -28,7 +28,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy, getHomepageLink } from "./SubjectIdentifier";
 import MaterialReactTable from 'material-react-table';
 import { Box } from '@mui/material';

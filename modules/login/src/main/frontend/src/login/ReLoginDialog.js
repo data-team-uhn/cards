@@ -19,7 +19,7 @@
 import React from 'react';
 import { Dialog } from '@mui/material';
 import PropTypes from 'prop-types';
-import MainLoginComponent from './loginMainComponent';
+import MainLoginContainer from './MainLoginContainer';
 import { checkPropTypes } from "../propTypes";
 
 export const GlobalLoginContext = React.createContext();
@@ -51,7 +51,7 @@ function ReLoginDialog(props) {
     <Dialog
       open={isOpen}
     >
-      <MainLoginComponent handleLogin={handleLogin} redirectOnLogin={false}/>
+      <MainLoginContainer handleLogin={handleLogin} redirectOnLogin={false}/>
     </Dialog>
   );
 }

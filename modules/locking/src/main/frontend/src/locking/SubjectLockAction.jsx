@@ -42,7 +42,7 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { DateTime } from "luxon";
 
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import ErrorDialog from "../components/ErrorDialog.jsx";
 
 function SubjectLockAction(props) {

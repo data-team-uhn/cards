@@ -30,7 +30,7 @@ import {
 
 import { makeStyles } from 'tss-react/mui';
 
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 
 const useStyles = makeStyles()(theme => ({
   buttonProgress: {

@@ -40,7 +40,7 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LaunchIcon from '@mui/icons-material/Launch';
 import DeleteWithRefreshButton from "./DeleteWithRefreshButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import NewItemButton from "../components/NewItemButton.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
 

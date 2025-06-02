@@ -156,8 +156,8 @@ function FormFields(props) {
 
 const FormFieldsComponent = withStyles(FormFields, styles);
 
-function SignUpForm(props) {
-  checkPropTypes(SignUpForm, props);
+function RegistrationForm(props) {
+  checkPropTypes(RegistrationForm, props);
   const { classes, handleLogin, handleSuccess, loginOnSuccess, handleExit, closeButtonText, submitButtonText } = props;
 
   let [ errorOpen, setErrorOpen ] = useState(false);
@@ -284,7 +284,7 @@ function SignUpForm(props) {
   );
 }
 
-SignUpForm.propTypes = {
+RegistrationForm.propTypes = {
   handleLogin: PropTypes.func,
   handleSuccess: PropTypes.func,
   loginOnSuccess: PropTypes.bool,
@@ -293,4 +293,4 @@ SignUpForm.propTypes = {
   submitButtonText: PropTypes.string
 };
 
-export default withStyles(SignUpForm, styles);
+export default withStyles(RegistrationForm, styles);

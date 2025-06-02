@@ -35,8 +35,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import styles from "../styling/styles";
 
-function SignIn(props) {
-  checkPropTypes(SignIn, props);
+function LoginForm(props) {
+  checkPropTypes(LoginForm, props);
   const { classes, handleLogin, redirectOnLogin } = props;
 
   const [ username, setUsername ] = useState("");
@@ -244,9 +244,9 @@ function SignIn(props) {
   );
 }
 
-SignIn.propTypes = {
+LoginForm.propTypes = {
   handleLogin: PropTypes.func,
   redirectOnLogin: PropTypes.bool
 };
 
-export default withStyles(SignIn, styles);
+export default withStyles(LoginForm, styles);

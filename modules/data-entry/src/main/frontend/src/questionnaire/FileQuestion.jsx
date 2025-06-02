@@ -26,7 +26,7 @@ import PropTypes from "prop-types";
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
 import DragAndDrop from "../components/dragAndDrop";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";
 import Question from "./Question";

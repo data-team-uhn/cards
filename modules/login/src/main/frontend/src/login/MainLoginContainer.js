@@ -20,8 +20,8 @@ import React, { useState } from 'react';
 
 import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
 
-import SignUpForm from './signUpForm';
-import SignIn from './loginForm';
+import RegistrationForm from './RegistrationForm';
+import LoginForm from './LoginForm';
 import Logo from "../components/Logo";
 import { withStyles } from 'tss-react/mui';
 import styles from "../styling/styles";
@@ -39,9 +39,9 @@ function MainLoginContainer(props) {
         <Logo maxWidth="200px" component={Grid}/>
         <Grid>
         { signInShown ?
-          <SignIn handleLogin={handleLogin} redirectOnLogin={redirectOnLogin}/>
+          <LoginForm handleLogin={handleLogin} redirectOnLogin={redirectOnLogin}/>
           :
-          <SignUpForm loginOnSuccess={true} handleLogin={handleLogin} />
+          <RegistrationForm loginOnSuccess={true} handleLogin={handleLogin} />
         }
         </Grid>
         { isLongForm && !signInShown &&
@@ -73,6 +73,4 @@ function MainLoginContainer(props) {
   );
 }
 
-const MainLoginComponent = withStyles(MainLoginContainer, styles);
-
-export default MainLoginComponent;
+export default withStyles(MainLoginContainer, styles);

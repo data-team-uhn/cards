@@ -48,7 +48,7 @@ import { getTextHierarchy, getHierarchyAsList } from "./SubjectIdentifier";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import ErrorDialog from "../components/ErrorDialog";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PrintButton from "../dataHomepage/PrintButton.jsx";

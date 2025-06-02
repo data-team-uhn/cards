@@ -44,7 +44,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import DragAndDrop from "./components/dragAndDrop.jsx";
 import { escapeJQL } from "./escape.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 
 const useStyles = makeStyles()(theme => ({
   root: {

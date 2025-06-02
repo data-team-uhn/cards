@@ -26,7 +26,7 @@ import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@mui/icons-material/Description";
 import Search from "@mui/icons-material/Search";
 import HeaderStyle from "./headerStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 import { checkPropTypes } from "./propTypes";
 
 export const DEFAULT_QUERY_URL = "/query";

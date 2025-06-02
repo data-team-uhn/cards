@@ -27,7 +27,7 @@ import ResponsiveDialog from "../components/ResponsiveDialog";
 import VariableAutocomplete from "./VariableAutocomplete";
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities.jsx";
 
 // We have to import each filter dependency here to load them properly into the FilterComponentManager

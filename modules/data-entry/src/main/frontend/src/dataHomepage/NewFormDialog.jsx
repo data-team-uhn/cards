@@ -34,7 +34,7 @@ import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../question
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import FormattedText from "../components/FormattedText.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;

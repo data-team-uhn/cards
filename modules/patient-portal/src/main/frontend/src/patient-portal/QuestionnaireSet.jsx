@@ -48,7 +48,7 @@ import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 import FormattedText from "../components/FormattedText.jsx";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
 
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 const useStyles = makeStyles()(theme => ({
   mainContainer: {

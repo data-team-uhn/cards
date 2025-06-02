@@ -24,7 +24,7 @@ import { checkPropTypes } from "../propTypes";
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import VariableAutocomplete from "../dataHomepage/VariableAutocomplete";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { useFieldsReaderContext, useFieldsWriterContext } from "./FieldsContext";
 import { stripCardsNamespace } from "../questionnaire/QuestionnaireUtilities";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
