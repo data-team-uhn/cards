@@ -29,7 +29,7 @@ import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import MaterialReactTable from 'material-react-table';
-import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 const GROUP_URL = "/system/userManager/group/";
 

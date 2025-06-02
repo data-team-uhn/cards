@@ -22,7 +22,7 @@ import { Alert, Button, Dialog, DialogTitle, DialogContent, TextField, Tooltip }
 import { withStyles } from 'tss-react/mui';
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 import styles from "../../styling/styles";
 

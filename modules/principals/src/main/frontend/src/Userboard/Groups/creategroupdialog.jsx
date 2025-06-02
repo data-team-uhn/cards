@@ -22,7 +22,7 @@ import { Alert, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent,
 import { withStyles } from 'tss-react/mui';
 
 import userboardStyle from '../userboardStyle.jsx';
-import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 function CreateGroupDialog(props) {
   checkPropTypes(CreateGroupDialog, props);

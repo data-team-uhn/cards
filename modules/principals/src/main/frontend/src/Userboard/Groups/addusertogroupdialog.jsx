@@ -23,7 +23,7 @@ import userboardStyle from '../userboardStyle.jsx';
 import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 import MaterialReactTable from 'material-react-table';
-import { fetchWithReLogin, GlobalLoginContext } from "../../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 const GROUP_URL="/system/userManager/group/";
 

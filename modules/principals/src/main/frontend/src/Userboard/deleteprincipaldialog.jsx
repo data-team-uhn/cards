@@ -23,7 +23,7 @@ import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography }
 import { withStyles } from 'tss-react/mui';
 
 import userboardStyle from './userboardStyle.jsx';
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 function DeletePrincipalDialog(props) {
   checkPropTypes(DeletePrincipalDialog, props);

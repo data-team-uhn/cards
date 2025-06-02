@@ -22,7 +22,7 @@ import React, { useState, useEffect, useContext } from 'react';
 
 import UsersManager from './Users/usersmanager.jsx';
 import GroupsManager from './Groups/groupsmanager.jsx';
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialog.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 export default function PrincipalsContainer(props) {
   const [ users, setUsers ] = useState([]);
