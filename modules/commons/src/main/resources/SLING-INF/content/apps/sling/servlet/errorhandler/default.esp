@@ -58,7 +58,7 @@ if ("application/json".equals(request.getHeader("Accept"))) {
   let version = currentSession.getNode("/libs/cards/conf/Version").getProperty("Version").getString();
   let appName = currentSession.getNode("/libs/cards/conf/AppName").getProperty("AppName").getString();
   let platformName = currentSession.getNode("/libs/cards/conf/PlatformName").getProperty("PlatformName").getString();
-  let appVersion = currentSession.getNode("/libs/cards/conf/AppVersion").getProperty("AppVersion").getString();
+  let appVersion = currentSession.propertyExists("/libs/cards/conf/AppVersion/AppVersion") ? currentSession.getProperty("/libs/cards/conf/AppVersion/AppVersion").getString() : "";
   let colors = currentSession.getNode("/libs/cards/conf/ThemeColor");
   let media = currentSession.getNode("/libs/cards/conf/Media");
   let assets = currentSession.getNode("/libs/cards/resources/assets");
