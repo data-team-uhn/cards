@@ -58,6 +58,7 @@ if ("application/json".equals(request.getHeader("Accept"))) {
   let version = currentSession.getNode("/libs/cards/conf/Version").getProperty("Version").getString();
   let appName = currentSession.getNode("/libs/cards/conf/AppName").getProperty("AppName").getString();
   let platformName = currentSession.getNode("/libs/cards/conf/PlatformName").getProperty("PlatformName").getString();
+  let appVersion = currentSession.propertyExists("/libs/cards/conf/AppVersion/AppVersion") ? currentSession.getProperty("/libs/cards/conf/AppVersion/AppVersion").getString() : "";
   let colors = currentSession.getNode("/libs/cards/conf/ThemeColor");
   let media = currentSession.getNode("/libs/cards/conf/Media");
   let assets = currentSession.getNode("/libs/cards/resources/assets");
@@ -71,6 +72,7 @@ if ("application/json".equals(request.getHeader("Accept"))) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="version" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(version)}">
     <meta name="platformName" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(platformName)}">
+    <meta name="appVersion" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appVersion)}">
     <meta name="title" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appName)}">
     <title>${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(appName)}</title>
     <meta name="statusCode" content="${Packages.org.apache.commons.text.StringEscapeUtils.escapeXml11(statusCode)}">
