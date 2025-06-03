@@ -27,46 +27,57 @@ import { withStyles } from 'tss-react/mui';
 import styles from "../styling/styles";
 
 function MainLoginContainer(props) {
-  const { classes, selfContained, handleLogin, redirectOnLogin } = props;
+  const { classes, selfContained, signUpEnabled, handleLogin, redirectOnLogin } = props;
   let [ signInShown, setSignInShow ] = useState(true);
 
   const isLongForm = !!window.location.pathname.startsWith("/login");
   const title = document.querySelector('meta[name="title"]').content;
+  const paperClassName = `${classes.paper} ${selfContained ? classes.selfContained : ''}`.trim();
 
   return (
-    <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
-      <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
+    <Paper className={paperClassName} elevation={0}>
+      <Grid
+        container
+        direction="column"
+        spacing={3}
+        alignItems="center"
+        alignContent="center"
+      >
         <Logo maxWidth="200px" component={Grid}/>
         <Grid>
-        { signInShown ?
-          <LoginForm handleLogin={handleLogin} redirectOnLogin={redirectOnLogin}/>
-          :
-          <RegistrationForm loginOnSuccess={true} handleLogin={handleLogin} />
-        }
+          { signInShown ?
+            <LoginForm handleLogin={handleLogin} redirectOnLogin={redirectOnLogin}/>
+            :
+            <RegistrationForm loginOnSuccess={true} handleLogin={handleLogin} />
+           }
         </Grid>
-        { isLongForm && !signInShown &&
+        { isLongForm && (!signInShown || signUpEnabled) &&
           <Grid>
             <Button
               variant="outlined"
               fullWidth
               className={classes.main}
               onClick={() => setSignInShow(!signInShown)}
-             >
+            >
               { signInShown ?  "Sign up" : "Sign In" }
             </Button>
           </Grid>
         }
         { isLongForm &&
-        <Grid>
-          <Breadcrumbs separator="by" className={classes.appInfo}>
-            <Typography variant="subtitle2">{title}</Typography>
-            <Tooltip title="DATA Team @ UHN">
-              <a href="https://uhndata.io/" target="_blank">
-                <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
-              </a>
-            </Tooltip>
-          </Breadcrumbs>
-        </Grid>
+          <Grid>
+            <Breadcrumbs separator="by" className={classes.appInfo}>
+              <Typography variant="subtitle2">{title}</Typography>
+              <Tooltip title="DATA Team @ UHN">
+                <a href="https://uhndata.io/" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src="/libs/cards/resources/media/default/data-logo_light_bg.png"
+                    width="80"
+                    alt="DATA"
+                  />
+                </a>
+              </Tooltip>
+            </Breadcrumbs>
+          </Grid>
         }
       </Grid>
     </Paper>
