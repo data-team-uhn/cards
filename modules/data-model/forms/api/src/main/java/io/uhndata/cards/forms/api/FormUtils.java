@@ -508,9 +508,9 @@ public interface FormUtils
     Object getValue(NodeState answer);
 
     /**
-     * Retrieve the value(s) stored in an Property.
+     * Retrieve the value(s) stored in a Property.
      *
-     * @param value an Property value, may be {@code null}
+     * @param value a Property value, may be {@code null}
      * @return the value or values stored in the answer, either as a simple value of the corresponding type (e.g.
      *         Boolean, Calendar, Decimal, String), or an array of simple values; reference and path values are returned
      *         as strings (UUID or path), and not as the referenced nodes themselves; {@code null} may be returned if no

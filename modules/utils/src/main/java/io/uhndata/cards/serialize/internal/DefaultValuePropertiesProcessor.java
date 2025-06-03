@@ -67,7 +67,7 @@ public class DefaultValuePropertiesProcessor implements ResourceJsonProcessor
     @Reference
     protected FormUtils formUtils;
 
-    private Map<NodeType, Map<String, Object[]>> defaultsMap = new HashMap<>();
+    private ThreadLocal<Map<NodeType, Map<String, Object[]>>> defaultsMap = ThreadLocal.withInitial(HashMap::new);
 
     @Override
     public String getName()
@@ -95,7 +95,7 @@ public class DefaultValuePropertiesProcessor implements ResourceJsonProcessor
             // Initialize defaults map for the node if not already done
             initializeDefaultsMap(node);
 
-            Map<String, Object[]> nodeDefaultsMap = this.defaultsMap.get(node.getPrimaryNodeType());
+            Map<String, Object[]> nodeDefaultsMap = this.defaultsMap.get().get(node.getPrimaryNodeType());
             final String propertyName = property.getName();
             Object[] defaultValues = nodeDefaultsMap.get(propertyName);
 
@@ -132,7 +132,7 @@ public class DefaultValuePropertiesProcessor implements ResourceJsonProcessor
     // If we haven't fetched the default values for this node yet, do it now
     private void initializeDefaultsMap(Node node) throws RepositoryException
     {
-        if (this.defaultsMap.get(node.getPrimaryNodeType()) != null) {
+        if (this.defaultsMap.get().get(node.getPrimaryNodeType()) != null) {
             return;
         }
 
@@ -151,7 +151,7 @@ public class DefaultValuePropertiesProcessor implements ResourceJsonProcessor
                 nodeDefaultsMap.put(propName, result);
             }
         }
-        this.defaultsMap.put(node.getPrimaryNodeType(), nodeDefaultsMap);
+        this.defaultsMap.get().put(node.getPrimaryNodeType(), nodeDefaultsMap);
     }
 
     private JsonValue handleNoDefaultValues(Property property, JsonValue jsonValue) throws RepositoryException
@@ -182,6 +182,6 @@ public class DefaultValuePropertiesProcessor implements ResourceJsonProcessor
     @Override
     public void end(Resource resource)
     {
-        this.defaultsMap = new HashMap<>();
+        this.defaultsMap = ThreadLocal.withInitial(HashMap::new);
     }
 }
