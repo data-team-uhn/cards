@@ -43,7 +43,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 /**
  * An optional {@link ResourceJsonProcessor} that processes {@code cards/Questionnaire} resources.
  * This processor targets nodes within the questionnaire and excludes properties if their value is the default value
- * or obvious non-values. The name of this processor is {@code excludeDefaultValueProperties}.
+ * or obvious non-values. The name of this processor is {@code excludeDefaultProperties}.
  *
  * Property exclusion logic for a node properties:
  * <p>
@@ -62,7 +62,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  *  @version $Id$
 **/
 @Component(immediate = true)
-public class DefaultValuePropertiesProcessor implements ResourceJsonProcessor
+public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
 {
     @Reference
     protected FormUtils formUtils;
@@ -72,7 +72,7 @@ public class DefaultValuePropertiesProcessor implements ResourceJsonProcessor
     @Override
     public String getName()
     {
-        return "excludeDefaultValueProperties";
+        return "excludeDefaultProperties";
     }
 
     @Override
