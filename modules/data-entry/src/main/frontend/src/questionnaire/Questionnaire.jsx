@@ -44,7 +44,7 @@ import DeleteButton from "../dataHomepage/DeleteButton";
 import ExportButton from "../dataHomepage/ExportButton";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
-import { ENTRY_TYPES } from "./FormEntry";
+import { ENTRY_TYPES, QUESTION_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
@@ -390,7 +390,7 @@ let QuestionnaireContents = (props) => {
 
   useEffect(() => {
     // Load initial data
-    changeQuestionnaireContext(findQuestionnaireEntries(data, ["cards:Question"]));
+    changeQuestionnaireContext(findQuestionnaireEntries(data, QUESTION_TYPES));
     // Clear context when unmounting component
     return (() => changeQuestionnaireContext([]));
   }, []);
