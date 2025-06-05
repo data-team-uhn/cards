@@ -19,11 +19,14 @@
 
 package io.uhndata.cards.export;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,6 +57,30 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
  */
 public class ExportTask implements Runnable
 {
+    private static final class CompositeException extends Exception
+    {
+        private static final long serialVersionUID = 1L;
+
+        private final List<Exception> exceptions;
+
+        private CompositeException(final List<Exception> exceptions)
+        {
+            this.exceptions = exceptions;
+        }
+
+        @Override
+        public void printStackTrace(final PrintStream s)
+        {
+            this.exceptions.stream().forEach(e -> e.printStackTrace(s));
+        }
+
+        @Override
+        public void printStackTrace(final PrintWriter s)
+        {
+            this.exceptions.stream().forEach(e -> e.printStackTrace(s));
+        }
+    }
+
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportTask.class);
 
@@ -127,28 +154,29 @@ public class ExportTask implements Runnable
         }
     }
 
-    public void doManualExport(LocalDate lower, LocalDate upper) throws LoginException
+    public void doManualExport(LocalDate lower, LocalDate upper) throws Exception
     {
         LOGGER.info("Executing Manual data Export {}", this.config.name());
         doExport(lower != null ? lower.atStartOfDay(ZoneId.systemDefault()) : null,
             upper != null ? upper.atStartOfDay(ZoneId.systemDefault()) : null);
     }
 
-    public void doPeriodicExport() throws LoginException
+    public void doPeriodicExport() throws Exception
     {
         LOGGER.info("Executing Scheduled data Export {}", this.config.name());
         doExport(getPastDayStart(this.config.frequencyInDays()), getPastDayStart(0));
     }
 
-    public void doDailyExport() throws LoginException
+    public void doDailyExport() throws Exception
     {
         LOGGER.info("Executing Daily S3 Export {}", this.config.name());
         doExport(getPastDayStart(0), null);
     }
 
-    private void doExport(final ZonedDateTime startDate, final ZonedDateTime endDate) throws LoginException
+    private void doExport(final ZonedDateTime startDate, final ZonedDateTime endDate) throws Exception
     {
         boolean mustPopResolver = false;
+        List<Exception> exceptions = new ArrayList<>();
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             this.rrp.push(resolver);
             mustPopResolver = true;
@@ -166,7 +194,10 @@ public class ExportTask implements Runnable
                     String filename =
                         getTargetFileName(identifier, startDate, endDate);
                     // Step 4: Store the generated file
-                    this.output(resourceContents, filename);
+                    Exception e = this.output(resourceContents, filename);
+                    if (e != null) {
+                        exceptions.add(e);
+                    }
                 }
             }
         } catch (LoginException e) {
@@ -177,6 +208,9 @@ public class ExportTask implements Runnable
             if (mustPopResolver) {
                 this.rrp.pop();
             }
+        }
+        if (!exceptions.isEmpty()) {
+            throw new CompositeException(exceptions);
         }
     }
 
@@ -217,7 +251,7 @@ public class ExportTask implements Runnable
         return m.replaceAll(match -> DateTimeFormatter.ofPattern(match.group(1)).format(endDate));
     }
 
-    private void output(ResourceRepresentation input, String filename)
+    private Exception output(ResourceRepresentation input, String filename)
     {
         try {
             this.store.store(input.getRepresentation(), input.getRepresentationSize(), filename, input.getMimeType(),
@@ -228,8 +262,10 @@ public class ExportTask implements Runnable
             });
             LOGGER.info("Exported {} to {}", input.getIdentifier().getPath(), filename);
             Metrics.increment(this.resolverFactory, "S3ExportedSubjects", 1);
+            return null;
         } catch (Exception e) {
             LOGGER.error("Failed to export {}: {}", input.getIdentifier().getPath(), e.getMessage(), e);
+            return e;
         }
     }
 }
