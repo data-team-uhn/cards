@@ -117,7 +117,7 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
             // Property is multiple, check if all values match the default values
             Object[] actualValues = (Object[]) actualValue;
             // Excluding property if all values match the default values
-            if (areArraysEqualAsSets(defaultValues, actualValues)) {
+            if (Arrays.equals(defaultValues, actualValues)) {
                 return null;
             }
         } catch (RepositoryException e) {
@@ -170,18 +170,9 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
         return jsonValue;
     }
 
-    private boolean areArraysEqualAsSets(Object[] array1, Object[] array2)
-    {
-        if (array1.length != array2.length) {
-            return false;
-        }
-        // Compare arrays element by element in order
-        return Arrays.equals(array1, array2);
-    }
-
     @Override
     public void end(Resource resource)
     {
-        this.defaultsMap = ThreadLocal.withInitial(HashMap::new);
+        this.defaultsMap.remove();
     }
 }
