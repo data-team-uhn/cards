@@ -20,7 +20,6 @@ package io.uhndata.cards.serialize.internal;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -93,9 +92,8 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
     {
         try {
             // Initialize defaults map for the node if not already done
-            initializeDefaultsMap(node);
+            Map<String, Object[]> nodeDefaultsMap = getOrCreateDefaultsMap(node);
 
-            Map<String, Object[]> nodeDefaultsMap = this.defaultsMap.get().get(node.getPrimaryNodeType());
             final String propertyName = property.getName();
             Object[] defaultValues = nodeDefaultsMap.get(propertyName);
 
@@ -129,14 +127,15 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
         return jsonValue;
     }
 
-    // If we haven't fetched the default values for this node yet, do it now
-    private void initializeDefaultsMap(Node node) throws RepositoryException
+    // If we haven't fetched the default values for this node yet, do it now and return
+    private Map<String, Object[]> getOrCreateDefaultsMap(Node node) throws RepositoryException
     {
-        if (this.defaultsMap.get().get(node.getPrimaryNodeType()) != null) {
-            return;
+        Map<String, Object[]> nodeDefaultsMap = this.defaultsMap.get().get(node.getPrimaryNodeType());
+        if (nodeDefaultsMap != null) {
+            return nodeDefaultsMap;
         }
 
-        Map<String, Object[]> nodeDefaultsMap = new HashMap<>();
+        nodeDefaultsMap = new HashMap<>();
         PropertyDefinition[] propDefs = node.getPrimaryNodeType().getPropertyDefinitions();
 
         for (PropertyDefinition def : propDefs) {
@@ -148,10 +147,11 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
                         .map(this.formUtils::getValue)
                         .toArray(Object[]::new);
 
-                nodeDefaultsMap.put(propName, result);
+                nodeDefaultsMap.putIfAbsent(propName, result);
             }
         }
         this.defaultsMap.get().put(node.getPrimaryNodeType(), nodeDefaultsMap);
+        return nodeDefaultsMap;
     }
 
     private JsonValue handleNoDefaultValues(Property property, JsonValue jsonValue) throws RepositoryException
@@ -175,8 +175,8 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
         if (array1.length != array2.length) {
             return false;
         }
-
-        return new HashSet<>(Arrays.asList(array1)).equals(new HashSet<>(Arrays.asList(array2)));
+        // Compare arrays element by element in order
+        return Arrays.equals(array1, array2);
     }
 
     @Override
