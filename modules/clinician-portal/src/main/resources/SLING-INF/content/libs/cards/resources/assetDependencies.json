@@ -1,0 +1,6 @@
+{
+  "clinician-portal.ClinicDashboard.js": ["asset:cards-dataentry.Questionnaires.js", "asset:clinician-portal.ClinicForms.js", "asset:clinician-portal.ClinicVisits.js"],
+  "clinician-portal.ClinicForms.js": ["asset:cards-dataentry.LiveTable.js"],
+  "clinician-portal.ClinicVisits.js": ["asset:cards-dataentry.LiveTable.js"],
+  "clinician-portal.DashboardSettingsConfiguration.js": ["asset:cards-login.ReLoginDialog.js"]
+}
