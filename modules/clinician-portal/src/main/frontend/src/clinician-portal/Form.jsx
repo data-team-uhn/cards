@@ -18,7 +18,7 @@
 //
 import React from "react";
 
-import DefaultForm from "../questionnaire/Form.jsx";
+import DefaultForm from "../questionnaire/FormView.jsx";
 
 function Form(props) {
 
