@@ -1,0 +1,9 @@
+{
+  "clinician-portal.ClinicDashboard.js": ["asset:cards-dataentry.Questionnaires.js", "asset:clinician-portal.ClinicForms.js", "asset:clinician-portal.ClinicVisits.js"],
+  "clinician-portal.ClinicForms.js": ["asset:cards-dataentry.LiveTable.js"],
+  "clinician-portal.ClinicVisits.js": ["asset:cards-dataentry.LiveTable.js"],
+  "clinician-portal.Form.js": ["asset:cards-login.loginDialogue.js", "asset:cards-dataentry.Forms.js", "asset:cards-pedigree.Pedigree.js"],
+  "clinician-portal.Visit.js": ["asset:cards-login.loginDialogue.js"],
+  "clinician-portal.Patient.js": ["asset:cards-login.loginDialogue.js"],
+  "clinician-portal.DashboardSettingsConfiguration.js": ["asset:cards-login.loginDialogue.js"]
+}
