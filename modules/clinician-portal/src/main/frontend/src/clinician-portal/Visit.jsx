@@ -218,7 +218,7 @@ function Visit(props) {
 
   const displayMessageScreen = (message, type, icon) => (
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-      <Grid item>
+      <Grid>
         <Alert severity={type} icon={icon}>{message}</Alert>
       </Grid>
     </Grid>
@@ -304,6 +304,7 @@ function Visit(props) {
       size="small"
       className={`${classes[flag + "Flag"] || classes.DefaultFlag}`}
       sx={{mr: 1}}
+      key={flag}
     />
   )
 
@@ -345,6 +346,7 @@ function Visit(props) {
                 { displayFlags(q) }
                 { !isFormComplete(q) && isFormNavigable(q) && listPages(q) }
               </>}
+              slotProps={{'secondary': {'component': 'div'}}}
             />
           </ListItemButton>
         </ListItem>
@@ -401,8 +403,8 @@ function Visit(props) {
         }
         tags={visit?.statusFlags?.map(displayFlag)}
       />
-      <Grid item>{ displayVisitInfo() }</Grid>
-      <Grid item>
+      <Grid>{ displayVisitInfo() }</Grid>
+      <Grid>
         { listForms(clinicQIds, "Clinical examination", true) }
         { listForms(patientQIds, "Patient surveys") }
       </Grid>

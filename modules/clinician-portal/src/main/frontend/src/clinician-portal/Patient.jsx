@@ -153,7 +153,7 @@ function Patient(props) {
 
   const displayMessageScreen = (message, type, icon) => (
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-      <Grid item>
+      <Grid>
         <Alert severity={type} icon={icon}>{message}</Alert>
       </Grid>
     </Grid>
@@ -208,13 +208,13 @@ function Patient(props) {
         breadcrumbs={(patientData?.parents && getHierarchyAsList(patientData.parents, true) || [getHomepageLink(patientData)])}
       />
       { patientInfo &&
-        <Grid item>
+        <Grid>
           <Alert variant="outlined" severity="info" icon={<ContactPageIcon/>}>
           { patientInfo }
           </Alert>
         </Grid>
       }
-      <Grid item>
+      <Grid>
         <Box sx={{ height: 400, width: '100%' }}>
           <DataGrid
             sx={{cursor: "pointer"}}
