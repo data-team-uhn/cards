@@ -40,9 +40,9 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * An optional {@link ResourceJsonProcessor} that processes {@code cards/Questionnaire} resources.
- * This processor targets nodes within the questionnaire and excludes properties if their value is the default value
- * or obvious non-values. The name of this processor is {@code excludeDefaultProperties}.
+ * An optional {@link ResourceJsonProcessor} that processes resources of all resource types.
+ * This processor targets nodes and excludes properties if their value is the default value or obvious non-values.
+ * The name of this processor is {@code excludeDefaultProperties}.
  *
  * Property exclusion logic for a node properties:
  * <p>
@@ -83,7 +83,8 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
     @Override
     public boolean canProcess(Resource resource)
     {
-        return resource.isResourceType("cards/Questionnaire");
+        // This works on all resource types
+        return true;
     }
 
     @Override
