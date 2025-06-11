@@ -59,7 +59,8 @@ function AnswerInstructions (props) {
 
   return (instructionsExist && (
     <Typography
-      color={ answerIsAcceptable ? 'textSecondary' : 'error'}
+      component="p"
+      color={answerIsAcceptable ? 'textSecondary' : 'error'}
       className="cards-answerInstructions"
       variant="caption"
     >
