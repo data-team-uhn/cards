@@ -40,14 +40,14 @@ import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * An optional {@link ResourceJsonProcessor} that processes resources of all resource types.
- * This processor targets nodes and excludes properties if their value is the default value or obvious non-values.
+ * An optional {@link ResourceJsonProcessor} applicable to any type of resource. This processor targets
+ * nodes and excludes their properties if their value is the default value or an obvious non-value.
  * The name of this processor is {@code excludeDefaultProperties}.
  *
- * Property exclusion logic for a node properties:
+ * Property exclusion logic:
  * <p>
  * <ul>
- *   <li>If a property's value matches its JCR-defined default value, the property is excluded from JSON output.</li>
+ *   <li>If a property's value matches its JCR-defined default value, the property is excluded from the JSON output.</li>
  *   <li>If a property does not have a JCR-defined default value:
  *     <ul>
  *       <li>It is excluded if it's a boolean type property with a value of {@code false}.</li>
