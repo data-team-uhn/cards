@@ -194,17 +194,17 @@ function NumberQuestion(props) {
     { height: Math.max(100, sliderMarks.length*30) + "px" } : undefined
 
   // Callback function for our min/max
-  let hasMinMaxValueError = (text) => {
+  let getMinMaxValueError = (text) => {
     let value = 0;
     if (typeof(text) === "undefined" || text === "") {
       // The custom input has been unset
-      return false;
+      return null;
     }
 
     if (dataType === "long") {
       // Test that it is an integer
       if (!/^[-+]?\d*$/.test(text)) {
-        return true;
+        return "Value must be an integer";
       }
 
       value = parseInt(text);
@@ -213,25 +213,31 @@ function NumberQuestion(props) {
 
       // Reject whitespace and non-numbers
       if (/^\s*$/.test(text) || isNaN(value)) {
-        return true;
+        return "Value must be a number";
       }
     }
 
     // Test that it is within our min/max (if they are defined)
-    if ((typeof minValue !== 'undefined' && value < minValue) ||
+    if ((typeof minValue !== 'undefined' && value < minValue) &&
       (typeof maxValue !== 'undefined' && value > maxValue)) {
-      return true;
+      return `The values must be between ${minValue} and ${maxValue}`;
+    }
+    if (typeof minValue !== 'undefined' && value < minValue) {
+      return `The values must be greater than ${minValue}`;
+    }
+    if (typeof maxValue !== 'undefined' && value > maxValue) {
+      return `The values must be lower than ${maxValue}`;
     }
 
-    return false;
+    return null;
   }
 
   React.useEffect(() => {
     if (!isRange) return;
     // Check for invalid range limits
     setMinMaxError(
-      lowerLimit && hasMinMaxValueError(lowerLimit) ||
-      upperLimit && hasMinMaxValueError(upperLimit)
+      getMinMaxValueError(lowerLimit) ||
+      getMinMaxValueError(upperLimit)
     );
     setRangeError(
        typeof(lowerLimit) == 'undefined' && typeof(upperLimit) != 'undefined' ||
@@ -240,9 +246,9 @@ function NumberQuestion(props) {
   }, [lowerLimit, upperLimit]);
 
   React.useEffect(() => {
-    if (!isSlider || isRange) return;
+    if (isRange) return;
     setMinMaxError(
-      sliderValue && hasMinMaxValueError(sliderValue)
+      getMinMaxValueError(sliderValue)
     );
   }, [sliderValue]);
 
@@ -302,12 +308,16 @@ function NumberQuestion(props) {
     if (idx != 1) return '';
     return (
       <div>
-        <FormattedText color={pageActive && (minMaxError || rangeError) ? "error" : ""}>
+        <FormattedText color={!disableMinMaxValueEnforcement && pageActive && (minMaxError || rangeError) ? "error" : ""}>
           { `${initialValue?.[0]} &mdash; ${label}` }
         </FormattedText>
-        { pageActive && (minMaxError || rangeError) &&
+        { (disableMinMaxValueEnforcement && typeof messageForValuesOutsideMinMax != "undefined") ?
+          <Typography component="div" color="textSecondary" variant="caption">
+            { messageForValuesOutsideMinMax }
+          </Typography>
+        : (pageActive && (minMaxError || rangeError)) &&
           <Typography component="div" color="error" variant="caption">
-            Invalid input
+            { rangeError ? rangeErrorMessage : minMaxError }
           </Typography>
         }
       </div>
@@ -315,7 +325,22 @@ function NumberQuestion(props) {
   }
 
   let markdownFormatter = function(label, idx) {
-    return <FormattedText>{label}</FormattedText>;
+    return (
+      <div>
+        <FormattedText color={!disableMinMaxValueEnforcement && pageActive && minMaxError ? "error" : ""}>
+          { label }
+        </FormattedText>
+        { (disableMinMaxValueEnforcement && typeof messageForValuesOutsideMinMax != "undefined") ?
+          <Typography component="div" color="textSecondary" variant="caption">
+            { messageForValuesOutsideMinMax }
+          </Typography>
+        : (pageActive && minMaxError) &&
+          <Typography component="div" color="error" variant="caption">
+            { minMaxError }
+          </Typography>
+        }
+      </div>
+    );
   }
 
   let setValue = function(fn, value) {
@@ -383,6 +408,7 @@ function NumberQuestion(props) {
           minAnswers={Math.min(1, minAnswers)}
           maxAnswers={0}
           currentAnswers={typeof(lowerLimit) != 'undefined' && typeof(upperLimit) != 'undefined' ? 1 : 0}
+          {...props}
           />
         { rangeError &&
           <Typography
@@ -406,6 +432,7 @@ function NumberQuestion(props) {
               variant="standard"
               helperText="Lower limit"
               value={lowerLimit}
+              error={rangeError || !!minMaxError}
               placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
               onChange={event => setValue(setLowerLimit, event.target.value)}
               slotProps={{
@@ -421,6 +448,7 @@ function NumberQuestion(props) {
               variant="standard"
               helperText="Upper limit"
               value={upperLimit}
+              error={rangeError || !!minMaxError}
               placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
               onChange={event => setValue(setUpperLimit, event.target.value)}
               slotProps={{
@@ -450,6 +478,7 @@ function NumberQuestion(props) {
             minAnswers={Math.min(1, minAnswers)}
             maxAnswers={0}
             currentAnswers={isSingleSliderSelected ?  1 : 0}
+            {...props}
           />
           { makeSlider({
               valueLabelDisplay: (isSingleSliderSelected ? "on" : "off"),
@@ -472,13 +501,13 @@ function NumberQuestion(props) {
             valueType={valueType}
             input={displayMode === "input" || displayMode === "list+input"}
             textbox={displayMode === "textbox"}
-            onUpdate={text => setMinMaxError(!!text && hasMinMaxValueError(text))}
+            onUpdate={text => setMinMaxError(getMinMaxValueError(text))}
             additionalInputProps={textFieldProps}
             muiInputProps={muiInputProps}
             error={!disableMinMaxValueEnforcement && minMaxError}
             existingAnswer={existingAnswer}
             pageActive={pageActive}
-            validate={disableMinMaxValueEnforcement ? value => !hasMinMaxValueError(value) : undefined}
+            validate={disableMinMaxValueEnforcement ? value => !getMinMaxValueError(value) : undefined}
             validationErrorText={minMaxMessage}
             softValidation={disableMinMaxValueEnforcement}
             {...rest}
