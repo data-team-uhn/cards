@@ -29,56 +29,58 @@ import ErrorIcon from '@mui/icons-material/Error';
 import DoneIcon from '@mui/icons-material/Done';
 import ShareIcon from '@mui/icons-material/Share';
 
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 function SurveyLinkButton(props) {
   const { visitURL, size } = props;
 
-  const [ token, setToken ] = useState();
   const [ surveyLink, setSurveyLink ] = useState();
+  const [ fetchingLink, setFetchingLink ] = useState();
   const [ copied, setCopied ] = useState();
   const [ error, setError ] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  useEffect(() => {
-    fetchWithReLogin(globalLoginDisplay, `${visitURL}.token.html`)
-      .then((response) => response.ok ? response.text() : Promise.reject(response))
-      .then((text) => setToken(text.trim()))
-      .catch(() => setError("Could not generate survey link"));
-  }, [visitURL]);
-
-  useEffect(() => {
-    token && setSurveyLink(window.location.origin + "/Survey.html?auth_token=" + token);
-  }, [token]);
-
-  const onCopy = () => {
+  const copy = (text) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(function() {
       setCopied(false);
-    }, 3000);
-  }
+    }, 5_000);
+  };
 
-  return (
-    surveyLink ?
-      <CopyToClipboard text={surveyLink} onCopy={onCopy}>
-        <Tooltip title={
-          copied ? "Copied"
-          : `Copy patient survey link to clipboard`
-        }>
-          <IconButton size={size ?? "large"}>
-            { copied ? <DoneIcon/> : <ShareIcon/> }
-          </IconButton>
-        </Tooltip>
-    </CopyToClipboard>
-   : <Tooltip title={error ? error : "Generating survey link..."}>
-       <IconButton size={size || large} disabled>
-         {error ? <ErrorIcon /> : <CircularProgress size={24}/>}
-       </IconButton>
-     </Tooltip>
-  );
+  const fetchToken = () => {
+    setFetchingLink(true);
+    fetchWithReLogin(globalLoginDisplay, `${visitURL}.token.html`)
+      .then((response) => response.ok ? response.text() : Promise.reject(response))
+      .then((text) => { setSurveyLink(window.location.origin + "/Survey.html?auth_token=" + text.trim()); copy(window.location.origin + "/Survey.html?auth_token=" + text.trim()); })
+      .catch(() => setError("Could not generate survey link"))
+      .finally(() => setFetchingLink(false));
+  };
+
+  const onClick = () => {
+    surveyLink ? copy(surveyLink) : fetchToken();
+  };
+
+  if (error) {
+    return (<Tooltip title={error}>
+      <IconButton size={size || "large"}>
+        <ErrorIcon />
+      </IconButton>
+    </Tooltip>);
+  }
+  if (fetchingLink) {
+    return (<Tooltip title={"Generating survey link..."}>
+      <IconButton size={size || "large"}>
+        <CircularProgress size={24}/>
+      </IconButton>
+    </Tooltip>);
+  }
+  return (<Tooltip title={copied ? "Copied" : `Copy patient survey link to clipboard`}>
+    <IconButton size={size || "large"} onClick={onClick}>
+      { copied ? <DoneIcon/> : <ShareIcon/> }
+    </IconButton>
+  </Tooltip>);
 }
 
 SurveyLinkButton.propTypes = {
