@@ -67,7 +67,7 @@ public class PauseResumeFormEditorProvider implements EditorProvider
         throws CommitFailedException
     {
         if (this.rrf != null) {
-            // Each ComputedEditor maintains a state, so a new instance must be returned each time
+            // Each PauseResumeFormEditor maintains a state, so a new instance must be returned each time
             return new PauseResumeFormEditor(builder, this.rrf, this.rrp,
                 this.questionnaireUtils, this.formUtils, this.subjectUtils, this.linkUtils, false);
         }
