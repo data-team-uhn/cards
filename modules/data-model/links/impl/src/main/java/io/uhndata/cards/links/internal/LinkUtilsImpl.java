@@ -19,11 +19,11 @@ package io.uhndata.cards.links.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -106,6 +106,31 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     }
 
     @Override
+    public Collection<Link> getLinksOfType(Node source, String type)
+    {
+        try {
+            Collection<Link> links = getLinks(source);
+            Node linkDefinition = getLinkType(source.getSession(), type);
+            return links.stream().filter(link -> {
+                try {
+                    return link.getDefinition().getNode().getPath().equals(linkDefinition.getPath());
+                } catch (RepositoryException e) {
+                    return false;
+                }
+            }).collect(Collectors.toList());
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to retrieve links of type {} for node {}", type, source, e);
+            return new ArrayList<Link>();
+        }
+    }
+
+    private Node getLinkType(Session session, String type)
+        throws RepositoryException
+    {
+        return session.getNode(type.startsWith("/") ? type : LINK_DEFINITIONS_PATH + type);
+    }
+
+    @Override
     public Collection<Link> getBacklinks(Node source)
     {
         final Collection<Link> result = new ArrayList<>();
@@ -127,9 +152,7 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     public Link addLink(Node source, Node destination, String type, String label) throws IllegalArgumentException
     {
         try {
-            return addLink(source, destination,
-                source.getSession().getNode(type.startsWith("/") ? type : LINK_DEFINITIONS_PATH + type),
-                label);
+            return addLink(source, destination, getLinkType(source.getSession(), type), label);
         } catch (RepositoryException e) {
             throw new IllegalArgumentException("Unknown link type: " + type);
         }
@@ -278,23 +301,28 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     @Override
     public boolean removeLinks(Node source, Node destination, Node type, String label)
     {
-        final List<Link> matchingLinks = getLinks(source).stream().filter(link -> {
+        Stream<Link> matchingLinks = getLinks(source).stream().filter(link -> {
             try {
                 return link.getDefinition().getNode().isSame(type);
             } catch (RepositoryException e) {
                 return false;
             }
-        }).filter(link -> {
-            try {
-                return link.getLinkedResource() != null && destination.isSame(link.getLinkedResource());
-            } catch (RepositoryException e) {
-                return false;
-            }
-        }).filter(link -> label == null || StringUtils.equals(label, link.getLabel()))
-            .collect(Collectors.toList());
+        });
+        if (destination != null) {
+            matchingLinks = matchingLinks.filter(link -> {
+                try {
+                    return link.getLinkedResource() != null && destination.isSame(link.getLinkedResource());
+                } catch (RepositoryException e) {
+                    return false;
+                }
+            });
+        }
+        if (label != null) {
+            matchingLinks = matchingLinks.filter(link -> StringUtils.equals(label, link.getLabel()));
+        }
 
-        return !matchingLinks.isEmpty()
-            && matchingLinks.stream().map(link -> removeLink(link.getNode())).reduce(true, Boolean::logicalAnd);
+        return matchingLinks.count() > 0
+            && matchingLinks.map(link -> removeLink(link.getNode())).reduce(true, Boolean::logicalAnd);
     }
 
     private Node getLinksContainer(final Node resource) throws RepositoryException

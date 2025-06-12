@@ -53,6 +53,7 @@
               SLING-INF/content/libs/cards/PatientHomepage/;path:=/libs/cards/PatientHomepage/;overwrite:=true,
               SLING-INF/content/libs/cards/resources/assetDependencies.json;path:=/libs/cards/resources/assetDependencies;overwriteProperties:=true,
               SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/apps/cards/LinkDefinitions/;path:=/apps/cards/LinkDefinitions/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwriteProperties:=true;uninstall:=true,
@@ -145,6 +146,11 @@
     <dependency>
       <groupId>io.uhndata.cards</groupId>
       <artifactId>cards-data-model-forms-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-data-model-links-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

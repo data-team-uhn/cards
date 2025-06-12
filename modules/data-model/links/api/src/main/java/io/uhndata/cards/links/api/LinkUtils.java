@@ -57,6 +57,15 @@ public interface LinkUtils
     Collection<Link> getLinks(Node source);
 
     /**
+     * Retrieve all the links from a resource of a desired link type.
+     *
+     * @param source the node to get links from
+     * @param type the type of link to filter by, the name of the node holding the link definition, or a JCR path to it
+     * @return a collection of links, may be empty
+     */
+    Collection<Link> getLinksOfType(Node source, String type);
+
+    /**
      * Retrieve all the links to a resource.
      *
      * @param source the node to get links pointing to
@@ -87,14 +96,6 @@ public interface LinkUtils
     Link addLink(Node source, Node destination, Node type, String label);
 
     /**
-     * Add a backlink for the original link, if it is missing.
-     *
-     * @param original an existing link
-     * @return {@code true} if a backlink was created or already existed, {@code false} otherwise
-     */
-    boolean addBacklink(Link original);
-
-    /**
      * Create a new link between two resources.
      *
      * @param source the node builder to put the link on, usually a newly created node
@@ -103,6 +104,14 @@ public interface LinkUtils
      * @param label an optional label for the new link
      */
     void addLink(NodeBuilder source, Node destination, Node type, String label);
+
+    /**
+     * Add a backlink for the original link, if it is missing.
+     *
+     * @param original an existing link
+     * @return {@code true} if a backlink was created or already existed, {@code false} otherwise
+     */
+    boolean addBacklink(Link original);
 
     /**
      * Delete a link.
