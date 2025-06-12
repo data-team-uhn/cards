@@ -431,6 +431,7 @@ function MultipleChoice(props) {
                 tabIndex: isRadio ? -1 : undefined
               }, additionalInputProps),
               input: muiInputProps,
+              formHelperText: {component: "div"},
             }}
             value={ghostName || ''}
             multiline={textbox}
