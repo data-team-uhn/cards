@@ -56,7 +56,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SurveyFirstOpenedListener.class);
 
-    private static final String OPENED_PROP = "survey_opened";
+    private static final String QUESTION_NAME = "survey_opened";
 
     private static final String LINK_DEFINITION_NAME = "belongsToSurvey";
 
@@ -138,7 +138,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
         final Node questionnaire = this.formUtils.getQuestionnaire(surveyForm);
         if (SURVEY_EVENTS_PATH.equals(questionnaire.getPath())) {
             // If the form is for the survey events questionnaire, update the survey opened date
-            final Node question = this.questionnaireUtils.getQuestion(questionnaire, OPENED_PROP);
+            final Node question = this.questionnaireUtils.getQuestion(questionnaire, QUESTION_NAME);
             final Node answer = this.formUtils.getAnswer(surveyForm, question);
             if (this.formUtils.getValue(answer) != null) {
                 return;
