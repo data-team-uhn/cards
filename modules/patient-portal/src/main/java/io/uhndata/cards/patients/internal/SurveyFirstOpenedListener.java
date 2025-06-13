@@ -58,7 +58,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
 
     private static final String OPENED_PROP = "survey_opened";
 
-    private static final String BELONGS_TO_SURVEY_PROP = "belongsToSurvey";
+    private static final String LINK_DEFINITION_NAME = "belongsToSurvey";
 
     private static final String SURVEY_EVENTS_PATH = "/Questionnaires/Survey events";
 
@@ -95,7 +95,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
 
         boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.rrf
-            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "SurveyEventsFormListener"))
+            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "SurveyFirstOpenedListener"))
         ) {
             Session session = localResolver.adaptTo(Session.class);
             String path = event.getPath();
@@ -111,7 +111,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
                 return;
             }
 
-            final Link link = this.linkUtils.getLinksOfType(node, BELONGS_TO_SURVEY_PROP)
+            final Link link = this.linkUtils.getLinksOfType(node, LINK_DEFINITION_NAME)
                 .stream().findFirst().orElse(null);
             if (link == null) {
                 return;
