@@ -58,6 +58,10 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
 
     private static final String OPENED_PROP = "survey_opened";
 
+    private static final String BELONGS_TO_SURVEY_PROP = "belongsToSurvey";
+
+    private static final String SURVEY_EVENTS_PATH = "/Questionnaires/Survey events";
+
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
             policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
@@ -107,7 +111,8 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
                 return;
             }
 
-            final Link link = this.linkUtils.getLinksOfType(node, "belongsToSurvey").stream().findFirst().orElse(null);
+            final Link link = this.linkUtils.getLinksOfType(node, BELONGS_TO_SURVEY_PROP)
+                .stream().findFirst().orElse(null);
             if (link == null) {
                 return;
             }
@@ -131,7 +136,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
             return;
         }
         final Node questionnaire = this.formUtils.getQuestionnaire(surveyForm);
-        if ("/Questionnaires/Survey events".equals(questionnaire.getPath())) {
+        if (SURVEY_EVENTS_PATH.equals(questionnaire.getPath())) {
             // If the form is for the survey events questionnaire, update the survey opened date
             final Node question = this.questionnaireUtils.getQuestion(questionnaire, OPENED_PROP);
             final Node answer = this.formUtils.getAnswer(surveyForm, question);
