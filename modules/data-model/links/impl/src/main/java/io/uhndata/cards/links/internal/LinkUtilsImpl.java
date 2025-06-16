@@ -321,8 +321,7 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
             matchingLinks = matchingLinks.filter(link -> StringUtils.equals(label, link.getLabel()));
         }
 
-        return matchingLinks.count() > 0
-            && matchingLinks.map(link -> removeLink(link.getNode())).reduce(true, Boolean::logicalAnd);
+        return matchingLinks.map(link -> removeLink(link.getNode())).reduce(true, Boolean::logicalAnd);
     }
 
     private Node getLinksContainer(final Node resource) throws RepositoryException
