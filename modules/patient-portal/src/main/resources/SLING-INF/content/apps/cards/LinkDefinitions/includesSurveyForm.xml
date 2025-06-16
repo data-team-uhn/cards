@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>belongsToSurvey</name>
+	<name>includesSurveyForm</name>
 	<primaryNodeType>cards:LinkDefinition</primaryNodeType>
 	<property>
 		<name>label</name>
-		<value>Belongs to Survey</value>
+		<value>Includes Survey Form</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -46,7 +46,7 @@
 	</property>
 	<property>
 		<name>backlink</name>
-		<value>/apps/cards/LinkDefinitions/includesSurveyForm</value>
+		<value>/apps/cards/LinkDefinitions/belongsToSurvey</value>
 		<type>Path</type>
 	</property>
 	<property>
