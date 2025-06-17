@@ -110,7 +110,7 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
             }
 
             // Property is single valued, compare the actual value with the default value
-            if (!property.isMultiple()) {
+            if (!property.isMultiple() && defaultValues.length == 1) {
                 // Excluding property
                 return defaultValues[0].equals(actualValue) ? null : jsonValue;
             }
