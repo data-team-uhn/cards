@@ -308,7 +308,7 @@ function Section(props) {
           })
         }
         {isEdit && isRecurrent &&
-        <Grid sx={{bgcolor: "action.hover", p: 1}}>
+        <Grid sx={{bgcolor: "action.hover", px: 1, py: 2}}>
           <Button
             size="small"
             variant="contained"
