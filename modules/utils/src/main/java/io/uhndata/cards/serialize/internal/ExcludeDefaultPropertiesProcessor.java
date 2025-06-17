@@ -81,13 +81,6 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
     }
 
     @Override
-    public boolean canProcess(Resource resource)
-    {
-        // This works on all resource types
-        return true;
-    }
-
-    @Override
     public JsonValue processProperty(Node node, Property property, JsonValue jsonValue,
         Function<Node, JsonValue> function)
     {
