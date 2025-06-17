@@ -144,7 +144,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
                 return;
             }
 
-            answer.setProperty("value", Calendar.getInstance());
+            answer.setProperty(FormUtils.VALUE_PROPERTY, Calendar.getInstance());
             session.save();
         }
     }
