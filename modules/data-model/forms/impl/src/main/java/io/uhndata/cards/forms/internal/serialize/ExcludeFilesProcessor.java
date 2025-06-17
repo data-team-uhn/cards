@@ -54,13 +54,6 @@ public class ExcludeFilesProcessor implements ResourceJsonProcessor
     private ThreadLocal<Set<String>> exclude = new ThreadLocal<>();
 
     @Override
-    public boolean canProcess(final Resource resource)
-    {
-        // This works on all resource types
-        return true;
-    }
-
-    @Override
     public String getName()
     {
         return "excludeFiles";
