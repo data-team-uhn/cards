@@ -28,6 +28,7 @@ import javax.json.JsonValue;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.links.api.Link;
 import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
@@ -61,7 +62,7 @@ public class FormToSurveyLinkProcessor implements ResourceJsonProcessor
         final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (child.isNodeType("cards:Links")) {
+            if (child.isNodeType(LinkUtils.LINKS_NODETYPE)) {
                 // Do not include the links node
                 return null;
             }
@@ -76,7 +77,7 @@ public class FormToSurveyLinkProcessor implements ResourceJsonProcessor
         final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("cards:Form")) {
+            if (node.isNodeType(FormUtils.FORM_NODETYPE)) {
                 if (node.hasNode(LinkUtils.LINKS_CONTAINER)) {
                     Link link = getBelongsToSurveyLink(node.getNode(LinkUtils.LINKS_CONTAINER));
                     if (link != null) {
@@ -100,6 +101,5 @@ public class FormToSurveyLinkProcessor implements ResourceJsonProcessor
                 return false;
             }
         }).findAny().orElse(null);
-
     }
 }
