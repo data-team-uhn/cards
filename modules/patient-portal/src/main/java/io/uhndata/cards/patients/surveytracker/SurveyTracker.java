@@ -388,7 +388,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
     }
 
     /**
-     * Check if an answer is for the "visit time" question.
+     * Check if an answer is for the "visit clinic" question.
      *
      * @param answer the answer node to check
      * @return {@code true} if the answer is indeed for the target question
