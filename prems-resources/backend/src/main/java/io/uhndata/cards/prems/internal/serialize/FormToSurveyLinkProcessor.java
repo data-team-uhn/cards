@@ -80,7 +80,7 @@ public class FormToSurveyLinkProcessor implements ResourceJsonProcessor
                 if (node.hasNode(LinkUtils.LINKS_CONTAINER)) {
                     Link link = getBelongsToSurveyLink(node.getNode(LinkUtils.LINKS_CONTAINER));
                     if (link != null) {
-                        json.add("@survey", link.getLinkedResource().getProperty("jcr:uuid").getString());
+                        json.add("@survey", link.getLinkedResource().getName());
                     }
                 }
             }
