@@ -86,7 +86,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
 
     private void handleEvent(final ResourceChange event)
     {
-        // Check that if the property was changed by user
+        // Check if the property was changed by a patient user
         final String userID = event.getUserId();
         final Boolean isPatient = "patient".equals(userID) || "guest-patient".equals(userID);
         if (!isPatient) {
