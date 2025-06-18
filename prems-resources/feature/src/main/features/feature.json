@@ -376,7 +376,7 @@
       "retriever": "Questionnaires with modified forms",
       "retrieverParameters": [
         "questionnaire=/Questionnaires/Survey events",
-        "selectors=.dataFilter:statusNot=INCOMPLETE.labels.formToSurveyLinks"
+        "selectors=.dataFilter:statusNot=INCOMPLETE.labels"
       ],
       "formatter": "csv",
       "fileNameFormat": "{resourcePath}.csv",
@@ -399,7 +399,7 @@
         "questionnaire=/Questionnaires/Patient information",
         "questionnaire=/Questionnaires/Visit information",
         "questionnaire=/Questionnaires/Survey events",
-        "selectors=.csvHeader:raw.-dereference.dataOption:formSelectors=-dereference\\.simple\\.deep\\.-identify\\.nolinks"
+        "selectors=.csvHeader:raw.-dereference.dataOption:formSelectors=-dereference\\.simple\\.deep\\.-identify\\.formToSurveyLinks"
       ],
       "formatter": "json",
       "fileNameFormat": "{resourcePath}_{today}.json",

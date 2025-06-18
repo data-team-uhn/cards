@@ -49,7 +49,7 @@ public interface LinkUtils
     Link getLink(Node linkNode) throws IllegalArgumentException;
 
     /**
-     * Retrieve all the links from a resource.
+     * Retrieve all the links from a resource or link node.
      *
      * @param source the node to get links from
      * @return a collection of links, may be empty

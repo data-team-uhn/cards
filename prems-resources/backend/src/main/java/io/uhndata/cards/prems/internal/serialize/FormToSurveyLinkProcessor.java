@@ -33,7 +33,8 @@ import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Omit the links from the output, if any. The name of this processor is {@code nolinks}.
+ * If there is a belongsToSurvey link, include the uuid of the linked form in the root of the source form.
+ * Otherwise, omit the link. The name of this processor is {@code formToSurveyLinks}.
  *
  * @version $Id$
  */

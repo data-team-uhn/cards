@@ -107,8 +107,10 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             // Collect column headers explicitly as labels because csvData maps only questions uuids to answers
             final List<String> columns = new ArrayList<>();
             final List<String> rawColumns = new ArrayList<>();
+            // A list of columns with data that should be copied from the root form, not answers
             final Map<String, String> extraColumns = new LinkedHashMap<>();
 
+            // Collect all the headers from the configuration, questions and any other hardcoded columns
             processHeaders(questionnaire, resolver, csvData, columns, rawColumns, extraColumns, resolutionPathInfo);
 
             // Print header
@@ -147,49 +149,51 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             // No specific subject types for this questionnaire, output all known subject types
             getSubjectTypes(resolver, csvData, columns, rawColumns);
         }
-        csvData.put(CREATED_HEADER, new HashMap<>());
-        columns.add(CREATED_HEADER);
-        rawColumns.add("jcr:created");
-        extraColumns.put(CREATED_HEADER, "jcr:created");
 
-        csvData.put(LAST_MODIFIED_HEADER, new HashMap<>());
-        columns.add(LAST_MODIFIED_HEADER);
-        rawColumns.add("jcr:lastModified");
-        extraColumns.put(LAST_MODIFIED_HEADER, "jcr:lastModified");
+        recordColumn(CREATED_HEADER, "jcr:created", csvData, columns, rawColumns, extraColumns);
+        recordColumn(LAST_MODIFIED_HEADER, "jcr:lastModified", csvData, columns, rawColumns, extraColumns);
 
+        // Get any extra configured headers
         processExtraHeaders(csvData, columns, rawColumns, extraColumns, resolutionPathInfo);
 
         // Get header titles from the questionnaire question objects
         processSectionToHeaderRow(questionnaire, csvData, columns, rawColumns);
     }
 
+    private void recordColumn(final String label, final String value, final Map<String, Map<Integer, String>> csvData,
+        final List<String> columns, final List<String> rawColumns, final Map<String, String> extraColumns)
+    {
+        csvData.put(label, new HashMap<>());
+        columns.add(label);
+        rawColumns.add(value);
+        extraColumns.put(label, value);
+    }
+
     private void processExtraHeaders(final Map<String, Map<Integer, String>> csvData, final List<String> columns,
         final List<String> rawColumns, final Map<String, String> extraColumns, final String resolutionPathInfo)
     {
         // Collect any other columns specified by the export configuration
-        if (resolutionPathInfo.contains(INCLUDE_FIELDS)) {
-            int startIndex = resolutionPathInfo.indexOf(INCLUDE_FIELDS);
-            do {
-                int endIndex = resolutionPathInfo.indexOf(".", startIndex + 1);
-                if (endIndex < 0) {
-                    endIndex = resolutionPathInfo.length();
-                }
-                int divider = resolutionPathInfo.indexOf("=", startIndex);
+        int startIndex = resolutionPathInfo.indexOf(INCLUDE_FIELDS);
+        while (startIndex > 0) {
+            // Search for headers with the format:
+            // .csvIncludeFields:<value>=<label>
+            int endIndex = resolutionPathInfo.indexOf(".", startIndex + 1);
+            if (endIndex < 0) {
+                endIndex = resolutionPathInfo.length();
+            }
 
-                String value = resolutionPathInfo.substring(startIndex + INCLUDE_FIELDS.length(),
-                    (divider < endIndex && divider > 0) ? divider : endIndex);
-                String label = (divider < endIndex && divider > 0)
-                    ? resolutionPathInfo.substring(divider + 1, endIndex)
-                    : value;
-                if (label.startsWith("\"") && label.endsWith("\"")) {
-                    label = label.substring(1, label.length() - 1);
-                }
-                csvData.put(label, new HashMap<>());
-                columns.add(label);
-                rawColumns.add(value);
-                extraColumns.put(label, value);
-                startIndex = resolutionPathInfo.indexOf(INCLUDE_FIELDS, endIndex);
-            } while (startIndex > 0);
+            String[] pieces = resolutionPathInfo.substring(startIndex + INCLUDE_FIELDS.length(), endIndex)
+                .split("=", 2);
+            String value = pieces[0];
+            String label = pieces.length == 2 ? pieces[1] : pieces[0];
+
+            // If label is in quotes, remove them
+            if (label.startsWith("\"") && label.endsWith("\"")) {
+                label = label.substring(1, label.length() - 1);
+            }
+
+            recordColumn(label, value, csvData, columns, rawColumns, extraColumns);
+            startIndex = resolutionPathInfo.indexOf(INCLUDE_FIELDS, endIndex);
         }
     }
 
@@ -283,7 +287,9 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             processFormSubjects(form.getJsonObject("subject"), csvData);
         }
         extraColumns.forEach((label, value) -> {
-            csvData.get(label).put(0, form.getString(value));
+            if (form.containsKey(value)) {
+                csvData.get(label).put(0, form.getString(value));
+            }
         });
 
         // Compute on which row each answer is supposed to be.
