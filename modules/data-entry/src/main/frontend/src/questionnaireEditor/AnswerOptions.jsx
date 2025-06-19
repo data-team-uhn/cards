@@ -463,7 +463,7 @@ let AnswerOptionList = (props) => {
   let answerOptions = Object.values(data ||{}).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
                       .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
   return (
-    answerOptions.map(item => <div key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</div>)
+    answerOptions.map(item => <div key={item['jcr:uuid'] || item.value}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</div>)
   );
 }
 
