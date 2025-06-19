@@ -21,6 +21,7 @@ import java.util.EnumSet;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.Value;
 import javax.json.JsonValue;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
@@ -505,6 +506,26 @@ public interface FormUtils
      *         value is stored in the answer
      */
     Object getValue(NodeState answer);
+
+    /**
+     * Retrieve the value(s) stored in a Property.
+     *
+     * @param value a Property value, may be {@code null}
+     * @return the value or values stored in the answer, either as a simple value of the corresponding type (e.g.
+     *         Boolean, Calendar, Decimal, String), or an array of simple values; reference and path values are returned
+     *         as strings (UUID or path), and not as the referenced nodes themselves; {@code null} may be returned if no
+     *         value is stored in the answer
+     */
+    Object getValue(Property value);
+
+    /**
+     * Extract the actual value from a Value object.
+     *
+     * @param value a Value object, may be {@code null}
+     * @return the actual value stored in the object as a simple value of the corresponding type (e.g.
+     *         Boolean, Calendar, Decimal, String); {@code null} may be returned if no value is stored in the answer
+     */
+    Object getValue(Value value);
 
     /**
      * Serialize the value(s) stored in an Answer.
