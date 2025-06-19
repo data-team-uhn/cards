@@ -308,11 +308,11 @@ function Section(props) {
           })
         }
         {isEdit && isRecurrent &&
-        <Grid className="addSectionContainer">
+        <Grid sx={{bgcolor: "action.hover", px: 1, py: 2}}>
           <Button
             size="small"
-            variant="outlined"
-            className={classes.addSectionButton}
+            variant="contained"
+            color="success"
             onClick={() => {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
             }}
