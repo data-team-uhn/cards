@@ -58,7 +58,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
 
     private static final String QUESTION_NAME = "survey_opened";
 
-    private static final String LINK_DEFINITION_NAME = "belongsToSurvey";
+    private static final String LINK_TYPE = "belongsToSurvey";
 
     private static final String SURVEY_EVENTS_PATH = "/Questionnaires/Survey events";
 
@@ -111,8 +111,7 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
                 return;
             }
 
-            final Link link = this.linkUtils.getLinksOfType(node, LINK_DEFINITION_NAME)
-                .stream().findFirst().orElse(null);
+            final Link link = this.linkUtils.getLinksOfType(node, LINK_TYPE).stream().findFirst().orElse(null);
             if (link == null) {
                 return;
             }
@@ -144,8 +143,20 @@ public class SurveyFirstOpenedListener implements ResourceChangeListener
                 return;
             }
 
+            checkoutIfNeeded(surveyForm, session);
             answer.setProperty(FormUtils.VALUE_PROPERTY, Calendar.getInstance());
             session.save();
         }
+    }
+
+    private boolean checkoutIfNeeded(final Node form, final Session session)
+        throws RepositoryException
+    {
+        session.refresh(true);
+        if (!form.isCheckedOut()) {
+            session.getWorkspace().getVersionManager().checkout(form.getPath());
+            return true;
+        }
+        return false;
     }
 }
