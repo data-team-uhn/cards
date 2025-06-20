@@ -153,8 +153,10 @@ public class SurveyEventsFormListener implements ResourceChangeListener
             if (this.formUtils.isForm(referencedNode)
                 && clinicQuestionnaires.contains(this.formUtils.getQuestionnaire(referencedNode).getIdentifier())
             ) {
-                // Found a form for the current clinic: remove it from any previous Survey Event Forms, then
-                // link it to the current Survey Event form
+                // Found a form for the current clinic:
+                // - Remove any links from the form to old Survey Event forms but keep the link from the
+                //   survey event form to that form, if any exist
+                // - Link the form to the current Survey Event form
                 this.linkUtils.removeLinks(referencedNode, null, "belongsToSurvey", null);
                 // linkUtils expects the link between source and destination to have the same label as the backlink.
                 // Since the link from form to survey is the important link, use the label for that direction.
