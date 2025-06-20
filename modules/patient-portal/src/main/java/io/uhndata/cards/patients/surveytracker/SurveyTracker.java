@@ -68,6 +68,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
 public class SurveyTracker implements ResourceChangeListener, EventHandler
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SurveyTracker.class);
+    private static final String SURVEY_EVENTS_PATH = "/Questionnaires/Survey events";
 
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
@@ -134,7 +135,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             final Session session = localResolver.adaptTo(Session.class);
 
             final Node visitSubject = session.getNode((String) event.getProperty("visit"));
-            final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
+            final Node surveyStatusQuestionnaire = session.getNode(SURVEY_EVENTS_PATH);
             final Node surveyStatusForm =
                 ensureSurveyStatusFormExists(surveyStatusQuestionnaire, visitSubject, session);
             final String questionName =
@@ -145,7 +146,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             final Node question = surveyStatusQuestionnaire.getNode(questionName);
             final Node answer = this.formUtils.getAnswer(surveyStatusForm, question);
             if (answer != null) {
-                answer.setProperty("value", Calendar.getInstance());
+                answer.setProperty(FormUtils.VALUE_PROPERTY, Calendar.getInstance());
                 session.save();
             }
         } catch (final LoginException e) {
@@ -166,6 +167,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
      *
      * @param event a change that happened in the repository
      */
+    @SuppressWarnings("CyclomaticComplexity")
     private void handleResourceEvent(final ResourceChange event)
     {
         // Acquire a service session with the right privileges for accessing visits and their forms
@@ -184,7 +186,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             final Node form = this.formUtils.getForm(node);
             if (isAnswerForHasSurveys(node) && hasSurveys(node)) {
                 // Also update the expiration date, since this cannot be copied from the visit
-                ensureSurveyStatusFormExists(session.getNode("/Questionnaires/Survey events"),
+                ensureSurveyStatusFormExists(session.getNode(SURVEY_EVENTS_PATH),
                     this.formUtils.getSubject(form), session);
                 updateSurveyExpirationDate(form, this.formUtils.getAnswer(form,
                     session.getNode("/Questionnaires/Visit information/time")), session);
@@ -192,6 +194,10 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
                 updateSurveySubmittedDate(node, session);
             } else if (isAnswerForVisitTime(node)) {
                 updateSurveyExpirationDate(form, node, session);
+            } else if (isAnswerForVisitClinic(node)) {
+                // Clinic changed: make sure we have a survey events form for the new clinic
+                ensureSurveyStatusFormExists(session.getNode(SURVEY_EVENTS_PATH),
+                    this.formUtils.getSubject(form), session);
             }
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage());
@@ -209,13 +215,13 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
         if (!session.nodeExists("/Questionnaires/Survey events/responses_received")) {
             return;
         }
-        final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
+        final Node surveyStatusQuestionnaire = session.getNode(SURVEY_EVENTS_PATH);
         final Node surveyStatusForm = ensureSurveyStatusFormExists(surveyStatusQuestionnaire,
             this.formUtils.getSubject(this.formUtils.getForm(submittedAnswer)), session);
         final Node submittedDateAnswer = this.formUtils.getAnswer(surveyStatusForm,
             session.getNode("/Questionnaires/Survey events/responses_received"));
         if (submittedDateAnswer != null && this.formUtils.getValue(submittedDateAnswer) == null) {
-            submittedDateAnswer.setProperty("value", Calendar.getInstance());
+            submittedDateAnswer.setProperty(FormUtils.VALUE_PROPERTY, Calendar.getInstance());
             session.save();
         }
     }
@@ -228,9 +234,11 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
         }
         Calendar eventDate = (Calendar) this.formUtils.getValue(dischargedAnswer);
         if (eventDate != null) {
-            final Node surveyStatusQuestionnaire = session.getNode("/Questionnaires/Survey events");
-            final Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire,
-                this.formUtils.getSubject(this.formUtils.getForm(dischargedAnswer)), session);
+            final Node surveyStatusQuestionnaire = session.getNode(SURVEY_EVENTS_PATH);
+            Node visitSubject = this.formUtils.getSubject(this.formUtils.getForm(dischargedAnswer));
+            String clinic = findVisitClinic(visitSubject, session);
+            final Node surveyStatusForm
+                = findSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, clinic, session);
             final Node expirationDateAnswer = this.formUtils.getAnswer(surveyStatusForm,
                 session.getNode("/Questionnaires/Survey events/survey_expiry"));
             if (expirationDateAnswer != null) {
@@ -241,7 +249,7 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
                 expirationDate.set(Calendar.MINUTE, 0);
                 expirationDate.set(Calendar.SECOND, 0);
                 expirationDate.set(Calendar.MILLISECOND, 0);
-                expirationDateAnswer.setProperty("value", expirationDate);
+                expirationDateAnswer.setProperty(FormUtils.VALUE_PROPERTY, expirationDate);
                 session.save();
             }
         }
@@ -266,20 +274,23 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
     private Node ensureSurveyStatusFormExists(final Node surveyStatusQuestionnaire, final Node visitSubject,
         final Session session) throws RepositoryException
     {
-        // First look for an existing form
-        Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
-        if (surveyStatusForm == null) {
-            // Not found, create a new form
-            surveyStatusForm = createSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
+        // Make sure that the visit has a clinic
+        String clinic = findVisitClinic(visitSubject, session);
+        if (clinic != null) {
+            // Look for an existing form
+            Node surveyStatusForm = findSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, clinic, session);
+            if (surveyStatusForm == null) {
+                surveyStatusForm = createSurveyStatusForm(surveyStatusQuestionnaire, visitSubject, session);
+            }
+            surveyStatusForm.getSession().getWorkspace().getVersionManager().checkout(surveyStatusForm.getPath());
+            return surveyStatusForm;
         }
-        surveyStatusForm.getSession().getWorkspace().getVersionManager().checkout(surveyStatusForm.getPath());
-        return surveyStatusForm;
+        return null;
     }
 
     private Node findSurveyStatusForm(final Node surveyStatusQuestionnaire, final Node visitSubject,
-        final Session session) throws RepositoryException
+        final String clinic, final Session session) throws RepositoryException
     {
-        String clinic = findVisitClinic(visitSubject, session);
         Node assignedSurvey = surveyStatusQuestionnaire.getNode("assigned_survey");
         final String query = String.format(
             "SELECT surveyStatusForm.*"
@@ -325,7 +336,9 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
             session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
         if (queryResult.hasNext()) {
             final Node result = queryResult.nextNode();
-            return result.getProperty("value").getString();
+            return result.hasProperty(FormUtils.VALUE_PROPERTY)
+                ? result.getProperty(FormUtils.VALUE_PROPERTY).getString()
+                : null;
         }
         return null;
     }
@@ -372,6 +385,17 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
     private boolean isAnswerForVisitTime(final Node answer)
     {
         return isAnswerForQuestion(answer, "time");
+    }
+
+    /**
+     * Check if an answer is for the "visit clinic" question.
+     *
+     * @param answer the answer node to check
+     * @return {@code true} if the answer is indeed for the target question
+     */
+    private boolean isAnswerForVisitClinic(final Node answer)
+    {
+        return isAnswerForQuestion(answer, "clinic");
     }
 
     private boolean isAnswerForQuestion(final Node answer, final String questionName)
