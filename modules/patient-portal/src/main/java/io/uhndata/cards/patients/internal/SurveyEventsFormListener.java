@@ -109,7 +109,7 @@ public class SurveyEventsFormListener implements ResourceChangeListener
             // Get the current questionnaire
             Node questionnaire = this.formUtils.getQuestionnaire(node);
             // An iterator of all properties that reference the current subject.
-            // This will include all of the subject's forms, but will also include some subjects
+            // This should only include forms.
             Node visit = this.formUtils.getSubject(node);
             PropertyIterator visitReferences = visit.getReferences(FormUtils.SUBJECT_PROPERTY);
 
@@ -148,7 +148,7 @@ public class SurveyEventsFormListener implements ResourceChangeListener
         // Check for existing forms that are present in the current clinic and link to them.
         // Can't use the current Survey Event form's clinic answer as that may not have been set yet.
         while (visitReferences.hasNext()) {
-            // Get the node that is referencing the current subject
+            // Get the node that is referencing the current subject. This should be a form.
             Node referencedNode = visitReferences.nextProperty().getParent();
             if (this.formUtils.isForm(referencedNode)
                 && clinicQuestionnaires.contains(this.formUtils.getQuestionnaire(referencedNode).getIdentifier())
@@ -156,6 +156,8 @@ public class SurveyEventsFormListener implements ResourceChangeListener
                 // Found a form for the current clinic: remove it from any previous Survey Event Forms, then
                 // link it to the current Survey Event form
                 this.linkUtils.removeLinks(referencedNode, null, "belongsToSurvey", null, true);
+                // linkUtils expects the link between source and destination to have the same label as the backlink.
+                // Since the link from form to survey is the important link, use the label for that direction.
                 this.linkUtils.addLink(form, referencedNode, "includesSurveyForm", "Belongs to Survey");
             }
         }
