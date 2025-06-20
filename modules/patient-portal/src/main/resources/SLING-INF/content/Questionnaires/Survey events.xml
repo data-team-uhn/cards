@@ -340,6 +340,40 @@
 		</property>
 	</node>
 	<node>
+		<name>survey_opened</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Survey opened on</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy-MM-dd'T'HH:mm:ss.sssZ</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>plain</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>autocreated</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
 		<name>responses_received</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>

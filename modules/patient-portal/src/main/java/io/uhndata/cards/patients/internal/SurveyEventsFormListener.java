@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.links.api.Link;
 import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
@@ -63,6 +64,7 @@ public class SurveyEventsFormListener implements ResourceChangeListener
     private static final String VISIT_INFORMATION_PATH = "/Questionnaires/Visit information";
     private static final String SURVEY_EVENTS_PATH = "/Questionnaires/Survey events";
     private static final String SURVEY_EVENTS_CLINIC = "/Questionnaires/Survey events/assigned_survey";
+    private static final String LINK_TYPE = "belongsToSurvey";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SurveyEventsFormListener.class);
 
@@ -153,14 +155,20 @@ public class SurveyEventsFormListener implements ResourceChangeListener
             if (this.formUtils.isForm(referencedNode)
                 && clinicQuestionnaires.contains(this.formUtils.getQuestionnaire(referencedNode).getIdentifier())
             ) {
+                Link existingLink = this.linkUtils.getLinksOfType(referencedNode, LINK_TYPE)
+                    .stream().findFirst().orElse(null);
+                if (existingLink != null && existingLink.getLinkedResource().getPath().equals(form.getPath())) {
+                    // Already linking to the right Survey Events form, nothing to do
+                    continue;
+                }
                 // Found a form for the current clinic:
                 // - Remove any links from the form to old Survey Event forms but keep the link from the
                 //   survey event form to that form, if any exist
                 // - Link the form to the current Survey Event form
-                this.linkUtils.removeLinks(referencedNode, null, "belongsToSurvey", null);
+                this.linkUtils.removeLinks(referencedNode, null, LINK_TYPE, null);
                 // linkUtils expects the link between source and destination to have the same label as the backlink.
                 // Since the link from form to survey is the important link, use the label for that direction.
-                this.linkUtils.addLink(form, referencedNode, "includesSurveyForm", "Belongs to Survey");
+                this.linkUtils.addLink(referencedNode, form, LINK_TYPE, "Belongs to Survey");
             }
         }
     }
@@ -195,7 +203,7 @@ public class SurveyEventsFormListener implements ResourceChangeListener
 
         if (surveyEventsForm != null) {
             // Found a survey events form: Link to it
-            this.linkUtils.addLink(form, surveyEventsForm, "belongsToSurvey", "Belongs to Survey");
+            this.linkUtils.addLink(form, surveyEventsForm, LINK_TYPE, "Belongs to Survey");
         }
     }
 
