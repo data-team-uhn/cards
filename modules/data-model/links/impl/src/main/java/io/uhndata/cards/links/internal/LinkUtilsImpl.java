@@ -260,15 +260,28 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     @Override
     public boolean removeLink(Node link)
     {
+        return removeLink(link, false);
+    }
+
+    @Override
+    public boolean removeLink(Node linkNode, boolean removeBacklinks)
+    {
         try {
-            if (!link.isNodeType(Link.LINK_NODETYPE)) {
+            if (!linkNode.isNodeType(Link.LINK_NODETYPE)) {
                 return false;
             }
-            link.remove();
-            link.getSession().save();
+            if (removeBacklinks) {
+                Link link = getLink(linkNode);
+                Link backlink = link.getBacklink();
+                if (backlink != null) {
+                    removeLink(backlink.getNode());
+                }
+            }
+            linkNode.remove();
+            linkNode.getSession().save();
             return true;
         } catch (RepositoryException e) {
-            LOGGER.warn("Failed to delete link {}: {}", link, e.getMessage());
+            LOGGER.warn("Failed to delete link {}: {}", linkNode, e.getMessage());
             return false;
         }
     }
@@ -282,9 +295,16 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     @Override
     public boolean removeLinks(Node source, Node destination, String type, String label)
     {
+        return removeLinks(source, destination, type, null, false);
+    }
+
+    @Override
+    public boolean removeLinks(Node source, Node destination, String type, String label, boolean removeBacklinks)
+    {
         try {
             return removeLinks(source, destination,
-                source.getSession().getNode(type.startsWith("/") ? type : LINK_DEFINITIONS_PATH + type), label);
+                source.getSession().getNode(type.startsWith("/") ? type : LINK_DEFINITIONS_PATH + type),
+                label, removeBacklinks);
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to delete link of type {} from {} to {}: {}", type, source, destination,
                 e.getMessage(), e);
@@ -300,6 +320,12 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
 
     @Override
     public boolean removeLinks(Node source, Node destination, Node type, String label)
+    {
+        return removeLinks(source, destination, type, label, false);
+    }
+
+    @Override
+    public boolean removeLinks(Node source, Node destination, Node type, String label, boolean removeBacklinks)
     {
         Stream<Link> matchingLinks = getLinks(source).stream().filter(link -> {
             try {
@@ -321,7 +347,8 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
             matchingLinks = matchingLinks.filter(link -> StringUtils.equals(label, link.getLabel()));
         }
 
-        return matchingLinks.map(link -> removeLink(link.getNode())).reduce(true, Boolean::logicalAnd);
+        return matchingLinks.map(link -> removeLink(link.getNode(), removeBacklinks))
+            .reduce(true, Boolean::logicalAnd);
     }
 
     private Node getLinksContainer(final Node resource) throws RepositoryException

@@ -62,6 +62,7 @@ public class SurveyEventsFormListener implements ResourceChangeListener
 {
     private static final String VISIT_INFORMATION_PATH = "/Questionnaires/Visit information";
     private static final String SURVEY_EVENTS_PATH = "/Questionnaires/Survey events";
+    private static final String SURVEY_EVENTS_CLINIC = "/Questionnaires/Survey events/assigned_survey";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SurveyEventsFormListener.class);
 
@@ -107,24 +108,19 @@ public class SurveyEventsFormListener implements ResourceChangeListener
 
             // Get the current questionnaire
             Node questionnaire = this.formUtils.getQuestionnaire(node);
+            // An iterator of all properties that reference the current subject.
+            // This will include all of the subject's forms, but will also include some subjects
             Node visit = this.formUtils.getSubject(node);
-            // A list of all the questionnaires belonging to the current clinic
-            List<String> clinicQuestionnaires = getVisitClinicQuestionnaires(session, visit);
-            // No need to proceed further if there are no questionnaires for the current clinic
-            if (clinicQuestionnaires.size() > 0) {
-                // An iterator of all properties that reference the current subject.
-                // This will include all of the subject's forms, but will also include some subjects
-                PropertyIterator visitReferences = visit.getReferences("subject");
+            PropertyIterator visitReferences = visit.getReferences(FormUtils.SUBJECT_PROPERTY);
 
-                // There's two cases where we may need to create a link:
-                // 1. New survey events form.
-                //    Check for any forms for the current clinic and link them to the current form.
-                // 2. New form that belongs to the current clinic. Link it to an existing survey events form.
-                if (isSurveyEventsQuestionnaire(questionnaire)) {
-                    handleSurveyEventsForm(node, visitReferences, clinicQuestionnaires);
-                } else if (clinicQuestionnaires.contains(questionnaire.getIdentifier())) {
-                    handleNonSurveyEventsForm(node, visitReferences);
-                }
+            // There's two cases where we may need to create a link:
+            // 1. New survey events form.
+            //    Check for any forms for the current clinic and link them to the current form.
+            // 2. New form that belongs to the current clinic. Link it to an existing survey events form.
+            if (isSurveyEventsQuestionnaire(questionnaire)) {
+                handleSurveyEventsForm(session, node, visit, visitReferences);
+            } else {
+                handleNonSurveyEventsForm(session, node, questionnaire, visitReferences);
             }
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
@@ -138,40 +134,58 @@ public class SurveyEventsFormListener implements ResourceChangeListener
         }
     }
 
-    private void handleSurveyEventsForm(final Node form, final PropertyIterator visitReferences,
-        final List<String> clinicQuestionnaires)
+    private void handleSurveyEventsForm(final Session session, final Node form, final Node visit,
+        final PropertyIterator visitReferences)
         throws RepositoryException
     {
-        // Found a new Survey Events form: Check for existing forms that are present in the current clinic
-        // and link to them
+        // A list of all the questionnaires belonging to the current clinic
+        List<String> clinicQuestionnaires = getVisitClinicQuestionnaires(session, visit);
+        if (clinicQuestionnaires.size() < 1) {
+            // No questionnaires that are a part of the current clinic: Nothing to do
+            return;
+        }
+        // Found a new Survey Events form:
+        // Check for existing forms that are present in the current clinic and link to them.
+        // Can't use the current Survey Event form's clinic answer as that may not have been set yet.
         while (visitReferences.hasNext()) {
             // Get the node that is referencing the current subject
             Node referencedNode = visitReferences.nextProperty().getParent();
             if (this.formUtils.isForm(referencedNode)
                 && clinicQuestionnaires.contains(this.formUtils.getQuestionnaire(referencedNode).getIdentifier())
             ) {
-                // Found a form for the current clinic: link it to the current Survey Event form
-                this.linkUtils.removeLinks(referencedNode, null, "belongsToSurvey", null);
-                this.linkUtils.addLink(form, referencedNode, "includesSurveyForm", "Includes Survey Form");
+                // Found a form for the current clinic: remove it from any previous Survey Event Forms, then
+                // link it to the current Survey Event form
+                this.linkUtils.removeLinks(referencedNode, null, "belongsToSurvey", null, true);
+                this.linkUtils.addLink(form, referencedNode, "includesSurveyForm", "Belongs to Survey");
             }
         }
 
     }
 
-    private void handleNonSurveyEventsForm(final Node form, final PropertyIterator visitReferences)
+    private void handleNonSurveyEventsForm(final Session session, final Node form,
+        final Node questionnaire, final PropertyIterator visitReferences)
         throws RepositoryException
     {
         // Found a new form that is a part of the current clinic:
         // Search for an existing Survey Events form
         Node surveyEventsForm = null;
+        Node surveyClinicQuestion = session.getNode(SURVEY_EVENTS_CLINIC);
+
         while (visitReferences.hasNext()) {
-            Node referencedNode = visitReferences.nextProperty().getNode();
-            if (isSurveyEventsQuestionnaire(this.formUtils.getQuestionnaire(referencedNode))) {
-                // Only keep track of the most recently created Survey Events form in case there are multiple
-                if (surveyEventsForm == null
-                    || getCreatedDate(referencedNode).after(getCreatedDate(surveyEventsForm))
+            Node referencedForm = visitReferences.nextProperty().getParent();
+            Node referencedQuestionnaire = this.formUtils.getQuestionnaire(referencedForm);
+            if (isSurveyEventsQuestionnaire(referencedQuestionnaire)) {
+                // Found a survey events form for the current visit: check if this form is a part of that
+                // survey event form's clinic
+                Node clinic = this.formUtils.getAnswer(referencedForm, surveyClinicQuestion);
+                // Only keep track of the most recently created Survey Events form in case
+                // there are multiple that contain this form
+                if (getClinicQuestionnaires(session, clinic).contains(questionnaire.getIdentifier())
+                    && (surveyEventsForm == null
+                        || getCreatedDate(referencedForm).after(getCreatedDate(surveyEventsForm)))
                 ) {
-                    surveyEventsForm = referencedNode;
+                    surveyEventsForm = referencedForm;
+                    break;
                 }
             }
         }
@@ -193,24 +207,25 @@ public class SurveyEventsFormListener implements ResourceChangeListener
         if (visitInformationForm != null) {
             // Get the list of questionnaires associated with the current clinic
             Node clinic = this.formUtils.getAnswer(visitInformationForm, visitClinicQuestion);
-            if (clinic.hasProperty("value")) {
-                return getClinicQuestionnaires(session, clinic.getProperty("value").getString());
-            }
+            return getClinicQuestionnaires(session, clinic);
         }
         return new ArrayList<String>();
     }
 
-    private List<String> getClinicQuestionnaires(Session session, String clinic)
+    private List<String> getClinicQuestionnaires(Session session, Node clinicAnswer)
         throws RepositoryException
     {
-        Node clinicMapping = session.getNode(clinic);
-        Node survey = session.getNode("/Survey/" + clinicMapping.getProperty("survey").getString());
         List<String> surveyFormIds = new LinkedList<>();
-        NodeIterator surveyForms = survey.getNodes();
-        while (surveyForms.hasNext()) {
-            Node surveyForm = surveyForms.nextNode();
-            if ("cards:QuestionnaireRef".equals(surveyForm.getPrimaryNodeType().getName())) {
-                surveyFormIds.add(surveyForm.getProperty("questionnaire").getNode().getIdentifier());
+        if (clinicAnswer != null && clinicAnswer.hasProperty(FormUtils.VALUE_PROPERTY)) {
+            String clinic = clinicAnswer.getProperty(FormUtils.VALUE_PROPERTY).getString();
+            Node clinicMapping = session.getNode(clinic);
+            Node survey = session.getNode("/Survey/" + clinicMapping.getProperty("survey").getString());
+            NodeIterator surveyForms = survey.getNodes();
+            while (surveyForms.hasNext()) {
+                Node surveyForm = surveyForms.nextNode();
+                if ("cards:QuestionnaireRef".equals(surveyForm.getPrimaryNodeType().getName())) {
+                    surveyFormIds.add(surveyForm.getProperty("questionnaire").getNode().getIdentifier());
+                }
             }
         }
         return surveyFormIds;
@@ -239,14 +254,12 @@ public class SurveyEventsFormListener implements ResourceChangeListener
     private Node getVisitInformationForm(final Node subject, final Node visitInformationQuestionnaire)
         throws RepositoryException
     {
-        final PropertyIterator references = subject.getReferences();
+        final PropertyIterator references = subject.getReferences(FormUtils.SUBJECT_PROPERTY);
         while (references.hasNext()) {
             Property reference = references.nextProperty();
             Node form = reference.getParent();
 
-            if (this.formUtils.isForm(form)
-                && visitInformationQuestionnaire.getIdentifier().equals(
-                    this.formUtils.getQuestionnaireIdentifier(form))) {
+            if (this.formUtils.isForm(form) && isVisitInformationForm(form)) {
                 return form;
             }
         }
