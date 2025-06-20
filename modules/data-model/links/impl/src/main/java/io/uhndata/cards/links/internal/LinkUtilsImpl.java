@@ -302,9 +302,7 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     public boolean removeLinks(Node source, Node destination, String type, String label, boolean removeBacklinks)
     {
         try {
-            return removeLinks(source, destination,
-                source.getSession().getNode(type.startsWith("/") ? type : LINK_DEFINITIONS_PATH + type),
-                label, removeBacklinks);
+            return removeLinks(source, destination, getLinkType(source.getSession(), type), label, removeBacklinks);
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to delete link of type {} from {} to {}: {}", type, source, destination,
                 e.getMessage(), e);
