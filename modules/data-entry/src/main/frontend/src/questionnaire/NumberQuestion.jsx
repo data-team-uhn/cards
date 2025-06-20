@@ -204,7 +204,7 @@ function NumberQuestion(props) {
     if (dataType === "long") {
       // Test that it is an integer
       if (!/^[-+]?\d*$/.test(text)) {
-        return "Value must be an integer";
+        return `The value${isRange ? 's' : ''} must be whole numbers`;
       }
 
       value = parseInt(text);
@@ -213,20 +213,20 @@ function NumberQuestion(props) {
 
       // Reject whitespace and non-numbers
       if (/^\s*$/.test(text) || isNaN(value)) {
-        return "Value must be a number";
+        return `The value${isRange ? 's' : ''} must be numeric`;
       }
     }
 
     // Test that it is within our min/max (if they are defined)
-    if ((typeof minValue !== 'undefined' && value < minValue) &&
-      (typeof maxValue !== 'undefined' && value > maxValue)) {
-      return `The values must be between ${minValue} and ${maxValue}`;
+    if ((typeof minValue !== 'undefined' && (isRange ? lowerLimit : value) < minValue) &&
+        (typeof maxValue !== 'undefined' && (isRange ? upperLimit : value) > maxValue)) {
+      return `The value${isRange ? 's' : ''} must be between ${minValue} and ${maxValue}`;
     }
     if (typeof minValue !== 'undefined' && value < minValue) {
-      return `The values must be greater than ${minValue}`;
+      return `The value${isRange ? 's' : ''} must be greater than ${minValue}`;
     }
     if (typeof maxValue !== 'undefined' && value > maxValue) {
-      return `The values must be lower than ${maxValue}`;
+      return `The value${isRange ? 's' : ''} must be lower than ${maxValue}`;
     }
 
     return null;
