@@ -399,7 +399,7 @@
         "questionnaire=/Questionnaires/Patient information",
         "questionnaire=/Questionnaires/Visit information",
         "questionnaire=/Questionnaires/Survey events",
-        "selectors=.csvHeader:raw.-dereference.dataOption:formSelectors=-dereference\\.simple\\.deep\\.-identify\\.formToSurveyLinks"
+        "selectors=.csvHeader:raw.-dereference.dataOption:formSelectors=-dereference\\.simple\\.deep\\.-identify\\.nolinks\\.formToSurveyLinks"
       ],
       "formatter": "json",
       "fileNameFormat": "{resourcePath}_{today}.json",

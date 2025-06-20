@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.prems.internal.serialize;
+package io.uhndata.cards.patients.internal.serialize;
 
 import java.util.function.Function;
 
@@ -58,48 +58,18 @@ public class FormToSurveyLinkProcessor implements ResourceJsonProcessor
     }
 
     @Override
-    public JsonValue processChild(final Node node, final Node child, final JsonValue input,
-        final Function<Node, JsonValue> serializeNode)
-    {
-        try {
-            if (child.isNodeType(LinkUtils.LINKS_NODETYPE)) {
-                // Do not include the links node
-                return null;
-            }
-        } catch (RepositoryException e) {
-            // Really shouldn't happen
-        }
-        return input;
-    }
-
-    @Override
     public void leave(final Node node, final JsonObjectBuilder json,
         final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType(FormUtils.FORM_NODETYPE)) {
-                if (node.hasNode(LinkUtils.LINKS_CONTAINER)) {
-                    Link link = getBelongsToSurveyLink(node.getNode(LinkUtils.LINKS_CONTAINER));
-                    if (link != null) {
-                        json.add("@survey", link.getLinkedResource().getName());
-                    }
+            if (node.isNodeType(FormUtils.FORM_NODETYPE) && node.hasNode(LinkUtils.LINKS_CONTAINER)) {
+                Link link = this.linkUtils.getLinksOfType(node, "belongsToSurvey").stream().findFirst().orElse(null);
+                if (link != null) {
+                    json.add("@survey", link.getLinkedResource().getName());
                 }
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
-    }
-
-    private Link getBelongsToSurveyLink(Node linksNode)
-    {
-        return this.linkUtils.getLinks(linksNode).stream().filter(link -> {
-            try {
-                String linkName = link.getDefinition().getNode().getName();
-                return "belongsToSurvey".equals(linkName);
-            } catch (RepositoryException e) {
-                // Shouldn't happen
-                return false;
-            }
-        }).findAny().orElse(null);
     }
 }
