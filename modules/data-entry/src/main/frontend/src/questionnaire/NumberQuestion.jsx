@@ -344,11 +344,13 @@ function NumberQuestion(props) {
   }
 
   let setValue = function(fn, value) {
-    let number = Number(value);
-    if (dataType === "long" && !isNaN(number)) {
-      value = Math.round(number);
+    if (value != null && value != "") {
+      let number = Number(value);
+      if (dataType === "long" && !isNaN(number)) {
+        value = Math.round(number);
+      }
     }
-    fn(String(value))
+    fn(String(value));
   }
 
   let makeSlider = (options) => {
