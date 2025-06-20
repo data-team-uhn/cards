@@ -47,7 +47,8 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  * Property exclusion logic:
  * <p>
  * <ul>
- *   <li>If a property's value matches its JCR-defined default value, the property is excluded from the JSON output.</li>
+ *   <li>If a property's value matches its JCR-defined default value, the property is excluded from the
+ *       JSON output.</li>
  *   <li>If a property does not have a JCR-defined default value:
  *     <ul>
  *       <li>It is excluded if it's a boolean type property with a value of {@code false}.</li>
