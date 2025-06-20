@@ -92,10 +92,15 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     {
         final Collection<Link> result = new ArrayList<>();
         try {
-            if (!source.hasNode(LINKS_CONTAINER)) {
-                return result;
+            NodeIterator children;
+            if (LINKS_NODETYPE.equals(source.getPrimaryNodeType().getName())) {
+                children = source.getNodes();
+            } else {
+                if (!source.hasNode(LINKS_CONTAINER)) {
+                    return result;
+                }
+                children = source.getNode(LINKS_CONTAINER).getNodes();
             }
-            final NodeIterator children = source.getNode(LINKS_CONTAINER).getNodes();
             while (children.hasNext()) {
                 result.add(new LinkImpl(children.nextNode()));
             }
