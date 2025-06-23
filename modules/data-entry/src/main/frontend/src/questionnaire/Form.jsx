@@ -553,10 +553,10 @@ function Form (props) {
         <Typography variant="overline">
           {"Related: "}
           {validLinks.length == 1 ?
-              validLinks.map(link => <Link key={link["@name"]} to={"../" + baseURL + link["to"]}>{link["resourceLabel"]}</Link>)
+              validLinks.map(link => <Link key={link["@name"]} to={".." + baseURL + link["to"]}>{link["resourceLabel"]}</Link>)
               :
               <List dense disablePadding>
-              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"../" + baseURL + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
+              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={".." + baseURL + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
               </List>
           }
         </Typography>
