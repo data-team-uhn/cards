@@ -110,7 +110,6 @@ function SubjectTypes(props) {
                 entryName={row.original.label}
                 onComplete={dialogSuccess}
                 entryType={entryType}
-                admin
               />
             </Box>
         )

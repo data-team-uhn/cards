@@ -72,7 +72,7 @@ function Questionnaires(props) {
               <EditButton
                 entryType={entryType}
                 entryPath={row.original["@path"]}
-                admin
+                extensionURL="admin"
               />
               <ExportButton
                 entryPath={row.original["@path"]}
@@ -85,7 +85,6 @@ function Questionnaires(props) {
                 entryName={row.original.title}
                 onComplete={dialogSuccess}
                 entryType={entryType}
-                admin
               />
             </Box>
           )
