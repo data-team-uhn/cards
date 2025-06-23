@@ -63,7 +63,7 @@ export default function Footer (props) {
     {
       footerExtensions.map((extension, index) => {
         let Extension = extension["cards:extensionRender"];
-        return <Extension key={index} />
+        return <Extension key={index} extension={extension} />
       })
     }
     </Toolbar>

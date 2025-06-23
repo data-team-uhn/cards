@@ -171,6 +171,7 @@ function UserDashboard(props) {
             onClose={onClose}
             onSubmit={onClose}
             key={"extensionDialog-" + index}
+            extension={extension}
             />
         })
       }
