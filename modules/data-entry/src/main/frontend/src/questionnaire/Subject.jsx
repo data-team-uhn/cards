@@ -92,9 +92,14 @@ function Subject(props) {
   const tabs = ["Chart", "Timeline"]
   const location = useLocation();
   const navigate = useNavigate();
-  const currentSubjectId = getSubjectIdFromPath(location.pathname);
+  const [ currentSubjectId, setCurrentSubjectId ] = useState(getSubjectIdFromPath(location.pathname));
 
   useEffect(() => {
+    let newId = getSubjectIdFromPath(location.pathname);
+    if (newId !== currentSubjectId) {
+      setCurrentSubject(undefined);
+      setCurrentSubjectId(newId);
+    }
     if (location.hash.length > 0 && tabs.includes(location.hash.substring(1))) {
       setActiveTab(tabs.indexOf(location.hash.substring(1)));
     }
