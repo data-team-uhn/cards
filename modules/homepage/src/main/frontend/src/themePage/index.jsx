@@ -72,7 +72,7 @@ function Main(props) {
     let title = " | " + docTitle;
     return (
       <Page title={title} pageDefaultName={route["cards:extensionName"]}>
-        <ThisComponent contentOffset={contentOffset} />
+        <ThisComponent contentOffset={contentOffset} extension={route} />
       </Page>
       );
   };

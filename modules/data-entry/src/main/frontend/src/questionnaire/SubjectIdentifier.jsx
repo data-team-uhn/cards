@@ -24,10 +24,14 @@ function defaultCreator (node) {
   return {to: "../content.html" + node["@path"]}
 }
 
+function extensionCreator(node, extensionURL) {
+  return extensionURL ? {to: "../content.html/" + extensionURL + node["@path"]} : defaultCreator(node)
+}
+
 // Extract the subject id from the subject path
 // returns null if the parameter is not a valid subject path (expected format: Subjects/<id>)
-export function getHomepageLink (subjectNode) {
-  let props = defaultCreator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`});
+export function getHomepageLink (subjectNode, extensionURL="") {
+  let props = extensionCreator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`}, extensionURL);
   return (<Link {...props} underline="hover">{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
 }
 
@@ -39,13 +43,25 @@ export function getSubjectIdFromPath (path) {
 }
 
 // Recursive function to get a flat list of parents
-export function getHierarchy (node, RenderComponent, propsCreator) {
+export function getHierarchy (node, RenderComponent, propsCreator, extensionURL="") {
   let HComponent = RenderComponent || Link;
-  let hpropsCreator = propsCreator || defaultCreator;
-  let props = hpropsCreator(node);
+  let props = propsCreator || extensionCreator(node, extensionURL);
   let output = <React.Fragment>{node.type.label} <HComponent {...props}>{node.identifier}</HComponent></React.Fragment>;
   if (node["parents"]?.type) {
-    let ancestors = getHierarchy(node["parents"], HComponent, propsCreator);
+    let ancestors = getHierarchy(node["parents"], HComponent, propsCreator, extensionURL);
+    return <React.Fragment>{ancestors} / {output}</React.Fragment>
+  } else {
+    return output;
+  }
+}
+
+// Recursive function to get a flat list of parents with no subject labels
+export function getShortHierarchy (node, RenderComponent, propsCreator, extensionURL="") {
+  let HComponent = RenderComponent || Link;
+  let props = propsCreator || extensionCreator(node, extensionURL);
+  let output = <HComponent {...props}>{node.identifier}</HComponent>;
+  if (node["parents"] && node["parents"].type) {
+    let ancestors = getShortHierarchy(node["parents"], HComponent, propsCreator, extensionURL);
     return <React.Fragment>{ancestors} / {output}</React.Fragment>
   } else {
     return output;
@@ -65,19 +81,19 @@ export function getTextHierarchy (node, withType = false) {
 }
 
 // Recursive function to get the list of ancestors as an array
-export function getHierarchyAsList (node, includeHomepage) {
+export function getHierarchyAsList (node, includeHomepage, extensionURL="") {
   if (!node?.type) {
-    return includeHomepage ? [getHomepageLink()] : [];
+    return includeHomepage ? [getHomepageLink(undefined, extensionURL)] : [];
   }
-  let props = defaultCreator(node);
+  let props = extensionCreator(node, extensionURL);
   let parent = <>{node.type.label} <Link {...props} underline="hover">{node.identifier}</Link></>;
   if (node["parents"]) {
-    let ancestors = getHierarchyAsList(node["parents"]);
+    let ancestors = getHierarchyAsList(node["parents"], undefined, extensionURL);
     ancestors.push(parent);
     return ancestors;
   } else {
     let result = [parent];
-    includeHomepage && result.unshift(getHomepageLink(node));
+    includeHomepage && result.unshift(getHomepageLink(node, extensionURL));
     return result;
   }
 }

@@ -33,7 +33,7 @@ function EditButton(props) {
     entryType = "",
     size = "large",
     className,
-    admin,
+    extensionURL,
     onClick
   } = props;
 
@@ -48,7 +48,7 @@ function EditButton(props) {
         ?
         innerButton
         :
-        <Link to={(admin ? "../content.html/admin" : "../content.html") + entryPath + ".edit"} underline="hover">
+        <Link to={(extensionURL ? "../content.html/" + extensionURL : "../content.html") + entryPath + ".edit"} underline="hover">
           {innerButton}
         </Link>
       }
@@ -61,7 +61,7 @@ EditButton.propTypes = {
   entryType: PropTypes.string,
   size: PropTypes.oneOf(["small", "medium", "large"]),
   className: PropTypes.string,
-  admin: PropTypes.bool,
+  extensionURL: PropTypes.string,
   onClick: PropTypes.func
 }
 

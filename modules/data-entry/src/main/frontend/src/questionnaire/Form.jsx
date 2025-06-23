@@ -72,8 +72,8 @@ import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
  * <Form />
  */
 function Form (props) {
-  let { classes, contentOffset } = props;
-  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
+  let { classes, contentOffset, extensionURL } = props;
+  let { mode, className, actionSwitches, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons, paginationProps } = props;
   // Record if the form was already checked out before opening it, which may indicate that another user is editing, or it is being edited in a different tab
   let [ wasCheckedOut, setWasCheckedOut ] = useState(false);
   // This holds the full form JSON, once it is received from the server
@@ -169,7 +169,7 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const formURL = `/Forms/${id}`;
-  const urlBase = "/content.html";
+  const baseURL = "/content.html" + (extensionURL ? "/" + extensionURL : "");
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
@@ -405,7 +405,7 @@ function Form (props) {
 
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    navigate(urlBase + formURL + '.edit' + window.location.hash);
+    navigate(baseURL + formURL + '.edit' + window.location.hash);
   }
 
   let onClose = (event) => {
@@ -413,13 +413,13 @@ function Form (props) {
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers?.();
-        navigate(urlBase + formURL);
+        navigate(baseURL + formURL);
     });
   }
 
   let onDelete = () => {
     removeWindowHandlers?.();
-    navigate(urlBase + (data?.subject?.['@path'] || ''));
+    navigate(baseURL + (data?.subject?.['@path'] || ''));
   }
 
   let title = data?.questionnaire?.title || id || "";
@@ -553,10 +553,10 @@ function Form (props) {
         <Typography variant="overline">
           {"Related: "}
           {validLinks.length == 1 ?
-              validLinks.map(link => <Link key={link["@name"]} to={"../content.html" + link["to"]}>{link["resourceLabel"]}</Link>)
+              validLinks.map(link => <Link key={link["@name"]} to={".." + baseURL + link["to"]}>{link["resourceLabel"]}</Link>)
               :
               <List dense disablePadding>
-              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={"../content.html" + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
+              {validLinks.map(link => <ListItem key={link["@name"]}><Link to={".." + baseURL + link["to"]}>{link["resourceLabel"]}</Link></ListItem>)}
               </List>
           }
         </Typography>
@@ -577,7 +577,7 @@ function Form (props) {
         { !disableHeader &&
         <ResourceHeader
           title={title}
-          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
+          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject, undefined, extensionURL).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
           tags={ statusFlags?.map( item => (
             <Chip
               label={item[0].toUpperCase() + item.slice(1).toLowerCase()}

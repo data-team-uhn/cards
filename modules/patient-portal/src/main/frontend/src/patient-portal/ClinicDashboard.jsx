@@ -210,7 +210,7 @@ function ClinicDashboard(props) {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
             return <Grid size={{xs:12, xl:6}} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
-              <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} clinicId={clinicId} dashboardConfig={dashboardConfig}/>
+              <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} clinicId={clinicId} dashboardConfig={dashboardConfig} extension={extension} />
             </Grid>
           })
         }
