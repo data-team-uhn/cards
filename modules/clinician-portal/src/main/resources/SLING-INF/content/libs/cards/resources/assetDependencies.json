@@ -2,5 +2,8 @@
   "clinician-portal.ClinicDashboard.js": ["asset:cards-dataentry.Questionnaires.js", "asset:clinician-portal.ClinicForms.js", "asset:clinician-portal.ClinicVisits.js"],
   "clinician-portal.ClinicForms.js": ["asset:cards-dataentry.LiveTable.js"],
   "clinician-portal.ClinicVisits.js": ["asset:cards-dataentry.LiveTable.js"],
+  "clinician-portal.Form.js": ["asset:cards-login.ReLoginDialog.js", "asset:cards-dataentry.Forms.js", "asset:cards-dataentry.FormView.js", "asset:cards-pedigree.Pedigree.js"],
+  "clinician-portal.Visit.js": ["asset:cards-login.ReLoginDialog.js"],
+  "clinician-portal.Patient.js": ["asset:cards-login.ReLoginDialog.js"],
   "clinician-portal.DashboardSettingsConfiguration.js": ["asset:cards-login.ReLoginDialog.js"]
 }
