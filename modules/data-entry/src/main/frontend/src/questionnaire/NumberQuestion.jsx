@@ -71,7 +71,6 @@ const useSliderStyles = makeStyles()(theme => ({
       marginRight: theme.spacing(4),
       "& .MuiSlider-valueLabel" : {
         background: theme.palette.secondary.main,
-        transform: "rotate(-90deg) translate3d(7px, -18px, 0) !important",
       },
     },
   },
