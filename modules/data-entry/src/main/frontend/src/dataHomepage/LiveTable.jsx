@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@mui/material";
-import { Card, CardHeader, CardContent, CardActions, Typography, Button, LinearProgress } from "@mui/material";
+import { Card, CardHeader, CardContent, CardActions, Typography, Button, LinearProgress, Stack } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import { Link } from 'react-router';
 import { DateTime } from "luxon";
@@ -267,7 +267,13 @@ function LiveTable(props) {
         extensionURL={extensionURL}
       />
     });
-    return <TableCell key={index} className={classes.tableActions}>{content}</TableCell>;
+    return (
+      <TableCell key={index}>
+        <Stack direction="row" sx={{justifyContent: "flex-end", my: .5}}>
+        { content }
+        </Stack>
+      </TableCell>
+    );
   }
 
   let getNestedValue = (entry, path) => {

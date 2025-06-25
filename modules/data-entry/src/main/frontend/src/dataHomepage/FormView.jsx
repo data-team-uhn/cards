@@ -74,8 +74,8 @@ function FormView(props) {
     },
   ]
   const actions = {
-    "delete": DeleteButton,
-    "edit": EditButton
+    "edit": EditButton,
+    "delete": DeleteButton   
   }
   const [ enabledActions, setEnabledActions ] = useState(actions);
   let isActionEnabled = (action) => (!!!actionSwitches || !!(actionSwitches[action]()));
