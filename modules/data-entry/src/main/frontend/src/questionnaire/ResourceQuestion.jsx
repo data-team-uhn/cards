@@ -29,7 +29,7 @@ import ResourceQuery from "../resourceQuery/ResourceQuery";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 // Component that renders a question, where the answer options are children of a given JCR node
 

@@ -28,7 +28,7 @@ import {
 import AdminScreen from "./adminDashboard/AdminScreen.jsx";
 import FormattedText from "./components/FormattedText.jsx";
 
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 
 const APIKEY_SERVLET_URL = "/.googleApiKey";
 

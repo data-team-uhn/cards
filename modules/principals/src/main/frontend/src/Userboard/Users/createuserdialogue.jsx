@@ -17,7 +17,7 @@
 
 import React from "react";
 import { Grid, Dialog, DialogTitle, DialogContent } from "@mui/material";
-import SignUpForm from "../../login/signUpForm.js";
+import RegistrationForm from "../../login/RegistrationForm.js";
 
 class CreateUserDialogue extends React.Component {
     constructor(props) {
@@ -42,7 +42,7 @@ class CreateUserDialogue extends React.Component {
                 <DialogTitle>Register a new user</DialogTitle>
                 <DialogContent>
                   <Grid container>
-                    <SignUpForm
+                    <RegistrationForm
                       loginOnSuccess={false}
                       handleSuccess={() => this.handleCreateUser()}
                       handleExit={() => this.props.handleClose()}

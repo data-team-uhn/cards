@@ -36,7 +36,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 
 const APIKEY_SERVLET_URL = "/Vocabularies.bioportalApiKey";
 

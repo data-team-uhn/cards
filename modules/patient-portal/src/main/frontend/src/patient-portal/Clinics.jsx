@@ -29,7 +29,7 @@ import {
 import Fields from "../questionnaireEditor/Fields.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 function Clinics(props) {

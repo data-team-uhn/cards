@@ -1,3 +1,3 @@
 {
-  "cards-downtime-warning-banner.DowntimeWarningConfiguration.js": ["asset:cards-login.loginDialogue.js"]
+  "cards-downtime-warning-banner.DowntimeWarningConfiguration.js": ["asset:cards-login.ReLoginDialog.js"]
 }

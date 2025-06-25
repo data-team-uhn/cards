@@ -18,7 +18,7 @@
 //
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import MainLoginComponent from './loginMainComponent';
+import MainLoginContainer from './MainLoginContainer';
 import PageStart from '../PageStart';
 import { appTheme } from "../themePalette.jsx";
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
@@ -28,7 +28,7 @@ root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <PageStart extensionsName="LoginPageStart" />
-      <MainLoginComponent selfContained redirectOnLogin={true} />
+      <MainLoginContainer selfContained redirectOnLogin={true} />
     </ThemeProvider>
   </StyledEngineProvider>
 );

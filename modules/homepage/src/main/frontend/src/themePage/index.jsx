@@ -30,7 +30,7 @@ import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
 import PageStart from "../PageStart";
 import IndexStyle from "./indexStyle.jsx";
-import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
+import ReLoginDialog, { GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
@@ -40,7 +40,7 @@ function Main(props) {
   let [ contentOffset, setContentOffset ] = useState(0);
   let [ mobileOpen, setMobileOpen ] = useState(false);
   let [ routes, setRoutes ] = useState([]);
-  let [ loginDialogOpen, setLoginDialogOpen ] = useState(false);
+  let [ reLoginDialogOpen, setReLoginDialogOpen ] = useState(false);
   let [ loginHandlers, setLoginHandlers ] = useState([]);
 
   const image = document.querySelector('meta[name="sidebarBackground"]').content;
@@ -101,14 +101,14 @@ function Main(props) {
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {
             let handler = ((success) => {
-              success && setLoginDialogOpen(false);
+              success && setReLoginDialogOpen(false);
               success && loginHandlerFcn();
             });
-            !loginDialogOpen && setLoginDialogOpen(true);
+            !reLoginDialogOpen && setReLoginDialogOpen(true);
             let shouldAddHandler = !discardOnFailure || loginHandlers.length < 1;
             shouldAddHandler && setLoginHandlers(prevState => prevState.concat(handler));
           },
-          getDialogOpenStatus: () => loginDialogOpen
+          getDialogOpenStatus: () => reLoginDialogOpen
         }}
       >
         <PageStart
@@ -119,8 +119,8 @@ function Main(props) {
             }
           }
         />
-        <DialogueLoginContainer
-          isOpen={loginDialogOpen}
+        <ReLoginDialog
+          isOpen={reLoginDialogOpen}
           handleLogin={(success) => {
             if (success) {
               loginHandlers.forEach(handler => handler(success));

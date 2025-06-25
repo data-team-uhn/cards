@@ -32,7 +32,7 @@ import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 import QueryMatchingUtils from "./QueryMatchingUtils";
 import FormattedText from "../components/FormattedText";
 
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 const NO_RESULTS_TEXT = "No results, use:";
 const NONE_OF_ABOVE_TEXT = "None of the above, use:";

@@ -18,8 +18,9 @@
 //
 import React from 'react';
 import { Dialog } from '@mui/material';
-
-import MainLoginComponent from './loginMainComponent';
+import PropTypes from 'prop-types';
+import MainLoginContainer from './MainLoginContainer';
+import { checkPropTypes } from "../propTypes";
 
 export const GlobalLoginContext = React.createContext();
 
@@ -42,20 +43,22 @@ export function fetchWithReLogin(displayLoginCtx, url, fetchArgs, discardOnFailu
     });
 }
 
-class DialogueLoginContainer extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+function ReLoginDialog(props) {
+  checkPropTypes(ReLoginDialog, props);
+  const { isOpen, handleLogin } = props;
 
-  render () {
-    return (
-      <Dialog
-        open={this.props.isOpen}
-      >
-        <MainLoginComponent handleLogin={this.props.handleLogin} redirectOnLogin={false}/>
-      </Dialog>
-    );
-  }
+  return (
+    <Dialog
+      open={isOpen}
+    >
+      <MainLoginContainer handleLogin={handleLogin} redirectOnLogin={false}/>
+    </Dialog>
+  );
 }
 
-export default DialogueLoginContainer;
+ReLoginDialog.propTypes = {
+  isOpen: PropTypes.bool,
+  handleLogin: PropTypes.func.isRequired,
+};
+
+export default ReLoginDialog;
