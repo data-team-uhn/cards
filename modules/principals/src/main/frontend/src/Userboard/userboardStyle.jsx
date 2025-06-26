@@ -30,9 +30,6 @@ const userboardStyle = theme => ({
       justifyContent: "flex-end",
       marginTop: theme.spacing(2)
     },
-    cardRoot: {
-      paddingLeft: "120px"
-    },
     info: {
       backgroundColor: theme.palette.info.main
     },

@@ -19,7 +19,7 @@ import React, { useState, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui'
-import { Avatar, Button, Card, CardContent, Grid, IconButton, Tooltip } from "@mui/material";
+import { Avatar, Box, Button, Grid, IconButton, Tooltip } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialog from "./CreateGroupDialog.jsx";
 import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
@@ -132,12 +132,12 @@ function GroupsManager(props) {
                 muiTableHeadCellProps: {align: 'right'},
                 muiTableBodyCellProps: {
                   sx: {
-                    textAlign: 'right'
+                    padding: '0',
                   },
                 },
               },
               'mrt-row-expand': {
-                size: 8,
+                size: 4,
               },
             }}
             columns={[
@@ -152,14 +152,16 @@ function GroupsManager(props) {
             enableRowActions
             positionActionsColumn="last"
             renderRowActions={({ row }) => (
-              <Tooltip title="Delete Group">
-                <IconButton
-                  onClick={() => { setCurrentGroupName(row.original.name);
-                                   setDeployDeleteGroup(true); }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
+              <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
+                <Tooltip title="Delete Group">
+                  <IconButton
+                    onClick={() => { setCurrentGroupName(row.original.name);
+                                     setDeployDeleteGroup(true);}}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             )}
             renderDetailPanel={({ row }) => {
                 const group = row.original;
@@ -167,9 +169,9 @@ function GroupsManager(props) {
                 const tableTitle = "Group " + group.name + " users";
 
                 return (
-                  <div>
-                    <Card className={classes.cardRoot}>
-                      <CardContent>
+                  <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
+                    <Grid size={1}></Grid>
+                    <Grid size={11}>
                         { groupUsers.length > 0 &&
                             <MaterialReactTable
                               tableInstanceRef={tableRef}
@@ -177,11 +179,6 @@ function GroupsManager(props) {
                               enableColumnFilters={false}
                               enableSorting={false}
                               enableTopToolbar={false}
-                              muiTableHeadCellProps={{
-                                sx: (theme) => ({
-                                  color: theme.palette.text.primary,
-                                }),
-                              }}
                               enableRowSelection
                               enableSelectAll={false}
                               muiSelectCheckboxProps={{ color: 'primary' }}
@@ -234,9 +231,8 @@ function GroupsManager(props) {
                             Remove User from Group
                           </Button>
                         </Grid>
-                      </CardContent>
-                    </Card>
-                  </div>
+                      </Grid>
+                    </Grid>
                 )
             }}
           />

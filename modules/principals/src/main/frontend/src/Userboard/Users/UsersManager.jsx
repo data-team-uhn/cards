@@ -19,7 +19,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui';
-import { Avatar, Box, Card, CardContent, IconButton, Tooltip } from "@mui/material";
+import { Avatar, Box, Grid, IconButton, Tooltip } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialog from "./CreateUserDialog.jsx";
 import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
@@ -99,7 +99,7 @@ function UsersManager(props) {
                 { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
                   Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
                 },
-                { header: 'User Name', accessorKey: 'name' },
+                { header: 'User Name', accessorKey: 'name', size: 300, },
                 { header: 'Admin', accessorKey: 'isAdmin', size: 10,
                   Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
                 },
@@ -109,6 +109,7 @@ function UsersManager(props) {
               ]}
               displayColumnDefOptions={{
                 'mrt-row-actions': {
+                  size: 10,
                   muiTableHeadCellProps: {align: 'right'},
                   muiTableBodyCellProps: {
                     sx: {
@@ -117,7 +118,7 @@ function UsersManager(props) {
                   },
                 },
                 'mrt-row-expand': {
-                  size: 8,
+                  size: 4,
                 },
               }}
               data={users}
@@ -143,11 +144,9 @@ function UsersManager(props) {
                 const tableTitle = "User " + user.name + " Groups";
 
                 return currentUserGroups.length > 0 && (
-                  <div>
-                    <Card className={classes.cardRoot}>
-                      <CardContent>
-                      {
-                        <div>
+                    <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
+                      <Grid size={1}></Grid>
+                      <Grid size={11}>
                           <MaterialReactTable
                               enableColumnActions={false}
                               enableColumnFilters={false}
@@ -160,22 +159,15 @@ function UsersManager(props) {
                                   { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
                                     Cell: ({ row }) => ( <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar> )
                                   },
-                                  { header: 'Name', accessorKey: 'name', muiTableBodyCellProps: {align: 'left'} },
-                                  { header: 'Members', accessorKey: 'members', size: 10,
-                                    muiTableBodyCellProps: {align: 'left'}, muiTableHeadCellProps: {align: 'left'}
-                                  },
-                                  { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10,                                   
-                                    muiTableBodyCellProps: {align: 'left'}, muiTableHeadCellProps: {align: 'left'}
-                                  },
+                                  { header: 'Name', accessorKey: 'name', size: 300, },
+                                  { header: 'Members', accessorKey: 'members', size: 10, },
+                                  { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
                                 ]
                               }]}
                               data={currentUserGroups}
                           />
-                        </div>
-                      }
-                    </CardContent>
-                  </Card>
-                </div> 
+                    </Grid>
+                  </Grid>
                 ) || (<div>User is not in any group</div>)
               }}
           />
