@@ -21,9 +21,9 @@ import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui'
 import { Avatar, Button, Card, CardContent, Grid, IconButton, Tooltip } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
-import CreateGroupDialog from "./creategroupdialog.jsx";
-import DeletePrincipalDialog from "../deleteprincipaldialog.jsx";
-import AddUserToGroupDialog from "./addusertogroupdialog.jsx";
+import CreateGroupDialog from "./CreateGroupDialog.jsx";
+import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
+import AddUserToGroupDialog from "./AddUserToGroupDialog.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx"
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import DeleteIcon from '@mui/icons-material/Delete';

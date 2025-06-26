@@ -38,7 +38,7 @@ import { useLocation } from 'react-router';
 import SearchBar from "../../SearchBar.jsx"; // In the commons module
 import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
 import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
-import ChangeUserPasswordDialog from "../../Userboard/Users/changeuserpassworddialog.jsx";
+import ChangeUserPasswordDialog from "../../Userboard/Users/ChangeUserPasswordDialog.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 function HeaderLinks (props) {

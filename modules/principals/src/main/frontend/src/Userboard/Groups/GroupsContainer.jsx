@@ -18,10 +18,10 @@
 //
 
 import React from 'react';
-import PrincipalsContainer from '../principalsContainer.jsx';
+import PrincipalsContainer from '../PrincipalsContainer.jsx';
 
-export default function UsersContainer() {
+export default function GroupsContainer() {
   return (
-    <PrincipalsContainer isUserListPage/>
+    <PrincipalsContainer/>
   );
 }
