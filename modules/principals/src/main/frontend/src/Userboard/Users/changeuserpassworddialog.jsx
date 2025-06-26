@@ -158,7 +158,7 @@ function ChangeUserPasswordDialog(props) {
         credentials: 'include',
         body: formData
     })
-    .then(response => response.ok ? response.json() : Promise.reject(response))
+    .then(response => response.ok ? response : Promise.reject(response))
     .then(() => handleCloseDialog(true))
     .catch((error) => handleError(error));
   }
