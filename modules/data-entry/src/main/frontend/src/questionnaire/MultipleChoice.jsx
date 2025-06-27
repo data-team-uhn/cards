@@ -406,12 +406,12 @@ function MultipleChoice(props) {
             />
         :
           <TextField
-            variant="standard"
+            variant={textbox ? "outlined" : "standard"}
             error={error || inputError}
             helperText={
               inputError
               ? <FormattedText variant="caption">{ validationErrorText }</FormattedText>
-              : maxAnswers !== 1 && !error && "Press ENTER to add a new option"
+              : maxAnswers !== 1 && !error && "Press ENTER to add a new value"
             }
             className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
             onChange={ghostUpdateEvent}
@@ -434,6 +434,7 @@ function MultipleChoice(props) {
             }}
             value={ghostName || ''}
             multiline={textbox}
+            minRows={textbox ? 4 : undefined}
             inputRef={ref => {inputEl = ref}}
           />
       }
@@ -647,7 +648,12 @@ function ResponseChild(props) {
 
   return (
     <React.Fragment>
-      <ListItem key={name} className={classes.selectionChild} onClick={evt => {evt.preventDefault(); onClick(id, name, checked);}}>
+      <ListItem
+        key={name}
+        className={isDefaultOption ? classes.selectionChild : undefined}
+        sx={isDefaultOption ? undefined : {alignItems: "start", flexWrap: "nowrap"}}
+        onClick={evt => {evt.preventDefault(); onClick(id, name, checked);}}
+      >
           { /* This is either a Checkbox/Radiobox if this is a default suggestion, or a delete button otherwise */
           isDefaultOption ?
             (<>
