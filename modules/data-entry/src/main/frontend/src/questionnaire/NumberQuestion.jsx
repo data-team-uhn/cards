@@ -204,7 +204,7 @@ function NumberQuestion(props) {
     if (dataType === "long") {
       // Test that it is an integer
       if (!/^[-+]?\d*$/.test(text)) {
-        return `The value${isRange ? 's' : ''} must be whole numbers`;
+        return `The value${isRange ? 's' : ''} must be whole number${isRange ? 's' : ''}`;
       }
 
       value = parseInt(text);
