@@ -356,7 +356,7 @@ function PatientIdentification(props) {
                                onBlur: (event) => {
                                  if (dob?.invalid) {
                                    setError(true);
-                                   setErrorMessage("Invalid date: "  + dob.invalid.explanation);
+                                   setErrorMessage("Invalid date" + (dob.invalid.explanation ? ": " + dob.invalid.explanation : ""));
                                  }
                                },
                                inputProps: {

@@ -71,8 +71,10 @@ function DateQuestion(props) {
   const upperLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(upperLimit));
   const lowerLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(lowerLimit));
 
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("Invalid date");
+  const [formatError, setFormatError] = useState();
+  const [endFormatError, setEndFormatError] = useState();
+  const [minMaxError, setMinMaxError] = useState();
+  const [rangeError, setRangeError] = useState();
 
   const views = DateTimeUtilities.getPickerViews(dateFormat);
 
@@ -87,19 +89,57 @@ function DateQuestion(props) {
   const rangeErrorMessage = "Invalid date range: end date should be after the start date";
 
   useEffect(() => {
-    // Determine if the end date is earlier than the start date
-    if (isRange && displayedDate && displayedEndDate && displayedEndDate < displayedDate) {
-      setError(true);
-      setErrorMessage(rangeErrorMessage);
-    }
-  }, [displayedDate, displayedEndDate]);
+    validateInput(null, displayedDate, false);
+    isRange && validateInput(null, displayedEndDate, true);
+  }, []);
 
   let setDate = (value, isEnd) => {
-    setError(false);
     if (isEnd) {
       setDisplayedEndDate(value);
     } else {
       setDisplayedDate(value);
+    }
+  }
+
+  let cleanErrorMessages = (isEnd) => {
+    setMinMaxError(null);
+    setRangeError(null);
+    if (isEnd) {
+      setEndFormatError(null);
+    } else {
+      setFormatError(null);
+    }
+  }
+
+  let validateInput = (event, date, isEnd) => {
+    if (!date) return;
+    if (date?.invalid) {
+      // Picker does not update invalid error explanation until the state is changed
+      // need to replace input with current value and question date format
+      let explanation = date.invalid?.explanation.replace(/the input "([^"]*)"/, `the input "${event.currentTarget.value}"`);
+      explanation = explanation.replace(/as format .*/, `as format ${dateFormat.toLowerCase()}`);
+      let message = "Invalid date" + (explanation ? ": " + explanation : "");
+      if (isEnd) {
+        setEndFormatError(message);
+      } else {
+        setFormatError(message);
+      }
+    } else {
+      // Test that date is within our upperLimit/lowerLimit (if they are defined)
+      if ((lowerLimitLuxon && !lowerLimitLuxon.invalid && (isRange ? lowerLimitLuxon : date) < lowerLimitLuxon) &&
+          (upperLimitLuxon && !upperLimitLuxon.invalid && (isRange ? upperLimitLuxon : date) > upperLimitLuxon)) {
+        setMinMaxError(`Date${isRange ? 's' : ''} must be between ${lowerLimitLuxon.toFormat(dateFormat)} and ${upperLimitLuxon.toFormat(dateFormat)}`);
+      }
+      if (lowerLimitLuxon && !lowerLimitLuxon.invalid && date < lowerLimitLuxon) {
+        setMinMaxError(`Date${isRange ? 's' : ''} must be after ${lowerLimitLuxon.toFormat(dateFormat)}`);
+      }
+      if (upperLimitLuxon && !upperLimitLuxon.invalid && date > upperLimitLuxon) {
+        setMinMaxError(`Date${isRange ? 's' : ''} must be before ${upperLimitLuxon.toFormat(dateFormat)}`);
+      }
+      // Determine if the end date is earlier than the start date
+      if (isRange && displayedDate && displayedEndDate && displayedEndDate < displayedDate) {
+        setRangeError(rangeErrorMessage);
+      }
     }
   }
 
@@ -118,7 +158,9 @@ function DateQuestion(props) {
     outputAnswers.push(["endDate", outputEnd]);
   }
 
-  let getDateField = (isEnd, date) => {
+  let errorMessage = formatError || minMaxError || rangeError;
+
+  let getDateField = (isEnd, date, formatError) => {
     return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <PickerComponent
@@ -129,24 +171,20 @@ function DateQuestion(props) {
         maxDate={upperLimitLuxon || undefined}
         value={date}
         onChange={(value) => {
-          setError(false);
           setDate(value, isEnd);
         }}
+        onAccept={(value) => validateInput(null, value, isEnd)}
         slotProps={{ textField: {
                        variant: 'standard',
-                       error: !isRange && error && !!date?.invalid,
+                       error: formatError || minMaxError || rangeError,
                        className: classes.textField,
-                       helperText: !isRange && error && !!date?.invalid ? errorMessage : null,
-                       onBlur: (event) => {
-                         if (date?.invalid) {
-                           setError(true);
-                           setErrorMessage("Invalid date: "  + date.invalid.explanation);
-                         }
-                       },
+                       helperText: formatError || minMaxError || null,
+                       onBlur: (event) => validateInput(event, date, isEnd),
+                       onFocus: (event) => cleanErrorMessages(isEnd),
                      },
                      field: {
                        clearable: true,
-                       onClear: () => setDate("", isEnd),
+                       onClear: () => setDate(null, isEnd),
                      },
         }}
       />
@@ -164,34 +202,48 @@ function DateQuestion(props) {
     } else {
       limits[1] = DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(limits[1]))?.toFormat(dateFormat);
     }
-    return limits.join(' - ');
+    return dateDisplayFormatter(limits.join(' - '), idx);
+  }
+
+  let dateDisplayFormatter = function(label, idx) {
+    return (
+      <div>
+        <Typography component="div" color={pageActive && errorMessage ? "error" : ""}>
+          { label }
+        </Typography>
+        { pageActive && errorMessage &&
+          <Typography component="div" color="error" variant="caption">
+            { errorMessage }
+          </Typography>
+        }
+      </div>
+    );
   }
 
   return (
     <Question
-      defaultDisplayFormatter={isRange? rangeDisplayFormatter : undefined}
+      defaultDisplayFormatter={isRange? rangeDisplayFormatter : dateDisplayFormatter}
       compact={isRange}
       currentAnswers={DateTimeUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
       {...props}
       >
-      { isRange && error &&
-        <Typography
+      { isRange && rangeError && <Typography
           component="p"
           color="error"
           className={classes.answerInstructions}
           variant="caption"
         >
-          { errorMessage }
+          { rangeError }
         </Typography>
       }
-      {pageActive &&
+      { pageActive &&
         <div className={isRange ? classes.range : ''}>
-          {getDateField(false, displayedDate)}
+          { getDateField(false, displayedDate, formatError) }
           { /* If this is an interval, allow the user to select a second date */
           isRange &&
           <React.Fragment>
             <span className="separator">&mdash;</span>
-            { getDateField(true, displayedEndDate) }
+            { getDateField(true, displayedEndDate, endFormatError) }
           </React.Fragment>
           }
         </div>
