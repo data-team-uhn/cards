@@ -249,7 +249,7 @@ export default class DateTimeUtilities {
   }
 
   static formatIsHourMinuteSeconds(dateFormat) {
-    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "HH:mm:ss";
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "hh:mm:ss";
   }
 
   static timeQuestionFieldType(dateFormat) {
