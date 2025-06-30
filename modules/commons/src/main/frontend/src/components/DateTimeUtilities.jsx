@@ -116,6 +116,8 @@ export default class DateTimeUtilities {
     };
     let truncateTo = 'millisecond';
     for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
+      // Check if the current specifier is missing.
+      // If the current specifier is 'H', check if both 'H' and 'h' are missing
       if (toFormat.indexOf(formatSpecifier) < 0 && ("H" != formatSpecifier || toFormat.indexOf("h") < 0)) {
         truncateTo = targetPrecision;
       }
