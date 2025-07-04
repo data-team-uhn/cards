@@ -48,8 +48,11 @@ function CreateGroupDialog(props) {
           setError(response.statusText);
           return;
         }
-        reload();
-        handleClose();
+        reload?.();
+        handleClose?.();
+    })
+    .catch((error) => {
+        setError(error?.statusText ?? error);
     });
   }
 
@@ -60,8 +63,8 @@ function CreateGroupDialog(props) {
     >
       <DialogTitle>Create New Group</DialogTitle>
       <DialogContent>
-        {error && <Alert severity="error">{error}</Alert>}
-        <Grid container>
+        <Grid container direction="column" spacing={2}>
+          {error && <Grid><Alert severity="error">{error}</Alert></Grid>}
           <Grid>
             <TextField
               variant="standard"
@@ -77,7 +80,7 @@ function CreateGroupDialog(props) {
       <DialogActions className={classes.dialogActions}>
         <Button
           variant="outlined"
-          onClick={handleClose}
+          onClick={(event) => { setError(""); handleClose?.(); }}
         >
           Cancel
         </Button>

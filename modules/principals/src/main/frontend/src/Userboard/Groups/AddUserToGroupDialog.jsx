@@ -51,7 +51,7 @@ function AddUserToGroupDialog(props) {
             body: formData
         })
         .then(() => {
-            reload();
+            reload(false, tableRef);
             handleClose();
         })
         .catch((error) => {

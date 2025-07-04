@@ -40,8 +40,8 @@ function CreateUserDialog(props) {
         <Grid container>
           <RegistrationForm
             loginOnSuccess={false}
-            handleSuccess={() => handleCreateUser()}
-            handleExit={() => handleClose()}
+            handleSuccess={handleCreateUser}
+            handleExit={handleClose}
             closeButtonText="Cancel"
             submitButtonText="Create account"
           />

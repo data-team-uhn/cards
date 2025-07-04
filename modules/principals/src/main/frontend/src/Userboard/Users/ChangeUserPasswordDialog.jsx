@@ -186,7 +186,7 @@ function ChangeUserPasswordDialog(props) {
 
   let handleCloseDialog = (success = false) => {
     setError("");
-    handleClose && handleClose(success);
+    handleClose?.(success);
   }
 
   let validationSchema = {

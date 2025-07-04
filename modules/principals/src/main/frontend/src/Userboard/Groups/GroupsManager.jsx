@@ -19,7 +19,7 @@ import React, { useState, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui'
-import { Avatar, Box, Button, Grid, IconButton, Tooltip } from "@mui/material";
+import { Alert, Avatar, Box, Button, Grid, IconButton, Tooltip } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialog from "./CreateGroupDialog.jsx";
 import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
@@ -42,8 +42,8 @@ function GroupsManager(props) {
   let [ deployCreateGroup, setDeployCreateGroup ] = useState(false);
   let [ deployDeleteGroup, setDeployDeleteGroup ] = useState(false);
   let [ deployAddGroupUsers, setDeployAddGroupUsers ] = useState(false);
+  let [ error, setError ] = useState("");
 
-  let tableRef = useRef();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let getGroupUsers = (groupName) => {
@@ -59,11 +59,13 @@ function GroupsManager(props) {
     setCurrentGroupName("");
   }
 
-  let handleRemoveUsers = (currentGroupName, groupUsers) => {
+  let handleRemoveUsers = (currentGroupName, groupUsers, tableRef) => {
+	setError("");
     if (!tableRef.current) return;
     let formData = new FormData();
 
     let selectedUsers = Object.keys(tableRef.current?.getState().rowSelection);
+    if (selectedUsers.length == 0) return;
     for (var i = 0; i < selectedUsers.length; ++i) {
       formData.append(':member@Delete', groupUsers[selectedUsers[i]].name);
     }
@@ -74,13 +76,13 @@ function GroupsManager(props) {
         credentials: 'include',
         body: formData
       })
-      .then(handleReload)
-      .catch((error) => console.log(error?.statusText ?? error));
+      .then(() => handleReload(false, tableRef))
+      .catch((error) => setError(error?.statusText ?? error));
   }
 
-  let handleReload = (doClear) => {
+  let handleReload = (doClear, tableRef) => {
     doClear && clearSelectedGroup();
-    tableRef.current?.resetRowSelection();
+    tableRef?.current?.resetRowSelection();
     reload();
   }
 
@@ -164,6 +166,7 @@ function GroupsManager(props) {
               </Box>
             )}
             renderDetailPanel={({ row }) => {
+	            let tableRef = useRef();
                 const group = row.original;
                 const groupUsers = group.members > 0 ? getGroupUsers(group.name) : [];
                 const tableTitle = "Group " + group.name + " users";
@@ -172,6 +175,7 @@ function GroupsManager(props) {
                   <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
                     <Grid size={1}></Grid>
                     <Grid size={11}>
+                        {error && <Alert severity="error">{error}</Alert>}
                         { groupUsers.length > 0 &&
                             <MaterialReactTable
                               tableInstanceRef={tableRef}
@@ -226,7 +230,7 @@ function GroupsManager(props) {
                             variant="contained"
                             color="secondary"
                             disabled={groupUsers.length == 0}
-                            onClick={() => handleRemoveUsers(group.principalName, groupUsers)}
+                            onClick={() => handleRemoveUsers(group.principalName, groupUsers, tableRef)}
                           >
                             Remove User from Group
                           </Button>
