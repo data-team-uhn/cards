@@ -1,0 +1,9 @@
+{
+  "clinician-dashboard.ClinicDashboard.js": ["asset:cards-dataentry.Questionnaires.js", "asset:clinician-dashboard.ClinicForms.js", "asset:clinician-dashboard.ClinicVisits.js"],
+  "clinician-dashboard.ClinicForms.js": ["asset:cards-dataentry.LiveTable.js"],
+  "clinician-dashboard.ClinicVisits.js": ["asset:cards-dataentry.LiveTable.js"],
+  "clinician-dashboard.Form.js": ["asset:cards-login.ReLoginDialog.js", "asset:cards-dataentry.Forms.js", "asset:cards-dataentry.FormView.js", "asset:cards-pedigree.Pedigree.js"],
+  "clinician-dashboard.Visit.js": ["asset:cards-login.ReLoginDialog.js"],
+  "clinician-dashboard.Patient.js": ["asset:cards-login.ReLoginDialog.js"],
+  "clinician-dashboard.DashboardSettingsConfiguration.js": ["asset:cards-login.ReLoginDialog.js"]
+}

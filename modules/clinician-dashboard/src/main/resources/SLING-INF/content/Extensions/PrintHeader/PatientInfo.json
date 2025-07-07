@@ -2,6 +2,6 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/print/header",
   "cards:extensionName": "Print header with patient information",
-  "cards:extensionRenderURL": "asset:clinician-portal.PrintHeader.js",
+  "cards:extensionRenderURL": "asset:clinician-dashboard.PrintHeader.js",
   "cards:defaultOrder": 10
 }

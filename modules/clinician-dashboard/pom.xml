@@ -26,9 +26,9 @@
     <version>0.9.32-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-clinician-portal</artifactId>
+  <artifactId>cards-clinician-dashboard</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Clinician Portal</name>
+  <name>CARDS - Clinician Dashboard</name>
   <description>An alternative view of patients, visits and forms, more suited for clinicians</description>
 
   <build>
