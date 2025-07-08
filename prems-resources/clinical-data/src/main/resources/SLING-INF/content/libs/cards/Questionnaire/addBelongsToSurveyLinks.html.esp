@@ -32,7 +32,6 @@ response.setContentType('text/html');
 
 // Without confirm=1 in the URL, we don't do any actual changes.
 let dryRun = request.getParameter("confirm") != "1";
-let pendingChanges = 0;
 
 let formUtils = sling.getService(Packages.io.uhndata.cards.forms.api.FormUtils);
 let linkUtils = sling.getService(Packages.io.uhndata.cards.links.api.LinkUtils);
@@ -164,12 +163,7 @@ let updateForm = function(form) {
  * @param destination The Survey Events form to link to
  */
 let createLink = function(source, destination) {
-  pendingChanges++;
   linkUtils.addLink(source, destination, belongsToSurveyLinkType, "Belongs to Survey");
-  if (pendingChanges >= 100) {
-    currentSession.save();
-    pendingChanges = 0;
-  }
 }
 
 /**
@@ -216,7 +210,6 @@ out.println("<ol>");
 fixAllForms()
 out.println("</ol>");
 if (!dryRun) {
-    currentSession.save();
     out.println("<p>Changes performed.<p>")
 } else {
   out.println("<p><a href='" + request.getPathInfo() + "?confirm=1" + (request.getQueryString() ? "&" + request.getQueryString() : "") + "'>Confirm?</a></p>");
