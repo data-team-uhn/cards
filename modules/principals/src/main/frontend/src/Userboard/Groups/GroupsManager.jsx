@@ -60,7 +60,7 @@ function GroupsManager(props) {
   }
 
   let handleRemoveUsers = (currentGroupName, groupUsers, tableRef) => {
-	setError("");
+    setError("");
     if (!tableRef.current) return;
     let formData = new FormData();
 
@@ -166,7 +166,7 @@ function GroupsManager(props) {
               </Box>
             )}
             renderDetailPanel={({ row }) => {
-	            let tableRef = useRef();
+                let tableRef = useRef();
                 const group = row.original;
                 const groupUsers = group.members > 0 ? getGroupUsers(group.name) : [];
                 const tableTitle = "Group " + group.name + " users";
