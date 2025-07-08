@@ -67,6 +67,7 @@ function CreateGroupDialog(props) {
           {error && <Grid><Alert severity="error">{error}</Alert></Grid>}
           <Grid>
             <TextField
+              fullWidth
               variant="standard"
               id="name"
               name="name"
