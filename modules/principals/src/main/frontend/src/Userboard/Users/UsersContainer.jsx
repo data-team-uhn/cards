@@ -16,19 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+
 import React from 'react';
-import PrincipalsContainer from '../principalsContainer.jsx';
+import PrincipalsContainer from '../PrincipalsContainer.jsx';
 
-class GroupsContainer extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render () {
-    return (
-      <PrincipalsContainer isUserListPage={false}/>
-    );
-  }
+export default function UsersContainer() {
+  return (
+    <PrincipalsContainer isUserListPage/>
+  );
 }
-
-export default GroupsContainer;

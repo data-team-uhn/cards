@@ -15,13 +15,15 @@
   under the License.
 */
 
-import React from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui';
-import { Avatar, Box, Card, CardContent, IconButton, Tooltip } from "@mui/material";
+import { Avatar, Box, Grid, IconButton, Tooltip } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
-import CreateUserDialogue from "./createuserdialogue.jsx";
-import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
-import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
+import CreateUserDialog from "./CreateUserDialog.jsx";
+import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
+import ChangeUserPasswordDialog from "./ChangeUserPasswordDialog.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx";
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import MaterialReactTable from 'material-react-table';
@@ -30,65 +32,55 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 
 
-
 const USER_URL = "/system/userManager/user/";
 
-class UsersManager extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentUserName: "",
-      currentGroupName: "",
+function UsersManager(props) {
+  checkPropTypes(UsersManager, props);
+  const { classes, groups, users, reload } = props;
 
-      deployCreateUser: false,
-      deployDeleteUser: false,
-      deployChangeUserPassword: false,
-    };
-  }
+  let [ currentUserName, setCurrentUserName ] = useState("");
+  let [ deployCreateUser, setDeployCreateUser ] = useState(false);
+  let [ deployDeleteUser, setDeployDeleteUser ] = useState(false);
+  let [ deployChangeUserPassword, setDeployChangeUserPassword ] = useState(false);
 
-  getUserGroups (userGroups){
+  let getUserGroups = (userGroups) => {
     //Get groups filtering all groups by user name
     let memberOf = userGroups.map((group) => group.name);
-    let groups = this.props.groups.filter( (group) => {
-              return memberOf.indexOf(group.name) > -1;
-          });
-    return groups;
+    let groupsOfUser = groups.filter(group => memberOf.includes(group.name));
+    return groupsOfUser;
   }
 
-  handleReload () {
-    this.setState({currentUserName: ""});
-    this.props.reload();
+  let handleReload = () => {
+    setCurrentUserName("");
+    reload();
   }
 
-  render() {
-    const { classes } = this.props;
-
-    return (
+  return (
       <AdminScreen
         title="Users"
         action={
           <NewItemButton
             title="Create new user"
-            onClick={() => this.setState({deployCreateUser: true})}
+            onClick={() => setDeployCreateUser(true)}
           />
         }>
-        <CreateUserDialogue
-          isOpen={this.state.deployCreateUser}
-          handleClose={() => {this.setState({deployCreateUser: false});}}
-          reload={() => this.handleReload()}
+        <CreateUserDialog
+          isOpen={deployCreateUser}
+          handleClose={() => setDeployCreateUser(false)}
+          reload={() => handleReload()}
         />
-        <DeletePrincipalDialogue
-          isOpen={this.state.deployDeleteUser}
-          handleClose={() => {this.setState({deployDeleteUser: false});}}
-          name={this.state.currentUserName}
-          reload={() => this.handleReload()}
+        <DeletePrincipalDialog
+          isOpen={deployDeleteUser}
+          handleClose={() => setDeployDeleteUser(false)}
+          name={currentUserName}
+          reload={() => handleReload()}
           url={USER_URL}
           type="user"
         />
-        <ChangeUserPasswordDialogue 
-          isOpen={this.state.deployChangeUserPassword}
-          handleClose={() => {this.setState({deployChangeUserPassword: false});}}
-          name={this.state.currentUserName}
+        <ChangeUserPasswordDialog 
+          isOpen={deployChangeUserPassword}
+          handleClose={() => setDeployChangeUserPassword(false)}
+          name={currentUserName}
         />
 
         <div className={classes.root}>
@@ -107,7 +99,7 @@ class UsersManager extends React.Component {
                 { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
                   Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
                 },
-                { header: 'User Name', accessorKey: 'name' },
+                { header: 'User Name', accessorKey: 'name', size: 300, },
                 { header: 'Admin', accessorKey: 'isAdmin', size: 10,
                   Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
                 },
@@ -117,6 +109,7 @@ class UsersManager extends React.Component {
               ]}
               displayColumnDefOptions={{
                 'mrt-row-actions': {
+                  size: 10,
                   muiTableHeadCellProps: {align: 'right'},
                   muiTableBodyCellProps: {
                     sx: {
@@ -125,21 +118,21 @@ class UsersManager extends React.Component {
                   },
                 },
                 'mrt-row-expand': {
-                  size: 8,
+                  size: 4,
                 },
               }}
-              data={this.props.users}
+              data={users}
               enableRowActions
               positionActionsColumn="last"
               renderRowActions={({ row }) => (
                 <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
                   <Tooltip title="Change Password">
-                    <IconButton onClick={ () => this.setState({currentUserName: row.original.name, deployChangeUserPassword: true}) } >
+                    <IconButton onClick={ () => { setCurrentUserName(row.original.name); setDeployChangeUserPassword(true); } } >
                       <LockIcon />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete User">
-                    <IconButton onClick={ () => this.setState({currentUserName: row.original.name, deployDeleteUser: true}) } >
+                    <IconButton onClick={ () => { setCurrentUserName(row.original.name); setDeployDeleteUser(true); } } >
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
@@ -147,15 +140,13 @@ class UsersManager extends React.Component {
               )}
               renderDetailPanel={({ row }) => {
                 const user = row.original;
-                const currentUserGroups = user.memberOf.length > 0 ? this.getUserGroups(user.memberOf) : [];
+                const currentUserGroups = user.memberOf.length > 0 ? getUserGroups(user.memberOf) : [];
                 const tableTitle = "User " + user.name + " Groups";
 
                 return currentUserGroups.length > 0 && (
-                  <div>
-                    <Card className={classes.cardRoot}>
-                      <CardContent>
-                      {
-                        <div>
+                    <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
+                      <Grid size={1}></Grid>
+                      <Grid size={11}>
                           <MaterialReactTable
                               enableColumnActions={false}
                               enableColumnFilters={false}
@@ -168,29 +159,27 @@ class UsersManager extends React.Component {
                                   { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
                                     Cell: ({ row }) => ( <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.name.charAt(0)}</Avatar> )
                                   },
-                                  { header: 'Name', accessorKey: 'name', muiTableBodyCellProps: {align: 'left'} },
-                                  { header: 'Members', accessorKey: 'members', size: 10,
-                                    muiTableBodyCellProps: {align: 'left'}, muiTableHeadCellProps: {align: 'left'}
-                                  },
-                                  { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10,                                   
-                                    muiTableBodyCellProps: {align: 'left'}, muiTableHeadCellProps: {align: 'left'}
-                                  },
+                                  { header: 'Name', accessorKey: 'name', size: 300, },
+                                  { header: 'Members', accessorKey: 'members', size: 10, },
+                                  { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
                                 ]
                               }]}
                               data={currentUserGroups}
                           />
-                        </div>
-                      }
-                    </CardContent>
-                  </Card>
-                </div> 
+                    </Grid>
+                  </Grid>
                 ) || (<div>User is not in any group</div>)
               }}
           />
         </div>
       </AdminScreen>
     );
-  }
 }
 
-export default withStyles (UsersManager, userboardStyle);
+UsersManager.propTypes = {
+  users: PropTypes.array,
+  groups: PropTypes.array,
+  reload: PropTypes.func.isRequired
+}
+
+export default withStyles(UsersManager, userboardStyle);

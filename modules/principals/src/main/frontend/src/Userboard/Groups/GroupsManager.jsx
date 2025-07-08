@@ -15,106 +15,107 @@
   under the License.
 */
 
-import React from "react";
-import { withStyles } from 'tss-react/mui';
-import { Avatar, Button, Card, CardContent, Grid, IconButton, Tooltip } from "@mui/material";
+import React, { useState, useRef, useContext } from "react";
+import PropTypes from "prop-types";
+import { checkPropTypes } from "../../propTypes";
+import { withStyles } from 'tss-react/mui'
+import { Alert, Avatar, Box, Button, Grid, IconButton, Tooltip } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
-import CreateGroupDialogue from "./creategroupdialogue.jsx";
-import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
-import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
+import CreateGroupDialog from "./CreateGroupDialog.jsx";
+import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
+import AddUserToGroupDialog from "./AddUserToGroupDialog.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx"
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import MaterialReactTable from 'material-react-table';
+import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 const GROUP_URL = "/system/userManager/group/";
 
-class GroupsManager extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentGroupUsers: [],
-      currentGroupName: "",
+function GroupsManager(props) {
+  checkPropTypes(GroupsManager, props);
+  const { classes, groups, users, reload } = props;
 
-      deployCreateGroup: false,
-      deployDeleteGroup: false,
-      deployAddGroupUsers: false,
-      groupUsersLoaded: false
-    };
+  let [ currentGroupUsers, setCurrentGroupUsers ] = useState([]);
+  let [ currentGroupName, setCurrentGroupName ] = useState("");
+  let [ deployCreateGroup, setDeployCreateGroup ] = useState(false);
+  let [ deployDeleteGroup, setDeployDeleteGroup ] = useState(false);
+  let [ deployAddGroupUsers, setDeployAddGroupUsers ] = useState(false);
+  let [ error, setError ] = useState("");
 
-    this.tableRef = React.createRef();
-  }
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  getGroupUsers (groupName){
+  let getGroupUsers = (groupName) => {
     //Get groups filtering all users by group name
-    let users = this.props.users.filter( (user) => {
+    let groupUsers = users.filter( (user) => {
             let memberOf = user.memberOf.map((group) => group.name);
             return memberOf.indexOf(groupName) > -1;
         });
-    return users;
+    return groupUsers;
   }
 
-  clearSelectedGroup () {
-    this.setState(
-      {
-        currentGroupName: "",
-      }
-    );
+  let clearSelectedGroup = () => {
+    setCurrentGroupName("");
   }
 
-  handleRemoveUsers(currentGroupName, groupUsers) {
-    if (!this.tableRef.current) return;
+  let handleRemoveUsers = (currentGroupName, groupUsers, tableRef) => {
+    setError("");
+    if (!tableRef.current) return;
     let formData = new FormData();
 
-    let selectedUsers = Object.keys(this.tableRef.current?.getState().rowSelection);
+    let selectedUsers = Object.keys(tableRef.current?.getState().rowSelection);
+    if (selectedUsers.length == 0) return;
     for (var i = 0; i < selectedUsers.length; ++i) {
       formData.append(':member@Delete', groupUsers[selectedUsers[i]].name);
     }
 
-    fetch(GROUP_URL + currentGroupName + ".update.html",
+    fetchWithReLogin(globalLoginDisplay, GROUP_URL + currentGroupName + ".update.html",
       {
         method: 'POST',
         credentials: 'include',
         body: formData
       })
-      .then(() => {
-        this.handleReload();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then(() => handleReload(false, tableRef))
+      .catch((error) => setError(error?.statusText ?? error?.message ?? ("" + error)));
   }
 
-  handleReload (doClear) {
-    doClear && this.clearSelectedGroup();
-    this.tableRef.current?.resetRowSelection();
-    this.props.reload();
+  let handleReload = (doClear, tableRef) => {
+    doClear && clearSelectedGroup();
+    tableRef?.current?.resetRowSelection();
+    reload();
   }
 
-  componentDidMount () {
-    document.addEventListener("principals-reloaded", this.openDetailsPanel);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("principals-reloaded", this.openDetailsPanel);
-  }
-
-  render() {
-    const { classes } = this.props;
-
-    return (
+  return (
       <AdminScreen
         title="Groups"
         action={
           <NewItemButton
             title="Create new group"
-            onClick={(event) => this.setState({deployCreateGroup: true})}
+            onClick={(event) => setDeployCreateGroup(true)}
           />
         }>
-        <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload(true)} />
-        <DeletePrincipalDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload(true)} url={GROUP_URL} type="group" />
-        <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} groupUsers={this.state.currentGroupUsers} allUsers={this.props.users}  reload={() => this.handleReload()} />
+        <CreateGroupDialog
+          isOpen={deployCreateGroup}
+          handleClose={() => setDeployCreateGroup(false)}
+          reload={() => handleReload(true)}
+        />
+        <DeletePrincipalDialog
+          isOpen={deployDeleteGroup}
+          handleClose={() => setDeployDeleteGroup(false)}
+          name={currentGroupName}
+          reload={() => handleReload(true)}
+          url={GROUP_URL}
+          type="group"
+        />
+        <AddUserToGroupDialog
+          isOpen={deployAddGroupUsers}
+          handleClose={() => setDeployAddGroupUsers(false)}
+          name={currentGroupName}
+          groupUsers={currentGroupUsers}
+          allUsers={users}
+          reload={handleReload}
+        />
         <div className={classes.root}>
           <MaterialReactTable
             enableColumnActions={false}
@@ -133,12 +134,12 @@ class GroupsManager extends React.Component {
                 muiTableHeadCellProps: {align: 'right'},
                 muiTableBodyCellProps: {
                   sx: {
-                    textAlign: 'right'
+                    padding: '0',
                   },
                 },
               },
               'mrt-row-expand': {
-                size: 8,
+                size: 4,
               },
             }}
             columns={[
@@ -149,37 +150,39 @@ class GroupsManager extends React.Component {
               { header: 'Members', accessorKey: 'members', size: 10, },
               { header: 'Declared Members', accessorKey: 'declaredMembers', size: 10, },
             ]}
-            data={this.props.groups}
+            data={groups}
             enableRowActions
             positionActionsColumn="last"
             renderRowActions={({ row }) => (
-              <Tooltip title="Delete Group">
-                <IconButton onClick={ () => this.setState({currentGroupName: row.original.name, deployDeleteGroup: true}) } >
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
+              <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
+                <Tooltip title="Delete Group">
+                  <IconButton
+                    onClick={() => { setCurrentGroupName(row.original.name);
+                                     setDeployDeleteGroup(true);}}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             )}
             renderDetailPanel={({ row }) => {
+                let tableRef = useRef();
                 const group = row.original;
-                const groupUsers = group.members > 0 ? this.getGroupUsers(group.name) : [];
+                const groupUsers = group.members > 0 ? getGroupUsers(group.name) : [];
                 const tableTitle = "Group " + group.name + " users";
 
                 return (
-                  <div>
-                    <Card className={classes.cardRoot}>
-                      <CardContent>
+                  <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
+                    <Grid size={1}></Grid>
+                    <Grid size={11}>
+                        {error && <Alert severity="error">{error}</Alert>}
                         { groupUsers.length > 0 &&
                             <MaterialReactTable
-                              tableInstanceRef={this.tableRef}
+                              tableInstanceRef={tableRef}
                               enableColumnActions={false}
                               enableColumnFilters={false}
                               enableSorting={false}
                               enableTopToolbar={false}
-                              muiTableHeadCellProps={{
-                                sx: (theme) => ({
-                                  color: theme.palette.text.primary,
-                                }),
-                              }}
                               enableRowSelection
                               enableSelectAll={false}
                               muiSelectCheckboxProps={{ color: 'primary' }}
@@ -217,32 +220,35 @@ class GroupsManager extends React.Component {
                           <Button
                             variant="contained"
                             className={classes.containerButton}
-                            onClick={() => { this.setState({currentGroupName: group.principalName,
-                                                            deployAddGroupUsers: true,
-                                                            currentGroupUsers: groupUsers});
-                                           }
-                            }
+                            onClick={() => { setCurrentGroupName(group.principalName);
+                                             setDeployAddGroupUsers(true);
+                                             setCurrentGroupUsers(groupUsers); }}
                           >
                             Add User to Group
                           </Button>
                           <Button
                             variant="contained"
                             color="secondary"
-                            onClick={() => { this.handleRemoveUsers(group.principalName, groupUsers) }}
+                            disabled={groupUsers.length == 0}
+                            onClick={() => handleRemoveUsers(group.principalName, groupUsers, tableRef)}
                           >
                             Remove User from Group
                           </Button>
                         </Grid>
-                      </CardContent>
-                    </Card>
-                  </div>
+                      </Grid>
+                    </Grid>
                 )
             }}
           />
         </div>
       </AdminScreen>
     );
-  }
+}
+
+GroupsManager.propTypes = {
+  groups: PropTypes.array,
+  users: PropTypes.array,
+  reload: PropTypes.func.isRequired
 }
 
 export default withStyles (GroupsManager, userboardStyle);
