@@ -52,7 +52,7 @@ function CreateGroupDialog(props) {
         handleClose?.();
     })
     .catch((error) => {
-        setError(error?.statusText ?? error);
+        setError(error?.statusText ?? error?.message ?? ("" + error));
     });
   }
 

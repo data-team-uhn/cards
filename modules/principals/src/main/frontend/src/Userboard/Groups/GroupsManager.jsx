@@ -77,7 +77,7 @@ function GroupsManager(props) {
         body: formData
       })
       .then(() => handleReload(false, tableRef))
-      .catch((error) => setError(error?.statusText ?? error));
+      .catch((error) => setError(error?.statusText ?? error?.message ?? ("" + error)));
   }
 
   let handleReload = (doClear, tableRef) => {
