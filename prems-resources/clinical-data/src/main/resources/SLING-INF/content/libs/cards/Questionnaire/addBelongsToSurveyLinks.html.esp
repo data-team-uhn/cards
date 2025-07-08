@@ -16,7 +16,7 @@
 --%>
 <html>
 <head>
-<title>Update last modified date</title>
+<title>Add missing belongsToSurvey links to legacy forms</title>
 </head>
 <body>
 <%
@@ -32,6 +32,10 @@ response.setContentType('text/html');
 
 // Without confirm=1 in the URL, we don't do any actual changes.
 let dryRun = request.getParameter("confirm") != "1";
+let pendingChanges = 0;
+
+let formUtils = sling.getService(Packages.io.uhndata.cards.forms.api.FormUtils);
+let linkUtils = sling.getService(Packages.io.uhndata.cards.links.api.LinkUtils);
 
 let clinics = {};
 let surveyEventsQuestionnaire = null;
@@ -88,7 +92,7 @@ let getClinic = function(clinic) {
 let fixAllForms = function() {
   let questionnaire = currentSession.getNode("/Questionnaires/Survey events");
   // Store values as UUID strings for easy comparison with references
-  surveyEventsClinicQuestion = questionnaire.getNode("assigned_survey").getProperty("jcr:uuid").toString();
+  surveyEventsClinicQuestion = questionnaire.getNode("assigned_survey");
   surveyEventsQuestionnaire = questionnaire.getProperty("jcr:uuid").toString();
   belongsToSurveyLinkType = currentSession.getNode(belongsToSurveyLinkPath);
 
@@ -108,18 +112,12 @@ let fixAllForms = function() {
  */
 let updateForm = function(form) {
   // Check if the current form has a belongs to survey link. Exit if so.
-  if (form.hasNode("cards:links")) {
-    let links = form.getNode("cards:links").getNodes();
-    for (var i = 0; i < links.length; ++i) {
-      if (belongsToSurveyLinkPath == links[i].getProperty("type").getNode().getPath().toString()) {
-        // Already has a belongs to survey link, exit
-        return;
-      }
-    }
+  if (!linkUtils.getLinksOfType(form, belongsToSurveyLinkType).isEmpty()) {
+    return;
   }
 
   // Get ready to find and store the most recent applicable survey events form
-  let subject = form.getProperty("subject").getNode();
+  let subject = formUtils.getSubject(form);
   let subjectReferences = subject.getReferences("subject");
   let questionnaire = form.getProperty("questionnaire").toString();
 
@@ -150,7 +148,10 @@ let updateForm = function(form) {
   }
 
   if (surveyEventsForm) {
-    out.println("<li>Linking form <a href='/content.html" + form + "'><tt>" + getFormName(form) + "</tt></a> (modified " + form.getProperty("jcr:lastModified").getString() + ") to survey <a href='/content.html" + surveyEventsForm + "'><tt>" + getFormName(surveyEventsForm) + "</tt></a></li>");
+    out.println("<li>Linking form <a href='/content.html" + form + "'><tt>" + getFormName(form)
+      + "</tt></a> (modified " + form.getProperty("jcr:lastModified").getString()
+      + ") to survey <a href='/content.html" + surveyEventsForm
+      + "'><tt>" + getFormName(surveyEventsForm) + "</tt></a></li>");
     if (!dryRun) {
       createLink(form, surveyEventsForm);
     }
@@ -159,23 +160,16 @@ let updateForm = function(form) {
 
 /**
  * Add a belongsToSurvey link from a form to a survey events form
- * @param source The form that shoulf have the belongsToSurvey link added
+ * @param source The form that should have the belongsToSurvey link added
  * @param destination The Survey Events form to link to
  */
 let createLink = function(source, destination) {
-  let linksContainer;
-  // Get or create the form's links container
-  if (source.hasNode("cards:links")) {
-    linksContainer = source.getNode("cards:links");
-  } else {
-    linksContainer = source.addNode("cards:links", 	"cards:Links");
-    linksContainer.setProperty("form", source);
+  pendingChanges++;
+  linkUtils.addLink(source, destination, belongsToSurveyLinkType, "Belongs to Survey");
+  if (pendingChanges >= 100) {
+    currentSession.save();
+    pendingChanges = 0;
   }
-  let link = linksContainer.addNode(uuid(), "cards:WeakLink");
-  link.setProperty("form", source);
-  link.setProperty("label", "Belongs to Survey");
-  link.setProperty("reference", destination);
-  link.setProperty("type", belongsToSurveyLinkType);
 }
 
 /**
@@ -185,16 +179,8 @@ let createLink = function(source, destination) {
  *          Should be a path to a clinic mapping.
  */
 let getClinicFromSurveyEventsForm = function(form) {
-  let nodes = form.getNodes();
-  // Iterate through all the child nodes of the form
-  for (var i = 0; i < nodes.length; ++i) {
-    let child = nodes[i];
-    if (child.hasProperty("question") && child.getProperty("question").toString() == surveyEventsClinicQuestion) {
-      // Found the clinic question. Get the clinic
-      return child.hasProperty("value") ? child.getProperty("value").toString() : null;
-    }
-  }
-  return null;
+  let answer = formUtils.getAnswer(form, surveyEventsClinicQuestion)
+  return answer == null ? null : formUtils.getValue(answer).toString();
 }
 
 /**
@@ -214,7 +200,7 @@ let uuid = function() {
  * @return the form name as a string
  */
 let getFormName = function(form) {
-  return result = form.getProperty("subject").getNode().getProperty("identifier") + " / " + form.getProperty("questionnaire").getNode().getProperty("title");
+  return result = formUtils.getSubject(form).getProperty("identifier") + " / " + formUtils.getQuestionnaire(form).getProperty("title");
 }
 
 // All definitions done, perform the actual work
@@ -229,7 +215,7 @@ out.println("<h2>Data changes:</h2>");
 out.println("<ol>");
 fixAllForms()
 out.println("</ol>");
-if (request.getParameter("confirm") == "1") {
+if (!dryRun) {
     currentSession.save();
     out.println("<p>Changes performed.<p>")
 } else {
