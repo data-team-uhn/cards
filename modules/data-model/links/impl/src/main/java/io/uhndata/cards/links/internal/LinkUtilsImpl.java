@@ -114,19 +114,25 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
     public Collection<Link> getLinksOfType(Node source, String type)
     {
         try {
-            Collection<Link> links = getLinks(source);
             Node linkDefinition = getLinkType(source.getSession(), type);
-            return links.stream().filter(link -> {
-                try {
-                    return link.getDefinition().getNode().getPath().equals(linkDefinition.getPath());
-                } catch (RepositoryException e) {
-                    return false;
-                }
-            }).collect(Collectors.toList());
+            return getLinksOfType(source, linkDefinition);
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to retrieve links of type {} for node {}", type, source, e);
             return new ArrayList<Link>();
         }
+    }
+
+    @Override
+    public Collection<Link> getLinksOfType(Node source, Node linkDefinition)
+    {
+        Collection<Link> links = getLinks(source);
+        return links.stream().filter(link -> {
+            try {
+                return link.getDefinition().getNode().getPath().equals(linkDefinition.getPath());
+            } catch (RepositoryException e) {
+                return false;
+            }
+        }).collect(Collectors.toList());
     }
 
     private Node getLinkType(Session session, String type)

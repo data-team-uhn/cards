@@ -66,6 +66,15 @@ public interface LinkUtils
     Collection<Link> getLinksOfType(Node source, String type);
 
     /**
+     * Retrieve all the links from a resource of a desired link type.
+     *
+     * @param source the node to get links from
+     * @param type the node holding the link definition to filter by
+     * @return a collection of links, may be empty
+     */
+    Collection<Link> getLinksOfType(Node source, Node type);
+
+    /**
      * Retrieve all the links to a resource.
      *
      * @param source the node to get links pointing to

@@ -1,0 +1,220 @@
+<%--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+--%>
+<html>
+<head>
+<title>Add missing belongsToSurvey links to legacy forms</title>
+</head>
+<body>
+<%
+
+// This script updates all forms of a specific questionnaire to link to the most recent
+// Survey Events form for the visit that includes this form
+//
+// This script applies to a specific questionnaire, so identifying the
+// questionnaire of the forms to be updated is done simply by accessing it in
+// the browser, e.g. /Questionnaires/OAIP.addBelongsToSurveyLinks.html
+
+response.setContentType('text/html');
+
+// Without confirm=1 in the URL, we don't do any actual changes.
+let dryRun = request.getParameter("confirm") != "1";
+
+let formUtils = sling.getService(Packages.io.uhndata.cards.forms.api.FormUtils);
+let linkUtils = sling.getService(Packages.io.uhndata.cards.links.api.LinkUtils);
+
+let clinics = {};
+let surveyEventsQuestionnaire = null;
+let surveyEventsClinicQuestion = null;
+let belongsToSurveyLinkPath = "/apps/cards/LinkDefinitions/belongsToSurvey";
+let belongsToSurveyLinkType = null;
+
+
+/**
+ * Prepare a list of clinic mappings.
+ * This maps all the ClinicMapping paths to a list of questionnaire UUIDs that belong to that clinic
+ */
+let getClinicMapping = function() {
+  let query = "SELECT * FROM [cards:ClinicMapping] AS f";
+  let clinics = currentSession.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
+  while (clinics.hasNext()) {
+    getClinic(clinics.next());
+  }
+}
+
+/*
+ * For a given clinic, prepare a list of questionnaires that are a part of the clinic.
+ * This is stored into the clinics global variable
+ */
+let getClinic = function(clinic) {
+  dryRun && out.println("<li>" + clinic + ": [");
+  // Get the QuestionnaireSet for the clinic
+  let survey = currentSession.getNode("/Survey/" + clinic.getProperty("survey").getString());
+
+  let data = [];
+  let surveyRefs = survey.getNodes();
+  // Iterate through all the child nodes of the Survey QuestionnaireSet
+  for (var i = 0; i < surveyRefs.length; ++i) {
+    let surveyRef = surveyRefs[i];
+    if ("cards:QuestionnaireRef".equals(surveyRef.getPrimaryNodeType().getName())) {
+      // The result of getIdentifer does not like to be forced into a Javascript String type:
+      // .toString(), new String(), String.valueOf() all return an object, not a string.
+      // Use string concatenation to force it into a Javascript string.
+      let form = "" + surveyRef.getProperty("questionnaire").getNode().getIdentifier();
+      data.push(form);
+      dryRun && out.print(form);
+      if (i < surveyRefs.length - 1) {
+        dryRun && out.print(", ");
+      }
+    }
+  }
+  clinics[clinic.getPath()] = data;
+  dryRun && out.print("]");
+}
+
+/**
+ * Find all forms that need to be updated and add a belongsToSurvey link if required.
+ */
+let fixAllForms = function() {
+  let questionnaire = currentSession.getNode("/Questionnaires/Survey events");
+  // Store values as UUID strings for easy comparison with references
+  surveyEventsClinicQuestion = questionnaire.getNode("assigned_survey");
+  surveyEventsQuestionnaire = questionnaire.getProperty("jcr:uuid").toString();
+  belongsToSurveyLinkType = currentSession.getNode(belongsToSurveyLinkPath);
+
+  // Get all forms of the specified type
+  let query = "SELECT * FROM [cards:Form] AS f WHERE f.'questionnaire' = '" + currentNode.getIdentifier() + "'";
+  let forms = currentSession.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute().getNodes();
+  while (forms.hasNext()) {
+    updateForm(forms.next());
+  }
+}
+
+/**
+ * Update a form with the balongsToSurvey link if required.
+ * The node must be a form (cards:Form).
+ *
+ * @param form a form node
+ */
+let updateForm = function(form) {
+  // Check if the current form has a belongs to survey link. Exit if so.
+  if (!linkUtils.getLinksOfType(form, belongsToSurveyLinkType).isEmpty()) {
+    return;
+  }
+
+  // Get ready to find and store the most recent applicable survey events form
+  let subject = formUtils.getSubject(form);
+  let subjectReferences = subject.getReferences("subject");
+  let questionnaire = form.getProperty("questionnaire").toString();
+
+  let surveyEventsForm = null;
+  let surveyEventsDate = null;
+
+  // Search the subject's forms for an applicable survey events form
+  while (subjectReferences.hasNext()) {
+    let referencedForm = subjectReferences.next().getParent();
+    let referencedQuestionnaire = referencedForm.getProperty("questionnaire");
+
+    if (referencedQuestionnaire.toString() == surveyEventsQuestionnaire) {
+      // Found a survey Events form.
+      // Compare it's clinic answer to the clinics mapping to see if the
+      // triggering form is included in this survey events form.
+      let clinic = getClinicFromSurveyEventsForm(referencedForm);
+      if (clinic && clinics[clinic] && clinics[clinic].includes(questionnaire)) {
+        // Check to make sure this is a more recent survey events form than the current saved
+        // survey events form, if this is not the first
+        let currentDate = referencedForm.getProperty("jcr:created").getDate();
+        if (surveyEventsForm == null || currentDate.after(surveyEventsDate)) {
+          // This is the most recent applicable survey events form so far. Save it
+          surveyEventsForm = referencedForm;
+          surveyEventsDate = currentDate;
+        }
+      }
+    }
+  }
+
+  if (surveyEventsForm) {
+    out.println("<li>Linking form <a href='/content.html" + form + "'><tt>" + getFormName(form)
+      + "</tt></a> (modified " + form.getProperty("jcr:lastModified").getString()
+      + ") to survey <a href='/content.html" + surveyEventsForm
+      + "'><tt>" + getFormName(surveyEventsForm) + "</tt></a></li>");
+    if (!dryRun) {
+      createLink(form, surveyEventsForm);
+    }
+  }
+}
+
+/**
+ * Add a belongsToSurvey link from a form to a survey events form
+ * @param source The form that should have the belongsToSurvey link added
+ * @param destination The Survey Events form to link to
+ */
+let createLink = function(source, destination) {
+  linkUtils.addLink(source, destination, belongsToSurveyLinkType, "Belongs to Survey");
+}
+
+/**
+ * Find the clinic answer, if present, for a given survey events form
+ * @param form The survey events form to search for a clinic
+ * @returns the value of the clinic answer, or null if not present.
+ *          Should be a path to a clinic mapping.
+ */
+let getClinicFromSurveyEventsForm = function(form) {
+  let answer = formUtils.getAnswer(form, surveyEventsClinicQuestion)
+  return answer == null ? null : formUtils.getValue(answer).toString();
+}
+
+/**
+ * Generate a version 4 UUID
+ */
+let uuid = function() {
+  let d = '';
+  while (d.length < 32) d += Math.random().toString(16).substr(2);
+  const vr = ((parseInt(d.substr(16, 1), 16) & 0x3) | 0x8).toString(16);
+  return `${d.substr(0, 8)}-${d.substr(8, 4)}-4${d.substr(13, 3)}-${vr}${d.substr(17, 3)}-${d.substr(20, 12)}`;
+}
+
+/**
+ * Compute the name of a form, in the format "Subject label / Questionnaire title".
+ *
+ * @param form a Form node
+ * @return the form name as a string
+ */
+let getFormName = function(form) {
+  return result = formUtils.getSubject(form).getProperty("identifier") + " / " + formUtils.getQuestionnaire(form).getProperty("title");
+}
+
+// All definitions done, perform the actual work
+
+dryRun && out.println("<h2>Dry run, here is what will be done:</h2>");
+dryRun && out.println("<h2>Clinic Mapping:</h2>");
+dryRun && out.println("<ul>");
+getClinicMapping()
+dryRun && out.println("</ul>");
+
+out.println("<h2>Data changes:</h2>");
+out.println("<ol>");
+fixAllForms()
+out.println("</ol>");
+if (!dryRun) {
+    out.println("<p>Changes performed.<p>")
+} else {
+  out.println("<p><a href='" + request.getPathInfo() + "?confirm=1" + (request.getQueryString() ? "&" + request.getQueryString() : "") + "'>Confirm?</a></p>");
+}
+
+%>
+</body>
+</html>
