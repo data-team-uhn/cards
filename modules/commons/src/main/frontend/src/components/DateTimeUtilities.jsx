@@ -128,7 +128,7 @@ export default class DateTimeUtilities {
 
   static dateToFormattedString(date, textFieldType) {
     return (!date?.isValid) ? "" :
-    textFieldType === "date" ? date.toFormat(this.VIEW_DATE_FORMAT) : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
+    textFieldType === "date" ? date.toFormat(this.defaultDateFormat) : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
   // Convert a moment string to a month display

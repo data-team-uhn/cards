@@ -270,7 +270,7 @@ AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date") {
     let dateType = DateTimeUtilities.getDateType(questionDefinition.dateFormat);
     if ( [DateTimeUtilities.FULL_DATE_TYPE, DateTimeUtilities.DATETIME_TYPE, DateTimeUtilities.MONTH_DATE_TYPE].includes(dateType)) {
-      return [StyledDateQuestion, 60];
+      return [StyledDateQuestion, 70];
     } else {
       // Default date handler
       return [StyledDateQuestion, 50];
