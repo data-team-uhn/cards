@@ -49,6 +49,7 @@
     "tss-react": "4.9.16",
     "yup": "0.32.11",
     "raphael": "2.3.0",
+    "remove-markdown": "0.6.2",
     "google-palette": "1.1.1",
     "recharts": "2.15.2"
   },
