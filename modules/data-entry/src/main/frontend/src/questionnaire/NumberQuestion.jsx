@@ -217,11 +217,13 @@ function NumberQuestion(props) {
       }
     }
 
-    // Test that it is within our min/max (if they are defined)
-    if ((typeof minValue !== 'undefined' && (isRange ? lowerLimit : value) < minValue) &&
-        (typeof maxValue !== 'undefined' && (isRange ? upperLimit : value) > maxValue)) {
-      return `The value${isRange ? 's' : ''} must be between ${minValue} and ${maxValue}`;
+    // Test that it is within our min/max (if they are defined), can happen only if isRange
+    if (isRange && typeof minValue !== 'undefined' && lowerLimit < minValue &&
+                   typeof maxValue !== 'undefined' && upperLimit > maxValue) {
+      return `The values must be between ${minValue} and ${maxValue}`;
     }
+
+    // individual out of range error can happen if range or not
     if (typeof minValue !== 'undefined' && value < minValue) {
       return `The value${isRange ? 's' : ''} must be greater than ${minValue}`;
     }
