@@ -24,7 +24,7 @@ export default class DateTimeUtilities {
 
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
-  static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss";
+  static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss.SSSZ";
   static defaultDateFormat = "yyyy-MM-dd";
   static VIEW_DATE_FORMAT = "yyyy/MM/dd";
 
@@ -46,7 +46,7 @@ export default class DateTimeUtilities {
     questionDefinition: PropTypes.shape({
       text: PropTypes.string,
       dateFormat: PropTypes.string,
-      type: PropTypes.oneOf([DateTimeUtilities.TIMESTAMP_TYPE, DateTimeUtilities.INTERVAL_TYPE]),
+      type: PropTypes.oneOf([this.TIMESTAMP_TYPE, this.INTERVAL_TYPE]),
       lowerLimit: PropTypes.string,
       upperLimit: PropTypes.string,
     })
@@ -108,6 +108,7 @@ export default class DateTimeUtilities {
 
     // Determine the coarsest measure to truncate the input to
     const truncate = {
+      'S':'second',
       's':'minute',
       'm':'hour',
       'H':'day',
@@ -152,7 +153,7 @@ export default class DateTimeUtilities {
     if (Array.isArray(value)) {
       return `${this.formatDateAnswer(dateFormat, value[0])} to ${this.formatDateAnswer(dateFormat, value[1])}`;
     }
-    dateFormat = dateFormat || this.VIEW_DATE_FORMAT;
+    dateFormat = dateFormat || this.defaultDateFormat;
     let dateType = this.getDateType(dateFormat);
     if (dateType === this.YEAR_DATE_TYPE) {
       // Year-only dates are displayed like a number
@@ -197,8 +198,8 @@ export default class DateTimeUtilities {
     // Compute the displayed difference
     let result = {long:""}
     if (startDateInput && endDateInput) {
-      let startDate = this.toPrecision(startDateInput, this.VIEW_DATE_FORMAT);
-      let endDate = this.toPrecision(endDateInput, this.VIEW_DATE_FORMAT);
+      let startDate = this.toPrecision(startDateInput, this.defaultDateFormat);
+      let endDate = this.toPrecision(endDateInput, this.defaultDateFormat);
 
       let diff = [];
       let longDiff = [];
