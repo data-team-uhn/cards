@@ -114,11 +114,15 @@ function DateQuestion(props) {
   let validateInput = (event, date, isEnd) => {
     if (!date) return;
     if (date?.invalid) {
-      // Picker does not update invalid error explanation until the state is changed
-      // need to replace input with current value and question date format
-      let explanation = date.invalid?.explanation.replace(/the input "([^"]*)"/, `the input "${event.currentTarget.value}"`);
-      explanation = explanation.replace(/as format .*/, `as format ${dateFormat.toLowerCase()}`);
-      let message = "Invalid date" + (explanation ? ": " + explanation : "");
+      let message = "Invalid date";
+      if (date.invalid?.explanation) {
+        // Picker does not update invalid error explanation until the state is changed
+        // need to replace input with current value and question date format
+        let explanation = date.invalid?.explanation.replace(/the input "([^"]*)"/, `the input "${event.currentTarget.value}"`);
+        explanation = explanation.replace(/as format .*/, `as format ${dateFormat.toLowerCase()}`);
+        message = message + (explanation ? ": " + explanation : "");
+      }
+
       if (isEnd) {
         setEndFormatError(message);
       } else {
@@ -173,7 +177,10 @@ function DateQuestion(props) {
         onChange={(value) => {
           setDate(value, isEnd);
         }}
-        onAccept={(value) => validateInput(null, value, isEnd)}
+        onAccept={(value) => {
+          cleanErrorMessages(isEnd);
+          validateInput(null, value, isEnd);
+        }}
         slotProps={{ textField: {
                        variant: 'standard',
                        error: formatError || minMaxError || rangeError,
