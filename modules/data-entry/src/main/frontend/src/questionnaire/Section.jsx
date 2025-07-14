@@ -314,11 +314,12 @@ function Section(props) {
             size="small"
             variant="contained"
             color="success"
+            startIcon={<Add />}
             onClick={() => {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
             }}
             >
-            <Add fontSize="small" sx={{ m: "0 2px 2px -4px" }}/> {removeMd(sectionDefinition["label"])}
+            {removeMd(sectionDefinition["label"])}
           </Button>
         </Grid>}
         {/* Remove any cards:AnswerSections that we have created by using an @Delete suffix */
