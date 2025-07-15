@@ -23,6 +23,7 @@ import { checkPropTypes } from "../propTypes";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
+import Note from "./Note";
 import FormattedText from "../components/FormattedText";
 import { useFormWriterContext } from "./FormContext";
 
@@ -31,16 +32,29 @@ import { useFormWriterContext } from "./FormContext";
 // Other options are passed to the <question> widget
 let AutocreatedQuestion = (props) => {
   checkPropTypes(AutocreatedQuestion, props);
-  const { isEdit, ...rest } = props;
+  const {
+    isEdit,
+    noteComponent = Note,
+    noteProps,
+    onChangeNote,
+    pageActive = true,
+    path,
+    ...rest
+  } = props;
   const { existingAnswer, questionName } = rest;
-  const { displayMode } = {...props.questionDefinition, ...rest};
+  const { displayMode, enableNotes } = {...props.questionDefinition, ...rest};
 
   const [isFormatted, changeIsFormatted] = useState(false);
-
 
   // If we are in edit mode, upon loading the pre-filled answers, place them
   // in the form context where they can be accessed by computed answers
   const changeFormContext = useFormWriterContext();
+  // Rename this variable to start with a capital letter so React knows it is a component
+  const NoteComponent = noteComponent;
+
+  let { onAddSuggestion } = { ...props, ...noteProps };
+  let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
+  let answerPath = path + "/" + answerID;
 
   useEffect(() => {
     if (isEdit) {
@@ -67,7 +81,18 @@ let AutocreatedQuestion = (props) => {
       defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : (label, idx) => label}
       disableInstructions
       {...rest}
-    />
+    >
+      { enableNotes &&
+        <NoteComponent
+          existingAnswer={existingAnswer}
+          answerPath={answerPath}
+          onChangeNote={onChangeNote}
+          onAddSuggestion={onAddSuggestion}
+          pageActive={pageActive}
+          {...noteProps}
+          />
+      }
+    </Question>
   )
 }
 
