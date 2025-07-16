@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { checkPropTypes } from "../propTypes";
 import { v4 as uuidv4 } from 'uuid';
+import { List, ListItem } from "@mui/material";
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 import Note from "./Note";
@@ -82,7 +83,15 @@ let AutocreatedQuestion = (props) => {
       disableInstructions
       {...props}
     >
-      { Array.of(existingAnswer?.[1].value || []).flat().map(v => <div><FormattedText>{`${v}`}</FormattedText></div>) }
+      { typeof(existingAnswer?.[1].value) != 'undefined' &&
+        <List sx={{p: 0}}>
+        { Array.of(existingAnswer[1].value).flat().map(v => (
+          <ListItem key={existingAnswer[0]+v} sx={{py: 0}}>
+          { isFormatted ? <FormattedText>{`${v}`}</FormattedText> : v }
+          </ListItem>
+        ))}
+        </List>
+      }
       { isEdit && enableNotes &&
         <NoteComponent
           existingAnswer={existingAnswer}
