@@ -78,12 +78,12 @@ let AutocreatedQuestion = (props) => {
   return (
     <Question
       isEdit={isEdit}
-      preventDefaultVew={true}
+      preventDefaultView
       disableInstructions
-      {...rest}
+      {...props}
     >
-      { Array.of(existingAnswer?.[1].value || []).map(v => <div><FormattedText>{`${v}`}</FormattedText></div>) }
-      { enableNotes &&
+      { Array.of(existingAnswer?.[1].value || []).flat().map(v => <div><FormattedText>{`${v}`}</FormattedText></div>) }
+      { isEdit && enableNotes &&
         <NoteComponent
           existingAnswer={existingAnswer}
           answerPath={answerPath}
