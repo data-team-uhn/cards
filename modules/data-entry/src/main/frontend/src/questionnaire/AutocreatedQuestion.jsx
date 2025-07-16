@@ -20,7 +20,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { checkPropTypes } from "../propTypes";
-
+import { v4 as uuidv4 } from 'uuid';
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 import Note from "./Note";
@@ -77,11 +77,12 @@ let AutocreatedQuestion = (props) => {
   // Answer instructions are not displayed since there's nothing the user can do in this form to actually follow them, as the answers are read-only
   return (
     <Question
-      isEdit={false}
-      defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : (label, idx) => label}
+      isEdit={isEdit}
+      preventDefaultVew={true}
       disableInstructions
       {...rest}
     >
+      { Array.of(existingAnswer?.[1].value || []).map(v => <div><FormattedText>{`${v}`}</FormattedText></div>) }
       { enableNotes &&
         <NoteComponent
           existingAnswer={existingAnswer}
