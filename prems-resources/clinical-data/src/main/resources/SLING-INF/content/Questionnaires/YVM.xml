@@ -3355,7 +3355,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 			</property>
 			<property>
 				<name>text</name>
-				<value>If your family and friends required cancer care, would you recommend this cancer centre?</value>
+				<value>If your family and friends required cancer care, would you recommend this cancer centre?</value>
 				<type>String</type>
 			</property>
 			<property>
