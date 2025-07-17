@@ -19,7 +19,7 @@
   "bundles":[
     {
       "id":"${project.groupId}:${project.artifactId}:${project.version}",
-      "start-order":"25"
+      "start-order":"15"
     }
   ],
   "configurations":{
@@ -32,9 +32,9 @@
         "create path (rep:Unstructured) /jcr:system/cards:locks",
         // Locking and unlocking subjects and appropriate visits
         "create service user locking \n set ACL for locking \n allow jcr:all on / \n end",
-        "set ACL for everyone \n deny rep:write on /Subjects,/Forms restriction(cards:locked) \n deny rep:write on /jcr:system/cards:locks \n allow jcr:read on /jcr:system/cards:locks \n deny rep:write on /Subjects,/Forms restriction(rep:itemNames, cards:lock) \n end",
         "create group LockUsers",
-        "create group UnlockUsers"
+        "create group UnlockUsers",
+        "set ACL for everyone \n deny rep:write on /Subjects,/Forms restriction(cards:locked) \n deny rep:write on /jcr:system/cards:locks \n allow jcr:read on /jcr:system/cards:locks \n deny rep:write on /Subjects,/Forms restriction(rep:itemNames, cards:lock) \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~locking":{
