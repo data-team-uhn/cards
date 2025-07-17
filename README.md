@@ -61,7 +61,7 @@ A docker image can optionally be built with `mvn install -Pdocker`, if docker is
 
 `./start_cards.sh --mongo` to to use mongo DB for Oak storage
 
-`./start_cards.sh --debug` to turn on debugging on port 5005
+`./start_cards.sh --debug` to turn on remote debugging on port 5005
 
 By default, the app will run with username `admin` and password `admin`.
 
