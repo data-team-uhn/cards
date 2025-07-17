@@ -53,6 +53,16 @@ A docker image can optionally be built with `mvn install -Pdocker`, if docker is
 
 `./start_cards.sh --demo` to include the demo warning banner
 
+`./start_cards.sh --permissions` to enable permissions
+
+`./start_cards.sh --clarity` to enable clarity integration
+
+`./start_cards.sh --locking` to enable the locking/sign off abilities
+
+`./start_cards.sh --mongo` to to use mongo DB for Oak storage
+
+`./start_cards.sh --debug` to turn on debugging on port 5005
+
 By default, the app will run with username `admin` and password `admin`.
 
 In order to use "Vocabularies" section and load vocabularies from BioPortal (bioontology.org) `BIOPORTAL_APIKEY` environment variable should be set to a valid BioPortal API key. You can [request a new account](https://bioportal.bioontology.org/accounts/new) if you don't already have one, and the API key can be found [in your profile](https://bioportal.bioontology.org/account).
