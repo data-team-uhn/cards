@@ -50,7 +50,7 @@ function SubjectLockAction(props) {
   const {
     subject,
     reloadSubject,
-    size,
+    size="large",
     variant = "icon",
     className
   } = props;
@@ -346,8 +346,8 @@ function SubjectLockAction(props) {
           <Tooltip title={buttonText}>
             <IconButton component="span" onClick={openDialog} className={className} size={size}>
               { isLocked
-                ? <LockOpenIcon fontSize={size}/>
-                : <LockIcon fontSize={size}/>
+                ? <LockOpenIcon fontSize={size == "small" ? size : undefined}/>
+                : <LockIcon fontSize={size == "small" ? size : undefined}/>
               }
             </IconButton>
           </Tooltip>
