@@ -191,8 +191,9 @@ public class ComputedAnswersEditor extends AnswersEditor
             // - AND this question already has an answer
             if (
                 expressionResult.numberOfArguments() > 0
-                    && !expressionResult.expressionUsedChangedValue()
                     && existingAnswer != null
+                    && String.valueOf(formUtils.getValue(existingAnswer))
+                        .equals(String.valueOf(expressionResult.getResult()))
             ) {
                 return;
             }
