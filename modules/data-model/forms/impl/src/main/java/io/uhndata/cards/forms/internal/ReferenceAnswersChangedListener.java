@@ -17,6 +17,7 @@
 package io.uhndata.cards.forms.internal;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -134,7 +136,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
         throws RepositoryException
     {
         final VersionManager versionManager = session.getWorkspace().getVersionManager();
-        Set<String> checkoutPaths = new HashSet<>();
+        final Set<String> checkoutPaths = new HashSet<>();
         while (nodeIterator.hasNext()) {
             final Node node = nodeIterator.nextNode();
             if (node.isNodeType("cards:AnswerSection")) {
@@ -142,54 +144,81 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             } else if (node.isNodeType("cards:Answer")) {
                 final String answerNodeType = node.getPrimaryNodeType().getName();
                 final String subject = this.formUtils.getSubject(this.formUtils.getForm(node)).getIdentifier();
-                // TODO: is this query needed with the refactor in CARDS-2509/2571?
-                // May be possible to replace it with a loop on node.getReferences()
-                final NodeIterator resourceIteratorReferencingAnswers = session
+                final NodeIterator referencingQuestions = session.getWorkspace().getQueryManager().createQuery(
+                    "SELECT * FROM [cards:Question] AS q WHERE q.question = '"
+                        + node.getProperty("question").getNode().getPath() + '\'',
+                    "JCR-SQL2")
+                    .execute().getNodes();
+                if (!referencingQuestions.hasNext()) {
+                    continue;
+                }
+                Map<String, Node> answers = new HashMap<>();
+
+                NodeIterator resourceIteratorReferencingAnswers = session
                     .getWorkspace().getQueryManager().createQuery(
                         // Answers that were explicitly copied from this answer
-                        "SELECT a.* FROM [" + answerNodeType + "] AS a WHERE a.copiedFrom = '"
-                            + escape(node.getPath()) + "'"
-                            + " UNION "
-                            // Answers that don't have a value yet
-                            + "SELECT a.* FROM [" + answerNodeType + "] AS a"
-                            + "  INNER JOIN [cards:Form] AS f ON a.form = f.[jcr:uuid]"
-                            + "  INNER JOIN [cards:Question] AS q ON a.question = q.[jcr:uuid]"
-                            + "  WHERE"
-                            // The answer doesn't have a value
-                            + "    a.value is null"
-                            // The answer's question references this question
-                            + "    AND q.question = '"
-                            + escape(node.getProperty("question").getNode().getPath()) + "'"
-                            // The answer belongs to the same subject or one of its descendants
-                            + "    AND f.relatedSubjects = '" + subject + "'"
+                        "SELECT a.* FROM [" + answerNodeType + "] AS a"
+                            + " WHERE a.copiedFrom = '" + escape(node.getPath()) + '\''
                             // Use the fast index for the query
                             + " OPTION (index tag cards)",
                         "JCR-SQL2")
                     .execute().getNodes();
-                final Property sourceAnswerValue =
-                    !node.hasProperty(VALUE) ? null : node.getProperty(VALUE);
                 while (resourceIteratorReferencingAnswers.hasNext()) {
-                    final Node referenceAnswer = resourceIteratorReferencingAnswers.nextNode();
-                    if (shouldUpdateValue(sourceAnswerValue, referenceAnswer)) {
-                        final Node formNode = this.formUtils.getForm(referenceAnswer);
-                        final String referenceFormPath = formNode.getPath();
-                        versionManager.checkout(referenceFormPath);
-                        checkoutPaths.add(referenceFormPath);
-                        if (sourceAnswerValue == null) {
-                            referenceAnswer.setProperty(VALUE, (Value) null);
-                        } else if (sourceAnswerValue.isMultiple()) {
-                            referenceAnswer.setProperty(VALUE, sourceAnswerValue.getValues());
-                        } else {
-                            referenceAnswer.setProperty(VALUE, sourceAnswerValue.getValue());
-                        }
-                        referenceAnswer.setProperty("copiedFrom", node.getPath());
+                    final Node answer = resourceIteratorReferencingAnswers.nextNode();
+                    answers.putIfAbsent(answer.getIdentifier(), answer);
+                }
+                while (referencingQuestions.hasNext()) {
+                    final Node question = referencingQuestions.nextNode();
+                    resourceIteratorReferencingAnswers = session
+                        .getWorkspace().getQueryManager().createQuery(
+                            // Answers that don't have a value yet
+                            "SELECT a.* FROM [" + answerNodeType + "] AS a"
+                                + "  INNER JOIN [cards:Form] AS f ON a.form = f.[jcr:uuid]"
+                                + "  WHERE"
+                                // The answer doesn't have a value
+                                + "    a.value is null"
+                                // The answer's question is the referencing question
+                                + "    AND a.question = '" + question.getIdentifier() + '\''
+                                // The answer belongs to the same subject or one of its descendants
+                                + "    AND f.relatedSubjects = '" + subject + '\''
+                                // Use the fast index for the query
+                                + " OPTION (index tag cards)",
+                            "JCR-SQL2")
+                        .execute().getNodes();
+                    while (resourceIteratorReferencingAnswers.hasNext()) {
+                        final Node answer = resourceIteratorReferencingAnswers.nextNode();
+                        answers.putIfAbsent(answer.getIdentifier(), answer);
                     }
+                }
+                for (final Node referenceAnswer : answers.values()) {
+                    updateAnswer(node, referenceAnswer, versionManager, checkoutPaths);
                 }
             }
         }
         session.save();
         for (String path : checkoutPaths) {
             versionManager.checkin(path);
+        }
+    }
+
+    private void updateAnswer(final Node newAnswer, final Node referenceAnswer, final VersionManager versionManager,
+        final Set<String> checkoutPaths) throws PathNotFoundException, RepositoryException
+    {
+        final Property newValue =
+            !newAnswer.hasProperty(VALUE) ? null : newAnswer.getProperty(VALUE);
+        if (shouldUpdateValue(newValue, referenceAnswer)) {
+            final Node formNode = this.formUtils.getForm(referenceAnswer);
+            final String referenceFormPath = formNode.getPath();
+            versionManager.checkout(referenceFormPath);
+            checkoutPaths.add(referenceFormPath);
+            if (newValue == null) {
+                referenceAnswer.setProperty(VALUE, (Value) null);
+            } else if (newValue.isMultiple()) {
+                referenceAnswer.setProperty(VALUE, newValue.getValues());
+            } else {
+                referenceAnswer.setProperty(VALUE, newValue.getValue());
+            }
+            referenceAnswer.setProperty("copiedFrom", newAnswer.getPath());
         }
     }
 
