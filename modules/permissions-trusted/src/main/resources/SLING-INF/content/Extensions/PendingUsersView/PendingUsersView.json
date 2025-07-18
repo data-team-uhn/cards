@@ -2,7 +2,7 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Your account is pending approval",
-  "cards:targetURL": "/content.html/",
+  "cards:targetURL": "/content.html/*",
   "cards:defaultOrder": 1000,
   "cards:extensionRenderURL": "asset:cards-permissions-trusted.PendingView.js"
 }
