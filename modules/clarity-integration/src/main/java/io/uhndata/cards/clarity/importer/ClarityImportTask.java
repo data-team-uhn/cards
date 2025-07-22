@@ -84,6 +84,10 @@ public class ClarityImportTask implements Runnable
 
     private final int dayToQuery;
 
+    private int discardedVisits;
+
+    private int importedVisits;
+
     private final ThreadLocal<Map<String, String>> sqlColumnToDataType = ThreadLocal.withInitial(HashMap::new);
 
     private final ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
@@ -258,6 +262,8 @@ public class ClarityImportTask implements Runnable
     {
         this.config = config;
         this.dayToQuery = dayToQuery;
+        this.discardedVisits = 0;
+        this.importedVisits = 0;
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
         this.processors = processors;
@@ -268,7 +274,7 @@ public class ClarityImportTask implements Runnable
     @Override
     public void run()
     {
-        LOGGER.info("Running ClarityImportTask");
+        LOGGER.info("Running ClarityImportTask: " + this.config.name());
 
         String connectionUrl =
             String.format("jdbc:sqlserver://%s;user=%s;password=%s;encrypt=%s;", env(this.config.server()),
@@ -313,6 +319,9 @@ public class ClarityImportTask implements Runnable
 
             checkinNodes();
             updatePerformanceCounters();
+
+            LOGGER.info("Number of importeded visits: " + this.importedVisits);
+            LOGGER.info("Number of discarded visits: " + this.discardedVisits);
 
         } catch (SQLException e) {
             LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
@@ -473,8 +482,10 @@ public class ClarityImportTask implements Runnable
             try {
                 row = processor.processEntry(row);
                 if (row == null) {
+                    this.discardedVisits++;
                     return;
                 }
+                this.importedVisits++;
             } catch (Exception e) {
                 LOGGER.error("Unhandled exception while processing data: {}", e.getMessage(), e);
             }
@@ -500,8 +511,10 @@ public class ClarityImportTask implements Runnable
                 ? getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent)
                 : getSubject(resolver, row, childSubjectMapping);
             if (newSubjectParent == null) {
+                this.discardedVisits++;
                 return;
             }
+            this.importedVisits++;
 
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
                 UpdatePolicy updatePolicy = questionnaireMapping.updatePolicy;
