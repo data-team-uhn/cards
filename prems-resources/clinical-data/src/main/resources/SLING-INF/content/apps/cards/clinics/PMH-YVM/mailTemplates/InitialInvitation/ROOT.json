@@ -3,6 +3,6 @@
   "senderAddress": "PMExperience@uhn.ca",
   "senderName": "The Patient Experience Team",
   "subject": "About Your Recent Experience at Princess Margaret Cancer Centre",
-  "includeAttachment_UHN-Logo.png": true,
-  "includeAttachment_YE-Logo.png": true
+  "includeAttachment_PM-Header.png": true,
+  "includeAttachment_PM-Footer.png": true
 }

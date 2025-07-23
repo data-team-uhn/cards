@@ -5,7 +5,6 @@
   "replyToAddress": "IC_Patientexperience@uhn.ca",
   "replyToName": "UHN Integrated Care",
   "subject": "UHN Patient Experience Survey",
-  "includeAttachment_UHN-Logo.png": true,
-  "includeAttachment_YE-Logo.png": true,
-  "includeAttachment_IC-Logo.png": true
+  "includeAttachment_Header.png": true,
+  "includeAttachment_Footer.png": true
 }
