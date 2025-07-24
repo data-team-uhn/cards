@@ -50,6 +50,9 @@ import QuestionMatrix from "./QuestionMatrix";
 import Section from "./Section";
 /* eslint-enable import/order */
 
+export const QUESTIONNAIRE_TYPES = ["cards:Questionnaire"];
+export const CONDITIONAL_TYPES = ["cards:Conditional", "cards:ConditionalGroup"];
+export const EXTLINK_TYPES = ["cards:ExternalLink"];
 export const QUESTION_TYPES = ["cards:Question"];
 export const SECTION_TYPES = ["cards:Section"];
 export const INFO_TYPES = ["cards:Information"];
@@ -276,11 +279,13 @@ export default function FormEntry(props) {
     gridProps
   } = props;
   gridProps = gridProps || {};
+
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
+  let displayedComponent = null;
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
-    return displayQuestion(
+    displayedComponent = displayQuestion(
       entryDefinition,
       path,
       existingAnswers,
@@ -297,7 +302,7 @@ export default function FormEntry(props) {
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
     if ("matrix" === entryDefinition["displayMode"]) {
-      return displayMatrix(
+      displayedComponent = displayMatrix(
         entryDefinition,
         path,
         existingAnswers,
@@ -308,7 +313,7 @@ export default function FormEntry(props) {
         gridProps
       );
     } else {
-      return displaySection(
+      displayedComponent = displaySection(
         entryDefinition,
         path,
         depth,
@@ -325,6 +330,16 @@ export default function FormEntry(props) {
       );
     }
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displayInformation(entryDefinition, keyProp, pageActive, isEdit, gridProps);
+    displayedComponent = displayInformation(entryDefinition, keyProp, pageActive, isEdit, gridProps);
   }
+
+  if (!displayedComponent) {
+    console.warn("FormEntry: No component to display for entry", entryDefinition);
+  }
+
+  return (
+    <React.Fragment>
+      {displayedComponent}
+    </React.Fragment>
+  )
 }

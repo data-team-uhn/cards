@@ -17,18 +17,16 @@
 //  under the License.
 //
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 
 import EditIcon from '@mui/icons-material/Edit';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import CollapseIcon from '@mui/icons-material/UnfoldLess';
 import ExpandIcon from '@mui/icons-material/UnfoldMore';
 import {
-  Avatar,
   Card,
   CardContent,
   CardHeader,
-  Icon,
   IconButton,
   Popover,
   Tooltip,
@@ -41,6 +39,10 @@ import EditDialog from "./EditDialog";
 import { camelCaseToWords } from "./LabeledField";
 import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+
+import { useQuestionnaireInViewContext } from '../questionnaire/QuestionnaireContext.jsx';
+import { useQuestionnaireTreeContext, getOrdinalString } from './QuestionnaireTreeContext.jsx';
+import { ENTRY_TYPES } from '../questionnaire/FormEntry.jsx';
 
 const useStyles = makeStyles()(theme => ({
   root : {
@@ -55,6 +57,7 @@ const useStyles = makeStyles()(theme => ({
     "& .MuiCardHeader-content .MuiIconButton-root": {
       display: "none",
     },
+    marginBottom: theme.spacing(.75),
   },
   title: {
     display: "inline",
@@ -121,10 +124,19 @@ let QuestionnaireItemCard = (props) => {
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
   let [ moreInfoAnchor, setMoreInfoAnchor ] = useState(null);
-  const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
+  const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
+  const treeContext = useQuestionnaireTreeContext();
+  const inView = useQuestionnaireInViewContext();
   const itemRef = useRef();
-  // if autofocus is needed and specified in the url
+
+  useEffect(() => {
+    if (itemRef.current) {
+      itemRef.current.setAttribute('in-view-data-id', data['jcr:uuid']);
+    }
+  }, [data['jcr:uuid']]);
+
+  // If autofocus is needed and specified in the url
   // create a ref to store the question container DOM element
   useEffect(() => {
     if (highlight) {
@@ -154,88 +166,124 @@ let QuestionnaireItemCard = (props) => {
     titleClasses.push(classes.titlePlaceholder);
   }
 
+  const ordinalPosition = useMemo(() => {
+    if (type === "Questionnaire" || !treeContext?.state?.nodes) {
+      return null;
+    }
+    // Get id of current item
+    const itemId = data['jcr:uuid'];
+    // Get the index of the item in the parent from treeContext.state.nodes object
+    const itemParent = Object.values(treeContext.state.nodes)
+      .find(item => item['id'] === itemId)?.parent;
+    const itemPosition = itemParent 
+      ? treeContext.state.nodes[itemParent].children
+        .filter(childId => ENTRY_TYPES.includes(treeContext.state.nodes[childId]?.jcrPrimaryType))
+        .indexOf(itemId) 
+      : null;
+    return itemPosition !== null ? getOrdinalString(itemPosition) : null;
+  }, [type, treeContext?.state?.nodes, data['jcr:uuid']]);
+
   return (
-    <Card variant="outlined" ref={highlight ? itemRef : undefined} className={cardClasses.join(" ")}>
-      <CardHeader
-        disableTypography
-        avatar={!plain && (avatar || type) ?
-          <Avatar style={{ backgroundColor: avatarColor || "black" }}>
-            { avatar ? <Icon>{avatar}</Icon> : type?.charAt(0) }
-          </Avatar>
-          : null
-        }
-        title={
-          <>
-            { <FormattedText className={titleClasses.join(" ")} variant="h6">{titleText}</FormattedText> }
-            { moreInfo &&
-              <Tooltip title="Properties">
-                <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">
-                  <MoreIcon />
-                </IconButton>
-              </Tooltip>
+    <div
+      // If Questionnaire then dont apply left border
+      style={{borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`, position: "relative"}}
+      onClick={() => inView.highlighter.highlight(data['jcr:uuid'])}
+    >
+      { !!ordinalPosition && 
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            backgroundColor: avatarColor || "black",
+            fontSize: "9px",
+            color: "white",
+            zIndex: 1
+          }}
+      >
+        {ordinalPosition}
+      </div>
+      }
+      <Card
+        variant="outlined"
+        ref={itemRef}
+        className={cardClasses.join(" ")}
+      >
+          <CardHeader
+            disableTypography
+            title={
+              <>
+                <FormattedText className={titleClasses.join(" ")} variant="h6">{titleText}</FormattedText>
+                { moreInfo &&
+                  <Tooltip title="Properties">
+                    <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">
+                      <MoreIcon />
+                    </IconButton>
+                  </Tooltip>
+                }
+                { moreInfo && moreInfoAnchor &&
+                  <Popover
+                    className={classes.moreInfo}
+                    open={Boolean(moreInfoAnchor)}
+                    anchorEl={moreInfoAnchor}
+                    onClose={() => setMoreInfoAnchor(null)}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                    }}
+                  >
+                    <Card><CardContent>{moreInfo}</CardContent></Card>
+                  </Popover>
+                }
+              </>
             }
-            { moreInfo && moreInfoAnchor &&
-              <Popover
-                className={classes.moreInfo}
-                open={Boolean(moreInfoAnchor)}
-                anchorEl={moreInfoAnchor}
-                onClose={() => setMoreInfoAnchor(null)}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-              >
-                <Card><CardContent>{moreInfo}</CardContent></Card>
-              </Popover>
+            action={
+              <div>
+                {action}
+                {!disableEdit &&
+                <Tooltip title={`Edit ${formattedType.toLowerCase()} properties`}>
+                  <IconButton onClick={() => setEditDialogOpen(true)} size="large">
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+                }
+                {!disableDelete &&
+                <DeleteButton
+                  entryPath={data["@path"]}
+                  entryName={title || data[titleField] || data["@name"]}
+                  entryType={formattedType.toLowerCase()}
+                  onComplete={onActionDone}
+                />
+                }
+                {!disableCollapse &&
+                <Tooltip title={isCollapsed? "Expanded view" : "Collapsed view"}>
+                  <IconButton onClick={() => setCollapsed(!isCollapsed)} disabled={!Boolean(children)} size="large">
+                    { isCollapsed ? <ExpandIcon /> : <CollapseIcon /> }
+                  </IconButton>
+                </Tooltip>
+                }
+              </div>
             }
-          </>
-        }
-        action={
-          <div>
-            {action}
-            {!disableEdit &&
-            <Tooltip title={`Edit ${formattedType.toLowerCase()} properties`}>
-              <IconButton onClick={() => setEditDialogOpen(true)} size="large">
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
-            }
-            {!disableDelete &&
-            <DeleteButton
-              entryPath={data["@path"]}
-              entryName={title || data[titleField] || data["@name"]}
-              entryType={formattedType.toLowerCase()}
-              onComplete={onActionDone}
+          />
+          <CardContent className={!plain ? classes.withAvatar : undefined}>
+            { children }
+            { editDialogOpen && <EditDialog
+              targetExists={true}
+              data={data}
+              type={type}
+              model={model}
+              isOpen={editDialogOpen}
+              onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
+              onCancel={() => setEditDialogOpen(false)}
             />
             }
-            {!disableCollapse &&
-            <Tooltip title={isCollapsed? "Expanded view" : "Collapsed view"}>
-              <IconButton onClick={() => setCollapsed(!isCollapsed)} disabled={!!!children} size="large">
-                { isCollapsed ? <ExpandIcon /> : <CollapseIcon /> }
-              </IconButton>
-            </Tooltip>
-            }
-          </div>
-        }
-      />
-      <CardContent className={!plain ? classes.withAvatar : undefined}>
-        { children }
-        { editDialogOpen && <EditDialog
-          targetExists={true}
-          data={data}
-          type={type}
-          model={model}
-          isOpen={editDialogOpen}
-          onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
-          onCancel={() => setEditDialogOpen(false)}
-        />
-        }
-      </CardContent>
-    </Card>
+          </CardContent>
+      </Card>
+    </div>
   );
 };
 

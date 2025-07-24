@@ -16,12 +16,87 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { createContext, useContext, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+// For storing structure of questionnaire for reordering
+import { useQuestionnaireTreeContext, findTreeEntries } from "../questionnaireEditor/QuestionnaireTreeContext";
+import { ENTRY_TYPES, EXTLINK_TYPES, QUESTION_TYPES, QUESTIONNAIRE_TYPES } from "./FormEntry";
+
+// Custom hook to track which item is in view
+export function useInViewTracker(items, options = { threshold: 0.3 }) {
+  const [activeItem, setActiveItem] = useState(null);
+  const [lastIntersectingItem, setLastIntersectingItem] = useState(null);
+  
+  // Set up Intersection Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = entry.target.getAttribute('in-view-data-id');
+  
+          if (entry.isIntersecting) {
+            setActiveItem(id);
+            setLastIntersectingItem(id);
+          }
+        });
+      },
+      { ...options }
+    );
+
+    items.forEach(item => {
+      const element = document.querySelector(`[in-view-data-id='${item.value}']`);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    // Cleanup observer on unmount
+    return () => {
+      observer.disconnect();
+    };
+  }, [items, options, lastIntersectingItem]);
+
+  // Function to scroll to item card when clicked
+  const scrollToItem = (id) => {
+    const target = document.querySelector(`[in-view-data-id='${id}']`);
+    const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+    const offsetPosition = targetPosition - 100;
+  
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+
+
+
+  // Map of which items are highlighted
+  const [highlightedItems, setHighlightedItems] = useState(new Map());
+  const highlighter = {
+    highlightedItems,
+    highlight: (id) => {
+      setHighlightedItems(new Map(highlightedItems.set(id, true)));
+    },
+    unhighlight: (id) => {
+      highlightedItems.delete(id);
+      setHighlightedItems(new Map(highlightedItems));
+    },
+    unhighlightAll: (ids) => {
+      highlightedItems.forEach((_, id) => {
+        highlightedItems.delete(id);
+      })
+      setHighlightedItems(new Map(highlightedItems));
+    },
+    isHighlighted: (id) => highlightedItems.has(id),
+  }
+
+  return { activeItem, scrollToItem, highlighter,};
+};
+
 
 const DEFAULT_STATE = [];
 
 const QuestionnaireReaderContext = createContext(DEFAULT_STATE);
-const QuestionnaireWriterContext = createContext();
+const QuestionnaireInViewContext = createContext();
 
 /**
  * A context provider for a questionnaire, which contains questions data and a way to set them
@@ -29,11 +104,23 @@ const QuestionnaireWriterContext = createContext();
  * @returns {Object} a React component with the questionnaire provider
  */
 export function QuestionnaireProvider(props) {
-  const [questions, setQuestions] = useState(DEFAULT_STATE);
+  const treeContext = useQuestionnaireTreeContext();
 
+  const questions = useMemo(() => {
+    return findTreeEntries(treeContext.state.nodes, QUESTION_TYPES);
+  }, [treeContext.state.nodes]);
+
+  const inViewEntries = useMemo(() => {
+    return findTreeEntries(treeContext.state.nodes,
+      ENTRY_TYPES.concat(QUESTIONNAIRE_TYPES).concat(EXTLINK_TYPES)
+    )
+  }, [treeContext.state.nodes]);
+
+  // Use useInViewTracker for breadcrumb
+  const inViewTracker = useInViewTracker(inViewEntries);
   return (
     <QuestionnaireReaderContext.Provider value={questions}>
-      <QuestionnaireWriterContext.Provider value={setQuestions} {...props}/>
+      <QuestionnaireInViewContext.Provider value={inViewTracker} {...props}/>
     </QuestionnaireReaderContext.Provider>
   );
 }
@@ -54,15 +141,13 @@ export function useQuestionnaireReaderContext() {
 }
 
 /**
- * Obtain a writer to the context of the parent questionnaire.
- * @returns {Object} a React context of values from the parent questionnaire
- * @throws an error if it is not within a QuestionnaireProvider
+ * Obtain the inView state of the parent questionnaire
  */
-export function useQuestionnaireWriterContext() {
-  const context = useContext(QuestionnaireWriterContext);
+export function useQuestionnaireInViewContext() {
+  const context = useContext(QuestionnaireInViewContext);
 
   if (context == undefined) {
-    throw new Error("useQuestionnaireWriterContext must be used within a QuestionnaireProvider")
+    throw new Error("useQuestionnaireInViewContext must be used within a QuestionnaireProvider")
   }
 
   return context;

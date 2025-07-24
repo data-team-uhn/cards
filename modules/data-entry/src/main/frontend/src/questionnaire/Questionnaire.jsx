@@ -25,11 +25,14 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import {
   Button,
   CircularProgress,
+  Divider,
   Grid,
   IconButton,
   List,
   ListItem,
   Popover,
+  Tabs,
+  Tab,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -58,73 +61,70 @@ import DeleteButton from "../dataHomepage/DeleteButton";
 import ExportButton from "../dataHomepage/ExportButton";
 import { checkPropTypes } from "../propTypes";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import { blue, blueGrey, deepPurple, green, orange, purple } from '@mui/material/colors';
+import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
+import ResourceHeader from "./ResourceHeader";
+import QuestionnairePreview from "./QuestionnairePreview";
+import { QuestionnaireProvider } from "./QuestionnaireContext"; //This is purely computed from QuestionnaireTreeContext now
+import { stripCardsNamespace } from "./QuestionnaireUtilities";
+import { ReorderModal } from "../questionnaireEditor/ReorderModal.jsx";
+import EditorHeader from "../questionnaireEditor/EditorHeader.jsx";
+import { useQuestionnaireTreeContext, QuestionnaireTreeProvider } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
+import _ from "lodash";
+
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 
-// GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
+  let location = useLocation();
+  let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
+  
+  return (
+    <QuestionnaireTreeProvider questionnaireId={id}>
+      <QuestionnaireComponent {...props} />
+    </QuestionnaireTreeProvider>
+  )
+}
+
+// GUI for displaying details about a questionnaire.
+let QuestionnaireComponent = (props) => {
   let { classes } = props;
-  let [ data, setData ] = useState();
-  let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ error, setError ] = useState();
   let location = useLocation();
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
-  let isEdit = location.pathname.endsWith(".edit");
+
+  const treeContext = useQuestionnaireTreeContext();
+  const { data } = treeContext.state;
+  const questionnaireTitle = data?.title || decodeURI(id);
+
   let navigate = useNavigate();
-
+  let isEdit = location.pathname.endsWith(".edit");
+  let isReorder = location.pathname.endsWith(".reorder");
+  const [ editTab, setEditTab ] = useState(isEdit ? 'edit' : isReorder ? 'reorder' : 'edit');
   let pageNameWriter = usePageNameWriterContext();
-
-  let handleError = (response) => {
-    setError(response);
-    setData({});
-  }
-
-  let fetchData = () => {
-    fetch(`/Questionnaires/${id}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(setData)
-      .catch(handleError);
-  };
 
   // First, fetch the questionnaire data
   useEffect(() => {
-    fetchData();
-  }, [isEdit]);
-
-  useEffect(() => {
-    setQuestionnaireTitle(data?.title || decodeURI(id));
-  }, [data?.title]);
+    treeContext.actions.fetchRootData().catch((error) => { setError(error) });
+  }, [editTab]);
 
   useEffect(() => {
     pageNameWriter(questionnaireTitle);
   }, [questionnaireTitle]);
 
   useEffect(() => {
-    if (!isEdit) return;
-    //Perform a JCR check-out of the Questionnaire
-    let checkoutForm = new FormData();
-    checkoutForm.set(":operation", "checkout");
-    fetch(`/Questionnaires/${id}`, {
-      method: "POST",
-      body: checkoutForm
-    });
-
-    function performCheckIn() {
-      let checkinForm = new FormData();
-      checkinForm.set(":operation", "checkin");
-      fetch(`/Questionnaires/${id}`, {
-        method: "POST",
-        body: checkinForm
-      });
-    }
-
+    if (!(isEdit || isReorder)) return;
+    // Perform a JCR check-out of the Questionnaire and register a check-in
+    treeContext.actions.checkOut(id);
+    const performCheckIn = () => { treeContext.actions.checkIn(id) };
     window.addEventListener("beforeunload", performCheckIn);
     return (() => {
       window.removeEventListener("beforeunload", performCheckIn);
@@ -173,7 +173,7 @@ let Questionnaire = (props) => {
 
   let questionnaireMenu = (
     <div className={classes.actionsMenu}>
-      { isEdit ?
+      {(isEdit || isReorder) ?
         <Tooltip title="Preview" onClick={() => navigate(questionnaireUrl)}>
           <IconButton size="large">
             <PreviewIcon />
@@ -220,41 +220,61 @@ let Questionnaire = (props) => {
             <Typography variant="overline">
               Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
             </Typography>
-      }
-    </ResourceHeader>
+          }
+          <EditorHeader />
+        </ResourceHeader>
   );
 
   return (
-    error ?
-      <Typography variant="h2" color="error">
-        Error obtaining questionnaire info: {error.status} {error.statusText}
-      </Typography>
-      :
-      ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
-        <Grid container className={classes.formContainer} {...FORM_ENTRY_CONTAINER_PROPS}>
-          { questionnaireHeader }
-          { !isEdit ?
-            <QuestionnairePreview
-              data={data}
-              key={id + data?.['jcr:lastModified']}
-              title={questionnaireTitle}
-              contentOffset={props.contentOffset}
-            />
-            :
-            <QuestionnaireProvider>
-              <QuestionnaireContents
-                disableDelete
-                data={data}
-                key={id + data?.['jcr:lastModified']}
-                classes={classes}
-                onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-                onActionDone={()=>{}}
-                menuProps={{ isMainAction: true }}
-              />
-            </QuestionnaireProvider>
-          }
-        </Grid>
-      )
+    <QuestionnaireProvider>
+      { error ?
+        <Typography variant="h2" color="error">
+          Error obtaining questionnaire info: {error.status} {error.statusText}
+        </Typography>
+        :
+        data?.["jcr:primaryType"] === "cards:Questionnaire" &&
+          <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+            { questionnaireHeader }
+            <Grid>
+              { !(isEdit || isReorder)
+                ?
+                <QuestionnairePreview
+                  data={data}
+                  title={questionnaireTitle}
+                  contentOffset={props.contentOffset}
+                />
+                :
+                <>
+                  <Tabs
+                    value={editTab}
+                    onChange={(event, newValue) => {
+                      const editSuffix = `.${newValue}`;
+                      setEditTab(newValue);
+                      navigate(questionnaireUrl + editSuffix);
+                    }}
+                  >
+                    <Tab label="Edit" value="edit" />
+                    <Tab label="Reorder" value="reorder" />
+                  </Tabs>
+                  <Divider />
+                  { editTab == "edit" &&
+                    <QuestionnaireContents
+                      key={treeContext.state.timestamp}
+                      disableDelete
+                      data={data}
+                      classes={classes}
+                      menuProps={{ isMainAction: true }}
+                    />
+                  }
+                  { editTab == "reorder" &&
+                    <ReorderDraft key={treeContext.state.timestamp} />
+                  }
+                </>
+              }
+            </Grid>
+          </Grid>
+      }
+    </QuestionnaireProvider>
   );
 };
 
@@ -394,16 +414,6 @@ QuestionnaireItemSet.propTypes = {
 // Questionnaire contents: properties + entries
 let QuestionnaireContents = (props) => {
   checkPropTypes(QuestionnaireContents, props);
-  let { data } = props;
-
-  let changeQuestionnaireContext = useQuestionnaireWriterContext();
-
-  useEffect(() => {
-    // Load initial data
-    changeQuestionnaireContext(findQuestionnaireEntries(data, QUESTION_TYPES));
-    // Clear context when unmounting component
-    return (() => changeQuestionnaireContext([]));
-  }, []);
 
   return <QuestionnaireEntry
     disableCollapse={false}
@@ -417,7 +427,6 @@ let QuestionnaireContents = (props) => {
 
 QuestionnaireContents.propTypes = {
   onActionDone: PropTypes.func,
-  onFieldsChanged: PropTypes.func,
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string,
@@ -504,7 +513,7 @@ Section.propTypes = {
 // Details about a simple condition for displaying a section
 let Conditional = (props) => <QuestionnaireEntry
   type="Conditional"
-  avatarColor={cyan[800]}
+  avatarColor={green[800]}
   model="Conditional.json"
   {...props} />;
 
@@ -520,7 +529,7 @@ Conditional.propTypes = {
 // Details about a group pf conditions for displaying a section
 let ConditionalGroup = (props) => <QuestionnaireEntry
   type="ConditionalGroup"
-  avatarColor={indigo[800]}
+  avatarColor={green[800]}
   model="ConditionalGroup.json"
   {...props} />;
 
@@ -544,34 +553,13 @@ let QuestionnaireEntry = (props) => {
   // --------------------------------------------------------------
   // Questionnaire context manipulation
 
-  let changeQuestionnaireContext = useQuestionnaireWriterContext();
+  const treeContext = useQuestionnaireTreeContext();
 
-  let updateContext = (data) => {
-    let vars = findQuestionnaireEntries({ data: data }, QUESTION_TYPES);
-    changeQuestionnaireContext((oldContext) => {
-      let newContext = oldContext || [];
-      vars.forEach(v => {
-        const index = newContext.findIndex(x => x.id == v.id);
-        if (index >= 0) {
-          newContext.splice(index, 1, v);
-        } else {
-          newContext.push(v);
-        }
-      });
-      return newContext;
-    });
-  }
-
-  let removeFromContext = (id) => {
-    changeQuestionnaireContext((oldContext) => {
-      let newContext = oldContext || [];
-      const index = newContext.findIndex(x => x.id == id);
-      if (index >= 0) {
-        newContext.splice(index, 1);
-      }
-      return newContext;
-    });
-  }
+  useEffect(() => {
+    if (!_.isEqual(entryData, data)) {
+      treeContext.actions.updateNodeData(entryData);
+    }
+  }, [entryData]);
 
   // -------------------------------------------------------------
   // Find child item specifications
@@ -638,7 +626,6 @@ let QuestionnaireEntry = (props) => {
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
-      onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
       // Try to reload the data from the server
       fetch(`${data["@path"]}.deep.json`)
@@ -647,16 +634,17 @@ let QuestionnaireEntry = (props) => {
         .catch(() => {
           // If it fails, it's because we deleted an item
           // Update the context to remove the deleted item
-          removeFromContext(`${data['jcr:uuid']}`);
+          if (!!data['jcr:uuid']) {
+            treeContext.actions.removeNode(data['jcr:uuid']);
+          }
           // Then pass it up to the parent
-          onActionDone();
+          onActionDone?.();
         });
     }
   }
 
   let onCreated = (newData) => {
     setEntryData(newData);
-    updateContext(newData);
   }
 
   // -------------------------------------------------------------
@@ -670,26 +658,34 @@ let QuestionnaireEntry = (props) => {
 
   return (
     <QuestionnaireItemCard
-      titleField={titleField}
-      moreInfo={renderFields({ condensed: true })}
-      data={entryData}
-      type={type}
-      doHighlight={doHighlight}
-      action={
-        menuItems?.length > 0 ?
-          <CreationMenu
-            data={entryData}
-            onCreated={onCreated}
-            menuItems={menuItems}
-            models={childModels}
-            {...menuProps}
-          />
-          : undefined
-      }
-      onActionDone={handleDataChange}
-      model={model}
-      disableCollapse={true}
-      {...rest}
+        titleField={titleField}
+        moreInfo={renderFields({condensed: true})}
+        data={entryData}
+        type={type}
+        upperClasses={classes}
+        doHighlight={doHighlight}
+        action={<>
+          { menuItems?.length > 0 &&
+            <CreationMenu
+              data={entryData}
+              onCreated={onCreated}
+              menuItems={menuItems}
+              models={childModels}
+              {...menuProps}
+            />
+          }
+          { !!menuProps?.isMainAction ?
+            // If this is the main action, render MoveEntryModal without data to select reorder source
+            // Otherwise render MoveEntryModal with data set
+            <ReorderModal />
+            :
+            [...QUESTION_TYPES, ...SECTION_TYPES].includes(entryData['jcr:primaryType']) &&
+              <ReorderModal entryData={entryData} />
+          }
+        </>}
+        onActionDone={handleDataChange}
+        model={model}
+        {...rest}
     >
       { childModels ?
         <QuestionnaireItemSet
@@ -708,7 +704,6 @@ let QuestionnaireEntry = (props) => {
 
 QuestionnaireEntry.propTypes = {
   onActionDone: PropTypes.func,
-  onFieldsChanged: PropTypes.func,
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
