@@ -174,87 +174,103 @@ let QuestionnaireItemCard = (props) => {
     <div
       // TODO: doesnt work with deprecated styling hook
       // If Questionnaire then dont apply left border
-      style={{borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`}}
+      style={{borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`,
+        display: "flex",
+        flexDirection: "row"
+    }}
       onClick={() => inView.highlighter.highlight(data['jcr:uuid'])}
     >
-    <Card variant="outlined"
-      ref={itemRef}
-      className={cardClasses.join(" ")}
-    >
-      <CardHeader
-        disableTypography
-        title={
-          <>
-            { <FormattedText className={titleClasses.join(" ")} variant="h6">{titleText}</FormattedText> }
-            { moreInfo &&
-              <Tooltip title="Properties">
-                <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">
-                  <MoreIcon />
-                </IconButton>
-              </Tooltip>
+      <div
+        style={{
+          flex: "2%",
+          backgroundColor: avatarColor || "black",
+          color: "white",
+        }}
+      >
+        #1
+      </div>
+      <div
+        style={{flex: "98%",}}
+      >
+        <Card variant="outlined"
+          ref={itemRef}
+          className={cardClasses.join(" ")}
+        >
+          <CardHeader
+            disableTypography
+            title={
+              <>
+                { <FormattedText className={titleClasses.join(" ")} variant="h6">{titleText}</FormattedText> }
+                { moreInfo &&
+                  <Tooltip title="Properties">
+                    <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">
+                      <MoreIcon />
+                    </IconButton>
+                  </Tooltip>
+                }
+                { moreInfo && moreInfoAnchor &&
+                  <Popover
+                  className={classes.moreInfo}
+                  open={Boolean(moreInfoAnchor)}
+                  anchorEl={moreInfoAnchor}
+                  onClose={() => setMoreInfoAnchor(null)}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                >
+                  <Card><CardContent>{moreInfo}</CardContent></Card>
+                  </Popover>
+                }
+              </>
             }
-            { moreInfo && moreInfoAnchor &&
-              <Popover
-               className={classes.moreInfo}
-               open={Boolean(moreInfoAnchor)}
-               anchorEl={moreInfoAnchor}
-               onClose={() => setMoreInfoAnchor(null)}
-               anchorOrigin={{
-                 vertical: 'bottom',
-                 horizontal: 'left',
-               }}
-               transformOrigin={{
-                 vertical: 'top',
-                 horizontal: 'left',
-               }}
-             >
-               <Card><CardContent>{moreInfo}</CardContent></Card>
-              </Popover>
+            action={
+              <div>
+                {action}
+                {!disableEdit &&
+                <Tooltip title={`Edit ${formattedType.toLowerCase()} properties`}>
+                  <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+                }
+                {!disableDelete &&
+                <DeleteButton
+                  entryPath={data["@path"]}
+                  entryName={title || data[titleField] || data["@name"]}
+                  entryType={formattedType.toLowerCase()}
+                  onComplete={onActionDone}
+                />
+                }
+                {!disableCollapse &&
+                <Tooltip title={isCollapsed? "Expanded view" : "Collapsed view"}>
+                  <IconButton onClick={() => setCollapsed(!isCollapsed)} disabled={!!!children} size="large">
+                    { isCollapsed ? <ExpandIcon /> : <CollapseIcon /> }
+                  </IconButton>
+                </Tooltip>
+                }
+              </div>
             }
-          </>
-        }
-        action={
-          <div>
-            {action}
-            {!disableEdit &&
-            <Tooltip title={`Edit ${formattedType.toLowerCase()} properties`}>
-              <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
+          />
+          <CardContent className={!plain ? classes.withAvatar : undefined}>
+            { children }
+            { editDialogOpen && <EditDialog
+                                  targetExists={true}
+                                  data={data}
+                                  type={type}
+                                  model={model}
+                                  isOpen={editDialogOpen}
+                                  onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
+                                  onCancel={() => { setEditDialogOpen(false); }}
+                                />
             }
-            {!disableDelete &&
-            <DeleteButton
-               entryPath={data["@path"]}
-               entryName={title || data[titleField] || data["@name"]}
-               entryType={formattedType.toLowerCase()}
-               onComplete={onActionDone}
-            />
-            }
-            {!disableCollapse &&
-            <Tooltip title={isCollapsed? "Expanded view" : "Collapsed view"}>
-              <IconButton onClick={() => setCollapsed(!isCollapsed)} disabled={!!!children} size="large">
-                { isCollapsed ? <ExpandIcon /> : <CollapseIcon /> }
-              </IconButton>
-            </Tooltip>
-            }
-          </div>
-        }
-      />
-      <CardContent className={!plain ? classes.withAvatar : undefined}>
-        { children }
-        { editDialogOpen && <EditDialog
-                              targetExists={true}
-                              data={data}
-                              type={type}
-                              model={model}
-                              isOpen={editDialogOpen}
-                              onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
-                              onCancel={() => { setEditDialogOpen(false); }}
-                            />
-        }
-      </CardContent>
-    </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

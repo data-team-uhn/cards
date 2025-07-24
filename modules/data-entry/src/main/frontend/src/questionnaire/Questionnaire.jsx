@@ -132,7 +132,7 @@ let QuestionnaireComponent = (props) => {
             entryType="Questionnaire"
             size="medium"
             variant="text"
-            onClose={setActionsMenu.bind(null)}
+            onClose={() => setActionsMenu(null)}
           />
         </ListItem>
         <ListItem className={classes.actionsMenuItem}>
@@ -141,7 +141,7 @@ let QuestionnaireComponent = (props) => {
             component="a"
             download={`${id}.json`}
             href={`/Questionnaires/${id}.deep.-identify.importable.json`}
-            onClick={setActionsMenu.bind(null)}
+            onClick={() => setActionsMenu(null)}
           >
             Export as JSON
           </Button>
@@ -151,10 +151,10 @@ let QuestionnaireComponent = (props) => {
             entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
             entryName={questionnaireTitle}
             entryType="Questionnaire"
-            onComplete={navigate.bind(baseUrl, { replace: true })}
+            onComplete={() => navigate(baseUrl, { replace: true })}
             size="medium"
             variant="text"
-            onClose={setActionsMenu.bind(null)}
+            onClose={() => setActionsMenu(null)}
           />
         </ListItem>
       </List>
@@ -163,13 +163,13 @@ let QuestionnaireComponent = (props) => {
   let questionnaireMenu = (
     <div className={classes.actionsMenu}>
       {(isEdit || isReorder) ?
-          <Tooltip title="Preview" onClick={navigate.bind(questionnaireUrl)}>
+          <Tooltip title="Preview" onClick={() => navigate(questionnaireUrl)}>
             <IconButton size="large">
               <PreviewIcon />
             </IconButton>
           </Tooltip>
         :
-          <Tooltip title="Edit" onClick={navigate.bind(questionnaireUrl + ".edit")}>
+          <Tooltip title="Edit" onClick={() => navigate(questionnaireUrl + ".edit")}>
             <IconButton color="primary" size="large">
               <EditIcon />
             </IconButton>
@@ -183,7 +183,7 @@ let QuestionnaireComponent = (props) => {
       <Popover
         open={Boolean(actionsMenu)}
         anchorEl={actionsMenu}
-        onClose={setActionsMenu.bind(null)}
+        onClose={() => setActionsMenu(null)}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -664,14 +664,14 @@ let QuestionnaireEntry = (props) => {
               {...menuProps}
             />
           }
-          { !!menuProps?.isMainAction ?
+          {/* { !!menuProps?.isMainAction ?
             // If this is the main action, render MoveEntryModal without data to select reorder source
             // Otherwise render MoveEntryModal with data set
             <ReorderModal />
             :
             [...QUESTION_TYPES, ...SECTION_TYPES].includes(entryData['jcr:primaryType']) &&
               <ReorderModal entryData={entryData} />
-          }
+          } */}
         </>}
         onActionDone={handleDataChange}
         model={model}

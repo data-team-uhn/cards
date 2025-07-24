@@ -284,10 +284,6 @@ export default function ReorderForm(props) {
     }
 
     const ReorderForm = (props) => {
-        const ordinalChildPosition = getOrdinalString(
-            nodes[nodes[reorderSource].parent].children.filter(nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType)).indexOf(reorderSource)
-        )
-
         return (
             <Grid container alignItems='baseline' direction="row" rowSpacing={3} columnSpacing={2}>
                 {/* Will render to null if preselected */}
@@ -328,7 +324,9 @@ export default function ReorderForm(props) {
                         </Grid>
                         <Grid size={9}>
                             <Typography>
-                                {ordinalChildPosition}
+                                {getOrdinalString(
+                                    nodes[nodes[reorderSource].parent].children.filter(nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType)).indexOf(reorderSource)
+                                )}
                             </Typography>
                         </Grid>
                     </>
