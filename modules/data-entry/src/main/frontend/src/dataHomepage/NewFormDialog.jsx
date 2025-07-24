@@ -363,7 +363,7 @@ function NewFormDialog(props) {
           {error && (!newSubjectPopperOpen) && <Alert severity="error">{error}</Alert>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
-            {relatedForms &&
+            {/* {relatedForms &&
               <MaterialReactTable
                 tableInstanceRef={tableRef}
                 enableToolbarInternalActions={false}
@@ -408,7 +408,7 @@ function NewFormDialog(props) {
                   }),
                 })}
               />
-            }
+            } */}
           </React.Fragment>
           :
           <React.Fragment>

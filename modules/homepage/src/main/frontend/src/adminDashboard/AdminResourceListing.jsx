@@ -88,7 +88,7 @@ function AdminResourceListing(props) {
       title={title}
       action={buttonProps ? <NewItemButton {...buttonProps}/> : action}
     >
-      <MaterialReactTable
+      {/* <MaterialReactTable
         enableColumnFilters={false}
         positionToolbarAlertBanner="none"
         muiSearchTextFieldProps={{ autoFocus: true }}
@@ -122,7 +122,7 @@ function AdminResourceListing(props) {
             myCustomFilterFn: customFilter,
           }}
         globalFilterFn={customFilter ? "myCustomFilterFn" : "contains"}
-      />
+      /> */}
     </AdminScreen>
   );
 }

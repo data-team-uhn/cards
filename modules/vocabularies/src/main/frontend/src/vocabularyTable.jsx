@@ -61,7 +61,7 @@ export default function VocabularyTable(props) {
 
       {(vocabList.length > 0) &&
       <Grid>
-        <MaterialReactTable
+        {/* <MaterialReactTable
             enableColumnActions={false}
             enableSorting={false}
             enableTopToolbar={false}
@@ -117,7 +117,7 @@ export default function VocabularyTable(props) {
                  addSetter={(setFunction) => props.addSetter(row.original.acronym, setFunction, type)}
                />
             )}
-          />
+          /> */}
       </Grid>
       }
     </React.Fragment>

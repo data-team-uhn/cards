@@ -159,7 +159,7 @@ function UnstyledNewSubjectDialog (props) {
               helperText={newSubjectType?.["idPatternHint"] || ""}
             />
           </div>
-          <MaterialReactTable
+          {/* <MaterialReactTable
             enableTableHead={false}
             enableToolbarInternalActions={false}
             manualPagination
@@ -201,7 +201,7 @@ function UnstyledNewSubjectDialog (props) {
                 cursor: 'pointer',
               },
             })}
-          />
+          /> */}
         </DialogContent>
         <DialogActions>
           <Button
@@ -314,7 +314,7 @@ function UnstyledSelectParentDialog (props) {
     <ResponsiveDialog open={open} onClose={onClose} keepMounted title={`Select ${parentType?.['label']} for ${childType?.['label']} ${childName}`}>
       <DialogContent dividers className={classes.dialogContentWithTable}>
         { error && <Alert severity="error">{error}</Alert>}
-        {
+        {/* {
           initialized &&
             <MaterialReactTable
               enableColumnActions={false}
@@ -355,7 +355,7 @@ function UnstyledSelectParentDialog (props) {
                 }),
               })}
             />
-        }
+        } */}
       </DialogContent>
       <DialogActions>
         { onCreateParent &&
@@ -1042,7 +1042,7 @@ function SubjectSelectorList(props) {
 
   return(
     <React.Fragment>
-      <MaterialReactTable
+      {/* <MaterialReactTable
         enableColumnActions={false}
         enableColumnFilters={false}
         enableSorting={false}
@@ -1083,7 +1083,7 @@ function SubjectSelectorList(props) {
             )
           }),
         })}
-      />
+      /> */}
     </React.Fragment>
   )
 };

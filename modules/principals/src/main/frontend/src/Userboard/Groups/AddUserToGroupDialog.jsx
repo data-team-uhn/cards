@@ -84,7 +84,7 @@ function AddUserToGroupDialog(props) {
       <DialogContent>
         <Grid container>
           <div>
-            <MaterialReactTable
+            {/* <MaterialReactTable
               tableInstanceRef={tableRef}
               enableColumnActions={false}
               enableColumnFilters={false}
@@ -116,7 +116,7 @@ function AddUserToGroupDialog(props) {
                 },
               ]}
               data={freeUsers}
-            />
+            /> */}
           </div>
         </Grid>
       </DialogContent>

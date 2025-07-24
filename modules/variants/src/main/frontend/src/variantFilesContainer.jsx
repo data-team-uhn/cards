@@ -912,7 +912,7 @@ export default function VariantFilesContainer() {
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
-        <MaterialReactTable
+        {/* <MaterialReactTable
           data={fileSelected?.sameFiles}
           enableColumnActions={false}
           enableColumnFilters={false}
@@ -970,7 +970,7 @@ export default function VariantFilesContainer() {
               </IconButton>
             </Tooltip>
           )}
-        />
+        /> */}
       </DialogContent>
     </Dialog>
   </React.Fragment>

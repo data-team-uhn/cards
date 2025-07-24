@@ -105,7 +105,7 @@ function UserDashboard(props) {
     { creationExtensions.length > 0 && <>
       <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
-          <MaterialReactTable
+          {/* <MaterialReactTable
             enableToolbarInternalActions={false}
             enableTableHead={false}
             enableTableFooter={creationExtensions.length > 5}
@@ -137,7 +137,7 @@ function UserDashboard(props) {
                 fontSize: '1rem'
               },
             }}
-          />
+          /> */}
         </DialogContent>
         <DialogActions>
           <Button
