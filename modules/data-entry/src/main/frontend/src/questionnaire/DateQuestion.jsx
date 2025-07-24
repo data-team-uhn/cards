@@ -71,6 +71,8 @@ function DateQuestion(props) {
   const upperLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(upperLimit));
   const lowerLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(lowerLimit));
 
+  const instructions = DateTimeUtilities.getAnswerValueInstructions(lowerLimitLuxon, upperLimitLuxon, dateFormat);
+
   const [formatError, setFormatError] = useState();
   const [endFormatError, setEndFormatError] = useState();
   const [minMaxError, setMinMaxError] = useState();
@@ -234,6 +236,16 @@ function DateQuestion(props) {
       currentAnswers={DateTimeUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
       {...props}
       >
+      { pageActive && instructions &&
+        <Typography
+          component="p"
+          color="textSecondary"
+          className="cards-answerInstructions"
+          variant="caption"
+        >
+          { instructions }
+        </Typography>
+      }
       { isRange && rangeError && <Typography
           component="p"
           color="error"
