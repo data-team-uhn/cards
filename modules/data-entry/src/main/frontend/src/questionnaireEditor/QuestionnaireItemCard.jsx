@@ -21,11 +21,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { checkPropTypes } from "../propTypes";
 import {
-  Avatar,
   Card,
   CardContent,
   CardHeader,
-  Icon,
   IconButton,
   Popover,
   Tooltip,
@@ -44,6 +42,7 @@ import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
 import { camelCaseToWords }  from "./LabeledField";
+import { useQuestionnaireInViewContext } from '../questionnaire/QuestionnaireContext.jsx';
 
 const useStyles = makeStyles()(theme => ({
   root : {
@@ -58,6 +57,7 @@ const useStyles = makeStyles()(theme => ({
     "& .MuiCardHeader-content .MuiIconButton-root": {
       display: "none",
     },
+    marginBottom: theme.spacing(.75),
   },
   title: {
     display: "inline",
@@ -96,7 +96,7 @@ const useStyles = makeStyles()(theme => ({
     "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-root.cards-questionnaire-entry-props": {
       paddingLeft: theme.spacing(7.5),
     },
-  }
+  },
 }));
 
 // General class or Sections and Questions
@@ -124,10 +124,22 @@ let QuestionnaireItemCard = (props) => {
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
+
   let [ moreInfoAnchor, setMoreInfoAnchor ] = useState(null);
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
+  const inView = useQuestionnaireInViewContext();
+
   const itemRef = useRef();
+
+  useEffect(() => {
+    if (itemRef.current) {
+      console.log("Setting in-view-data-id", data);
+      itemRef.current.setAttribute('in-view-data-id', data['jcr:uuid']);
+      console.log("Setting in-view-data-id", itemRef.current.getAttribute('in-view-data-id'));
+    }
+  }, [data['jcr:uuid']])
+
   // if autofocus is needed and specified in the url
   // create a ref to store the question container DOM element
   useEffect(() => {
@@ -159,15 +171,18 @@ let QuestionnaireItemCard = (props) => {
   }
 
   return (
-    <Card variant="outlined" ref={highlight ? itemRef : undefined} className={cardClasses.join(" ")}>
+    <div
+      // TODO: doesnt work with deprecated styling hook
+      // If Questionnaire then dont apply left border
+      style={{borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`}}
+      onClick={() => inView.highlighter.highlight(data['jcr:uuid'])}
+    >
+    <Card variant="outlined"
+      ref={itemRef}
+      className={cardClasses.join(" ")}
+    >
       <CardHeader
         disableTypography
-        avatar={!plain && (avatar || type) ?
-          <Avatar style={{backgroundColor: avatarColor || "black"}}>
-            { avatar ? <Icon>{avatar}</Icon> : type?.charAt(0) }
-          </Avatar>
-          : null
-        }
         title={
           <>
             { <FormattedText className={titleClasses.join(" ")} variant="h6">{titleText}</FormattedText> }
@@ -240,6 +255,7 @@ let QuestionnaireItemCard = (props) => {
         }
       </CardContent>
     </Card>
+    </div>
   );
 };
 

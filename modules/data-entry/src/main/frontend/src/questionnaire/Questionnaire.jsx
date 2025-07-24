@@ -24,13 +24,15 @@ import { checkPropTypes } from "../propTypes";
 import {
   Button,
   CircularProgress,
+  Divider,
   Grid,
   IconButton,
   List,
   ListItem,
   Popover,
+  Tabs, Tab,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
 
 import { withStyles } from 'tss-react/mui';
@@ -43,8 +45,8 @@ import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import ExportButton from "../dataHomepage/ExportButton";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
-import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
-import { ENTRY_TYPES, QUESTION_TYPES } from "./FormEntry";
+import { blue, blueGrey, deepPurple, green, orange, purple } from '@mui/material/colors';
+import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
@@ -52,71 +54,68 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
-import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
-import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
+import { QuestionnaireProvider } from "./QuestionnaireContext"; //This is purely computed from QuestionnaireTreeContext now
+import { stripCardsNamespace } from "./QuestionnaireUtilities";
+import { ReorderModal } from "../questionnaireEditor/ReorderModal.jsx";
+import EditorHeader from "../questionnaireEditor/EditorHeader.jsx";
+import { useQuestionnaireTreeContext, jcrActions, QuestionnaireTreeProvider } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
+import _ from "lodash";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 
-// GUI for displaying details about a questionnaire.
+import ReorderDraft from "../questionnaireEditor/ReorderDraft.jsx";
+
+
 let Questionnaire = (props) => {
+  let location = useLocation();
+  let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
+  
+  return (
+    <QuestionnaireTreeProvider questionnaireId={id}>
+      <QuestionnaireComponent {...props} />
+    </QuestionnaireTreeProvider>
+  )
+}
+
+// GUI for displaying details about a questionnaire.
+let QuestionnaireComponent = (props) => {
   let { classes } = props;
-  let [ data, setData ] = useState();
-  let [ questionnaireTitle, setQuestionnaireTitle ] = useState();
+
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ error, setError ] = useState();
+
   let location = useLocation();
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
-  let isEdit = window.location.pathname.endsWith(".edit");
+
+  const treeContext = useQuestionnaireTreeContext();
+  const { data } = treeContext.state;
+
+  const questionnaireTitle = data?.title || decodeURI(id);
+
   let navigate = useNavigate();
+  let isEdit = window.location.pathname.endsWith(".edit");
+  let isReorder = window.location.pathname.endsWith(".reorder");
 
   let pageNameWriter = usePageNameWriterContext();
 
-  let handleError = (response) => {
-    setError(response);
-    setData({});
-  }
-
-  let fetchData = () => {
-    fetch(`/Questionnaires/${id}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(setData)
-      .catch(handleError);
-  };
+  const [editTab, setEditTab] = useState(isEdit ? 'edit' : isReorder ? 'reorder' : 'edit')
 
   // First, fetch the questionnaire data
   useEffect(() => {
-    fetchData();
-  }, [isEdit]);
-
-  useEffect(() => {
-    setQuestionnaireTitle(data?.title || decodeURI(id));
-  }, [data?.title]);
+    treeContext.actions.fetchRootData().catch((error) => { setError(error) });
+  }, [editTab]);
 
   useEffect(() => {
     pageNameWriter(questionnaireTitle);
   }, [questionnaireTitle]);
 
   useEffect(() => {
-    if (!isEdit) return;
-    //Perform a JCR check-out of the Questionnaire
-    let checkoutForm = new FormData();
-    checkoutForm.set(":operation", "checkout");
-    fetch(`/Questionnaires/${id}`, {
-      method: "POST",
-      body: checkoutForm
-    });
-
-    function performCheckIn() {
-      let checkinForm = new FormData();
-      checkinForm.set(":operation", "checkin");
-      fetch(`/Questionnaires/${id}`, {
-        method: "POST",
-        body: checkinForm
-      });
-    }
-
+    if (!(isEdit || isReorder)) return;
+    //Perform a JCR check-out of the Questionnaire and register a check-in
+    const checkout = jcrActions.checkOut(id);
+    const performCheckIn = () => { jcrActions.checkIn(id) };
     window.addEventListener("beforeunload", performCheckIn);
     return (() => {
       window.removeEventListener("beforeunload", performCheckIn);
@@ -127,78 +126,78 @@ let Questionnaire = (props) => {
       <List>
         <ListItem className={classes.actionsMenuItem}>
           <ExportButton
-              entityData={data}
-              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-              entryName={questionnaireTitle || id}
-              entryType="Questionnaire"
-              size="medium"
-              variant="text"
-              onClose={() => { setActionsMenu(null); }}
+            entityData={data}
+            entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+            entryName={questionnaireTitle || id}
+            entryType="Questionnaire"
+            size="medium"
+            variant="text"
+            onClose={setActionsMenu.bind(null)}
           />
         </ListItem>
         <ListItem className={classes.actionsMenuItem}>
-            <Button
-                size="medium"
-                component="a"
-                download={`${id}.json`}
-                href={`/Questionnaires/${id}.deep.-identify.importable.json`}
-                onClick={() => {
-                    setActionsMenu(null);
-                }}>
-                    Export as JSON
-            </Button>
+          <Button
+            size="medium"
+            component="a"
+            download={`${id}.json`}
+            href={`/Questionnaires/${id}.deep.-identify.importable.json`}
+            onClick={setActionsMenu.bind(null)}
+          >
+            Export as JSON
+          </Button>
         </ListItem>
         <ListItem className={classes.actionsMenuItem}>
           <DeleteButton
-              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-              entryName={questionnaireTitle}
-              entryType="Questionnaire"
-              onComplete={() => navigate(baseUrl, { replace: true })}
-              size="medium"
-              variant="text"
-              onClose={() => { setActionsMenu(null); }}
+            entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+            entryName={questionnaireTitle}
+            entryType="Questionnaire"
+            onComplete={navigate.bind(baseUrl, { replace: true })}
+            size="medium"
+            variant="text"
+            onClose={setActionsMenu.bind(null)}
           />
         </ListItem>
       </List>
   )
 
   let questionnaireMenu = (
-      <div className={classes.actionsMenu}>
-        { isEdit ?
-          <Tooltip title="Preview" onClick={() => navigate(questionnaireUrl)}>
+    <div className={classes.actionsMenu}>
+      {(isEdit || isReorder) ?
+          <Tooltip title="Preview" onClick={navigate.bind(questionnaireUrl)}>
             <IconButton size="large">
               <PreviewIcon />
             </IconButton>
           </Tooltip>
-          :
-          <Tooltip title="Edit" onClick={() => navigate(questionnaireUrl + ".edit")}>
+        :
+          <Tooltip title="Edit" onClick={navigate.bind(questionnaireUrl + ".edit")}>
             <IconButton color="primary" size="large">
               <EditIcon />
             </IconButton>
           </Tooltip>
-        }
-        <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-          <IconButton size="large">
-            <MoreIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Popover
-            open={Boolean(actionsMenu)}
-            anchorEl={actionsMenu}
-            onClose={() => {setActionsMenu(null)}}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-        >
-          { dropdownList }
-        </Popover>
-      </div>
+      }
+      <Tooltip title="More actions" onClick={(event) => setActionsMenu(event.currentTarget) }>
+        <IconButton size="large">
+          <MoreIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Popover
+        open={Boolean(actionsMenu)}
+        anchorEl={actionsMenu}
+        onClose={setActionsMenu.bind(null)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        {dropdownList}
+      </Popover>
+    </div>
   )
+
 
   let questionnaireHeader = (
         <ResourceHeader
@@ -212,40 +211,61 @@ let Questionnaire = (props) => {
               Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
             </Typography>
           }
+          <EditorHeader />
         </ResourceHeader>
   );
 
   return (
-    error ?
-      <Typography variant="h2" color="error">
-        Error obtaining questionnaire info: {error.status} {error.statusText}
-      </Typography>
-    :
-      ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
-        <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
-          { questionnaireHeader }
-          { !isEdit ?
-              <QuestionnairePreview
-                data={data}
-                key={id + data?.['jcr:lastModified']}
-                title={questionnaireTitle}
-                contentOffset={props.contentOffset}
-              />
-            :
-              <QuestionnaireProvider>
-                <QuestionnaireContents
-                  disableDelete
+    <QuestionnaireProvider>
+      { error ?
+        <Typography variant="h2" color="error">
+          Error obtaining questionnaire info: {error.status} {error.statusText}
+        </Typography>
+        :
+        data?.["jcr:primaryType"] === "cards:Questionnaire" &&
+          <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
+            { questionnaireHeader }
+            <Grid>
+              { !(isEdit || isReorder)
+                ?
+                <QuestionnairePreview
                   data={data}
-                  key={id + data?.['jcr:lastModified']}
-                  classes={classes}
-                  onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-                  onActionDone={()=>{}}
-                  menuProps={{isMainAction: true}}
+                  title={questionnaireTitle}
+                  contentOffset={props.contentOffset}
                 />
-              </QuestionnaireProvider>
-          }
+                :
+                <>
+                  <Tabs
+                    value={editTab}
+                    onChange={(event, newValue) => {
+                      const editSuffix = `.${newValue}`;
+                      setEditTab(newValue);
+                      navigate(questionnaireUrl + editSuffix);
+                    }}
+                  >
+                    <Tab label="Edit" value="edit" />
+                    <Tab label="Reorder" value="reorder" />
+                  </Tabs>
+                  <Divider />
+                  { editTab == "edit" &&
+                    <QuestionnaireContents
+                      key={treeContext.state.timestamp}
+                      disableDelete
+                      data={data}
+                      classes={classes}
+                      // onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                      menuProps={{ isMainAction: true }}
+                    />
+                  }
+                  { editTab == "reorder" &&
+                    <ReorderDraft key={treeContext.state.timestamp} />
+                }
+              </>
+            }
+          </Grid>
         </Grid>
-      )
+      }
+    </QuestionnaireProvider>
   );
 };
 
@@ -281,7 +301,7 @@ let QuestionnaireItemSet = (props) => {
       // Sort by the specified order
       .sort((a, b) => a.defaultOrder - b.defaultOrder)
       // Record the sorted entries into the priority list
-      .forEach(v => prioritaryModels = {...prioritaryModels, ...v.entries});
+      .forEach(v => prioritaryModels = { ...prioritaryModels, ...v.entries });
 
     // If there are any entries with defaultOrder, we update the priorityEntryTypes
     if (Object.keys(prioritaryModels).length > 0) {
@@ -299,8 +319,8 @@ let QuestionnaireItemSet = (props) => {
     //   group3 : {entries: {g: "g,json", h: "h.json"}, defaultOrder: 1}
     // }
     // => {a: "a.json", b: "b,json", c: "c.json", f: "f.json"}
-    Object.entries(models).forEach(([k,v]) => {
-      if ( typeof(v) == "object") {
+    Object.entries(models).forEach(([k, v]) => {
+      if (typeof(v) == "object") {
         if (typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) == "undefined") {
           // Flatten groups with `entries` but without `defaultOrder` (the ones with defaultOrder are already in the "priority" list)
           generalModels = {...generalModels, ...v.entries}
@@ -313,7 +333,7 @@ let QuestionnaireItemSet = (props) => {
     // If there are any entries without defaultOrder, we update the generalEntryTypes
     // Otherwise the original list is kept, i.e. ENTRY_TYPES
     if (Object.keys(generalModels).length > 0) {
-       generalEntryTypes = getEntryTypes(generalModels);
+      generalEntryTypes = getEntryTypes(generalModels);
     }
   }
 
@@ -349,28 +369,29 @@ let QuestionnaireItemSet = (props) => {
                        />
                      </Grid>
         )(eval(stripCardsNamespace(value['jcr:primaryType'])))
-      )
-    }
+        )
+      }
     </>
   )
 
   // There is no data to display, do not render an empty container
-  if ( !!!children &&
-       !Object.values(data).some(v => [...(generalEntryTypes ||[]), ...(prioritaryEntryTypes || [])].includes(v['jcr:primaryType'])) ) {
+  if (!!!children &&
+    !Object.values(data).some(v => [...(generalEntryTypes || []), ...(prioritaryEntryTypes || [])].includes(v['jcr:primaryType']))) {
     return null;
   }
 
   return (
     <Grid container direction="column" spacing={4} wrap="nowrap">
       {children}
-      {
-        data ?
-        <>
-        { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
-        { listEntries(generalModels, generalEntryTypes) }
-        </>
-        : <Grid><Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid></Grid>
-      }
+      <Grid>
+        { data ?
+          <>
+          { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
+          { listEntries(generalModels, generalEntryTypes) }
+          </>
+          : <Grid><Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid></Grid>
+        }
+      </Grid>
     </Grid>
   );
 }
@@ -384,16 +405,6 @@ QuestionnaireItemSet.propTypes = {
 // Questionnaire contents: properties + entries
 let QuestionnaireContents = (props) => {
   checkPropTypes(QuestionnaireContents, props);
-  let { data } = props;
-
-  let changeQuestionnaireContext = useQuestionnaireWriterContext();
-
-  useEffect(() => {
-    // Load initial data
-    changeQuestionnaireContext(findQuestionnaireEntries(data, QUESTION_TYPES));
-    // Clear context when unmounting component
-    return (() => changeQuestionnaireContext([]));
-  }, []);
 
   return <QuestionnaireEntry
            disableCollapse={false}
@@ -407,7 +418,6 @@ let QuestionnaireContents = (props) => {
 
 QuestionnaireContents.propTypes = {
   onActionDone: PropTypes.func,
-  onFieldsChanged: PropTypes.func,
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string,
@@ -490,12 +500,10 @@ Section.propTypes = {
   model: PropTypes.string
 };
 
-
-// Details about a simple condition for displaying a section
-let Conditional = (props) => <QuestionnaireEntry
+// Details about a simple condition for desplaying a section
+let Conditional = (props) => <QuestionnaireEntry {...props}
                                type="Conditional"
-                               avatarColor={cyan[800]}
-                               model="Conditional.json"
+                               avatarColor={green[800]}
                                {...props} />;
 
 Conditional.propTypes = {
@@ -510,7 +518,7 @@ Conditional.propTypes = {
 // Details about a group pf conditions for displaying a section
 let ConditionalGroup = (props) => <QuestionnaireEntry
                                     type="ConditionalGroup"
-                                    avatarColor={indigo[800]}
+                                    avatarColor={green[800]}
                                     model="ConditionalGroup.json"
                                     {...props} />;
 
@@ -535,34 +543,13 @@ let QuestionnaireEntry = (props) => {
   // --------------------------------------------------------------
   // Questionnaire context manipulation
 
-  let changeQuestionnaireContext = useQuestionnaireWriterContext();
+  const treeContext = useQuestionnaireTreeContext();
 
-  let updateContext = (data) => {
-    let vars = findQuestionnaireEntries({data: data}, QUESTION_TYPES);
-    changeQuestionnaireContext((oldContext) => {
-       let newContext = oldContext || [];
-       vars.forEach(v => {
-         const index = newContext.findIndex(x => x.id == v.id);
-         if (index >= 0) {
-           newContext.splice(index, 1, v);
-         } else {
-           newContext.push(v);
-         }
-       });
-       return newContext;
-    });
-  }
-
-  let removeFromContext = (id) => {
-    changeQuestionnaireContext((oldContext) => {
-      let newContext = oldContext || [];
-      const index = newContext.findIndex(x => x.id == id);
-      if (index >= 0) {
-        newContext.splice(index, 1);
-      }
-      return newContext;
-    });
-  }
+  useEffect(() => {
+    if (!_.isEqual(entryData, data)) {
+      treeContext.actions.updateNodeData(entryData);
+    }
+  }, [entryData]);
 
   // -------------------------------------------------------------
   // Find child item specifications
@@ -619,33 +606,35 @@ let QuestionnaireEntry = (props) => {
   }, [entryData, childModels]);
 
   // -------------------------------------------------------------
-  // Handle data updates (field changes, child item creation or
-  // deletion)
-
+  // Handle data updates (field changes, child item creation or deletion)
+  // TODO: treeContext.dispatch (delete, field change, create)
   let handleDataChange = (newData) => {
-    // There's new data to load, display and highlight it:
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
-      onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
+      // TODO field changes not propagated?
+      // onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
       // Try to reload the data from the server
       fetch(`${data["@path"]}.deep.json`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(json => handleDataChange(json))
         .catch(() => {
-           // If it fails, it's because we deleted an item
-           // Update the context to remove the deleted item
-           removeFromContext(`${data['jcr:uuid']}`);
-           // Then pass it up to the parent
-           onActionDone();
+          // If it fails, it's because we deleted an item
+          // Update the context to remove the deleted item
+          if (!!data['jcr:uuid']) {
+            treeContext.actions.removeNode(data['jcr:uuid'])
+            // TODO check conditionals linked to deleted questions
+            // treeContext.dispatch({ type: 'REMOVE_NODE', payload: {nodeId: `${data['jcr:uuid']}`} })
+          }
+          // Then pass it up to the parent
+          onActionDone?.();
         });
     }
   }
 
   let onCreated = (newData) => {
     setEntryData(newData);
-    updateContext(newData);
   }
 
   // -------------------------------------------------------------
@@ -665,8 +654,8 @@ let QuestionnaireEntry = (props) => {
         type={type}
         upperClasses={classes}
         doHighlight={doHighlight}
-        action={
-            menuItems?.length > 0 ?
+        action={<>
+          { menuItems?.length > 0 &&
             <CreationMenu
               data={entryData}
               onCreated={onCreated}
@@ -674,11 +663,18 @@ let QuestionnaireEntry = (props) => {
               models={childModels}
               {...menuProps}
             />
-            : undefined
-        }
+          }
+          { !!menuProps?.isMainAction ?
+            // If this is the main action, render MoveEntryModal without data to select reorder source
+            // Otherwise render MoveEntryModal with data set
+            <ReorderModal />
+            :
+            [...QUESTION_TYPES, ...SECTION_TYPES].includes(entryData['jcr:primaryType']) &&
+              <ReorderModal entryData={entryData} />
+          }
+        </>}
         onActionDone={handleDataChange}
         model={model}
-        disableCollapse={true}
         {...rest}
     >
       { childModels ?
@@ -698,7 +694,6 @@ let QuestionnaireEntry = (props) => {
 
 QuestionnaireEntry.propTypes = {
   onActionDone: PropTypes.func,
-  onFieldsChanged: PropTypes.func,
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,

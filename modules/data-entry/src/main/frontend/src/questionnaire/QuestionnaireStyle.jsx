@@ -611,11 +611,12 @@ const questionnaireStyle = theme => ({
         color: theme.palette.grey["500"]
     },
     questionnaireListItem: {
-        color: theme.palette.grey["900"]
+        color: theme.palette.grey["900"],
+        outline: `1px solid ${theme.palette.primary.main}`,
     },
     focusedQuestionnaireItem: {
       "&.MuiCard-root, > .MuiCard-root" : {
-        outline: `2px solid ${theme.palette.primary.main}`,
+        outline: `2px solid ${theme.palette.primary.dark}`,
       },
     },
     questionnaireItemWithError: {
