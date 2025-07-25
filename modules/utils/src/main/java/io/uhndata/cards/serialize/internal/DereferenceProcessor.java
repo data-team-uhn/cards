@@ -54,6 +54,13 @@ public class DereferenceProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Dereference properties of type `REFERENCE`, `WEAKREFERENCE` and `PATH`:"
+            + " Instead of printing the internal UUID, serialize the referenced node.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 10;

@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.forms.internal.serialize.filters;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.BaseFilterFactory;
 import io.uhndata.cards.serialize.spi.DataFilter;
 import io.uhndata.cards.serialize.spi.DataFilterFactory;
+import io.uhndata.cards.serialize.spi.SelectorDetails;
 
 /**
  * Filter forms based on who last modified them. Use {@code modifiedBy=username} to filter only forms modified by that
@@ -41,6 +43,17 @@ import io.uhndata.cards.serialize.spi.DataFilterFactory;
 @Component
 public class LastAuthor extends BaseFilterFactory implements DataFilterFactory
 {
+    @Override
+    public List<SelectorDetails> getFilterDetails()
+    {
+        List<SelectorDetails> result = new ArrayList<>();
+        result.add(new SelectorDetails("modifiedBy",
+            "Only show results that were last modified by the specified user."));
+        result.add(new SelectorDetails("notModifiedBy",
+            "Only show results that were not last modified by the specified user."));
+        return result;
+    }
+
     @Override
     public List<DataFilter> parseFilters(List<Pair<String, String>> filters, List<String> allSelectors)
     {

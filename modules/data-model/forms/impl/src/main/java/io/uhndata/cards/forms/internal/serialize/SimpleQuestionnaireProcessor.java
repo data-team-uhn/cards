@@ -46,6 +46,13 @@ public class SimpleQuestionnaireProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Only runs on Questionnaires.\n"
+            + "Simplify questionnaire serialization by removing child jcr properties.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 50;

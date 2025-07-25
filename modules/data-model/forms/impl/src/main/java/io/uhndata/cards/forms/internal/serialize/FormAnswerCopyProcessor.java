@@ -57,6 +57,17 @@ public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor
     private QuestionnaireUtils questionnaireUtils;
 
     @Override
+    public String getDescription()
+    {
+        return "Only runs on Forms.\n"
+            + "Copy the answer of certain answers to the form JSON. The answers to copy are configured in "
+            + "`/apps/cards/config/CopyAnswers/Questionnaires/[questionnaire name]/` as properties with the desired "
+            + "output name as the key and references to a questiona s the value.\n"
+            + "Questions can be copied either from the current form itself, or from another form belonging to the "
+            + "same subject.";
+    }
+
+    @Override
     public boolean canProcess(final Resource resource)
     {
         // This only works on forms

@@ -39,6 +39,12 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
     @Override
+    public String getDescription()
+    {
+        return super.getDescription() + "Get pedigree question answers as an svg picture.";
+    }
+
+    @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {

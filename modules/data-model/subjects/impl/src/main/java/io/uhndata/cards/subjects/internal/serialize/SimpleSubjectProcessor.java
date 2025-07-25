@@ -46,6 +46,13 @@ public class SimpleSubjectProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Only runs on Subjects.\n"
+            + "Simplify form serialization by removing child jcr properties.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 50;

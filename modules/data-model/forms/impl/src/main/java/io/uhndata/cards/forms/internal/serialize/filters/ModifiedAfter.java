@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.forms.internal.serialize.filters;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,6 +27,7 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.BaseFilterFactory;
 import io.uhndata.cards.serialize.spi.DataFilter;
 import io.uhndata.cards.serialize.spi.DataFilterFactory;
+import io.uhndata.cards.serialize.spi.SelectorDetails;
 import io.uhndata.cards.utils.DateUtils;
 
 /**
@@ -39,6 +41,17 @@ import io.uhndata.cards.utils.DateUtils;
 @Component
 public class ModifiedAfter extends BaseFilterFactory implements DataFilterFactory
 {
+    @Override
+    public List<SelectorDetails> getFilterDetails()
+    {
+        List<SelectorDetails> result = new ArrayList<>();
+        result.add(new SelectorDetails("modifiedAfter",
+            "Only show results that were modified after the requested time. "
+            + "eg. `.dataFilter:modifiedAfter=2025-01-01T06:00:00%5C.000-05:00` for forms modified after "
+            + "January 1, 2025 at 6 AM in the time zone UTC-5"));
+        return result;
+    }
+
     @Override
     public List<DataFilter> parseFilters(List<Pair<String, String>> filters, List<String> allSelectors)
     {

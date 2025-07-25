@@ -75,6 +75,13 @@ public class DateObfuscationProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Obfuscates all dates by serializing them as an offset from a specific reference date.\n"
+            + "This date is defined in an environment variable.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 100;

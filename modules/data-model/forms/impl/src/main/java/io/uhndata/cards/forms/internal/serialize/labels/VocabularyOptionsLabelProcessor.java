@@ -43,6 +43,13 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
     @Override
+    public String getDescription()
+    {
+        return "Runs on Forms and Questionnaires.\n"
+            + "Adds a label to answer option nodes.";
+    }
+
+    @Override
     public boolean canProcess(Resource resource)
     {
         return resource.isResourceType("cards/Form") || resource.isResourceType("cards/Questionnaire");

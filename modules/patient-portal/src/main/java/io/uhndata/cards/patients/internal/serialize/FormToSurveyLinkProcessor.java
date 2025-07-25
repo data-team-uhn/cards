@@ -34,7 +34,7 @@ import io.uhndata.cards.links.api.LinkUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * If there is a belongsToSurvey link, include the uuid of the linked form in the root of the source form.
+ * If there is a belongsToSurvey link, include the name of the linked form in the root of the source form.
  * Otherwise, omit the link. The name of this processor is {@code formToSurveyLinks}.
  *
  * @version $Id$
@@ -49,6 +49,13 @@ public class FormToSurveyLinkProcessor implements ResourceJsonProcessor
     public String getName()
     {
         return "formToSurveyLinks";
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return "If a node has a `belongsToSurvey` link, include the name of the linked form in the root of the form "
+            + "linking it";
     }
 
     @Override

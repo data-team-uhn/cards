@@ -43,6 +43,12 @@ public class SkipLinksProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Skip all links";
+    }
+
+    @Override
     public int getPriority()
     {
         return 100;

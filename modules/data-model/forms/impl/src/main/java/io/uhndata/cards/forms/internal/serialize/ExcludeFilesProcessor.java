@@ -36,6 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
+import io.uhndata.cards.serialize.spi.SelectorDetails;
 
 /**
  * A processor that excludes the files content from the export. By default it excludes all files, but it can be tailored
@@ -57,6 +58,20 @@ public class ExcludeFilesProcessor implements ResourceJsonProcessor
     public String getName()
     {
         return "excludeFiles";
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return "Exclude file contents from an export. By default, exclude all files";
+    }
+
+    @Override
+    public SelectorDetails getDetails()
+    {
+        return new SelectorDetails(getName(), getDescription(), isEnabledByDefault(null),
+             "exclude", "If this option is included, only exclude the specified file. "
+            + "`.excludeFiles:exclude=/Questionnaires/Path/To/Question`");
     }
 
     @Override

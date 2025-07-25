@@ -49,6 +49,12 @@ public class PropertiesProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Serialize all node properties.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 0;

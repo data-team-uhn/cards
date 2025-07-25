@@ -61,6 +61,16 @@ public class SubjectAnswerCopyProcessor extends AbstractAnswerCopyProcessor
     private QuestionnaireUtils questionnaireUtils;
 
     @Override
+    public String getDescription()
+    {
+        return "Only runs on Subjects.\n"
+            + "Copy the answer of certain answers from forms to the root subject JSON. The answers to copy are "
+            + "configured in `/apps/cards/config/CopyAnswers/Questionnaires/[questionnaire name]/` as properties with "
+            + "the desired output name as the key and references to a questiona s the value.\n"
+            + "Questions can be copied either from a form belonging to this subject, or one of it's ancestors.";
+    }
+
+    @Override
     public boolean canProcess(final Resource resource)
     {
         // This only works on subjects

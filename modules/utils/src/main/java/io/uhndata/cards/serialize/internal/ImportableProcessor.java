@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Remove any properties from the output that woulkd not be present in an importable questionnaire XML.
+ * Remove any properties from the output that would not be present in an importable questionnaire XML.
  * This processor is intended to be run alongside the following other processors:
  * * .deep
  * * .-identify
@@ -49,6 +49,13 @@ public class ImportableProcessor implements ResourceJsonProcessor
     public String getName()
     {
         return "importable";
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return "Remove any properties from the output that would not be present in an importable questionnaire XML."
+            + "This processor is intended to be run alongside the `deep` and `-identify` processor";
     }
 
     @Override

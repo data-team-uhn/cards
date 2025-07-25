@@ -42,6 +42,12 @@ public class DeepProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Enable deep serialization of nodes, including all child nodes";
+    }
+
+    @Override
     public int getPriority()
     {
         return 10;

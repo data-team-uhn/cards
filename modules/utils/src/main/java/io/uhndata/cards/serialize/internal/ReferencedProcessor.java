@@ -46,6 +46,12 @@ public class ReferencedProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Report if a node is referenced by adding a `@referenced=true|false` property";
+    }
+
+    @Override
     public int getPriority()
     {
         return 10;

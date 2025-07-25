@@ -81,6 +81,12 @@ public class DataProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Serialize the forms associated with a Questionnaire or Subject";
+    }
+
+    @Override
     public int getPriority()
     {
         return 90;
