@@ -1,4 +1,6 @@
-# Overview of the main data types
+# Data Serialization
+
+## Overview of the main data types
 - **Subject Type**. A definition of a type of entity about which data can be collected. Subject Types can be either independent of each other or have hierarchical relationships. Typically, there are two defined Subject Types:
     - **Patient** - An individual who has visited the hospital.
     - **Visit** - An encounter of a Patient at a hospital. Any Visit must belong to a Patient.
@@ -8,7 +10,7 @@
     - Forms link back to a particular Questionnaire to be able to display the Questions and Sections that are associated with a given Answer or Answer Section.
     - Forms link to a particular Subject as the owner of this Form. For example, each Patient Subject will always have a single Patient Information Form, each Visit Subject will always have a Visit Information Form, Visits will have one or more Survey Events forms, and visits will have one or more survey forms (such as YVM, PMOO, etc) depending on the location and type of the patient's visit to the hospital that triggered the survey.
 
-## Status flags
+### Status flags
 
 Forms (as well as their Answer and AnswerSection descendants) and Subjects can have `statusFlags`. Notable flags:
 - `INCOMPLETE` - the Form is missing at least one Answer value to a mandatory Question. The causative Answer entries and all of their parent items all the way to the Form will also have the `INCOMPLETE` status flag
@@ -16,18 +18,18 @@ Forms (as well as their Answer and AnswerSection descendants) and Subjects can h
 - `DRAFT` - the form is INCOMPLETE, INVALID, or both. DRAFT is not applied to the Answers and Answer Sections.
 - `SUBMITTED` - a form associated with a Visit subject containing answers to a survey questionnaire that has been submitted via the patient portal. Unless the data has been submitted, it can not be considered for statistics as the patient did not "sign off" on their answers.
 
-# Running exports
+## Running exports
 To run an export, navigate to a URL in the following format:
 `<base url>/Path/To/Exported/Data.<Any processors>.dataFilter:<Any filters>.<extension>`.
 
-## Export formats
+### Export formats
 Multiple different export formats are supported. These include:
 - **.csv** and **.tsv**: This format includes additional processing options to help match data into a row/column format. These options are explained in the CSV Adapter Options section below, alongside the standard Processor and Filter options.
 - **.json**: This format most closely matches the way that data is stored internally.
 - **.txt**: minimalistic human-readable serialization, suitable for copy/pasting in a note
 - **.md**: suitable for printing or archiving
 
-## Notable export paths:
+### Notable export paths:
 - `/Questionnaires/<QuestionnaireId>.json` exports the Questionnaire metadata definition
 - `/Questionnaires/<QuestionnaireId>.deep.json` exports the full Questionnaire definition, including questions and sections
 - `/Questionnaires/<QuestionnaireId>.data.json` exports the forms containing answers to the specified Questionnaire. Filters and processors can be added, as shown in the examples above.
@@ -35,7 +37,7 @@ Multiple different export formats are supported. These include:
 - `/Forms/<Form ID>.deep.json` exports a Form with all its answers. Filters and processors can be added, as shown in the examples above.
 - `/Forms/<Form ID>.md` exports a Markdown-formatted view of a Form. Use `.txt` to export plain text instead.
 
-### Example: Weekly OAIP Form Export
+#### Example: Weekly OAIP Form Export
 `/Questionnaires/OAIP.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.labels.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvHeader:raw.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv`
 - `/Questionnaires/OAIP`: Export the OAIP questionnaire
 - `.data`: Include the forms that answer this questionnaire
@@ -49,19 +51,19 @@ Multiple different export formats are supported. These include:
 - `.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month`: Do not include the question `oaip_visit_month` or it's answers. The path to this question has been URL  encoded twice from `/Questionnaires/OAIP/oaip_module1/oaip_visit_month`, first to replace the `/` with `%2F` and second to replace `%` with `%25`
 - `.csv`: Export the data as a csv file.
 
-### Example: Weekly Survey Event Form Export
+#### Example: Weekly Survey Event Form Export
 `/Questionnaires/Survey events.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.dataFilter:statusNot=INCOMPLETE.labels.csv`
 
-### Example: Exporting all the data for a Visit as JSON
+#### Example: Exporting all the data for a Visit as JSON
 `/Subjects/<MRN>/<Encounter ID>.data.deep.json`
 
-### Example: Exporting a Patient and all the forms, from all their visits, that have been modified since the specified date
+#### Example: Exporting a Patient and all the forms, from all their visits, that have been modified since the specified date
 `/Subjects/<MRN>.deep.data.dataFilter:modifiedAfter=2025-07-19.dataOption:descendantData=true.dataOption:formSelectors=deep%5C.bare.json`
 
-### Example: Exports a Form with all its answers in a simplified form, with almost no metadata
+#### Example: Exports a Form with all its answers in a simplified form, with almost no metadata
 `/Forms/<Form ID>.deep.bare.-identify.-dereference.nolinks.-answerCopy.json`
 
-## Notes on processors and filters:
+#### Notes on processors and filters:
 - Processors and filters that expect a date to be provided can accept that date in a variety of formats. For example,
     - `2025-01-01T02:00:00%5C.000-05:00`: A fully specified date, including date (Jan. 1), time (02:00:00), millisecond (.000), and timezone (-05:00)
     - `2025-01-01T02:00`: A simplified datetime, interpretted using the server's timezone
@@ -71,93 +73,6 @@ Multiple different export formats are supported. These include:
 - Some processors have multiple implementations under the same name. These instances are generally designed to accomplish the same goal, each working on specific data types or in specific situations, and enabling one of them will enable all of them.
 
 For the full list of available processors and filters, please refer to the last two sections of this document.
-
-
-## Processors
-
-## Filters
-
-## CSV adapter options
-
-### csvHeader:labels
-**Description**: Only runs on `Questionnaires`.
-Include the human readable label as a header row for all exported columns
-**isEnabledByDefault**: true
-### csvHeader:raw
-**Description**: Only runs on `Questionnaires`.
-Include the raw property name as a header row for all exported columns
-### csvIncludeFields
-**Description**: Only runs on `Questionnaires`.
-Include a specified property on data forms that belongs to this questionnaire that would normally be skipped in the csv export process. This option is intended to be run alongside the `.data` processor.
-For example, `.csvIncludeFields:@survey=Survey` will include the `@survey` property with the readable column label `Survey`# Overview of the main data types
-- **Subject Type**. A definition of a type of entity about which data can be collected. Subject Types can be either independent of each other or have hierarchical relationships. Typically, there are two defined Subject Types:
-    - **Patient** - An individual who has visited the hospital.
-    - **Visit** - An encounter of a Patient at a hospital. Any Visit must belong to a Patient.
-- **Subject**. An entity that can have child subjects (entities) and forms associated with it. For example, a Patient subject can have one or multiple child Visits.
-- **Questionnaire**. A set of Questions, potentially organized in Sections, that users are presented with. Hierarchical organization: A Questionnaire contains Questions and/or Sections, a Section contains Questions and/or other Sections.
-- **Form**. A set of Answers and Answer Sections that store the responses of a user to the Questionnaire. Answers can be empty if the user did not provide one. When a user should be able to complete a given Questionnaire, a blank Form is generated for that user and Questionnaire.
-    - Forms link back to a particular Questionnaire to be able to display the Questions and Sections that are associated with a given Answer or Answer Section.
-    - Forms link to a particular Subject as the owner of this Form. For example, each Patient Subject will always have a single Patient Information Form, each Visit Subject will always have a Visit Information Form, Visits will have one or more Survey Events forms, and visits will have one or more survey forms (such as YVM, PMOO, etc) depending on the location and type of the patient's visit to the hospital that triggered the survey.
-
-## Status flags
-
-Forms (as well as their Answer and AnswerSection descendants) and Subjects can have `statusFlags`. Notable flags:
-- `INCOMPLETE` - the Form is missing at least one Answer value to a mandatory Question. The causative Answer entries and all of their parent items all the way to the Form will also have the `INCOMPLETE` status flag
-- `INVALID` - the Form has at least one Answer with an invalid value (for example, value 5 for a Question that expects values between 0 and 4). The causative Answer entries and all of their parent items all the way to the Form will also have the `INVALID` status flag
-- `DRAFT` - the form is INCOMPLETE, INVALID, or both. DRAFT is not applied to the Answers and Answer Sections.
-- `SUBMITTED` - a form associated with a Visit subject containing answers to a survey questionnaire that has been submitted via the patient portal. Unless the data has been submitted, it can not be considered for statistics as the patient did not "sign off" on their answers.
-
-# Running exports
-To run an export, navigate to a URL in the following format:
-`<base url>/Path/To/Exported/Data.<Any processors>.dataFilter:<Any filters>.<extension>`.
-
-## Export formats
-Multiple different export formats are supported. These include:
-- **.csv** and **.tsv**: This format includes additional processing options to help match data into a row/column format. These options are explained in the CSV Adapter Options section below, alongside the standard Processor and Filter options.
-- **.json**: This format most closely matches the way that data is stored internally.
-- **.txt**: minimalistic human-readable serialization, suitable for copy/pasting in a note
-- **.md**: suitable for printing or archiving
-
-## Notable export paths:
-- `/Questionnaires/<QuestionnaireId>.json` exports the Questionnaire metadata definition
-- `/Questionnaires/<QuestionnaireId>.deep.json` exports the full Questionnaire definition, including questions and sections
-- `/Questionnaires/<QuestionnaireId>.data.json` exports the forms containing answers to the specified Questionnaire. Filters and processors can be added, as shown in the examples above.
-- `/Subjects/<MRN>/<Encounter ID>.data.deep.json` exports a visit and all its associated forms. Filters and processors can be added, as shown in the examples above.
-- `/Subjects/<MRN>.deep.data.dataFilter:modifiedAfter=2025-07-19.dataOption:descendantData=true.dataOption:formSelectors=deep%5C.bare.json` exports a Patient and all the forms, from all their visits, that have been modified since the specified date.
-- `/Forms/<Form ID>.deep.json` exports a Form with all its answers. Filters and processors can be added, as shown in the examples above.
-- `/Forms/<Form ID>.deep.bare.-identify.-dereference.nolinks.-answerCopy.json` exports a Form with all its answers in a simplified form, with almost no metadata.
-- `/Forms/<Form ID>.md` exports a Markdown-formatted view of a Form. Use `.txt` to export plain text instead.
-
-## Example: Weekly OAIP Form Export
-`/Questionnaires/OAIP.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.labels.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvHeader:raw.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv`
-- `/Questionnaires/OAIP`: Export the OAIP questionnaire
-- `.data`: Include the forms that answer this questionnaire
-- `.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00`: Files modified after 2 AM on July 19th, UTC -5. Do note that the `\` from a standard time stamp has been URL encoded to `%5C`. The shorter format `2025-07-19` is also supported, and interpreted as Midnight (time `T00:00:00.000`) in the server's timezone.
-- `.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00`: Files modified before 2 AM on July 26th, UTC -5
-- `.labels`: Include the human readable version of answers, instead of the raw data (eg. `Never` instead of `0`)
-- `.formToSurveyLinks`: Include the path to the relevant Survey Events form in the form data. This adds an `@survey` property, which is included in the export later
-- `.dataFilter:status=SUBMITTED`: Only include forms with the `SUBMITTED` status flag
-- `.csvIncludeFields:@survey=Survey`: Special instruction for the csv output format. Include the `@survey` property in the output column with the label `Survey`
-- `.csvHeader:raw`: Special instruction for the csv output format. Include the raw property names as a header in addition to the (default) labels
-- `.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month`: Do not include the question `oaip_visit_month` or it's answers. The path to this question has been URL  encoded twice from `/Questionnaires/OAIP/oaip_module1/oaip_visit_month`, first to replace the `/` with `%2F` and second to replace `%` with `%25`
-- `.csv`: Export the data as a csv file.
-
-## Example: Weekly Survey Event Form Export
-`/Questionnaires/Survey events.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.dataFilter:statusNot=INCOMPLETE.labels.csv`
-
-## Example: Exporting all the data for a Visit as JSON:
-`/Subjects/<MRN>/<Encounter ID>.data.deep.json`
-
-## Example: Exporting a Patient and all the forms, from all their visits, that have been modified since the specified date.
-- `/Subjects/<MRN>.deep.data.dataFilter:modifiedAfter=2025-07-19.dataOption:descendantData=true.dataOption:formSelectors=deep%5C.bare.json` exports a
-## Notes on processors and filters:
-- Processors and filters that expect a date to be provided can accept that date in a variety of formats. For example,
-    - `2025-01-01T02:00:00%5C.000-05:00`: A fully specified date, including date (Jan. 1), time (02:00:00), millisecond (.000), and timezone (-05:00)
-    - `2025-01-01T02:00`: A simplified datetime, interpretted using the server's timezone
-    - `2025-01-01`: A date, interpretted as midnight on that day in the server's timezone
-- Some processors are enabled by default. These processors can be disabled by including their name prefixed with a `-`. For example, `.-identify` would disable the `identify` processor. These default processors are labeled below with `isEnabledByDefault`.
-- Some processors or filters are set up to only run on a specific data type. These restrictions are noted in their description. For example, `Only runs on Forms`.
-- Some processors have multiple implementations under the same name. These instances are generally designed to accomplish the same goal, each working on specific data types or in specific situations, and enabling one of them will enable all of them.
 
 ## Processors:
 ### answerCopy:
