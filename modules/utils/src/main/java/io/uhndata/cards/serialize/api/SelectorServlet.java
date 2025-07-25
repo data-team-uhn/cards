@@ -167,7 +167,7 @@ public class SelectorServlet extends SlingSafeMethodsServlet
     private void writeMarkdown(Writer out, JsonObject result)
         throws IOException
     {
-        writeObject(out, result, "", "");
+        writeObject(out, result, "#", "");
     }
 
     private void writeValue(Writer out, JsonValue result, String header, String indentation)
