@@ -37,4 +37,10 @@ public interface DataFilterFactory
      * @return a list of filters that could be parsed by this factory, an empty list if nothing matched
      */
     List<DataFilter> parseFilters(List<Pair<String, String>> filters, List<String> allSelectors);
+
+    /**
+     * The details about any filters that may be created by this factory.
+     * @return TODO
+     */
+    List<SelectorDetails> getFilterDetails();
 }
