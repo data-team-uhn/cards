@@ -203,15 +203,23 @@ public class SelectorServlet extends SlingSafeMethodsServlet
             }
         }
 
+
         for (Entry<String, JsonValue> array : childArrays) {
             out.write(String.format("%s#%s %s:\n", indentation, header, array.getKey()));
             writeArray(out, array.getValue().asJsonArray(), header, indentation);
         }
 
-        for (Entry<String, JsonValue> object : childObjects) {
-            out.write(String.format("%s#%s %s:\n", indentation, header, object.getKey()));
-            writeObject(out, object.getValue().asJsonObject(), "#" + header, indentation);
-        }
+        childObjects.stream()
+            .sorted((Entry<String, JsonValue> first, Entry<String, JsonValue> second)
+                -> first.getKey().compareTo(second.getKey()))
+            .forEach((Entry<String, JsonValue> object) -> {
+                try {
+                    out.write(String.format("%s#%s %s:\n", indentation, header, object.getKey()));
+                    writeObject(out, object.getValue().asJsonObject(), "#" + header, indentation);
+                } catch (IOException e) {
+                    // TODO: Should not happen
+                }
+            });
 
     }
 

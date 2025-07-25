@@ -20,7 +20,7 @@
 package io.uhndata.cards.serialize.spi;
 
 /**
- * The details about a selctor that can be used to filter or modify what data is returned.
+ * The details about a selector that can be used to filter or modify what data is returned.
  *
  * @version $Id$
  */
