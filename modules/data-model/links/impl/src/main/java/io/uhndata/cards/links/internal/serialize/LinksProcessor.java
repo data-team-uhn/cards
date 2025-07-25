@@ -54,7 +54,8 @@ public class LinksProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Simplify link serialization to only include the link type and path to the linked resource";
+        return "Simplify the serialization of links to other resources (such as other forms) to "
+            + "only include the link type and path to the linked resource.";
     }
 
     @Override

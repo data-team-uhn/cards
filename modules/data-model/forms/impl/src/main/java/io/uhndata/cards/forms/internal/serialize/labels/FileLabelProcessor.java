@@ -45,7 +45,8 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     @Override
     public String getDescription()
     {
-        return super.getDescription() + "Get the human readable answer for file questions.";
+        return super.getDescription()
+            + "Get the human readable answer for file questions by outputting the file name instead of the path.";
     }
 
     @Override

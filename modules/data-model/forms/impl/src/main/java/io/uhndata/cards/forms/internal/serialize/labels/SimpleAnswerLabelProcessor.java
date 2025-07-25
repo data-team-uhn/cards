@@ -61,8 +61,8 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
     @Override
     public String getDescription()
     {
-        return "Only runs on forms\n."
-            + "Add the human readable version of an answer to it's serialization in the `displayedValue` property";
+        return "Only runs on `Forms`.\n"
+            + "Add the human readable version of an answer to its serialization in the `displayedValue` property";
     }
 
     @Override

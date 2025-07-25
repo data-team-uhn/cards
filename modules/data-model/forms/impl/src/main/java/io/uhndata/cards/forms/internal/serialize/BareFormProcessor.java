@@ -61,7 +61,7 @@ public class BareFormProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Only runs on forms.\n"
+        return "Only runs on `Forms`.\n"
             + "Simplify form serialization by only including the subject name, questionnaire and each section"
             + "and question. Designed for use with `deep`, `-dereference` and `-identify`";
     }

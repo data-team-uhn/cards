@@ -45,7 +45,9 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
     @Override
     public String getDescription()
     {
-        return super.getDescription() + "Get the human readable answer for text and number questions with options.";
+        return super.getDescription()
+            + "Get the human readable answer for text and number questions with options by outputting the answer "
+            + "option's label instead of the stored value.";
     }
 
     @Override

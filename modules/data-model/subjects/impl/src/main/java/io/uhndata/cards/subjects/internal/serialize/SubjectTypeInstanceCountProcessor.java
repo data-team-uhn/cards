@@ -59,8 +59,8 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Only runs on Subjects.\n"
-            + "Add the number of instances of a subject to the subject type json";
+        return "Only runs on `Subjects`.\n"
+            + "Include the number of subjects of that type in the subject type serialization.";
     }
 
     @Override

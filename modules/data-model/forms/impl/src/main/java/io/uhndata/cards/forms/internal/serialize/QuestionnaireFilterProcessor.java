@@ -71,21 +71,24 @@ public class QuestionnaireFilterProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Only runs on Questionnaires.\n"
-            + "Include or exclude question or sections.\n"
-            + "If only include options are provided, only those nodes and any descendants will be included\n"
-            + "If only exclude options are provided, all other nodes will be included.\n"
-            + "If both include and exclude options are provided, then for a node to be included it must be a "
-            + "specified include node or descendent thereof and also not be a member or descendant of an exclude node."
-            + "\nIt is not possible to include a descendant of an excluded node";
+        return "Only runs on `Questionnaires`.\n"
+            + "Include or exclude questions or sections.\n"
+            + "If only `include` options are provided, only those items and any descendants will be included\n"
+            + "If only `exclude` options are provided, all other items will be included.\n"
+            + "If both `include` and `exclude` options are provided, then for an item to be included it must be a "
+            + "listed as an `include` item or descendent thereof and also not be listed as or a descendant of an "
+            + "`exclude` item."
+            + "\nIt is not possible to include a descendant of an excluded item";
     }
 
     @Override
     public SelectorDetails getDetails()
     {
         return new SelectorDetails(getName(), getDescription(), isEnabledByDefault(null),
-            "include", "A path to an included node. `answerFilter:include=/Questionnaires/Path/To/Question`",
-            "exclude", "A path to an excluded node. answerFilter:exclude=/Questionnaires/Path/To/Question");
+            "include", "A path to an included question or section. "
+                + "`answerFilter:include=/Questionnaires/Path/To/Question`",
+            "exclude", "A path to an excluded question or section. "
+                + "`answerFilter:exclude=/Questionnaires/Path/To/Question`");
     }
 
     @Override

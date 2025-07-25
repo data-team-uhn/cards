@@ -45,7 +45,7 @@ public class SkipLinksProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Skip all links";
+        return "Exclude the links to other resources from serialization.";
     }
 
     @Override

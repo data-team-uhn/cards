@@ -46,8 +46,8 @@ public class ModifiedBefore extends BaseFilterFactory implements DataFilterFacto
     {
         List<SelectorDetails> result = new ArrayList<>();
         result.add(new SelectorDetails("modifiedBefore",
-            "Only show results that were modified before the requested time. "
-            + "eg. `.dataFilter:modifiedBefore=2025-01-01T06:00:00%5C.000-05:00` for forms modified before "
+            "Only show results that were modified before the requested datetime. "
+            + "e.g. `.dataFilter:modifiedBefore=2025-01-01T06:00:00%5C.000-05:00` for forms modified before "
             + "January 1, 2025 at 6 AM in the time zone UTC-5"));
         return result;
     }

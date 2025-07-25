@@ -51,7 +51,7 @@ public class PropertiesProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Serialize all node properties.";
+        return "Serialize node properties.";
     }
 
     @Override

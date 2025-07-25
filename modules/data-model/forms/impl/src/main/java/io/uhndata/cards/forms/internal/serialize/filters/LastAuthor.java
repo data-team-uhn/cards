@@ -50,7 +50,7 @@ public class LastAuthor extends BaseFilterFactory implements DataFilterFactory
         result.add(new SelectorDetails("modifiedBy",
             "Only show results that were last modified by the specified user."));
         result.add(new SelectorDetails("notModifiedBy",
-            "Only show results that were not last modified by the specified user."));
+            "Only show results that were last modified by anby other other than the specified user."));
         return result;
     }
 

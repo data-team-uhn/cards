@@ -59,10 +59,10 @@ public class ClinicDataFilterFactory extends BaseFilterFactory implements DataFi
     {
         List<SelectorDetails> result = new ArrayList<>();
         result.add(new SelectorDetails("clinic",
-            "Only show forms that belong to a user that has a visit information form for the specified clinic. "
+            "Only show forms that belong to a user that has a 'Visit information' form for the specified clinic. "
             + "If included multiple times, this includes forms belonging to any of the specified clinics."));
         result.add(new SelectorDetails("clinicNot",
-            "Exclude forms that belong to a user that has a visit information form for the specified clinic. "
+            "Exclude forms that belong to a user that has a 'Visit information' form for the specified clinic. "
             + "If included multiple times, this excludes forms belonging to any of the specified clinics."));
         return result;
     }

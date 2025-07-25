@@ -54,8 +54,8 @@ public class FormToSurveyLinkProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "If a node has a `belongsToSurvey` link, include the name of the linked form in the root of the form "
-            + "linking it";
+        return "If a form has a `belongsToSurvey` link, include the name of the linked form in the root of the "
+            + "linking form's serialization JSON.";
     }
 
     @Override

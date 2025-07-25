@@ -52,7 +52,7 @@ public class BareSubjectProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Only runs on Subjects.\n"
+        return "Only runs on `Subjects`.\n"
             + "Simplify subject serialization by only including simple labels for the name, type and parents of a"
             + "subject. Should be used with `-dereference` and `-identify`";
     }

@@ -63,7 +63,8 @@ public class ExcludeFilesProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Exclude file contents from an export. By default, exclude all files";
+        return "Exclude the contents of uploaded files from the serialization. "
+            + "By default, all uploaded files are excluded";
     }
 
     @Override
@@ -71,7 +72,7 @@ public class ExcludeFilesProcessor implements ResourceJsonProcessor
     {
         return new SelectorDetails(getName(), getDescription(), isEnabledByDefault(null),
              "exclude", "If this option is included, only exclude the specified file. "
-            + "`.excludeFiles:exclude=/Questionnaires/Path/To/Question`");
+            + "`.excludeFiles:exclude=/Questionnaires/Path/To/QuestionWithFileAnswer`");
     }
 
     @Override

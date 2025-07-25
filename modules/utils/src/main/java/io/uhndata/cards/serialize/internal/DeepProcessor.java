@@ -44,7 +44,9 @@ public class DeepProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Enable deep serialization of nodes, including all child nodes";
+        return "Enable deep serialization, i.e. including the serialization of all descendant items. "
+            + "For example, serializing a Form without `deep` would only output the form's properties. "
+            + "With `deep`, all the answers are included, organized by sections.";
     }
 
     @Override
