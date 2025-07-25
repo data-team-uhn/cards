@@ -43,7 +43,7 @@
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // Set a default title.
-  - title (String) = "DATA-PRO" mandatory autocreated
+  - title (String) = "Home page" mandatory autocreated
 
 //-----------------------------------------------------------------------------
 // A mapping reference from clinic name to a survey ID.
