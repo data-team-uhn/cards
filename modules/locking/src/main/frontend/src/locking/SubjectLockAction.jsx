@@ -231,7 +231,7 @@ function SubjectLockAction(props) {
 
   let getChildSubjects = (subject, subjects) => {
     Object.values(subject).forEach((child) => {
-      if (child["jcr:primaryType"] == "cards:Subject" && child["@path"].startsWith(subject["@path"])) {
+      if (child["jcr:primaryType"] == "cards:Subject" && child["@path"].startsWith(subject["@path"]) && !child["cards:lock"]) {
         subjects.push(child["jcr:uuid"]);
         getChildSubjects(child, subjects);
       }
