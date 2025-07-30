@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { checkPropTypes } from "../propTypes";
 import {
@@ -43,6 +43,8 @@ import FormattedText from "../components/FormattedText.jsx";
 
 import { camelCaseToWords }  from "./LabeledField";
 import { useQuestionnaireInViewContext } from '../questionnaire/QuestionnaireContext.jsx';
+import { useQuestionnaireTreeContext, getOrdinalString } from './QuestionnaireTreeContext.jsx';
+import { ENTRY_TYPES } from '../questionnaire/FormEntry.jsx';
 
 const useStyles = makeStyles()(theme => ({
   root : {
@@ -66,6 +68,7 @@ const useStyles = makeStyles()(theme => ({
     opacity: "0.6",
     fontWeight: "300 !important",
   },
+
   collapsed: {
     "& .MuiCardContent-root": {
       paddingTop: 0,
@@ -128,19 +131,18 @@ let QuestionnaireItemCard = (props) => {
   let [ moreInfoAnchor, setMoreInfoAnchor ] = useState(null);
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
+  const treeContext = useQuestionnaireTreeContext();
   const inView = useQuestionnaireInViewContext();
 
   const itemRef = useRef();
 
   useEffect(() => {
     if (itemRef.current) {
-      console.log("Setting in-view-data-id", data);
       itemRef.current.setAttribute('in-view-data-id', data['jcr:uuid']);
-      console.log("Setting in-view-data-id", itemRef.current.getAttribute('in-view-data-id'));
     }
   }, [data['jcr:uuid']])
 
-  // if autofocus is needed and specified in the url
+  // If autofocus is needed and specified in the url
   // create a ref to store the question container DOM element
   useEffect(() => {
     if (highlight) {
@@ -170,28 +172,52 @@ let QuestionnaireItemCard = (props) => {
     titleClasses.push(classes.titlePlaceholder);
   }
 
+
+  const ordinalPosition = useMemo(() => {
+    if (type === "Questionnaire" || !treeContext?.state?.nodes) {
+      return null;
+    }
+    // Get id of current item
+    const itemId = data['jcr:uuid'];
+    // Get the index of the item in the parent from treeContext.state.nodes object
+    const itemParent = Object.values(treeContext.state.nodes)
+      .find(item => item['id'] === itemId)?.parent;
+    const itemPosition = itemParent 
+      ? treeContext.state.nodes[itemParent].children
+        .filter(childId => ENTRY_TYPES.includes(treeContext.state.nodes[childId]?.jcrPrimaryType))
+        .indexOf(itemId) 
+      : null;
+    return itemPosition !== null ? getOrdinalString(itemPosition) : null;
+  }, [type, treeContext?.state?.nodes, data['jcr:uuid']]);
+
   return (
     <div
-      // TODO: doesnt work with deprecated styling hook
       // If Questionnaire then dont apply left border
       style={{borderLeft: type === "Questionnaire" ? "none" : `3px solid ${avatarColor || "black"}`,
-        display: "flex",
-        flexDirection: "row"
+        position: "relative",
     }}
       onClick={() => inView.highlighter.highlight(data['jcr:uuid'])}
     >
-      <div
-        style={{
-          flex: "2%",
-          backgroundColor: avatarColor || "black",
-          color: "white",
-        }}
-      >
-        #1
-      </div>
-      <div
-        style={{flex: "98%",}}
-      >
+
+    {
+      !!ordinalPosition && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            backgroundColor: avatarColor || "black",
+            fontSize: "9px",
+            color: "white",
+            zIndex: 1
+          }}
+        >
+          {ordinalPosition}
+        </div>
+      )
+    }
+
+      <div>
         <Card variant="outlined"
           ref={itemRef}
           className={cardClasses.join(" ")}

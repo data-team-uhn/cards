@@ -35,7 +35,6 @@ export function useInViewTracker(items, options = { threshold: 0.3 }) {
           const id = entry.target.getAttribute('in-view-data-id');
   
           if (entry.isIntersecting) {
-            // console.log('entry is intersecting', id);
             setActiveItem(id);
             setLastIntersectingItem(id);
           }
@@ -83,7 +82,6 @@ export function useInViewTracker(items, options = { threshold: 0.3 }) {
       setHighlightedItems(new Map(highlightedItems));
     },
     unhighlightAll: (ids) => {
-      console.log('unhighlight all')
       highlightedItems.forEach((_, id) => {
         highlightedItems.delete(id);
       })
@@ -99,7 +97,6 @@ export function useInViewTracker(items, options = { threshold: 0.3 }) {
 const DEFAULT_STATE = [];
 
 const QuestionnaireReaderContext = React.createContext(DEFAULT_STATE);
-// const QuestionnaireWriterContext = React.createContext();
 const QuestionnaireInViewContext = React.createContext();
 
 /**
@@ -122,7 +119,6 @@ export function QuestionnaireProvider(props) {
 
   // Use useInViewTracker for breadcrumb
   const inViewTracker = useInViewTracker(inViewEntries);
-  // console.log(inViewTracker);
   return (
     <QuestionnaireReaderContext.Provider value={questions}>
       <QuestionnaireInViewContext.Provider value={inViewTracker} {...props} />

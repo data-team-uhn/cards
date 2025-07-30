@@ -578,7 +578,6 @@ const warningValidators = {
 
 // Reducer Function
 const treeReducer = (state, action) => {
-    console.log(state, action)
     if (!action.type || !ACTIONS.includes(action.type)) {
         throw new Error("Invalid action type in treeReducer")
     }
@@ -637,43 +636,43 @@ const treeReducer = (state, action) => {
 export const QuestionnaireTreeContext = React.createContext();
 
 export const jcrActions = {
-    checkIn: (id) => {
+    checkIn: (globalLoginDisplay, {id}) => {
         let checkinForm = new FormData();
         checkinForm.set(":operation", "checkin");
-        return fetch(`/Questionnaires/${id}`, {
+        return fetchWithReLogin(globalLoginDisplay, `/Questionnaires/${id}`, {
             method: "POST",
             body: checkinForm
         });
     },
-    checkOut: (id) => {
+    checkOut: (globalLoginDisplay, {id}) => {
         let checkoutForm = new FormData();
         checkoutForm.set(":operation", "checkout");
-        return fetch(`/Questionnaires/${id}`, {
+        return fetchWithReLogin(globalLoginDisplay, `/Questionnaires/${id}`, {
             method: "POST",
             body: checkoutForm
         });
     },
 
-    fetchQuestionnaireData: (id) => {
+    fetchQuestionnaireData: (globalLoginDisplay, {id}) => {
         // 'links' is an implicit processor (called by default) so we don't use it to format our 'cards:Links' children
         // '.-links' formats as an object field with 'jcr:primaryType' property
         // '.links' formats as an array
         // 'deep' is an explicit processor
-        return fetch(`/Questionnaires/${id}.-links.deep.json`)
+        return fetchWithReLogin(globalLoginDisplay, `/Questionnaires/${id}.-links.deep.json`)
     },
 
-    fetchResourceJSON: (data) => { return fetch(`${data["@path"]}.deep.json`) },
+    fetchResourceJSON: (globalLoginDisplay, {data}) => { return fetchWithReLogin(globalLoginDisplay, `${data["@path"]}.deep.json`) },
 
     // https://sling.apache.org/documentation/bundles/manipulating-content-the-slingpostservlet-servlets-post.html#order-1
     // :order index
-    reorderEntry: (reorderSourceNode, newPosition) => {
+    reorderEntry: (globalLoginDisplay, {reorderSourceNode, newPosition}) => {
         let reorderForm = new FormData();
         // const order = newPosition === -1 ? 'last' : `${newPosition}`
         const order = newPosition
         const path = reorderSourceNode.path
         reorderForm.set(":order", order);
         reorderForm.set(":http-equiv-accept", "application/json");
-        return fetch(path, {
+        return fetchWithReLogin(globalLoginDisplay, path, {
             method: "POST",
             body: reorderForm
         });
@@ -684,7 +683,7 @@ export const jcrActions = {
     // :operation=move
     // :dest=/content/newParentNode/childNode
     // :order=before siblingNodeName || index
-    moveEntryNested: (reorderSourceNode, newParentNode, newPosition) => {
+    moveEntryNested: (globalLoginDisplay, {reorderSourceNode, newParentNode, newPosition}) => {
         const reorderForm = new FormData();
         // Use numeric 'order' value to move to specific position
         // If newPosition -1, then move to top of parent's children
@@ -698,12 +697,27 @@ export const jcrActions = {
         // For the case of reordering within same parent
         // reorderForm.set(":replace", "true");
         reorderForm.set(":http-equiv-accept", "application/json");
-        return fetch(path, {
+        return fetchWithReLogin(globalLoginDisplay, path, {
             method: "POST",
             body: reorderForm,
         });
     },
 
+}
+
+/**
+ * Utility function for formatting child index into ordinal string
+ * 
+ */
+export function getOrdinalString(number) {
+    if (number < 0) return null; // Ensure the number is positive or zero
+
+    number += 1; // Offset the number by 1
+
+    const suffixes = ["th", "st", "nd", "rd"];
+    const value = number % 100;
+
+    return number + (suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]);
 }
 
 /**
@@ -725,15 +739,15 @@ export function QuestionnaireTreeProvider(props) {
 
     // Actions
     const fetchRootData = useCallback(() => {
-        return jcrActions.fetchQuestionnaireData(questionnaireId)
+        return jcrActions.fetchQuestionnaireData(globalLoginDisplay, {id: questionnaireId})
             .then(response => response.json())
             .then(data => {
                 dispatch({ type: INITIALIZE_ROOT, payload: { jcrData: data } })
             })
-    }, [])
+    }, [globalLoginDisplay, questionnaireId])
 
     const fetchRootNodes = useCallback(() => {
-        return jcrActions.fetchQuestionnaireData(questionnaireId)
+        return jcrActions.fetchQuestionnaireData(globalLoginDisplay, {id: questionnaireId})
             .then(response => response.json())
             .then(data => {
                 const nodes = initializeRoot(data)
@@ -813,10 +827,10 @@ export function QuestionnaireTreeProvider(props) {
         const reorderSourceParentId = nodes[reorderSourceId].parent
         const isNewParent = newParentId != reorderSourceParentId
         const submit = isNewParent ?
-            jcrActions.moveEntryNested(nodes[reorderSourceId], nodes[newParentId], newPosition)
-            : jcrActions.reorderEntry(nodes[reorderSourceId], newPosition)
+            jcrActions.moveEntryNested(globalLoginDisplay, {reorderSourceNode: nodes[reorderSourceId], newParentNode: nodes[newParentId], newPosition})
+            : jcrActions.reorderEntry(globalLoginDisplay, {reorderSourceNode: nodes[reorderSourceId], newPosition})
         return submit
-    }, [state.nodes])
+    }, [globalLoginDisplay, state.nodes])
 
 
     useEffect(() => {
@@ -826,6 +840,8 @@ export function QuestionnaireTreeProvider(props) {
     }, [])
 
     const actions = {
+        checkIn(id) { jcrActions.checkIn(globalLoginDisplay, {id}) },
+        checkOut(id) { jcrActions.checkOut(globalLoginDisplay, {id}) },
         fetchRootData,
         clearTree,
         refreshTree,

@@ -46,7 +46,6 @@ const useEntryChipStyles = makeStyles()((theme, { color }) => ({
 // Separate component for the chip to properly handle the props-based styles
 const EntryChip = ({ label, entryColor, onMouseEnter, onMouseLeave }) => {
   const { classes } = useEntryChipStyles({ color: entryColor });
-  console.log(classes)
   return (
     <Chip 
       label={label}
