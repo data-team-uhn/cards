@@ -68,7 +68,6 @@ const useStyles = makeStyles()(theme => ({
     opacity: "0.6",
     fontWeight: "300 !important",
   },
-
   collapsed: {
     "& .MuiCardContent-root": {
       paddingTop: 0,
@@ -127,13 +126,10 @@ let QuestionnaireItemCard = (props) => {
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
-
   let [ moreInfoAnchor, setMoreInfoAnchor ] = useState(null);
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
-
   const treeContext = useQuestionnaireTreeContext();
   const inView = useQuestionnaireInViewContext();
-
   const itemRef = useRef();
 
   useEffect(() => {

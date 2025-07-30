@@ -123,12 +123,12 @@ function ResourceHeader (props) {
     <Grid size={12} className={classes.resourceHeader} style={{top: contentOffset}} id="cards-resource-header">
       <Grid container justifyContent="space-between" alignItems="center" wrap="nowrap">
         <Grid>
-          <Breadcrumbs separator={separator}>
-              {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
-              <Collapse in={fullBreadcrumbTrigger}>
-                <Typography variant="subtitle2">{title}</Typography>
-              </Collapse>
-            </Breadcrumbs>
+        <Breadcrumbs separator={separator}>
+          {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
+          <Collapse in={fullBreadcrumbTrigger}>
+            <Typography variant="subtitle2">{title}</Typography>
+          </Collapse>
+        </Breadcrumbs>
         </Grid>
         <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid}>
           { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }

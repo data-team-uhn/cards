@@ -224,10 +224,8 @@ export default function ReorderForm(props) {
         // If newParent has empty children is empty of entry types (conditionals not included) then set positionRadio to first 
         const newParentChildrenPrimaryTypes = nodes[newParent]?.children.map(child => nodes[child].jcrPrimaryType)
         const newParentHasNoEntryChildren = newParentChildrenPrimaryTypes?.filter(primaryType => ENTRY_TYPES.includes(primaryType))?.length === 0
-        // const newParentHasNoEntryChildren = !!nodes[newParent]?.children.map(child => nodes[child].jcrPrimaryType).some(childPrimaryType => ENTRY_TYPES.includes(childPrimaryType))
 
         if (newParentHasNoEntryChildren) {
-            console.log('New parent has no entry children, setting positionRadio to first')
             reorderDispatch({ type: 'SET_POSITIONRADIO', payload: 'first' })
         }
     }, [newParent])

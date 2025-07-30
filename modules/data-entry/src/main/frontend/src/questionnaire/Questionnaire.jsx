@@ -80,27 +80,20 @@ let Questionnaire = (props) => {
 // GUI for displaying details about a questionnaire.
 let QuestionnaireComponent = (props) => {
   let { classes } = props;
-
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ error, setError ] = useState();
-
-  let location = useLocation();
+  let location = useLocation();  
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let id = /Questionnaires\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
-
   const treeContext = useQuestionnaireTreeContext();
   const { data } = treeContext.state;
-
   const questionnaireTitle = data?.title || decodeURI(id);
-
   let navigate = useNavigate();
   let isEdit = window.location.pathname.endsWith(".edit");
   let isReorder = window.location.pathname.endsWith(".reorder");
-
-  let pageNameWriter = usePageNameWriterContext();
-
   const [editTab, setEditTab] = useState(isEdit ? 'edit' : isReorder ? 'reorder' : 'edit')
+  let pageNameWriter = usePageNameWriterContext();
 
   // First, fetch the questionnaire data
   useEffect(() => {
@@ -301,7 +294,7 @@ let QuestionnaireItemSet = (props) => {
       // Sort by the specified order
       .sort((a, b) => a.defaultOrder - b.defaultOrder)
       // Record the sorted entries into the priority list
-      .forEach(v => prioritaryModels = { ...prioritaryModels, ...v.entries });
+      .forEach(v => prioritaryModels = {...prioritaryModels, ...v.entries});
 
     // If there are any entries with defaultOrder, we update the priorityEntryTypes
     if (Object.keys(prioritaryModels).length > 0) {
@@ -319,8 +312,8 @@ let QuestionnaireItemSet = (props) => {
     //   group3 : {entries: {g: "g,json", h: "h.json"}, defaultOrder: 1}
     // }
     // => {a: "a.json", b: "b,json", c: "c.json", f: "f.json"}
-    Object.entries(models).forEach(([k, v]) => {
-      if (typeof(v) == "object") {
+    Object.entries(models).forEach(([k,v]) => {
+      if ( typeof(v) == "object") {
         if (typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) == "undefined") {
           // Flatten groups with `entries` but without `defaultOrder` (the ones with defaultOrder are already in the "priority" list)
           generalModels = {...generalModels, ...v.entries}
@@ -375,7 +368,7 @@ let QuestionnaireItemSet = (props) => {
   )
 
   // There is no data to display, do not render an empty container
-  if (!!!children &&
+  if ( !!!children &&
     !Object.values(data).some(v => [...(generalEntryTypes || []), ...(prioritaryEntryTypes || [])].includes(v['jcr:primaryType']))) {
     return null;
   }
@@ -607,13 +600,10 @@ let QuestionnaireEntry = (props) => {
 
   // -------------------------------------------------------------
   // Handle data updates (field changes, child item creation or deletion)
-  // TODO: treeContext.dispatch (delete, field change, create)
   let handleDataChange = (newData) => {
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
-      // TODO field changes not propagated?
-      // onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
       // Try to reload the data from the server
       fetch(`${data["@path"]}.deep.json`)
@@ -624,8 +614,6 @@ let QuestionnaireEntry = (props) => {
           // Update the context to remove the deleted item
           if (!!data['jcr:uuid']) {
             treeContext.actions.removeNode(data['jcr:uuid'])
-            // TODO check conditionals linked to deleted questions
-            // treeContext.dispatch({ type: 'REMOVE_NODE', payload: {nodeId: `${data['jcr:uuid']}`} })
           }
           // Then pass it up to the parent
           onActionDone?.();

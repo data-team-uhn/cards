@@ -111,7 +111,6 @@ function QuestionnaireAutocomplete(props) {
   const { classes } = useStyles();
 
   let unselectEntity = (index) => {
-    console.log('unselectEntity', index);
     onSelectionChanged(oldValues => {
       let newValues = oldValues.slice();
       newValues.splice(index, 1);
@@ -163,7 +162,7 @@ function QuestionnaireAutocomplete(props) {
         multiple={!!multiple}
         disableCloseOnSelect={!!multiple}
         disableClearable
-        value={multiple
+        value={ multiple
           ? entities?.filter(v => selection.includes(getOptionValue(v))) ?? []
           : entities.find(v => selection.includes(getOptionValue(v))) ?? ""
         }
