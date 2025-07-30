@@ -58,7 +58,7 @@ import { QuestionnaireProvider } from "./QuestionnaireContext"; //This is purely
 import { stripCardsNamespace } from "./QuestionnaireUtilities";
 import { ReorderModal } from "../questionnaireEditor/ReorderModal.jsx";
 import EditorHeader from "../questionnaireEditor/EditorHeader.jsx";
-import { useQuestionnaireTreeContext, jcrActions, QuestionnaireTreeProvider } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
+import { useQuestionnaireTreeContext, QuestionnaireTreeProvider } from "../questionnaireEditor/QuestionnaireTreeContext.jsx";
 import _ from "lodash";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
@@ -114,8 +114,8 @@ let QuestionnaireComponent = (props) => {
   useEffect(() => {
     if (!(isEdit || isReorder)) return;
     //Perform a JCR check-out of the Questionnaire and register a check-in
-    const checkout = jcrActions.checkOut(id);
-    const performCheckIn = () => { jcrActions.checkIn(id) };
+    treeContext.actions.checkOut(id);
+    const performCheckIn = () => { treeContext.actions.checkIn(id) };
     window.addEventListener("beforeunload", performCheckIn);
     return (() => {
       window.removeEventListener("beforeunload", performCheckIn);
@@ -664,14 +664,14 @@ let QuestionnaireEntry = (props) => {
               {...menuProps}
             />
           }
-          {/* { !!menuProps?.isMainAction ?
+          { !!menuProps?.isMainAction ?
             // If this is the main action, render MoveEntryModal without data to select reorder source
             // Otherwise render MoveEntryModal with data set
             <ReorderModal />
             :
             [...QUESTION_TYPES, ...SECTION_TYPES].includes(entryData['jcr:primaryType']) &&
               <ReorderModal entryData={entryData} />
-          } */}
+          }
         </>}
         onActionDone={handleDataChange}
         model={model}

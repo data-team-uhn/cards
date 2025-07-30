@@ -29,21 +29,10 @@ import {
     RadioGroup,
     Radio,
 } from '@mui/material';
-import { useQuestionnaireTreeContext, isDescendant } from './QuestionnaireTreeContext';
+import { useQuestionnaireTreeContext, isDescendant, getOrdinalString } from './QuestionnaireTreeContext';
 import QuestionnaireAutocomplete from '../questionnaire/QuestionnaireAutocomplete';
 import { stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
 import { ENTRY_TYPES } from '../questionnaire/FormEntry';
-
-function getOrdinalString(number) {
-    if (number < 0) return null; // Ensure the number is positive or zero
-
-    number += 1; // Offset the number by 1
-
-    const suffixes = ["th", "st", "nd", "rd"];
-    const value = number % 100;
-
-    return number + (suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]);
-}
 
 // State for reorder submission
 // {status: 'idle' | 'loading' | 'success' | 'error', data: null, error: null, inputs: {reorderSource: string, newParent: string, positionRadio: string, newPosition: number}}
@@ -233,9 +222,12 @@ export default function ReorderForm(props) {
     useEffect(() => {
         setNewPositionSelection([])
         // If newParent has empty children is empty of entry types (conditionals not included) then set positionRadio to first 
-        const newParentHasNoEntryChildren = !!nodes[newParent]?.children.map(child => nodes[child].jcrPrimaryType).some(childPrimaryType => ENTRY_TYPES.includes(childPrimaryType))
+        const newParentChildrenPrimaryTypes = nodes[newParent]?.children.map(child => nodes[child].jcrPrimaryType)
+        const newParentHasNoEntryChildren = newParentChildrenPrimaryTypes?.filter(primaryType => ENTRY_TYPES.includes(primaryType))?.length === 0
+        // const newParentHasNoEntryChildren = !!nodes[newParent]?.children.map(child => nodes[child].jcrPrimaryType).some(childPrimaryType => ENTRY_TYPES.includes(childPrimaryType))
 
         if (newParentHasNoEntryChildren) {
+            console.log('New parent has no entry children, setting positionRadio to first')
             reorderDispatch({ type: 'SET_POSITIONRADIO', payload: 'first' })
         }
     }, [newParent])
@@ -372,6 +364,10 @@ export default function ReorderForm(props) {
                         {(() => {
                             const noNewParent = !newParent
                             const newParentHasNoEntryChildren = !nodes[newParent]?.children.some(child => ENTRY_TYPES.includes(nodes[child].jcrPrimaryType))
+                            const filteredChildren = nodes[nodes[reorderSource]?.parent]?.children?.filter(nodeId => ENTRY_TYPES.includes(nodes[nodeId]?.jcrPrimaryType));
+                            const originalPositionIndex = filteredChildren?.indexOf(reorderSource);
+                            const originalPositionIsFirst = originalPositionIndex === 0;
+                            const originalPositionIsLast = originalPositionIndex === filteredChildren?.length - 1;
                             return (
                                 [
                                     { value: 'first', label: 'First' },
@@ -381,7 +377,12 @@ export default function ReorderForm(props) {
                                     <FormControlLabel key={value}
                                         value={value}
                                         label={label}
-                                        disabled={noNewParent || newParentHasNoEntryChildren}
+                                        disabled={[
+                                            noNewParent,
+                                            newParentHasNoEntryChildren,
+                                            (value === 'first' && originalPositionIsFirst),
+                                            (value === 'last' && originalPositionIsLast)
+                                        ].includes(true)}
                                         control={<Radio />}
                                     />
                                 ))
@@ -451,7 +452,6 @@ export default function ReorderForm(props) {
             .catch(handleError)
             .finally(handleClose);
     };
-
 
     return (
         <>
