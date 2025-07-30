@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
 
@@ -28,11 +28,15 @@ import {
 import MoveDownIcon from '@mui/icons-material/MoveDown';
 import ReorderForm from './ReorderForm';
 
+import { useQuestionnaireTreeContext } from './QuestionnaireTreeContext';
+
 // If no entry data is provided then reorderSource can be selected
 export function ReorderModal(props) {
     const { entryData } = props;
     const noEntryData = [undefined, null].includes(entryData);
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const treeContext = useQuestionnaireTreeContext()
+    const title = treeContext?.state?.nodes[entryData?.['jcr:uuid']]?.title
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -55,7 +59,7 @@ export function ReorderModal(props) {
                 fullWidth
             >
                 <DialogTitle>
-                    {noEntryData ? "Select position of an entry" : `Select position of '${entryData['@name']}'`}
+                    {noEntryData ? "Select position of an entry" : `Select position of '${title}'`}
                 </DialogTitle>
                 <ReorderForm
                     onClose={handleClickClose}
