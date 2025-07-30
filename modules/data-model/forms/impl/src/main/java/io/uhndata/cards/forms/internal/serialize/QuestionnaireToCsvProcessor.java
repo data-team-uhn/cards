@@ -138,13 +138,14 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             // Collect all the headers from the configuration, questions and any other hardcoded columns
             processHeaders(questionnaire, resolver, csvData, columns, rawColumns, extraColumns, resolutionPathInfo);
 
-            List<StringPair> replacements = extractArgumentPairs("csvColumnReplace", resolutionPathInfo);
 
             // Print header
             if (!resolutionPathInfo.contains("-csvHeader:labels")) {
+                List<StringPair> replacements = extractArgumentPairs(".csvReplaceColumnLabels:", resolutionPathInfo);
                 printRecordWithReplacements(columns, replacements, csvPrinter);
             }
             if (resolutionPathInfo.contains("csvHeader:raw")) {
+                List<StringPair> replacements = extractArgumentPairs(".csvReplaceColumnIds:", resolutionPathInfo);
                 printRecordWithReplacements(rawColumns, replacements, csvPrinter);
             }
 
@@ -175,7 +176,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
                 endIndex = decodedPath.length();
             }
 
-            String[] pieces = decodedPath.substring(startIndex + INCLUDE_FIELDS.length(), endIndex)
+            String[] pieces = decodedPath.substring(startIndex + name.length(), endIndex)
                 .split("=", 2);
             String left = pieces[0];
             String right = pieces.length == 2 ? pieces[1] : pieces[0];

@@ -110,7 +110,8 @@ function ExportButton(props) {
   // to enable identifiers, add .csvHeader:raw
   const [ hasHeaderLabels, setHeaderLabels ] = useState(DEFAULTS.hasHeaderLabels);
   const [ hasHeaderIdentifiers, setHeaderIdentifiers ] = useState(DEFAULTS.hasHeaderIdentifiers);
-  const [ csvReplacement, setCsvReplacement ] = useState(DEFAULTS.csvReplacement);
+  const [ csvReplaceColumnLabels, setCsvReplaceColumnLabels ] = useState(DEFAULTS.csvReplacement);
+  const [ csvReplaceColumnIds, setCsvReplaceColumnIds ] = useState(DEFAULTS.csvReplacement);
   // Specifies if the .labels processor is enabled (disabled by default for values)
   const [ hasAnswerLabels, setAnswerLabels ] = useState(DEFAULTS.hasAnswerLabels);
 
@@ -188,9 +189,14 @@ function ExportButton(props) {
     if (hasHeaderIdentifiers) {
       path += ".csvHeader:raw";
     }
-    if (csvReplacement) {
-      csvReplacement.split(",").forEach(replacement => {
-        path += ".csvColumnReplace:" + encodeURIComponent(encodeURIComponent(replacement));
+    if (csvReplaceColumnLabels) {
+      csvReplaceColumnLabels.split(",").forEach(replacement => {
+        path += ".csvReplaceColumnLabels:" + encodeURIComponent(encodeURIComponent(replacement));
+      })
+    }
+    if (csvReplaceColumnIds) {
+      csvReplaceColumnIds.split(",").forEach(replacement => {
+        path += ".csvReplaceColumnIds:" + encodeURIComponent(encodeURIComponent(replacement));
       })
     }
     if (selectedEntityIds.length > 0) {
@@ -341,18 +347,33 @@ function ExportButton(props) {
             </Grid>
           </Grid>
           <Grid container alignItems='center' className={classes.container}>
-            <Grid size={4}><Typography variant="subtitle2">Header replacement:</Typography></Grid>
+            <Grid size={4}><Typography variant="subtitle2">Header label replacement:</Typography></Grid>
             <Grid size={8}>
               <TextField
                 variant="standard"
-                label="Regex based replace"
-                placeholder="/@=#,/_=-"
-                value={csvReplacement}
-                onChange={(event) => setCsvReplacement(event.target.value)}
+                helperText="Regex based replace all. Format: <regex to find>=<value to replace with>,<regex2>=<value2>,..."
+                placeholder="@=#"
+                value={csvReplaceColumnLabels}
+                onChange={(event) => setCsvReplaceColumnLabels(event.target.value)}
+                fullwidth
+                multiline
               />
             </Grid>
           </Grid>
-
+          <Grid container alignItems='center' className={classes.container}>
+            <Grid size={4}><Typography variant="subtitle2">Header Id replacement:</Typography></Grid>
+            <Grid size={8}>
+              <TextField
+                variant="standard"
+                helperText="Regex based replace all. Format: <regex to find>=<value to replace with>,<regex2>=<value2>,..."
+                placeholder="@=#"
+                value={csvReplaceColumnIds}
+                onChange={(event) => setCsvReplaceColumnIds(event.target.value)}
+                fullwidth
+                multiline
+              />
+            </Grid>
+          </Grid>
           <Grid container alignItems='center' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
             <Grid size={8}>
