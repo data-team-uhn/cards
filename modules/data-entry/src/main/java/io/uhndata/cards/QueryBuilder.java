@@ -176,7 +176,7 @@ public class QueryBuilder implements Use
             this.resourceSelectors = StringUtils.defaultString(request.getParameter("resourceSelectors"));
             this.disableEscaping = "true".equals(doNotEscape);
             final String showTotalRowsParam = request.getParameter("showTotalRows");
-            this.showTotalRows = StringUtils.isBlank(showTotalRowsParam) || "true".equals(showTotalRowsParam);
+            this.showTotalRows = "true".equals(showTotalRowsParam);
 
             QueryResult results = query(request);
             if (results == null) {
