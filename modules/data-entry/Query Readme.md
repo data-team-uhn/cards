@@ -24,7 +24,7 @@ The basic query structure is as follows:
 - `req`: A reflected query parameter, it will be copied in the response, and can be used to differentiate between multiple requests sent in parallel.
 - `resourceSelectors`: A list of selectors to use when serializing the matching resources as JSON. See the description in `modules/utils/Serialization Readme.md` for more details about selectors.
 - `rawResults=true`: Returns just the selected columns in a map instead of the JSON serialization of the matching resources.
-- `showTotalRows=true`: Requests to return a complete count of the matching items; for performance reasons the default is to only count up to 10 times the number of requested items and indicate in the response that more items are available
+- `showTotalRows=true`: Requests to return a complete count of the matching items; for performance reasons the default is to only count up to 10 times the number of requested items and indicate in the response that more items are available.
 
 ### Response format
 
@@ -90,7 +90,14 @@ The above query is slow, it is a lot faster to query the UUIDs of the subjects i
 
 ### A note about `option (index tag)`
 
-For faster queries, there are several indexes built on top of the data. There are two types of indexes, simple property indexes that only map the values of a specific property to the nodes matching that value, and Lucene indexes that allow more complex queries. Property indexes are very fast when only one property is being queried, and reflect data in realtime, but when there's more than one condition imposed on a node, only one of those conditions will use an index while the rest are checked one by one, which may be very slow. Lucene indexes are more versatile and usually just as fast as property indexes, although it takes a few seconds to reflect the newest data. Without specifying which type of index to use may result in the wrong index being used, which may lead to very slow queries. It is recommended to always append `OPTION (index tag cards)` at the end of the query to force the use of the Lucene indexes, unless a realtime count of the number of matches for a very simple query is needed.
+For faster queries, there are several indexes built on top of the data.
+There are two types of indexes, simple property indexes that only map the values of a specific property to the nodes matching that value, and Lucene indexes that allow more complex queries.
+Property indexes are very fast when only one property is being queried, and reflect data in realtime,
+but when there's more than one condition imposed on a node, only one of those conditions will use an index while the rest are checked one by one, which may be very slow.
+Lucene indexes are more versatile and usually just as fast as property indexes, although it takes a few seconds to reflect the newest data.
+Not specifying which type of index to use may result in the wrong index being used, or no index at all, which may lead to very slow queries.
+It is recommended to always append `OPTION (index tag cards)` at the end of the query to force the use of the Lucene indexes, unless a realtime count of the number of matches for a very simple query is needed.
+It is also possible to request a property index to be used with `OPTION (index tag property)`, if a property index is the right one to use for the query.
 
 ## UUIDs Within CARDS Data
 Within CARDS, UUIDs are used in two places:
