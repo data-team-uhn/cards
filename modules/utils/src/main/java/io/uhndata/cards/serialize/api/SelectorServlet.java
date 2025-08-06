@@ -53,12 +53,12 @@ import io.uhndata.cards.serialize.spi.SelectorDetails.SelectorOption;
 
 /**
  * A servlet that lists the available {@code ResourceJsonProcessor}s and {@code DataFilter}s
- * which can be used as selectors for questionnaire data exports.
+ * which can be used as selectors for data serializtion or exports.
  *
  * @version $Id$
  */
 @Component(service = { Servlet.class })
-@SlingServletResourceTypes(resourceTypes = { "cards/QuestionnairesHomepage" }, extensions = {
+@SlingServletResourceTypes(resourceTypes = { "cards/ResourceHomepage" }, extensions = {
     "selectors" }, methods = { "GET", "POST" })
 public class SelectorServlet extends SlingSafeMethodsServlet
 {

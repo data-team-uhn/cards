@@ -52,6 +52,12 @@ public class ResourceLabelProcessor extends AbstractResourceLabelProcessor imple
     private ThreadResourceResolverProvider rrp;
 
     @Override
+    public String getDescription()
+    {
+        return "Get the human readable answer for resource questions.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 90;

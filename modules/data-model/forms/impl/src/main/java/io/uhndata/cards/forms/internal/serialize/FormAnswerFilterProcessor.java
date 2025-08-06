@@ -92,9 +92,9 @@ public class FormAnswerFilterProcessor implements ResourceJsonProcessor
     {
         return new SelectorDetails(getName(), getDescription(), isEnabledByDefault(null),
             "include", "A path to an included question or section. "
-                + "`answerFilter:include=/Questionnaires/Path/To/Question`",
+                + "e.g. `answerFilter:include=/Questionnaires/Path/To/Question`",
             "exclude", "A path to an excluded question or section. "
-                + "`answerFilter:exclude=/Questionnaires/Path/To/Question`");
+                + "e.g. `answerFilter:exclude=/Questionnaires/Path/To/Question`");
     }
 
     @Override

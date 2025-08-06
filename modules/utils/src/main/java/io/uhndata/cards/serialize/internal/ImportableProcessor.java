@@ -54,7 +54,8 @@ public class ImportableProcessor implements ResourceJsonProcessor
     @Override
     public String getDescription()
     {
-        return "Remove any properties from the output that would not be present in an importable questionnaire XML."
+        return "Export a file that is suitable for using as a source file to be imported. "
+            + "Removes any properties that are tied to a running instance such as unique ID and version control. "
             + "This processor is intended to be run alongside the `deep` and `-identify` processor";
     }
 

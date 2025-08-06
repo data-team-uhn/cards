@@ -71,7 +71,8 @@ public class ExcludeFilesProcessor implements ResourceJsonProcessor
     public SelectorDetails getDetails()
     {
         return new SelectorDetails(getName(), getDescription(), isEnabledByDefault(null),
-             "exclude", "If this option is included, only exclude the specified file. "
+            "exclude", "If this option is specified, only exclude the specified files. "
+            + "Use it multiple times to exclude more than one file. "
             + "`.excludeFiles:exclude=/Questionnaires/Path/To/QuestionWithFileAnswer`");
     }
 

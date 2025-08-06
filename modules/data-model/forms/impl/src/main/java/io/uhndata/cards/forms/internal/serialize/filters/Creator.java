@@ -48,9 +48,11 @@ public class Creator extends BaseFilterFactory implements DataFilterFactory
     {
         List<SelectorDetails> result = new ArrayList<>();
         result.add(new SelectorDetails("createdBy",
-            "Only show results that were created by the specified user."));
+            "Only show results that were created by the specified user. "
+            + "e.g. `.dataFilter:createdBy=admin`"));
         result.add(new SelectorDetails("notCreatedBy",
-            "Only show results that were created by any user other than the specified user."));
+            "Only show results that were created by any user other than the specified user. "
+            + "e.g. `.dataFilter:notCreatedBy=admin`"));
         return result;
     }
 

@@ -77,7 +77,7 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
     public String getDescription()
     {
         return "Exclude properties if their value is the default value or an obvious non-value:\n"
-            + " - If a property's' value matches its JCR-defined default value\n"
+            + " - If a property's value matches its defined default value\n"
             + " - If it's a `false` boolean\n"
             + " - If it's an empty string ''";
     }

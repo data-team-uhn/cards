@@ -59,13 +59,6 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
     }
 
     @Override
-    public String getDescription()
-    {
-        return "Only runs on `Forms`.\n"
-            + "Add the human readable version of an answer to its serialization in the `displayedValue` property";
-    }
-
-    @Override
     public int getPriority()
     {
         return 75;

@@ -48,8 +48,7 @@ public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements
     @Override
     public String getDescription()
     {
-        return super.getDescription()
-            + "Get the human readable answer for boolean questions by outputting the labels specified in the "
+        return "Get the human readable answer for boolean questions by outputting the labels specified in the "
             + "question definition, e.g. 'Yes' or 'True' instead of '1'.";
     }
 

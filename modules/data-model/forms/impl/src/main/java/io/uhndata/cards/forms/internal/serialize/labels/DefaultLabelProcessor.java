@@ -42,7 +42,7 @@ public class DefaultLabelProcessor extends SimpleAnswerLabelProcessor implements
     @Override
     public String getDescription()
     {
-        return super.getDescription() + "Get the human readable answer for number questions.";
+        return "Get the human readable answer for questions.";
     }
 
     @Override

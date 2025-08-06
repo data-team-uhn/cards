@@ -41,7 +41,7 @@ public class PedigreeLabelProcessor extends SimpleAnswerLabelProcessor implement
     @Override
     public String getDescription()
     {
-        return super.getDescription() + "Get pedigree question answers as an svg picture.";
+        return "Get the answers for pedigree questions as an svg picture.";
     }
 
     @Override
