@@ -22,7 +22,7 @@ The basic query structure is as follows:
 - `offset`: A 0-based number indicating the offset of the first item to include in the result, skipping over all the previous resources matching the query. Defaults to `0` if not specified.
 - `limit`: The number of items to include in the result, starting with the `offset`'th one. Defaults to `10` if not specified.
 - `req`: A reflected query parameter, it will be copied in the response, and can be used to differentiate between multiple requests sent in parallel.
-- `resourceSelectors`: A list of selectors to use when serializing the matching resources as JSON. See the description in `modules/utils/Serialization Readme.md` for more details about selectors.
+- `resourceSelectors`: A list of selectors to use when serializing the matching resources as JSON. See the description in [`Serialization.md`](Serialization.md) for more details about selectors.
 - `rawResults=true`: Returns just the selected columns in a map instead of the JSON serialization of the matching resources.
 - `showTotalRows=true`: Requests to return a complete count of the matching items; for performance reasons the default is to only count up to 10 times the number of requested items and indicate in the response that more items are available.
 

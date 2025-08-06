@@ -47,7 +47,7 @@ To use the pagination servlet, simply add `.paginate` at the end of the URL when
 - `limit`: The number of items to include in the result, starting with the `offset`'th one. Defaults to `10` if not specified.
 - `descending`: By default, results are ordered by their creation date, with the oldest first. To instead get the newest first, use `descending=true`.
 - `req`: A reflected query parameter, it will be copied in the response, and can be used to differentiate between multiple requests sent in parallel.
-- `resourceSelectors`: A list of selectors to use when serializing the matching resources as JSON. See the description in `modules/utils/Serialization Readme.md` for more details about selectors.
+- `resourceSelectors`: A list of selectors to use when serializing the matching resources as JSON. See the description in [`Serialization.md`](Serialization.md) for more details about selectors.
 - `fieldname`, `fieldcomparator`, `fieldvalue`: basic filters on the resources being listed. Use all three to put a single restriction on one of the resource properties, for example `fieldname=statusFlags&fieldcomparator=<>&fieldvalue=INCOMPLETE` or `fieldname=jcr:createdBy&fieldcomparator==&fieldvalue=admin` or `fieldname=jcr:created&fieldcomparator=>=&fieldvalue=2025-01-01T00:00:00.000-04:00`
 
 ## Advanced form filtering
