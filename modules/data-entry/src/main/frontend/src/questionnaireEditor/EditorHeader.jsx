@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 
 import {
   Chip,
@@ -43,7 +43,7 @@ const useEntryChipStyles = makeStyles()((theme, { color }) => ({
 }));
 
 // Separate component for the chip to properly handle the props-based styles
-const EntryChip = ({ label, entryColor, onMouseEnter, onMouseLeave }) => {
+const EntryChip = memo(function EntryChip({ label, entryColor, onMouseEnter, onMouseLeave }) {
   const { classes } = useEntryChipStyles({ color: entryColor });
   return (
     <Chip 
@@ -55,7 +55,7 @@ const EntryChip = ({ label, entryColor, onMouseEnter, onMouseLeave }) => {
       className={classes.entryChip}
     />
   );
-};
+});
 
 /**
  * Header component for the questionnaire editor that displays counts and warnings for different entry types
@@ -68,6 +68,7 @@ function EditorHeader() {
   const [anchorEl, setAnchorEl] = useState(null);
 
   let handlePopoverOpen = (event, entryType) => {
+    if (!event.currentTarget) return;
     setAnchorEl({ element: event.currentTarget, type: entryType });
   }
 
@@ -79,14 +80,17 @@ function EditorHeader() {
     return null;
   }
 
-  const missingTitlesByEntryType = Object.entries(warnings.missingTitles).reduce((acc, [id, jcrData]) => {
-    const entryType = jcrData['jcr:primaryType'];
-    if (!acc[entryType]) {
-      acc[entryType] = [];
-    }
-    acc[entryType].push(jcrData)
-    return acc;
-  }, {});
+  const missingTitlesByEntryType = useMemo(() => {
+    if (!warnings.missingTitles) return {};
+    return Object.entries(warnings.missingTitles).reduce((acc, [id, jcrData]) => {
+      const entryType = jcrData['jcr:primaryType'];
+      if (!acc[entryType]) {
+        acc[entryType] = [];
+      }
+      acc[entryType].push(jcrData);
+      return acc;
+    }, {});
+  }, [warnings]);
 
   return (
     <>
