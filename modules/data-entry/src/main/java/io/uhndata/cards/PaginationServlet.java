@@ -449,8 +449,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final String[] comparators = request.getParameterValues(FIELDCOMPARATORS);
 
         final Map<String, String[]> fieldParameters = new HashMap<>();
-        // if field names and values are provided
-        if (names != null && values != null && comparators != null) {
+        // if any of field names or values are provided
+        if (names != null || values != null || comparators != null) {
+            // check if they are all present
+            if (names == null || values == null || comparators == null) {
+                throw new IllegalArgumentException(
+                    "Invalid request, all field parameters must be provided if any is present");
+            }
             // check if the arrays length are equal
             if (names.length != values.length || values.length != comparators.length) {
                 throw new IllegalArgumentException(
