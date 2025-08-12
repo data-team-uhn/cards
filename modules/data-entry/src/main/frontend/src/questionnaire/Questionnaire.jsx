@@ -113,7 +113,7 @@ let QuestionnaireComponent = (props) => {
 
   // First, fetch the questionnaire data
   useEffect(() => {
-    treeContext.actions.fetchRootData().catch((error) => { setError(error) });
+    treeContext.actions.refreshTree();
   }, [editTab]);
 
   useEffect(() => {
