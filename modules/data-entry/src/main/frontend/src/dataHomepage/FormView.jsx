@@ -86,7 +86,7 @@ function FormView(props) {
   const tabFilter = {
     "Questionnaires" : '&includeallstatus=true',
     "Completed" : '',
-    "Drafts" : '&fieldname=statusFlags&fieldvalue=INCOMPLETE',
+    "Drafts" : '&fieldnames=statusFlags&fieldvalues=INCOMPLETE&fieldcomparators=%3D',
   };
   const tabs = Object.keys(tabFilter);
 
@@ -103,7 +103,7 @@ function FormView(props) {
         .then(qData => {
           setTitle(qData["title"]);
           setSubtitle(qData["description"]);
-          setQFilter('&fieldname=questionnaire&fieldvalue=' + encodeURIComponent(qData["jcr:uuid"]));
+          setQFilter('&fieldnames=questionnaire&fieldcomparators=%3D&fieldvalues=' + encodeURIComponent(qData["jcr:uuid"]));
         })
         .catch(err => setQFilter(''));
     } else {

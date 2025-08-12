@@ -41,6 +41,7 @@ import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -58,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * <li><code>filter</code>: a (lucene-like) search term, such as {@code germline}, {@code cancer OR tumor},
  * {@code (*blastoma OR *noma OR tumor*) recurrent}; no filter set by default</li>
  * <li><code>includeallstatus</code>: if true, incomplete forms will be included. Otherwise, they will be excluded
- * unless searched for directly using {@code fieldname="statusFlags"}
+ * unless searched for directly using {@code fieldnames="statusFlags"}
  * </ul>
  *
  * @version $Id$
@@ -199,10 +200,19 @@ public class CountServlet extends PaginationServlet
             }
         }));
 
-        Map<String, String> fieldParameters = getSanitizedFieldParameters(request);
-        if (!fieldParameters.isEmpty() && !fieldParameters.get(FIELDNAME).isBlank()) {
-            node.setProperty(fieldParameters.get(FIELDNAME) + fieldParameters.get(FIELDCOMPARATOR),
-                    fieldParameters.get(FIELDVALUE));
+        Map<String, String[]> fieldParameters = getFieldParameters(request);
+        final String[] fieldNames = fieldParameters.get(FIELDNAMES);
+        if (fieldNames != null) {
+            final String[] fieldValues = fieldParameters.get(FIELDVALUES);
+            final String[] fieldComparators = fieldParameters.get(FIELDCOMPARATORS);
+
+            for (int i = 0; i < fieldNames.length; i++) {
+                if (StringUtils.isNotBlank(fieldNames[i])) {
+                    node.setProperty(this.sanitizeValue(fieldNames[i])
+                        + this.sanitizeComparator(fieldComparators[i]),
+                        this.sanitizeValue(fieldValues[i]));
+                }
+            }
         }
     }
 

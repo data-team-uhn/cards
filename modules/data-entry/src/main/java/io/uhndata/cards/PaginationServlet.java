@@ -27,12 +27,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory;
  * <li><code>filter</code>: a (lucene-like) search term, such as {@code germline}, {@code cancer OR tumor},
  * {@code (*blastoma OR *noma OR tumor*) recurrent}; no filter set by default</li>
  * <li><code>includeallstatus</code>: if true, incomplete forms will be included. Otherwise, they will be excluded
- * unless searched for directly using {@code fieldname="statusFlags"}
+ * unless searched for directly using {@code fieldnames="statusFlags"}
  * </ul>
  *
  * @version $Id$
@@ -81,9 +81,9 @@ import org.slf4j.LoggerFactory;
 public class PaginationServlet extends SlingSafeMethodsServlet
 {
 
-    protected static final String FIELDNAME = "fieldname";
-    protected static final String FIELDCOMPARATOR = "fieldcomparator";
-    protected static final String FIELDVALUE = "fieldvalue";
+    protected static final String FIELDNAMES = "fieldnames";
+    protected static final String FIELDCOMPARATORS = "fieldcomparators";
+    protected static final String FIELDVALUES = "fieldvalues";
     private static final Logger LOGGER = LoggerFactory.getLogger(PaginationServlet.class);
 
     private static final long serialVersionUID = -6068156942302219324L;
@@ -393,13 +393,21 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
 
         // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
-        Map<String, String> fieldParameters = getSanitizedFieldParameters(request);
-        if (StringUtils.isNotBlank(fieldParameters.get(FIELDNAME))) {
-            query.append(String.format(
-                " and n.'%s'%s'%s'",
-                    fieldParameters.get(FIELDNAME),
-                    fieldParameters.get(FIELDCOMPARATOR),
-                    fieldParameters.get(FIELDVALUE)));
+        final Map<String, String[]> fieldParameters = getFieldParameters(request);
+        final String[] fieldNames = fieldParameters.get(FIELDNAMES);
+        if (fieldNames != null) {
+            final String[] fieldValues = fieldParameters.get(FIELDVALUES);
+            final String[] fieldComparators = fieldParameters.get(FIELDCOMPARATORS);
+
+            for (int i = 0; i < fieldNames.length; i++) {
+                if (StringUtils.isNotBlank(fieldNames[i])) {
+                    query.append(String.format(
+                        " and n.'%s'%s'%s'",
+                        this.sanitizeValue(fieldNames[i]),
+                        this.sanitizeComparator(fieldComparators[i]),
+                        this.sanitizeValue(fieldValues[i])));
+                }
+            }
         }
 
         // TODO, if more request options are required: convert includeAllStatus into a request mode
@@ -407,7 +415,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final boolean includeAllStatus = Boolean.parseBoolean(request.getParameter("includeallstatus"));
         // Only display `INCOMPLETE` forms if we are explicitly checking the status of forms,
         // or if the user requested forms with all statuses
-        if (!("statusFlags".equals(fieldParameters.get(FIELDNAME)) || includeAllStatus
+        if (!(fieldNames != null && Arrays.asList(fieldNames).contains("statusFlags") || includeAllStatus
                 || nodeType.equals(SUBJECT_IDENTIFIER))) {
             query.append(" and not n.'statusFlags'='INCOMPLETE'");
         }
@@ -429,19 +437,37 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     }
 
     /**
-     * Get from the request field parameters, sanitize and parse them into a collection.
+     * Get from the request field parameters and parse them into a collection.
      *
      * @param request the current request
-     * @return a map from field parameter name to field parameter value
+     * @return a map from field parameter name to array of field parameter values
      */
-    protected Map<String, String> getSanitizedFieldParameters(final SlingHttpServletRequest request)
+    protected Map<String, String[]> getFieldParameters(final SlingHttpServletRequest request)
     {
-        Map<String, String> sanitizedFilterParameters = new HashMap<>();
-        sanitizedFilterParameters.put(FIELDNAME, this.sanitizeValue(request.getParameter(FIELDNAME)));
-        sanitizedFilterParameters.put(FIELDVALUE, this.sanitizeValue(request.getParameter(FIELDVALUE)));
-        sanitizedFilterParameters.put(FIELDCOMPARATOR, this.sanitizeComparator(request.getParameter(FIELDCOMPARATOR)));
+        final String[] names = request.getParameterValues(FIELDNAMES);
+        final String[] values = request.getParameterValues(FIELDVALUES);
+        final String[] comparators = request.getParameterValues(FIELDCOMPARATORS);
 
-        return sanitizedFilterParameters;
+        final Map<String, String[]> fieldParameters = new HashMap<>();
+        // if any of field names or values are provided
+        if (names != null || values != null || comparators != null) {
+            // check if they are all present
+            if (names == null || values == null || comparators == null) {
+                throw new IllegalArgumentException(
+                    "Invalid request, all field parameters must be provided if any is present");
+            }
+            // check if the arrays length are equal
+            if (names.length != values.length || values.length != comparators.length) {
+                throw new IllegalArgumentException(
+                    "Invalid request, an equal number of field names, values and comparators must be provided");
+            }
+
+            fieldParameters.put(FIELDNAMES, names);
+            fieldParameters.put(FIELDVALUES, values);
+            fieldParameters.put(FIELDCOMPARATORS, comparators);
+        }
+
+        return fieldParameters;
     }
 
     /**
@@ -458,7 +484,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final Map<FilterType, List<Filter>> result = new HashMap<>();
         for (FilterType filterType : FilterType.values()) {
             final String[] filters = request.getParameterValues(filterType.parameterName);
-            if (filters == null || filters.length == 0) {
+            if (filters == null) {
                 continue;
             }
             if (filterType.valueless) {
@@ -470,16 +496,18 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 final String[] values = request.getParameterValues("filtervalues");
                 final String[] types = request.getParameterValues("filtertypes");
                 final String[] comparators = request.getParameterValues("filtercomparators");
+                if (values == null || types == null || comparators == null) {
+                    continue;
+                }
                 if (filters.length != values.length || types.length != comparators.length
                     || filters.length != comparators.length) {
                     throw new IllegalArgumentException(
                         "Invalid request, the same number of filter names, values, types and comparators"
                             + " must be provided");
                 }
-                final List<Filter> gatheredFilters = new LinkedList<>();
-                for (int i = 0; i < filters.length; ++i) {
-                    gatheredFilters.add(new Filter(filters[i], values[i], types[i], comparators[i]));
-                }
+                final List<Filter> gatheredFilters = IntStream.range(0, filters.length)
+                    .mapToObj(i -> new Filter(filters[i], values[i], types[i], comparators[i]))
+                    .collect(Collectors.toList());
                 result.put(filterType, gatheredFilters);
             }
         }
@@ -907,7 +935,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param input the value to sanitize
      * @return a sanitized version of the input
      */
-    private String sanitizeValue(String input)
+    protected String sanitizeValue(String input)
     {
         return StringUtils.isEmpty(input) ? "" : input.replaceAll("['\\\\]", "\\\\$0");
     }
@@ -919,7 +947,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param comparator the comparator to sanitize
      * @return an accepted comparator, may be {@code =} if the specified comparator is not supported
      */
-    private String sanitizeComparator(String comparator)
+    protected String sanitizeComparator(String comparator)
     {
         if (!COMPARATORS.contains(comparator)) {
             // Invalid comparator: return '='
