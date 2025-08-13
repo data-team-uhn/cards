@@ -666,7 +666,7 @@ public class EmailTemplate
             while (children.hasNext()) {
                 Node child = children.nextNode();
                 if (child.isNodeType("nt:file")
-                    && !this.instance.properties.containsKey("skipAttachment_" + child.getName())) {
+                    && this.instance.properties.containsKey("includeAttachment_" + child.getName())) {
                     withInlineAttachment(child.getName(), getMimeType(child, resolver), readFileAsBytes(child));
                 }
             }
