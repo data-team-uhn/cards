@@ -124,6 +124,13 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         throws CommitFailedException
     {
         if (this.isFormNode) {
+            final Set<String> statusFlags = new TreeSet<>();
+            if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+            }
+            if (statusFlags.contains("SUBMITTED")) {
+                return;
+            }
             processNode(this.currentNodeBuilder);
         }
     }
