@@ -2,5 +2,8 @@
   "jcr:primaryType": "cards:EmailTemplate",
   "senderAddress": "yourexperience@uhn.ca",
   "senderName": "Your Experience",
-  "subject": "UHN Patient Experience Survey"
+  "subject": "UHN Patient Experience Survey",
+  "includeAttachment_UHN-Logo.png": true,
+  "includeAttachment_YE-Logo.png": true,
+  "includeAttachment_PE-Logo.png": true
 }

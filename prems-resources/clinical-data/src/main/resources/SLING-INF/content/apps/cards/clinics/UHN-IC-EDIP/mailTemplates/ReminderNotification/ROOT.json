@@ -1,8 +1,11 @@
 {
   "jcr:primaryType": "cards:EmailTemplate",
-  "senderAddress": "IC_patientexperience@uhn.ca",
+  "senderAddress": "IC_Patientexperience@uhn.ca",
   "senderName": "UHN Integrated Care",
   "replyToAddress": "IC_Patientexperience@uhn.ca",
   "replyToName": "UHN Integrated Care",
-  "subject": "UHN Patient Experience Survey"
+  "subject": "UHN Patient Experience Survey",
+  "includeAttachment_UHN-Logo.png": true,
+  "includeAttachment_YE-Logo.png": true,
+  "includeAttachment_IC-Logo.png": true
 }
