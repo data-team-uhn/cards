@@ -17,10 +17,13 @@
 package io.uhndata.cards.forms.internal;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
 
+import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
@@ -106,6 +109,14 @@ public class CreateMissingAnswersEditor extends DefaultEditor
     public void leave(final NodeState before, final NodeState after)
     {
         if (!this.isFormNode) {
+            return;
+        }
+
+        final Set<String> statusFlags = new TreeSet<>();
+        if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+            this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+        }
+        if (statusFlags.contains("SUBMITTED")) {
             return;
         }
 
