@@ -85,7 +85,7 @@ let AutocreatedQuestion = (props) => {
     >
       { typeof(existingAnswer?.[1].value) != 'undefined' &&
         <List sx={{p: 0}}>
-        { Array.of(existingAnswer[1].value).flat().map(v => (
+        { Array.of(existingAnswer[1].displayedValue).flat().map(v => (
           <ListItem key={existingAnswer[0]+v} sx={{py: 0}}>
           { isFormatted ? <FormattedText>{`${v}`}</FormattedText> : v }
           </ListItem>
