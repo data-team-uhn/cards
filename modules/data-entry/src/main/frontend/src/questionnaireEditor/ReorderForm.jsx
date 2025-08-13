@@ -310,7 +310,7 @@ export default function ReorderForm(props) {
                 selection={[nodes[reorderSource].parent]}
                 getOptionValue={(option) => option.value}
                 id="originalParent"
-                disabled={true}
+                disabled
               />
             </Grid>
             <Grid size={3}>

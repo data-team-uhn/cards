@@ -272,7 +272,7 @@ let QuestionnaireItemCard = (props) => {
           <CardContent className={!plain ? classes.withAvatar : undefined}>
             { children }
             { editDialogOpen && <EditDialog
-              targetExists={true}
+              targetExists
               data={data}
               type={type}
               model={model}

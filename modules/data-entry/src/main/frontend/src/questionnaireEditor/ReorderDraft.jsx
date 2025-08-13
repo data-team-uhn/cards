@@ -716,7 +716,7 @@ function RecursiveDragList(props) {
               }}
             >
               {entryChildren.map((childId) => <RecursiveDragList key={childId} nodeId={childId} level={level + 1} />)}
-              <TargetPlaceholderDivider nodeId={nodeId} insert={true} level={level} />
+              <TargetPlaceholderDivider nodeId={nodeId} insert level={level} />
             </List>
           </Collapse>
         }
