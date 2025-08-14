@@ -59,7 +59,7 @@ public class FlattenFormProcessor implements ResourceJsonProcessor
     public String getDescription()
     {
         return "Flatten a form so all answers, regardless of sections and subsections, are listed in the top level of "
-            + "the json. This processor is incompatible with the `bare` processor";
+            + "the json. This processor is incompatible with the `bare` processor.";
     }
 
     @Override

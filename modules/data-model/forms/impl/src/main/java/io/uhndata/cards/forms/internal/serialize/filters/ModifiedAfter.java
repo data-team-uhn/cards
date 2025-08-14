@@ -48,7 +48,7 @@ public class ModifiedAfter extends BaseFilterFactory implements DataFilterFactor
         result.add(new SelectorDetails("modifiedAfter",
             "Only show results that were modified after the requested datetime. "
             + "e.g. `.dataFilter:modifiedAfter=2025-01-01T06:00:00%5C.000-05:00` for forms modified after "
-            + "January 1, 2025 at 6 AM in the time zone UTC-5"));
+            + "January 1, 2025 at 6 AM in the time zone UTC-5."));
         return result;
     }
 

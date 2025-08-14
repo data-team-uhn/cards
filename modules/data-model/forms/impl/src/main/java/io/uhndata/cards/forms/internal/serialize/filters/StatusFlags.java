@@ -49,10 +49,10 @@ public class StatusFlags extends BaseFilterFactory implements DataFilterFactory
         List<SelectorDetails> result = new ArrayList<>();
         result.add(new SelectorDetails("status",
             "Only show results that have the specified status flag. "
-            + "e.g. `.dataFilter:status=SUBMITTED`"));
+            + "e.g. `.dataFilter:status=SUBMITTED`."));
         result.add(new SelectorDetails("statusNot",
             "Only show results that do not have the specified status flag. "
-            + "e.g. `.dataFilter:statusNot=INCOMPLETE`"));
+            + "e.g. `.dataFilter:statusNot=INCOMPLETE`."));
         return result;
     }
 

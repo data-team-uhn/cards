@@ -45,8 +45,7 @@ public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor 
     @Override
     public String getDescription()
     {
-        return "Runs on Forms and Questionnaires.\n"
-            + "Adds a label to answer option nodes.";
+        return "Adds a label to answers for vocabulary questions.";
     }
 
     @Override

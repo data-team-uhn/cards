@@ -48,7 +48,7 @@ public class CreatedAfter extends BaseFilterFactory implements DataFilterFactory
         result.add(new SelectorDetails("createdAfter",
             "Only show results that were created on or after the requested datetime. "
             + "e.g. `.dataFilter:createdAfter=2025-01-01T06:00:00%5C.000-05:00` for forms created after "
-            + "January 1, 2025 at 6 AM in the time zone UTC-5"));
+            + "January 1, 2025 at 6 AM in the time zone UTC-5."));
         return result;
     }
 

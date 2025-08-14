@@ -55,7 +55,7 @@ public class SimpleFormProcessor implements ResourceJsonProcessor
     {
         return "Only runs on `Forms`.\n"
             + "Simplify form serialization by removing unnecessary properties and children. "
-            + "Removes child jcr properties, removes extra properties from answers and cleans up subject types";
+            + "Removes child jcr properties, removes extra properties from answers and cleans up subject types.";
     }
 
     @Override

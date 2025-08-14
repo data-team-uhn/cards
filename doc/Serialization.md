@@ -77,160 +77,158 @@ Multiple different export formats are supported. These include:
 - Some processors or filters are set up to only run on a specific data type. These restrictions are noted in their description. For example, `Only runs on Forms`.
 - Some processors have multiple implementations under the same name. These instances are generally designed to accomplish the same goal, each working on specific data types or in specific situations, and enabling one of them will enable all of them.
 
-For the full list of available processors and filters, please refer to the last two sections of this document.
+For the full list of available processors and filters, please refer to the next two sections of this document.
 
 ## Processors
 ### answerCopy
 #### Implementations
 1. Only runs on `Subjects`.  
-Copy the values of certain answers from forms to the root subject JSON. The answers to copy are configured in `/apps/cards/config/CopyAnswers/Questionnaires/[questionnaire name]/` as properties with the desired output name as the key and references to a question as the value.
-Questions can be copied either from a form belonging to this subject, one of it's ancestors or one of it's descendants.  
-**isEnabledByDefault**: true
-1. Only runs on `Forms`.  
-Copy the values of certain answers to the form JSON. The answers to copy are configured in `/apps/cards/config/CopyAnswers/Questionnaires/[questionnaire name]/` as properties with the desired output name as the key and references to a question as the value.
-Questions can be copied either from the current form itself, or from another form belonging to the same subject, one of the subject's ancesters, or one of the subject's descendants.  
-**isEnabledByDefault**: true
+    Copy the values of certain answers from forms to the root subject JSON. The answers to copy are configured in `/apps/cards/config/CopyAnswers/Questionnaires/[questionnaire name]/` as properties with the desired output name as the key and references to a question as the value.  
+    Questions can be copied either from a form belonging to this subject, one of it's ancestors or one of it's descendants.  
+    **Enabled by default**  
+2. Only runs on `Forms`.  
+    Copy the values of certain answers to the form JSON. The answers to copy are configured in `/apps/cards/config/CopyAnswers/Questionnaires/[questionnaire name]/` as properties with the desired output name as the key and references to a question as the value.  
+    Questions can be copied either from the current form itself, or from another form belonging to the same subject, one of the subject's ancesters, or one of the subject's descendants.  
+    **Enabled by default**  
 ### answerFilter
 Only runs on `Forms`.  
-Include or exclude answers or answer sections based on the question or section they refer to.
-If only `include` options are provided, only those items and any descendants will be included.
-If only `exclude` options are provided, all other items will be included.
-If both `include` and `exclude` options are provided, then for an item to be included it must be a listed as an `include` item or descendent thereof and also not be listed as or a descendant of an `exclude` node.
+Include or exclude answers or answer sections based on the question or section they refer to.  
+If only `include` options are provided, only those items and any descendants will be included.  
+If only `exclude` options are provided, all other items will be included.  
+If both `include` and `exclude` options are provided, then for an item to be included it must be a listed as an `include` item or descendent thereof and also not be listed as or a descendant of an `exclude` node.  
 It is not possible to include a descendant of an excluded item.  
-#### Options
- - **include**: A path to an included question or section. e.g. `answerFilter:include=/Questionnaires/Path/To/Question`
- - **exclude**: A path to an excluded question or section. e.g. `answerFilter:exclude=/Questionnaires/Path/To/Question`
+#### Options  
+ - **include**: A path to an included question or section. e.g. `answerFilter:include=/Questionnaires/Path/To/Question`  
+ - **exclude**: A path to an excluded question or section. e.g. `answerFilter:exclude=/Questionnaires/Path/To/Question`  
 ### bare
 #### Implementations
-1. Simplify serialization for all resource types by removing all technical properties, renaming `jcr:created` to `created` and storing file attachments in a `content` property.
-1.  Only runs on `Forms`.
-Simplify form serialization by only including the subject name, questionnaire and each sectionand question. Designed for use with `deep`, `-dereference` and `-identify`.
-1. Only runs on `Subjects`.
-Simplify subject serialization by only including simple labels for the name, type and parents of asubject. Should be used with `-dereference` and `-identify`.
+1. Simplify serialization for all resource types by removing all technical properties, renaming `jcr:created` to `created` and storing file attachments in a `content` property.  
+2. Only runs on `Forms`.  
+    Simplify form serialization by only including the subject name, questionnaire and each section and question. Designed for use with `deep`, `-dereference` and `-identify`.  
+3. Only runs on `Subjects`.  
+    Simplify subject serialization by only including simple labels for the name, type and parents of a subject. Should be used with `-dereference` and `-identify`.  
 ### data
-Serialize the forms associated with a Questionnaire or Subject.
+Serialize the forms associated with a Questionnaire or Subject.  
 ### deep
-Enable deep serialization, i.e. including the serialization of all descendant items. For example, serializing a Form without `deep` would only output the form's properties. With `deep`, all the answers are included, organized by sections.
+Enable deep serialization, i.e. including the serialization of all descendant items. For example, serializing a Form without `deep` would only output the form's properties. With `deep`, all the answers are included, organized by sections.  
 ### dereference
 Dereference properties of type `REFERENCE`, `WEAKREFERENCE` and `PATH`: Instead of printing the internal UUID, serialize the referenced node.  
-**isEnabledByDefault**: true
+**Enabled by default**  
 ### excludeDefaultProperties
-Exclude properties if their value is the default value or an obvious non-value:
- - If a property's value matches its defined default value
- - If it's a `false` boolean
- - If it's an empty string ''.
+Exclude properties if their value is the default value or an obvious non-value:  
+ - If a property's value matches its defined default value  
+ - If it's a `false` boolean  
+ - If it's an empty string `""`  
 ### excludeFiles
 Exclude the contents of uploaded files from the serialization. By default, all uploaded files are excluded.  
-**isEnabledByDefault**: true
-#### Options
- - **exclude**: If this option is specified, only exclude the specified files. Use it multiple times to exclude more than one file: `.excludeFiles:exclude=/Questionnaires/Path/To/QuestionWithFileAnswer`.
+**Enabled by default**  
+#### Options  
+ - **exclude**: If this option is specified, only exclude the specified files. Use it multiple times to exclude more than one file: `.excludeFiles:exclude=/Questionnaires/Path/To/QuestionWithFileAnswer`.  
 ### flatten
-Flatten a form so all answers, regardless of sections and subsections, are listed in the top level of the json. This processor is incompatible with the `bare` processor.
+Flatten a form so all answers, regardless of sections and subsections, are listed in the top level of the json. This processor is incompatible with the `bare` processor.  
 ### formToSurveyLinks
-If a form has a `belongsToSurvey` link, include the name of the linked form in the root of the linking form's serialization JSON.
+If a form has a `belongsToSurvey` link, include the name of the linked form in the root of the linking form's serialization JSON.  
 ### identify
 Identify a node by including its `@path` and `@name` properties.  
-**isEnabledByDefault**: true
+**Enabled by default**  
 ### importable
-Export a file that is suitable for using as a source file to be imported. Removes any properties that are tied to a running instance such as unique ID and version control. This processor is intended to be run alongside the `deep` and `-identify` processor.
+Export a file that is suitable for using as a source file to be imported. Removes any properties that are tied to a running instance such as unique ID and version control. This processor is intended to be run alongside the `deep` and `-identify` processor.  
 ### instanceCount
 Only runs on `SubjectTypes`.  
-Include the number of subjects of that type in the subject type serialization.
+Include the number of subjects of that type in the subject type serialization.  
 ### labels
 #### Implementations
 1. Get the human readable answer for resource questions with options by outputting the answer option's label instead of the stored value.  
-**isEnabledByDefault**: true
-1. Get the human readable answer for resource questions.  
-**isEnabledByDefault**: true
-1. Runs on Forms and Questionnaires. Adds a label to answer option nodes.  
-**isEnabledByDefault**: true
-1. Get the human readable answer for text and number questions with options by outputting the answer option's label instead of the stored value.  
-**isEnabledByDefault**: true
-1. Get the answers for pedigree questions as an svg picture.  
-**isEnabledByDefault**: true
-1. Get the human readable answer for file questions by outputting the file name instead of the path.  
-**isEnabledByDefault**: true
-1. Get the human readable answer for dicom questions by outputting the dicom file name instead of the path.  
-**isEnabledByDefault**: true
-1. Get the human readable answer for questions.  
-**isEnabledByDefault**: true
-1. Get the human readable answer for date questions. The human readable version is the date formatted with the date format configured in the date question definition, for example `01/07/2025` instead of the stored value `2025-01-07T00:00:00%5C.000-05:00`.  
-**isEnabledByDefault**: true
-1. Get the human readable answer for boolean questions by outputting the labels specified in the question definition, e.g. 'Yes' or 'True' instead of '1'.  
-**isEnabledByDefault**: true
-1. Get the human readable answer for text and number questions with options by outputting the answer option's label instead of the stored value.  
-**isEnabledByDefault**: true
+    **Enabled by default**  
+2. Get the human readable answer for resource questions.  
+    **Enabled by default**  
+3. Adds a label to answers for vocabulary questions.  
+    **Enabled by default**  
+4. Get the human readable answer for text and number questions with options by outputting the answer option's label instead of the stored value.  
+    **Enabled by default**  
+5. Get the answers for pedigree questions as an svg picture.  
+    **Enabled by default**  
+6. Get the human readable answer for file questions by outputting the file name instead of the path.  
+    **Enabled by default**  
+7. Get the human readable answer for dicom questions by outputting the dicom file name instead of the path.  
+    **Enabled by default**  
+8. Get the human readable answer for questions.  
+    **Enabled by default**  
+9. Get the human readable answer for date questions. The human readable version is the date formatted with the date format configured in the date question definition, for example `01/07/2025` instead of the stored value `2025-01-07T00:00:00%5C.000-05:00`.  
+    **Enabled by default**  
+10. Get the human readable answer for boolean questions by outputting the labels specified in the question definition, e.g. 'Yes' or 'True' instead of '1'.  
+    **Enabled by default**  
+11. Get the human readable answer for text and number questions with options by outputting the answer option's label instead of the stored value.  
+    **Enabled by default**  
 ### links
 Simplify the serialization of links to other resources (such as other forms) to only include the link type and path to the linked resource.  
-**isEnabledByDefault**: true
+**Enabled by default**  
 ### nolinks
-Exclude the links to other resources from serialization.
+Exclude the links to other resources from serialization.  
 ### properties
 Serialize node properties.  
-**isEnabledByDefault**: true
+**Enabled by default**  
 ### questionnaireFilter
 Only runs on `Questionnaires`.  
-Include or exclude questions or sections.
-If only `include` options are provided, only those items and any descendants will be included.
-If only `exclude` options are provided, all other items will be included.
-If both `include` and `exclude` options are provided, then for an item to be included it must be a listed as an `include` item or descendent thereof and also not be listed as or a descendant of an `exclude` item.
-It is not possible to include a descendant of an excluded item.
-#### Options
- - **include**: A path to an included question or section. e.g. `questionnaireFilter:include=/Questionnaires/Path/To/Question`
- - **exclude**: A path to an excluded question or section. e.g. `questionnaireFilter:exclude=/Questionnaires/Path/To/Question`
+Include or exclude questions or sections.  
+If only `include` options are provided, only those items and any descendants will be included.  
+If only `exclude` options are provided, all other items will be included.  
+If both `include` and `exclude` options are provided, then for an item to be included it must be a listed as an `include` item or descendent thereof and also not be listed as or a descendant of an `exclude` item.  
+It is not possible to include a descendant of an excluded item.  
+#### Options  
+ - **include**: A path to an included question or section. e.g. `questionnaireFilter:include=/Questionnaires/Path/To/Question`  
+ - **exclude**: A path to an excluded question or section. e.g. `questionnaireFilter:exclude=/Questionnaires/Path/To/Question`  
 ### referenced
-Report if a resource is referenced by adding a `@referenced=true|false` property.
+Report if a resource is referenced by adding a `@referenced=true|false` property.  
 ### simple
 #### Implementations
-1. Simplify serialization for all resource types by removing unnecessary properties.
-Remove the `form` property and all `sling:` and `jcr:` properties.
-1. Only runs on `Questionnaires`.  
-Simplify questionnaire serialization by removing child jcr properties.
-1. Only runs on `Forms`.  
-Simplify form serialization by removing unnecessary properties and children. Removes child jcr properties, removes extra properties from answers and cleans up subject types.
-1. Only runs on `Subjects`.  
-Simplify form serialization by removing the jcr properties.
-
+1. Simplify serialization for all resource types by removing unnecessary properties.  
+    Remove the `form` property and all `sling:` and `jcr:` properties.  
+2. Only runs on `Questionnaires`.  
+    Simplify questionnaire serialization by removing child jcr properties.  
+3. Only runs on `Forms`.  
+    Simplify form serialization by removing unnecessary properties and children. Removes child jcr properties, removes extra properties from answers and cleans up subject types.  
+4. Only runs on `Subjects`.  
+    Simplify form serialization by removing the jcr properties.  
 ## Filters
 ### clinic
-Only show forms that belong to a user that has a 'Visit information' form for the specified clinic. If included multiple times, this includes forms belonging to any of the specified clinics. e.g. `.dataFilter:clinic=PMH-YVM`.
+Only show forms that belong to a user that has a 'Visit information' form for the specified clinic. If included multiple times, this includes forms belonging to any of the specified clinics. e.g. `.dataFilter:clinic=PMH-YVM`.  
 ### clinicNot
-Exclude forms that belong to a user that has a 'Visit information' form for the specified clinic. If included multiple times, this excludes forms belonging to any of the specified clinics. e.g. `.dataFilter:clinicNot=PMH-YVM`.
+Exclude forms that belong to a user that has a 'Visit information' form for the specified clinic. If included multiple times, this excludes forms belonging to any of the specified clinics. e.g. `.dataFilter:clinicNot=PMH-YVM`.  
 ### createdAfter
-Only show results that were created on or after the requested datetime. e.g. `.dataFilter:createdAfter=2025-01-01T06:00:00%5C.000-05:00` for forms created after January 1, 2025 at 6 AM in the time zone UTC-5.
+Only show results that were created on or after the requested datetime. e.g. `.dataFilter:createdAfter=2025-01-01T06:00:00%5C.000-05:00` for forms created after January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### createdBefore
-Only show results that were created before the requested datetime. e.g. `.dataFilter:createdBefore=2025-01-01T06:00:00%5C.000-05:00` for forms created before January 1, 2025 at 6 AM in the time zone UTC-5.
+Only show results that were created before the requested datetime. e.g. `.dataFilter:createdBefore=2025-01-01T06:00:00%5C.000-05:00` for forms created before January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### createdBy
-Only show results that were created by the specified user. e.g. `.dataFilter:createdBy=admin`
+Only show results that were created by the specified user. e.g. `.dataFilter:createdBy=admin`.  
 ### modifiedAfter
-Only show results that were modified after the requested datetime. e.g. `.dataFilter:modifiedAfter=2025-01-01T06:00:00%5C.000-05:00` for forms modified after January 1, 2025 at 6 AM in the time zone UTC-5.
+Only show results that were modified after the requested datetime. e.g. `.dataFilter:modifiedAfter=2025-01-01T06:00:00%5C.000-05:00` for forms modified after January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### modifiedBefore
-Only show results that were modified before the requested datetime. e.g. `.dataFilter:modifiedBefore=2025-01-01T06:00:00%5C.000-05:00` for forms modified before January 1, 2025 at 6 AM in the time zone UTC-5.
+Only show results that were modified before the requested datetime. e.g. `.dataFilter:modifiedBefore=2025-01-01T06:00:00%5C.000-05:00` for forms modified before January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### modifiedBy
-Only show results that were last modified by the specified user. e.g. `.dataFilter:modifiedBy=admin`.
+Only show results that were last modified by the specified user. e.g. `.dataFilter:modifiedBy=admin`.  
 ### notCreatedBy
-Only show results that were created by any user other than the specified user. e.g. `.dataFilter:notCreatedBy=admin`.
+Only show results that were created by any user other than the specified user. e.g. `.dataFilter:notCreatedBy=admin`.  
 ### notModifiedBy
-Only show results that were last modified by anby other other than the specified user. e.g. `.dataFilter:notModifiedBy=admin`.
+Only show results that were last modified by anby other other than the specified user. e.g. `.dataFilter:notModifiedBy=admin`.  
 ### status
-Only show results that have the specified status flag. e.g. `.dataFilter:status=SUBMITTED`.
+Only show results that have the specified status flag. e.g. `.dataFilter:status=SUBMITTED`.  
 ### statusNot
-Only show results that do not have the specified status flag. e.g. `.dataFilter:statusNot=INCOMPLETE`.
+Only show results that do not have the specified status flag. e.g. `.dataFilter:statusNot=INCOMPLETE`.  
 ### visitSubmitted
-Only include forms based on their submission status.
-#### Options
- - **`.dataFilter:visitSubmitted=true`**: Only show forms belonging to a submitted visit.
- - **`.dataFilter:visitSubmitted=false`**: Only show forms belonging to a visit that has not been submitted.
-
+Only include forms based on their submission status.  
+#### Options  
+ - **`.dataFilter:visitSubmitted=true`**: Only show forms belonging to a submitted visit.  
+ - **`.dataFilter:visitSubmitted=false`**: Only show forms belonging to a visit that has not been submitted.  
 ## CSV Adapter Options
 ### csvHeader:labels
 Only runs on `Questionnaires`.  
 Include the human readable label as a header row for all exported columns.  
-**isEnabledByDefault**: true
+**Enabled by default**  
 ### csvHeader:raw
 Only runs on `Questionnaires`.  
-Include the raw property name as a header row for all exported columns.
+Include the raw property name as a header row for all exported columns.  
 ### csvIncludeFields
 Only runs on `Questionnaires`.  
 Include a specified property on data forms that belongs to this questionnaire that would normally be skipped in the csv export process. This option is intended to be run alongside the `.data` processor.  
-For example, `.csvIncludeFields:@survey=Survey` will include the `@survey` property.
+For example, `.csvIncludeFields:@survey=Survey` will include the `@survey` property.  

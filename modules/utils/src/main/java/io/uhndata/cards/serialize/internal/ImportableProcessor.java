@@ -56,7 +56,7 @@ public class ImportableProcessor implements ResourceJsonProcessor
     {
         return "Export a file that is suitable for using as a source file to be imported. "
             + "Removes any properties that are tied to a running instance such as unique ID and version control. "
-            + "This processor is intended to be run alongside the `deep` and `-identify` processor";
+            + "This processor is intended to be run alongside the `deep` and `-identify` processor.";
     }
 
     @Override

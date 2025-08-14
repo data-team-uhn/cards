@@ -54,8 +54,8 @@ public class VisitSubmittedDataFilterFactory extends BaseFilterFactory implement
         List<SelectorDetails> result = new ArrayList<>();
         result.add(new SelectorDetails("visitSubmitted",
             "Only include forms based on their submission status.",
-            "`.dataFilter:visitSubmitted=true`", "Only show forms belonging to a submitted visit",
-            "`.dataFilter:visitSubmitted=false`", "Only show forms belonging to a visit that has not been submitted"));
+            "`.dataFilter:visitSubmitted=true`", "Only show forms belonging to a submitted visit.",
+            "`.dataFilter:visitSubmitted=false`", "Only show forms belonging to a visit that has not been submitted."));
         return result;
     }
 

@@ -79,7 +79,7 @@ public class ExcludeDefaultPropertiesProcessor implements ResourceJsonProcessor
         return "Exclude properties if their value is the default value or an obvious non-value:\n"
             + " - If a property's value matches its defined default value\n"
             + " - If it's a `false` boolean\n"
-            + " - If it's an empty string ''";
+            + " - If it's an empty string `\"\"`";
     }
 
     @Override

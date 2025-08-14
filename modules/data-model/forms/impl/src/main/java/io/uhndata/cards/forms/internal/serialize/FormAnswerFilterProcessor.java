@@ -79,12 +79,12 @@ public class FormAnswerFilterProcessor implements ResourceJsonProcessor
     {
         return "Only runs on `Forms`.\n"
             + "Include or exclude answers or answer sections based on the question or section they refer to.\n"
-            + "If only `include` options are provided, only those items and any descendants will be included\n"
+            + "If only `include` options are provided, only those items and any descendants will be included.\n"
             + "If only `exclude` options are provided, all other items will be included.\n"
             + "If both `include` and `exclude` options are provided, then for an item to be included it must be a "
             + "listed as an `include` item or descendent thereof and also not be listed as or a descendant of an "
             + "`exclude` node.\n"
-            + "It is not possible to include a descendant of an excluded item";
+            + "It is not possible to include a descendant of an excluded item.";
     }
 
     @Override
