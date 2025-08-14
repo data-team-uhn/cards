@@ -40,7 +40,11 @@ public interface DataFilterFactory
 
     /**
      * The details about any filters that may be created by this factory.
-     * @return TODO
+     * Intended to be displayed to users looking to retrieve data.
+     *
+     * @return A list of details about filters that this factory supports.
+     *         May have just 1 entry if only one selector is handled by this factory
+     *         or multiple entries if multiple different selectors are handled.
      */
     List<SelectorDetails> getFilterDetails();
 }

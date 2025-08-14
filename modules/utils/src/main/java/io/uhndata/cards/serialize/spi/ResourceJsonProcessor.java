@@ -78,14 +78,18 @@ public interface ResourceJsonProcessor
     int getPriority();
 
     /**
+     * A description of what this processor does.
+     * This is intended to be displayed to users looking to use processors to help format data.
      *
-     * @return TODO
+     * @return A description about this processor
      */
     String getDescription();
 
     /**
+     * Data about how to use this processor and what it does.
+     * Intended to be displayed to users looking to retrieve data.
      *
-     * @return TODO
+     * @return The full set of details about how to use this processor and it's effects.
      */
     default SelectorDetails getDetails()
     {

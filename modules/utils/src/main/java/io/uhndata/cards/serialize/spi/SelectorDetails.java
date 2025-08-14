@@ -21,6 +21,16 @@ package io.uhndata.cards.serialize.spi;
 
 /**
  * The details about a selector that can be used to filter or modify what data is returned.
+ * This is intended to be displayed to users looking to use selectors to help format data,
+ * so should contain information about:
+ * - How to call this selector (it's name)
+ * - What the selector does
+ * - What type of data the selector runs on (if it is restricted to certain data types)
+ * - How this selector is intended to be used
+ *     - Is it selector for a specific type of output?
+ *     - Is it selector to be used with certain other selectors?
+ * - Any additional options that can be used to configure this selector,
+ *   how to specify them and what impact these options have
  *
  * @version $Id$
  */
