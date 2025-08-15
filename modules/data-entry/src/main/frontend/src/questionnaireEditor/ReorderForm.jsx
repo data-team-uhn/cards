@@ -35,7 +35,6 @@ import { stripCardsNamespace } from '../questionnaire/QuestionnaireUtilities';
 import { ENTRY_TYPES } from '../questionnaire/FormEntry';
 
 // State for reorder submission
-// {status: 'idle' | 'loading' | 'success' | 'error', data: null, error: null, inputs: {reorderSource: string, newParent: string, positionRadio: string, newPosition: number}}
 const initialReorderState = {
   status: 'idle',
   data: null,
@@ -49,7 +48,6 @@ const initialReorderState = {
 };
 
 const reorderReducer = (state, action) => {
-  let newInputs;
   switch (action.type) {
     case 'SET_IDLE':
       return { ...state, status: 'idle' };
@@ -60,33 +58,27 @@ const reorderReducer = (state, action) => {
     case 'SET_ERROR':
       return { ...state, status: 'error', error: action.payload };
     case 'SET_REORDERSOURCE':
-      newInputs = { ...state.inputs, reorderSource: action.payload };
-      return { ...state, inputs: newInputs };
+      return { ...state, inputs: { ...state.inputs, reorderSource: action.payload } };
     case 'SET_NEWPARENT':
-      newInputs = {...state.inputs, newParent: action.payload };
-      return { ...state, inputs: newInputs };
-    case 'SET_POSITIONRADIO':
-      if (!['first', 'last', 'other'].includes(action.payload)) {
-        console.error('Invalid position radio value', action.payload);
-        return state;
-      }
-      newInputs = { ...state.inputs, positionRadio: action.payload };
-      // If first or last, set newPosition as well
-      if (['first', 'last'].includes(action.payload)) {
-        newInputs = {...newInputs, newPosition: action.payload === 'first' ? 0 : -1};
-      } else {
-        // If other then reset newPosition
-        newInputs = {...newInputs, newPosition: null};
-      }
-      return { ...state, inputs: newInputs };
+      return { ...state, inputs: { ...state.inputs, newParent: action.payload } };
+    case 'SET_POSITIONRADIO': {
+      const positionRadio = action.payload;
+      const newPosition = positionRadio === 'first' ? 0 : positionRadio === 'last' ? -1 : null;
+      return {
+        ...state,
+        inputs: {
+          ...state.inputs,
+          positionRadio,
+          newPosition
+        }
+      };
+    }
     case 'SET_NEWPOSITION':
-      newInputs = { ...state.inputs, newPosition: action.payload };
-      return { ...state, inputs: newInputs };
+      return { ...state, inputs: { ...state.inputs, newPosition: action.payload } };
     default:
-      console.warning('Unhandled action in reorderReducer', action);
       return state;
   }
-}
+};
 
 
 export default function ReorderForm(props) {
@@ -117,22 +109,10 @@ export default function ReorderForm(props) {
   const reorderSource = reorderState.inputs.reorderSource;
 
   const sourceOptions = useMemo(() => {
-    const nodes = treeContext.state.nodes;
-    if (!!Object.keys(nodes).length) {
-      const newSourceOptions = [];
-      for (const id in nodes) {
-        if (nodes.hasOwnProperty(id)) {
-          const node = nodes[id];
-          if (ENTRY_TYPES.includes(node.jcrPrimaryType)) {
-            newSourceOptions.push(node);
-          }
-        }
-      }
-      return newSourceOptions;
-    } else {
-      return [];
-    }
-  }, [treeContext.state.nodes]);
+    return Object.values(nodes)
+      .filter(node => ENTRY_TYPES.includes(node.jcrPrimaryType));
+  }, [nodes]);
+
 
   // New parent is the entry to move the reorder source to
   const [newParentSelection, setNewParentSelection] = useState([]);
@@ -156,21 +136,9 @@ export default function ReorderForm(props) {
 
   // Parent options for a given source node is any section or the root questionnaire
   const parentOptions = useMemo(() => {
-    if (!!reorderSource && !!Object.keys(nodes).length) {
-      const newParentOptions = [];
-      for (const id in nodes) {
-        if (nodes.hasOwnProperty(id)) {
-          const node = nodes[id];
-          // Only sections and questionnaires can be new parents
-          if (['cards:Section', 'cards:Questionnaire'].includes(node.jcrPrimaryType)) {
-            newParentOptions.push(node);
-          }
-        }
-      }
-      return newParentOptions;
-    } else {
-      return [];
-    }
+     if (!reorderSource) return [];
+    return Object.values(nodes)
+      .filter(node => ['cards:Section', 'cards:Questionnaire'].includes(node.jcrPrimaryType));
   }, [nodes, reorderSource]);
 
   const getParentOptionDisabled = useCallback((option) => {
@@ -183,27 +151,21 @@ export default function ReorderForm(props) {
   }, [nodes, reorderSource]);
 
   const positionOptions = useMemo(() => {
-    if (!!newParent && !!Object.keys(nodes).length) {
-      const parent = nodes[newParent];
-      const newPositions = parent.children.map(id => (nodes[id])).map((node, index) => {
-        const { name, title, path, relativePath, jcrPrimaryType } = node;
-        if (!ENTRY_TYPES.includes(jcrPrimaryType)) {
-          return null;
-        }
-        return {
-          value: index,
-          name: name,
-          text: title,
-          path: path,
-          relativePath: relativePath,
-          type: stripCardsNamespace(jcrPrimaryType)
-        }
-      }).filter(node => node !== null);
-      return newPositions;
-    } else {
-      return [];
-    }
+    if (!newParent) return [];
+    const parent = nodes[newParent];
+    return parent.children
+      .map(id => nodes[id])
+      .filter(node => ENTRY_TYPES.includes(node.jcrPrimaryType))
+      .map((node, index) => ({
+        value: index,
+        name: node.name,
+        text: node.title,
+        path: node.path,
+        relativePath: node.relativePath,
+        type: stripCardsNamespace(node.jcrPrimaryType)
+      }));
   }, [nodes, newParent]);
+
 
   useEffect(() => {
     if (Object.keys(nodes).length === 0) {
