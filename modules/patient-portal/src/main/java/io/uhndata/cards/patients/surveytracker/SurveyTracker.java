@@ -198,6 +198,8 @@ public class SurveyTracker implements ResourceChangeListener, EventHandler
                 // Clinic changed: make sure we have a survey events form for the new clinic
                 ensureSurveyStatusFormExists(session.getNode(SURVEY_EVENTS_PATH),
                     this.formUtils.getSubject(form), session);
+                updateSurveyExpirationDate(form, this.formUtils.getAnswer(form,
+                    session.getNode("/Questionnaires/Visit information/time")), session);
             }
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage());
