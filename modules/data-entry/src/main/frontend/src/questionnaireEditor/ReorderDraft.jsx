@@ -145,7 +145,7 @@ const initialReorderState = {
   tree: null, //not used but could be if you want to decouple the tree and reorder contexts
 
   status: 'idle',
-  errror: null,
+  error: null,
 
   inputs: {
     reorderSourceId: null,
