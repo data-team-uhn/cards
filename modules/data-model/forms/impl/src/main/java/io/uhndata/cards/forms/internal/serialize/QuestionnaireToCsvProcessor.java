@@ -81,6 +81,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         return resource.isResourceType("cards/Questionnaire");
     }
 
+    @SuppressWarnings({"checkstyle:MultipleStringLiterals"})
     @Override
     public List<SelectorDetails> getDetails()
     {
@@ -97,6 +98,19 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             + "Include a specified property on data forms that belongs to this questionnaire that would normally be "
             + "skipped in the csv export process. This option is intended to be run alongside the `.data` processor.\n"
             + "For example, `.csvIncludeFields:@survey=Survey` will include the `@survey` property."));
+        result.add(new SelectorDetails("csvReplaceColumnLabels",
+            "Only runs on `Questionnaires`.\n"
+            + "Replace all regex matches in the label header with a specified string.\n"
+            + "Use this selector multiple times to run multiple different replacements.\n"
+            + "For example, `.csvReplaceColumnLabels:Identifier=ID` will replace any instances of `Identifier` with "
+            + "`ID`."));
+        result.add(new SelectorDetails("csvReplaceColumnIds",
+            "Only runs on `Questionnaires`.\n"
+            + "Replace all regex matches in the identifier header with a specified string.\n"
+            + "Use this selector multiple times to run multiple different replacements.\n"
+            + "This option is intended to be run alongside the `.csvHeader:raw` selector.\n"
+            + "For example, `.csvReplaceColumnIds:@=#` will replace any instances of `@` with `#`, "
+            + "such as `@name` = `#name`."));
         return result;
     }
 

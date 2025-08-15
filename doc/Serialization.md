@@ -38,7 +38,7 @@ Multiple different export formats are supported. These include:
 - `/Forms/<Form ID>.md` exports a Markdown-formatted view of a Form. Use `.txt` to export plain text instead.
 
 #### Example: Weekly OAIP Form Export
-`/Questionnaires/OAIP.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv`
+`/Questionnaires/OAIP.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.csvReplaceColumnIds:@=#.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv`
 - `/Questionnaires/OAIP`: Export the OAIP questionnaire
 - `.data`: Include the forms that answer this questionnaire
 - `.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00`: Files modified on or after 2 AM on July 19th, UTC-5. Since periods are used to seperate selectors, the period in the timestamp must be escaped with a `\`. This slash needs to be URL-encoded to `%5C`. The shorter format `2025-07-19` is also supported, and interpreted as Midnight (time `T00:00:00.000`) in the server's timezone.
@@ -48,6 +48,7 @@ Multiple different export formats are supported. These include:
 - `.formToSurveyLinks`: Include the path to the relevant Survey Events form in the form data. This adds an `@survey` property, which is included in the export later
 - `.csvIncludeFields:@survey=Survey`: Special instruction for the csv output format. Include the `@survey` property in a column with the label `Survey`
 - `.csvHeader:raw`: Special instruction for the csv output format. Include the raw property names as a header in addition to the (default) labels
+- `.csvReplaceColumnIds:@=#`: Replace any instances of `@` in the raw column headers with `#`. Notably, replace `@name` and `@survey` with `#name` and `#survey`
 - `.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month`: Do not include the question `oaip_visit_month` or it's answers. The path to this question has been URL  encoded twice from `/Questionnaires/OAIP/oaip_module1/oaip_visit_month`, first to replace the `/` with `%2F` and second to replace `%` with `%25`
 - `.csv`: Export the data as a csv file.
 
@@ -232,3 +233,14 @@ Include the raw property name as a header row for all exported columns.
 Only runs on `Questionnaires`.  
 Include a specified property on data forms that belongs to this questionnaire that would normally be skipped in the csv export process. This option is intended to be run alongside the `.data` processor.  
 For example, `.csvIncludeFields:@survey=Survey` will include the `@survey` property.  
+### csvReplaceColumnIds
+Only runs on `Questionnaires`.  
+Replace all regex matches in the identifier header with a specified string.  
+Use this selector multiple times to run multiple different replacements.  
+This option is intended to be run alongside the `.csvHeader:raw` selector.  
+For example, `.csvReplaceColumnIds:@=#` will replace any instances of `@` with `#`, such as `@name` = `#name`.  
+### csvReplaceColumnLabels
+Only runs on `Questionnaires`.  
+Replace all regex matches in the label header with a specified string.  
+Use this selector multiple times to run multiple different replacements.  
+For example, `.csvReplaceColumnLabels:Identifier=ID` will replace any instances of `Identifier` with `ID`.  
