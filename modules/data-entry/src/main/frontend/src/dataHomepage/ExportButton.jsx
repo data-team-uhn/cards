@@ -190,14 +190,15 @@ function ExportButton(props) {
       path += ".csvHeader:raw";
     }
     if (csvReplaceColumnLabels) {
-      csvReplaceColumnLabels.split(",").forEach(replacement => {
+      // Split at commas or newlines, trimming whitespace before or after these delimiters
+      csvReplaceColumnLabels.split(/\s*[,\n]\s*/).forEach(replacement => {
         path += ".csvReplaceColumnLabels:" + encodeURIComponent(encodeURIComponent(replacement));
-      })
+      });
     }
     if (csvReplaceColumnIds) {
-      csvReplaceColumnIds.split(",").forEach(replacement => {
+      csvReplaceColumnIds.split(/\s*[,\n]\s*/).forEach(replacement => {
         path += ".csvReplaceColumnIds:" + encodeURIComponent(encodeURIComponent(replacement));
-      })
+      });
     }
     if (selectedEntityIds.length > 0) {
       path +=  ".questionnaireFilter";
@@ -351,7 +352,7 @@ function ExportButton(props) {
             <Grid size={8}>
               <TextField
                 variant="standard"
-                helperText="Regex based replace all. Format: <regex to find>=<value to replace with>,<regex2>=<value2>,..."
+                helperText="List of pairs `<regex to find>=<value to replace with>` separated by commas or newlines. Example: <regex_1>=<value_1>,<regex_2>=<value_2>,..."
                 placeholder="@=#"
                 value={csvReplaceColumnLabels}
                 onChange={(event) => setCsvReplaceColumnLabels(event.target.value)}
@@ -365,7 +366,7 @@ function ExportButton(props) {
             <Grid size={8}>
               <TextField
                 variant="standard"
-                helperText="Regex based replace all. Format: <regex to find>=<value to replace with>,<regex2>=<value2>,..."
+                helperText="List of pairs `<regex to find>=<value to replace with>` separated by commas or newlines."
                 placeholder="@=#"
                 value={csvReplaceColumnIds}
                 onChange={(event) => setCsvReplaceColumnIds(event.target.value)}

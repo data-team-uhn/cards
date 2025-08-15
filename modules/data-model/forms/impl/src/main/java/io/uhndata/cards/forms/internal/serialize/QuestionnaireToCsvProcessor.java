@@ -182,7 +182,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             String right = pieces.length == 2 ? pieces[1] : pieces[0];
 
             result.add(new StringPair(left, right));
-            startIndex = decodedPath.indexOf(INCLUDE_FIELDS, endIndex);
+            startIndex = decodedPath.indexOf(name, endIndex);
         }
 
         return result;
@@ -198,7 +198,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             csvPrinter.printRecord(records.stream().map(record -> {
                 String result = record;
                 for (int i = 0; i < patterns.size(); i++) {
-                    Matcher matcher = patterns.get(i).matcher(record);
+                    Matcher matcher = patterns.get(i).matcher(result);
                     result = matcher.replaceAll(replacements.get(i).getRight());
                 }
                 return result;
