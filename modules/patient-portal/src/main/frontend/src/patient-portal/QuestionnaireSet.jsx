@@ -63,7 +63,7 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   screen : {
-    alignItems: "center",
+    alignItems: "flex-start",
     margin: "auto",
     maxWidth: "780px",
     width: "100%",
@@ -591,7 +591,8 @@ function QuestionnaireSet(props) {
   const greet = (name) => {
     let hourOfDay = (new Date()).getHours();
     let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
-    return `Good ${timeOfDay}` + (name ? `, ${name}` : '');
+    let greeting = `Good ${timeOfDay}` + (name ? `, ${name}` : '');
+    return <Typography variant="h6" key="welcome-greeting" sx={{fontWeight: "600"}}>{ greeting }</Typography>;
   }
 
   const appointmentDate = () => {
@@ -663,19 +664,19 @@ function QuestionnaireSet(props) {
   let introMessage = intro.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
-    <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    greet(username),
     appointmentAlert(),
     displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "survey-info"}),
   ] : [
-    <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    greet(username),
     appointmentAlert(),
     (introMessage
-      ? <FormattedText key="intro-message" className="patient-portal-instructions">{introMessage}</FormattedText>
-      : displayText("surveyIntro", Typography, {key: "welcome-message", className: "patient-portal-instructions"})
+      ? <FormattedText key="intro-message">{introMessage}</FormattedText>
+      : displayText("surveyIntro", Typography, {key: "welcome-message"})
     ),
-    <List key="welcome-surveys">
+    <List key="welcome-surveys" sx={{p : 0}}>
     { (questionnaireIds || []).map((q, i) => (
-      <ListItem key={q+"Welcome"}>
+      <ListItem key={q+"Welcome"} sx={{pt : 0, pb: 0}}>
         <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
@@ -686,11 +687,11 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
-    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>,
+    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action" sx={{mr: 10, width: 1}}>Begin</Fab>,
     <Typography component="p" key="expiry-message" color="textSecondary">
         {expiryDate()}
     </Typography>,
-    displayText("surveyDraftInfo", FormattedText, {variant: "body2", key: "draft-info", className: "patient-portal-instructions"}),
+    displayText("surveyDraftInfo", FormattedText, {variant: "body2", key: "draft-info"}),
   ];
 
   let formScreen = [
@@ -865,7 +866,15 @@ function QuestionnaireSetScreen (props) {
   return (
   <Paper elevation={0} className={classes.mainContainer}>
     <Grid container direction="column" spacing={4} {...rest}>
-      {Array.from(children || []).filter(c => c).map((c, i) => <Grid key={i+"MainItem"} className={classes.mainItem}>{c}</Grid>)}
+      {Array.from(children || []).filter(c => c).map((c, i) =>
+          <Grid
+            key={i+"MainItem"}
+            alignSelf={["welcome-action", "expiry-message", "review-title", "summary-title"].includes(c.key) || c.key.startsWith("review-submit") ? "center" : ""}
+            className={classes.mainItem}
+          >
+            {c}
+          </Grid>)
+      }
     </Grid>
   </Paper>
   );
