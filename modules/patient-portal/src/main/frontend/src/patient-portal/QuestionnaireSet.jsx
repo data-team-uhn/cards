@@ -592,7 +592,7 @@ function QuestionnaireSet(props) {
     let hourOfDay = (new Date()).getHours();
     let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
     let greeting = `Good ${timeOfDay}` + (name ? `, ${name}` : '');
-    return <Typography variant="h6" key="welcome-greeting" sx={{fontWeight: "600"}}>{ greeting }</Typography>;
+    return <Typography variant="h6" key="welcome-greeting">{ greeting }</Typography>;
   }
 
   const appointmentDate = () => {
@@ -674,9 +674,9 @@ function QuestionnaireSet(props) {
       ? <FormattedText key="intro-message">{introMessage}</FormattedText>
       : displayText("surveyIntro", Typography, {key: "welcome-message"})
     ),
-    <List key="welcome-surveys" sx={{p : 0}}>
+    <List key="welcome-surveys" dense>
     { (questionnaireIds || []).map((q, i) => (
-      <ListItem key={q+"Welcome"} sx={{pt : 0, pb: 0}}>
+      <ListItem key={q+"Welcome"}>
         <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
@@ -869,7 +869,7 @@ function QuestionnaireSetScreen (props) {
       {Array.from(children || []).filter(c => c).map((c, i) =>
           <Grid
             key={i+"MainItem"}
-            alignSelf={["welcome-action", "expiry-message", "review-title", "summary-title"].includes(c.key) || c.key.startsWith("review-submit") ? "center" : ""}
+            alignSelf={["welcome-action", "expiry-message", "review-title"].includes(c.key) || c.key?.startsWith("review-submit") ? "center" : ""}
             className={classes.mainItem}
           >
             {c}
