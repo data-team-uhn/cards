@@ -16,7 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
 import { createTheme } from '@mui/material/styles';
 
 import { appTheme } from "../themePalette";
