@@ -675,9 +675,9 @@ function QuestionnaireSet(props) {
       ? <FormattedText key="intro-message">{introMessage}</FormattedText>
       : displayText("surveyIntro", Typography, {key: "welcome-message"})
     ),
-    <List key="welcome-surveys" dense>
+    <List key="welcome-surveys" disablePadding>
     { (questionnaireIds || []).map((q, i) => (
-      <ListItem key={q+"Welcome"}>
+      <ListItem key={q+"Welcome"} sx={{py : 0}}>
         <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
