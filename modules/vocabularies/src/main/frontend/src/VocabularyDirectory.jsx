@@ -26,7 +26,7 @@ import {
   Typography
 } from "@mui/material";
 
-import VocabularyTable from "./vocabularyTable";
+import VocabularyTable from "./VocabularyTable";
 
 const Status = require("./statusCodes.json");
 

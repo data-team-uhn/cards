@@ -25,9 +25,9 @@ import {
 import React, {useEffect} from "react";
 
 import AdminScreen from "./adminDashboard/AdminScreen.jsx";
-import VocabularyDirectory from "./vocabularyDirectory";
-import OwlInstaller from "./owlInstaller";
-import { BioPortalApiKey } from "./bioportalApiKey";
+import VocabularyDirectory from "./VocabularyDirectory.jsx";
+import OwlInstaller from "./OwlInstaller.jsx";
+import { BioPortalApiKey } from "./BioportalApiKey.jsx";
 
 const Phase = require("./phaseCodes.json");
 const vocabLinks = require("./vocabularyLinks.json");

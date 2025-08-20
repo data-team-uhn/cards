@@ -51,10 +51,10 @@ export default function fetchBioPortalApiKey(globalLoginDisplay, func, errorHand
     func(keyJson[JSON_KEY]);
   }
 
-fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
-  .then((response) => response.ok ? response.json() : Promise.reject(response))
-  .then(parseKey)
-  .catch(errorHandler);
+  fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
+    .then((response) => response.ok ? response.json() : Promise.reject(response))
+    .then(parseKey)
+    .catch(errorHandler);
 }
 
 const useStyles = makeStyles()(theme => ({

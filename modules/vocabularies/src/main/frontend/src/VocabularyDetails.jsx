@@ -32,8 +32,8 @@ import {
 
 import { makeStyles } from 'tss-react/mui';
 
-import VocabularyAction from "./vocabularyAction";
-import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";
+import VocabularyAction from "./VocabularyAction";
+import VocabularyBrowser from "./vocabQuery/VocabularyBrowser";
 
 const Phase = require("./phaseCodes.json");
 

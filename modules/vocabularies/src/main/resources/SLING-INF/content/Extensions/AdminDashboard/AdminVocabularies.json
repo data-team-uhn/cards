@@ -3,7 +3,7 @@
   "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
   "cards:extensionName": "Vocabularies",
   "cards:targetURL": "/content.html/admin/Vocabularies",
-  "cards:icon": "asset:cards-vocabularies.vocabulariesIcon.js",
+  "cards:icon": "asset:cards-vocabularies.VocabulariesIcon.js",
   "cards:defaultOrder": 92,
   "cards:hint": "Install and update medical vocabularies used"
 }

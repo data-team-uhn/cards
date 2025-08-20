@@ -32,7 +32,7 @@ import { makeStyles } from 'tss-react/mui';
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 
-import fetchBioPortalApiKey from "./bioportalApiKey";
+import fetchBioPortalApiKey from "./BioportalApiKey.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 
 const vocabLinks = require('./vocabularyLinks.json');
@@ -62,7 +62,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }));
 
-export default function Search(props) {
+export default function VocabularySearch(props) {
   const [error, setError] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
   const [loading, setLoading] = React.useState(false);
