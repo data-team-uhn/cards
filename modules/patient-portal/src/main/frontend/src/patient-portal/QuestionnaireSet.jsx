@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
   Avatar,
+  Box,
   Button,
   CircularProgress,
   Fab,
@@ -741,7 +742,9 @@ function QuestionnaireSet(props) {
           </Grid>
         </Paper>
         :
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" alignItems="center" sx={{width: "780px"}}>
+          <CircularProgress />
+        </Box>
       }
       </Grid>
       ))}
@@ -868,7 +871,7 @@ function QuestionnaireSetScreen (props) {
       {Array.from(children || []).filter(c => c).map((c, i) =>
           <Grid
             key={i+"MainItem"}
-            alignSelf={["welcome-action", "expiry-message", "review-title", "review-loading"].includes(c.key) || c.key?.startsWith("review-submit") ? "center" : ""}
+            alignSelf={["welcome-action", "expiry-message", "review-title", "review-loading", "exit-loading"].includes(c.key) || c.key?.startsWith("review-submit") ? "center" : ""}
             className={classes.mainItem}
           >
             {c}
