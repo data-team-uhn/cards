@@ -289,7 +289,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             "cards:extensionPointId", "cards/coreUI/sidebar/entry",
             "cards:extensionName", this.sidebarLabel.get(),
             "cards:targetURL", "/content.html/Dashboard/" + this.idHash.get(),
-            "cards:icon", "asset:patient-portal.clinicIcon.js",
+            "cards:icon", "asset:patient-portal.ClinicIcon.js",
             "cards:defaultOrder", 10,
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:Extension"));
         if (clinicGroup != null) {
