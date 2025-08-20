@@ -677,7 +677,7 @@ function QuestionnaireSet(props) {
     ),
     <List key="welcome-surveys" disablePadding>
     { (questionnaireIds || []).map((q, i) => (
-      <ListItem key={q+"Welcome"} sx={{py : 0}}>
+      <ListItem key={q+"Welcome"} disablePadding>
         <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
