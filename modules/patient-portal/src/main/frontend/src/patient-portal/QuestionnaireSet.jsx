@@ -718,9 +718,7 @@ function QuestionnaireSet(props) {
   );
 
   let reviewScreen = !enableReviewScreen ? [
-    <Grid alignItems="center" justifyContent="center">
-      <Grid key="review-loading"><CircularProgress/></Grid>
-    </Grid>
+    <CircularProgress key="review-loading"/>
   ] : [
     <Typography variant="h4" key="review-title">Review and Submit</Typography>,
     submitButton("Submit now"),
@@ -870,7 +868,7 @@ function QuestionnaireSetScreen (props) {
       {Array.from(children || []).filter(c => c).map((c, i) =>
           <Grid
             key={i+"MainItem"}
-            alignSelf={["welcome-action", "expiry-message", "review-title"].includes(c.key) || c.key?.startsWith("review-submit") ? "center" : ""}
+            alignSelf={["welcome-action", "expiry-message", "review-title", "review-loading"].includes(c.key) || c.key?.startsWith("review-submit") ? "center" : ""}
             className={classes.mainItem}
           >
             {c}

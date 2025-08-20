@@ -33,6 +33,8 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
+    maxWidth: 500,
+    margin: "0 auto",
   },
   submit : {
     marginTop: theme.spacing(5),
