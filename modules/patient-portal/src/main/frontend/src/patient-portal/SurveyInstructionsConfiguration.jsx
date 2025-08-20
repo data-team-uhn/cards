@@ -54,7 +54,7 @@ function SurveyInstructionsConfiguration() {
   const labels = {
     welcomeMessage: ["welcomeMessage"],
     eventSelectionScreen: ["noEventsMessage", "eventSelectionMessage"],
-    startScreen: [ "enableStartScreen", "eventLabel", "noSurveysMessage", "surveyIntro", "surveyDraftInfo" ],
+    startScreen: [ "enableStartScreen", "greeting", "eventLabel", "noSurveysMessage", "surveyIntro", "surveyDraftInfo" ],
     reviewScreen: ["enableReviewScreen"],
     summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
   };

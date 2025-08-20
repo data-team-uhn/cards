@@ -70,9 +70,6 @@ const useStyles = makeStyles()(theme => ({
     "& > .mainItem" : {
       paddingLeft: 0,
     },
-    "& h4, h6, .patient-portal-instructions" : {
-      textAlign: "center",
-    }
   },
   surveyPreviewComponent : {
     background: theme.palette.action.hover,
@@ -589,10 +586,14 @@ function QuestionnaireSet(props) {
 
 
   const greet = (name) => {
-    let hourOfDay = (new Date()).getHours();
-    let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
-    let greeting = `Good ${timeOfDay}` + (name ? `, ${name}` : '');
-    return <Typography variant="h6" key="welcome-greeting">{ greeting }</Typography>;
+    let greeting = displayText("greeting", Typography, {variant: "h6", key: "welcome-greeting"});
+    if (!greeting) {
+      let hourOfDay = (new Date()).getHours();
+      let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
+      let greetingMessage = `Good ${timeOfDay}` + (name ? `, ${name}` : '');
+      greeting = <Typography variant="h6" key="welcome-greeting">{ greetingMessage }</Typography>;
+    }
+    return greeting;
   }
 
   const appointmentDate = () => {
@@ -759,8 +760,8 @@ function QuestionnaireSet(props) {
   let endingMessage = ending.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
   let finalInstructions = (
-      endingMessage ? <FormattedText key="summary-instructions" className="patient-portal-instructions">{endingMessage}</FormattedText> :
-      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions", className: "patient-portal-instructions"})
+      endingMessage ? <FormattedText key="summary-instructions">{endingMessage}</FormattedText> :
+      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions"})
   );
 
   let disclaimer = (

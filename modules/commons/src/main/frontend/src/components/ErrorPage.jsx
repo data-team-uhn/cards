@@ -32,10 +32,6 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
-    textAlign: "center",
-    "& .MuiGrid-root" : {
-      textAlign: "center",
-    },
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
@@ -43,7 +39,18 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 export default function ErrorPage(props) {
-  const { errorCode, errorCodeColor, title, titleColor, message, messageColor, buttonLink, buttonLabel, ...rest } = props;
+  const {
+    errorCode,
+    errorCodeColor,
+    title,
+    titleColor,
+    message,
+    messageColor,
+    buttonLink,
+    buttonLabel,
+    textAlign="center",
+    ...rest
+  } = props;
   const { classes } = useStyles();
 
   return (
@@ -52,8 +59,7 @@ export default function ErrorPage(props) {
           container
           direction="column"
           spacing={7}
-          alignItems="center"
-          alignContent="center"
+          textAlign={textAlign}
         >
           <Logo maxWidth="360px" component={Grid}/>
           <Grid>

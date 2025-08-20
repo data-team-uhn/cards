@@ -33,13 +33,10 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
-    textAlign: "center",
-    "& .MuiGrid-root" : {
-      textAlign: "center",
-    },
   },
   submit : {
     marginTop: theme.spacing(5),
+    float: 'right',
   }
 }));
 
@@ -79,6 +76,7 @@ function Unsubscribe (props) {
         message="This page can only be accessed by opening an invitation to fill in a survey"
         buttonLink="/content.html/Questionnaires/User"
         buttonLabel="Go to the dashboard"
+        textAlign="left"
       />
     );
   }
@@ -91,8 +89,6 @@ function Unsubscribe (props) {
           container
           direction="column"
           spacing={7}
-          alignItems="center"
-          alignContent="center"
         >
           <Logo component={Grid} size={12} />
           <Grid>

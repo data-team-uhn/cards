@@ -51,7 +51,7 @@ const useStyles = makeStyles()(theme => ({
   },
   description : {
     "& > *" : {
-      textAlign: "center",
+      textAlign: "left",
       marginBottom: "16px",
       "@media (max-width: 400px)" : {
         fontSize: "x-small",
@@ -89,6 +89,9 @@ const useStyles = makeStyles()(theme => ({
       justifyContent: "flex-start",
       textTransform: "none",
     },
+  },
+  submit : {
+    float: 'right',
   }
 }));
 
@@ -248,6 +251,7 @@ function PatientIdentification(props) {
         title=""
         message={message}
         messageColor="textPrimary"
+        textAlign="left"
       />
     )
   }
@@ -293,7 +297,7 @@ function PatientIdentification(props) {
     {/* Patient identification form */}
 
     <form className={classes.form} onSubmit={onSubmit} >
-      <Grid container direction="column" spacing={4} alignItems="center" justifyContent="center">
+      <Grid container direction="column" spacing={4} >
          <Logo component={Grid} size={12}/>
 
          { /* If we don't have the authentication token yet or we don't need the identification form,
@@ -405,8 +409,10 @@ function PatientIdentification(props) {
             </Grid>
             <Grid>
               <Button
-                variant="contained" onClick={() => window.location = "/system/sling/logout"}
-                >
+                variant="contained"
+                className={classes.submit}
+                onClick={() => window.location = "/system/sling/logout"}
+              >
                 Close
               </Button>
             </Grid>
