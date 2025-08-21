@@ -43,6 +43,13 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
     @Override
+    public String getDescription()
+    {
+        return "Get the human readable answer for text and number questions with options by outputting the answer "
+            + "option's label instead of the stored value.";
+    }
+
+    @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {

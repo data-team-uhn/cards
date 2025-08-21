@@ -36,6 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
+import io.uhndata.cards.serialize.spi.SelectorDetails;
 
 /**
  * A processor that excludes or includes answer or answer section nodes based on the question/section they refer to, and
@@ -71,6 +72,29 @@ public class FormAnswerFilterProcessor implements ResourceJsonProcessor
     public String getName()
     {
         return "answerFilter";
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return "Only runs on `Forms`.\n"
+            + "Include or exclude answers or answer sections based on the question or section they refer to.\n"
+            + "If only `include` options are provided, only those items and any descendants will be included.\n"
+            + "If only `exclude` options are provided, all other items will be included.\n"
+            + "If both `include` and `exclude` options are provided, then for an item to be included it must be a "
+            + "listed as an `include` item or descendent thereof and also not be listed as or a descendant of an "
+            + "`exclude` node.\n"
+            + "It is not possible to include a descendant of an excluded item.";
+    }
+
+    @Override
+    public SelectorDetails getDetails()
+    {
+        return new SelectorDetails(getName(), getDescription(), isEnabledByDefault(null),
+            "include", "A path to an included question or section. "
+                + "e.g. `answerFilter:include=/Questionnaires/Path/To/Question`",
+            "exclude", "A path to an excluded question or section. "
+                + "e.g. `answerFilter:exclude=/Questionnaires/Path/To/Question`");
     }
 
     @Override

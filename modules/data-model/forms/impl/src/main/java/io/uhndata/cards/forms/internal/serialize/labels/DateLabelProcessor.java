@@ -47,6 +47,14 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     private static final DateFormat DEFAULT_FORMAT = SimpleDateFormat.getDateInstance();
 
     @Override
+    public String getDescription()
+    {
+        return "Get the human readable answer for date questions. The human readable version is the date "
+            + "formatted with the date format configured in the date question definition, "
+            + "for example `01/07/2025` instead of the stored value `2025-01-07T00:00:00.000-05:00`.";
+    }
+
+    @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {

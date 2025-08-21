@@ -52,6 +52,13 @@ public class LinksProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Simplify the serialization of links to other resources (such as other forms) to "
+            + "only include the link type and path to the linked resource.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 5;

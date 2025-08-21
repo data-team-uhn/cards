@@ -37,6 +37,14 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class DicomLabelProcessor extends FileLabelProcessor implements ResourceJsonProcessor
 {
+
+    @Override
+    public String getDescription()
+    {
+        return "Get the human readable answer for dicom questions by outputting the dicom file name instead of the "
+            + "path.";
+    }
+
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {

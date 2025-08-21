@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.patients.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -31,6 +32,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.serialize.spi.BaseFilterFactory;
 import io.uhndata.cards.serialize.spi.DataFilter;
 import io.uhndata.cards.serialize.spi.DataFilterFactory;
+import io.uhndata.cards.serialize.spi.SelectorDetails;
 
 /**
  * Filter forms based on the submitted status of the visit they belong to. Use {@code visitSubmitted=true} to filter
@@ -45,6 +47,17 @@ public class VisitSubmittedDataFilterFactory extends BaseFilterFactory implement
 {
     @Reference
     private ThreadResourceResolverProvider resolverProvider;
+
+    @Override
+    public List<SelectorDetails> getFilterDetails()
+    {
+        List<SelectorDetails> result = new ArrayList<>();
+        result.add(new SelectorDetails("visitSubmitted",
+            "Only include forms based on their submission status.",
+            "`.dataFilter:visitSubmitted=true`", "Only show forms belonging to a submitted visit.",
+            "`.dataFilter:visitSubmitted=false`", "Only show forms belonging to a visit that has not been submitted."));
+        return result;
+    }
 
     @Override
     public List<DataFilter> parseFilters(List<Pair<String, String>> filters, List<String> allSelectors)

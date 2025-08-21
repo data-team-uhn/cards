@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.forms.internal.serialize.filters;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.BaseFilterFactory;
 import io.uhndata.cards.serialize.spi.DataFilter;
 import io.uhndata.cards.serialize.spi.DataFilterFactory;
+import io.uhndata.cards.serialize.spi.SelectorDetails;
 
 /**
  * Filter forms based on their status flags. Use {@code status=FLAG} to filter only forms having that flag, and
@@ -41,6 +43,19 @@ import io.uhndata.cards.serialize.spi.DataFilterFactory;
 @Component
 public class StatusFlags extends BaseFilterFactory implements DataFilterFactory
 {
+    @Override
+    public List<SelectorDetails> getFilterDetails()
+    {
+        List<SelectorDetails> result = new ArrayList<>();
+        result.add(new SelectorDetails("status",
+            "Only show results that have the specified status flag. "
+            + "e.g. `.dataFilter:status=SUBMITTED`."));
+        result.add(new SelectorDetails("statusNot",
+            "Only show results that do not have the specified status flag. "
+            + "e.g. `.dataFilter:statusNot=INCOMPLETE`."));
+        return result;
+    }
+
     @Override
     public List<DataFilter> parseFilters(List<Pair<String, String>> filters, List<String> allSelectors)
     {

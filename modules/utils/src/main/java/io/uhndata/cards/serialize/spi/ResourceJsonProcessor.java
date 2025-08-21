@@ -78,6 +78,25 @@ public interface ResourceJsonProcessor
     int getPriority();
 
     /**
+     * A description of what this processor does.
+     * This is intended to be displayed to users looking to use processors to help format data.
+     *
+     * @return A description about this processor
+     */
+    String getDescription();
+
+    /**
+     * Data about how to use this processor and what it does.
+     * Intended to be displayed to users looking to retrieve data.
+     *
+     * @return The full set of details about how to use this processor and it's effects.
+     */
+    default SelectorDetails getDetails()
+    {
+        return new SelectorDetails(getName(), getDescription(), isEnabledByDefault(null));
+    }
+
+    /**
      * Checks if the given resource can be serialized by this processor. This method is only invoked for the top level
      * resource being serialized, not for each of its children/descendants. If this method returns {@code true}, this
      * processor may be invoked, if selected. If this method returns {@code false}, this processor will not be invoked

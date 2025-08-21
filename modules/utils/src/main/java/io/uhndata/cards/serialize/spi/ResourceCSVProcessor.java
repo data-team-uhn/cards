@@ -18,6 +18,8 @@
  */
 package io.uhndata.cards.serialize.spi;
 
+import java.util.List;
+
 import org.apache.sling.api.resource.Resource;
 
 /**
@@ -44,6 +46,16 @@ public interface ResourceCSVProcessor
     {
         return false;
     }
+
+    /**
+     * The details about any selectors that may be handled by this processor.
+     * Intended to be displayed to users looking to retrieve data.
+     *
+     * @return A list of selector details that describe what this processor does and how to call it.
+     *         May have just 1 entry if only one selector is handled by this processor
+     *         or multiple entries if multiple different selectors are handled.
+     */
+    List<SelectorDetails> getDetails();
 
     /**
      * Called for serializing a resource to CSV.

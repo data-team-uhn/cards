@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.forms.internal.serialize.filters;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.BaseFilterFactory;
 import io.uhndata.cards.serialize.spi.DataFilter;
 import io.uhndata.cards.serialize.spi.DataFilterFactory;
+import io.uhndata.cards.serialize.spi.SelectorDetails;
 
 /**
  * Filter forms based on who created them. Use {@code createdBy=username} to filter only forms created by that user, and
@@ -41,6 +43,19 @@ import io.uhndata.cards.serialize.spi.DataFilterFactory;
 @Component
 public class Creator extends BaseFilterFactory implements DataFilterFactory
 {
+    @Override
+    public List<SelectorDetails> getFilterDetails()
+    {
+        List<SelectorDetails> result = new ArrayList<>();
+        result.add(new SelectorDetails("createdBy",
+            "Only show results that were created by the specified user. "
+            + "e.g. `.dataFilter:createdBy=admin`."));
+        result.add(new SelectorDetails("notCreatedBy",
+            "Only show results that were created by any user other than the specified user. "
+            + "e.g. `.dataFilter:notCreatedBy=admin`."));
+        return result;
+    }
+
     @Override
     public List<DataFilter> parseFilters(List<Pair<String, String>> filters, List<String> allSelectors)
     {

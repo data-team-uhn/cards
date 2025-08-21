@@ -46,6 +46,12 @@ public class IdentificationProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Identify a node by including its `@path` and `@name` properties.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 10;

@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceCSVProcessor;
+import io.uhndata.cards.serialize.spi.SelectorDetails;
 
 /**
  * CSV serializer that can process Questionnaires.
@@ -72,6 +73,25 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     public boolean canProcess(final Resource resource)
     {
         return resource.isResourceType("cards/Questionnaire");
+    }
+
+    @Override
+    public List<SelectorDetails> getDetails()
+    {
+        List<SelectorDetails> result = new ArrayList<>();
+        result.add(new SelectorDetails("csvHeader:labels",
+            "Only runs on `Questionnaires`.\n"
+            + "Include the human readable label as a header row for all exported columns.",
+            true));
+        result.add(new SelectorDetails("csvHeader:raw",
+            "Only runs on `Questionnaires`.\n"
+            + "Include the raw property name as a header row for all exported columns."));
+        result.add(new SelectorDetails("csvIncludeFields",
+            "Only runs on `Questionnaires`.\n"
+            + "Include a specified property on data forms that belongs to this questionnaire that would normally be "
+            + "skipped in the csv export process. This option is intended to be run alongside the `.data` processor.\n"
+            + "For example, `.csvIncludeFields:@survey=Survey` will include the `@survey` property."));
+        return result;
     }
 
     @Override

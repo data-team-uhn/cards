@@ -40,6 +40,12 @@ public class DefaultLabelProcessor extends SimpleAnswerLabelProcessor implements
     private static final String DEFAULT_RESOURCE_TYPE = "cards:Answer";
 
     @Override
+    public String getDescription()
+    {
+        return "Get the human readable answer for questions.";
+    }
+
+    @Override
     public int getPriority()
     {
         // Unlike all other label processors, this has a lower priority, since it provides a default label that can

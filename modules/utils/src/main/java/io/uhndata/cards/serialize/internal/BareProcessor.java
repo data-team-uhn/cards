@@ -63,6 +63,13 @@ public class BareProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Simplify serialization for all resource types by removing all technical properties, "
+            + "renaming `jcr:created` to `created` and storing file attachments in a `content` property.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 90;

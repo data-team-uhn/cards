@@ -43,6 +43,12 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
     @Override
+    public String getDescription()
+    {
+        return "Get the human readable answer for file questions by outputting the file name instead of the path.";
+    }
+
+    @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {

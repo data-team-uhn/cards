@@ -51,6 +51,13 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
     private ThreadResourceResolverProvider rrp;
 
     @Override
+    public String getDescription()
+    {
+        return "Get the human readable answer for resource questions with options by outputting the answer "
+            + "option's label instead of the stored value.";
+    }
+
+    @Override
     public boolean canProcess(Resource resource)
     {
         return resource.isResourceType("cards/Form") || resource.isResourceType("cards/Questionnaire");

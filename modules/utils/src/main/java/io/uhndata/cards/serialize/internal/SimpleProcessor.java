@@ -51,6 +51,13 @@ public class SimpleProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Simplify serialization for all resource types by removing unnecessary properties.\n"
+            + "Remove the `form` property and all `sling:` and `jcr:` properties.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 25;

@@ -57,6 +57,13 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
     }
 
     @Override
+    public String getDescription()
+    {
+        return "Only runs on `SubjectTypes`.\n"
+            + "Include the number of subjects of that type in the subject type serialization.";
+    }
+
+    @Override
     public int getPriority()
     {
         return 55;

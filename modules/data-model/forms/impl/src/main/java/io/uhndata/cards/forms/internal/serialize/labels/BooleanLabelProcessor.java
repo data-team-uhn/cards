@@ -46,6 +46,13 @@ public class BooleanLabelProcessor extends SimpleAnswerLabelProcessor implements
     private static final String UNKNOWN_LABEL = "unknownLabel";
 
     @Override
+    public String getDescription()
+    {
+        return "Get the human readable answer for boolean questions by outputting the labels specified in the "
+            + "question definition, e.g. 'Yes' or 'True' instead of '1'.";
+    }
+
+    @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {

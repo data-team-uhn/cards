@@ -18,6 +18,7 @@
  */
 package io.uhndata.cards.patients.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.serialize.spi.BaseFilterFactory;
 import io.uhndata.cards.serialize.spi.DataFilter;
 import io.uhndata.cards.serialize.spi.DataFilterFactory;
+import io.uhndata.cards.serialize.spi.SelectorDetails;
 
 /**
  * Filter forms based on the clinic their visit belongs to. Use {@code clinic=/Path/To/Clinic} to filter only forms
@@ -51,6 +53,21 @@ public class ClinicDataFilterFactory extends BaseFilterFactory implements DataFi
 {
     @Reference
     private ThreadResourceResolverProvider resolverProvider;
+
+    @Override
+    public List<SelectorDetails> getFilterDetails()
+    {
+        List<SelectorDetails> result = new ArrayList<>();
+        result.add(new SelectorDetails("clinic",
+            "Only show forms that belong to a user that has a 'Visit information' form for the specified clinic. "
+            + "If included multiple times, this includes forms belonging to any of the specified clinics. "
+            + "e.g. `.dataFilter:clinic=PMH-YVM`."));
+        result.add(new SelectorDetails("clinicNot",
+            "Exclude forms that belong to a user that has a 'Visit information' form for the specified clinic. "
+            + "If included multiple times, this excludes forms belonging to any of the specified clinics. "
+            + "e.g. `.dataFilter:clinicNot=PMH-YVM`."));
+        return result;
+    }
 
     @Override
     public List<DataFilter> parseFilters(List<Pair<String, String>> filters, List<String> allSelectors)
