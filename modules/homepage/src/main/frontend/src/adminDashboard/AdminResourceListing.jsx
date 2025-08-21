@@ -16,12 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 
 import AdminScreen from "./AdminScreen.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 
 
 function AdminResourceListing(props) {
@@ -83,46 +83,86 @@ function AdminResourceListing(props) {
     };
   });
 
+  const tableConfig = useMemo(() => ({
+    enableColumnFilters: false,
+    positionToolbarAlertBanner: "none",
+    muiSearchTextFieldProps: { autoFocus: true },
+    // initialState: { showGlobalFilter: true },
+    state: { isLoading: isLoading, showProgressBars: isRefetching, 
+      // 
+      showGlobalFilter: true
+     },
+    columns: columns,
+    data: data,
+    muiTablePaperProps: { elevation: 0 },
+    muiTableHeadCellProps: {
+      sx: (theme) => ({
+        background: theme.palette.grey['200'],
+      }),
+    },
+    displayColumnDefOptions: {
+      'mrt-row-actions': {
+        muiTableHeadCellProps: {align: 'right'},
+        muiTableBodyCellProps: {
+          sx: {
+            padding: '0',
+          },
+        },
+      },
+      'mrt-row-expand': {
+        size: 8,
+      },
+    },
+    enableRowActions: tableActions,
+    positionActionsColumn: "last",
+    renderRowActions: tableActions,
+    filterFns: {
+        myCustomFilterFn: customFilter,
+      },
+    globalFilterFn: customFilter ? "myCustomFilterFn" : "contains"
+  }), [data, isLoading, isRefetching]);
+  const table = useMaterialReactTable(tableConfig);
+
   return (
     <AdminScreen
       title={title}
       action={buttonProps ? <NewItemButton {...buttonProps}/> : action}
     >
-      {/* <MaterialReactTable
-        enableColumnFilters={false}
-        positionToolbarAlertBanner="none"
-        muiSearchTextFieldProps={{ autoFocus: true }}
-        initialState={{ showGlobalFilter: true }}
-        state={{ isLoading: isLoading, showProgressBars: isRefetching }}
-        columns={columns}
-        data={data}
-        muiTablePaperProps={{ elevation: 0 }}
-        muiTableHeadCellProps={{
-            sx: (theme) => ({
-              background: theme.palette.grey['200'],
-            }),
-          }}
-        displayColumnDefOptions={{
-            'mrt-row-actions': {
-              muiTableHeadCellProps: {align: 'right'},
-              muiTableBodyCellProps: {
-                sx: {
-                  padding: '0',
-                },
-              },
-            },
-            'mrt-row-expand': {
-              size: 8,
-            },
-          }}
-        enableRowActions={tableActions}
-        positionActionsColumn="last"
-        renderRowActions={tableActions}
-        filterFns={{
-            myCustomFilterFn: customFilter,
-          }}
-        globalFilterFn={customFilter ? "myCustomFilterFn" : "contains"}
-      /> */}
+      <MaterialReactTable table={table}
+        // enableColumnFilters={false}
+        // positionToolbarAlertBanner="none"
+        // muiSearchTextFieldProps={{ autoFocus: true }}
+        // initialState={{ showGlobalFilter: true }}
+        // state={{ isLoading: isLoading, showProgressBars: isRefetching }}
+        // columns={columns}
+        // data={data}
+        // muiTablePaperProps={{ elevation: 0 }}
+        // muiTableHeadCellProps={{
+        //     sx: (theme) => ({
+        //       background: theme.palette.grey['200'],
+        //     }),
+        //   }}
+        // displayColumnDefOptions={{
+        //     'mrt-row-actions': {
+        //       muiTableHeadCellProps: {align: 'right'},
+        //       muiTableBodyCellProps: {
+        //         sx: {
+        //           padding: '0',
+        //         },
+        //       },
+        //     },
+        //     'mrt-row-expand': {
+        //       size: 8,
+        //     },
+        //   }}
+        // enableRowActions={tableActions}
+        // positionActionsColumn="last"
+        // renderRowActions={tableActions}
+        // filterFns={{
+        //     myCustomFilterFn: customFilter,
+        //   }}
+        // globalFilterFn={customFilter ? "myCustomFilterFn" : "contains"}
+      />
     </AdminScreen>
   );
 }

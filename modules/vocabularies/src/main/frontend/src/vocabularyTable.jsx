@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import {
   Grid,
@@ -25,7 +25,7 @@ import {
   Tooltip
 } from "@mui/material";
 
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import VocabularyActions from "./vocabularyActions"
 import Search from "./search";
 
@@ -46,7 +46,73 @@ export default function VocabularyTable(props) {
         setFilteredVocabs(vocabList.slice().filter(vocab => acronymFilterList.includes(vocab.acronym)));
       }
     }
-  }, [filterTable, acronymFilterList])
+  }, [filterTable, acronymFilterList]);
+
+  const tableConfig = useMemo(() => ({
+    data: filterTable ? filteredVocabs : vocabList,
+    state: { isLoading: loading,
+      //  
+      showColumnFilters: true
+     },
+    // initialState: {  },
+    columns: [
+      { header: 'Identifier', accessorKey: 'acronym', size: 30, filterFn: 'contains' },
+      { header: 'Name', accessorKey: 'name', filterFn: 'contains' },
+      { header: 'Version', accessorKey: 'version', size: 10, enableColumnFilter: false,
+        Cell: ({ row }) => row.original.version &&
+          <Tooltip title={row.original.version}>
+            <Typography style={{fontWeight: "inherit"}} noWrap>
+              {row.original.version}
+            </Typography>
+          </Tooltip>
+      },
+      { header: type === "local" ? "Installation Date" : "Release Date",
+        accessorKey: 'released',
+        size: 20,
+        enableColumnFilter: false,
+        Cell: ({ row }) => (new Date(type === "local" ? row.original.installed : row.original.released)).toString().substring(4,15)
+      }
+    ],
+    
+    enableColumnActions: false,
+    displayColumnDefOptions: {
+      'mrt-row-actions': {
+        size: 50,
+        muiTableHeadCellProps: {align: "right"},
+        muiTableBodyCellProps: {
+          sx: {
+            whiteSpace: "pre",
+            textAlign: "right",
+            paddingRight: "0.3rem"
+          },
+        },
+        enableColumnFilter: false,
+      },
+    },
+
+    enableSorting: false,
+    enableTopToolbar: false,
+    muiTableHeadCellProps: {
+      sx: (theme) => ({
+        background: theme.palette.grey['200'],
+      }),
+    },
+
+    enableRowActions: true,
+    positionActionsColumn: "last",
+    renderRowActions: ({ row }) => (
+      <VocabularyActions
+         type={type}
+         vocabulary={row.original}
+         updateLocalList={props.updateLocalList}
+         initPhase={props.acronymPhaseObject[row.original.acronym] || Phase["Not Installed"]}
+         setPhase={(phase) => props.setPhase(row.original.acronym, phase)}
+         addSetter={(setFunction) => props.addSetter(row.original.acronym, setFunction, type)}
+       />
+    )
+  }), [filterTable, filteredVocabs, vocabList, loading, type, props]);
+
+  const table = useMaterialReactTable(tableConfig);
 
   return(
     <React.Fragment>
@@ -61,63 +127,7 @@ export default function VocabularyTable(props) {
 
       {(vocabList.length > 0) &&
       <Grid>
-        {/* <MaterialReactTable
-            enableColumnActions={false}
-            enableSorting={false}
-            enableTopToolbar={false}
-            state={{ isLoading: loading }}
-            initialState={{ showColumnFilters: true }}
-            columns={[
-              { header: 'Identifier', accessorKey: 'acronym', size: 30, filterFn: 'contains' },
-              { header: 'Name', accessorKey: 'name', filterFn: 'contains' },
-              { header: 'Version', accessorKey: 'version', size: 10, enableColumnFilter: false,
-                Cell: ({ row }) => row.original.version &&
-                  <Tooltip title={row.original.version}>
-                    <Typography style={{fontWeight: "inherit"}} noWrap>
-                      {row.original.version}
-                    </Typography>
-                  </Tooltip>
-              },
-              { header: type === "local" ? "Installation Date" : "Release Date",
-                accessorKey: 'released',
-                size: 20,
-                enableColumnFilter: false,
-                Cell: ({ row }) => (new Date(type === "local" ? row.original.installed : row.original.released)).toString().substring(4,15)
-              }
-            ]}
-            muiTableHeadCellProps={{
-              sx: (theme) => ({
-                background: theme.palette.grey['200'],
-              }),
-            }}
-            displayColumnDefOptions={{
-              'mrt-row-actions': {
-                size: 50,
-                muiTableHeadCellProps: {align: "right"},
-                muiTableBodyCellProps: {
-                  sx: {
-                    whiteSpace: "pre",
-                    textAlign: "right",
-                    paddingRight: "0.3rem"
-                  },
-                },
-                enableColumnFilter: false,
-              },
-            }}
-            data={filterTable ? filteredVocabs : vocabList}
-            enableRowActions
-            positionActionsColumn="last"
-            renderRowActions={({ row }) => (
-              <VocabularyActions
-                 type={type}
-                 vocabulary={row.original}
-                 updateLocalList={props.updateLocalList}
-                 initPhase={props.acronymPhaseObject[row.original.acronym] || Phase["Not Installed"]}
-                 setPhase={(phase) => props.setPhase(row.original.acronym, phase)}
-                 addSetter={(setFunction) => props.addSetter(row.original.acronym, setFunction, type)}
-               />
-            )}
-          /> */}
+        <MaterialReactTable table={table} />
       </Grid>
       }
     </React.Fragment>

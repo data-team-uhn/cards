@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useMemo} from "react";
 
 import {
   Box,
@@ -39,7 +39,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import BackupIcon from '@mui/icons-material/Backup';
 import CloseIcon from '@mui/icons-material/Close';
 import GetApp from '@mui/icons-material/GetApp';
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import DragAndDrop from "./components/dragAndDrop.jsx";
@@ -761,6 +761,68 @@ export default function VariantFilesContainer() {
     return [json, subjectPath, tumorPath, regionPath];
   }
 
+  const tableConfig = useMemo(() => ({
+    data: fileSelected?.sameFiles || [],
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enableSorting: false,
+    enableTopToolbar: false,
+    muiTablePaperProps: { elevation: 0 },
+    muiTableBodyRowProps: {
+      sx: {
+        verticalAlign: 'top',
+      },
+    },
+    columns: [
+      { header: 'Created', size: 10,
+        muiTableBodyCellProps: {
+          sx: (theme) => ({
+            paddingLeft: theme.spacing(2),
+            fontWeight: "bold",
+            whiteSpace: 'nowrap',
+          })
+        },
+        Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
+                            {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd")}
+                          </Link>
+      },
+      { header: 'Uploaded By',
+        muiTableBodyCellProps: {
+          sx: {
+            whiteSpace: 'pre-wrap',
+            paddingBottom: "8px",
+          }
+        },
+        Cell: ({ row }) => row.original["jcr:createdBy"] }
+    ],
+    displayColumnDefOptions: {
+      'mrt-row-actions': {
+        header: 'Actions',
+        size: 10,
+        muiTableHeadCellProps: {align: 'right'},
+        muiTableBodyCellProps: {
+          sx: {
+            padding: '0',
+            textAlign: 'right'
+          },
+        },
+      },
+    },
+    enableRowActions: true,
+    positionActionsColumn: "last",
+    renderRowActions: ({ row }) => (
+      <Tooltip title="Download">
+        <IconButton size="large">
+          <Link underline="none" color="inherit" href={row.original["@path"]} download>
+            <GetApp />
+          </Link>
+        </IconButton>
+      </Tooltip>
+    )
+  }), [fileSelected]);
+
+  const table = useMaterialReactTable(tableConfig);
+
   if (!somaticVariantsUUID) {
     fetchBasicData();
   }
@@ -912,65 +974,65 @@ export default function VariantFilesContainer() {
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
-        {/* <MaterialReactTable
-          data={fileSelected?.sameFiles}
-          enableColumnActions={false}
-          enableColumnFilters={false}
-          enableSorting={false}
-          enableTopToolbar={false}
-          muiTablePaperProps={{ elevation: 0 }}
-          muiTableBodyRowProps={{
-            sx: {
-              verticalAlign: 'top',
-            },
-          }}
-          columns={[
-            { header: 'Created', size: 10,
-              muiTableBodyCellProps: {
-                sx: (theme) => ({
-                  paddingLeft: theme.spacing(2),
-                  fontWeight: "bold",
-                  whiteSpace: 'nowrap',
-                })
-              },
-              Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
-                                  {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd")}
-                                </Link>
-            },
-            { header: 'Uploaded By',
-              muiTableBodyCellProps: {
-                sx: {
-                  whiteSpace: 'pre-wrap',
-                  paddingBottom: "8px",
-                }
-              },
-              Cell: ({ row }) => row.original["jcr:createdBy"] }
-          ]}
-           displayColumnDefOptions={{
-            'mrt-row-actions': {
-              header: 'Actions',
-              size: 10,
-              muiTableHeadCellProps: {align: 'right'},
-              muiTableBodyCellProps: {
-                sx: {
-                  padding: '0',
-                  textAlign: 'right'
-                },
-              },
-            },
-          }}
-          enableRowActions
-          positionActionsColumn="last"
-          renderRowActions={({ row }) => (
-            <Tooltip title="Download">
-              <IconButton size="large">
-                <Link underline="none" color="inherit" href={row.original["@path"]} download>
-                  <GetApp />
-                </Link>
-              </IconButton>
-            </Tooltip>
-          )}
-        /> */}
+        <MaterialReactTable table={table}
+          // data={fileSelected?.sameFiles}
+          // enableColumnActions={false}
+          // enableColumnFilters={false}
+          // enableSorting={false}
+          // enableTopToolbar={false}
+          // muiTablePaperProps={{ elevation: 0 }}
+          // muiTableBodyRowProps={{
+          //   sx: {
+          //     verticalAlign: 'top',
+          //   },
+          // }}
+          // columns={[
+          //   { header: 'Created', size: 10,
+          //     muiTableBodyCellProps: {
+          //       sx: (theme) => ({
+          //         paddingLeft: theme.spacing(2),
+          //         fontWeight: "bold",
+          //         whiteSpace: 'nowrap',
+          //       })
+          //     },
+          //     Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
+          //                         {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd")}
+          //                       </Link>
+          //   },
+          //   { header: 'Uploaded By',
+          //     muiTableBodyCellProps: {
+          //       sx: {
+          //         whiteSpace: 'pre-wrap',
+          //         paddingBottom: "8px",
+          //       }
+          //     },
+          //     Cell: ({ row }) => row.original["jcr:createdBy"] }
+          // ]}
+          //  displayColumnDefOptions={{
+          //   'mrt-row-actions': {
+          //     header: 'Actions',
+          //     size: 10,
+          //     muiTableHeadCellProps: {align: 'right'},
+          //     muiTableBodyCellProps: {
+          //       sx: {
+          //         padding: '0',
+          //         textAlign: 'right'
+          //       },
+          //     },
+          //   },
+          // }}
+          // enableRowActions
+          // positionActionsColumn="last"
+          // renderRowActions={({ row }) => (
+          //   <Tooltip title="Download">
+          //     <IconButton size="large">
+          //       <Link underline="none" color="inherit" href={row.original["@path"]} download>
+          //         <GetApp />
+          //       </Link>
+          //     </IconButton>
+          //   </Tooltip>
+          // )}
+        />
       </DialogContent>
     </Dialog>
   </React.Fragment>

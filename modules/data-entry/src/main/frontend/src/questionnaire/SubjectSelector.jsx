@@ -17,13 +17,13 @@
 //  under the License.
 //
 
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { useNavigate } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Alert, Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./SubjectIdentifier.jsx";
@@ -141,6 +141,55 @@ function UnstyledNewSubjectDialog (props) {
     pagination.pageSize
   ]);
 
+  const tableConfig = useMemo(() => ({
+    data: allowedTypes?.length ? allowedTypes : data,
+    columns: [
+      { accessorKey: 'label' }
+    ],
+    state: {
+      rowSelection: { [newSubjectType?.["label"]]: true },
+      globalFilter,
+      isLoading,
+      pagination,
+      showProgressBars: isRefetching,
+      // 
+      showGlobalFilter: true
+    },
+    // initialState={{ showGlobalFilter: true }}
+
+    enableTableHead: false,
+    enableToolbarInternalActions: false, 
+    manualPagination: true,
+    onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: setPagination,
+    getRowId: (row) => row["label"],
+    rowCount: rowCount,
+    
+    renderTopToolbarCustomActions: () => {
+      return <Typography variant="h6" sx={{pl: 2}}>Select a type</Typography>;
+    },
+    positionToolbarAlertBanner: "none",
+    muiTableHeadCellProps: {
+      sx: {
+        fontSize: 'large',
+        paddingTop: '0',
+      },
+    },
+    muiTableBodyCellProps: {
+      sx: {
+        fontSize: '1rem',
+      },
+    },
+    muiTableBodyRowProps: ({ row }) => ({
+      onClick: () => { changeType(row.original); },
+      selected: !isLoading && row.original['label'] === (newSubjectType?.['label'] || subjectType?.['label']),
+      sx: {
+        cursor: 'pointer',
+      },
+    })
+  }), [allowedTypes, data, globalFilter, isLoading, isRefetching, newSubjectType, pagination.pageIndex, pagination.pageSize, rowCount, subjectType]);
+  const table = useMaterialReactTable(tableConfig);
+
   return(
     <React.Fragment>
       <ResponsiveDialog title="Create new subject" open={open} onClose={onClose}>
@@ -159,49 +208,49 @@ function UnstyledNewSubjectDialog (props) {
               helperText={newSubjectType?.["idPatternHint"] || ""}
             />
           </div>
-          {/* <MaterialReactTable
-            enableTableHead={false}
-            enableToolbarInternalActions={false}
-            manualPagination
-            onGlobalFilterChange={setGlobalFilter}
-            onPaginationChange={setPagination}
-            getRowId={ (row) => row["label"] }
-            rowCount={rowCount}
-            state={{
-              rowSelection: { [newSubjectType?.["label"]]: true },
-              globalFilter,
-              isLoading,
-              pagination,
-              showProgressBars: isRefetching
-            }}
-            initialState={{ showGlobalFilter: true }}
-            columns={[
-                { accessorKey: 'label' }
-            ]}
-            data={ allowedTypes?.length ? allowedTypes : data }
-            renderTopToolbarCustomActions={() => {
-              return <Typography variant="h6" sx={{pl: 2}}>Select a type</Typography>;
-            }}
-            positionToolbarAlertBanner="none"
-            muiTableHeadCellProps={{
-              sx: {
-                fontSize: 'large',
-                paddingTop: '0',
-              },
-            }}
-            muiTableBodyCellProps={{
-              sx: {
-                fontSize: '1rem',
-              },
-            }}
-            muiTableBodyRowProps={({ row }) => ({
-              onClick: () => { changeType(row.original); },
-              selected: !isLoading && row.original['label'] === (newSubjectType?.['label'] || subjectType?.['label']),
-              sx: {
-                cursor: 'pointer',
-              },
-            })}
-          /> */}
+          <MaterialReactTable table={table}
+            // enableTableHead={false}
+            // enableToolbarInternalActions={false}
+            // manualPagination
+            // onGlobalFilterChange={setGlobalFilter}
+            // onPaginationChange={setPagination}
+            // getRowId={ (row) => row["label"] }
+            // rowCount={rowCount}
+            // state={{
+            //   rowSelection: { [newSubjectType?.["label"]]: true },
+            //   globalFilter,
+            //   isLoading,
+            //   pagination,
+            //   showProgressBars: isRefetching
+            // }}
+            // initialState={{ showGlobalFilter: true }}
+            // columns={[
+            //     { accessorKey: 'label' }
+            // ]}
+            // data={ allowedTypes?.length ? allowedTypes : data }
+            // renderTopToolbarCustomActions={() => {
+            //   return <Typography variant="h6" sx={{pl: 2}}>Select a type</Typography>;
+            // }}
+            // positionToolbarAlertBanner="none"
+            // muiTableHeadCellProps={{
+            //   sx: {
+            //     fontSize: 'large',
+            //     paddingTop: '0',
+            //   },
+            // }}
+            // muiTableBodyCellProps={{
+            //   sx: {
+            //     fontSize: '1rem',
+            //   },
+            // }}
+            // muiTableBodyRowProps={({ row }) => ({
+            //   onClick: () => { changeType(row.original); },
+            //   selected: !isLoading && row.original['label'] === (newSubjectType?.['label'] || subjectType?.['label']),
+            //   sx: {
+            //     cursor: 'pointer',
+            //   },
+            // })}
+          />
         </DialogContent>
         <DialogActions>
           <Button
@@ -310,52 +359,95 @@ function UnstyledSelectParentDialog (props) {
     getHierarchy
   ]);
 
+  const tableConfig = useMemo(() => ({
+    data: data,
+    columns: [
+      { accessorKey: 'hierarchy' }
+    ],
+    state: {
+      rowSelection: { [value?.["jcr:uuid"]]: true },
+      globalFilter,
+      isLoading,
+      pagination,
+      showProgressBars: isRefetching,
+      // 
+      showGlobalFilter: true
+    },
+    // initialState={{ showGlobalFilter: true }}
+    
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enableSorting: false,
+    enableToolbarInternalActions: false,
+    enableTableHead: false,
+    manualPagination: true,
+    onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: setPagination,
+    rowCount: rowCount,
+    getRowId: (row) => row["jcr:uuid"],
+    positionToolbarAlertBanner: "none",
+    muiSearchTextFieldProps: { autoFocus: true },
+    muiTableBodyRowProps: ({ row }) => ({
+      onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent?.(row.original); },
+      sx: {
+        cursor: 'pointer',
+      },
+    }),
+    muiTableBodyCellProps: ({ cell }) => ({
+      sx: (theme) => ({
+        fontSize: '1rem',
+        // grey out subjects that already have something by this name
+        color: (hasChildWithId(cell.row.original, childName) ? theme.palette.text.disabled : theme.palette.text.primary)
+      }),
+    })
+  }), [data, globalFilter, isLoading, isRefetching, pagination.pageIndex, pagination.pageSize, rowCount, value, childName, onChangeParent]);
+  const table = useMaterialReactTable(tableConfig);
   return(
     <ResponsiveDialog open={open} onClose={onClose} keepMounted title={`Select ${parentType?.['label']} for ${childType?.['label']} ${childName}`}>
       <DialogContent dividers className={classes.dialogContentWithTable}>
         { error && <Alert severity="error">{error}</Alert>}
-        {/* {
+        
           initialized &&
-            <MaterialReactTable
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableSorting={false}
-              enableToolbarInternalActions={false}
-              enableTableHead={false}
-              manualPagination
-              onGlobalFilterChange={setGlobalFilter}
-              onPaginationChange={setPagination}
-              rowCount={rowCount}
-              state={{
-                rowSelection: { [value?.["jcr:uuid"]]: true },
-                globalFilter,
-                isLoading,
-                pagination,
-                showProgressBars: isRefetching
-              }}
-              initialState={{ showGlobalFilter: true }}
-              columns={[
-                  { accessorKey: 'hierarchy' }
-              ]}
-              data={data}
-              getRowId={ (row) => row["jcr:uuid"] }
-              positionToolbarAlertBanner="none"
-              muiSearchTextFieldProps={{ autoFocus: true }}
-              muiTableBodyRowProps={({ row }) => ({
-                onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent?.(row.original); },
-                sx: {
-                  cursor: 'pointer',
-                },
-              })}
-              muiTableBodyCellProps={({ cell }) => ({
-                sx: (theme) => ({
-                  fontSize: '1rem',
-                  // grey out subjects that already have something by this name
-                  color: (hasChildWithId(cell.row.original, childName) ? theme.palette.text.disabled : theme.palette.text.primary)
-                }),
-              })}
+            <MaterialReactTable table={table}
+              // enableColumnActions={false}
+              // enableColumnFilters={false}
+              // enableSorting={false}
+              // enableToolbarInternalActions={false}
+              // enableTableHead={false}
+              // manualPagination
+              // onGlobalFilterChange={setGlobalFilter}
+              // onPaginationChange={setPagination}
+              // rowCount={rowCount}
+              // state={{
+              //   rowSelection: { [value?.["jcr:uuid"]]: true },
+              //   globalFilter,
+              //   isLoading,
+              //   pagination,
+              //   showProgressBars: isRefetching
+              // }}
+              // initialState={{ showGlobalFilter: true }}
+              // columns={[
+              //     { accessorKey: 'hierarchy' }
+              // ]}
+              // data={data}
+              // getRowId={ (row) => row["jcr:uuid"] }
+              // positionToolbarAlertBanner="none"
+              // muiSearchTextFieldProps={{ autoFocus: true }}
+              // muiTableBodyRowProps={({ row }) => ({
+              //   onClick: () => { !hasChildWithId(row.original, childName) && onChangeParent?.(row.original); },
+              //   sx: {
+              //     cursor: 'pointer',
+              //   },
+              // })}
+              // muiTableBodyCellProps={({ cell }) => ({
+              //   sx: (theme) => ({
+              //     fontSize: '1rem',
+              //     // grey out subjects that already have something by this name
+              //     color: (hasChildWithId(cell.row.original, childName) ? theme.palette.text.disabled : theme.palette.text.primary)
+              //   }),
+              // })}
             />
-        } */}
+        
       </DialogContent>
       <DialogActions>
         { onCreateParent &&
@@ -1040,50 +1132,98 @@ function SubjectSelectorList(props) {
     pagination.pageSize
   ]);
 
+  const tableConfig = useMemo(() => ({
+    data: data,
+    state: {
+      rowSelection: { [selectedSubject?.["jcr:uuid"]]: true },
+      globalFilter,
+      isLoading,
+      pagination,
+      showProgressBars: isRefetching,
+      showGlobalFilter: true
+    },
+    // Cannot use both state and initialState
+    // initialState: { showGlobalFilter: true },
+    columns:[
+      { accessorKey: 'hierarchy' }
+    ],
+
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enableSorting: false,
+    enableToolbarInternalActions: false,
+    enableTableHead: false,
+    manualPagination: true,
+    onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: setPagination,
+    getRowId: (row) => row["jcr:uuid"],
+    rowCount: rowCount,
+
+    positionToolbarAlertBanner: "none",
+    muiSearchTextFieldProps: { autoFocus: true },
+    muiTableBodyRowProps: ({ row }) => ({
+      onClick: () => { handleSelection(row.original) && onSelect(row.original); },
+      sx: {
+        cursor: 'pointer',
+      },
+    }),
+    muiTableBodyCellProps: ({ cell }) => ({
+      sx: (theme) => ({
+        fontSize: '1rem',
+        // grey out subjects that have already reached maxPerSubject
+        color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["f.subject"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+        ? theme.palette.text.disabled
+        : theme.palette.text.primary
+        )
+      }),
+    })
+  }), [data, globalFilter, isLoading, pagination, relatedSubjects, selectedQuestionnaire, isRefetching, selectedSubject]);
+  const table = useMaterialReactTable(tableConfig);
+
   return(
     <React.Fragment>
-      {/* <MaterialReactTable
-        enableColumnActions={false}
-        enableColumnFilters={false}
-        enableSorting={false}
-        enableToolbarInternalActions={false}
-        enableTableHead={false}
-        manualPagination
-        onGlobalFilterChange={setGlobalFilter}
-        onPaginationChange={setPagination}
-        getRowId={ (row) => row["jcr:uuid"] }
-        rowCount={rowCount}
-        state={{
-          rowSelection: { [selectedSubject?.["jcr:uuid"]]: true },
-          globalFilter,
-          isLoading,
-          pagination,
-          showProgressBars: isRefetching
-        }}
-        initialState={{ showGlobalFilter: true }}
-        columns={[
-          { accessorKey: 'hierarchy' }
-        ]}
-        data={data}
-        positionToolbarAlertBanner="none"
-        muiSearchTextFieldProps={{ autoFocus: true }}
-        muiTableBodyRowProps={({ row }) => ({
-          onClick: () => { handleSelection(row.original) && onSelect(row.original); },
-          sx: {
-            cursor: 'pointer',
-          },
-        })}
-        muiTableBodyCellProps={({ cell }) => ({
-          sx: (theme) => ({
-            fontSize: '1rem',
-            // grey out subjects that have already reached maxPerSubject
-            color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["f.subject"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
-            ? theme.palette.text.disabled
-            : theme.palette.text.primary
-            )
-          }),
-        })}
-      /> */}
+      <MaterialReactTable table={table}
+        // enableColumnActions={false}
+        // enableColumnFilters={false}
+        // enableSorting={false}
+        // enableToolbarInternalActions={false}
+        // enableTableHead={false}
+        // manualPagination
+        // onGlobalFilterChange={setGlobalFilter}
+        // onPaginationChange={setPagination}
+        // getRowId={ (row) => row["jcr:uuid"] }
+        // rowCount={rowCount}
+        // state={{
+        //   rowSelection: { [selectedSubject?.["jcr:uuid"]]: true },
+        //   globalFilter,
+        //   isLoading,
+        //   pagination,
+        //   showProgressBars: isRefetching
+        // }}
+        // initialState={{ showGlobalFilter: true }}
+        // columns={[
+        //   { accessorKey: 'hierarchy' }
+        // ]}
+        // data={data}
+        // positionToolbarAlertBanner="none"
+        // muiSearchTextFieldProps={{ autoFocus: true }}
+        // muiTableBodyRowProps={({ row }) => ({
+        //   onClick: () => { handleSelection(row.original) && onSelect(row.original); },
+        //   sx: {
+        //     cursor: 'pointer',
+        //   },
+        // })}
+        // muiTableBodyCellProps={({ cell }) => ({
+        //   sx: (theme) => ({
+        //     fontSize: '1rem',
+        //     // grey out subjects that have already reached maxPerSubject
+        //     color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["f.subject"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+        //     ? theme.palette.text.disabled
+        //     : theme.palette.text.primary
+        //     )
+        //   }),
+        // })}
+      />
     </React.Fragment>
   )
 };

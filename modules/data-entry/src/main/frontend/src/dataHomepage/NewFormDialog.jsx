@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,7 +27,7 @@ import {
   Typography
 } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import Alert from '@mui/material/Alert';
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
@@ -348,6 +348,57 @@ function NewFormDialog(props) {
     }
   }
 
+  const tableConfig = useMemo(() => ({
+    // TODO: move tableRef related logic to useMaterialReactTable hook
+    // tableInstanceRef={tableRef}
+    data: data,
+    columns: [
+      { accessorKey: 'title',
+        Cell: ({ row }) => (<>
+                      <Typography component="div">{row.original.title}</Typography>
+                      <FormattedText variant="caption" color="textSecondary">
+                        {row.original.description}
+                      </FormattedText>
+                    </>)
+      },
+      { accessorKey: 'description' }
+    ],
+    state: {
+      rowSelection: { [selectedQuestionnaire?.["jcr:uuid"]]: true },
+      globalFilter,
+      isLoading,
+      pagination,
+      showProgressBars: isRefetching,
+      // 
+      showGlobalFilter: true, columnVisibility: { description: false }
+    },
+    // initialState={{ showGlobalFilter: true, columnVisibility: { description: false } }}
+
+    enableToolbarInternalActions: false,
+    enableTableHead: false,
+    onGlobalFilterChange: setGlobalFilter,
+    manualPagination: true,
+    onPaginationChange: setPagination,
+    rowCount: rowCount,
+    getRowId: (row) => row["jcr:uuid"],
+    
+    positionToolbarAlertBanner: "none",
+    muiSearchTextFieldProps: { autoFocus: true },
+    muiTableBodyRowProps: ({ row }) => ({
+      sx: {
+        cursor: isRowDisabled(row) ? 'default' : 'pointer',
+      },
+      onClick: () => { onClickRow(row); },
+    }),
+    muiTableBodyCellProps: ({ cell }) => ({
+      sx: (theme) => ({
+        // grey out subjects that have already reached maxPerSubject
+        color: isRowDisabled(cell.row) ? theme.palette.text.disabled : theme.palette.text.primary,
+      }),
+    })
+  }), [data, selectedQuestionnaire, globalFilter, isLoading, isRefetching, pagination, rowCount]);
+  const table = useMaterialReactTable(tableConfig)
+
   return (
     <React.Fragment>
       <ResponsiveDialog
@@ -363,52 +414,52 @@ function NewFormDialog(props) {
           {error && (!newSubjectPopperOpen) && <Alert severity="error">{error}</Alert>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
-            {/* {relatedForms &&
-              <MaterialReactTable
-                tableInstanceRef={tableRef}
-                enableToolbarInternalActions={false}
-                enableTableHead={false}
-                onGlobalFilterChange={setGlobalFilter}
-                manualPagination
-                onPaginationChange={setPagination}
-                rowCount={rowCount}
-                state={{
-                  rowSelection: { [selectedQuestionnaire?.["jcr:uuid"]]: true },
-                  globalFilter,
-                  isLoading,
-                  pagination,
-                  showProgressBars: isRefetching
-                }}
-                initialState={{ showGlobalFilter: true, columnVisibility: { description: false } }}
-                columns={[
-                  { accessorKey: 'title',
-                    Cell: ({ row }) => (<>
-                                  <Typography component="div">{row.original.title}</Typography>
-                                  <FormattedText variant="caption" color="textSecondary">
-                                    {row.original.description}
-                                  </FormattedText>
-                                </>)
-                  },
-                  { accessorKey: 'description' }
-                ]}
-                getRowId={ (row) => row["jcr:uuid"] }
-                data={data}
-                positionToolbarAlertBanner="none"
-                muiSearchTextFieldProps={{ autoFocus: true }}
-                muiTableBodyRowProps={({ row }) => ({
-                  sx: {
-                    cursor: isRowDisabled(row) ? 'default' : 'pointer',
-                  },
-                  onClick: () => { onClickRow(row); },
-                })}
-                muiTableBodyCellProps={({ cell }) => ({
-                  sx: (theme) => ({
-                    // grey out subjects that have already reached maxPerSubject
-                    color: isRowDisabled(cell.row) ? theme.palette.text.disabled : theme.palette.text.primary,
-                  }),
-                })}
+            {relatedForms &&
+              <MaterialReactTable table={table}
+                // tableInstanceRef={tableRef}
+                // enableToolbarInternalActions={false}
+                // enableTableHead={false}
+                // onGlobalFilterChange={setGlobalFilter}
+                // manualPagination
+                // onPaginationChange={setPagination}
+                // rowCount={rowCount}
+                // state={{
+                //   rowSelection: { [selectedQuestionnaire?.["jcr:uuid"]]: true },
+                //   globalFilter,
+                //   isLoading,
+                //   pagination,
+                //   showProgressBars: isRefetching
+                // }}
+                // initialState={{ showGlobalFilter: true, columnVisibility: { description: false } }}
+                // columns={[
+                //   { accessorKey: 'title',
+                //     Cell: ({ row }) => (<>
+                //                   <Typography component="div">{row.original.title}</Typography>
+                //                   <FormattedText variant="caption" color="textSecondary">
+                //                     {row.original.description}
+                //                   </FormattedText>
+                //                 </>)
+                //   },
+                //   { accessorKey: 'description' }
+                // ]}
+                // getRowId={ (row) => row["jcr:uuid"] }
+                // data={data}
+                // positionToolbarAlertBanner="none"
+                // muiSearchTextFieldProps={{ autoFocus: true }}
+                // muiTableBodyRowProps={({ row }) => ({
+                //   sx: {
+                //     cursor: isRowDisabled(row) ? 'default' : 'pointer',
+                //   },
+                //   onClick: () => { onClickRow(row); },
+                // })}
+                // muiTableBodyCellProps={({ cell }) => ({
+                //   sx: (theme) => ({
+                //     // grey out subjects that have already reached maxPerSubject
+                //     color: isRowDisabled(cell.row) ? theme.palette.text.disabled : theme.palette.text.primary,
+                //   }),
+                // })}
               />
-            } */}
+            }
           </React.Fragment>
           :
           <React.Fragment>

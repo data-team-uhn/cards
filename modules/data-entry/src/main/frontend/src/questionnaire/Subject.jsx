@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import { Link, useLocation, useNavigate } from 'react-router';
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
@@ -30,7 +30,7 @@ import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy, getHomepageLink } from "./SubjectIdentifier";
-import MaterialReactTable from 'material-react-table';
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { Box } from '@mui/material';
 
 import {
@@ -441,6 +441,136 @@ function SubjectMemberInternal (props) {
     }
   }, [data['jcr:lastModified']]);
 
+  const tableConfig = useMemo(() => ({
+    data: subjectGroups?.[questionnaireTitle] || [],
+    initialState: { pagination: { pageSize: pageSize, pageIndex: 0 } },
+    enableTopToolbar: false,
+    enableTableHead: false,
+    enableTableFooter: false,
+    enableBottomToolbar: !!(subjectGroups[questionnaireTitle]?.length > pageSize),
+    enablePagination: !!(subjectGroups[questionnaireTitle]?.length > pageSize),
+    
+    muiTablePaperProps: {
+      elevation: 0,
+    },
+    muiTableBodyRowProps: {
+      sx: {
+        verticalAlign: 'top',
+      },
+    },
+    layoutMode: "grid",
+    muiTableBodyCellProps: {
+      sx: {
+        flex: '0 0 auto',
+      }
+    },
+    // muiTableDetailPanelProps
+    muiDetailPanelProps: {
+      sx: (theme) => ({
+        marginLeft: theme.spacing(9),
+        width: '100%'
+      })
+    },
+    renderDetailPanel: ({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/>,
+    defaultColumn: {
+      minSize: 20,
+      maxSize: 9001
+    },
+    displayColumnDefOptions: {
+      'mrt-row-actions': {
+        id: 'Actions',
+        size: 80,
+        muiTableBodyCellProps: {
+          sx: (theme) => ({
+            paddingRight: theme.spacing(2),
+            flex: '0 0 auto',
+          }),
+        },
+      },
+      'mrt-row-expand': {
+        size: 40,
+        minSize: 40,
+        maxSize: 40,
+        muiTableBodyCellProps: {
+          sx: (theme) => ({
+            paddingRight: '0',
+            paddingLeft: theme.spacing(0.25),
+            paddingTop: theme.spacing(0.5),
+            flex: '0 0 auto',
+            alignItems: 'start'
+          }),
+        },
+      },
+    },
+    columns: [
+      { id: 'Questionnaire',
+        size: 400,
+        muiTableBodyCellProps: {
+          sx: {
+            paddingLeft: 0,
+            fontWeight: "bold",
+            paddingTop: "10px",
+            whiteSpace: 'nowrap',
+          },
+        },
+        Cell: ({ row }) => (
+                       <Grid container spacing={1} justifyContent="flex-start" wrap="nowrap">
+                         <Grid size="auto">
+                           <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
+                         </Grid>
+                         <Grid size="auto">
+                           <Link to={baseURL + row.original["@path"]} underline="hover">
+                             {questionnaireTitle}
+                           </Link>
+                           <Typography variant="caption" component="div" color="textSecondary">
+                             Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                           </Typography>
+                           <Typography variant="caption" component="div" color="textSecondary">
+                             Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                           </Typography>
+                         </Grid>
+                       </Grid>
+                     ) },
+      { id: 'Status',
+        muiTableBodyCellProps: {
+          sx: (theme) => ({
+            whiteSpace: 'nowrap',
+            paddingTop: "10px",
+            paddingBottom: theme.spacing(1),
+          }),
+        },
+        Cell: ({ row }) => (<>
+                             { row.original["statusFlags"].map((status) => {
+                               return <Chip
+                                 key={status}
+                                 label={wordToTitleCase(status)}
+                                 variant="outlined"
+                                 className={`${classes.childFormFlag} ${classes[status + "Flag"] || classes.DefaultFlag}`}
+                                 size="small"
+                               />
+                             })}
+                           </>) },
+    ],
+    enableRowActions: true,
+    positionActionsColumn: "last",
+    renderRowActions: ({ row }) => (
+      <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
+        <EditButton
+          entryPath={row.original["@path"]}
+          entryType="Form"
+          extensionURL={extensionURL}
+        />
+        <DeleteButton
+          entryPath={row.original["@path"]}
+          entryName={getEntityIdentifier(row.original)}
+          entryType="Form"
+          onComplete={fetchTableData}
+        />
+      </Box>
+    )
+  }), [data, pageSize, subjectGroups]);
+  const table = useMaterialReactTable(tableConfig);
+
   // If the subjectGroups data has not yet been fetched, return an in-progress symbol
   if (!subjectGroups) {
     return (
@@ -535,131 +665,131 @@ function SubjectMemberInternal (props) {
         {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => (
             <Grid key={questionnaireTitle}>
-              <MaterialReactTable
-                data={subjectGroups[questionnaireTitle]}
-                enableTopToolbar={false}
-                enableTableHead={false}
-                enableTableFooter={false}
-                enableBottomToolbar={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
-                enablePagination={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
-                initialState={{ pagination: { pageSize: pageSize, pageIndex: 0 } }}
-                muiTablePaperProps={{
-                  elevation: 0,
-                }}
-                muiTableBodyRowProps={{
-                  sx: {
-                    verticalAlign: 'top',
-                  },
-                }}
-                layoutMode="grid"
-                muiTableBodyCellProps={{
-                  sx: {
-                    flex: '0 0 auto',
-                  }
-                }}
-                muiTableDetailPanelProps={{
-                  sx: (theme) => ({
-                    marginLeft: theme.spacing(9),
-                    width: '100%'
-                  })
-                }}
-                renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
-                defaultColumn={{
-                  minSize: 20,
-                  maxSize: 9001
-                }}
-                displayColumnDefOptions={{
-                  'mrt-row-actions': {
-                    id: 'Actions',
-                    size: 80,
-                    muiTableBodyCellProps: {
-                      sx: (theme) => ({
-                        paddingRight: theme.spacing(2),
-                        flex: '0 0 auto',
-                      }),
-                    },
-                  },
-                  'mrt-row-expand': {
-                    size: 40,
-                    minSize: 40,
-                    maxSize: 40,
-                    muiTableBodyCellProps: {
-                      sx: (theme) => ({
-                        paddingRight: '0',
-                        paddingLeft: theme.spacing(0.25),
-                        paddingTop: theme.spacing(0.5),
-                        flex: '0 0 auto',
-                        alignItems: 'start'
-                      }),
-                    },
-                  },
-                }}
-                columns={[
-                  { id: 'Questionnaire',
-                    size: 400,
-                    muiTableBodyCellProps: {
-                      sx: {
-                        paddingLeft: 0,
-                        fontWeight: "bold",
-                        paddingTop: "10px",
-                        whiteSpace: 'nowrap',
-                      },
-                    },
-                    Cell: ({ row }) => (
-                                   <Grid container spacing={1} justifyContent="flex-start" wrap="nowrap">
-                                     <Grid size="auto">
-                                       <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
-                                     </Grid>
-                                     <Grid size="auto">
-                                       <Link to={baseURL + row.original["@path"]} underline="hover">
-                                         {questionnaireTitle}
-                                       </Link>
-                                       <Typography variant="caption" component="div" color="textSecondary">
-                                         Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
-                                       </Typography>
-                                       <Typography variant="caption" component="div" color="textSecondary">
-                                         Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
-                                       </Typography>
-                                     </Grid>
-                                   </Grid>
-                                 ) },
-                  { id: 'Status',
-                    muiTableBodyCellProps: {
-                      sx: (theme) => ({
-                        whiteSpace: 'nowrap',
-                        paddingTop: "10px",
-                        paddingBottom: theme.spacing(1),
-                      }),
-                    },
-                    Cell: ({ row }) => (<>
-                                         { row.original["statusFlags"].map((status) => {
-                                           return <Chip
-                                             key={status}
-                                             label={wordToTitleCase(status)}
-                                             variant="outlined"
-                                             className={`${classes.childFormFlag} ${classes[status + "Flag"] || classes.DefaultFlag}`}
-                                             size="small"
-                                           />
-                                         })}
-                                       </>) },
-                ]}
-                enableRowActions
-                positionActionsColumn="last"
-                renderRowActions={({ row }) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
-                    <EditButton
-                      entryPath={row.original["@path"]}
-                      entryType="Form"
-                      extensionURL={extensionURL}
-                    />
-                    <DeleteButton
-                      entryPath={row.original["@path"]}
-                      entryName={getEntityIdentifier(row.original)}
-                      entryType="Form"
-                      onComplete={fetchTableData}
-                    />
-                  </Box>
-                )}
+              <MaterialReactTable table={table}
+                // data={subjectGroups[questionnaireTitle]}
+                // enableTopToolbar={false}
+                // enableTableHead={false}
+                // enableTableFooter={false}
+                // enableBottomToolbar={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
+                // enablePagination={!!(subjectGroups[questionnaireTitle]?.length > pageSize)}
+                // initialState={{ pagination: { pageSize: pageSize, pageIndex: 0 } }}
+                // muiTablePaperProps={{
+                //   elevation: 0,
+                // }}
+                // muiTableBodyRowProps={{
+                //   sx: {
+                //     verticalAlign: 'top',
+                //   },
+                // }}
+                // layoutMode="grid"
+                // muiTableBodyCellProps={{
+                //   sx: {
+                //     flex: '0 0 auto',
+                //   }
+                // }}
+                // muiTableDetailPanelProps={{
+                //   sx: (theme) => ({
+                //     marginLeft: theme.spacing(9),
+                //     width: '100%'
+                //   })
+                // }}
+                // renderDetailPanel={({ row }) => <FormData formID={row.original["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> }
+                // defaultColumn={{
+                //   minSize: 20,
+                //   maxSize: 9001
+                // }}
+                // displayColumnDefOptions={{
+                //   'mrt-row-actions': {
+                //     id: 'Actions',
+                //     size: 80,
+                //     muiTableBodyCellProps: {
+                //       sx: (theme) => ({
+                //         paddingRight: theme.spacing(2),
+                //         flex: '0 0 auto',
+                //       }),
+                //     },
+                //   },
+                //   'mrt-row-expand': {
+                //     size: 40,
+                //     minSize: 40,
+                //     maxSize: 40,
+                //     muiTableBodyCellProps: {
+                //       sx: (theme) => ({
+                //         paddingRight: '0',
+                //         paddingLeft: theme.spacing(0.25),
+                //         paddingTop: theme.spacing(0.5),
+                //         flex: '0 0 auto',
+                //         alignItems: 'start'
+                //       }),
+                //     },
+                //   },
+                // }}
+                // columns={[
+                //   { id: 'Questionnaire',
+                //     size: 400,
+                //     muiTableBodyCellProps: {
+                //       sx: {
+                //         paddingLeft: 0,
+                //         fontWeight: "bold",
+                //         paddingTop: "10px",
+                //         whiteSpace: 'nowrap',
+                //       },
+                //     },
+                //     Cell: ({ row }) => (
+                //                    <Grid container spacing={1} justifyContent="flex-start" wrap="nowrap">
+                //                      <Grid size="auto">
+                //                        <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar>
+                //                      </Grid>
+                //                      <Grid size="auto">
+                //                        <Link to={baseURL + row.original["@path"]} underline="hover">
+                //                          {questionnaireTitle}
+                //                        </Link>
+                //                        <Typography variant="caption" component="div" color="textSecondary">
+                //                          Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                //                        </Typography>
+                //                        <Typography variant="caption" component="div" color="textSecondary">
+                //                          Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                //                        </Typography>
+                //                      </Grid>
+                //                    </Grid>
+                //                  ) },
+                //   { id: 'Status',
+                //     muiTableBodyCellProps: {
+                //       sx: (theme) => ({
+                //         whiteSpace: 'nowrap',
+                //         paddingTop: "10px",
+                //         paddingBottom: theme.spacing(1),
+                //       }),
+                //     },
+                //     Cell: ({ row }) => (<>
+                //                          { row.original["statusFlags"].map((status) => {
+                //                            return <Chip
+                //                              key={status}
+                //                              label={wordToTitleCase(status)}
+                //                              variant="outlined"
+                //                              className={`${classes.childFormFlag} ${classes[status + "Flag"] || classes.DefaultFlag}`}
+                //                              size="small"
+                //                            />
+                //                          })}
+                //                        </>) },
+                // ]}
+                // enableRowActions
+                // positionActionsColumn="last"
+                // renderRowActions={({ row }) => (
+                //   <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
+                //     <EditButton
+                //       entryPath={row.original["@path"]}
+                //       entryType="Form"
+                //       extensionURL={extensionURL}
+                //     />
+                //     <DeleteButton
+                //       entryPath={row.original["@path"]}
+                //       entryName={getEntityIdentifier(row.original)}
+                //       entryType="Form"
+                //       onComplete={fetchTableData}
+                //     />
+                //   </Box>
+                // )}
               />
             </Grid>
           ))

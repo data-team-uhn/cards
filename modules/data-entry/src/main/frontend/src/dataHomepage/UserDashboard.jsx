@@ -16,9 +16,9 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 
 import { loadExtensions } from "../uiextension/extensionManager";
 import NewItemButton from "../components/NewItemButton.jsx";
@@ -80,6 +80,49 @@ function UserDashboard(props) {
       .finally(() => setCreationLoading(false));
   }, [])
 
+  const tableConfig = useMemo(() => ({
+    data: creationExtensions,
+    columns: [
+      { accessorKey: 'cards:extensionName' },
+    ],
+    state: {
+      rowSelection: { [selectedRow?.["jcr:uuid"]]: true },
+      showGlobalFilter: (creationExtensions.length > 5),
+      // 
+      pagination: { pageSize: 10, pageIndex: 0 }
+    },
+    // initialState: {
+    //   showGlobalFilter: (creationExtensions.length > 5),
+    //   pagination: { pageSize: 10, pageIndex: 0 }
+    // },
+
+    enableToolbarInternalActions: false,
+    enableTableHead: false,
+    enableTableFooter: creationExtensions.length > 5,
+    enableTopToolbar: creationExtensions.length > 5,
+    enableBottomToolbar: creationExtensions.length > 5,
+    enablePagination: creationExtensions.length > 5,
+    getRowId: (row) => row["jcr:uuid"],
+
+    muiTableHeadProps: {
+      sx: {
+        display: creationExtensions.length < 5 ? 'none' : 'contents',
+      },
+    },
+    muiTableBodyRowProps: ({ row }) => ({
+      sx: {
+        cursor: 'pointer',
+      },
+      onClick: () => { setSelectedRow(row?.original); },
+    }),
+    muiTableBodyCellProps: {
+      sx: {
+        fontSize: '1rem'
+      },
+    }
+  }), [creationExtensions, selectedRow]);
+  const table = useMaterialReactTable(tableConfig);
+
   if (loading) {
     return (
       <Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid>
@@ -105,39 +148,39 @@ function UserDashboard(props) {
     { creationExtensions.length > 0 && <>
       <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
         <DialogContent dividers className={classes.dialogContentWithTable}>
-          {/* <MaterialReactTable
-            enableToolbarInternalActions={false}
-            enableTableHead={false}
-            enableTableFooter={creationExtensions.length > 5}
-            enableTopToolbar={creationExtensions.length > 5}
-            enableBottomToolbar={creationExtensions.length > 5}
-            enablePagination={creationExtensions.length > 5}
-            getRowId={ (row) => row["jcr:uuid"] }
-            state={{ rowSelection: { [selectedRow?.["jcr:uuid"]]: true } }}
-            initialState={{ showGlobalFilter: (creationExtensions.length > 5),
-                            pagination: { pageSize: 10, pageIndex: 0 }
-                         }}
-            columns={[
-              { accessorKey: 'cards:extensionName' },
-            ]}
-            data={creationExtensions}
-            muiTableHeadProps={{
-              sx: {
-                display: creationExtensions.length < 5 ? 'none' : 'contents',
-              },
-            }}
-            muiTableBodyRowProps={({ row }) => ({
-              sx: {
-                cursor: 'pointer',
-              },
-              onClick: () => { setSelectedRow(row?.original); },
-            })}
-            muiTableBodyCellProps={{
-              sx: {
-                fontSize: '1rem'
-              },
-            }}
-          /> */}
+          <MaterialReactTable table={table}
+            // enableToolbarInternalActions={false}
+            // enableTableHead={false}
+            // enableTableFooter={creationExtensions.length > 5}
+            // enableTopToolbar={creationExtensions.length > 5}
+            // enableBottomToolbar={creationExtensions.length > 5}
+            // enablePagination={creationExtensions.length > 5}
+            // getRowId={ (row) => row["jcr:uuid"] }
+            // state={{ rowSelection: { [selectedRow?.["jcr:uuid"]]: true } }}
+            // initialState={{ showGlobalFilter: (creationExtensions.length > 5),
+            //                 pagination: { pageSize: 10, pageIndex: 0 }
+            //              }}
+            // columns={[
+            //   { accessorKey: 'cards:extensionName' },
+            // ]}
+            // data={creationExtensions}
+            // muiTableHeadProps={{
+            //   sx: {
+            //     display: creationExtensions.length < 5 ? 'none' : 'contents',
+            //   },
+            // }}
+            // muiTableBodyRowProps={({ row }) => ({
+            //   sx: {
+            //     cursor: 'pointer',
+            //   },
+            //   onClick: () => { setSelectedRow(row?.original); },
+            // })}
+            // muiTableBodyCellProps={{
+            //   sx: {
+            //     fontSize: '1rem'
+            //   },
+            // }}
+          />
         </DialogContent>
         <DialogActions>
           <Button

@@ -15,14 +15,14 @@
   under the License.
 */
 
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useMemo } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui';
 import userboardStyle from '../userboardStyle.jsx';
 import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
-import MaterialReactTable from 'material-react-table';
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 const GROUP_URL="/system/userManager/group/";
@@ -68,6 +68,45 @@ function AddUserToGroupDialog(props) {
     }
   }
 
+  const tableConfig = useMemo(() => ({
+    // TODO: move tableRef related logic to useMaterialReactTable hook
+    // tableInstanceRef: tableRef,
+    data: freeUsers || [],
+    columns: [
+      { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
+        Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
+      { header: 'User Name', accessorKey: 'name' },
+      { header: 'Admin', accessorKey: 'isAdmin', size: 10,
+        Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+      },
+      { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
+        Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+      },
+    ],
+
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enableSorting: false,
+    enableTopToolbar: false,
+    muiTableHeadCellProps: {
+      sx: (theme) => ({
+        background: theme.palette.grey['200'],
+      }),
+    },
+
+    enableRowSelection: true,
+    enableSelectAll: false,
+    muiSelectCheckboxProps: { color: 'primary' },
+    muiTableBodyRowProps: ({ row }) => ({
+      onClick: row.getToggleSelectedHandler(),
+      sx: {
+        cursor: 'pointer',
+      },
+    }),
+  }), [freeUsers]);
+
+  const table = useMaterialReactTable(tableConfig);
+
   return (
     <Dialog
       maxWidth="sm"
@@ -84,39 +123,39 @@ function AddUserToGroupDialog(props) {
       <DialogContent>
         <Grid container>
           <div>
-            {/* <MaterialReactTable
-              tableInstanceRef={tableRef}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableSorting={false}
-              enableTopToolbar={false}
-              muiTableHeadCellProps={{
-                sx: (theme) => ({
-                  background: theme.palette.grey['200'],
-                }),
-              }}
-              enableRowSelection
-              enableSelectAll={false}
-              muiSelectCheckboxProps={{ color: 'primary' }}
-              muiTableBodyRowProps={({ row }) => ({
-                onClick: row.getToggleSelectedHandler(),
-                sx: {
-                  cursor: 'pointer',
-                },
-              })}
-              columns={[
-                { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
-                  Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
-                { header: 'User Name', accessorKey: 'name' },
-                { header: 'Admin', accessorKey: 'isAdmin', size: 10,
-                  Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
-                },
-                { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
-                  Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
-                },
-              ]}
-              data={freeUsers}
-            /> */}
+            <MaterialReactTable table={table}
+              // tableInstanceRef={tableRef}
+              // enableColumnActions={false}
+              // enableColumnFilters={false}
+              // enableSorting={false}
+              // enableTopToolbar={false}
+              // muiTableHeadCellProps={{
+              //   sx: (theme) => ({
+              //     background: theme.palette.grey['200'],
+              //   }),
+              // }}
+              // enableRowSelection
+              // enableSelectAll={false}
+              // muiSelectCheckboxProps={{ color: 'primary' }}
+              // muiTableBodyRowProps={({ row }) => ({
+              //   onClick: row.getToggleSelectedHandler(),
+              //   sx: {
+              //     cursor: 'pointer',
+              //   },
+              // })}
+              // columns={[
+              //   { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
+              //     Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
+              //   { header: 'User Name', accessorKey: 'name' },
+              //   { header: 'Admin', accessorKey: 'isAdmin', size: 10,
+              //     Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+              //   },
+              //   { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
+              //     Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+              //   },
+              // ]}
+              // data={freeUsers}
+            />
           </div>
         </Grid>
       </DialogContent>
