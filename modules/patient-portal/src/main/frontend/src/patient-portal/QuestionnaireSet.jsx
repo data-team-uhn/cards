@@ -643,11 +643,11 @@ function QuestionnaireSet(props) {
       diffString("minutes", diffStrings, diffs);
 
       if (diffStrings.length > 0) {
-        result = " This survey link will expire in " + diffStrings[0] + ".";
+        result = "**This survey link will expire in " + diffStrings[0] + ".**";
       }
     } else {
       // Visit date could not be retrieved, this token will expire 1 hour from creation.
-      result = " This session will expire in 1 hour."
+      result = "**This session will expire in 1 hour.**"
     }
 
     return result;
@@ -690,10 +690,10 @@ function QuestionnaireSet(props) {
     ))}
     </List>,
     nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action" sx={{mr: 10, width: 1}}>Begin</Fab>,
-    <Typography component="p" key="expiry-message" color="textSecondary">
+    <FormattedText key="expiry-message" color="textSecondary">
         {expiryDate()}
-    </Typography>,
-    displayText("surveyDraftInfo", FormattedText, {variant: "body2", key: "draft-info"}),
+    </FormattedText>,
+    displayText("surveyDraftInfo", FormattedText, {key: "draft-info"}),
   ];
 
   let formScreen = [
