@@ -20,6 +20,8 @@ import React, { useState, useEffect, useContext }  from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
+  Alert,
+  AlertTitle,
   Avatar,
   Box,
   Button,
@@ -34,8 +36,6 @@ import {
   Typography,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import NextStepIcon from '@mui/icons-material/ChevronRight';
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -689,7 +689,7 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
-    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action" sx={{mr: 10, width: 1}}>Begin</Fab>,
+    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action" sx={{px: 5}}>Begin</Fab>,
     <FormattedText key="expiry-message" color="textSecondary">
         {expiryDate()}
     </FormattedText>,
@@ -799,9 +799,9 @@ function QuestionnaireSet(props) {
   let loadingScreen = [ <CircularProgress key="exit-loading"/> ];
 
   let incompleteScreen = [
-        <List key="incomplete-list">
+        <List key="incomplete-list" disablePadding>
         { (questionnaireIds || []).map((q, i) => (
-          <ListItem key={q+"Exit"}>
+          <ListItem key={q+"Exit"} disablePadding>
             <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
             <ListItemText
               primary={questionnaires[q]?.title}
@@ -810,21 +810,17 @@ function QuestionnaireSet(props) {
           </ListItem>
         ))}
         </List>,
-        <Typography color="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
-        <>
-        { canSubmitIncomplete ?
-          <Grid container spacing={2}>
-            <Grid>
-              <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
-            </Grid>
+        <Alert severity="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Alert>,
+        <Grid container spacing={2} justifyContent="flex-end" key="incomplete-actions">
+          { canSubmitIncomplete &&
             <Grid>
               <Button variant="outlined" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
             </Grid>
+          }
+          <Grid>
+            <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
           </Grid>
-          :
-          <Fab variant="extended" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
-        }
-        </>
+        </Grid>
   ];
 
   let exitScreen = (
@@ -863,13 +859,18 @@ function QuestionnaireSetScreen (props) {
 
   const { classes } = useStyles();
 
+  const isElementCentered = key => (
+    ["welcome-action", "expiry-message", "exit-loading"].includes(key) || key?.startsWith("review-")
+  );
+
   return (
   <Paper elevation={0} className={classes.mainContainer}>
     <Grid container direction="column" spacing={4} {...rest}>
       {Array.from(children || []).filter(c => c).map((c, i) =>
           <Grid
             key={i+"MainItem"}
-            alignSelf={["welcome-action", "expiry-message", "exit-loading"].includes(c.key) || c.key?.startsWith("review-") ? "center" : ""}
+            size={!isElementCentered(c.key) && 12}
+            alignSelf={isElementCentered(c.key) && "center"}
             className={classes.mainItem}
           >
             {c}
