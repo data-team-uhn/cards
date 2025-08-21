@@ -262,8 +262,6 @@ public class ClarityImportTask implements Runnable
     {
         this.config = config;
         this.dayToQuery = dayToQuery;
-        this.discardedVisits = 0;
-        this.importedVisits = 0;
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
         this.processors = processors;
@@ -272,9 +270,12 @@ public class ClarityImportTask implements Runnable
     // The entry point for running an import
 
     @Override
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     public void run()
     {
         LOGGER.info("Running ClarityImportTask: " + this.config.name());
+        this.discardedVisits = 0;
+        this.importedVisits = 0;
 
         String connectionUrl =
             String.format("jdbc:sqlserver://%s;user=%s;password=%s;encrypt=%s;", env(this.config.server()),
@@ -491,8 +492,13 @@ public class ClarityImportTask implements Runnable
             }
         }
         // Recursively move down the local Clarity Import configuration tree
-        walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
+        final boolean result = walkThroughLocalConfig(resolver, row, this.clarityImportConfiguration.get(),
             resolver.resolve("/Subjects"));
+        if (result) {
+            this.importedVisits++;
+        } else {
+            this.discardedVisits++;
+        }
     }
 
     private void addSubjectIdentifiersToData(final Map<String, String> row, final ClaritySubjectMapping subjectMapping)
@@ -501,7 +507,7 @@ public class ClarityImportTask implements Runnable
         subjectMapping.childSubjects.forEach(child -> addSubjectIdentifiersToData(row, child));
     }
 
-    private void walkThroughLocalConfig(ResourceResolver resolver, Map<String, String> row,
+    private boolean walkThroughLocalConfig(ResourceResolver resolver, Map<String, String> row,
         ClaritySubjectMapping subjectMapping, Resource subjectParent)
         throws ParseException, PersistenceException, RepositoryException, SQLException
     {
@@ -511,10 +517,8 @@ public class ClarityImportTask implements Runnable
                 ? getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent)
                 : getSubject(resolver, row, childSubjectMapping);
             if (newSubjectParent == null) {
-                this.discardedVisits++;
-                return;
+                return false;
             }
-            this.importedVisits++;
 
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
                 UpdatePolicy updatePolicy = questionnaireMapping.updatePolicy;
@@ -525,6 +529,8 @@ public class ClarityImportTask implements Runnable
                     if (updatePolicy == UpdatePolicy.updateExisting || updatePolicy == UpdatePolicy.onlyExisting) {
                         // Update the answers to an existing Form
                         updateExistingForm(resolver, formNode, questionnaireMapping, row);
+                    } else {
+                        return false;
                     }
                 } else {
                     if (updatePolicy != UpdatePolicy.onlyExisting) {
@@ -543,8 +549,9 @@ public class ClarityImportTask implements Runnable
                     }
                 }
             }
-            walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
+            return walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
         }
+        return true;
     }
 
     // Methods for storing subjects
