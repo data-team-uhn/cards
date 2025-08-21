@@ -51,7 +51,7 @@ public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     {
         return "Get the human readable answer for date questions. The human readable version is the date "
             + "formatted with the date format configured in the date question definition, "
-            + "for example `01/07/2025` instead of the stored value `2025-01-07T00:00:00%5C.000-05:00`.";
+            + "for example `01/07/2025` instead of the stored value `2025-01-07T00:00:00.000-05:00`.";
     }
 
     @Override

@@ -49,7 +49,7 @@ public class SimpleSubjectProcessor implements ResourceJsonProcessor
     public String getDescription()
     {
         return "Only runs on `Subjects`.\n"
-            + "Simplify form serialization by removing the jcr properties.";
+            + "Simplify subject serialization by removing the jcr properties.";
     }
 
     @Override

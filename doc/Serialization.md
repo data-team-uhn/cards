@@ -41,8 +41,8 @@ Multiple different export formats are supported. These include:
 `/Questionnaires/OAIP.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv`
 - `/Questionnaires/OAIP`: Export the OAIP questionnaire
 - `.data`: Include the forms that answer this questionnaire
-- `.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00`: Files modified after 2 AM on July 19th, UTC -5. Since periods are used to seperate selectors, the period in the timestamp must be escaped with a `\`. This slesh needs to be URL-encoded to `%5C`. The shorter format `2025-07-19` is also supported, and interpreted as Midnight (time `T00:00:00.000`) in the server's timezone.
-- `.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00`: Files modified before 2 AM on July 26th, UTC -5
+- `.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00`: Files modified on or after 2 AM on July 19th, UTC-5. Since periods are used to seperate selectors, the period in the timestamp must be escaped with a `\`. This slash needs to be URL-encoded to `%5C`. The shorter format `2025-07-19` is also supported, and interpreted as Midnight (time `T00:00:00.000`) in the server's timezone.
+- `.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00`: Files modified before 2 AM on July 26th, UTC-5
 - `.dataFilter:status=SUBMITTED`: Only include forms with the `SUBMITTED` status flag
 - `.labels`: Use the human readable version of answers, instead of the raw data (eg. `Never` instead of `0`)
 - `.formToSurveyLinks`: Include the path to the relevant Survey Events form in the form data. This adds an `@survey` property, which is included in the export later
@@ -73,7 +73,7 @@ Multiple different export formats are supported. These include:
     - `2025-01-01T02:00:00%5C.000-05:00`: A fully specified date, including date (Jan. 1), time (02:00:00), millisecond (.000), and timezone (-05:00)
     - `2025-01-01T02:00`: A simplified datetime, interpreted using the server's timezone
     - `2025-01-01`: A date, interpreted as midnight on that day in the server's timezone
-- Some processors are enabled by default. These processors can be disabled by including their name prefixed with a `-`. For example, `.-identify` would disable the `identify` processor. These default processors are labeled below with `isEnabledByDefault`.
+- Some processors are enabled by default. These processors can be disabled by including their name prefixed with a `-`. For example, `.-identify` would disable the `identify` processor. These default processors are labeled below with `Enabled by default`.
 - Some processors or filters are set up to only run on a specific data type. These restrictions are noted in their description. For example, `Only runs on Forms`.
 - Some processors have multiple implementations under the same name. These instances are generally designed to accomplish the same goal, each working on specific data types or in specific situations, and enabling one of them will enable all of them.
 
@@ -83,7 +83,7 @@ For the full list of available processors and filters, please refer to the next 
 ### answerCopy
 #### Implementations
 1. Only runs on `Subjects`.  
-    Copy the values of certain answers from forms to the root subject JSON. The answers to copy are configured in `/apps/cards/config/CopyAnswers/Questionnaires/[questionnaire name]/` as properties with the desired output name as the key and references to a question as the value.  
+    Copy the values of certain answers from forms to the root subject JSON. The answers to copy are configured in `/apps/cards/config/CopyAnswers/SubjectTypes/[subject type name]/` as properties with the desired output name as the key and references to a question as the value.  
     Questions can be copied either from a form belonging to this subject, one of it's ancestors or one of it's descendants.  
     **Enabled by default**  
 2. Only runs on `Forms`.  
@@ -154,7 +154,7 @@ Include the number of subjects of that type in the subject type serialization.
     **Enabled by default**  
 8. Get the human readable answer for questions.  
     **Enabled by default**  
-9. Get the human readable answer for date questions. The human readable version is the date formatted with the date format configured in the date question definition, for example `01/07/2025` instead of the stored value `2025-01-07T00:00:00%5C.000-05:00`.  
+9. Get the human readable answer for date questions. The human readable version is the date formatted with the date format configured in the date question definition, for example `01/07/2025` instead of the stored value `2025-01-07T00:00:00.000-05:00`.  
     **Enabled by default**  
 10. Get the human readable answer for boolean questions by outputting the labels specified in the question definition, e.g. 'Yes' or 'True' instead of '1'.  
     **Enabled by default**  
@@ -189,7 +189,7 @@ Report if a resource is referenced by adding a `@referenced=true|false` property
 3. Only runs on `Forms`.  
     Simplify form serialization by removing unnecessary properties and children. Removes child jcr properties, removes extra properties from answers and cleans up subject types.  
 4. Only runs on `Subjects`.  
-    Simplify form serialization by removing the jcr properties.  
+    Simplify subject serialization by removing the jcr properties.  
 ## Filters
 ### clinic
 Only show forms that belong to a user that has a 'Visit information' form for the specified clinic. If included multiple times, this includes forms belonging to any of the specified clinics. e.g. `.dataFilter:clinic=PMH-YVM`.  
@@ -202,7 +202,7 @@ Only show results that were created before the requested datetime. e.g. `.dataFi
 ### createdBy
 Only show results that were created by the specified user. e.g. `.dataFilter:createdBy=admin`.  
 ### modifiedAfter
-Only show results that were modified after the requested datetime. e.g. `.dataFilter:modifiedAfter=2025-01-01T06:00:00%5C.000-05:00` for forms modified after January 1, 2025 at 6 AM in the time zone UTC-5.  
+Only show results that were modified on or after the requested datetime. e.g. `.dataFilter:modifiedAfter=2025-01-01T06:00:00%5C.000-05:00` for forms modified after January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### modifiedBefore
 Only show results that were modified before the requested datetime. e.g. `.dataFilter:modifiedBefore=2025-01-01T06:00:00%5C.000-05:00` for forms modified before January 1, 2025 at 6 AM in the time zone UTC-5.  
 ### modifiedBy
@@ -210,7 +210,7 @@ Only show results that were last modified by the specified user. e.g. `.dataFilt
 ### notCreatedBy
 Only show results that were created by any user other than the specified user. e.g. `.dataFilter:notCreatedBy=admin`.  
 ### notModifiedBy
-Only show results that were last modified by anby other other than the specified user. e.g. `.dataFilter:notModifiedBy=admin`.  
+Only show results that were last modified by any user other than the specified user. e.g. `.dataFilter:notModifiedBy=admin`.  
 ### status
 Only show results that have the specified status flag. e.g. `.dataFilter:status=SUBMITTED`.  
 ### statusNot
