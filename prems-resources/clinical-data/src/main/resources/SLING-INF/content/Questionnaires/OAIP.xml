@@ -1611,7 +1611,7 @@ If you have a personal care concern or need help please speak directly to your c
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Don’t know/not sure</value>
+					<value>Don’t know / Not sure</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1735,7 +1735,7 @@ If you have a personal care concern or need help please speak directly to your c
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Don’t know/not sure</value>
+					<value>Don’t know / Not sure</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2286,7 +2286,7 @@ If you have a personal care concern or need help please speak directly to your c
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Don’t know/Not sure</value>
+					<value>Don’t know / Not sure</value>
 					<type>String</type>
 				</property>
 				<property>
