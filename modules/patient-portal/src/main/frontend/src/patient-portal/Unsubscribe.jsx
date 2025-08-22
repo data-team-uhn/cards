@@ -34,7 +34,11 @@ const useStyles = makeStyles()(theme => ({
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
     maxWidth: 500,
+    width: "100%",
     margin: "0 auto",
+    "& > .MuiGrid-root" : {
+      width: "100%",
+    },
   },
   submit : {
     marginTop: theme.spacing(5),
@@ -93,7 +97,7 @@ function Unsubscribe (props) {
           spacing={7}
         >
           <Logo component={Grid} size={12} />
-          <Grid>
+          <Grid size={12}>
             { error && <Alert severity="error">
               <AlertTitle>An error occurred</AlertTitle>
                {error}
@@ -113,7 +117,7 @@ function Unsubscribe (props) {
               </>
               : confirmed !== null ?
               <>
-                <Alert icon={false} severity="info">
+                <Alert severity="success">
                   You have been {confirmed ? "unsubscribed from" : "resubscribed to"} {appName}.
                 </Alert>
                 <Button
@@ -127,7 +131,7 @@ function Unsubscribe (props) {
               </>
               :
               <>
-                <Typography>{`This will unsubscribe you from all ${appName} emails.`}</Typography>
+                <Alert icon={false} severity="info">{`This will unsubscribe you from all ${appName} emails.`}</Alert>
                 <Button
                   type="submit"
                   variant="contained"
