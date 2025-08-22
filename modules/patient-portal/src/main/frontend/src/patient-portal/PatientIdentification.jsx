@@ -325,7 +325,7 @@ function PatientIdentification(props) {
             { error ?
               <Typography color="error">{error}</Typography>
               :
-              <Typography>Enter the following information for identification</Typography>
+              <Typography variant="h6">Enter the following information for identification:</Typography>
             }
             </div>
             <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
