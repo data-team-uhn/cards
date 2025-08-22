@@ -18,10 +18,14 @@
 //
 import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
-import { Paper, Grid, Button, Typography } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Grid,
+  Paper
+} from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
