@@ -25,7 +25,7 @@ import { withStyles } from 'tss-react/mui';
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
-import DragAndDrop from "../components/dragAndDrop";
+import DragAndDrop from "../components/DragAndDrop";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";

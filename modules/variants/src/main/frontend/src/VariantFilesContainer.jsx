@@ -42,7 +42,7 @@ import GetApp from '@mui/icons-material/GetApp';
 import MaterialReactTable from "material-react-table";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
-import DragAndDrop from "./components/dragAndDrop.jsx";
+import DragAndDrop from "./components/DragAndDrop";
 import { escapeJQL } from "./escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 

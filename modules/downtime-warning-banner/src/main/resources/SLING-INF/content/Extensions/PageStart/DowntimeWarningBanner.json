@@ -2,5 +2,5 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/pageStart",
   "cards:extensionName": "Downtime Warning Banner",
-  "cards:extensionRenderURL": "asset:cards-downtime-warning-banner.downtimeBanner.js"
+  "cards:extensionRenderURL": "asset:cards-downtime-warning-banner.DowntimeBanner.js"
 }

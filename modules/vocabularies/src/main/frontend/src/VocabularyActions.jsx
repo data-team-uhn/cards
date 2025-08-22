@@ -23,8 +23,8 @@ import {
   Typography
 } from "@mui/material";
 
-import VocabularyDetails from "./vocabularyDetails"
-import VocabularyAction from "./vocabularyAction"
+import VocabularyDetails from "./VocabularyDetails"
+import VocabularyAction from "./VocabularyAction"
 import ErrorDialog from "./components/ErrorDialog";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 

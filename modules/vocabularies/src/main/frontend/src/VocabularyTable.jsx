@@ -26,8 +26,8 @@ import {
 } from "@mui/material";
 
 import MaterialReactTable from "material-react-table";
-import VocabularyActions from "./vocabularyActions"
-import Search from "./search";
+import VocabularyActions from "./VocabularyActions"
+import VocabularySearch from "./VocabularySearch";
 
 const Phase = require("./phaseCodes.json");
 
@@ -51,7 +51,7 @@ export default function VocabularyTable(props) {
   return(
     <React.Fragment>
       {(type === "remote") &&
-      <Search
+      <VocabularySearch
         setAcronymFilterList={setAcronymFilterList}
         setParentFilterTable={setFilterTable}
         setLoading={setLoading}

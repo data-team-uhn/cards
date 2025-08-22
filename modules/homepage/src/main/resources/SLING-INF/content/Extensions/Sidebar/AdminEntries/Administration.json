@@ -2,7 +2,7 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
   "cards:extensionName": "Administration",
-  "cards:icon": "asset:cards-homepage.adminIcon.js",
+  "cards:icon": "asset:cards-homepage.AdminIcon.js",
   "cards:targetURL": "/content.html/admin",
   "cards:defaultOrder": 90
 }

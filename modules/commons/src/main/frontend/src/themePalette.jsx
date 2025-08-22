@@ -16,7 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
 import { createTheme } from '@mui/material/styles';
 
 let primaryColor = document.querySelector('meta[name="primaryColor"]')?.content || "#003366";

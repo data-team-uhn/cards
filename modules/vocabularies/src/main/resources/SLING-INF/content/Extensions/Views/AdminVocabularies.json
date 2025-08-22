@@ -2,6 +2,6 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Vocabularies",
-  "cards:extensionRenderURL": "asset:cards-vocabularies.admin-page.js",
+  "cards:extensionRenderURL": "asset:cards-vocabularies.VocabulariesAdminPage.js",
   "cards:targetURL": "/content.html/admin/Vocabularies"
 }

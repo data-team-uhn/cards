@@ -21,7 +21,7 @@ import { useState, useEffect } from "react";
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
-import Sidebar from "./Sidebar/sidebar"
+import Sidebar from "./Sidebar/Sidebar.jsx"
 import { getRoutes } from '../routes';
 import { withStyles } from 'tss-react/mui';
 import { unstable_HistoryRouter as Router, Routes, Route, Navigate } from "react-router";

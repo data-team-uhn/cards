@@ -1,3 +1,3 @@
 {
-  "cards-vocabularies.admin-page.js": ["asset:cards-login.ReLoginDialog.js"]
+  "cards-vocabularies.VocabulariesAdminPage.js": ["asset:cards-login.ReLoginDialog.js"]
 }
