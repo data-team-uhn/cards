@@ -30,6 +30,10 @@
   <packaging>bundle</packaging>
   <name>CARDS - Utilities</name>
 
+  <properties>
+    <coverage.instructionRatio>0.04</coverage.instructionRatio>
+  </properties>
+
   <build>
     <resources>
       <resource>
@@ -101,6 +105,11 @@
       <groupId>io.uhndata.cards</groupId>
       <artifactId>cards-data-model-forms-api</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
 </project>
