@@ -19,8 +19,6 @@
 package io.uhndata.cards.forms.internal.serialize;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -43,6 +41,7 @@ import javax.json.JsonValue.ValueType;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
@@ -52,6 +51,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceCSVProcessor;
 import io.uhndata.cards.serialize.spi.SelectorDetails;
+import io.uhndata.cards.utils.SelectorUtils;
 
 /**
  * CSV serializer that can process Questionnaires.
@@ -66,13 +66,14 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     private static final String IDENTIFIER_HEADER = "Identifier";
 
     private static final String CREATED_HEADER = "Created";
+
     private static final String LAST_MODIFIED_HEADER = "Last modified";
 
     private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
 
     private static final String UUID_PROP = "jcr:uuid";
 
-    private static final String INCLUDE_FIELDS = ".csvIncludeFields:";
+    private static final String INCLUDE_FIELDS = "csvIncludeFields:";
 
     @Override
     public boolean canProcess(final Resource resource)
@@ -138,14 +139,15 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             // Collect all the headers from the configuration, questions and any other hardcoded columns
             processHeaders(questionnaire, resolver, csvData, columns, rawColumns, extraColumns, resolutionPathInfo);
 
-
             // Print header
             if (!resolutionPathInfo.contains("-csvHeader:labels")) {
-                List<StringPair> replacements = extractArgumentPairs(".csvReplaceColumnLabels:", resolutionPathInfo);
+                List<Pair<Pattern, String>> replacements =
+                    extractArgumentPairs("csvReplaceColumnLabels:", resolutionPathInfo);
                 printRecordWithReplacements(columns, replacements, csvPrinter);
             }
             if (resolutionPathInfo.contains("csvHeader:raw")) {
-                List<StringPair> replacements = extractArgumentPairs(".csvReplaceColumnIds:", resolutionPathInfo);
+                List<Pair<Pattern, String>> replacements =
+                    extractArgumentPairs("csvReplaceColumnIds:", resolutionPathInfo);
                 printRecordWithReplacements(rawColumns, replacements, csvPrinter);
             }
 
@@ -163,43 +165,22 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         return null;
     }
 
-    private List<StringPair> extractArgumentPairs(final String name, final String resolutionPathInfo)
+    private List<Pair<Pattern, String>> extractArgumentPairs(final String name, final String resolutionPathInfo)
     {
-        String decodedPath = URLDecoder.decode(resolutionPathInfo, StandardCharsets.UTF_8);
-        List<StringPair> result = new ArrayList<>();
-        int startIndex = decodedPath.indexOf(name);
-        while (startIndex > 0) {
-            // Search for headers with the format:
-            // .csvIncludeFields:<value>=<label>
-            int endIndex = decodedPath.indexOf(".", startIndex + 1);
-            if (endIndex < 0) {
-                endIndex = decodedPath.length();
-            }
-
-            String[] pieces = decodedPath.substring(startIndex + name.length(), endIndex)
-                .split("=", 2);
-            String left = pieces[0];
-            String right = pieces.length == 2 ? pieces[1] : pieces[0];
-
-            result.add(new StringPair(left, right));
-            startIndex = decodedPath.indexOf(name, endIndex);
-        }
-
-        return result;
+        return SelectorUtils.parseOptions(name, resolutionPathInfo).stream()
+            .map(pair -> Pair.of(Pattern.compile(pair.getKey()), pair.getValue())).collect(Collectors.toList());
     }
 
-    private void printRecordWithReplacements(List<String> records, List<StringPair> replacements,
+    private void printRecordWithReplacements(List<String> records, List<Pair<Pattern, String>> replacements,
         CSVPrinter csvPrinter)
         throws IOException
     {
         if (replacements.size() > 0) {
-            List<Pattern> patterns = replacements.stream().map(replacement -> Pattern.compile(replacement.getLeft()))
-                .collect(Collectors.toList());
             csvPrinter.printRecord(records.stream().map(record -> {
                 String result = record;
-                for (int i = 0; i < patterns.size(); i++) {
-                    Matcher matcher = patterns.get(i).matcher(result);
-                    result = matcher.replaceAll(replacements.get(i).getRight());
+                for (Pair<Pattern, String> replacement : replacements) {
+                    Matcher matcher = replacement.getKey().matcher(result);
+                    result = matcher.replaceAll(replacement.getValue());
                 }
                 return result;
             }).collect(Collectors.toList()));
@@ -246,8 +227,8 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         final List<String> rawColumns, final Map<String, String> extraColumns, final String resolutionPathInfo)
     {
         // Collect any other columns specified by the export configuration
-        List<StringPair> headers = extractArgumentPairs(INCLUDE_FIELDS, resolutionPathInfo);
-        for (StringPair header : headers) {
+        List<Pair<String, String>> headers = SelectorUtils.parseOptions(INCLUDE_FIELDS, resolutionPathInfo);
+        for (Pair<String, String> header : headers) {
             recordColumn(header.getRight(), header.getLeft(), csvData, columns, rawColumns, extraColumns);
         }
     }
@@ -501,28 +482,6 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             return StringUtils.substringAfterLast(((JsonString) value).getString(), "/");
         } else {
             return value.toString();
-        }
-    }
-
-    private class StringPair
-    {
-        private String left;
-        private String right;
-
-        StringPair(String left, String right)
-        {
-            this.left = left;
-            this.right = right;
-        }
-
-        String getLeft()
-        {
-            return this.left;
-        }
-
-        String getRight()
-        {
-            return this.right;
         }
     }
 }

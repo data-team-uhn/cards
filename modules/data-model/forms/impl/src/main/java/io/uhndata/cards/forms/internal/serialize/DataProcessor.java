@@ -19,7 +19,6 @@
 package io.uhndata.cards.forms.internal.serialize;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +45,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.serialize.DataFilters;
 import io.uhndata.cards.serialize.DataFiltersParser;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
+import io.uhndata.cards.utils.SelectorUtils;
 
 /**
  * Serialize a subject or questionnaire along with its forms. The name of this processor is {@code data}.
@@ -104,12 +104,7 @@ public class DataProcessor implements ResourceJsonProcessor
 
         this.filters.set(this.filtersParser.parseFilters(this.selectors.get()));
 
-        final Map<String, String> optionsMap = new HashMap<>();
-        Arrays.asList(this.selectors.get().split("(?<!\\\\)(?:\\\\\\\\)*\\.")).stream()
-            .filter(s -> StringUtils.startsWith(s, "dataOption:"))
-            .map(s -> StringUtils.substringAfter(s, "dataOption:"))
-            .forEach(s -> optionsMap.put(StringUtils.substringBefore(s, "="),
-                StringUtils.substringAfter(s, "=").replaceAll("\\\\\\.", ".")));
+        final Map<String, String> optionsMap = SelectorUtils.parseOptionsToMap("dataOption:", this.selectors.get());
         this.options.set(optionsMap);
 
         setDisplayLevel(optionsMap.get("descendantData"));
