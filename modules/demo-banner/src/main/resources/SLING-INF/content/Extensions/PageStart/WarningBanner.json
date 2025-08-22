@@ -2,5 +2,5 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/pageStart",
   "cards:extensionName": "Demo Warning Banner",
-  "cards:extensionRenderURL": "asset:cards-demo-banner.demoBanner.js"
+  "cards:extensionRenderURL": "asset:cards-demo-banner.DemoBanner.js"
 }
