@@ -19,6 +19,7 @@
 
 package io.uhndata.cards.prems.internal.importer;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
+import io.uhndata.cards.utils.DateUtils;
 
 /**
  * Clarity import processor that sends the long-form CPESIC questionnaire to a small percentage of patients from each
@@ -55,11 +57,16 @@ public class SendCPESForDepartmentFrequency extends AbstractClarityDataProcessor
 
         @AttributeDefinition(name = "Per Department Frequency", description = "For example \"Department name = 0.02\".")
         String[] frequency_per_department();
+
+        @AttributeDefinition(name = "Cutoff date", description = "No longer active after this date.")
+        String cutoff_date();
     }
 
     private final double defaultFrequency;
 
     private final Map<String, Double> perDepartmentFrequency;
+
+    private final ZonedDateTime cutoffDate;
 
     @Activate
     public SendCPESForDepartmentFrequency(SendCPESForDepartmentFrequencyConfigDefinition configuration)
@@ -74,12 +81,19 @@ public class SendCPESForDepartmentFrequency extends AbstractClarityDataProcessor
             }
             this.perDepartmentFrequency.put(pieces[0], Double.valueOf(pieces[1]));
         }
+        this.cutoffDate = DateUtils.parseDateTime(configuration.cutoff_date());
     }
 
     @Override
     public Map<String, String> processEntry(Map<String, String> input)
     {
         final String department = input.get("DISCH_DEPT_NAME");
+        if (this.cutoffDate != null) {
+            ZonedDateTime visitDate = DateUtils.parseDateTime(input.get("HOSP_DISCHARGE_DTTM"));
+            if (!visitDate.isBefore(this.cutoffDate)) {
+                return input;
+            }
+        }
         if ((input.get("CLINIC") == null || input.get("CLINIC").length() == 0)
             && Math.random() < this.perDepartmentFrequency.getOrDefault(department, this.defaultFrequency)) {
             input.put("CLINIC", "/Survey/ClinicMapping/2075099");
