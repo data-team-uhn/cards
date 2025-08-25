@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+
 public final class DateUtils
 {
     /** The preferred date format, as a formatter object that can format Date/Calendar instances. */
@@ -102,6 +104,9 @@ public final class DateUtils
      */
     public static Calendar parseCalendar(final String str)
     {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
         final Date date = CALENDAR_FORMATS.stream().map(format -> {
             try {
                 return format.parse(str);
@@ -125,6 +130,9 @@ public final class DateUtils
      */
     public static ZonedDateTime parseDateTime(final String str)
     {
+        if (StringUtils.isBlank(str)) {
+            return null;
+        }
         // We try parsing the date with each of the accepted formats, in descending order of specificity
         final ZonedDateTime date = DATETIME_FORMATS.stream().map(format -> {
             try {
@@ -142,9 +150,6 @@ public final class DateUtils
             }
             return null;
         }).filter(Objects::nonNull).findFirst().orElse(null);
-        if (date == null) {
-            return null;
-        }
         return date;
     }
 
