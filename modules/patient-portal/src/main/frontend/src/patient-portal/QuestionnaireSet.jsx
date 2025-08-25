@@ -20,7 +20,10 @@ import React, { useState, useEffect, useContext }  from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
+  Alert,
+  AlertTitle,
   Avatar,
+  Box,
   Button,
   CircularProgress,
   Fab,
@@ -33,8 +36,6 @@ import {
   Typography,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import NextStepIcon from '@mui/icons-material/ChevronRight';
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -63,16 +64,13 @@ const useStyles = makeStyles()(theme => ({
     },
   },
   screen : {
-    alignItems: "center",
+    alignItems: "flex-start",
     margin: "auto",
     maxWidth: "780px",
     width: "100%",
     "& > .mainItem" : {
       paddingLeft: 0,
     },
-    "& h4, h6, .patient-portal-instructions" : {
-      textAlign: "center",
-    }
   },
   surveyPreviewComponent : {
     background: theme.palette.action.hover,
@@ -589,9 +587,14 @@ function QuestionnaireSet(props) {
 
 
   const greet = (name) => {
-    let hourOfDay = (new Date()).getHours();
-    let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
-    return `Good ${timeOfDay}` + (name ? `, ${name}` : '');
+    let greeting = displayText("greeting", Typography, {variant: "h6", key: "welcome-greeting"});
+    if (!greeting) {
+      let hourOfDay = (new Date()).getHours();
+      let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
+      let greetingMessage = `Good ${timeOfDay}` + (name ? `, ${name}` : '');
+      greeting = <Typography variant="h6" key="welcome-greeting">{ greetingMessage }</Typography>;
+    }
+    return greeting;
   }
 
   const appointmentDate = () => {
@@ -640,11 +643,11 @@ function QuestionnaireSet(props) {
       diffString("minutes", diffStrings, diffs);
 
       if (diffStrings.length > 0) {
-        result = " This survey link will expire in " + diffStrings[0] + ".";
+        result = "**This survey link will expire in " + diffStrings[0] + ".**";
       }
     } else {
       // Visit date could not be retrieved, this token will expire 1 hour from creation.
-      result = " This session will expire in 1 hour."
+      result = "**This session will expire in 1 hour.**"
     }
 
     return result;
@@ -663,19 +666,19 @@ function QuestionnaireSet(props) {
   let introMessage = intro.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
-    <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    greet(username),
     appointmentAlert(),
     displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "survey-info"}),
   ] : [
-    <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    greet(username),
     appointmentAlert(),
     (introMessage
-      ? <FormattedText key="intro-message" className="patient-portal-instructions">{introMessage}</FormattedText>
-      : displayText("surveyIntro", Typography, {key: "welcome-message", className: "patient-portal-instructions"})
+      ? <FormattedText key="intro-message">{introMessage}</FormattedText>
+      : displayText("surveyIntro", Typography, {key: "welcome-message"})
     ),
-    <List key="welcome-surveys">
+    <List key="welcome-surveys" disablePadding>
     { (questionnaireIds || []).map((q, i) => (
-      <ListItem key={q+"Welcome"}>
+      <ListItem key={q+"Welcome"} disablePadding>
         <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
@@ -686,11 +689,11 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
-    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>,
-    <Typography component="p" key="expiry-message" color="textSecondary">
+    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action" sx={{px: 5}}>Begin</Fab>,
+    <FormattedText key="expiry-message" color="textSecondary">
         {expiryDate()}
-    </Typography>,
-    displayText("surveyDraftInfo", FormattedText, {variant: "body2", key: "draft-info", className: "patient-portal-instructions"}),
+    </FormattedText>,
+    displayText("surveyDraftInfo", FormattedText, {key: "draft-info"}),
   ];
 
   let formScreen = [
@@ -716,9 +719,7 @@ function QuestionnaireSet(props) {
   );
 
   let reviewScreen = !enableReviewScreen ? [
-    <Grid alignItems="center" justifyContent="center">
-      <Grid key="review-loading"><CircularProgress/></Grid>
-    </Grid>
+    <CircularProgress key="review-loading"/>
   ] : [
     <Typography variant="h4" key="review-title">Review and Submit</Typography>,
     submitButton("Submit now"),
@@ -758,8 +759,8 @@ function QuestionnaireSet(props) {
   let endingMessage = ending.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
   let finalInstructions = (
-      endingMessage ? <FormattedText key="summary-instructions" className="patient-portal-instructions">{endingMessage}</FormattedText> :
-      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions", className: "patient-portal-instructions"})
+      endingMessage ? <FormattedText key="summary-instructions">{endingMessage}</FormattedText> :
+      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions"})
   );
 
   let disclaimer = (
@@ -798,9 +799,9 @@ function QuestionnaireSet(props) {
   let loadingScreen = [ <CircularProgress key="exit-loading"/> ];
 
   let incompleteScreen = [
-        <List key="incomplete-list">
+        <List key="incomplete-list" disablePadding>
         { (questionnaireIds || []).map((q, i) => (
-          <ListItem key={q+"Exit"}>
+          <ListItem key={q+"Exit"} disablePadding>
             <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
             <ListItemText
               primary={questionnaires[q]?.title}
@@ -809,21 +810,17 @@ function QuestionnaireSet(props) {
           </ListItem>
         ))}
         </List>,
-        <Typography color="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
-        <>
-        { canSubmitIncomplete ?
-          <Grid container spacing={2}>
-            <Grid>
-              <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
-            </Grid>
+        <Alert severity="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Alert>,
+        <Grid container spacing={2} justifyContent="flex-end" key="incomplete-actions">
+          { canSubmitIncomplete &&
             <Grid>
               <Button variant="outlined" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
             </Grid>
+          }
+          <Grid>
+            <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
           </Grid>
-          :
-          <Fab variant="extended" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Fab>
-        }
-        </>
+        </Grid>
   ];
 
   let exitScreen = (
@@ -862,10 +859,23 @@ function QuestionnaireSetScreen (props) {
 
   const { classes } = useStyles();
 
+  const isElementCentered = key => (
+    ["welcome-action", "expiry-message", "exit-loading"].includes(key) || key?.startsWith("review-")
+  );
+
   return (
   <Paper elevation={0} className={classes.mainContainer}>
     <Grid container direction="column" spacing={4} {...rest}>
-      {Array.from(children || []).filter(c => c).map((c, i) => <Grid key={i+"MainItem"} className={classes.mainItem}>{c}</Grid>)}
+      {Array.from(children || []).filter(c => c).map((c, i) =>
+          <Grid
+            key={i+"MainItem"}
+            size={!isElementCentered(c.key) && 12}
+            alignSelf={isElementCentered(c.key) && "center"}
+            className={classes.mainItem}
+          >
+            {c}
+          </Grid>)
+      }
     </Grid>
   </Paper>
   );

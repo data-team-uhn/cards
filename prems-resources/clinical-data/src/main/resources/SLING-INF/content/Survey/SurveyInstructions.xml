@@ -57,6 +57,11 @@ Completing this survey is voluntary, and your name and contact information will 
         <type>Boolean</type>
     </property>
     <property>
+        <name>greeting</name>
+        <value>Your Experience at UHN</value>
+        <type>String</type>
+    </property>
+    <property>
         <name>surveyIntro</name>
         <value></value>
         <type>String</type>

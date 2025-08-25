@@ -18,10 +18,14 @@
 //
 import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
-import { Paper, Grid, Button, Typography } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Grid,
+  Paper
+} from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
@@ -33,13 +37,16 @@ const useStyles = makeStyles()(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
-    textAlign: "center",
-    "& .MuiGrid-root" : {
-      textAlign: "center",
+    maxWidth: 500,
+    width: "100%",
+    margin: "0 auto",
+    "& > .MuiGrid-root" : {
+      width: "100%",
     },
   },
   submit : {
     marginTop: theme.spacing(5),
+    float: 'right',
   }
 }));
 
@@ -79,6 +86,7 @@ function Unsubscribe (props) {
         message="This page can only be accessed by opening an invitation to fill in a survey"
         buttonLink="/content.html/Questionnaires/User"
         buttonLabel="Go to the dashboard"
+        textAlign="left"
       />
     );
   }
@@ -91,11 +99,9 @@ function Unsubscribe (props) {
           container
           direction="column"
           spacing={7}
-          alignItems="center"
-          alignContent="center"
         >
           <Logo component={Grid} size={12} />
-          <Grid>
+          <Grid size={12}>
             { error && <Alert severity="error">
               <AlertTitle>An error occurred</AlertTitle>
                {error}
@@ -115,7 +121,7 @@ function Unsubscribe (props) {
               </>
               : confirmed !== null ?
               <>
-                <Alert icon={false} severity="info">
+                <Alert severity="success">
                   You have been {confirmed ? "unsubscribed from" : "resubscribed to"} {appName}.
                 </Alert>
                 <Button
@@ -129,7 +135,7 @@ function Unsubscribe (props) {
               </>
               :
               <>
-                <Typography>{`This will unsubscribe you from all ${appName} emails.`}</Typography>
+                <Alert icon={false} severity="info">{`This will unsubscribe you from all ${appName} emails.`}</Alert>
                 <Button
                   type="submit"
                   variant="contained"
