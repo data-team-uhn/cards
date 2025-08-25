@@ -520,6 +520,7 @@ public class ClarityImportTask implements Runnable
                 return false;
             }
 
+            boolean result = true;
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
                 UpdatePolicy updatePolicy = questionnaireMapping.updatePolicy;
                 Resource formNode = getFormForSubject(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
@@ -549,7 +550,8 @@ public class ClarityImportTask implements Runnable
                     }
                 }
             }
-            return walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
+            result &= walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
+            return result;
         }
         return true;
     }
