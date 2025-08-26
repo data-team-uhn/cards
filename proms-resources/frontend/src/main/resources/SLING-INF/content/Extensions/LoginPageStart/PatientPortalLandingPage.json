@@ -1,6 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/loginPageStart",
-  "cards:extensionName": "Patient Landing Page",
-  "cards:extensionRenderURL": "asset:patient-portal.LandingPage.js"
-}
