@@ -23,7 +23,6 @@ import {
   Alert,
   AlertTitle,
   Avatar,
-  Box,
   Button,
   CircularProgress,
   Fab,
