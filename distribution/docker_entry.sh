@@ -45,7 +45,7 @@ then
   PROJECT_VERSION=$CARDS_VERSION
 fi
 
-VALID_PROJECT_NAMES="||cards4kids|cards4lfs|cards4proms|cards4prems|cards4heracles|"
+VALID_PROJECT_NAMES="||cards4lfs|cards4proms|cards4prems|cards4heracles|"
 [ -e /external_project/project_code.txt ] && VALID_PROJECT_NAMES="${VALID_PROJECT_NAMES}$(cat /external_project/project_code.txt | head -n 1 | tr -d '\n')|"
 echo "${VALID_PROJECT_NAMES}" | grep -q "|${PROJECT_NAME}|" || { echo "Invalid project specified - defaulting to generic CARDS."; unset PROJECT_NAME; }
 

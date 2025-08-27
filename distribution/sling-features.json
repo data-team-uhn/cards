@@ -18,9 +18,6 @@
   "cards4lfs": [
     "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
   ],
-  "cards4kids": [
-    "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
-  ],
   "": [
     "mvn:io.uhndata.cards/cards-dataentry/{$CARDS_VERSION}/slingosgifeature/permissions_{$PERMISSIONS|open}"
   ]
