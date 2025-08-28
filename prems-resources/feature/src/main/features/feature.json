@@ -733,7 +733,8 @@
       "frequency.per.department": [
         // This applies to the DISCH_DEPT_NAME column. For example:
         // "Department name = 0.02"
-      ]
+      ],
+      "cutoff.date": "2025-10-01"
     },
     // Only non-CPESIC patients from now on.
     // Assign patients that were both in the emergency and in-patient to the EDIP cohort
