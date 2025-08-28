@@ -146,6 +146,40 @@
 		</property>
 	</node>
 	<node>
+        <name>unsubscribed_list</name>
+        <primaryNodeType>cards:Question</primaryNodeType>
+        <property>
+            <name>text</name>
+            <value>Clinics that the patient has unsubscribed from for email notifications</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>maxAnswers</name>
+            <value>0</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>dataType</name>
+            <value>resource</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>primaryType</name>
+            <value>cards:ClinicMapping</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>labelProperty</name>
+            <value>displayName</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayMode</name>
+            <value>list</value>
+            <type>String</type>
+        </property>
+    </node>
+	<node>
 		<name>email_unsubscribed</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>

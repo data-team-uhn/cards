@@ -19,10 +19,12 @@
 
 package io.uhndata.cards.clarity.importer.internal;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
@@ -42,6 +44,7 @@ import io.uhndata.cards.clarity.importer.spi.AbstractClarityDataProcessor;
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.patients.emailnotifications.AppointmentUtils;
 import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
@@ -123,7 +126,7 @@ public class UnsubscribedFilter extends AbstractClarityDataProcessor implements 
             // Iterate through forms for the patient looking for the patient information form
             for (final PropertyIterator forms = subject.getReferences("subject"); forms.hasNext();) {
                 final Node form = forms.nextProperty().getParent();
-                if (formIsUnsubscribed(form)) {
+                if (formIsUnsubscribed(form, subject)) {
                     // Discard the clarity row
                     LOGGER.warn("Discarded visit {} due to unsubscription", id);
                     return true;
@@ -140,19 +143,30 @@ public class UnsubscribedFilter extends AbstractClarityDataProcessor implements 
         return false;
     }
 
-    private boolean formIsUnsubscribed(Node form)
+    private boolean formIsUnsubscribed(final Node form, final Node visitSubject)
+        throws PathNotFoundException, RepositoryException
     {
         final Node questionnaire = this.formUtils.getQuestionnaire(form);
         if (isPatientInformationForm(questionnaire)) {
-            Node unsubscribedQuestion =
-                this.questionnaireUtils.getQuestion(questionnaire, "email_unsubscribed");
+            Node unsubscribedQuestion = this.questionnaireUtils.getQuestion(questionnaire, "email_unsubscribed");
 
             final Long unsubscribed =
-                (Long) this.formUtils.getValue(
-                    this.formUtils.getAnswer(form, unsubscribedQuestion));
+                (Long) this.formUtils.getValue(this.formUtils.getAnswer(form, unsubscribedQuestion));
 
-            if (unsubscribed != null && unsubscribed == 1) {
-                return true;
+            if (unsubscribed != null) {
+                return unsubscribed == 1;
+            } else {
+                Node unsubscribedListQuestion = this.questionnaireUtils.getQuestion(questionnaire, "unsubscribed_list");
+                final String[] unsubscribedList =
+                    (String[]) this.formUtils.getValue(this.formUtils.getAnswer(form, unsubscribedListQuestion));
+
+                final String clinicPath = AppointmentUtils.getQuestionAnswerForSubject(
+                    this.formUtils,
+                    visitSubject,
+                    AppointmentUtils.CLINIC_PATH,
+                    "cards:TextAnswer",
+                    "");
+                return Arrays.asList(unsubscribedList).contains(clinicPath);
             }
         }
         return false;

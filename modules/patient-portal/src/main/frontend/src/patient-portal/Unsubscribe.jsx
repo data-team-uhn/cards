@@ -22,8 +22,15 @@ import {
   Alert,
   AlertTitle,
   Button,
+  Checkbox,
   Grid,
-  Paper
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemButton,
+  ListItemText,
+  Paper,
+  Typography
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
@@ -36,7 +43,7 @@ const useStyles = makeStyles()(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.spacing(12, 3, 3),
+    padding: theme.spacing(3, 3, 3),
     maxWidth: 500,
     width: "100%",
     margin: "0 auto",
@@ -44,40 +51,126 @@ const useStyles = makeStyles()(theme => ({
       width: "100%",
     },
   },
+  sizeSmall : {
+    padding: "0!important",
+  },
+  denseIcon : {
+    minWidth: theme.spacing(4),
+  },
   submit : {
-    marginTop: theme.spacing(5),
+    marginLeft: theme.spacing(1),
     float: 'right',
+  },
+  stepIndicator : {
+    border: "1px solid " + theme.palette.action.disabled,
+    background: "transparent",
+    color: theme.palette.text.disabled,
+    fontSize: "small",
+    fontWeight: "bold",
   }
 }));
 
 function Unsubscribe (props) {
-  // Current user and associated subject
-  const [ confirmed, setConfirmed ] = useState(null);
+  const [ showAllAlert, setShowAllAlert ] = useState(false);
+  const [ showListAlert, setShowListAlert ] = useState(false);
   const [ error, setError ] = useState();
-  const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
+  const [ unsubscribedAll, setUnsubscribedAll ] = useState(false);
+  const [ unsubscribedList, setUnsubscribedList ] = useState([]);
+  const [ initiated, setInitiated ] = useState();
   const { classes } = useStyles();
+  const [ clinics, setClinics ] = useState();
 
+  // get all of the available clinics list
   useEffect(() => {
+    fetch("Survey/ClinicMapping.paginate?limit=1000", {method: 'GET'})
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setClinics(json?.rows);
+      })
+      .catch(() => setError("Can not load clinics data"));
+  }, []);
+
+  // get the list of clinincs that patient has unsubscribed from
+  useEffect(() => {
+    if (!clinics) return;
+    fetchInfo();
+  }, [clinics]);
+
+  let fetchInfo = () => {
     fetch("/Survey.unsubscribe", {method: 'GET'})
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
-      .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
+      .then( (json) => {
+        json.status == "success" ? setUnsubscribedAll(json.email_unsubscribed) : Promise.reject(json.error);
+        let list = [];
+        if (json?.email_unsubscribed != null) {
+          list = json.email_unsubscribed == 1 ? clinics.map(c => c["@path"]) : [];
+        } else {
+          json.unsubscribed_list && list.push(...json.unsubscribed_list);
+        }
+
+        if (json?.email_unsubscribed != 1 && json.currentClinic && !list.includes(json.currentClinic)) {
+          !initiated && list.push(json.currentClinic);
+          setInitiated(true);
+        }
+
+        setUnsubscribedList(list);
+      })
       .catch((response) => {
         let errMsg = "Cannot unsubscribe: ";
         setError(errMsg + (response.status ? response.statusText : response));
       });
-  }, []);
+  }
 
-  let unsubscribe = (value) => {
-    let request_data = new FormData();
-    request_data.append("unsubscribe", value);
-    fetch("/Survey.unsubscribe", { method: 'POST', body: request_data })
+  let unsubscribe = (data, callback) => {
+    setShowAllAlert(false);
+    setShowListAlert(false);
+    setError();
+    fetch("/Survey.unsubscribe", { method: 'POST', body: data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
-      .then( json => json.status == "success" ? (setConfirmed(json.unsubscribed), setAlreadyUnsubscribed(null)) : Promise.reject(json.error))
+      .then( (json) => {
+        fetchInfo();
+        callback();
+      })
       .catch((response) => {
-        let errMsg = "Unsubscribing failed";
-        setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
+        let errMsg = "Unsubscribing failed: ";
+        setError(errMsg + (response.status ? `with error code ${response.status}: ${response.statusText}` : response));
       });
   }
+
+  let unsubscribeAll = () => {
+    let request_data = new FormData();
+    request_data.append("email_unsubscribed", unsubscribedAll ? 0 : 1);
+    unsubscribe(request_data, ()=> setShowAllAlert(true));
+  }
+
+  let unsubscribeList = () => {
+    let request_data = new FormData();
+    if (setUnsubscribedList.length == clinics.length) {
+      request_data.append("email_unsubscribed", 1);
+    } else if (setUnsubscribedList.length == 0) {
+      request_data.append("email_unsubscribed", 0);
+    } else {
+      unsubscribedList.forEach((item) => request_data.append("unsubscribed_list", item));
+    }
+    unsubscribe(request_data, ()=> setShowListAlert(true));
+  }
+
+  let handleToggle = (value) => {
+    setShowAllAlert(false);
+    setShowListAlert(false);
+    setError();
+
+    const currentIndex = unsubscribedList.indexOf(value);
+    const newList = [...unsubscribedList];
+
+    if (currentIndex === -1) {
+      newList.push(value);
+    } else {
+      newList.splice(currentIndex, 1);
+    }
+
+    setUnsubscribedList(newList);
+  };
 
   if (!("hasSessionSubject" in document.getElementById("patient-portal-unsubscribe-container").dataset)) {
     return (
@@ -94,11 +187,11 @@ function Unsubscribe (props) {
   let appName = document.querySelector('meta[name="title"]')?.content;
 
   return (
-    <Paper className={classes.paper} elevation={0}>
+      <Paper className={classes.paper} elevation={0}>
         <Grid
           container
           direction="column"
-          spacing={7}
+          spacing={2}
         >
           <Logo component={Grid} size={12} />
           <Grid size={12}>
@@ -107,48 +200,55 @@ function Unsubscribe (props) {
                {error}
               </Alert>
             }
-            { alreadyUnsubscribed ?
-              <>
-                <Alert icon={false} severity="info">{ `You are already unsubscribed from ${appName}.` }</Alert>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className={classes.submit}
-                  onClick={() => unsubscribe(0)}
-                  >
-                  Resubscribe
-                </Button>
-              </>
-              : confirmed !== null ?
-              <>
-                <Alert severity="success">
-                  You have been {confirmed ? "unsubscribed from" : "resubscribed to"} {appName}.
-                </Alert>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className={classes.submit}
-                  onClick={() => unsubscribe(1-confirmed)}
-                  >
-                  {confirmed ? "Resubscribe" : "Unsubscribe"}
-                </Button>
-              </>
-              :
-              <>
-                <Alert icon={false} severity="info">{`This will unsubscribe you from all ${appName} emails.`}</Alert>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className={classes.submit}
-                  onClick={() => unsubscribe(1)}
-                  >
-                  Unsubscribe
-                </Button>
-              </>
-            }
+            { showAllAlert && <Alert icon={false} severity="success">{ `You have ${unsubscribedAll ? "unsubscribed from" : "resubscribed to"} ${appName}.` }</Alert> }
+            { showListAlert && <Alert icon={false} severity="success">
+              { `You have unsubscribed from ${unsubscribedList.map(s => s.replace("/Survey/ClinicMapping/", "")).join(", ")}.` }
+              </Alert> }
+          </Grid>
+          <Grid size={12}>
+            <Typography variant="h4">Your Experience survey options</Typography>
+          </Grid>
+          <Grid size={12}>
+            <Typography variant="h6">Unsubscribe from:</Typography>
+          </Grid>
+          <Grid size={12}>
+            <List dense>
+            { (clinics || []).filter(c => c).map(c => (
+              <ListItem key={c.clinicName} disablePadding>
+                 <ListItemButton onClick={() => handleToggle(c["@path"])} dense>
+                  <ListItemIcon className={classes.denseIcon}>
+                    <Checkbox
+                      size="small"
+                      classes={{ sizeSmall: classes.sizeSmall }}
+                      edge="start"
+                      disableRipple
+                      checked={unsubscribedAll || unsubscribedList.includes(c["@path"])}
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary={c.displayName} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+            </List>
+          </Grid>
+          <Grid size={12}>
+            <Button
+              variant="contained"
+              className={classes.submit}
+              onClick={() => unsubscribeList()}
+              >
+              Unsubscribe from Selection
+            </Button>
+            <Button
+              variant="outlined"
+              className={classes.submit}
+              onClick={() => unsubscribeAll()}
+              >
+              {unsubscribedAll ? "Resubscribe to all" : "Unsubscribe from all"}
+            </Button>
           </Grid>
         </Grid>
-    </Paper>
+      </Paper>
   );
 }
 

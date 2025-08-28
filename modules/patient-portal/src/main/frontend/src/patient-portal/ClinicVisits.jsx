@@ -103,7 +103,7 @@ function ClinicVisits(props) {
            className={classes["status" + (!row.has_surveys ? "Unassigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Unreviewed" : "Completed")))]}
            to={`../content.html${row.subject['@path']}`}
            underline="hover">
-           { row.email_unsubscribed ? "Unsubscribed" : (!row.has_surveys ? "No surveys assigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed"))) }
+           { row.email_unsubscribed || row?.unsubscribed_list.includes(`/Survey/ClinicMapping/${clinicId}`) ? "Unsubscribed" : (!row.has_surveys ? "No surveys assigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed"))) }
          </Link>
       )
     }

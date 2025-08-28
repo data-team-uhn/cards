@@ -8,5 +8,6 @@
   "jcr:reference:reminder2_sent": "/Questionnaires/Survey events/reminder2_sent",
   "jcr:reference:has_surveys": "/Questionnaires/Visit information/has_surveys",
   "jcr:reference:email_unsubscribed": "/Questionnaires/Patient information/email_unsubscribed",
+  "jcr:reference:unsubscribed_list": "/Questionnaires/Patient information/unsubscribed_list",
   "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
 }

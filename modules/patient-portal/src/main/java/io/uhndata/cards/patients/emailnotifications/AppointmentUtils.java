@@ -20,6 +20,7 @@
 package io.uhndata.cards.patients.emailnotifications;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -109,10 +110,28 @@ public final class AppointmentUtils
                 "/Questionnaires/Patient information/email_unsubscribed",
                 "cards:BooleanAnswer",
                 0L);
-            Node visitClinic = session.getNode(getQuestionAnswerForSubject(formUtils, visitSubject,
-                CLINIC_PATH, TEXT_ANSWER, EMPTY));
+            if (patientEmailUnsubscribed == 1) {
+                return null;
+            }
 
+            final String clinicPath = getQuestionAnswerForSubject(
+                formUtils,
+                visitSubject,
+                AppointmentUtils.CLINIC_PATH,
+                "cards:TextAnswer",
+                null);
+            Node visitClinic = session.getNode(clinicPath);
             if (visitClinic == null) {
+                return null;
+            }
+
+            String[] patientEmailUnsubscribedList = getQuestionAnswerForSubject(
+                formUtils,
+                patientSubject,
+                "/Questionnaires/Patient information/unsubscribed_list",
+                "cards:ClinicMapping",
+                null);
+            if (Arrays.asList(patientEmailUnsubscribedList).contains(clinicPath)) {
                 return null;
             }
 
@@ -133,7 +152,7 @@ public final class AppointmentUtils
                 "/Questionnaires/Patient information/email",
                 TEXT_ANSWER,
                 EMPTY);
-            if (patientEmailUnsubscribed != 1 && (ignoreEmailConsent || patientEmailOk == 1)) {
+            if (ignoreEmailConsent || patientEmailOk == 1) {
                 if (EmailValidator.getInstance().isValid(patientEmailAddress)) {
                     return patientEmailAddress;
                 }
