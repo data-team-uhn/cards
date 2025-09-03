@@ -52,7 +52,7 @@ function FormView(props) {
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
 
   const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || ""
-  const baseURL = "../content.html" + extensionURL ? "/" + extensionURL : ""
+  const baseURL = "../content.html" + (extensionURL ? "/" + extensionURL : "");
 
   // Column configuration for the LiveTables
   const columns = [

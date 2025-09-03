@@ -54,8 +54,8 @@ function SubjectView(props) {
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("subjects:filters"));
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
 
-  const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || ""
-  const baseURL = "../content.html" + extensionURL ? "/" + extensionURL : ""
+  const extensionURL = extension?.["cards:extensionURL"] || props.extensionURL || "";
+  const baseURL = "../content.html" + (extensionURL ? "/" + extensionURL : "");
 
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("subjects:activeTab");
 
