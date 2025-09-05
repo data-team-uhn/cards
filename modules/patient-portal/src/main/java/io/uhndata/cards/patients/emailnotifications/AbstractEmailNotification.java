@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -207,8 +208,9 @@ abstract class AbstractEmailNotification
         // Send the Notification Email
         Map<String, String> valuesMap = new HashMap<>();
         valuesMap.put("surveysLink", "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token);
+        final String uuid = getPatientFormUUID(patientSubject, session);
         final String unsubscribeLink =
-            "https://" + CARDS_HOST_AND_PORT + "/Survey.unsubscribe.html?auth_token=" + token;
+            "https://" + CARDS_HOST_AND_PORT + "/Survey.unsubscribe.html?patient=" + uuid;
         valuesMap.put("unsubscribeLink", unsubscribeLink);
         final DateFormat sdf = DateFormat.getDateInstance(DateFormat.LONG);
         sdf.setTimeZone(tokenExpiryDate.getTimeZone());
@@ -221,6 +223,20 @@ abstract class AbstractEmailNotification
             .withRecipient(patientEmailAddress, patientFullName)
             .withExtraHeader("List-Unsubscribe", "<" + unsubscribeLink + ">")
             .build();
+    }
+
+    private String getPatientFormUUID(final Node patientSubject, final Session session) throws RepositoryException
+    {
+        final Node patientInformationQuestionnaire = session.getNode("/Questionnaires/Patient information");
+        final PropertyIterator properties = patientSubject.getReferences("subject");
+        while (properties.hasNext()) {
+            final Node form = properties.nextProperty().getParent();
+            if (patientInformationQuestionnaire.getIdentifier()
+                .equals(this.formUtils.getQuestionnaireIdentifier(form))) {
+                return form.getProperty("jcr:uuid").getString();
+            }
+        }
+        return null;
     }
 
     private void atMidnight(final Calendar c)

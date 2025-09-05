@@ -20,11 +20,11 @@ import { FooterLink } from "./Footer";
 
 function UnsubscribeLink (props) {
 
-  let auth_token = new URLSearchParams(window.location.search).get("auth_token");
+  let patient = new URLSearchParams(window.location.search).get("patient");
 
-  return (auth_token ?
+  return (patient ?
     <FooterLink
-      href={`/Survey.unsubscribe.html?auth_token=${auth_token}`}
+      href={`/Survey.unsubscribe.html?patient=${patient}`}
     >
       Unsubscribe
     </FooterLink>

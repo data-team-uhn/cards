@@ -61,8 +61,21 @@ function Unsubscribe (props) {
   const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
   const { classes } = useStyles();
 
+  let patient = new URLSearchParams(window.location.search).get("patient");
+  if (!patient) {
+    return (
+      <ErrorPage
+        title="Invalid access"
+        message="This page can only be accessed by opening an invitation to fill in a survey"
+        buttonLink="/content.html/Questionnaires/User"
+        buttonLabel="Go to the dashboard"
+        textAlign="left"
+      />
+    );
+  }
+
   useEffect(() => {
-    fetch("/Survey.unsubscribe", { method: 'GET' })
+    fetch(`/Survey.unsubscribe?patient=${patient}`, { method: 'GET' })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
       .catch((response) => {
@@ -81,18 +94,6 @@ function Unsubscribe (props) {
         let errMsg = "Unsubscribing failed";
         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
       });
-  }
-
-  if (!("hasSessionSubject" in document.getElementById("patient-portal-unsubscribe-container").dataset)) {
-    return (
-      <ErrorPage
-        title="Invalid access"
-        message="This page can only be accessed by opening an invitation to fill in a survey"
-        buttonLink="/content.html/Questionnaires/User"
-        buttonLabel="Go to the dashboard"
-        textAlign="left"
-      />
-    );
   }
 
   let appName = document.querySelector('meta[name="title"]')?.content;

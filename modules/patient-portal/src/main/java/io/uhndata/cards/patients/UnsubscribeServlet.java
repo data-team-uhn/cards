@@ -72,25 +72,22 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
     {
-        // This only works for a token-authenticated session; refuse requests if this is not the case
-        final String sessionSubjectIdentifier =
-            (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
-        if (sessionSubjectIdentifier == null) {
+        // This only works for a uuid-authenticated session; refuse requests if this is not the case
+        final String sessionPatientIdentifier = request.getParameter("patient");
+        if (sessionPatientIdentifier == null) {
             writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
             return;
         }
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "unsubscribe"))) {
             final Session session = rr.adaptTo(Session.class);
-            final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
-            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
-            final Node patientInformationForm =
-                getPatientInformationForm(visitSubject, patientInformationQuestionnaire, session);
+            final Node patientInformationForm = session.getNodeByIdentifier(sessionPatientIdentifier);
             if (patientInformationForm == null) {
                 writeError(response, SlingHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
                 return;
             }
 
+            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
             final Node unsubscribeQuestion =
                 this.questionnaireUtils.getQuestion(patientInformationQuestionnaire, UNSUBSCRIBE);
             Node unsubscribeAnswer = this.formUtils.getAnswer(patientInformationForm, unsubscribeQuestion);
