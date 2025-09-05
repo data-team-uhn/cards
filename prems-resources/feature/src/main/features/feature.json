@@ -342,7 +342,7 @@
         "questionnaire=/Questionnaires/OAIP",
         "questionnaire=/Questionnaires/OED",
         "questionnaire=/Questionnaires/Rehab",
-        "selectors=.labels.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter:exclude=/Questionnaires/OED/oed_module1/oed_visit_month.questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month.questionnaireFilter:exclude=/Questionnaires/Rehab/rs_module1/rs_visit_month"
+        "selectors=.labels.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvReplaceColumnIds:@=#.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter:exclude=/Questionnaires/OED/oed_module1/oed_visit_month.questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month.questionnaireFilter:exclude=/Questionnaires/Rehab/rs_module1/rs_visit_month"
       ],
       "formatter": "csv",
       "fileNameFormat": "{resourcePath}_labels.csv",
@@ -362,7 +362,7 @@
         "questionnaire=/Questionnaires/OAIP",
         "questionnaire=/Questionnaires/OED",
         "questionnaire=/Questionnaires/Rehab",
-        "selectors=.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter:exclude=/Questionnaires/OED/oed_module1/oed_visit_month.questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month.questionnaireFilter:exclude=/Questionnaires/Rehab/rs_module1/rs_visit_month"
+        "selectors=.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvReplaceColumnIds:@=#.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter:exclude=/Questionnaires/OED/oed_module1/oed_visit_month.questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month.questionnaireFilter:exclude=/Questionnaires/Rehab/rs_module1/rs_visit_month"
       ],
       "formatter": "csv",
       "fileNameFormat": "{resourcePath}.csv",
