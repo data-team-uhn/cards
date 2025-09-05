@@ -90,6 +90,7 @@ function ExportButton(props) {
     fileFormat : ".csv",
     hasHeaderLabels: true,
     hasHeaderIdentifiers: false,
+    csvReplacement: "",
     hasAnswerLabels: false,
     columnSelectionMode: "exclude",
     statusSelectionMode: "status",
@@ -109,6 +110,8 @@ function ExportButton(props) {
   // to enable identifiers, add .csvHeader:raw
   const [ hasHeaderLabels, setHeaderLabels ] = useState(DEFAULTS.hasHeaderLabels);
   const [ hasHeaderIdentifiers, setHeaderIdentifiers ] = useState(DEFAULTS.hasHeaderIdentifiers);
+  const [ csvReplaceColumnLabels, setCsvReplaceColumnLabels ] = useState(DEFAULTS.csvReplacement);
+  const [ csvReplaceColumnIds, setCsvReplaceColumnIds ] = useState(DEFAULTS.csvReplacement);
   // Specifies if the .labels processor is enabled (disabled by default for values)
   const [ hasAnswerLabels, setAnswerLabels ] = useState(DEFAULTS.hasAnswerLabels);
 
@@ -185,6 +188,17 @@ function ExportButton(props) {
     }
     if (hasHeaderIdentifiers) {
       path += ".csvHeader:raw";
+    }
+    if (csvReplaceColumnLabels) {
+      // Split at commas or newlines, trimming whitespace before or after these delimiters
+      csvReplaceColumnLabels.split(/\s*[,\n]\s*/).forEach(replacement => {
+        path += ".csvReplaceColumnLabels:" + encodeURIComponent(encodeURIComponent(replacement));
+      });
+    }
+    if (csvReplaceColumnIds) {
+      csvReplaceColumnIds.split(/\s*[,\n]\s*/).forEach(replacement => {
+        path += ".csvReplaceColumnIds:" + encodeURIComponent(encodeURIComponent(replacement));
+      });
     }
     if (selectedEntityIds.length > 0) {
       path +=  ".questionnaireFilter";
@@ -333,7 +347,34 @@ function ExportButton(props) {
               />
             </Grid>
           </Grid>
-
+          <Grid container alignItems='center' className={classes.container}>
+            <Grid size={4}><Typography variant="subtitle2">Header label replacement:</Typography></Grid>
+            <Grid size={8}>
+              <TextField
+                variant="standard"
+                helperText="List of pairs `<regex to find>=<value to replace with>` separated by commas or newlines. Example: <regex_1>=<value_1>,<regex_2>=<value_2>,..."
+                placeholder="@=#"
+                value={csvReplaceColumnLabels}
+                onChange={(event) => setCsvReplaceColumnLabels(event.target.value)}
+                fullwidth
+                multiline
+              />
+            </Grid>
+          </Grid>
+          <Grid container alignItems='center' className={classes.container}>
+            <Grid size={4}><Typography variant="subtitle2">Header Id replacement:</Typography></Grid>
+            <Grid size={8}>
+              <TextField
+                variant="standard"
+                helperText="List of pairs `<regex to find>=<value to replace with>` separated by commas or newlines."
+                placeholder="@=#"
+                value={csvReplaceColumnIds}
+                onChange={(event) => setCsvReplaceColumnIds(event.target.value)}
+                fullwidth
+                multiline
+              />
+            </Grid>
+          </Grid>
           <Grid container alignItems='center' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">Data format:</Typography></Grid>
             <Grid size={8}>

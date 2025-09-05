@@ -27,6 +27,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.jcr.query.Query;
 import javax.json.JsonArray;
@@ -38,6 +41,7 @@ import javax.json.JsonValue.ValueType;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
@@ -47,6 +51,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceCSVProcessor;
 import io.uhndata.cards.serialize.spi.SelectorDetails;
+import io.uhndata.cards.utils.SelectorUtils;
 
 /**
  * CSV serializer that can process Questionnaires.
@@ -61,13 +66,14 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     private static final String IDENTIFIER_HEADER = "Identifier";
 
     private static final String CREATED_HEADER = "Created";
+
     private static final String LAST_MODIFIED_HEADER = "Last modified";
 
     private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
 
     private static final String UUID_PROP = "jcr:uuid";
 
-    private static final String INCLUDE_FIELDS = ".csvIncludeFields:";
+    private static final String INCLUDE_FIELDS = "csvIncludeFields:";
 
     @Override
     public boolean canProcess(final Resource resource)
@@ -135,10 +141,14 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
 
             // Print header
             if (!resolutionPathInfo.contains("-csvHeader:labels")) {
-                csvPrinter.printRecord(columns);
+                List<Pair<Pattern, String>> replacements =
+                    extractArgumentPairs("csvReplaceColumnLabels:", resolutionPathInfo);
+                printRecordWithReplacements(columns, replacements, csvPrinter);
             }
             if (resolutionPathInfo.contains("csvHeader:raw")) {
-                csvPrinter.printRecord(rawColumns);
+                List<Pair<Pattern, String>> replacements =
+                    extractArgumentPairs("csvReplaceColumnIds:", resolutionPathInfo);
+                printRecordWithReplacements(rawColumns, replacements, csvPrinter);
             }
 
             // Aggregate form answers to the csvData collector for the CSV output
@@ -153,6 +163,30 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             LOGGER.error("Error in CSV export of {} questionnaire", questionnaire.getString("@name"));
         }
         return null;
+    }
+
+    private List<Pair<Pattern, String>> extractArgumentPairs(final String name, final String resolutionPathInfo)
+    {
+        return SelectorUtils.parseOptions(name, resolutionPathInfo).stream()
+            .map(pair -> Pair.of(Pattern.compile(pair.getKey()), pair.getValue())).collect(Collectors.toList());
+    }
+
+    private void printRecordWithReplacements(List<String> records, List<Pair<Pattern, String>> replacements,
+        CSVPrinter csvPrinter)
+        throws IOException
+    {
+        if (replacements.size() > 0) {
+            csvPrinter.printRecord(records.stream().map(record -> {
+                String result = record;
+                for (Pair<Pattern, String> replacement : replacements) {
+                    Matcher matcher = replacement.getKey().matcher(result);
+                    result = matcher.replaceAll(replacement.getValue());
+                }
+                return result;
+            }).collect(Collectors.toList()));
+        } else {
+            csvPrinter.printRecord(records);
+        }
     }
 
     private void processHeaders(final JsonObject questionnaire, final ResourceResolver resolver,
@@ -193,27 +227,9 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         final List<String> rawColumns, final Map<String, String> extraColumns, final String resolutionPathInfo)
     {
         // Collect any other columns specified by the export configuration
-        int startIndex = resolutionPathInfo.indexOf(INCLUDE_FIELDS);
-        while (startIndex > 0) {
-            // Search for headers with the format:
-            // .csvIncludeFields:<value>=<label>
-            int endIndex = resolutionPathInfo.indexOf(".", startIndex + 1);
-            if (endIndex < 0) {
-                endIndex = resolutionPathInfo.length();
-            }
-
-            String[] pieces = resolutionPathInfo.substring(startIndex + INCLUDE_FIELDS.length(), endIndex)
-                .split("=", 2);
-            String value = pieces[0];
-            String label = pieces.length == 2 ? pieces[1] : pieces[0];
-
-            // If label is in quotes, remove them
-            if (label.startsWith("\"") && label.endsWith("\"")) {
-                label = label.substring(1, label.length() - 1);
-            }
-
-            recordColumn(label, value, csvData, columns, rawColumns, extraColumns);
-            startIndex = resolutionPathInfo.indexOf(INCLUDE_FIELDS, endIndex);
+        List<Pair<String, String>> headers = SelectorUtils.parseOptions(INCLUDE_FIELDS, resolutionPathInfo);
+        for (Pair<String, String> header : headers) {
+            recordColumn(header.getRight(), header.getLeft(), csvData, columns, rawColumns, extraColumns);
         }
     }
 

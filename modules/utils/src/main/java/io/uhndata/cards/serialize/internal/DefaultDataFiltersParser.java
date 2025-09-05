@@ -19,11 +19,8 @@
 package io.uhndata.cards.serialize.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -31,6 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 import io.uhndata.cards.serialize.DataFiltersParser;
 import io.uhndata.cards.serialize.spi.DataFilter;
 import io.uhndata.cards.serialize.spi.DataFilterFactory;
+import io.uhndata.cards.utils.SelectorUtils;
 
 /**
  * Default implementation for {@link DataFiltersParser}.
@@ -47,30 +45,8 @@ public class DefaultDataFiltersParser implements DataFiltersParser
     @Override
     public DefaultDataFilters parseFilters(String selectorString)
     {
-        // First parse the selectors string into individual selectors.
-        // Split by unescaped dots. A backslash escapes a dot, but two backslashes are just one escaped backslash.
-        // Match by:
-        // - no preceding backslash, i.e. start counting at the first backslash (?<!\)
-        // - an even number of backslashes, i.e. any number of groups of two backslashes (?:\\)*
-        // - a literal dot \.
-        // Each backslash, except the \., is escaped twice, once as a special escape char inside a Java string, and
-        // once as a special escape char inside a RegExp. The one before the dot is escaped only once as a special
-        // char inside a Java string, since it must retain its escaping meaning in the RegExp.
-        final List<String> selectors = Arrays.asList(selectorString.split("(?<!\\\\)(?:\\\\\\\\)*\\."));
-
-        // Then, parse the dataFilter selectors into key=value pairs
-        final List<Pair<String, String>> filterStrings = selectors.stream()
-            .filter(s -> StringUtils.startsWith(s, "dataFilter:"))
-            .map(s -> StringUtils.substringAfter(s, "dataFilter:"))
-            .map(s -> Pair.of(StringUtils.substringBefore(s, "="),
-                // Also unescape inner dots, if present
-                // Escaped dot: \.
-                // As part of a regular expression, both characters need to be escaped: \\\.
-                // And as a Java string literal, each backslash must be escaped: \\\\\\.
-                StringUtils.substringAfter(s, "=").replaceAll("\\\\\\.", ".")))
-            .collect(Collectors.toList());
-
-        // Finally, pass the extracted filter pairs to all the filter factories and gather the result
+        final List<String> selectors = SelectorUtils.parseSelectors(selectorString);
+        final List<Pair<String, String>> filterStrings = SelectorUtils.parseOptions("dataFilter:", selectorString);
         final List<DataFilter> filters = new ArrayList<>();
         this.filterFactories.forEach(factory -> filters.addAll(factory.parseFilters(filterStrings, selectors)));
 
