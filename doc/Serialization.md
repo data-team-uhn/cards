@@ -38,7 +38,7 @@ Multiple different export formats are supported. These include:
 - `/Forms/<Form ID>.md` exports a Markdown-formatted view of a Form. Use `.txt` to export plain text instead.
 
 #### Example: Weekly OAIP Form Export
-`/Questionnaires/OAIP.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.csvReplaceColumnIds:@=#.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv`
+`/Questionnaires/OAIP.data.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00.dataFilter:modifiedBefore=2025-07-26T02:00:00%5C.000-05:00.dataFilter:status=SUBMITTED.labels.formToSurveyLinks.csvIncludeFields:@survey=Survey.csvHeader:raw.csvReplaceColumnIds:%2540%253D%2523.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month.csv`
 - `/Questionnaires/OAIP`: Export the OAIP questionnaire
 - `.data`: Include the forms that answer this questionnaire
 - `.dataFilter:modifiedAfter=2025-07-19T02:00:00%5C.000-05:00`: Files modified on or after 2 AM on July 19th, UTC-5. Since periods are used to seperate selectors, the period in the timestamp must be escaped with a `\`. This slash needs to be URL-encoded to `%5C`. The shorter format `2025-07-19` is also supported, and interpreted as Midnight (time `T00:00:00.000`) in the server's timezone.
@@ -48,7 +48,7 @@ Multiple different export formats are supported. These include:
 - `.formToSurveyLinks`: Include the path to the relevant Survey Events form in the form data. This adds an `@survey` property, which is included in the export later
 - `.csvIncludeFields:@survey=Survey`: Special instruction for the csv output format. Include the `@survey` property in a column with the label `Survey`
 - `.csvHeader:raw`: Special instruction for the csv output format. Include the raw property names as a header in addition to the (default) labels
-- `.csvReplaceColumnIds:@=#`: Replace any instances of `@` in the raw column headers with `#`. Notably, replace `@name` and `@survey` with `#name` and `#survey`
+- `.csvReplaceColumnIds:%2540%253D%2523` (decoded as `.csvReplaceColumnIds:@=#`): Replace any instances of `@` in the raw column headers with `#`. Notably, replace `@name` and `@survey` with `#name` and `#survey`. As special URL characters, `@`, `=` and `#` need to be URL-encoded
 - `.questionnaireFilter:exclude=%252FQuestionnaires%252FOAIP%252Foaip_module1%252Foaip_visit_month`: Do not include the question `oaip_visit_month` or it's answers. The path to this question has been URL  encoded twice from `/Questionnaires/OAIP/oaip_module1/oaip_visit_month`, first to replace the `/` with `%2F` and second to replace `%` with `%25`
 - `.csv`: Export the data as a csv file.
 
