@@ -48,7 +48,7 @@ Please do not include any other encounters or hospital stays in your answers.
         </property>
         <property>
             <name>estimate</name>
-            <value>5</value>
+            <value>10</value>
             <type>Long</type>
         </property>
         <property>
