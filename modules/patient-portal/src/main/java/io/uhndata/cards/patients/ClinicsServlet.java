@@ -20,11 +20,8 @@ package io.uhndata.cards.patients;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +35,7 @@ import javax.jcr.security.Privilege;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
@@ -51,9 +49,6 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -70,8 +65,6 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     private static final Logger LOGGER = LoggerFactory.getLogger(ClinicsServlet.class);
 
     // FIXME Delete this
-    private static final String IMPORT_FACTORY_PID = "io.uhndata.cards.proms.internal.importer.ImportConfig";
-
     private static final String DESCRIPTION_FIELD = "description";
 
     private static final String PRIMARY_TYPE_FIELD = "jcr:primaryType";
@@ -91,9 +84,6 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     private final ThreadLocal<String> description = new ThreadLocal<>();
 
     private final ThreadLocal<String> idHash = new ThreadLocal<>();
-
-    @Reference
-    private ConfigurationAdmin configAdmin;
 
     @Reference
     private PermissionsManager permissionsManager;
@@ -119,20 +109,6 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             } catch (final NullPointerException e) {
                 this.returnError(response, e.getMessage());
             }
-
-            // Grab the configuration to edit
-            final Configuration[] configs = this.configAdmin.listConfigurations(
-                "(service.factoryPid=" + IMPORT_FACTORY_PID + ")");
-
-            if (configs != null) {
-                for (final Configuration config : configs) {
-                    this.insertNewClinic(config, this.clinicName.get());
-                }
-            }
-        } catch (final InvalidSyntaxException e) {
-            // This can happen when the filter given to the listConfigurations call above is wrong
-            // This shouldn't happen unless a typo was made in the value of IMPORT_FACTORY_PID
-            this.returnError(response, "Invalid syntax in config search.");
         } catch (final IOException e) {
             // This can happen while updating the properties of a configuration
             // Unknown how to handle this
@@ -221,7 +197,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     {
         LOGGER.error(reason);
         try {
-            response.setStatus(SlingHttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             Writer out = response.getWriter();
             JsonGenerator generator = Json.createGenerator(out);
             generator.writeStartObject();
@@ -243,7 +219,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     {
         final Resource parentResource = resolver.getResource("/Survey/ClinicMapping");
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("clinicName", this.clinicName.get());
         params.put("displayName", this.displayName.get());
         params.put("sidebarLabel", this.sidebarLabel.get());
@@ -314,24 +290,6 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ExtensionPoint",
             "cards:extensionPointId", "clinics/dashboard/" + this.idHash.get(),
             "cards:extensionPointName", this.displayName.get() + " questionnaires dashboard"));
-    }
-
-    /**
-     * Update the clinic.names field of the given configuration with a new clinic name.
-     *
-     * @param config An OSGI config object for an instance of a proms ImportConfig
-     * @param newClinicName An new clinic's name to add
-     */
-    public void insertNewClinic(Configuration config, String newClinicName) throws IOException
-    {
-        String[] clinicNames = (String[]) config.getProperties().get("clinic.names");
-        String[] updatedClinicNames = Arrays.copyOf(clinicNames, clinicNames.length + 1);
-        updatedClinicNames[clinicNames.length] = newClinicName;
-
-        // Create a dictionary to contain the update request
-        Dictionary<String, Object> updateDictionary = new Hashtable<>();
-        updateDictionary.put("clinic.names", updatedClinicNames);
-        config.update(updateDictionary);
     }
 
     /**

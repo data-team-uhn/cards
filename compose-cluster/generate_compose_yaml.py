@@ -80,7 +80,7 @@ argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, t
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
 argparser.add_argument('--custom_env_file', help='Enable a custom file with environment variables')
-argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4proms, cards4lfs, etc...')
+argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4prems, cards4lfs, etc...')
 argparser.add_argument('--demo', help='Enable the Demo Banner, Upgrade Marker Flag, and Demo Forms', action='store_true')
 argparser.add_argument('--demo_banner', help='Enable only the Demo Banner', action='store_true')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
@@ -996,7 +996,7 @@ if args.mssql:
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_YVM_SQL_TABLE=PatientActivity_Outpatient_PMCC_data_for_PtExpSurvey')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_PMH_OO_SQL_TABLE=PatientActivity_PMCC_Outpatient_Oncology_for_PtExpSurvey')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=HOSP_DISCHARGE_DTTM')
-  elif args.cards_project == 'cards4proms':
+  elif args.cards_project == 'cards4datapro':
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=PatientVisitActivity_for_DATA-PRO')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=ENCOUNTER_DATE')
   if args.expose_mssql:

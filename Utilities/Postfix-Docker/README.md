@@ -71,10 +71,10 @@ required.
 5.8. Finish.
 ![Screenshot 008](screenshots/008.png)
 
-6. Start CARDS with emailing enabled (such as in the `cards4proms` project):
+6. Start CARDS with emailing enabled (such as in the `cards4prems` project):
 
 ```bash
-NIGHTLY_NOTIFICATIONS_SCHEDULE='0 * * * * ? *' SLING_COMMONS_CRYPTO_PASSWORD=password CARDS_HOST_AND_PORT='localhost:8080' ./start_cards.sh --project cards4proms --dev -V emailnotifications.smtps.checkserveridentity=false
+NIGHTLY_NOTIFICATIONS_SCHEDULE='0 * * * * ? *' SLING_COMMONS_CRYPTO_PASSWORD=password CARDS_HOST_AND_PORT='localhost:8080' ./start_cards.sh --project cards4prems --dev -V emailnotifications.smtps.checkserveridentity=false
 ```
 
 7. Send a test email
@@ -114,7 +114,7 @@ cd compose-cluster
 2. Build a new Docker Compose YAML configuration
 
 ```bash
-python3 generate_compose_yaml.py --dev_docker_image --oak_filesystem --cards_project cards4proms --server_address localhost:8080 --smtps --smtps_test_container --smtps_test_mail_path ~/path/to/mail/directory/
+python3 generate_compose_yaml.py --dev_docker_image --oak_filesystem --cards_project cards4prems --server_address localhost:8080 --smtps --smtps_test_container --smtps_test_mail_path ~/path/to/mail/directory/
 ```
 
 3. Build the Docker Compose configuration

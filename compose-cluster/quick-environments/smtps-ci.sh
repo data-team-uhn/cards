@@ -32,7 +32,7 @@ then
 fi
 
 python3 generate_compose_yaml.py \
-  --cards_project cards4proms \
+  --cards_project cards4datapro \
   --dev_docker_image \
   --composum \
   --oak_filesystem \

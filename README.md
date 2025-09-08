@@ -40,7 +40,7 @@ A docker image can optionally be built with `mvn install -Pdocker`, if docker is
 
 `./start_cards.sh -p PORT` to run at a different port
 
-`./start_cards.sh -P PROJECT1,PROJECT2` to run a specific project. Currently supported projects are: `lfs`, `kids`, `care`, `proms`.
+`./start_cards.sh -P PROJECT1,PROJECT2` to run a specific project. Currently supported projects are: `prems`.
 
 `./start_cards.sh --permissions SCHEME` to run with a different permission scheme. Currently supported schemes are:
 - `open`, the default, where all registered users can create, view and edit all records
