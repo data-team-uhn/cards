@@ -38,6 +38,7 @@ import ConditionalSingle from "./ConditionalSingle";
 import FormattedText from "../components/FormattedText.jsx";
 import { v4 as uuidv4 } from 'uuid';
 import { checkPropTypes } from "../propTypes";
+import removeMd from 'remove-markdown';
 
 const ID_STATE_KEY = ":AccessCount";
 
@@ -313,11 +314,12 @@ function Section(props) {
             size="small"
             variant="contained"
             color="success"
+            startIcon={<Add />}
             onClick={() => {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
             }}
             >
-            <Add fontSize="small" /> {sectionDefinition["label"]}
+            {removeMd(sectionDefinition["label"])}
           </Button>
         </Grid>}
         {/* Remove any cards:AnswerSections that we have created by using an @Delete suffix */
