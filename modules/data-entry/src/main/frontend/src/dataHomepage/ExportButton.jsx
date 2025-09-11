@@ -236,7 +236,7 @@ function ExportButton(props) {
     window.open(path, '_blank');
   }
 
-  // TODO: Switch to Date Time Range Picker once it is out
+  // TODO: Switch to Date Time Range Picker once it is free (currently pro paid version)
   // see https://mui.com/x/react-date-pickers/date-time-range-picker/
   let getDatePicker = (value, setter, rangeIsInvalid) => {
     return (<LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -251,6 +251,10 @@ function ExportButton(props) {
                                variant: 'standard',
                                error: rangeIsInvalid,
                                helperText: rangeIsInvalid ? " " : DATE_FORMAT,
+                             },
+                             field: {
+                               clearable: true,
+                               onClear: () => setter(""),
                              },
                 }}
               />

@@ -111,7 +111,7 @@ let ComputedQuestion = (props) => {
         newDisplayedValue = DateTimeUtilities.formatDateAnswer(dateFormat, DateTimeUtilities.stripTimeZone(newDisplayedValue));
       } else if (dateType === DateTimeUtilities.DATETIME_TYPE || dateType === DateTimeUtilities.FULL_DATE_TYPE) {
         newDisplayedValue = typeof(newDisplayedValue) === "string" && newDisplayedValue.length > 0
-          ? DateTimeUtilities.dateToFormattedString(DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(newDisplayedValue || ""), dateFormat), dateType)
+          ? DateTimeUtilities.dateToFormattedString(DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(newDisplayedValue || ""), dateFormat, DateTimeUtilities.slingDateFormat), dateType)
           : "";
       }
     } else if (dataType === "vocabulary") {

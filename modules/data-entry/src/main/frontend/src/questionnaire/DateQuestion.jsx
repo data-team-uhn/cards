@@ -143,8 +143,12 @@ function DateQuestion(props) {
         setMinMaxError(`Date${isRange ? 's' : ''} must be before ${upperLimitLuxon.toFormat(dateFormat)}`);
       }
       // Determine if the end date is earlier than the start date
-      if (isRange && displayedDate && displayedEndDate && displayedEndDate < displayedDate) {
-        setRangeError(rangeErrorMessage);
+      if (isRange) {
+        let startDateValue = isEnd ? displayedDate : date;
+        let endDateValue = isEnd ? date : displayedEndDate;
+        if (startDateValue && endDateValue && endDateValue < startDateValue) {
+          setRangeError(rangeErrorMessage);
+        }
       }
     }
   }
@@ -178,8 +182,6 @@ function DateQuestion(props) {
         value={date}
         onChange={(value) => {
           setDate(value, isEnd);
-        }}
-        onAccept={(value) => {
           cleanErrorMessages(isEnd);
           validateInput(null, value, isEnd);
         }}

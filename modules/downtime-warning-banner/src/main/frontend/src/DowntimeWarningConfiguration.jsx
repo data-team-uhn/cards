@@ -94,7 +94,7 @@ function DowntimeWarningConfiguration() {
                      },
                      field: {
                        clearable: true,
-                       onClear: () => onDateChange("", null),
+                       onClear: () => { onDateChange("", null); setHasChanges(true); }
                      },
         }}
       />
