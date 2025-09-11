@@ -108,7 +108,7 @@ function AdminConfigScreen(props) {
   const globalContext = useContext(GlobalLoginContext);
   const navigate = useNavigate();
   const { classes } = useStyles();
-  
+
   useEffect(() => {getConfig()}, []);
   useEffect(() => {hasChanges && setConfigIsInitial(false)}, [hasChanges]);
 
@@ -224,7 +224,7 @@ function AdminConfigScreen(props) {
             </DialogTitle>
             <DialogContent>
               <FormattedText>
-                This will revert **all** the changes made since opening this pagem **including the ones that you may have already saved**.
+                This will revert **all** the changes made since opening this page **including the ones that you may have already saved**.
               </FormattedText>
               <FormattedText>
                 If you wish to keep the saved changes and discard the unsaved ones, you can simply navigate away from this page, for example by clicking on the link to Administration at the top.
