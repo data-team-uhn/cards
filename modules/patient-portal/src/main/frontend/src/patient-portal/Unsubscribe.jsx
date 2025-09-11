@@ -35,13 +35,15 @@ const useStyles = makeStyles()(theme => ({
   paper: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    padding: theme.spacing(12, 3, 3),
-    maxWidth: 500,
-    width: "100%",
+    alignItems: 'stretch',
+    padding: theme.spacing(12, 0, 3),
     margin: "0 auto",
-    "& > .MuiGrid-root" : {
-      width: "100%",
+    width: 500,
+    // Magic number 532 = 500 (width on wider screens) + 16px on each side
+    [theme.breakpoints.down(532)]: {
+      // 8px on each side are the `body` padding
+      // subtract 16 more to achieve smooth transition when resising the window to under 532px wide
+      width: "calc(100% - 16px)",
     },
   },
   submit : {
@@ -98,10 +100,11 @@ function Unsubscribe (props) {
         <Grid
           container
           direction="column"
+          alignItems="stretch"
           spacing={7}
         >
-          <Logo component={Grid} size={12} />
-          <Grid size={12}>
+          <Logo component={Grid} />
+          <Grid>
             { error && <Alert severity="error">
               <AlertTitle>An error occurred</AlertTitle>
                {error}
