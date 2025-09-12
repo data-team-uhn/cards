@@ -75,14 +75,8 @@ export default class DateTimeUtilities {
       case this.YEAR_DATE_TYPE:
         result = "long";
         break;
-      case this.MONTH_DATE_TYPE:
-        result = "string";
-        break;
-      case this.DATETIME_TYPE:
-        result = "datetime-local";
-        break;
       default:
-        result = "date"
+        result = "string"
         break;
     }
     return result;
@@ -132,21 +126,8 @@ export default class DateTimeUtilities {
     textFieldType === "date" ? date.toFormat(this.defaultDateFormat) : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
-  // Convert a moment string to a month display
-  static dateStringToDisplayMonth(dateFormat, value) {
-    let monthIndex = dateFormat.indexOf('MM');
-    if (monthIndex === 5) {
-      value = value.replaceAll("-", dateFormat[4]);
-    }
-    if (value.length > 7) {
-      // Cut off any text beyond "yyyy/mm"
-      value = value.substring(0, 7);
-    }
-    return value;
-  }
-
   // Format a DateAnswer given the given dateFormat
-  static formatDateAnswer(dateFormat, value) {
+  static formatDateAnswer(dateFormat, value, fromFormat) {
     if (!value || value.length === 0) {
       return "";
     }
@@ -159,15 +140,8 @@ export default class DateTimeUtilities {
       // Year-only dates are displayed like a number
       return value;
     }
-    let date = this.toPrecision(value, dateFormat);
-    if (dateType === this.MONTH_DATE_TYPE) {
-      return this.dateStringToDisplayMonth(
-        dateFormat,
-        !date?.isValid ? "" : date.toFormat("yyyy-MM")
-        );
-    } else {
-      return date.toFormat(dateFormat);
-    }
+    let date = this.toPrecision(value, dateFormat, fromFormat);
+    return date.toFormat(dateFormat);
   }
 
   static stripTimeZone(dateString) {

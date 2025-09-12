@@ -52,7 +52,6 @@ function DowntimeWarningConfiguration() {
   const [ hasChanges, setHasChanges ] = useState();
 
   const dateFormat = "yyyy-MM-dd HH:mm";
-  const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   // Read the settings from the saved configuration
   let readDowntimeWarningSettings = (json) => {
@@ -63,8 +62,8 @@ function DowntimeWarningConfiguration() {
 
   let buildConfigData = (formData) => {
     formData.append('enabled', enabled);
-    formData.append('fromDate', fromDate.toFormat(dateFormat));
-    formData.append('toDate', toDate.toFormat(dateFormat));
+    formData.append('fromDate', fromDate?.toFormat(dateFormat) || "");
+    formData.append('toDate', toDate?.toFormat(dateFormat) || "");
   }
 
   useEffect(() => {
@@ -94,7 +93,7 @@ function DowntimeWarningConfiguration() {
                      },
                      field: {
                        clearable: true,
-                       onClear: () => { onDateChange("", null); setHasChanges(true); }
+                       onClear: () => { onDateChange(""); setHasChanges(true); }
                      },
         }}
       />

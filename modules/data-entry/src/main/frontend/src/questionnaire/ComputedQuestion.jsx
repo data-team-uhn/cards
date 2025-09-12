@@ -106,14 +106,7 @@ let ComputedQuestion = (props) => {
           break;
       }
     } else if (dataType === "date") {
-      let dateType = DateTimeUtilities.getDateType(dateFormat);
-      if (dateType === DateTimeUtilities.MONTH_DATE_TYPE) {
-        newDisplayedValue = DateTimeUtilities.formatDateAnswer(dateFormat, DateTimeUtilities.stripTimeZone(newDisplayedValue));
-      } else if (dateType === DateTimeUtilities.DATETIME_TYPE || dateType === DateTimeUtilities.FULL_DATE_TYPE) {
-        newDisplayedValue = typeof(newDisplayedValue) === "string" && newDisplayedValue.length > 0
-          ? DateTimeUtilities.dateToFormattedString(DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(newDisplayedValue || ""), dateFormat, DateTimeUtilities.slingDateFormat), dateType)
-          : "";
-      }
+      newDisplayedValue = DateTimeUtilities.formatDateAnswer(dateFormat, newDisplayedValue, DateTimeUtilities.slingDateFormat);
     } else if (dataType === "vocabulary") {
       var url = new URL("." + newDisplayedValue + ".info.json", window.location.origin);
       let showInfo = (status, data, params) => {
