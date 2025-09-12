@@ -286,7 +286,7 @@ function NumberQuestion(props) {
   // * displayMode = slider
   let minMaxMessage = "";
   if ((typeof minValue !== "undefined" || typeof maxValue !== "undefined") && !isSlider && !disableValueInstructions) {
-    if (disableMinMaxValueEnforcement && typeof messageForValuesOutsideMinMax != "undefined") {
+    if (typeof messageForValuesOutsideMinMax != "undefined") {
       minMaxMessage = messageForValuesOutsideMinMax;
     } else {
       minMaxMessage = "Please enter values ";
@@ -313,7 +313,7 @@ function NumberQuestion(props) {
         <FormattedText color={!disableMinMaxValueEnforcement && pageActive && (minMaxError || rangeError) ? "error" : ""}>
           { `${initialValue?.[0]} &mdash; ${label}` }
         </FormattedText>
-        { (disableMinMaxValueEnforcement && typeof messageForValuesOutsideMinMax != "undefined") ?
+        { (typeof messageForValuesOutsideMinMax != "undefined" && minMaxError) ?
           <Typography component="div" color="textSecondary" variant="caption">
             { messageForValuesOutsideMinMax }
           </Typography>
@@ -332,7 +332,7 @@ function NumberQuestion(props) {
         <FormattedText color={!disableMinMaxValueEnforcement && pageActive && minMaxError ? "error" : ""}>
           { label }
         </FormattedText>
-        { (disableMinMaxValueEnforcement && typeof messageForValuesOutsideMinMax != "undefined") ?
+        { (typeof messageForValuesOutsideMinMax != "undefined" && minMaxError) ?
           <Typography component="div" color="textSecondary" variant="caption">
             { messageForValuesOutsideMinMax }
           </Typography>
