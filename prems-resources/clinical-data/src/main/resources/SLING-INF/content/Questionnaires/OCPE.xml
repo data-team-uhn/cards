@@ -58,111 +58,141 @@
 		<type>Long</type>
 	</property>
 
-	<!-- Hidden Questions -->
-	<node>
-		<name>ocpe_hospital</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>Hospital</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>hidden</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>entryMode</name>
-			<value>reference</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>question</name>
-			<value>/Questionnaires/Visit information/location</value>
-			<type>String</type>
-		</property>
-	</node>
-
-	<node>
-		<name>ocpe_visit_date</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>dataType</name>
-			<value>date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>Visit Date</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>hidden</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>entryMode</name>
-			<value>reference</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>question</name>
-			<value>/Questionnaires/Visit information/date</value>
-			<type>String</type>
-		</property>
-	</node>
-
-	<node>
-		<name>ocpe_department</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>Department</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>hidden</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>entryMode</name>
-			<value>reference</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>question</name>
-			<value>/Questionnaires/Visit information/department</value>
-			<type>String</type>
-		</property>
-	</node>
-
 	<!-- Module 1 -->
 	<node>
 		<name>module1</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-            <name>label</name>
-            <value>Module 1</value>
-            <type>String</type>
-        </property>
+
+		<!-- Hidden Questions -->
+		<node>
+			<name>ocpe_hospital</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Hospital</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>reference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>question</name>
+				<value>/Questionnaires/Visit information/location</value>
+				<type>String</type>
+			</property>
+		</node>
+
+		<node>
+			<name>ocpe_department</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Department</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>reference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>question</name>
+				<value>/Questionnaires/Visit information/department</value>
+				<type>String</type>
+			</property>
+		</node>
+
+		<node>
+			<name>ocpe_visit_date</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Visit Date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>reference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>question</name>
+				<value>/Questionnaires/Visit information/date</value>
+				<type>String</type>
+			</property>
+		</node>
+
+		<node>
+			<name>ocpe_visit_month</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Visit month</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return (new Date(@{ocpe_visit_date}).getMonth())</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
 
 		<!-- Question 1 -->
 		<node>
@@ -375,6 +405,11 @@
 						<name>value</name>
 						<value>4</value>
 						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
 					</property>
 				</node>
 			</node>
@@ -612,6 +647,11 @@
 								<name>value</name>
 								<value>8</value>
 								<type>String</type>
+							</property>
+							<property>
+								<name>notApplicable</name>
+								<value>True</value>
+								<type>Boolean</type>
 							</property>
 						</node>
 					</node>
@@ -1769,11 +1809,6 @@
     <node>
         <name>module2_condition</name>
         <primaryNodeType>cards:Section</primaryNodeType>
-        <property>
-            <name>label</name>
-            <value>Module 2</value>
-            <type>String</type>
-        </property>
         <node>
             <name>condition</name>
             <primaryNodeType>cards:Conditional</primaryNodeType>
@@ -1962,11 +1997,6 @@
     <node>
         <name>module3_condition</name>
         <primaryNodeType>cards:Section</primaryNodeType>
-        <property>
-            <name>label</name>
-            <value>Module 3</value>
-            <type>String</type>
-        </property>
         <property>
             <name>description</name>
             <value>The following questions ask you about UHN's infection control practices (Q4 each year).</value>
