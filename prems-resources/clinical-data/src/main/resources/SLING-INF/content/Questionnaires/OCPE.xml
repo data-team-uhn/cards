@@ -282,7 +282,7 @@
 			</node>
 		</node>
 
-		<!-- Questions 2-4 section -->
+		<!-- Questions 2-4 - Virtual Care -->
 		<node>
 			<name>section_virtual_care</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
@@ -293,7 +293,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>The next set of questions focus on the technical aspects of your recent appointment.</value>
+				<value>The next set of questions focus on the **technical aspects** of your recent appointment.</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -385,7 +385,7 @@
 					</property>
 					<property>
 						<name>description</name>
-						<value>(Check all that apply)</value>
+						<value>Check all that apply.</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -562,7 +562,7 @@
 					</property>
 					<property>
 						<name>description</name>
-						<value>(Check all that apply)</value>
+						<value>Check all that apply.</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -1016,7 +1016,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>The next set of questions ask about your experience receiving care from the health care team.</value>
+				<value>The next set of questions ask about your **experience receiving care** from the health care team.</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -2346,7 +2346,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>(Please select a number)</value>
+					<value>Please select a number.</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3016,7 +3016,7 @@ Please do not include any names, contact information or identifying information.
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value>The following questions ask you about UHN's infection control practices.</value>
+			<value>The following questions ask you about UHN's **infection control practices**.</value>
 			<type>String</type>
 		</property>
 		<node>
