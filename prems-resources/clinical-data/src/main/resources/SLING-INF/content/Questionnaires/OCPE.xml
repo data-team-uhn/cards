@@ -124,7 +124,7 @@
 			</property>
 			<property>
 				<name>question</name>
-				<value>/Questionnaires/Visit information/department</value>
+				<value>/Questionnaires/Visit information/provider</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -154,7 +154,7 @@
 			</property>
 			<property>
 				<name>question</name>
-				<value>/Questionnaires/Visit information/date</value>
+				<value>/Questionnaires/Visit information/time</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -301,7 +301,7 @@
 				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
+					<value>includes any</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -326,7 +326,8 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>0</value>
+							<value>1</value>
+							<value>2</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -770,7 +771,7 @@
 						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
 							<name>comparator</name>
-							<value><![CDATA[<>]]></value>
+							<value>is not empty</value>
 							<type>String</type>
 						</property>
 						<node>
@@ -779,7 +780,7 @@
 							<property>
 								<name>value</name>
 								<values>
-									<value>ocpe_1</value>
+									<value>ocpe_2a</value>
 								</values>
 								<type>String</type>
 							</property>
@@ -787,17 +788,6 @@
 								<name>isReference</name>
 								<value>True</value>
 								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>0</value>
-								</values>
-								<type>String</type>
 							</property>
 						</node>
 					</node>
@@ -839,6 +829,31 @@
 					</node>
 					<node>
 						<name>condition3</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>is not empty</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>ocpe_2b</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+					<node>
+						<name>condition4</name>
 						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
 							<name>comparator</name>
@@ -952,13 +967,8 @@
 						<type>String</type>
 					</property>
 					<property>
-						<name>displayMode</name>
-						<value>list</value>
-						<type>String</type>
-					</property>
-					<property>
 						<name>dataType</name>
-						<value>long</value>
+						<value>boolean</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -971,63 +981,16 @@
 						<value>1</value>
 						<type>Long</type>
 					</property>
-					<node>
-						<name>0</name>
-						<primaryNodeType>cards:AnswerOption</primaryNodeType>
-						<property>
-							<name>label</name>
-							<value>Yes</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>value</name>
-							<value>0</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>defaultOrder</name>
-							<value>1</value>
-							<type>Long</type>
-						</property>
-					</node>
-					<node>
-						<name>1</name>
-						<primaryNodeType>cards:AnswerOption</primaryNodeType>
-						<property>
-							<name>label</name>
-							<value>No</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>value</name>
-							<value>1</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>defaultOrder</name>
-							<value>2</value>
-							<type>Long</type>
-						</property>
-					</node>
-					<node>
-						<name>2</name>
-						<primaryNodeType>cards:AnswerOption</primaryNodeType>
-						<property>
-							<name>label</name>
-							<value>Maybe</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>value</name>
-							<value>2</value>
-							<type>String</type>
-						</property>
-						<property>
-							<name>defaultOrder</name>
-							<value>3</value>
-							<type>Long</type>
-						</property>
-					</node>
+					<property>
+						<name>enableUnknown</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+					<property>
+						<name>unknownLabel</name>
+						<value>Maybe</value>
+						<type>String</type>
+					</property>
 				</node>
 			</node>
 		</node>
@@ -2608,7 +2571,7 @@
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>minAnswers</name>
-					<value>1</value>
+					<value>0</value>
 					<type>Long</type>
 				</property>
 				<property>
