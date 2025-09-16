@@ -30,6 +30,7 @@ import javax.jcr.RepositoryException;
 import javax.json.JsonValue;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -104,7 +105,7 @@ public class ExcludeFilesProcessor implements ResourceJsonProcessor
         if (resource.getResourceMetadata().getResolutionPathInfo() != null) {
             Arrays.asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))
                 .stream()
-                .filter(s -> StringUtils.startsWith(s, "excludeFiles:exclude="))
+                .filter(s -> Strings.CS.startsWith(s, "excludeFiles:exclude="))
                 .map(s -> StringUtils.substringAfter(s, "excludeFiles:exclude="))
                 .map(s -> URLDecoder.decode(s, StandardCharsets.UTF_8))
                 .forEach(s -> excluded.add(s.replaceAll("\\\\\\.", ".")));

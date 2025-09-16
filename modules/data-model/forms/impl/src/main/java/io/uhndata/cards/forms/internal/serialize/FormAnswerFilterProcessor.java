@@ -30,6 +30,7 @@ import javax.jcr.RepositoryException;
 import javax.json.JsonValue;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -119,7 +120,7 @@ public class FormAnswerFilterProcessor implements ResourceJsonProcessor
         // As a URL path segment, the value may also contain URL-escaped characters, which need to be unescaped.
         Arrays.asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))
             .stream()
-            .filter(s -> StringUtils.startsWith(s, "answerFilter:exclude="))
+            .filter(s -> Strings.CS.startsWith(s, "answerFilter:exclude="))
             .map(s -> StringUtils.substringAfter(s, "answerFilter:exclude="))
             .map(s -> URLDecoder.decode(s, StandardCharsets.UTF_8))
             .forEach(s -> excluded.add(s.replaceAll("\\\\\\.", ".")));
@@ -127,7 +128,7 @@ public class FormAnswerFilterProcessor implements ResourceJsonProcessor
 
         Arrays.asList(resource.getResourceMetadata().getResolutionPathInfo().split("(?<!\\\\)(?:\\\\\\\\)*\\."))
             .stream()
-            .filter(s -> StringUtils.startsWith(s, "answerFilter:include="))
+            .filter(s -> Strings.CS.startsWith(s, "answerFilter:include="))
             .map(s -> StringUtils.substringAfter(s, "answerFilter:include="))
             .map(s -> URLDecoder.decode(s, StandardCharsets.UTF_8))
             .forEach(s -> included.add(s.replaceAll("\\\\\\.", ".")));

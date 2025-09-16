@@ -22,6 +22,7 @@ package io.uhndata.cards.export;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
@@ -85,7 +86,7 @@ public class PeriodicExportManager
         if (configDef == null) {
             LOGGER.error("Unknown configuration.");
             return;
-        } else if (StringUtils.equals("none", configDef.exportSchedule())) {
+        } else if (Strings.CS.equals("none", configDef.exportSchedule())) {
             LOGGER.debug("Skipping non-periodic export {}.", configDef.name());
             return;
         }
@@ -117,7 +118,7 @@ public class PeriodicExportManager
     private DataPipeline buildPipeline(ExportConfigDefinition config)
     {
         final DataRetriever retriever =
-            this.retrievers.stream().filter(r -> StringUtils.equals(config.retriever(), r.getName())).findFirst()
+            this.retrievers.stream().filter(r -> Strings.CS.equals(config.retriever(), r.getName())).findFirst()
                 .orElse(null);
         if (retriever == null) {
             LOGGER.warn("Unknown data retriever configured for {}: {}. Maybe it's not loaded yet, will retry.",
@@ -125,7 +126,7 @@ public class PeriodicExportManager
             return null;
         }
         final DataFormatter formatter =
-            this.formatters.stream().filter(f -> StringUtils.equals(config.formatter(), f.getName())).findFirst()
+            this.formatters.stream().filter(f -> Strings.CS.equals(config.formatter(), f.getName())).findFirst()
                 .orElse(null);
         if (formatter == null) {
             LOGGER.warn("Unknown data formatter configured for {}: {}. Maybe it's not loaded yet, will retry.",
@@ -133,7 +134,7 @@ public class PeriodicExportManager
             return null;
         }
         final DataStore store =
-            this.stores.stream().filter(s -> StringUtils.equals(config.storage(), s.getName())).findFirst()
+            this.stores.stream().filter(s -> Strings.CS.equals(config.storage(), s.getName())).findFirst()
                 .orElse(null);
         if (store == null) {
             LOGGER.warn("Unknown storage configured for {}: {}. Maybe it's not loaded yet, will retry.",
@@ -160,7 +161,7 @@ public class PeriodicExportManager
     private void retrieverAdded(final DataRetriever retriever)
     {
         final String name = retriever.getName();
-        this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().retriever())).forEach(c -> {
+        this.configs.stream().filter(c -> Strings.CS.equals(name, c.getConfig().retriever())).forEach(c -> {
             configRemoved(c);
             configAdded(c);
         });
@@ -170,7 +171,7 @@ public class PeriodicExportManager
     private void retrieverRemoved(final DataRetriever retriever)
     {
         final String name = retriever.getName();
-        this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().retriever()))
+        this.configs.stream().filter(c -> Strings.CS.equals(name, c.getConfig().retriever()))
             .forEach(this::configRemoved);
     }
 
@@ -178,7 +179,7 @@ public class PeriodicExportManager
     private void formatterAdded(final DataFormatter formatter)
     {
         final String name = formatter.getName();
-        this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().formatter())).forEach(c -> {
+        this.configs.stream().filter(c -> Strings.CS.equals(name, c.getConfig().formatter())).forEach(c -> {
             configRemoved(c);
             configAdded(c);
         });
@@ -188,7 +189,7 @@ public class PeriodicExportManager
     private void formatterRemoved(final DataFormatter formatter)
     {
         final String name = formatter.getName();
-        this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().formatter()))
+        this.configs.stream().filter(c -> Strings.CS.equals(name, c.getConfig().formatter()))
             .forEach(this::configRemoved);
     }
 
@@ -196,7 +197,7 @@ public class PeriodicExportManager
     private void storeAdded(final DataStore store)
     {
         final String name = store.getName();
-        this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().storage())).forEach(c -> {
+        this.configs.stream().filter(c -> Strings.CS.equals(name, c.getConfig().storage())).forEach(c -> {
             configRemoved(c);
             configAdded(c);
         });
@@ -206,7 +207,7 @@ public class PeriodicExportManager
     private void storeRemoved(final DataStore store)
     {
         final String name = store.getName();
-        this.configs.stream().filter(c -> StringUtils.equals(name, c.getConfig().storage()))
+        this.configs.stream().filter(c -> Strings.CS.equals(name, c.getConfig().storage()))
             .forEach(this::configRemoved);
     }
 

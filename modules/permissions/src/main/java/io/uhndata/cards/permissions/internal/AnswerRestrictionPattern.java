@@ -18,7 +18,7 @@
  */
 package io.uhndata.cards.permissions.internal;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
@@ -54,7 +54,7 @@ public class AnswerRestrictionPattern implements RestrictionPattern
         }
 
         // Check if this answer is the one specified in the restriction
-        boolean result = StringUtils.equals(tree.getName(), this.targetAnswer);
+        boolean result = Strings.CS.equals(tree.getName(), this.targetAnswer);
         return result;
     }
 

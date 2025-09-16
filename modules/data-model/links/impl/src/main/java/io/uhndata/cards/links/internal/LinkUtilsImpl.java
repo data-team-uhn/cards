@@ -42,6 +42,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.sling.api.resource.LoginException;
@@ -353,7 +354,7 @@ public final class LinkUtilsImpl extends AbstractNodeUtils implements LinkUtils
             });
         }
         if (label != null) {
-            matchingLinks = matchingLinks.filter(link -> StringUtils.equals(label, link.getLabel()));
+            matchingLinks = matchingLinks.filter(link -> Strings.CS.equals(label, link.getLabel()));
         }
 
         return matchingLinks.map(link -> removeLink(link.getNode(), removeBacklinks))

@@ -45,6 +45,7 @@ import javax.servlet.Servlet;
 import javax.servlet.http.Cookie;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -375,7 +376,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     private boolean authenticate(final List<Credential> credentials)
     {
         return credentials.stream()
-            .filter(c -> c.presentedValue != null && StringUtils.equals(c.presentedValue, c.storedValue)).count() >= 2;
+            .filter(c -> c.presentedValue != null && Strings.CS.equals(c.presentedValue, c.storedValue)).count() >= 2;
     }
 
     private Node getPatientInformationQuestionnaire(final Session session) throws RepositoryException
@@ -458,9 +459,9 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             });
 
         return tests.entrySet().stream().allMatch(e -> {
-            boolean mustBePresent = !StringUtils.startsWith(e.getKey(), "!");
+            boolean mustBePresent = !Strings.CS.startsWith(e.getKey(), "!");
             Node question =
-                this.questionnaireUtils.getQuestion(visitQuestionnaire, StringUtils.removeStart(e.getKey(), "!"));
+                this.questionnaireUtils.getQuestion(visitQuestionnaire, Strings.CS.removeStart(e.getKey(), "!"));
             Node answer = this.formUtils.getAnswer(visitInformationForm, question);
             try {
                 if (!mustBePresent && (answer == null || !answer.hasProperty(VALUE))) {

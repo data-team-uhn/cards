@@ -19,9 +19,9 @@
 package io.uhndata.cards.vocabularies.spi;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Describes a term parsed from a vocabulary source. A few common properties are available as explicit individual
@@ -73,7 +73,7 @@ public class VocabularyTermSource
         final MultiValuedMap<String, String> allProperties, final String uri)
     {
         this.id = id;
-        this.label = StringUtils.defaultString(label, id);
+        this.label = Objects.toString(label, id);
         this.parents = parents;
         this.ancestors = ancestors;
         this.allProperties = allProperties;

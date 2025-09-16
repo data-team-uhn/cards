@@ -22,6 +22,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
@@ -96,7 +97,7 @@ public class SessionSubjectRestrictionPattern implements RestrictionPattern
         final PropertyState subjectProperty = form.getProperty("subject");
         // If there is a subject set, this authorization rule only applies if it is the same as the session's subject
         try {
-            return subjectProperty != null && StringUtils.equals(sessionSubject,
+            return subjectProperty != null && Strings.CS.equals(sessionSubject,
                 this.session.getNodeByIdentifier(subjectProperty.getValue(Type.STRING)).getPath());
         } catch (RepositoryException e) {
             return false;
@@ -112,7 +113,7 @@ public class SessionSubjectRestrictionPattern implements RestrictionPattern
         }
 
         // This is a subject, this authorization rule only applies if it is the same as the session's subject
-        return StringUtils.equals(sessionSubject, subject.getPath());
+        return Strings.CS.equals(sessionSubject, subject.getPath());
     }
 
     private Tree findAncestor(final Tree start, final String targetNodetype)
@@ -121,7 +122,7 @@ public class SessionSubjectRestrictionPattern implements RestrictionPattern
         // If this is not a Form or Subject node, look for one among its ancestors.
         Tree current = start;
         while (!current.isRoot() && (current.getProperty("jcr:primaryType") == null
-            || !StringUtils.equals(current.getProperty("jcr:primaryType").getValue(Type.STRING), targetNodetype))) {
+            || !Strings.CS.equals(current.getProperty("jcr:primaryType").getValue(Type.STRING), targetNodetype))) {
             current = current.getParent();
         }
         if (current.isRoot()) {

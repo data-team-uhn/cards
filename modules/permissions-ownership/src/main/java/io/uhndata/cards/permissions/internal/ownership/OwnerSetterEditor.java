@@ -16,7 +16,7 @@
  */
 package io.uhndata.cards.permissions.internal.ownership;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -81,7 +81,7 @@ public class OwnerSetterEditor extends DefaultEditor
     {
         // FIXME The list of nodetypes to be changed should be configurable
         if ("jcr:primaryType".equals(after.getName())
-            && StringUtils.equalsAny(after.getValue(Type.STRING), "cards:Form", "cards:Subject")) {
+            && Strings.CS.equalsAny(after.getValue(Type.STRING), "cards:Form", "cards:Subject")) {
             this.currentNodeBuilder.setProperty("owner", this.author);
             LOGGER.debug("Set {} as the owner of {} {}", this.author, after.getValue(Type.STRING),
                 this.currentNodeBuilder instanceof MemoryNodeBuilder

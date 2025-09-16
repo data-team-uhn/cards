@@ -21,7 +21,7 @@ package io.uhndata.cards.permissions.internal;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
@@ -64,7 +64,7 @@ public class QuestionRestrictionPattern implements RestrictionPattern
             final String answerQuestionPath =
                 this.session.getNodeByIdentifier(tree.getProperty("question").getValue(Type.REFERENCE)).getPath();
             for (final String targetQuestion : this.targetQuestions) {
-                if (StringUtils.equals(targetQuestion, answerQuestionPath)) {
+                if (Strings.CS.equals(targetQuestion, answerQuestionPath)) {
                     return true;
                 }
             }

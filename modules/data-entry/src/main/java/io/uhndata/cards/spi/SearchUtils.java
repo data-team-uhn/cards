@@ -22,7 +22,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.spi.commons.conversion.IllegalNameException;
 import org.apache.jackrabbit.spi.commons.conversion.NameParser;
 
@@ -102,7 +102,7 @@ public final class SearchUtils
             }
             return getMatchFromArray(valueStr, str);
         } else if (value != null) {
-            if (StringUtils.containsIgnoreCase(value.toString(), str)) {
+            if (Strings.CI.contains(value.toString(), str)) {
                 return value.toString();
             }
         }
@@ -125,7 +125,7 @@ public final class SearchUtils
         }
 
         for (String element : arr) {
-            if (StringUtils.containsIgnoreCase(element, str)) {
+            if (Strings.CI.contains(element, str)) {
                 return element;
             }
         }

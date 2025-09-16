@@ -29,7 +29,7 @@ import javax.jcr.query.RowIterator;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -188,7 +188,7 @@ public class FormsQuickSearchEngine implements QuickSearchEngine
             boolean matchedNotes = false;
             if (matchedValue == null && answer.hasProperty("note")) {
                 final String noteValue = answer.getProperty("note").getString();
-                if (StringUtils.containsIgnoreCase(noteValue, query)) {
+                if (Strings.CI.contains(noteValue, query)) {
                     matchedValue = noteValue;
                     matchedNotes = true;
                 }

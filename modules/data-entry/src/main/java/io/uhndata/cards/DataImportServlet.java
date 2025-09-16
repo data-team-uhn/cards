@@ -51,6 +51,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.request.RequestParameter;
@@ -158,7 +159,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
             }
             this.subjectTypes.set(subjectTypesParam);
 
-            parseData(request, StringUtils.equals("true", request.getParameter(":patch")));
+            parseData(request, Strings.CS.equals("true", request.getParameter(":patch")));
         } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } catch (RepositoryException e) {
@@ -583,10 +584,10 @@ public class DataImportServlet extends SlingAllMethodsServlet
                         || !childNode.hasProperty(prop)) {
                         continue;
                     }
-                    if (StringUtils.equals(value, childNode.getProperty(prop).getString())) {
+                    if (Strings.CS.equals(value, childNode.getProperty(prop).getString())) {
                         // We found an exact match for a known option, no need to do any further processing
                         return childNode.getProperty(VALUE_PROPERTY).getString();
-                    } else if (StringUtils.equalsIgnoreCase(value, childNode.getProperty(prop).getString())) {
+                    } else if (Strings.CS.equals(value, childNode.getProperty(prop).getString())) {
                         result = childNode.getProperty(VALUE_PROPERTY).getString();
                     }
                 }

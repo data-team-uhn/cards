@@ -41,7 +41,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonValue;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.ChildNodeEntry;
@@ -547,7 +547,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     {
         try {
             if (parent.hasProperty(property)
-                && StringUtils.equals(parent.getProperty(property).getValue().getString(), value)) {
+                && Strings.CS.equals(parent.getProperty(property).getValue().getString(), value)) {
                 return parent;
             }
             final NodeIterator children = parent.getNodes();
@@ -569,7 +569,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     {
         try {
             if (parent.hasProperty(property)
-                && StringUtils.equals(parent.getProperty(property).getValue(propertyType).toString(), value)) {
+                && Strings.CS.equals(parent.getProperty(property).getValue(propertyType).toString(), value)) {
                 return parent;
             }
             for (ChildNodeEntry child : parent.getChildNodeEntries()) {
@@ -588,7 +588,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     {
         try {
             if (parent.hasProperty(property)
-                && StringUtils.equals(parent.getProperty(property).getValue().getString(), value)) {
+                && Strings.CS.equals(parent.getProperty(property).getValue().getString(), value)) {
                 result.accept(parent);
             }
             final NodeIterator children = parent.getNodes();

@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
@@ -114,6 +114,6 @@ public class UnsubmittedFormsRestrictionPattern implements RestrictionPattern
     private boolean isForm(final Tree node)
     {
         return node.getProperty("jcr:primaryType") != null
-            && StringUtils.equals(node.getProperty("jcr:primaryType").getValue(Type.STRING), "cards:Form");
+            && Strings.CS.equals(node.getProperty("jcr:primaryType").getValue(Type.STRING), "cards:Form");
     }
 }

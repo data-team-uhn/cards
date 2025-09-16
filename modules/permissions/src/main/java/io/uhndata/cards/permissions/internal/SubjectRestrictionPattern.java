@@ -23,7 +23,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
@@ -97,7 +97,7 @@ public class SubjectRestrictionPattern implements RestrictionPattern
      */
     private boolean matchesReference(String uuid)
     {
-        if (StringUtils.equals(uuid, this.targetSubject)) {
+        if (Strings.CS.equals(uuid, this.targetSubject)) {
             return true;
         }
 
@@ -111,7 +111,7 @@ public class SubjectRestrictionPattern implements RestrictionPattern
             Node subject = this.session.getNodeByIdentifier(nextUuid);
             while (subject.hasProperty("parents")) {
                 nextUuid = subject.getProperty("parents").getString();
-                if (StringUtils.equals(nextUuid, this.targetSubject)) {
+                if (Strings.CS.equals(nextUuid, this.targetSubject)) {
                     return true;
                 }
                 subject = this.session.getNodeByIdentifier(nextUuid);

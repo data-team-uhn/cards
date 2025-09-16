@@ -21,6 +21,7 @@ package io.uhndata.cards.permissions.internal.ownership;
 import javax.jcr.Session;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
@@ -56,7 +57,7 @@ public class OwnerRestrictionPattern implements RestrictionPattern
         // If this is not a Form or Subject node, look for one among its ancestors.
         Tree mainTree = tree;
         while (!mainTree.isRoot() && (mainTree.getProperty("jcr:primaryType") == null
-            || !StringUtils.equalsAny(mainTree.getProperty("jcr:primaryType").getValue(Type.STRING),
+            || !Strings.CS.equalsAny(mainTree.getProperty("jcr:primaryType").getValue(Type.STRING),
                 "cards:Form", "cards:Subject"))) {
             mainTree = mainTree.getParent();
         }
@@ -75,7 +76,7 @@ public class OwnerRestrictionPattern implements RestrictionPattern
         }
 
         // There is an owner set, so this authorization rule only applies to that specified owner
-        return StringUtils.equals(ownerProperty.getValue(Type.STRING), this.session.getUserID());
+        return Strings.CS.equals(ownerProperty.getValue(Type.STRING), this.session.getUserID());
 
     }
 

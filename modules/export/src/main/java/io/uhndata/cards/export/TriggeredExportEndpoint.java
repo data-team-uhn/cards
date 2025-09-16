@@ -30,6 +30,7 @@ import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -135,21 +136,21 @@ public class TriggeredExportEndpoint extends SlingSafeMethodsServlet
         throws IOException
     {
         final DataRetriever retriever =
-            this.retrievers.stream().filter(r -> StringUtils.equals(config.retriever(), r.getName())).findFirst()
+            this.retrievers.stream().filter(r -> Strings.CS.equals(config.retriever(), r.getName())).findFirst()
                 .orElse(null);
         if (retriever == null) {
             writeError(400, "Invalid export configuration, unknown data retriever specified", response);
             return null;
         }
         final DataFormatter formatter =
-            this.formatters.stream().filter(f -> StringUtils.equals(config.formatter(), f.getName())).findFirst()
+            this.formatters.stream().filter(f -> Strings.CS.equals(config.formatter(), f.getName())).findFirst()
                 .orElse(null);
         if (formatter == null) {
             writeError(400, "Invalid export configuration, unknown data formatter specified", response);
             return null;
         }
         final DataStore store =
-            this.stores.stream().filter(s -> StringUtils.equals(config.storage(), s.getName())).findFirst()
+            this.stores.stream().filter(s -> Strings.CS.equals(config.storage(), s.getName())).findFirst()
                 .orElse(null);
         if (store == null) {
             writeError(400, "Invalid export configuration, unknown data store specified", response);

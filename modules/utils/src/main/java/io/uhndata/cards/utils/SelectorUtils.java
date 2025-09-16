@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -101,11 +102,11 @@ public final class SelectorUtils
         if (StringUtils.isAnyBlank(optionPrefix, resolutionPathInfo)) {
             return Collections.emptyList();
         }
-        final String prefix = StringUtils.appendIfMissing(optionPrefix, ":");
+        final String prefix = Strings.CS.appendIfMissing(optionPrefix, ":");
         // First parse the selectors string into a list of selectors
         // Then parse the dataFilter selectors into key=value pairs
         return parseSelectors(resolutionPathInfo).stream()
-            .filter(s -> StringUtils.startsWith(s, prefix))
+            .filter(s -> Strings.CS.startsWith(s, prefix))
             .map(s -> StringUtils.substringAfter(s, prefix))
             .map(s -> {
                 String[] bits = s.split("(?<=([^\\\\]|^)(\\\\\\\\){0,10})=", 2);
