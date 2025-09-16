@@ -118,6 +118,10 @@ const questionnaireStyle = theme => ({
         // is insufficient in making sure all components are the same size
         minWidth: "250px",
     },
+    textBox: {
+        // Outlined textboxes that are not part of a single select list should stretch full width
+        width: "100%",
+    },
     selectMultiValues: {
         whiteSpace: "normal",
         "& .MuiChip-root" : {

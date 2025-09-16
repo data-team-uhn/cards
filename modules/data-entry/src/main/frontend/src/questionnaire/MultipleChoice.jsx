@@ -413,7 +413,7 @@ function MultipleChoice(props) {
               ? <FormattedText variant="caption">{ validationErrorText }</FormattedText>
               : maxAnswers !== 1 && !error && "Press ENTER to add a new value"
             }
-            className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
+            className={(textbox ? classes.textBox : classes.textField) + (isRadio ? (' ' + classes.nestedInput) : '')}
             onChange={ghostUpdateEvent}
             disabled={disabled}
             onFocus={() => {maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}}
