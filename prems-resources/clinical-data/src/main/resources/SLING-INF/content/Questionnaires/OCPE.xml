@@ -769,133 +769,151 @@
 				<name>section_q3</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<node>
-					<name>conditionalGroup0</name>
+					<name>conditionalGroup</name>
 					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<property>
 						<name>requireAll</name>
-						<value>True</value>
+						<value>False</value>
 						<type>Boolean</type>
 					</property>
 					<node>
-						<name>condition1</name>
-						<primaryNodeType>cards:Conditional</primaryNodeType>
+						<name>conditionalGroup_2a</name>
+						<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 						<property>
-							<name>comparator</name>
-							<value>is not empty</value>
-							<type>String</type>
+							<name>requireAll</name>
+							<value>True</value>
+							<type>Boolean</type>
 						</property>
 						<node>
-							<name>operandA</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<name>condition1</name>
+							<primaryNodeType>cards:Conditional</primaryNodeType>
 							<property>
-								<name>value</name>
-								<values>
-									<value>ocpe_2a</value>
-								</values>
+								<name>comparator</name>
+								<value>is not empty</value>
 								<type>String</type>
 							</property>
+							<node>
+								<name>operandA</name>
+								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+								<property>
+									<name>value</name>
+									<values>
+										<value>ocpe_2a</value>
+									</values>
+									<type>String</type>
+								</property>
+								<property>
+									<name>isReference</name>
+									<value>True</value>
+									<type>Boolean</type>
+								</property>
+							</node>
+						</node>
+						<node>
+							<name>condition2</name>
+							<primaryNodeType>cards:Conditional</primaryNodeType>
 							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
+								<name>comparator</name>
+								<value><![CDATA[<>]]></value>
+								<type>String</type>
 							</property>
+							<node>
+								<name>operandA</name>
+								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+								<property>
+									<name>value</name>
+									<values>
+										<value>ocpe_2a</value>
+									</values>
+									<type>String</type>
+								</property>
+								<property>
+									<name>isReference</name>
+									<value>True</value>
+									<type>Boolean</type>
+								</property>
+							</node>
+							<node>
+								<name>operandB</name>
+								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+								<property>
+									<name>value</name>
+									<values>
+										<value>4</value>
+									</values>
+									<type>String</type>
+								</property>
+							</node>
 						</node>
 					</node>
 					<node>
-						<name>condition2</name>
-						<primaryNodeType>cards:Conditional</primaryNodeType>
+						<name>conditionalGroup_2b</name>
+						<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 						<property>
-							<name>comparator</name>
-							<value><![CDATA[<>]]></value>
-							<type>String</type>
+							<name>requireAll</name>
+							<value>True</value>
+							<type>Boolean</type>
 						</property>
 						<node>
-							<name>operandA</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<name>condition3</name>
+							<primaryNodeType>cards:Conditional</primaryNodeType>
 							<property>
-								<name>value</name>
-								<values>
-									<value>ocpe_2a</value>
-								</values>
+								<name>comparator</name>
+								<value>is not empty</value>
 								<type>String</type>
 							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
+							<node>
+								<name>operandA</name>
+								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+								<property>
+									<name>value</name>
+									<values>
+										<value>ocpe_2b</value>
+									</values>
+									<type>String</type>
+								</property>
+								<property>
+									<name>isReference</name>
+									<value>True</value>
+									<type>Boolean</type>
+								</property>
+							</node>
 						</node>
 						<node>
-							<name>operandB</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<name>condition4</name>
+							<primaryNodeType>cards:Conditional</primaryNodeType>
 							<property>
-								<name>value</name>
-								<values>
-									<value>4</value>
-								</values>
+								<name>comparator</name>
+								<value><![CDATA[<>]]></value>
 								<type>String</type>
 							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition3</name>
-						<primaryNodeType>cards:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>is not empty</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>ocpe_2b</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition4</name>
-						<primaryNodeType>cards:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value><![CDATA[<>]]></value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>ocpe_2b</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>8</value>
-								</values>
-								<type>String</type>
-							</property>
+							<node>
+								<name>operandA</name>
+								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+								<property>
+									<name>value</name>
+									<values>
+										<value>ocpe_2b</value>
+									</values>
+									<type>String</type>
+								</property>
+								<property>
+									<name>isReference</name>
+									<value>True</value>
+									<type>Boolean</type>
+								</property>
+							</node>
+							<node>
+								<name>operandB</name>
+								<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+								<property>
+									<name>value</name>
+									<values>
+										<value>8</value>
+									</values>
+									<type>String</type>
+								</property>
+							</node>
 						</node>
 					</node>
 				</node>
@@ -1020,39 +1038,73 @@
 				<type>String</type>
 			</property>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value><![CDATA[<>]]></value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>ocpe_3</value>
-						</values>
+						<name>comparator</name>
+						<value>is not empty</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ocpe_1</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition2</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>0</value>
-						</values>
+						<name>comparator</name>
+						<value><![CDATA[<>]]></value>
 						<type>String</type>
 					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>ocpe_3</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>0</value>
+							</values>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 			</node>
 
