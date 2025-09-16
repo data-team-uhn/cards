@@ -284,7 +284,7 @@
 
 		<!-- Questions 2-4 section -->
 		<node>
-			<name>section_q2_4</name>
+			<name>section_virtual_care</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -380,7 +380,12 @@
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Did you experience any technical problems related to your telephone appointment? (Check all that apply).</value>
+						<value>Did you experience any technical problems related to your telephone appointment?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(Check all that apply)</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -552,7 +557,12 @@
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Did you experience any technical problems related to your virtual appointment? (Check all that apply).</value>
+						<value>Did you experience any technical problems related to your virtual appointment?</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>description</name>
+						<value>(Check all that apply)</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -997,7 +1007,7 @@
 
 		<!-- Questions 5-16 condition -->
 		<node>
-			<name>section_q5_16</name>
+			<name>section_care_experience</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -2331,7 +2341,12 @@
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>How would you rate your overall experience based upon your most recent appointment? (Please select a number).</value>
+					<value>How would you rate your overall experience based upon your most recent appointment?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>(Please select a number)</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2454,7 +2469,7 @@
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>5</value>
+						<value>5 - Neutral</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -3001,7 +3016,7 @@ Please do not include any names, contact information or identifying information.
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>description</name>
-			<value>The following questions ask you about UHN's infection control practices (Q4 each year).</value>
+			<value>The following questions ask you about UHN's infection control practices.</value>
 			<type>String</type>
 		</property>
 		<node>
