@@ -587,7 +587,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                     if (Strings.CS.equals(value, childNode.getProperty(prop).getString())) {
                         // We found an exact match for a known option, no need to do any further processing
                         return childNode.getProperty(VALUE_PROPERTY).getString();
-                    } else if (Strings.CS.equals(value, childNode.getProperty(prop).getString())) {
+                    } else if (Strings.CI.equals(value, childNode.getProperty(prop).getString())) {
                         result = childNode.getProperty(VALUE_PROPERTY).getString();
                     }
                 }
