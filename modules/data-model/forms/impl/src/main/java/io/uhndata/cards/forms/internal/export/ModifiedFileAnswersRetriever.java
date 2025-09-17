@@ -28,7 +28,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,7 @@ public class ModifiedFileAnswersRetriever implements DataRetriever
             for (String s : questionnaires) {
                 query += "form.questionnaire = '" + resolver.getResource(s).getValueMap().get("jcr:uuid") + "' OR ";
             }
-            query = StringUtils.removeEnd(query, " OR ");
+            query = Strings.CS.removeEnd(query, " OR ");
             query += ")";
         }
         query += " OPTION (index tag cards)";

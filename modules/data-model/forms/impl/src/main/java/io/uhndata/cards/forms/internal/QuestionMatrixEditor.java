@@ -16,7 +16,7 @@
  */
 package io.uhndata.cards.forms.internal;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -68,7 +68,7 @@ public class QuestionMatrixEditor extends DefaultEditor
         }
 
         String propName = after.getName();
-        if (StringUtils.equalsAny(propName, "minAnswers", "maxAnswers", "dataType")) {
+        if (Strings.CS.equalsAny(propName, "minAnswers", "maxAnswers", "dataType")) {
 
             // Update changed property in each Question child node
             for (String childNodeName : this.currentNodeBuilder.getChildNodeNames()) {

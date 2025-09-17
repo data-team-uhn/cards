@@ -100,8 +100,8 @@ public class OboParserTest
     @Test
     public void gracefullyIgnoresMissingFiles() throws IOException, VocabularyIndexException
     {
-        new OboParser().parse(new File("/" + RandomStringUtils.random(40)), new VocabularyDescriptionBuilder().build(),
-            new Consumer<VocabularyTermSource>()
+        new OboParser().parse(new File("/" + RandomStringUtils.insecure().next(40)),
+            new VocabularyDescriptionBuilder().build(), new Consumer<VocabularyTermSource>()
             {
                 @Override
                 public void accept(VocabularyTermSource t)

@@ -21,6 +21,7 @@ package io.uhndata.cards.patients;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -32,7 +33,6 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -140,7 +140,7 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
                 unsubscribeAnswer = patientInformationForm.addNode(UUID.randomUUID().toString(), "cards:BooleanAnswer");
                 unsubscribeAnswer.setProperty("question", unsubscribeQuestion);
             }
-            final long value = Long.valueOf(StringUtils.defaultString(request.getParameter("unsubscribe"), "1"));
+            final long value = Long.valueOf(Objects.toString(request.getParameter("unsubscribe"), "1"));
             unsubscribeAnswer.setProperty(FormUtils.VALUE_PROPERTY, value);
             session.save();
             if (checkin) {

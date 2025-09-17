@@ -32,7 +32,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Activate;
@@ -177,7 +177,7 @@ public class RecentVisitDiscardFilter extends AbstractClarityDataProcessor imple
 
     private boolean isSameVisit(final Node visit, final String id)
     {
-        return StringUtils.equals(this.subjectUtils.getLabel(visit), id);
+        return Strings.CS.equals(this.subjectUtils.getLabel(visit), id);
     }
 
     private boolean isSurveyEventsForm(final Node questionnaire)

@@ -27,6 +27,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Pair;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -118,7 +119,7 @@ public class ClinicDataFilterFactory extends BaseFilterFactory implements DataFi
                             // SQL escape
                             .map(clinic -> clinic.replaceAll("'", "''"))
                             // Allow specifying filters without the leading /Survey/ClinicMapping/
-                            .map(clinic -> StringUtils.startsWith(clinic, "/") ? clinic
+                            .map(clinic -> Strings.CS.startsWith(clinic, "/") ? clinic
                                 : "/Survey/ClinicMapping/" + clinic)
                             .map(clinic -> CLINIC_ANSWER_SELECTOR + ".value = '" + clinic + "'")
                             .map(condition -> (this.positiveCheck ? "" : "not ") + condition)

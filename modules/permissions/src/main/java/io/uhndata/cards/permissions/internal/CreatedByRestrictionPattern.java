@@ -20,7 +20,7 @@ package io.uhndata.cards.permissions.internal;
 
 import javax.jcr.Session;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
@@ -60,7 +60,7 @@ public class CreatedByRestrictionPattern implements RestrictionPattern
         }
 
         // Check if this user is the one that created this node
-        return StringUtils.equals(tree.getProperty("jcr:createdBy").getValue(Type.STRING), this.session.getUserID());
+        return Strings.CS.equals(tree.getProperty("jcr:createdBy").getValue(Type.STRING), this.session.getUserID());
     }
 
     @Override

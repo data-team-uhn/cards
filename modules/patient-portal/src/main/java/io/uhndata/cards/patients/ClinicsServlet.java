@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -131,7 +132,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         this.surveyID.set(request.getParameter("survey"));
         this.emergencyContact.set(request.getParameter("emergencyContact"));
         String tokenLifetimeParam =
-            StringUtils.defaultString(request.getParameter("daysRelativeToEventWhileSurveyIsValid"), "");
+            Objects.toString(request.getParameter("daysRelativeToEventWhileSurveyIsValid"), "");
         if (StringUtils.isNotBlank(tokenLifetimeParam)) {
             this.tokenLifetime.set(Double.valueOf(tokenLifetimeParam));
         }

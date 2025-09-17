@@ -22,10 +22,10 @@ package io.uhndata.cards.forms.internal.export;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 
@@ -69,7 +69,7 @@ public class QuestionnairesWithModifiedFormsRetriever implements DataRetriever
             final String csvPath = String.format(
                 questionnaire + "%s.data.dataFilter:modifiedAfter=%s"
                     + (endDate != null ? ".dataFilter:modifiedBefore=%s" : ""),
-                StringUtils.defaultString(getNamedParameter(config.retrieverParameters(), "selectors")),
+                Objects.toString(getNamedParameter(config.retrieverParameters(), "selectors")),
                 escapeForDataUrl(DateUtils.toString(startDate)),
                 escapeForDataUrl(DateUtils.toString(endDate)));
             questionnaires

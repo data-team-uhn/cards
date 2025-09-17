@@ -31,6 +31,7 @@ import javax.json.JsonReader;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -206,7 +207,7 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
         // the BioOntology repository
         String creationDate = submission.getString("creationDate", null);
 
-        if (StringUtils.isNotBlank(version) && !StringUtils.equals("unknown", version)) {
+        if (StringUtils.isNotBlank(version) && !Strings.CS.equals("unknown", version)) {
             return version;
         } else if (StringUtils.isNotBlank(released)) {
             return released;

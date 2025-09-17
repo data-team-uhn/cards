@@ -48,6 +48,7 @@ import javax.json.JsonValue.ValueType;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -448,7 +449,7 @@ public class PatientLocalStorage
 
             // Do nothing if we don't know how to update this question
             final JsonGetter matchingGetter = mapping.entrySet().stream()
-                .filter(entry -> StringUtils.equals(StringUtils.substringBefore(entry.getKey(), "@"),
+                .filter(entry -> Strings.CS.equals(StringUtils.substringBefore(entry.getKey(), "@"),
                     questionName))
                 .map(Entry::getValue)
                 .findFirst().orElse(null);

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.tuple.Pair;
 import org.osgi.service.cm.ConfigurationException;
 
@@ -109,7 +109,7 @@ public abstract class AbstractConditionalClarityDataProcessor extends AbstractCl
         {
             if (this.unary) {
                 if (configuration.endsWith(this.operator)) {
-                    return Pair.of(StringUtils.removeEnd(configuration, this.operator).trim(), null);
+                    return Pair.of(Strings.CS.removeEnd(configuration, this.operator).trim(), null);
                 }
             } else {
                 String[] pieces = configuration.split("\\s*" + this.operator + "\\s*", 2);
