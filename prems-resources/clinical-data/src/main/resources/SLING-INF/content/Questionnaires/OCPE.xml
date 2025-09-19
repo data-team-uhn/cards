@@ -2018,7 +2018,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Did the doctor or other health care provider discuss any specific concerns you might have had about your care?Did you receive enough information from the  health care team about what to do if you were worried about your condition or treatment after your appointment?</value>
+				<value>Did you receive enough information from the health care team about what to do if you were worried about your condition or treatment after your appointment?</value>
 				<type>String</type>
 			</property>
 			<property>
