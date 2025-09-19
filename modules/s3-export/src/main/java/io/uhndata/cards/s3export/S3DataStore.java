@@ -116,6 +116,7 @@ public class S3DataStore implements DataStore
                     .withInputStream(contents)
                     .withPartNumber(partNumber)
                     .withPartSize(partSize);
+                uploadRequest.getRequestClientOptions().setReadLimit((int) partSize);
 
                 UploadPartResult uploadResult = s3.uploadPart(uploadRequest);
                 partETags.add(uploadResult.getPartETag());
