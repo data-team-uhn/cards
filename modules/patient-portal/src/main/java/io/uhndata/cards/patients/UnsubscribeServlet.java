@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
@@ -97,6 +98,8 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
             writeSuccess(response, unsubscribed);
         } catch (final LoginException e) {
             LOGGER.error("Service authorization not granted: {}", e.getMessage());
+        } catch (final ItemNotFoundException e) {
+            writeError(response, SlingHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
         } catch (final RepositoryException e) {
             LOGGER.warn("Exception validating patient authentication: {}", e.getMessage(), e);
         }

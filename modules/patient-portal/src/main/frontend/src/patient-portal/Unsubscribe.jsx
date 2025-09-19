@@ -76,11 +76,32 @@ function Unsubscribe (props) {
 
   useEffect(() => {
     fetch(`/Survey.unsubscribe?patient=${patient}`, { method: 'GET' })
-      .then( (response) => response.ok ? response.json() : Promise.reject(response) )
-      .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
-      .catch((response) => {
+      .then(async (response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          // Try to read JSON error body
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch (e) {
+            // Fallback if body is not JSON
+            errorData = { error: response.statusText };
+          }
+          return Promise.reject(errorData);
+        }
+      })
+      .then(json => {
+        if (json.status === "success") {
+          setAlreadyUnsubscribed(json.unsubscribed);
+        } else {
+          return Promise.reject(json.error);
+        }
+      })
+      .catch(error => {
+        // error now has access to a custom backend error data
         let errMsg = "Cannot unsubscribe: ";
-        setError(errMsg + (response.status ? response.statusText : response));
+        setError(errMsg + (error.error || error));
       });
   }, []);
 

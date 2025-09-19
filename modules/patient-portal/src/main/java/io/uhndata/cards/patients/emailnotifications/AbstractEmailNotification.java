@@ -207,8 +207,9 @@ abstract class AbstractEmailNotification
             .getToken();
         // Send the Notification Email
         Map<String, String> valuesMap = new HashMap<>();
-        valuesMap.put("surveysLink", "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token);
         final String uuid = getPatientFormUUID(patientSubject, session);
+        valuesMap.put("surveysLink", "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token
+            + "&patient=" + uuid);
         final String unsubscribeLink =
             "https://" + CARDS_HOST_AND_PORT + "/Survey.unsubscribe.html?patient=" + uuid;
         valuesMap.put("unsubscribeLink", unsubscribeLink);
