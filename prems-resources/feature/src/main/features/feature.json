@@ -327,6 +327,23 @@
       "daysToVisit": -14
     },
 
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-OC-InitialInvitationTask":{
+      "name": "UHN-OC-InitialInvitationsTask",
+      "notificationType": "Invitation",
+      "metricName": "{023} UHN-OC Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/OC",
+      "emailConfiguration": "/apps/cards/clinics/UHN-OC/mailTemplates/InitialInvitation",
+      "daysToVisit": -2
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-OC-Reminder1NotificationsTask":{
+      "name": "UHN-OC-Reminder1NotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "{024} UHN-OC 1st Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/OC",
+      "emailConfiguration": "/apps/cards/clinics/UHN-OC/mailTemplates/ReminderNotification",
+      "daysToVisit": -4
+    },
+
     // Periodic CSV exports of all new and updated data
 
     "io.uhndata.cards.export.ExportConfig~UHN-Labeled-Forms":{
