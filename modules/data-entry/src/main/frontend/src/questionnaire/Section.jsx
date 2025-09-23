@@ -28,7 +28,7 @@ import UnfoldMore from '@mui/icons-material/UnfoldMore';
 import ConditionalComponentManager from "./ConditionalComponentManager";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
-import { useFormReaderContext } from "./FormContext";
+import { useFormReaderContext, useFormWriterContext } from "./FormContext";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import { hasWarningFlags } from "./FormUtilities";
 
@@ -95,6 +95,7 @@ function Section(props) {
   // Keep a list of UUIDs whose contents we should hide
   const [ labelsToHide, setLabelsToHide ] = useState({});
   const formContext = useFormReaderContext();
+  const changeFormContext = useFormWriterContext();
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
   const [ answersToDelete, setAnswersToDelete ] = useState([]);
@@ -119,6 +120,13 @@ function Section(props) {
       setAnswersToDelete((oldValue) => oldValue.concat(delList));
       // Reset the list of existing answers
       setRemovableAnswers({[ID_STATE_KEY]: 1});
+
+      changeFormContext((oldContext) => {
+        // Remove the section answers from the context
+        let newData = {...oldContext};
+        keySet.forEach(key => { delete newData[key] });
+        return newData;
+      });
     }
   }, [conditionIsMet])
 
