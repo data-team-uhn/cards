@@ -71,8 +71,6 @@ function DateQuestion(props) {
   const upperLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(upperLimit));
   const lowerLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(lowerLimit));
 
-  const instructions = DateTimeUtilities.getAnswerValueInstructions(lowerLimitLuxon, upperLimitLuxon, dateFormat);
-
   const [formatError, setFormatError] = useState();
   const [endFormatError, setEndFormatError] = useState();
   const [minMaxError, setMinMaxError] = useState();
@@ -231,11 +229,32 @@ function DateQuestion(props) {
     );
   }
 
+  let isAnswerComplete = function() {
+    return type == DateTimeUtilities.INTERVAL_TYPE && outputAnswers.length == 2 || outputAnswers.length == 1;
+  }
+
+  let getAnswerValueInstructions = function() {
+    if (lowerLimitLuxon || upperLimitLuxon) {
+      let min = lowerLimitLuxon?.toFormat(dateFormat);
+      let max = upperLimitLuxon?.toFormat(dateFormat);
+      if (min && max) {
+        return `Between ${min} and ${max}`;
+      } else if (min) {
+        return `${min} or later`;
+      } else {
+        return `Before or on ${max}`;
+      }
+    }
+    return null;
+  }
+
+  const instructions = getAnswerValueInstructions();
+
   return (
     <Question
       defaultDisplayFormatter={isRange? rangeDisplayFormatter : dateDisplayFormatter}
       compact={isRange}
-      currentAnswers={DateTimeUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
+      currentAnswers={isAnswerComplete() ? 1 : 0}
       {...props}
       >
       { pageActive && instructions &&

@@ -292,9 +292,6 @@ let ComputedQuestion = (props) => {
         case "long":
           answerType = "Long";
           break;
-        case "string":
-          answerType = "Date";
-          break;
         default:
           answerType = "Date";
           break;

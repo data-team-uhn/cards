@@ -149,25 +149,6 @@ export default class DateTimeUtilities {
     return dateString?.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
   }
 
-  static isAnswerComplete(answers, type) {
-    return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
-  }
-
-  static getAnswerValueInstructions(lowerLimit, upperLimit, format) {
-    if (lowerLimit || upperLimit) {
-      let min = lowerLimit?.toFormat(format);
-      let max = upperLimit?.toFormat(format);
-      if (min && max) {
-        return `Between ${min} and ${max}`;
-      } else if (min) {
-        return `${min} or later`;
-      } else {
-        return `Before or on ${max}`;
-      }
-    }
-    return null;
-  }
-
   static dateDifference = (startDateInput, endDateInput) => {
     // Compute the displayed difference
     let result = {long:""}
@@ -231,26 +212,9 @@ export default class DateTimeUtilities {
     return this.formatIsMinuteSeconds(dateFormat) ? "string" : "time";
   }
 
-  static getPickerViews(dateFormat) {
-    let views = [];
-    if (typeof(dateFormat) === "string") {
-      dateFormat.toLowerCase().includes(this.yearTag) && views.push('year');
-      dateFormat.includes(this.monthTag) && views.push('month');
-      dateFormat.includes(this.dayTag) && views.push('day');
-      dateFormat.toLowerCase().includes(this.hourMeridiemTag) && views.push('hours');
-      dateFormat.includes(this.minuteTag) && views.push('minutes');
-      dateFormat.includes(this.secondTag) && views.push('seconds');
-    }
-    return views;
-  }
-
   static formatHasTime(dateFormat) {
     return typeof(dateFormat) === "string" &&
       (dateFormat.toLowerCase().includes(this.hourMeridiemTag) || dateFormat.includes(this.minuteTag) || dateFormat.includes(this.secondTag));
-  }
-
-  static formatIsMeridiem(dateFormat) {
-    return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
   }
 
   static processRelativeDate(dateString, endOfDay = false, toFormat) {
