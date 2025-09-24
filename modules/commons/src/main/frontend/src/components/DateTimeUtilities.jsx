@@ -184,7 +184,7 @@ export default class DateTimeUtilities {
       dateFormat.toLowerCase().includes(this.yearTag) && views.push('year');
       dateFormat.includes(this.monthTag) && views.push('month');
       dateFormat.includes(this.dayTag) && views.push('day');
-      dateFormat.toLowerCase().includes(this.hourTag) && views.push('hours');
+      dateFormat.toLowerCase().includes(this.hourMeridiemTag) && views.push('hours');
       dateFormat.includes(this.minuteTag) && views.push('minutes');
       dateFormat.includes(this.secondTag) && views.push('seconds');
     }
@@ -192,7 +192,7 @@ export default class DateTimeUtilities {
   }
 
   static formatIsMeridiem(dateFormat) {
-    return typeof(dateFormat) === "string" && dateFormat.toLowerCase().includes(this.hourMeridiemTag) && dateFormat.includes("a");
+    return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
   }
 
   static formatIsMinuteSeconds(dateFormat) {
