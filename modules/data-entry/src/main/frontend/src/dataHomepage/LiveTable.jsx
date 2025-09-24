@@ -22,22 +22,13 @@ import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePaginatio
 import { Card, CardHeader, CardContent, CardActions, Typography, Button, LinearProgress, Stack } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
 import { Link } from 'react-router';
-import { DateTime } from "luxon";
 import Filters from "./Filters.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import DateTimeUtilities from "../components/DateTimeUtilities.jsx";
 
 import LiveTableStyle from "./tableStyle.jsx";
 
-// Convert a date into the given format string
-// If the date is invalid (usually because it is missing), return ""
-let _formatDate = (date, formatString) => {
-  let dateObj = DateTime.fromISO(date);
-  if (dateObj.isValid) {
-    return dateObj.toFormat(formatString);
-  }
-  return "";
-};
 
 function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +221,7 @@ function LiveTable(props) {
       // Cutting after the fifth char means that either we skip "date:" and read the format,
       // or we just get the empty string and use the default format.
       let format = column.format.substring(5) || 'yyyy-MM-dd';
-      content = _formatDate(content, format);
+      content = DateTimeUtilities.formatDateAnswer(format, content);
     }
 
     let pathPrefix = (extensionURL ? "../content.html/" + extensionURL : "../content.html");
