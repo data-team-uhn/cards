@@ -203,7 +203,7 @@ function QuestionnaireSet(props) {
 
   const getVisitDate = () => {
     let dateAnswer = getVisitInformation("time");
-    return DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(dateAnswer));
+    return DateTimeUtilities.toPrecision(dateAnswer);
   }
 
   // If the `enableReviewScreen` state is not already defined, initialize it with the value passed via config

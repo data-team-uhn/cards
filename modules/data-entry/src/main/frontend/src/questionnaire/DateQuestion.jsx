@@ -79,9 +79,9 @@ function DateQuestion(props) {
   const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   const [ displayedDate, setDisplayedDate ] = useState(DateTimeUtilities.toPrecision(
-    DateTimeUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[0] : existingValues)));
+    typeof(existingValues) === "object" ? existingValues[0] : existingValues));
   const [ displayedEndDate, setDisplayedEndDate ] = useState(DateTimeUtilities.toPrecision(
-    DateTimeUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[1] : "")));
+    typeof(existingValues) === "object" ? existingValues[1] : ""));
   const isRange = (type === DateTimeUtilities.INTERVAL_TYPE);
   const hasTime = DateTimeUtilities.formatHasTime(dateFormat);
   const PickerComponent = hasTime ? DateTimePicker : DatePicker;
@@ -209,7 +209,7 @@ function DateQuestion(props) {
     if (limits.length == 1) {
       limits.push("");
     } else {
-      limits[1] = DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(limits[1]))?.toFormat(dateFormat);
+      limits[1] = DateTimeUtilities.toPrecision(limits[1])?.toFormat(dateFormat);
     }
     return dateDisplayFormatter(limits.join(' - '), idx);
   }

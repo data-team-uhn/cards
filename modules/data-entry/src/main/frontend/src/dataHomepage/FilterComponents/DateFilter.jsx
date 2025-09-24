@@ -46,7 +46,7 @@ const DateFilter = forwardRef((props, ref) => {
   checkPropTypes(DateFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
 
-  const [ displayedDate, setDisplayedDate ] = useState(DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(initial?.value)));
+  const [ displayedDate, setDisplayedDate ] = useState(DateTimeUtilities.toPrecision(initial?.value));
 
   // Dates should have a dateFormat, or default to "yyyy/MM/dd"
   const dateFormat = questionDefinition["dateFormat"] || DateTimeUtilities.VIEW_DATE_FORMAT;

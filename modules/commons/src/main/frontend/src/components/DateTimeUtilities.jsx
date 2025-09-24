@@ -144,11 +144,6 @@ export default class DateTimeUtilities {
     return date.toFormat(dateFormat);
   }
 
-  static stripTimeZone(dateString) {
-    // Remove the time zone (eg. "-05:00") from the end of a sling provided date string
-    return dateString?.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
-  }
-
   static dateDifference = (startDateInput, endDateInput) => {
     // Compute the displayed difference
     let result = {long:""}
