@@ -18,7 +18,7 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.commons:commons-collections4:4.4",
+            "id":"org.apache.commons:commons-collections4:4.5.0",
             "start-order":"15"
         },
         {
