@@ -139,7 +139,6 @@ export default function DragAndDrop(props) {
       <input id="file-input"
         type="file"
         accept={accept}
-        name="*"
         multiple={multifile}
         ref={inputRef}
         style={{display: 'none'}}
