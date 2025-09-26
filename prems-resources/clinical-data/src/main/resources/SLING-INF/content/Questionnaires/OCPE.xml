@@ -2743,8 +2743,9 @@
 			<property>
 				<name>description</name>
 				<value>
-Please focus on aspects of your care and experience during the appointment.
-Please do not include any names, contact information or identifying information.
+Please do not add any personal information (e.g your name, email address or phone number) when answering this question.
+This survey is meant to be anonymous and the information is being used for quality improvement.
+If you have a personal care concern or need help please speak directly to your care team.
 				</value>
 				<type>String</type>
 			</property>
