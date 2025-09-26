@@ -79,7 +79,7 @@ Tests
 by mounting it to an Alpine Linux container and exploring it as `UID=1001`.
 
 ```bash
-docker run --rm -u 1001 -v $(realpath PERCONA_DATA):/data:ro -it alpine:3.21
+docker run --rm -u 1001 -v $(realpath PERCONA_DATA):/data:ro -it alpine:3.22
 
 cd /data
 
