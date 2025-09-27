@@ -407,7 +407,7 @@ public class EmailTemplate
     private String getSingleAnswerValue(final Object value)
     {
         if (value instanceof Calendar) {
-            final DateFormat sdf = DateFormat.getDateInstance();
+            final DateFormat sdf = DateFormat.getDateInstance(DateFormat.LONG);
             sdf.setTimeZone(((Calendar) value).getTimeZone());
             return sdf.format(((Calendar) value).getTime());
         } else {
