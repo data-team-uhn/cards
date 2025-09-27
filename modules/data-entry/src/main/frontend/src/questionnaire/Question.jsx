@@ -129,8 +129,9 @@ function Question (props) {
             ( labels ?
               <List>
                 { labels.map( (item, idx) => {
+                  let value = defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item;
                   return(
-                    <ListItem key={existingAnswer[0] + idx}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item}</ListItem>
+                    value || value === 0 ? <ListItem key={existingAnswer[0] + idx}> {value}</ListItem> : null
                   )})
                 }
               </List>

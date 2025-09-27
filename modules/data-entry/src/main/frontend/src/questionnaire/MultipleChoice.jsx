@@ -127,8 +127,8 @@ function MultipleChoice(props) {
   let inputPrefill = (isBare || (isRadio && default_values.indexOf(String(initialSelection[0]?.[VALUE_POS])) < 0)) && existingAnswer?.[1] || '';
   // Prefill the input with the displayed value, unless the answer type is numeric, which means the displayed value may contain a unit of measurement
   const [ghostName, setGhostName] = useState(isNumeric ? inputPrefill?.value : inputPrefill?.displayedValue);
-  const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
-  const ghostSelected = selection.some(element => {return String(element[VALUE_POS]) === ghostValue || element[LABEL_POS] === ghostName});
+  const [ghostValue, setGhostValue] = useState(inputPrefill?.value ?? GHOST_SENTINEL);
+  const ghostSelected = selection.some(element => {return String(element[VALUE_POS]) === String(ghostValue) || element[LABEL_POS] === ghostName});
   const disabled = maxAnswers > 1 && selection.length >= maxAnswers;
   let inputEl = null;
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
@@ -431,8 +431,9 @@ function MultipleChoice(props) {
                 tabIndex: isRadio ? -1 : undefined
               }, additionalInputProps),
               input: muiInputProps,
+              formHelperText: {component: "div"},
             }}
-            value={ghostName || ''}
+            value={ghostName ?? ''}
             multiline={textbox}
             minRows={textbox ? 4 : undefined}
             inputRef={ref => {inputEl = ref}}

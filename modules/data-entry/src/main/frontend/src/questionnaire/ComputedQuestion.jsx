@@ -26,9 +26,9 @@ import { withStyles } from 'tss-react/mui';
 
 import Answer, {VALUE_POS} from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateQuestionUtilities from "./DateQuestionUtilities";
+import DateTimeUtilities from "../components/DateTimeUtilities";
 import Question from "./Question";
-import {Time} from "./TimeQuestion";
+
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from './QuestionnaireStyle';
 import { useFormReaderContext } from "./FormContext";
@@ -106,14 +106,7 @@ let ComputedQuestion = (props) => {
           break;
       }
     } else if (dataType === "date") {
-      let dateType = DateQuestionUtilities.getDateType(dateFormat);
-      if (dateType === DateQuestionUtilities.MONTH_DATE_TYPE) {
-        newDisplayedValue = DateQuestionUtilities.formatDateAnswer(dateFormat, DateQuestionUtilities.stripTimeZone(newDisplayedValue));
-      } else if (dateType === DateQuestionUtilities.DATETIME_TYPE || dateType === DateQuestionUtilities.FULL_DATE_TYPE) {
-        newDisplayedValue = typeof(newDisplayedValue) === "string" && newDisplayedValue.length > 0
-          ? DateQuestionUtilities.dateToFormattedString(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(newDisplayedValue || ""), dateFormat), dateType)
-          : "";
-      }
+      newDisplayedValue = DateTimeUtilities.formatDateAnswer(dateFormat, newDisplayedValue, DateTimeUtilities.slingDateFormat);
     } else if (dataType === "vocabulary") {
       var url = new URL("." + newDisplayedValue + ".info.json", window.location.origin);
       let showInfo = (status, data, params) => {
@@ -293,14 +286,11 @@ let ComputedQuestion = (props) => {
       answerType = "Long"; // Long, not Boolean
       break;
     case "date":
-      newFieldType = DateQuestionUtilities.getFieldType(dateFormat);
+      newFieldType = DateTimeUtilities.getFieldType(dateFormat);
       setFieldType(newFieldType);
       switch (newFieldType) {
         case "long":
           answerType = "Long";
-          break;
-        case "string":
-          answerType = "Date";
           break;
         default:
           answerType = "Date";
@@ -317,7 +307,7 @@ let ComputedQuestion = (props) => {
       break;
     case "time":
       answerType = "String";
-      newFieldType = Time.timeQuestionFieldType(dateFormat);
+      newFieldType = DateTimeUtilities.timeQuestionFieldType(dateFormat);
       setFieldType(newFieldType);
       break;
     case "text":

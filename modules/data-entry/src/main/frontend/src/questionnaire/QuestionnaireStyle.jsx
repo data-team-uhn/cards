@@ -116,7 +116,7 @@ const questionnaireStyle = theme => ({
     textField: {
         // Differing input types have differing widths, so setting width:100%
         // is insufficient in making sure all components are the same size
-        minWidth: "250px",
+        width: "250px",
     },
     textBox: {
         // Outlined textboxes that are not part of a single select list should stretch full width
@@ -142,13 +142,14 @@ const questionnaireStyle = theme => ({
     },
     range: {
         display: "flex",
-        alignItems: "flex-start",
-        "& .MuiInputBase-root" : {
-            minWidth: "110px !important",
-            width: "110px",
+        alignItems: "baseline",
+        flexWrap: "wrap",
+        "& .numberRangeLimit": {
+           minWidth: "110px !important",
+           width: "110px",
         },
         "& .separator" : {
-            padding: theme.spacing(0.5, 1),
+            padding: theme.spacing(1),
         }
     },
     cardHeaderButton: {
@@ -156,6 +157,10 @@ const questionnaireStyle = theme => ({
     },
     hiddenQuestion: {
         display: "none"
+    },
+    answerInstructions: {
+        margin: theme.spacing(-3,0,1),
+        padding: theme.spacing(1, 0),
     },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,

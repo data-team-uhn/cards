@@ -23,7 +23,7 @@ import { checkPropTypes } from "../propTypes";
 import NumberQuestion from "./NumberQuestion";
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateQuestionUtilities from "./DateQuestionUtilities";
+import DateTimeUtilities from "../components/DateTimeUtilities";
 
 // Component that renders a year only date question
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -52,7 +52,7 @@ function DateQuestionYear(props) {
     text,
     dateFormat = "yyyy",
     minAnswers = 0,
-    type = DateQuestionUtilities.TIMESTAMP_TYPE,
+    type = DateTimeUtilities.TIMESTAMP_TYPE,
     lowerLimit,
     upperLimit
   } = { ...props.questionDefinition, ...props};
@@ -62,25 +62,25 @@ function DateQuestionYear(props) {
       minAnswers={minAnswers}
       maxAnswers={1}
       dataType="long"
-      isRange={(type === DateQuestionUtilities.INTERVAL_TYPE)}
+      isRange={(type === DateTimeUtilities.INTERVAL_TYPE)}
       answerNodeType="cards:DateAnswer"
       valueType="Long"
       existingAnswer={existingAnswer}
-      maxValue={+DateQuestionUtilities.processRelativeDate(upperLimit, true, DateQuestionUtilities.yearTag) || 9999}
-      minValue={+DateQuestionUtilities.processRelativeDate(lowerLimit, false, DateQuestionUtilities.yearTag) || 1000}
+      maxValue={+DateTimeUtilities.processRelativeDate(upperLimit, true, DateTimeUtilities.yearTag) || 9999}
+      minValue={+DateTimeUtilities.processRelativeDate(lowerLimit, false, DateTimeUtilities.yearTag) || 1000}
       disableValueInstructions={typeof(upperLimit) == 'undefined' && typeof(lowerLimit) == 'undefined'}
       {...rest}
       />
   );
 }
 
-DateQuestionYear.propTypes = DateQuestionUtilities.PROP_TYPES;
+DateQuestionYear.propTypes = DateTimeUtilities.PROP_TYPES;
 
 export default DateQuestionYear;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date"
-    && DateQuestionUtilities.getDateType(questionDefinition.dateFormat) === DateQuestionUtilities.YEAR_DATE_TYPE)
+    && DateTimeUtilities.getDateType(questionDefinition.dateFormat) === DateTimeUtilities.YEAR_DATE_TYPE)
   {
     return [DateQuestionYear, 60];
   }
