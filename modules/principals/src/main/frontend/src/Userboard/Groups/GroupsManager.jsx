@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useContext, useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui'
@@ -28,10 +28,113 @@ import NewItemButton from "../../components/NewItemButton.jsx"
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
-import MaterialReactTable from 'material-react-table';
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 const GROUP_URL = "/system/userManager/group/";
+
+// separate component for the inner table to render/manage users belonging to the group
+let GroupUsersTable = (props) => {
+  let { group, classes, error, getGroupUsers, addUserToGroup, handleRemoveUsers } = props;
+
+  // memoize data so it only changes when group changes to avoid infinite re-renders
+  const groupUsers = useMemo(
+    () => (group.members > 0 ? getGroupUsers(group.name) : []),
+    [group, getGroupUsers]
+  );
+
+  const tableTitle = `Group ${group.name} users`;
+
+  // memoize columns to avoid infinite re-renders
+  const columns = useMemo(
+    () => [
+      {
+        id: tableTitle,
+        header: tableTitle,
+        columns: [
+          {
+            header: "Avatar",
+            accessorKey: "imageUrl",
+            size: 10,
+            Cell: ({ row }) => (
+              <Avatar src={row.original.imageUrl} className={classes.info}>
+                {row.original.initials}
+              </Avatar>
+            ),
+          },
+          { header: "User Name", accessorKey: "name", size: 300 },
+          {
+            header: "Admin",
+            accessorKey: "isAdmin",
+            size: 10,
+            Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : ""),
+          },
+          {
+            header: "Disabled",
+            accessorKey: "isDisabled",
+            size: 10,
+            Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : ""),
+          },
+        ],
+      },
+    ],
+    [classes.info, tableTitle]
+  );
+
+  // memoize row props callback to avoid infinite re-renders
+  const muiTableBodyRowProps = useCallback(
+    ({ row }) => ({
+      onClick: row.getToggleSelectedHandler(),
+      sx: { cursor: "pointer" },
+    }),
+    []
+  );
+
+  const table = useMaterialReactTable({
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enableSorting: false,
+    enableTopToolbar: false,
+    enableRowSelection: true,
+    enableSelectAll: false,
+    muiSelectCheckboxProps: { color: "primary" },
+    displayColumnDefOptions: {
+      "mrt-row-select": { size: 7 },
+    },
+    muiTableBodyRowProps,
+    columns,
+    data: groupUsers,
+  });
+
+  return (
+    <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
+      <Grid size={1}></Grid>
+      <Grid size={11}>
+        {error && <Alert severity="error">{error}</Alert>}
+        {groupUsers.length > 0 && <MaterialReactTable table={table} />}
+
+        <Grid container className={classes.cardActions}>
+          <Button
+            variant="contained"
+            className={classes.containerButton}
+            onClick={() => addUserToGroup(group)}
+          >
+            Add User to Group
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={groupUsers.length == 0 || Object.keys(table.getState().rowSelection).length == 0}
+            onClick={() => handleRemoveUsers(group.principalName, groupUsers, table)}
+          >
+            Remove User from Group
+          </Button>
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+};
+
 
 function GroupsManager(props) {
   checkPropTypes(GroupsManager, props);
@@ -55,16 +158,22 @@ function GroupsManager(props) {
     return groupUsers;
   }
 
+  let addUserToGroup = (group) => {
+    setCurrentGroupName(group.principalName);
+    setDeployAddGroupUsers(true);
+    setCurrentGroupUsers(groupUsers);
+  }
+
   let clearSelectedGroup = () => {
     setCurrentGroupName("");
   }
 
-  let handleRemoveUsers = (currentGroupName, groupUsers, tableRef) => {
+  let handleRemoveUsers = (currentGroupName, groupUsers, table) => {
     setError("");
-    if (!tableRef.current) return;
+    if (!table) return;
     let formData = new FormData();
 
-    let selectedUsers = Object.keys(tableRef.current?.getState().rowSelection);
+    let selectedUsers = Object.keys(table.getState().rowSelection);
     if (selectedUsers.length == 0) return;
     for (var i = 0; i < selectedUsers.length; ++i) {
       formData.append(':member@Delete', groupUsers[selectedUsers[i]].name);
@@ -76,13 +185,13 @@ function GroupsManager(props) {
         credentials: 'include',
         body: formData
       })
-      .then(() => handleReload(false, tableRef))
+      .then(() => handleReload(false, table))
       .catch((error) => setError(error?.statusText ?? error?.message ?? ("" + error)));
   }
 
-  let handleReload = (doClear, tableRef) => {
+  let handleReload = (doClear, table) => {
     doClear && clearSelectedGroup();
-    tableRef?.current?.resetRowSelection();
+    table?.resetRowSelection();
     reload();
   }
 
@@ -165,80 +274,16 @@ function GroupsManager(props) {
                 </Tooltip>
               </Box>
             )}
-            renderDetailPanel={({ row }) => {
-                let tableRef = useRef();
-                const group = row.original;
-                const groupUsers = group.members > 0 ? getGroupUsers(group.name) : [];
-                const tableTitle = "Group " + group.name + " users";
-
-                return (
-                  <Grid container sx={(theme) => ({ py: theme.spacing(2) })}>
-                    <Grid size={1}></Grid>
-                    <Grid size={11}>
-                        {error && <Alert severity="error">{error}</Alert>}
-                        { groupUsers.length > 0 &&
-                            <MaterialReactTable
-                              tableInstanceRef={tableRef}
-                              enableColumnActions={false}
-                              enableColumnFilters={false}
-                              enableSorting={false}
-                              enableTopToolbar={false}
-                              enableRowSelection
-                              enableSelectAll={false}
-                              muiSelectCheckboxProps={{ color: 'primary' }}
-                              displayColumnDefOptions={{
-                                'mrt-row-select': {
-                                  size: 7,
-                                },
-                              }}
-                              muiTableBodyRowProps={({ row }) => ({
-                                onClick: row.getToggleSelectedHandler(),
-                                sx: {
-                                  cursor: 'pointer',
-                                },
-                              })}
-                              columns={[{
-                                id: tableTitle,
-                                header: tableTitle,
-                                columns: [
-                                  { header: 'Avatar', accessorKey: 'imageUrl', size: 10,
-                                    Cell: ({ row }) => (<Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>)
-                                  },
-                                  { header: 'User Name', accessorKey: 'name', size: 300, },
-                                  { header: 'Admin', accessorKey: 'isAdmin', size: 10,
-                                    Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
-                                  },
-                                  { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
-                                    Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
-                                  },
-                                ]
-                              }]}
-                              data={groupUsers}
-                            />
-                        }
-                        <Grid container className={classes.cardActions}>
-                          <Button
-                            variant="contained"
-                            className={classes.containerButton}
-                            onClick={() => { setCurrentGroupName(group.principalName);
-                                             setDeployAddGroupUsers(true);
-                                             setCurrentGroupUsers(groupUsers); }}
-                          >
-                            Add User to Group
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            disabled={groupUsers.length == 0}
-                            onClick={() => handleRemoveUsers(group.principalName, groupUsers, tableRef)}
-                          >
-                            Remove User from Group
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                )
-            }}
+            renderDetailPanel={({ row }) => 
+              <GroupUsersTable
+                group={row.original}
+                classes={classes}
+                error={error}
+                addUserToGroup={addUserToGroup}
+                getGroupUsers={getGroupUsers}
+                handleRemoveUsers={handleRemoveUsers}
+              />
+            }
           />
         </div>
       </AdminScreen>

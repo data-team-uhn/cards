@@ -26,7 +26,7 @@ import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
 import ChangeUserPasswordDialog from "./ChangeUserPasswordDialog.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx";
 import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
-import MaterialReactTable from 'material-react-table';
+import { MaterialReactTable } from 'material-react-table';
 import LockIcon from '@mui/icons-material/Lock';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';

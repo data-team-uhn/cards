@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 
 import { loadExtensions } from "../uiextension/extensionManager";
 import NewItemButton from "../components/NewItemButton.jsx";
