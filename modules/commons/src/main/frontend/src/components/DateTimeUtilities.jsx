@@ -20,11 +20,12 @@
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
 
-export default class DateQuestionUtilities {
+export default class DateTimeUtilities {
 
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
-  static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss";
+  static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss.SSSZ";
+  static defaultDateFormat = "yyyy-MM-dd";
   static VIEW_DATE_FORMAT = "yyyy/MM/dd";
 
   static YEAR_DATE_TYPE = "year";
@@ -33,17 +34,19 @@ export default class DateQuestionUtilities {
   static DATETIME_TYPE = "datetime";
   static DEFAULT_DATE_TYPE = this.FULL_DATE_TYPE;
 
-  static yearTag = "yyyy";
-  static monthTag = "MM";
-  static dayTag = "dd";
-  static hourTag = "hh";
-  static minuteTag = "mm";
+  static yearTag = "y";
+  static monthTag = "M";
+  static dayTag = "d";
+  static hourTag = "H";
+  static hourMeridiemTag = "h";
+  static minuteTag = "m";
+  static secondTag = "s";
 
   static PROP_TYPES = {
     questionDefinition: PropTypes.shape({
       text: PropTypes.string,
       dateFormat: PropTypes.string,
-      type: PropTypes.oneOf([DateQuestionUtilities.TIMESTAMP_TYPE, DateQuestionUtilities.INTERVAL_TYPE]),
+      type: PropTypes.oneOf([this.TIMESTAMP_TYPE, this.INTERVAL_TYPE]),
       lowerLimit: PropTypes.string,
       upperLimit: PropTypes.string,
     })
@@ -72,14 +75,8 @@ export default class DateQuestionUtilities {
       case this.YEAR_DATE_TYPE:
         result = "long";
         break;
-      case this.MONTH_DATE_TYPE:
-        result = "string";
-        break;
-      case this.DATETIME_TYPE:
-        result = "datetime-local";
-        break;
       default:
-        result = "date"
+        result = "string"
         break;
     }
     return result;
@@ -114,7 +111,9 @@ export default class DateQuestionUtilities {
     };
     let truncateTo = 'millisecond';
     for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
-      if (toFormat.indexOf(formatSpecifier) < 0) {
+      // Check if the current specifier is missing.
+      // If the current specifier is 'H', check if both 'H' and 'h' are missing
+      if (toFormat.indexOf(formatSpecifier) < 0 && ("H" != formatSpecifier || toFormat.indexOf("h") < 0)) {
         truncateTo = targetPrecision;
       }
     }
@@ -124,88 +123,33 @@ export default class DateQuestionUtilities {
 
   static dateToFormattedString(date, textFieldType) {
     return (!date?.isValid) ? "" :
-    textFieldType === "date" ? date.toFormat("yyyy-MM-dd") : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
-  }
-
-  // Convert a moment string to a month display
-  static dateStringToDisplayMonth(dateFormat, value) {
-    let monthIndex = dateFormat.indexOf('MM');
-    if (monthIndex === 5) {
-      value = value.replaceAll("-", dateFormat[4]);
-    }
-    if (value.length > 7) {
-      // Cut off any text beyond "yyyy/mm"
-      value = value.substring(0, 7);
-    }
-    return value;
+    textFieldType === "date" ? date.toFormat(this.defaultDateFormat) : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
   // Format a DateAnswer given the given dateFormat
-  static formatDateAnswer(dateFormat, value) {
+  static formatDateAnswer(dateFormat, value, fromFormat) {
     if (!value || value.length === 0) {
       return "";
     }
     if (Array.isArray(value)) {
       return `${this.formatDateAnswer(dateFormat, value[0])} to ${this.formatDateAnswer(dateFormat, value[1])}`;
     }
-    dateFormat = dateFormat || "yyyy-MM-dd";
+    dateFormat = dateFormat || this.defaultDateFormat;
     let dateType = this.getDateType(dateFormat);
     if (dateType === this.YEAR_DATE_TYPE) {
       // Year-only dates are displayed like a number
       return value;
     }
-    let date = this.toPrecision(value, dateFormat);
-    if (dateType === this.MONTH_DATE_TYPE) {
-      return this.dateStringToDisplayMonth(
-        dateFormat,
-        !date?.isValid ? "" : date.toFormat("yyyy-MM")
-        );
-    } else {
-      return date.toFormat(dateFormat);
-    }
-  }
-
-  static stripTimeZone(dateString) {
-    // Remove the time zone (eg. "-05:00") from the end of a sling provided date string
-    return dateString?.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
-  }
-
-  static stripFrom(dateString, delimiter) {
-    // Remove everything after the delimiter
-    return (dateString?.includes(delimiter) ? dateString?.substring(0, dateString?.indexOf(delimiter)) : dateString)
-  }
-
-  static strip(dateAsISO, textFieldType) {
-    if (textFieldType == 'datetime-local') return this.stripFrom(dateAsISO, '.');
-    if (textFieldType == 'date') return this.stripFrom(dateAsISO, 'T');
-    return dateAsISO;
-  }
-
-  static isAnswerComplete(answers, type) {
-    return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
-  }
-
-  static getAnswerValueInstructions(lowerLimit, upperLimit, format) {
-    if (lowerLimit || upperLimit) {
-      let min = lowerLimit?.toFormat(format);
-      let max = upperLimit?.toFormat(format);
-      if (min && max) {
-        return `Between ${min} and ${max}`;
-      } else if (min) {
-        return `${min} or later`;
-      } else {
-        return `Before or on ${max}`;
-      }
-    }
-    return null;
+    let date = this.toPrecision(value, dateFormat, fromFormat);
+    return date.toFormat(dateFormat);
   }
 
   static dateDifference = (startDateInput, endDateInput) => {
     // Compute the displayed difference
     let result = {long:""}
     if (startDateInput && endDateInput) {
-      let startDate = this.toPrecision(startDateInput, "yyyy-MM-dd");
-      let endDate = this.toPrecision(endDateInput, "yyyy-MM-dd");
+      let startDate = this.toPrecision(startDateInput, this.defaultDateFormat);
+      let endDate = this.toPrecision(endDateInput, this.defaultDateFormat);
 
       let diff = [];
       let longDiff = [];
@@ -240,7 +184,7 @@ export default class DateQuestionUtilities {
       dateFormat.toLowerCase().includes(this.yearTag) && views.push('year');
       dateFormat.includes(this.monthTag) && views.push('month');
       dateFormat.includes(this.dayTag) && views.push('day');
-      dateFormat.toLowerCase().includes(this.hourTag) && views.push('hours');
+      dateFormat.toLowerCase().includes(this.hourMeridiemTag) && views.push('hours');
       dateFormat.includes(this.minuteTag) && views.push('minutes');
       dateFormat.includes(this.secondTag) && views.push('seconds');
     }
@@ -249,6 +193,23 @@ export default class DateQuestionUtilities {
 
   static formatIsMeridiem(dateFormat) {
     return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
+  }
+
+  static formatIsMinuteSeconds(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
+  }
+
+  static formatIsHourMinuteSeconds(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "hh:mm:ss";
+  }
+
+  static timeQuestionFieldType(dateFormat) {
+    return this.formatIsMinuteSeconds(dateFormat) ? "string" : "time";
+  }
+
+  static formatHasTime(dateFormat) {
+    return typeof(dateFormat) === "string" &&
+      (dateFormat.toLowerCase().includes(this.hourMeridiemTag) || dateFormat.includes(this.minuteTag) || dateFormat.includes(this.secondTag));
   }
 
   static processRelativeDate(dateString, endOfDay = false, toFormat) {

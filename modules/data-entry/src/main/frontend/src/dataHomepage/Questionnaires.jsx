@@ -24,19 +24,8 @@ import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialo
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import ExportButton from "./ExportButton.jsx";
-import { DateTime } from "luxon";
 import FormattedText from "../components/FormattedText.jsx";
-
-// Convert a date into the given format string
-// If the date is invalid (usually because it is missing), return ""
-let _formatDate = (date, formatString) => {
-  let dateObj = DateTime.fromISO(date);
-  if (dateObj.isValid) {
-    return dateObj.toFormat(formatString);
-  }
-  return "";
-};
-
+import DateTimeUtilities from "../components/DateTimeUtilities.jsx";
 
 function Questionnaires(props) {
   const [ questionnairesData, setQuestionnairesData ] = useState([]);
@@ -54,7 +43,7 @@ function Questionnaires(props) {
     {
       header: "Created on",
       accessorKey: "jcr:created",
-      Cell: ({ row }) => _formatDate(row.original["jcr:created"], "yyyy-MM-dd HH:mm"),
+      Cell: ({ row }) => DateTimeUtilities.formatDateAnswer("yyyy-MM-dd HH:mm", row.original["jcr:created"]),
       sortingFn: 'datetime',
       size: 20,
     },

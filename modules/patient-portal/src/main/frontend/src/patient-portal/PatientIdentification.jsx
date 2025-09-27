@@ -40,7 +40,12 @@ import ErrorPage from "../components/ErrorPage.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import ToUDialog from "./ToUDialog.jsx";
 
-import DropdownsDatePicker from "../components/DropdownsDatePicker.jsx";
+import DateTimeUtilities from "../components/DateTimeUtilities";
+
+import { DateTime } from "luxon";
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FormattedText from "../components/FormattedText.jsx";
 
 const useStyles = makeStyles()(theme => ({
@@ -105,7 +110,7 @@ function PatientIdentification(props) {
   const [ authToken, setAuthToken ] = useState();
 
   // The values entered by the user
-  const [ dob, setDob ] = useState();
+  const [ dob, setDob ] = useState(null);
   const [ mrn, setMrn ] = useState();
   const [ hc, setHc ] = useState();
 
@@ -130,6 +135,9 @@ function PatientIdentification(props) {
   const [ showTou, setShowTou ] = useState(false);
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
+
+  const dateFormat = DateTimeUtilities.defaultDateFormat;
+  const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   const { classes } = useStyles();
 
@@ -160,12 +168,12 @@ function PatientIdentification(props) {
   }
 
   const identify = () => {
-    if (!dob || !mrn && !hc) {
+    if (!dob.isValid || !mrn && !hc) {
       return null;
     }
     let requestData = new FormData();
     authToken && requestData.append("auth_token", authToken);
-    dob && requestData.append("date_of_birth", dob);
+    dob && requestData.append("date_of_birth", dob.toFormat(dateFormat));
     mrn && requestData.append("mrn", mrn);
     hc && requestData.append("health_card", hc);
     visit && requestData.append("visit", visit);
@@ -176,7 +184,7 @@ function PatientIdentification(props) {
   // On submitting the patient login form, make a request to identify the patient
   const onSubmit = (event) => {
     event?.preventDefault();
-    if (!dob || !mrn && !hc) {
+    if (!dob.isValid || !mrn && !hc) {
       setError("Date of birth and either MRN or Health Card Number are required for patient identification");
       return;
     }
@@ -328,8 +336,40 @@ function PatientIdentification(props) {
               <Typography variant="h6">Enter the following information for identification:</Typography>
             }
             </div>
-            <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
-            <DropdownsDatePicker id="j_dob" name="j_dob" formatDate onDateChange={setDob} autoFocus fullWidth/>
+            <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <DatePicker
+                views={views}
+                openTo="year"
+                format={dateFormat}
+                label="Date of birth"
+                value={dob}
+                onChange={(value) => {
+                  setError(false);
+                  setDob(value);
+                }}
+                slotProps={{ textField: {
+                               variant: 'standard',
+                               autoFocus: true,
+                               fullWidth: true,
+                               className: classes.textField,
+                               helperText: null,
+                               onBlur: (event) => {
+                                 if (dob?.invalid) {
+                                   setError(true);
+                                   setErrorMessage("Invalid date" + (dob.invalid.explanation ? ": " + dob.invalid.explanation : ""));
+                                 }
+                               },
+                               inputProps: {
+                                 placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`
+                               },
+                             },
+                             field: {
+                               clearable: true,
+                               onClear: () => setDob(null),
+                             },
+                }}
+              />
+            </LocalizationProvider>
             <Grid container alignItems="flex-start" wrap="nowrap" spacing={2} justifyContent="space-between">
               <Grid>
                 <FormControl variant="standard" margin="normal" fullWidth>
