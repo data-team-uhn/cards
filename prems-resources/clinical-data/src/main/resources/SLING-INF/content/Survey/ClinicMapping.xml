@@ -361,5 +361,10 @@
             <value>UHN OC</value>
             <type>String</type>
         </property>
+        <property>
+            <name>daysRelativeToEventWhileSurveyIsValid</name>
+            <value>18</value>
+            <type>Double</type>
+        </property>
     </node>
 </node>
