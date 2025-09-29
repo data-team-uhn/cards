@@ -24,6 +24,7 @@ import {
   Button,
   DialogActions,
   DialogContent,
+  TablePagination,
   Typography
 } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
@@ -72,6 +73,7 @@ function NewFormDialog(props) {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isRefetching, setIsRefetching ] = useState(false);
   const [ rowCount, setRowCount ] = useState(0);
+  const [ totalIsApproximate, setTotalIsApproximate ] = useState(0);
 
   //table state
   const [globalFilter, setGlobalFilter] = useState('');
@@ -315,6 +317,7 @@ function NewFormDialog(props) {
       const json = await response.json();
       setData(json["rows"]);
       setRowCount(json.totalrows);
+      setTotalIsApproximate(json.totalIsApproximate);
 
       setIsLoading(false);
       setIsRefetching(false);
@@ -326,6 +329,13 @@ function NewFormDialog(props) {
     pagination.pageIndex,
     pagination.pageSize
   ]);
+
+  let handleChangeRowsPerPage = (event) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: event.target.value,
+    }));
+  };
 
   let handleChangePage = (event, page) => {
     setPagination((prev) => ({
@@ -359,14 +369,11 @@ function NewFormDialog(props) {
     enableTableHead: false,
     onGlobalFilterChange: setGlobalFilter,
     enableBottomToolbar: false,
-    onPaginationChange: handleChangePage,
-    manualPagination: true,
     rowCount: rowCount,
     state: {
       rowSelection: { [selectedQuestionnaire?.["jcr:uuid"]]: true },
       globalFilter,
       isLoading,
-      pagination,
       showProgressBars: isRefetching,
     },
     initialState: { showGlobalFilter: true, columnVisibility: { description: false } },
@@ -421,6 +428,18 @@ function NewFormDialog(props) {
           <React.Fragment>
             {relatedForms && <>
               <MaterialReactTable table={table}/>
+              <TablePagination
+                  component="div"
+                  rowsPerPageOptions={[5, 10, 15, 20, 25, 30, 50, 100, 1000]}
+                  count={totalIsApproximate ? -1 : rowCount}
+                  rowsPerPage={pagination.pageSize}
+                  page={pagination.pageIndex}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  labelDisplayedRows={({from, to, count}) =>
+                      `${from}-${to} of ${totalIsApproximate ? `more than ${rowCount}` : count}`
+                  }
+                />
               </>
             }
           </React.Fragment>
