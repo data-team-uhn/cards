@@ -570,6 +570,11 @@ const questionnaireStyle = theme => ({
         padding: theme.spacing(1),
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     },
+    formFlagBox: {
+        display: "flex",
+        flexWrap: "wrap",
+        width: "100%",
+    },
     childFormFlag: {
         marginBottom: theme.spacing(1),
         marginRight: theme.spacing(1),

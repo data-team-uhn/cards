@@ -104,7 +104,10 @@ function AddUserToGroupDialog(props) {
     <Dialog
       maxWidth="sm"
       open={isOpen}
-      onClose={handleClose}
+      onClose={() => {
+        table.resetRowSelection();
+        handleClose();
+      }}
       slotProps={{ transition: {
                      onEntering: () => handleEntering(),
                    },
@@ -121,7 +124,7 @@ function AddUserToGroupDialog(props) {
         </Grid>
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
-        <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+        <Button variant="outlined" onClick={() => { table.resetRowSelection(); handleClose(); }}>Cancel</Button>
         <Button variant="contained" onClick={handleAddUsers}>Add</Button>
       </DialogActions>
     </Dialog>

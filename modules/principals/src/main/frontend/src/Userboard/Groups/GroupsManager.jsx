@@ -117,7 +117,7 @@ let GroupUsersTable = (props) => {
           <Button
             variant="contained"
             className={classes.containerButton}
-            onClick={() => addUserToGroup(group)}
+            onClick={() => addUserToGroup(group, groupUsers)}
           >
             Add User to Group
           </Button>
@@ -158,7 +158,7 @@ function GroupsManager(props) {
     return groupUsers;
   }
 
-  let addUserToGroup = (group) => {
+  let addUserToGroup = (group, groupUsers) => {
     setCurrentGroupName(group.principalName);
     setDeployAddGroupUsers(true);
     setCurrentGroupUsers(groupUsers);

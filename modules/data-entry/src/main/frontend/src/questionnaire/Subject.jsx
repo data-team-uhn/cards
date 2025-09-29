@@ -631,7 +631,7 @@ function SubjectMemberInternal (props) {
                         paddingBottom: theme.spacing(1),
                       }),
                     },
-                    Cell: ({ row }) => (<>
+                    Cell: ({ row }) => (<Box className={classes.formFlagBox}>
                                          { row.original["statusFlags"].map((status) => {
                                            return <Chip
                                              key={status}
@@ -641,7 +641,7 @@ function SubjectMemberInternal (props) {
                                              size="small"
                                            />
                                          })}
-                                       </>) },
+                                       </Box>) },
                 ]}
                 enableRowActions
                 positionActionsColumn="last"
