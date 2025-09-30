@@ -23,7 +23,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Alert, Button, CircularProgress, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./SubjectIdentifier.jsx";

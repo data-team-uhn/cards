@@ -30,7 +30,7 @@ import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy, getHomepageLink } from "./SubjectIdentifier";
-import MaterialReactTable from 'material-react-table';
+import { MaterialReactTable } from 'material-react-table';
 import { Box } from '@mui/material';
 
 import {
@@ -557,7 +557,7 @@ function SubjectMemberInternal (props) {
                     flex: '0 0 auto',
                   }
                 }}
-                muiTableDetailPanelProps={{
+                muiDetailPanelProps={{
                   sx: (theme) => ({
                     marginLeft: theme.spacing(9),
                     width: '100%'
@@ -631,7 +631,7 @@ function SubjectMemberInternal (props) {
                         paddingBottom: theme.spacing(1),
                       }),
                     },
-                    Cell: ({ row }) => (<>
+                    Cell: ({ row }) => (<Box className={classes.formFlagBox}>
                                          { row.original["statusFlags"].map((status) => {
                                            return <Chip
                                              key={status}
@@ -641,7 +641,7 @@ function SubjectMemberInternal (props) {
                                              size="small"
                                            />
                                          })}
-                                       </>) },
+                                       </Box>) },
                 ]}
                 enableRowActions
                 positionActionsColumn="last"

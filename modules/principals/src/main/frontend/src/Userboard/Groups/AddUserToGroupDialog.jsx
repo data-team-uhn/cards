@@ -15,14 +15,14 @@
   under the License.
 */
 
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import { withStyles } from 'tss-react/mui';
 import userboardStyle from '../userboardStyle.jsx';
 import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
-import MaterialReactTable from 'material-react-table';
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 const GROUP_URL="/system/userManager/group/";
@@ -33,13 +33,12 @@ function AddUserToGroupDialog(props) {
 
   let [ freeUsers, setFreeUsers ] = useState([]);
 
-  let tableRef = useRef();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let handleAddUsers = () => {
     let formData = new FormData();
 
-    let selectedUsers = Object.keys(tableRef.current?.getState().rowSelection);
+    let selectedUsers = Object.keys(table?.getState().rowSelection);
     for (var i = 0; i < selectedUsers.length; ++i) {
       formData.append(':member', freeUsers[selectedUsers[i]].name);
     }
@@ -51,7 +50,7 @@ function AddUserToGroupDialog(props) {
             body: formData
         })
         .then(() => {
-            reload(false, tableRef);
+            reload(false, table);
             handleClose();
         })
         .catch((error) => {
@@ -68,11 +67,47 @@ function AddUserToGroupDialog(props) {
     }
   }
 
+  let table = useMaterialReactTable({
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enableSorting: false,
+    enableTopToolbar: false,
+    muiTableHeadCellProps: {
+      sx: (theme) => ({
+        background: theme.palette.grey['200'],
+      }),
+    },
+    enableRowSelection: true,
+    enableSelectAll: false,
+    muiSelectCheckboxProps: { color: 'primary' },
+    muiTableBodyRowProps: ({ row }) => ({
+      onClick: row.getToggleSelectedHandler(),
+      sx: {
+        cursor: 'pointer',
+      },
+    }),
+    columns: [
+      { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
+        Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
+      { header: 'User Name', accessorKey: 'name' },
+      { header: 'Admin', accessorKey: 'isAdmin', size: 10,
+        Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
+      },
+      { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
+        Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
+      },
+    ],
+    data: freeUsers
+  });
+
   return (
     <Dialog
       maxWidth="sm"
       open={isOpen}
-      onClose={handleClose}
+      onClose={() => {
+        table.resetRowSelection();
+        handleClose();
+      }}
       slotProps={{ transition: {
                      onEntering: () => handleEntering(),
                    },
@@ -84,44 +119,12 @@ function AddUserToGroupDialog(props) {
       <DialogContent>
         <Grid container>
           <div>
-            <MaterialReactTable
-              tableInstanceRef={tableRef}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableSorting={false}
-              enableTopToolbar={false}
-              muiTableHeadCellProps={{
-                sx: (theme) => ({
-                  background: theme.palette.grey['200'],
-                }),
-              }}
-              enableRowSelection
-              enableSelectAll={false}
-              muiSelectCheckboxProps={{ color: 'primary' }}
-              muiTableBodyRowProps={({ row }) => ({
-                onClick: row.getToggleSelectedHandler(),
-                sx: {
-                  cursor: 'pointer',
-                },
-              })}
-              columns={[
-                { header: 'Avatar', accessorKey: 'imageUrl', size: 8,
-                  Cell: ({ row }) => <Avatar src={row.original.imageUrl} className={classes.info}>{row.original.initials}</Avatar>},
-                { header: 'User Name', accessorKey: 'name' },
-                { header: 'Admin', accessorKey: 'isAdmin', size: 10,
-                  Cell: ({ row }) => (row.original.isAdmin ? <CheckIcon /> : "")
-                },
-                { header: 'Disabled', accessorKey: 'isDisabled', size: 10,
-                  Cell: ({ row }) => (row.original.isDisabled ? <CheckIcon /> : "")
-                },
-              ]}
-              data={freeUsers}
-            />
+            <MaterialReactTable table={table}/>
           </div>
         </Grid>
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
-        <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+        <Button variant="outlined" onClick={() => { table.resetRowSelection(); handleClose(); }}>Cancel</Button>
         <Button variant="contained" onClick={handleAddUsers}>Add</Button>
       </DialogActions>
     </Dialog>

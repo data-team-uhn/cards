@@ -39,7 +39,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import BackupIcon from '@mui/icons-material/Backup';
 import CloseIcon from '@mui/icons-material/Close';
 import GetApp from '@mui/icons-material/GetApp';
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
 import DragAndDrop from "./components/DragAndDrop";

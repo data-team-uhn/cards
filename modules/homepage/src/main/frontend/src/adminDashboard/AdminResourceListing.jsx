@@ -21,7 +21,7 @@ import React, { useState, useContext, useEffect } from "react";
 import AdminScreen from "./AdminScreen.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 
 
 function AdminResourceListing(props) {

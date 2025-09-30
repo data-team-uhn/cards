@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -24,10 +24,11 @@ import {
   Button,
   DialogActions,
   DialogContent,
+  TablePagination,
   Typography
 } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import Alert from '@mui/material/Alert';
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
@@ -72,6 +73,7 @@ function NewFormDialog(props) {
   const [ isLoading, setIsLoading ] = useState(false);
   const [ isRefetching, setIsRefetching ] = useState(false);
   const [ rowCount, setRowCount ] = useState(0);
+  const [ totalIsApproximate, setTotalIsApproximate ] = useState(0);
 
   //table state
   const [globalFilter, setGlobalFilter] = useState('');
@@ -79,7 +81,6 @@ function NewFormDialog(props) {
     pageIndex: 0,
     pageSize: 5,
   });
-  const tableRef = useRef();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
   const navigate = useNavigate();
@@ -195,7 +196,7 @@ function NewFormDialog(props) {
 
   let goBack = () => {
     resetDialogState();
-    tableRef.current.resetGlobalFilter();
+    table.resetGlobalFilter();
     // Exit the dialog if we're at the first page or if there is a preset path
     if (progress === PROGRESS_SELECT_QUESTIONNAIRE || presetPath) {
       setDialogOpen(false);
@@ -316,6 +317,7 @@ function NewFormDialog(props) {
       const json = await response.json();
       setData(json["rows"]);
       setRowCount(json.totalrows);
+      setTotalIsApproximate(json.totalIsApproximate);
 
       setIsLoading(false);
       setIsRefetching(false);
@@ -327,6 +329,20 @@ function NewFormDialog(props) {
     pagination.pageIndex,
     pagination.pageSize
   ]);
+
+  let handleChangeRowsPerPage = (event) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: event.target.value,
+    }));
+  };
+
+  let handleChangePage = (event, page) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: page,
+    }));
+  }
 
   // If the number of related forms of a certain questionnaire type is at the maxPerSubject,
   // the corresponding row should not be selectable
@@ -346,7 +362,54 @@ function NewFormDialog(props) {
       setError("");
       setDisableProgress(false);
     }
-  }
+  };
+
+  let table = useMaterialReactTable({
+    enableToolbarInternalActions: false,
+    enableTableHead: false,
+    onGlobalFilterChange: setGlobalFilter,
+    enableBottomToolbar: false,
+    rowCount: rowCount,
+    state: {
+      rowSelection: { [selectedQuestionnaire?.["jcr:uuid"]]: true },
+      globalFilter,
+      isLoading,
+      showProgressBars: isRefetching,
+    },
+    initialState: { showGlobalFilter: true, columnVisibility: { description: false } },
+    columns: [
+      { accessorKey: 'title',
+        Cell: ({ row }) => (<>
+                      <Typography component="div">{row.original.title}</Typography>
+                      <FormattedText variant="caption" color="textSecondary">
+                        {row.original.description}
+                      </FormattedText>
+                    </>)
+      },
+      { accessorKey: 'description' }
+    ],
+    getRowId: (row) => row["jcr:uuid"],
+    data: data,
+    positionToolbarAlertBanner: "none",
+    muiSearchTextFieldProps: { autoFocus: true },
+    muiTableBodyRowProps: ({ row }) => ({
+      sx: {
+        cursor: isRowDisabled(row) ? 'default' : 'pointer',
+      },
+      onClick: () => { onClickRow(row); },
+    }),
+    muiTableBodyCellProps:({ cell }) => ({
+      sx: (theme) => ({
+        // grey out subjects that have already reached maxPerSubject
+        color: isRowDisabled(cell.row) ? theme.palette.text.disabled : theme.palette.text.primary,
+      }),
+    }),
+    muiTablePaperProps:({ table }) => ({
+      style: {
+        '--Paper-shadow': 'none',
+      },
+    }),
+  });
 
   return (
     <React.Fragment>
@@ -363,51 +426,21 @@ function NewFormDialog(props) {
           {error && (!newSubjectPopperOpen) && <Alert severity="error">{error}</Alert>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
-            {relatedForms &&
-              <MaterialReactTable
-                tableInstanceRef={tableRef}
-                enableToolbarInternalActions={false}
-                enableTableHead={false}
-                onGlobalFilterChange={setGlobalFilter}
-                manualPagination
-                onPaginationChange={setPagination}
-                rowCount={rowCount}
-                state={{
-                  rowSelection: { [selectedQuestionnaire?.["jcr:uuid"]]: true },
-                  globalFilter,
-                  isLoading,
-                  pagination,
-                  showProgressBars: isRefetching
-                }}
-                initialState={{ showGlobalFilter: true, columnVisibility: { description: false } }}
-                columns={[
-                  { accessorKey: 'title',
-                    Cell: ({ row }) => (<>
-                                  <Typography component="div">{row.original.title}</Typography>
-                                  <FormattedText variant="caption" color="textSecondary">
-                                    {row.original.description}
-                                  </FormattedText>
-                                </>)
-                  },
-                  { accessorKey: 'description' }
-                ]}
-                getRowId={ (row) => row["jcr:uuid"] }
-                data={data}
-                positionToolbarAlertBanner="none"
-                muiSearchTextFieldProps={{ autoFocus: true }}
-                muiTableBodyRowProps={({ row }) => ({
-                  sx: {
-                    cursor: isRowDisabled(row) ? 'default' : 'pointer',
-                  },
-                  onClick: () => { onClickRow(row); },
-                })}
-                muiTableBodyCellProps={({ cell }) => ({
-                  sx: (theme) => ({
-                    // grey out subjects that have already reached maxPerSubject
-                    color: isRowDisabled(cell.row) ? theme.palette.text.disabled : theme.palette.text.primary,
-                  }),
-                })}
-              />
+            {relatedForms && <>
+              <MaterialReactTable table={table}/>
+              <TablePagination
+                  component="div"
+                  rowsPerPageOptions={[5, 10, 15, 20, 25, 30, 50, 100, 1000]}
+                  count={totalIsApproximate ? -1 : rowCount}
+                  rowsPerPage={pagination.pageSize}
+                  page={pagination.pageIndex}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  labelDisplayedRows={({from, to, count}) =>
+                      `${from}-${to} of ${totalIsApproximate ? `more than ${rowCount}` : count}`
+                  }
+                />
+              </>
             }
           </React.Fragment>
           :

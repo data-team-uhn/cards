@@ -25,7 +25,7 @@ import {
   Tooltip
 } from "@mui/material";
 
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 import VocabularyActions from "./VocabularyActions"
 import VocabularySearch from "./VocabularySearch";
 
