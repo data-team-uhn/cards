@@ -65,7 +65,12 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 function DateQuestion(props) {
   checkPropTypes(DateQuestion, props);
   let {existingAnswer, classes, pageActive, ...rest} = props;
-  let {dateFormat, type, lowerLimit, upperLimit} = {dateFormat: DateTimeUtilities.defaultDateFormat, type: DateTimeUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
+  let {
+    dateFormat = DateTimeUtilities.defaultDateFormat,
+    type = DateTimeUtilities.TIMESTAMP_TYPE,
+    lowerLimit,
+    upperLimit
+  } = {...props.questionDefinition, ...props};
 
   const existingValues = existingAnswer && existingAnswer[1].value || "";
   const upperLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(upperLimit));
@@ -204,7 +209,7 @@ function DateQuestion(props) {
     const initialValue = Array.from(existingAnswer?.[1]?.value || []);
     let limits = initialValue.slice(0, 2);
     if (idx > 0 || limits.length == 0) return '';
-    limits[0] = label;
+    limits[0] = DateTimeUtilities.toPrecision(limits[0])?.toFormat(dateFormat);
     // In case of invalid data (only one limit of the range is available)
     if (limits.length == 1) {
       limits.push("");
