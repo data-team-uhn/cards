@@ -81,7 +81,6 @@
               SLING-INF/content/apps/cards/clarityImport/YourExperience.xml;path:=/apps/cards/clarityImport/YourExperience;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/PMH-YVM.xml;path:=/apps/cards/clarityImport/PMH-YVM;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/PMH-OO.xml;path:=/apps/cards/clarityImport/PMH-OO;overwrite:=true,
-              SLING-INF/content/Statistics/;path:=/Statistics/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
