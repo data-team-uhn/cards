@@ -207,7 +207,7 @@ function SubjectLockAction(props) {
       <List dense>
         {rows.map((row, index) => {
           let date = row["jcr:created"];
-          let dateObj = DateTime.fromISO(date);
+          let dateObj = DateTime.fromISO(date, { setZone: true });
           if (dateObj.isValid) {
             date = dateObj.toFormat("yyyy-MM-dd");
           }

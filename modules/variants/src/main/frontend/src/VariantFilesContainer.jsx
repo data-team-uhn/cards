@@ -935,7 +935,7 @@ export default function VariantFilesContainer() {
                 })
               },
               Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
-                                  {DateTime.fromISO(row.original['jcr:created']).toFormat(DateTimeUtilities.VIEW_DATE_FORMAT)}
+                                  {DateTime.fromISO(row.original['jcr:created'], { setZone: true }).toFormat(DateTimeUtilities.VIEW_DATE_FORMAT)}
                                  </Link>
             },
             { header: 'Uploaded By',

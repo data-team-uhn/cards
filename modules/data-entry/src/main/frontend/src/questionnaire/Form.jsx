@@ -475,7 +475,7 @@ function Form (props) {
                          resourcePath={formURL}
                          resourceData={data}
                          breadcrumb={getTextHierarchy(data?.subject, true)}
-                         date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+                         date={DateTime.fromISO(data['jcr:created'], { setZone: true }).toLocaleString(DateTime.DATE_MED)}
                          onClose={() => { setActionsMenu(null); }}
                        />
                     </ListItem>
@@ -543,7 +543,7 @@ function Form (props) {
   )
 
   let getTimestampString  = (timestamp) => {
-    let time = DateTime.fromISO(timestamp);
+    let time = DateTime.fromISO(timestamp, { setZone: true });
     return time.hasSame(DateTime.local(),"day") ? "at " + time.toFormat("hh:mma") : time.toRelativeCalendar();
   }
 
@@ -599,7 +599,7 @@ function Form (props) {
             <Typography variant="overline">
               {"Entered by " + data['jcr:createdBy'] + " on "}
               <Tooltip title={data['jcr:created']}>
-                <span>{DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
+                <span>{DateTime.fromISO(data['jcr:created'], { setZone: true }).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
               </Tooltip>
             </Typography>
             : ""

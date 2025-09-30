@@ -59,21 +59,21 @@ function TimeQuestion(props) {
   checkPropTypes(TimeQuestion, props);
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {dateFormat: "mm:ss", ...props.questionDefinition, ...props};
-  let currentStartValue = (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).isValid)
-    ? DateTime.fromFormat(existingAnswer[1].value, dateFormat) : null;
+  let currentStartValue = (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat, { setZone: true }).isValid)
+    ? DateTime.fromFormat(existingAnswer[1].value, dateFormat, { setZone: true }) : null;
   const [selectedTime, changeTime] = useState(currentStartValue);
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";
   const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
   const views = DateTimeUtilities.getPickerViews(dateFormat);
   const isHourMinuteSeconds = DateTimeUtilities.formatIsHourMinuteSeconds(dateFormat);
-  const maxTime = upperLimit ? DateTime.fromFormat(upperLimit, dateFormat) : null;
-  const minTime = lowerLimit ? DateTime.fromFormat(lowerLimit, dateFormat) : null;
+  const maxTime = upperLimit ? DateTime.fromFormat(upperLimit, dateFormat, { setZone: true }) : null;
+  const minTime = lowerLimit ? DateTime.fromFormat(lowerLimit, dateFormat, { setZone: true }) : null;
 
   // Error check existing answers when first loading the page
-  if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalid) {
+  if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat, { setZone: true }).invalid) {
     setError(true);
-    setErrorMessage(DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalidExplanation);
+    setErrorMessage(DateTime.fromFormat(existingAnswer[1].value, dateFormat, { setZone: true }).invalidExplanation);
   }
 
   let outputAnswers = [["time", selectedTime && selectedTime.isValid ? selectedTime.toFormat(dateFormat) : null]];

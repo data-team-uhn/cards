@@ -24,7 +24,6 @@ export default class DateTimeUtilities {
 
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
-  static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss.SSSZ";
   static defaultDateFormat = "yyyy-MM-dd";
   static VIEW_DATE_FORMAT = "yyyy/MM/dd";
 
@@ -88,16 +87,16 @@ export default class DateTimeUtilities {
     if (!date) {
       return null;
     }
-    if (!toFormat) {
-      toFormat = this.slingDateFormat;
-    }
 
     let new_date = date;
     if (typeof new_date === "string") {
-      new_date = fromFormat ? DateTime.fromFormat(new_date, fromFormat) : DateTime.fromISO(new_date);
+      new_date = fromFormat ? DateTime.fromFormat(new_date, fromFormat, { setZone: true }) : DateTime.fromISO(new_date, { setZone: true });
     }
     if (!new_date.isValid) {
       return null;
+    }
+    if (!toFormat) {
+      return new_date;
     }
 
     // Determine the coarsest measure to truncate the input to
@@ -230,7 +229,7 @@ export default class DateTimeUtilities {
     } else {
 
       // If not, is it a valid date in ISO format?
-      let isoDate = DateTime.fromISO(dateString.trim());
+      let isoDate = DateTime.fromISO(dateString.trim(), { setZone: true });
 
       if (isoDate.isValid){
         absoluteDate = isoDate;

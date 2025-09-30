@@ -209,7 +209,7 @@ let Questionnaire = (props) => {
           >
           { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
             <Typography variant="overline">
-              Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
+              Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created'], { setZone: true }).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
             </Typography>
           }
         </ResourceHeader>

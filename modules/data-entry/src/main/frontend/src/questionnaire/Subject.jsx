@@ -346,7 +346,7 @@ function SubjectHeader(props) {
                 resourcePath={path}
                 resourceData={subject?.data}
                 breadcrumb={pageTitle}
-                date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+                date={DateTime.fromISO(subject?.data['jcr:created'], { setZone: true }).toLocaleString(DateTime.DATE_MED)}
               />
               <DeleteButton
                 entryPath={path}
@@ -381,7 +381,7 @@ function SubjectHeader(props) {
         <Typography variant="overline"  color="textSecondary">
           {"Entered by " + subject.data['jcr:createdBy'] + " on "}
           <Tooltip title={subject.data['jcr:created']}>
-            <span>{DateTime.fromISO(subject.data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
+            <span>{DateTime.fromISO(subject.data['jcr:created'], { setZone: true }).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
           </Tooltip>
         </Typography>
         : ""
@@ -484,7 +484,7 @@ function SubjectMemberInternal (props) {
                   resourcePath={path}
                   resourceData={data}
                   breadcrumb={getTextHierarchy(data, true)}
-                  date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
+                  date={DateTime.fromISO(data['jcr:created'], { setZone: true }).toLocaleString(DateTime.DATE_MED)}
                   className={classes.childSubjectHeaderButton}
                   disableShortcut
                 />
@@ -615,10 +615,10 @@ function SubjectMemberInternal (props) {
                                          {questionnaireTitle}
                                        </Link>
                                        <Typography variant="caption" component="div" color="textSecondary">
-                                         Created {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                                         Created {DateTime.fromISO(row.original['jcr:created'], { setZone: true }).toFormat("yyyy-MM-dd HH:mm")}
                                        </Typography>
                                        <Typography variant="caption" component="div" color="textSecondary">
-                                         Last modified {DateTime.fromISO(row.original['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                                         Last modified {DateTime.fromISO(row.original['jcr:lastModified'], { setZone: true }).toFormat("yyyy-MM-dd HH:mm")}
                                        </Typography>
                                      </Grid>
                                    </Grid>

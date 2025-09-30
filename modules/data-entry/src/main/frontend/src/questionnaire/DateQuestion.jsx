@@ -34,6 +34,9 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTime } from "luxon";
+import { Link } from "@mui/material";
+
 
 // Component that renders a date/time question
 // Selected answers are placed in a series of <input type="hidden"> tags for submission.
@@ -80,6 +83,7 @@ function DateQuestion(props) {
   const [endFormatError, setEndFormatError] = useState();
   const [minMaxError, setMinMaxError] = useState();
   const [rangeError, setRangeError] = useState();
+  const [switchedFromZone, setSwitchedFromZone] = useState();
 
   const views = DateTimeUtilities.getPickerViews(dateFormat);
 
@@ -156,16 +160,16 @@ function DateQuestion(props) {
     }
   }
 
-  let getSlingDate = (isEnd) => {
+  let getISODate = (isEnd) => {
     let date = isEnd ? displayedEndDate : displayedDate;
     if (date) {
-      date = date.toFormat(DateTimeUtilities.slingDateFormat) || "";
+      date = date.toISO() || "";
     }
     return date;
   }
 
-  let outputStart = getSlingDate(false);
-  let outputEnd = getSlingDate(true);
+  let outputStart = getISODate(false);
+  let outputEnd = getISODate(true);
   let outputAnswers = outputStart && outputStart !== "Invalid DateTime" && outputStart.length > 0 ? [["date", outputStart]] : [];
   if (isRange && outputEnd && outputEnd !== "Invalid DateTime" && outputEnd.length > 0) {
     outputAnswers.push(["endDate", outputEnd]);
@@ -173,7 +177,21 @@ function DateQuestion(props) {
 
   let errorMessage = formatError || minMaxError || rangeError;
 
+  let handleSwitch = (value, isEnd) => {
+    // if switchedFromZone is defined then user made a switch to local timezone in past and wants to switch back to original
+    let currentZone = value.zoneName;
+    let newDate = switchedFromZone ? value.setZone(switchedFromZone) : DateTime.fromISO(value.toISO());
+    if (isEnd) {
+      setDisplayedEndDate(newDate);
+    } else {
+      setDisplayedDate(newDate);
+    }
+    setSwitchedFromZone(switchedFromZone ? null : currentZone);
+  };
+
   let getDateField = (isEnd, date, formatError) => {
+    let localUTCZone = DateTime.fromISO(DateTime.local().toISO(), { setZone: true }).zoneName;
+    let isLocalTimeZone = DateTime.local().toISO().slice(-4) === date?.toISO().slice(-4);
     return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <PickerComponent
@@ -183,6 +201,7 @@ function DateQuestion(props) {
         minDate={lowerLimitLuxon || undefined}
         maxDate={upperLimitLuxon || undefined}
         value={date}
+        timezone={date?.zoneName}
         onChange={(value) => {
           setDate(value, isEnd);
           cleanErrorMessages(isEnd);
@@ -192,7 +211,19 @@ function DateQuestion(props) {
                        variant: 'standard',
                        error: formatError || minMaxError || rangeError,
                        className: classes.textField,
-                       helperText: formatError || minMaxError || null,
+                       helperText: formatError || minMaxError || date && (!isLocalTimeZone || switchedFromZone) &&
+                       <>
+                         Date is in {isLocalTimeZone ? localUTCZone : date.zoneName}
+                         <Link
+                           component="button"
+                           type="button"
+                           underline="hover"
+                           onClick={() => handleSwitch(date, isEnd)}
+                           sx={{ cursor: "pointer", ml: 1 }}
+                         >
+                           Switch to {switchedFromZone || localUTCZone}
+                         </Link>
+                       </>|| null,
                        onBlur: (event) => validateInput(event, date, isEnd),
                        onFocus: (event) => cleanErrorMessages(isEnd),
                      },

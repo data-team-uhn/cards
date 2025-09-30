@@ -56,8 +56,8 @@ function DowntimeWarningConfiguration() {
   // Read the settings from the saved configuration
   let readDowntimeWarningSettings = (json) => {
     setEnabled(json.enabled == 'true');
-    json.fromDate && setFromDate(DateTime.fromFormat(json.fromDate, dateFormat));
-    json.toDate && setToDate(DateTime.fromFormat(json.toDate, dateFormat));
+    json.fromDate && setFromDate(DateTime.fromFormat(json.fromDate, dateFormat, { setZone: true }));
+    json.toDate && setToDate(DateTime.fromFormat(json.toDate, dateFormat, { setZone: true }));
   }
 
   let buildConfigData = (formData) => {
