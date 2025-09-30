@@ -432,7 +432,7 @@ public class EmailTemplate
     {
         if (value.getType() == PropertyType.DATE) {
             Calendar date = value.getDate();
-            final DateFormat sdf = DateFormat.getDateInstance();
+            final DateFormat sdf = DateFormat.getDateInstance(DateFormat.LONG);
             sdf.setTimeZone(date.getTimeZone());
             return sdf.format(date.getTime());
         } else {

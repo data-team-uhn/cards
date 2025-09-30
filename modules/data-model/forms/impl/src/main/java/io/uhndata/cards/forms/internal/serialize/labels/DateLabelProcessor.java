@@ -44,7 +44,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class DateLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
-    private static final DateFormat DEFAULT_FORMAT = SimpleDateFormat.getDateInstance();
+    private static final DateFormat DEFAULT_FORMAT = DateFormat.getDateInstance(DateFormat.LONG);
 
     @Override
     public String getDescription()
