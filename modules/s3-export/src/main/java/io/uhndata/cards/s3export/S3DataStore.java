@@ -29,6 +29,8 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.ResetException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -117,9 +119,11 @@ public class S3DataStore implements DataStore
                     .withPartNumber(partNumber)
                     .withPartSize(partSize);
 
-                UploadPartResult uploadResult = s3.uploadPart(uploadRequest);
+                UploadPartResult uploadResult = uploadPart(uploadRequest, s3, filename, partNumber);
+                if (uploadResult == null) {
+                    throw new IOException("Too many reset errors while uploading " + filename + ", aborting");
+                }
                 partETags.add(uploadResult.getPartETag());
-
                 position += partSize;
             }
 
@@ -129,6 +133,27 @@ public class S3DataStore implements DataStore
         } catch (Exception e) {
             throw new IOException("Failed to store file " + filename + " into S3 store " + getName(), e);
         }
+    }
+
+    private UploadPartResult uploadPart(final UploadPartRequest uploadRequest, AmazonS3 s3, String filename,
+        int partNumber) throws IOException
+    {
+        uploadRequest.getRequestClientOptions().setReadLimit((int) uploadRequest.getPartSize() + 1);
+
+        int retry = 0;
+        UploadPartResult uploadResult = null;
+        uploadRequest.getInputStream().mark((int) (uploadRequest.getPartSize() + 1));
+        do {
+            try {
+                uploadResult = s3.uploadPart(uploadRequest);
+            } catch (ResetException ex) {
+                LOGGER.warn("Reset error encountered while uploading {}#{}, retrying", filename, partNumber);
+            } catch (SdkClientException ex) {
+                LOGGER.warn("Exception while uploading {}#{}, retrying", filename, partNumber);
+            }
+            uploadRequest.getInputStream().reset();
+        } while (uploadRequest == null && ++retry < 3);
+        return uploadResult;
     }
 
     private long getPartSize(final String[] parameters)
