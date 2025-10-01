@@ -156,7 +156,7 @@ function NumberQuestion(props) {
   const [ minMaxError, setMinMaxError ] = useState(false);
   const [ rangeError, setRangeError ] = useState(false);
 
-  const initialValue = Array.from(existingAnswer?.[1]?.value || []);
+  const initialValue = Array.from(existingAnswer?.[1]?.value ?? []);
 
   // The following two are only used for range answers
   const [lowerLimit, setLowerLimit] = useState(initialValue[0]);
@@ -345,7 +345,7 @@ function NumberQuestion(props) {
   }
 
   let setValue = function(fn, value) {
-    if (value != null && value != "") {
+    if (value !== undefined && value !== null && value !== "") {
       let number = Number(value);
       if (dataType === "long" && !isNaN(number)) {
         value = Math.round(number);
