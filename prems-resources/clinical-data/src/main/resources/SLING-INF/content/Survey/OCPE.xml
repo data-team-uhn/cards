@@ -28,7 +28,7 @@
     <property>
         <name>intro</name>
         <value>
-Please answer some questions about your recent outpatient visit at **@{visit.location}**.
+Please answer some questions about your recent outpatient visit at **@{visit.provider:-UHN}** on **@{visit.time}**.
 
 During your appointment, care may be provided to you by one or more hospital
 staff. This survey uses the term "health care team" to refer to any hospital staff who
