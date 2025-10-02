@@ -108,6 +108,7 @@ function Unsubscribe (props) {
   let unsubscribe = (value) => {
     let request_data = new FormData();
     request_data.append("unsubscribe", value);
+    request_data.append("patient", patient);
     fetch("/Survey.unsubscribe", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? (setConfirmed(json.unsubscribed), setAlreadyUnsubscribed(null)) : Promise.reject(json.error))
