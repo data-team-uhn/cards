@@ -202,11 +202,14 @@ function QuestionnaireSet(props) {
     if ((typeof answer?.value != "undefined") && formatted) {
       // Special cases for formatting:
       if (question.dataType == "date") {
-        // Format dates to be human readable: January 1, 2000
-        let dateAnswer = DateTime.fromISO(answer.value);
-        if (dateAnswer.isValid) {
-          return dateAnswer.toLocaleString(DateTime.DATE_FULL);
-        }
+        // There may be one or two date values
+        let dates = Array.of(answer.value || []).flat();
+        return dates.map(d => {
+          // Format dates to be human readable: January 1, 2000
+          let dateAnswer = DateTime.fromISO(d);
+          return dateAnswer.isValid ? dateAnswer.toLocaleString(DateTime.DATE_FULL) : "";
+          // Retain only valid dates and join intervals by ' - '
+        }).filter(v => v).join(" - ");
       } else if (typeof question.maxAnswers != "undefined" && question.maxAnswers != 1) {
         // Join multivalued fiels as a comma separated list
         return answer.displayedValue?.join(", ");
