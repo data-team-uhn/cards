@@ -833,7 +833,8 @@ function QuestionnaireSet(props) {
 
   const progress = 100.0 * (crtStep + 1) / ((questionnaireIds?.length || 0) + 1);
 
-  return (<>
+  const screenContent = (
+    <>
       <Header
         key="title"
         title={title}
@@ -850,7 +851,21 @@ function QuestionnaireSet(props) {
           exitScreen
         }
       </QuestionnaireSetScreen>
-  </>)
+    </>
+  )
+
+  // If we're on a screen displaying survey questions,
+  // wrap the Header and the content in a Paper component,
+  // to keep them from being spaced evenly across the screen.
+  // The survey content will appear vertically aligned to the
+  // top, while the information screens (welcome message,
+  // review screen, final "Thank you" message will appear
+  // vertically aligned to the middle.
+  return (
+    crtStep >= 0 && crtStep < questionnaireIds.length
+    ? <Paper elevation={0}>{ screenContent }</Paper>
+    : screenContent
+  )
 }
 
 function QuestionnaireSetScreen (props) {
