@@ -186,19 +186,24 @@ public class ExportTask implements Runnable
                 this.retriever.getResourcesToExport(this.config, startDate, endDate, resolver);
 
             for (ResourceIdentifier identifier : resourcesToExport) {
-                // Step 2: Format the resources into the desired format
-                ResourceRepresentation resourceContents =
-                    this.formatter.format(identifier, startDate, endDate, this.config, resolver);
-                if (resourceContents != null) {
-                    // Step 3: Generate the file name according to the specified format
-                    String filename =
-                        getTargetFileName(identifier, startDate, endDate);
-                    // Step 4: Store the generated file
-                    Exception e = this.output(resourceContents, filename);
-                    if (e != null) {
-                        exceptions.add(e);
+                int retry = 0;
+                do {
+                    // Step 2: Format the resources into the desired format
+                    ResourceRepresentation resourceContents =
+                        this.formatter.format(identifier, startDate, endDate, this.config, resolver);
+                    if (resourceContents != null) {
+                        // Step 3: Generate the file name according to the specified format
+                        String filename =
+                            getTargetFileName(identifier, startDate, endDate);
+                        // Step 4: Store the generated file
+                        Exception e = this.output(resourceContents, filename);
+                        if (e != null) {
+                            exceptions.add(e);
+                        } else {
+                            break;
+                        }
                     }
-                }
+                } while (++retry <= 3);
             }
         } catch (LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
