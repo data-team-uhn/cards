@@ -75,20 +75,35 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
     {
         // This only works for a uuid-authenticated session; refuse requests if this is not the case
         final String sessionPatientIdentifier = request.getParameter("patient");
+        String sessionSubjectIdentifier = null;
         if (sessionPatientIdentifier == null) {
-            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
-            return;
+            // fall back to the previous version of unsuscribing params
+            sessionSubjectIdentifier =
+                (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
+            if (sessionSubjectIdentifier == null) {
+                writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
+                return;
+            }
         }
+
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "unsubscribe"))) {
             final Session session = rr.adaptTo(Session.class);
-            final Node patientInformationForm = session.getNodeByIdentifier(sessionPatientIdentifier);
+            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
+            final Node patientInformationForm;
+            if (sessionPatientIdentifier != null) {
+                patientInformationForm = session.getNodeByIdentifier(sessionPatientIdentifier);
+            } else {
+                final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
+                patientInformationForm =
+                    getPatientInformationForm(visitSubject, patientInformationQuestionnaire, session);
+            }
+
             if (patientInformationForm == null) {
                 writeError(response, SlingHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
                 return;
             }
 
-            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
             final Node unsubscribeQuestion =
                 this.questionnaireUtils.getQuestion(patientInformationQuestionnaire, UNSUBSCRIBE);
             Node unsubscribeAnswer = this.formUtils.getAnswer(patientInformationForm, unsubscribeQuestion);
@@ -106,20 +121,36 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
     }
 
     @Override
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
     {
         // This only works for a uuid-authenticated session; refuse requests if this is not the case
         final String sessionPatientIdentifier = request.getParameter("patient");
+        String sessionSubjectIdentifier = null;
         if (sessionPatientIdentifier == null) {
-            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
-            return;
+            // fall back to the previous version of unsuscribing params
+            sessionSubjectIdentifier =
+                (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
+            if (sessionSubjectIdentifier == null) {
+                writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
+                return;
+            }
         }
 
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "unsubscribe"))) {
             final Session session = rr.adaptTo(Session.class);
-            final Node patientInformationForm = session.getNodeByIdentifier(sessionPatientIdentifier);
+            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
+            final Node patientInformationForm;
+            if (sessionPatientIdentifier != null) {
+                patientInformationForm = session.getNodeByIdentifier(sessionPatientIdentifier);
+            } else {
+                final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
+                patientInformationForm =
+                    getPatientInformationForm(visitSubject, patientInformationQuestionnaire, session);
+            }
+
             if (patientInformationForm == null) {
                 writeError(response, SlingHttpServletResponse.SC_CONFLICT, "Sorry, cannot record your answer");
                 return;
@@ -129,7 +160,6 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
             final boolean checkin = !versionManager.isCheckedOut(patientInformationForm.getPath());
             versionManager.checkout(patientInformationForm.getPath());
 
-            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
             final Node unsubscribeQuestion =
                 this.questionnaireUtils.getQuestion(patientInformationQuestionnaire, UNSUBSCRIBE);
             Node unsubscribeAnswer = this.formUtils.getAnswer(patientInformationForm, unsubscribeQuestion);

@@ -61,8 +61,10 @@ function Unsubscribe (props) {
   const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
   const { classes } = useStyles();
 
-  let patient = new URLSearchParams(window.location.search).get("patient");
-  if (!patient) {
+  const params = new URLSearchParams(window.location.search);
+  const patient = params.get("patient");
+  const authToken = params.get("auth_token");
+  if (!(patient || authToken)) {
     return (
       <ErrorPage
         title="Invalid access"
@@ -75,7 +77,7 @@ function Unsubscribe (props) {
   }
 
   useEffect(() => {
-    fetch(`/Survey.unsubscribe?patient=${patient}`, { method: 'GET' })
+    fetch("/Survey.unsubscribe" + (patient ? `?patient=${patient}` : ""), { method: 'GET' })
       .then(async (response) => {
         if (response.ok) {
           return response.json();
@@ -108,7 +110,7 @@ function Unsubscribe (props) {
   let unsubscribe = (value) => {
     let request_data = new FormData();
     request_data.append("unsubscribe", value);
-    request_data.append("patient", patient);
+    patient && request_data.append("patient", patient);
     fetch("/Survey.unsubscribe", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? (setConfirmed(json.unsubscribed), setAlreadyUnsubscribed(null)) : Promise.reject(json.error))
