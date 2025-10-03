@@ -162,9 +162,9 @@ function Form (props) {
       incompleteQuestionEl.classList.add(classes.questionnaireItemWithError);
       incompleteQuestionEl.scrollIntoView({block: "center"});
     } else {
-      lastSaveStatus && endReached && onDone?.();
+      !saveInProgress && lastSaveStatus && endReached && onDone?.();
     }
-  }, [lastSaveStatus, endReached, incompleteQuestionEl]);
+  }, [lastSaveStatus, endReached, incompleteQuestionEl, saveInProgress]);
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
