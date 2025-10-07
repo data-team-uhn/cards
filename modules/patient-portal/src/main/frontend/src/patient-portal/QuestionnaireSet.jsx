@@ -195,10 +195,30 @@ function QuestionnaireSet(props) {
     return subjectData?.[questionnaireId]?.statusFlags?.includes("SUBMITTED");
   }
 
-  const getVisitInformation = (questionName) => {
-    let question = visitInformation?.questionnaire?.[questionName]?.["jcr:uuid"];
-    let answer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == question)?.value || null;
-    return answer;
+  const getVisitInformation = (questionName, formatted) => {
+    let question = visitInformation?.questionnaire?.[questionName];
+    if (!question) return null;
+    let answer = Object.values(visitInformation).find(entry => entry.question?.["jcr:uuid"] == question?.["jcr:uuid"]);
+    if ((typeof answer?.value != "undefined") && formatted) {
+      // Special cases for formatting:
+      if (question.dataType == "date") {
+        // There may be one or two date values
+        let dates = Array.of(answer.value || []).flat();
+        return dates.map(d => {
+          // Format dates to be human readable: January 1, 2000
+          let dateAnswer = DateTime.fromISO(d);
+          return dateAnswer.isValid ? dateAnswer.toLocaleString(DateTime.DATE_FULL) : "";
+          // Retain only valid dates and join intervals by ' - '
+        }).filter(v => v).join(" - ");
+      } else if (typeof question.maxAnswers != "undefined" && question.maxAnswers != 1) {
+        // Join multivalued fiels as a comma separated list
+        return answer.displayedValue?.join(", ");
+      }
+      // For everything else, return the displayedValue
+      return answer.displayedValue;
+    }
+    // Return the answer value by default
+    return answer?.value;
   }
 
   const getVisitDate = () => {
@@ -605,8 +625,7 @@ function QuestionnaireSet(props) {
     const eventLabel = displayText("eventLabel", AlertTitle);
     const time = appointmentDate();
     let location = getVisitInformation("location");
-    let provider = getVisitInformation("provider");
-    provider = provider?.length > 1 ? provider.join(", ") : provider;
+    let provider = getVisitInformation("provider", true);
     return (eventLabel && (time || location || provider)) ?
       <Alert severity="info" key="appointment-notification">
         {eventLabel}
@@ -655,14 +674,17 @@ function QuestionnaireSet(props) {
   // The questionnaire set intro may reference data from the visit information form, with default values
   // For example @{visit.location:-UHN} specifies that the `location` field needs to be displayed,
   // and it should default to "UHN" if the field is empty.
-  let pattern = /@\{visit\.([a-zA-z0-9_]*)(\:\-(.+))?\}/g;
-  // First, find the field name and default value
-  // It is necessary to find them separately first, as we need to call a function on the field name to
-  // obtain its value for replacement, and this won't work in one go directly in `replaceAll`, as
-  // the function will end up being called before the matching groups are identified.
-  let pieces = pattern.exec(intro);
-  // Replace the occurrence of the pattern with the value
-  let introMessage = intro.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
+  const fillInVisitData = (text) => {
+    let pattern = /@\{visit\.([A-z0-9_]+)(\:\-(.+?))?\}/g;
+    let match, result = text;
+    while ((match = pattern.exec(text)) !== null) {
+      result = result.replace(match[0], getVisitInformation(match[1], true) || match[3] || "");
+    }
+    return result;
+  }
+
+  // Replace all occurrences of the visit information pattern with the value from the Visit information form
+  let introMessage = fillInVisitData(intro);
 
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     greet(username),
@@ -753,9 +775,7 @@ function QuestionnaireSet(props) {
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
   // Replace any occurence of a visit information field with its value per current visit
-  pieces = pattern.exec(ending);
-  // Replace the occurrence of the pattern with the value
-  let endingMessage = ending.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
+  let endingMessage = fillInVisitData(ending);
 
   let finalInstructions = (
       endingMessage ? <FormattedText key="summary-instructions">{endingMessage}</FormattedText> :
