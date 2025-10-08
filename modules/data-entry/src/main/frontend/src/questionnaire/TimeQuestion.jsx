@@ -58,7 +58,7 @@ import DateTimeUtilities from "../components/DateTimeUtilities";
 function TimeQuestion(props) {
   checkPropTypes(TimeQuestion, props);
   let {existingAnswer, classes, pageActive, ...rest} = props;
-  let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {dateFormat: "mm:ss", ...props.questionDefinition, ...props};
+  let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {dateFormat: "HH:mm", ...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).isValid)
     ? DateTime.fromFormat(existingAnswer[1].value, dateFormat) : null;
   const [selectedTime, changeTime] = useState(currentStartValue);
