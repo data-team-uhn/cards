@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { TextField, Typography } from "@mui/material";
 
@@ -58,9 +58,23 @@ import DateTimeUtilities from "../components/DateTimeUtilities";
 function TimeQuestion(props) {
   checkPropTypes(TimeQuestion, props);
   let {existingAnswer, classes, pageActive, ...rest} = props;
-  let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {dateFormat: "HH:mm", ...props.questionDefinition, ...props};
-  let currentStartValue = (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).isValid)
-    ? DateTime.fromFormat(existingAnswer[1].value, dateFormat) : null;
+  let {
+    text,
+    lowerLimit,
+    upperLimit,
+    errorText,
+    minAnswers,
+    dateFormat,
+    saveFormat
+  } = {
+    dateFormat: "HH:mm",
+    saveFormat: "HH:mm:ss.SSS",
+    ...props.questionDefinition,
+    ...props
+  };
+  let currentStartValue = (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, saveFormat).isValid)
+    ? DateTime.fromFormat(existingAnswer[1].value, saveFormat) : null;
+
   const [selectedTime, changeTime] = useState(currentStartValue);
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";
@@ -71,16 +85,25 @@ function TimeQuestion(props) {
   const minTime = lowerLimit ? DateTime.fromFormat(lowerLimit, dateFormat) : null;
 
   // Error check existing answers when first loading the page
-  if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalid) {
-    setError(true);
-    setErrorMessage(DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalidExplanation);
+  useEffect(() => {
+    if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, saveFormat).invalid) {
+      setError(true);
+      setErrorMessage(DateTime.fromFormat(existingAnswer[1].value, saveFormat).invalidExplanation);
+    }
+  }, []);
+
+  // Provide the display formatted time to the Question component so the right formatting is displayed in view mode
+  let formattedAnswer = existingAnswer;
+  if (selectedTime && formattedAnswer?.[1]) {
+    formattedAnswer[1].displayedValue = selectedTime.toFormat(dateFormat);
   }
 
-  let outputAnswers = [["time", selectedTime && selectedTime.isValid ? selectedTime.toFormat(dateFormat) : null]];
+  let outputAnswers = [["time", selectedTime && selectedTime.isValid ? selectedTime.toFormat(saveFormat) : null]];
   return (
     <Question
       currentAnswers={!!selectedTime?.toFormat(dateFormat) ? 1 : 0}
       {...props}
+      existingAnswer={formattedAnswer}
       >
       {
         pageActive && <>
