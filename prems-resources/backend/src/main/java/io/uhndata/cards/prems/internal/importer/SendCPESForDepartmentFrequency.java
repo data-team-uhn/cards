@@ -52,6 +52,9 @@ public class SendCPESForDepartmentFrequency extends AbstractClarityDataProcessor
             + " of the total visits registered for each department")
     public @interface SendCPESForDepartmentFrequencyConfigDefinition
     {
+        @AttributeDefinition(name = "Enabled")
+        boolean enabled() default false;
+
         @AttributeDefinition(name = "Default Frequency", description = "For example \"0.04\".", defaultValue = "0.04")
         double default_frequency();
 
@@ -71,7 +74,7 @@ public class SendCPESForDepartmentFrequency extends AbstractClarityDataProcessor
     @Activate
     public SendCPESForDepartmentFrequency(SendCPESForDepartmentFrequencyConfigDefinition configuration)
     {
-        super(true, new String[] { "inpatient-ed" }, 120);
+        super(configuration.enabled(), new String[] { "inpatient-ed" }, 120);
         this.defaultFrequency = configuration.default_frequency();
         this.perDepartmentFrequency = new HashMap<>(configuration.frequency_per_department().length);
         for (String clinic : configuration.frequency_per_department()) {
