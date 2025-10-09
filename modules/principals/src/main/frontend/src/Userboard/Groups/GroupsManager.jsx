@@ -97,6 +97,7 @@ let GroupUsersTable = (props) => {
     enableTopToolbar: false,
     enableRowSelection: true,
     enableSelectAll: false,
+    enableRowActions: true,
     muiSelectCheckboxProps: { color: "primary" },
     displayColumnDefOptions: {
       "mrt-row-select": { size: 7 },
@@ -104,6 +105,15 @@ let GroupUsersTable = (props) => {
     muiTableBodyRowProps,
     columns,
     data: groupUsers,
+    renderRowActions: ({ cell, row, table }) => (
+      <Tooltip title={"Remove from group"}>
+        <IconButton component="span"
+          onClick={() => handleRemoveUsers(group.name, groupUsers, table, [row.original.name])}
+          size={"small"}>
+          <DeleteIcon fontSize={"small"}/>
+        </IconButton>
+      </Tooltip>
+    ),
   });
 
   return (
@@ -168,15 +178,15 @@ function GroupsManager(props) {
     setCurrentGroupName("");
   }
 
-  let handleRemoveUsers = (currentGroupName, groupUsers, table) => {
+  let handleRemoveUsers = (currentGroupName, groupUsers, table, users) => {
     setError("");
     if (!table) return;
     let formData = new FormData();
 
-    let selectedUsers = Object.keys(table.getState().rowSelection);
-    if (selectedUsers.length == 0) return;
-    for (var i = 0; i < selectedUsers.length; ++i) {
-      formData.append(':member@Delete', groupUsers[selectedUsers[i]].name);
+    let usersToRemove = users ? users : Object.keys(table.getState().rowSelection).map(user => groupUsers[user].name);
+    if (usersToRemove.length == 0) return;
+    for (var i = 0; i < usersToRemove.length; ++i) {
+      formData.append(':member@Delete', usersToRemove[i]);
     }
 
     fetchWithReLogin(globalLoginDisplay, GROUP_URL + currentGroupName + ".update.html",
@@ -274,7 +284,7 @@ function GroupsManager(props) {
                 </Tooltip>
               </Box>
             )}
-            renderDetailPanel={({ row }) => 
+            renderDetailPanel={({ row }) =>
               <GroupUsersTable
                 group={row.original}
                 classes={classes}
