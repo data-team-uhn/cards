@@ -29,14 +29,13 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.ResetException;
-import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AbortMultipartUploadRequest;
 import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
 import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
 import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
@@ -91,6 +90,7 @@ public class S3DataStore implements DataStore
             .withCredentials(new AWSStaticCredentialsProvider(credentials))
             .build();
 
+        String uploadId = null;
         try {
             final ObjectMetadata meta = new ObjectMetadata();
             // Some s3 buckets may forbid uploading "applications", so let's pretend that they're just plain text files
@@ -106,6 +106,7 @@ public class S3DataStore implements DataStore
             final InitiateMultipartUploadRequest initRequest =
                 new InitiateMultipartUploadRequest(s3BucketName, filename).withObjectMetadata(meta);
             final InitiateMultipartUploadResult initResponse = s3.initiateMultipartUpload(initRequest);
+            uploadId = initResponse.getUploadId();
             long position = 0;
             long partSize = getPartSize(config.storageParameters());
             for (int partNumber = 1; position < size; ++partNumber) {
@@ -114,15 +115,13 @@ public class S3DataStore implements DataStore
                 UploadPartRequest uploadRequest = new UploadPartRequest()
                     .withBucketName(s3BucketName)
                     .withKey(filename)
-                    .withUploadId(initResponse.getUploadId())
+                    .withUploadId(uploadId)
                     .withInputStream(contents)
                     .withPartNumber(partNumber)
                     .withPartSize(partSize);
+                uploadRequest.getRequestClientOptions().setReadLimit((int) uploadRequest.getPartSize() + 1);
 
-                UploadPartResult uploadResult = uploadPart(uploadRequest, s3, filename, partNumber);
-                if (uploadResult == null) {
-                    throw new IOException("Too many reset errors while uploading " + filename + ", aborting");
-                }
+                UploadPartResult uploadResult = s3.uploadPart(uploadRequest);
                 partETags.add(uploadResult.getPartETag());
                 position += partSize;
             }
@@ -131,29 +130,11 @@ public class S3DataStore implements DataStore
                 initResponse.getUploadId(), partETags);
             s3.completeMultipartUpload(compRequest);
         } catch (Exception e) {
+            if (uploadId != null) {
+                s3.abortMultipartUpload(new AbortMultipartUploadRequest(s3BucketName, filename, uploadId));
+            }
             throw new IOException("Failed to store file " + filename + " into S3 store " + getName(), e);
         }
-    }
-
-    private UploadPartResult uploadPart(final UploadPartRequest uploadRequest, AmazonS3 s3, String filename,
-        int partNumber) throws IOException
-    {
-        uploadRequest.getRequestClientOptions().setReadLimit((int) uploadRequest.getPartSize() + 1);
-
-        int retry = 0;
-        UploadPartResult uploadResult = null;
-        uploadRequest.getInputStream().mark((int) (uploadRequest.getPartSize() + 1));
-        do {
-            try {
-                uploadResult = s3.uploadPart(uploadRequest);
-            } catch (ResetException ex) {
-                LOGGER.warn("Reset error encountered while uploading {}#{}, retrying", filename, partNumber);
-            } catch (SdkClientException ex) {
-                LOGGER.warn("Exception while uploading {}#{}, retrying", filename, partNumber);
-            }
-            uploadRequest.getInputStream().reset();
-        } while (uploadRequest == null && ++retry < 3);
-        return uploadResult;
     }
 
     private long getPartSize(final String[] parameters)
