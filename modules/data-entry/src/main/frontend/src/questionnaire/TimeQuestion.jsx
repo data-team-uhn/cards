@@ -67,12 +67,15 @@ function TimeQuestion(props) {
     dateFormat,
     saveFormat
   } = {
-    dateFormat: "HH:mm",
-    saveFormat: "HH:mm:ss.SSS",
     ...props.questionDefinition,
     ...props
   };
-  let currentStartValue = (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, saveFormat).isValid)
+  // Set to defaults:
+  // Need to set saveFormat first so that it can fall back to it's default format
+  // if neither save nor date format is specified
+  saveFormat = saveFormat || dateFormat || "HH:mm:ss.SSS";
+  dateFormat = dateFormat || "HH:mm";
+  let currentStartValue = (existingAnswer?.[1]?.value && DateTime.fromFormat(existingAnswer[1].value, saveFormat).isValid)
     ? DateTime.fromFormat(existingAnswer[1].value, saveFormat) : null;
 
   const [selectedTime, changeTime] = useState(currentStartValue);
@@ -86,7 +89,7 @@ function TimeQuestion(props) {
 
   // Error check existing answers when first loading the page
   useEffect(() => {
-    if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, saveFormat).invalid) {
+    if (existingAnswer?.[1]?.value && DateTime.fromFormat(existingAnswer[1].value, saveFormat).invalid) {
       setError(true);
       setErrorMessage(DateTime.fromFormat(existingAnswer[1].value, saveFormat).invalidExplanation);
     }

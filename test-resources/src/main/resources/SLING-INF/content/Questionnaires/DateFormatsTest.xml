@@ -984,4 +984,28 @@
 			<type>Long</type>
 		</property>
 	</node>
+	<node>
+		<name>timesavecopiesdateformats</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Default save format. Enter in hour minute seconds 24 hour, save should copy entered</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>HH:mm:ss</value>
+			<type>String</type>
+		</property>
+	</node>
 </node>
