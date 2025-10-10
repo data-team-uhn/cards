@@ -103,7 +103,7 @@ const useStyles = makeStyles()(theme => ({
     }
   },
   collapsed : {
-    display: "none",
+    display: "none !important",
   },
 }));
 
