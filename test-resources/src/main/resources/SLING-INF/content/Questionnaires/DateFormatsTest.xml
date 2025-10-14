@@ -810,6 +810,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>saveFormat</name>
+			<value>mm:ss</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -820,7 +825,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Hour Minute</value>
+			<value>Hour Minute, AM/PM</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -830,6 +835,40 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
+			<value>hh:mm a</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>saveFormat</name>
+			<value>hh:mm a</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>timehoursminutes24</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Hour Minute, 24 hour</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>HH:mm</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>saveFormat</name>
 			<value>HH:mm</value>
 			<type>String</type>
 		</property>
@@ -858,9 +897,115 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>saveFormat</name>
+			<value>HH:mm:ss</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>timehoursminutes12to24hour</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Hour Minute. Entered with AM/PM, saved 24 hour</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>hh:mm a</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>saveFormat</name>
+			<value>HH:mm</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>timehoursminutestofull</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter Hour Minute in 24 hour, save down to milliseconds</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>HH:mm</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>saveFormat</name>
+			<value>HH:mm:ss.SSS</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>timedefaultformats</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Default time formats. Enter in Hour minute, 24 hour, save down to milliseconds</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>timesavecopiesdateformats</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Default save format. Enter in hour minute seconds 24 hour, save should copy entered</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>HH:mm:ss</value>
+			<type>String</type>
 		</property>
 	</node>
 </node>

@@ -303,7 +303,12 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>HH:MM (AM/PM)</value>
+			<value>hh:mm a</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>saveFormat</name>
+			<value>HH:mm</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -330,6 +335,11 @@
 			<value>HH:mm:ss</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>saveFormat</name>
+			<value>HH:mm:ss</value>
+			<type>String</type>
+		</property>
 	</node>
 	<node>
 		<name>timeQuestionMinutes</name>
@@ -351,6 +361,11 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
+			<value>mm:ss</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>saveFormat</name>
 			<value>mm:ss</value>
 			<type>String</type>
 		</property>

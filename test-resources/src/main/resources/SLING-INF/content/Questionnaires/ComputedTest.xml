@@ -1540,6 +1540,16 @@ return result;
 				<type>String</type>
 			</property>
 			<property>
+				<name>dateFormat</name>
+				<value>hh:mm a</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>saveFormat</name>
+				<value>HH:mm</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -1633,6 +1643,11 @@ return result;
 			</property>
 			<property>
 				<name>dateFormat</name>
+				<value>HH:mm:ss</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>saveFormat</name>
 				<value>HH:mm:ss</value>
 				<type>String</type>
 			</property>
@@ -1730,6 +1745,11 @@ return result;
 			</property>
 			<property>
 				<name>dateFormat</name>
+				<value>mm:ss</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>saveFormat</name>
 				<value>mm:ss</value>
 				<type>String</type>
 			</property>
