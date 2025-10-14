@@ -435,7 +435,7 @@
       },
       "time": {
         "minAnswers": {"0":{}, "1":{}},
-        "dateFormat": {"HH:mm": {}, "mm:ss": {}, "HH:mm:ss":{}},
+        "dateFormat": {"HH:mm": {}, "hh:mm a": {}, "HH:mm:ss":{}, "hh:mm:ss a": {}, "mm:ss": {}},
         "entryMode": {
           "user": {
             "lowerLimit": "string",
