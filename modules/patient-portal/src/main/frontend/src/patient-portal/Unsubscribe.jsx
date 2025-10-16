@@ -42,7 +42,7 @@ const useStyles = makeStyles()(theme => ({
     // Magic number 532 = 500 (width on wider screens) + 16px on each side
     [theme.breakpoints.down(532)]: {
       // 8px on each side are the `body` padding
-      // subtract 16 more to achieve smooth transition when resising the window to under 532px wide
+      // subtract 16 more to achieve smooth transition when resizing the window to under 532px wide
       width: "calc(100% - 16px)",
     },
   },
