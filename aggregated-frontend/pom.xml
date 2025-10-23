@@ -99,7 +99,7 @@
                 <exclude>**/node_modules/**</exclude>
                 <exclude>**/*.py</exclude>
                 <exclude>**/yarn.lock</exclude>
-                <exclude>**/package.json</exclude>
+                <exclude>**/*.json</exclude>
               </excludes>
             </fileset>
           </filesets>
