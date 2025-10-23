@@ -453,6 +453,16 @@
       "dayToImport": -2
     },
 
+    // Pull the most recent patient status from the death status table
+    "io.uhndata.cards.clarity.importer.ClarityImportConfig~death-status": {
+      "name": "Death Status",
+      "type": "death-status",
+      "importSchedule": "0 0 9 * * ? *",
+      "tableName": "%ENV%CLARITY_DEATH_STATUS_TABLE",
+      "dateColumn": "",
+      "mapping": "/apps/cards/clarityImport/DeathStatus"
+    },
+
     // Clarity import filters and mappers
 
     // Discard patients with invalid or non-consented emails
@@ -790,6 +800,13 @@
       "gracePeriod": 183,
       // This is already excluded by access rights, but we can speedup queries this way
       "excludedQuestionnaires": ["/Questionnaires/Survey events"]
+    },
+    // Unsubscribe deceased patients from all emails
+    "io.uhndata.cards.clarity.importer.internal.ConfiguredGenericMapper~DeathStatusEmailUnsubscribed":{
+      "supportedTypes": ["death-status"],
+      "priority": 35,
+      "column": "UNSUBSCRIBED",
+      "value": "Yes"
     }
   }
 }

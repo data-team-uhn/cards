@@ -167,7 +167,8 @@ public class ClarityImportTask implements Runnable
     {
         createNew,
         updateExisting,
-        cancelImport
+        cancelImport,
+        onlyExisting,
     }
 
     private static final class ClarityQuestionnaireMapping
@@ -490,23 +491,25 @@ public class ClarityImportTask implements Runnable
                     newSubjectParent);
 
                 if (formNode != null) {
-                    if (updatePolicy == UpdatePolicy.updateExisting) {
+                    if (updatePolicy == UpdatePolicy.updateExisting || updatePolicy == UpdatePolicy.onlyExisting) {
                         // Update the answers to an existing Form
                         updateExistingForm(resolver, formNode, questionnaireMapping, row);
                     }
                 } else {
-                    // Create a new Form
-                    formNode = createForm(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
-                        newSubjectParent);
+                    if (updatePolicy != UpdatePolicy.onlyExisting) {
+                        // Create a new Form
+                        formNode = createForm(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
+                            newSubjectParent);
 
-                    // Attach all the Answer nodes to it
-                    populateEmptyForm(resolver, formNode, questionnaireMapping, row);
+                        // Attach all the Answer nodes to it
+                        populateEmptyForm(resolver, formNode, questionnaireMapping, row);
 
-                    // Commit the changes to the JCR
-                    resolver.commit();
+                        // Commit the changes to the JCR
+                        resolver.commit();
 
-                    // Perform a JCR check-in to this cards:Form node once the import is completed
-                    this.nodesToCheckin.get().add(formNode.getPath());
+                        // Perform a JCR check-in to this cards:Form node once the import is completed
+                        this.nodesToCheckin.get().add(formNode.getPath());
+                    }
                 }
             }
             walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
