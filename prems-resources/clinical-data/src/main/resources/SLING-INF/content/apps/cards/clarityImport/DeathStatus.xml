@@ -71,11 +71,11 @@
             <value>/Questionnaires/Patient information/email_unsubscribed</value>
             <type>String</type>
           </property>
-            <property>
-              <name>computed</name>
-              <value>True</value>
-              <type>Boolean</type>
-            </property>
+          <property>
+            <name>computed</name>
+            <value>True</value>
+            <type>Boolean</type>
+          </property>
         </node>
       </node>
     </node>
