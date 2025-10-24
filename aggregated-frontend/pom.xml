@@ -95,6 +95,7 @@
               <directory>src/main/frontend/</directory>
               <excludes>
                 <exclude>**/webpack.config-template.js</exclude>
+				<exclude>**/eslint.config.js</exclude>
                 <exclude>**/node/**</exclude>
                 <exclude>**/node_modules/**</exclude>
                 <exclude>**/*.py</exclude>
