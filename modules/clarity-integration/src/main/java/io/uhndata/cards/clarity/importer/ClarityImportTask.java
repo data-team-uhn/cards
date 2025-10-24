@@ -612,6 +612,7 @@ public class ClarityImportTask implements Runnable
             }
             replaceFormAnswer(resolver, formNode,
                 generateAnswerNodeProperties(resolver, questionMapping, row));
+            LOGGER.info("{} Updated form {}", this.config.name(), formNode.getPath());
         }
         // Perform a JCR check-in to this cards:Form node once the import is completed
         this.nodesToCheckin.get().add(formNode.getPath());

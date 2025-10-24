@@ -806,7 +806,8 @@
       "supportedTypes": ["death-status"],
       "priority": 35,
       "column": "UNSUBSCRIBED",
-      "value": "Yes"
+      "value": "Yes",
+      "enableLogging": false
     }
   }
 }
