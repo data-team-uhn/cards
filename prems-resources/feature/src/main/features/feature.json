@@ -439,7 +439,7 @@
       "name": "Your Experience - Bickle Inpatient discharge events",
       "type": "bickle-inpatients",
       "importSchedule": "0 30 7 * * ? *",
-      "tableName": "%ENV%CLARITY_IP_REHAB_SQL_TABLE",
+      "tableName": "%ENV%CLARITY_BICKLE_INPATIENT_SQL_TABLE",
       "mapping": "/apps/cards/clarityImport/YourExperienceBickleInpatients",
       "dayToImport": -7
     },
