@@ -507,9 +507,15 @@
     // Only send surveys to patients once every 6 months
     "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~ye": {
       "enable": true,
-      "supportedTypes": ["inpatient-ed", "bickle-inpatients", "uhn-outpatient", "pmh-oo", "pmh-oo-trumps-yvm"],
+      "supportedTypes": ["inpatient-ed", "bickle-inpatients", "pmh-oo", "pmh-oo-trumps-yvm"],
       "minimum.visit.frequency": 183,
-      "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242", "/Survey/ClinicMapping/PM-OO", "/Survey/ClinicMapping/PM-OO-IP", "/Survey/ClinicMapping/OC"]
+      "clinics": ["/Survey/ClinicMapping/2075099", "/Survey/ClinicMapping/-1792626663", "/Survey/ClinicMapping/-1792626799", "/Survey/ClinicMapping/-432465800", "/Survey/ClinicMapping/78840662", "/Survey/ClinicMapping/-1792626676", "/Survey/ClinicMapping/-432465813", "/Survey/ClinicMapping/-432335117", "/Survey/ClinicMapping/1012196242", "/Survey/ClinicMapping/PM-OO", "/Survey/ClinicMapping/PM-OO-IP"]
+    },
+    "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~outpatient": {
+      "enable": true,
+      "supportedTypes": ["uhn-outpatient"],
+      "minimum.visit.frequency": 90,
+      "clinics": ["/Survey/ClinicMapping/OC"]
     },
     "io.uhndata.cards.clarity.importer.internal.RecentVisitDiscardFilter~yvm": {
       "enable": true,
