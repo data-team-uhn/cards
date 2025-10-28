@@ -18,10 +18,8 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Select, MenuItem } from "@mui/material";
+import { Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
@@ -37,8 +35,18 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  * @param {func} onChangeInput Callback for when the value select has changed
  *
  */
-const BooleanFilter = forwardRef((props, ref) => {
-  checkPropTypes(BooleanFilter, props);
+interface BooleanFilterProps {
+  initial?: { value?: string; label?: string };
+  onChangeInput: (value: string, label?: string) => void;
+  classes?: any;
+  questionDefinition: any;
+}
+
+interface QuestionDefinition {
+  dataType: string;
+}
+
+const BooleanFilter = forwardRef<HTMLSelectElement, BooleanFilterProps>((props, ref) => {
   const { classes, initial, onChangeInput } = props;
   // Manage our own state inside here as well
   const [ selection, setSelection ] = useState(initial?.value || "");
@@ -51,16 +59,15 @@ const BooleanFilter = forwardRef((props, ref) => {
     options.push([unknownLabel || "Unknown", "-1"]);
   }
 
-
   return (
     <Select
       variant="standard"
       value={selection}
-      onChange={(event, el) => {
+      onChange={(event: SelectChangeEvent<string>, el?: any) => {
         setSelection(event.target.value);
         onChangeInput(event.target.value, el.props["data-label"]);
       }}
-      className={classes.answerField}
+      className={classes?.answerField}
       ref={ref}
       >
       { options.map( (answer) => {
@@ -73,20 +80,14 @@ const BooleanFilter = forwardRef((props, ref) => {
   );
 });
 
-BooleanFilter.propTypes = {
-  initial: PropTypes.shape({
-    value: PropTypes.string,
-    label: PropTypes.string,
-  }),
-  onChangeInput: PropTypes.func
-}
-
 const StyledBooleanFilter = withStyles(BooleanFilter, QuestionnaireStyle)
 
 export default StyledBooleanFilter;
 
-FilterComponentManager.registerFilterComponent((questionDefinition) => {
-  if (questionDefinition.dataType === "boolean") {
-    return [COMPARATORS, StyledBooleanFilter, 50];
+FilterComponentManager.registerFilterComponent((questionDefinition: QuestionDefinition) => {
+    if (questionDefinition.dataType === "boolean") {
+      return [COMPARATORS, StyledBooleanFilter, 50];
+    }
+    return undefined;
   }
-});
+);
