@@ -36,11 +36,11 @@ import Question from "./Question";
 // <IdentifierQuestion questionDefinition={{ text: "Identifier", displayMode: "plain+copy", ... }} />
 
 export default function IdentifierQuestion(props) {
-  const { existingAnswer, pageActive, isEdit, ...rest} = props;
+  const { existingAnswer, pageActive, isEdit, ...rest } = props;
   const {
     displayMode = "plain",
     identifierType = "uuid"
-  } = {...props.questionDefinition };
+  } = { ...props.questionDefinition };
   const COPY_TO_CLIPBOARD = "Copy to clipboard";
   const [ text, setText ] = useState(COPY_TO_CLIPBOARD);
 
@@ -72,19 +72,19 @@ export default function IdentifierQuestion(props) {
       disableInstructions
       preventDefaultView
       {...props}
-      >
-        { pageActive &&
+    >
+      { pageActive &&
           <Tooltip title={text} onClose={handleClose}>
             <Button
               onClick={handleClick}
               endIcon={ displayMode.endsWith("+copy") ? <ContentCopyIcon /> : null}
-              sx={{padding: 0, textTransform: "none"}}
+              sx={{ padding: 0, textTransform: "none" }}
             >
-            { value}
+              { value}
             </Button>
           </Tooltip>
-        }
-        { isEdit &&
+      }
+      { isEdit &&
         <Answer
           answers={answer}
           existingAnswer={existingAnswer}
@@ -92,7 +92,7 @@ export default function IdentifierQuestion(props) {
           valueType="String"
           pageActive={pageActive}
           {...rest}
-          /> }
+        /> }
     </Question>);
 }
 

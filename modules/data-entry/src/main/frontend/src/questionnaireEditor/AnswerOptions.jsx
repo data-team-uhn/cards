@@ -54,61 +54,61 @@ let extractSortedOptions = (data) => {
   return Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption'
                                              && !value.notApplicable
                                              && !value.noneOfTheAbove)
-                            .slice()
-                            .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
+    .slice()
+    .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 }
 
 const useStyles = makeStyles()(theme => ({
-    answerOption: {
-      border: "1px solid " + theme.palette.divider,
-      background: theme.palette.background.paper,
-      borderRadius: theme.spacing(.5, 3, 3, .5),
-      margin: theme.spacing(1, 0),
-      "& > .MuiGrid-root" : {
-        display: "flex",
-      },
-      "& .MuiFormControl-root" : {
-        paddingTop: theme.spacing(1),
-        width: "100%",
-      },
-      "& .MuiInputBase-input" : {
-        paddingRight: theme.spacing(1),
-        paddingLeft: theme.spacing(1),
-      },
+  answerOption: {
+    border: "1px solid " + theme.palette.divider,
+    background: theme.palette.background.paper,
+    borderRadius: theme.spacing(.5, 3, 3, .5),
+    margin: theme.spacing(1, 0),
+    "& > .MuiGrid-root" : {
+      display: "flex",
     },
-    optionsList: {
-      position: 'relative',
+    "& .MuiFormControl-root" : {
+      paddingTop: theme.spacing(1),
+      width: "100%",
     },
-    answerOptionReadonly: {
-      "& .MuiInput-underline:before" : {
-        borderBottom: "0 none !important",
-      },
-      "& .MuiInput-underline:after" : {
-        borderBottom: "0 none !important",
-      }
+    "& .MuiInputBase-input" : {
+      paddingRight: theme.spacing(1),
+      paddingLeft: theme.spacing(1),
     },
-    answerOptionActions : {
+  },
+  optionsList: {
+    position: 'relative',
+  },
+  answerOptionReadonly: {
+    "& .MuiInput-underline:before" : {
+      borderBottom: "0 none !important",
+    },
+    "& .MuiInput-underline:after" : {
+      borderBottom: "0 none !important",
+    }
+  },
+  answerOptionActions : {
+    justifyContent: "flex-end",
+  },
+  newOptionInput: {
+    marginBottom: theme.spacing(2),
+  },
+  answerOptionSwitch: {
+    margin: theme.spacing(0.5, 0.5, 0.5, -0.5),
+  },
+  optionsDragIndicator: {
+    padding: theme.spacing(1.5, 0.5),
+    borderRadius: theme.spacing(0.5),
+  },
+  descriptionPopover: {
+    "& .MuiCardActions-root" : {
       justifyContent: "flex-end",
+      padding: theme.spacing(1,2),
     },
-    newOptionInput: {
-      marginBottom: theme.spacing(2),
-    },
-    answerOptionSwitch: {
-      margin: theme.spacing(0.5, 0.5, 0.5, -0.5),
-    },
-    optionsDragIndicator: {
-      padding: theme.spacing(1.5, 0.5),
-      borderRadius: theme.spacing(0.5),
-    },
-    descriptionPopover: {
-      "& .MuiCardActions-root" : {
-        justifyContent: "flex-end",
-        padding: theme.spacing(1,2),
-      },
-    },
-    optionDisabled: {
-      opacity: 0.5,
-    },
+  },
+  optionDisabled: {
+    opacity: 0.5,
+  },
 }));
 
 let AnswerOptions = (props) => {
@@ -133,27 +133,27 @@ let AnswerOptions = (props) => {
   const DEFAULT_NA_NODE_NAME = "None";
   const DEFAULT_NONEOFTHEABOVE_NODE_NAME = "NoneOfTheAbove";
 
-  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : (value == "numberOptions" ? "-1" : "notApplicable"),
-                                                                                   "label" : "None",
-                                                                                   "notApplicable" : false,
-                                                                                   "@name" : DEFAULT_NA_NODE_NAME,
-                                                                                   "@path" : path + "/" + DEFAULT_NA_NODE_NAME});
-  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": (value == "numberOptions" ? "0" : "noneOfTheAbove"),
-                                                                                      "label" : "None of the above",
-                                                                                      "noneOfTheAbove" : false,
-                                                                                      "@name" : DEFAULT_NONEOFTHEABOVE_NODE_NAME,
-                                                                                      "@path" : path + "/" + DEFAULT_NONEOFTHEABOVE_NODE_NAME});
+  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || { "value" : (value == "numberOptions" ? "-1" : "notApplicable"),
+    "label" : "None",
+    "notApplicable" : false,
+    "@name" : DEFAULT_NA_NODE_NAME,
+    "@path" : path + "/" + DEFAULT_NA_NODE_NAME });
+  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || { "value": (value == "numberOptions" ? "0" : "noneOfTheAbove"),
+    "label" : "None of the above",
+    "noneOfTheAbove" : false,
+    "@name" : DEFAULT_NONEOFTHEABOVE_NODE_NAME,
+    "@path" : path + "/" + DEFAULT_NONEOFTHEABOVE_NODE_NAME });
   // Update all options path on parent path change
   useEffect(() => {
-    setNotApplicableOption({ ...notApplicableOption, "@path" : path + "/" + notApplicableOption["@name"]});
-    setNoneOfTheAboveOption({ ...noneOfTheAboveOption, "@path" : path +  "/" + noneOfTheAboveOption["@name"]});
+    setNotApplicableOption({ ...notApplicableOption, "@path" : path + "/" + notApplicableOption["@name"] });
+    setNoneOfTheAboveOption({ ...noneOfTheAboveOption, "@path" : path +  "/" + noneOfTheAboveOption["@name"] });
     setOptions(oldOptions => {
       let newOptions = oldOptions.slice();
       newOptions.map(opt => { if (opt.isNew) {
-                                opt["@path"] = path + "/AnswerOption" + stringToHash(opt.value);
-                              }
-                              return opt;
-                            });
+        opt["@path"] = path + "/AnswerOption" + stringToHash(opt.value);
+      }
+      return opt;
+      });
       return newOptions;
     });
   }, [path])
@@ -221,7 +221,7 @@ let AnswerOptions = (props) => {
     let duplicate = validateOption(optionInput, option.duplicateSetter, option.data);
     if (optionInput && !duplicate) {
       let inputs = (optionInput || '').trim().split(/\s*=\s*(.*)/);
-      option.setter({ ...option.data, "value": inputs[0].trim(), "label": inputs[1] ? inputs[1].trim() : ""});
+      option.setter({ ...option.data, "value": inputs[0].trim(), "label": inputs[1] ? inputs[1].trim() : "" });
     }
   }
 
@@ -262,19 +262,19 @@ let AnswerOptions = (props) => {
       <Tooltip title={!item.description ? "Add a description" : "Edit description"}>
         <IconButton
           size="large"
-                    onClick={(event) => {
-                                setDescriptionAnchorEl(event.currentTarget);
-                                setDescriptionIndex(index);
-                                setDescriptionLabel(item.label || item.value);
-                                setIsSpecialOption(isSpecialOptn);
-                                setDescription(item.description);
-                              }
-                   }
+          onClick={(event) => {
+            setDescriptionAnchorEl(event.currentTarget);
+            setDescriptionIndex(index);
+            setDescriptionLabel(item.label || item.value);
+            setIsSpecialOption(isSpecialOptn);
+            setDescription(item.description);
+          }
+          }
         >
           <ComposedIcon
-              size="large"
-              MainIcon={NotesIcon}
-              ExtraIcon={!item.description ? AddIcon : EditIcon}/>
+            size="large"
+            MainIcon={NotesIcon}
+            ExtraIcon={!item.description ? AddIcon : EditIcon}/>
         </IconButton>
       </Tooltip>
     )
@@ -283,69 +283,69 @@ let AnswerOptions = (props) => {
   let generateSpecialOptions = (index) => {
     let option = specialOptionsInfo[index];
     return (
-    <Grid container
-       justifyContent="space-between"
-       alignItems="stretch"
-       className={classes.answerOption}
-       onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
-       >
-      <Grid size={1}></Grid>
-      <Grid size={8}>
-      <Tooltip title="Selected by default">
-        <Checkbox
-          color="secondary"
-          checked={option.data.isDefault}
-          disabled={!option.data[option.label]} onChange={(event) => {
-              option.setter({
-                ...option.data,
-                "isDefault": !!(event?.target?.checked)
-              });
-            }}
-          />
-      </Tooltip>
-      <Tooltip title={option.tooltip}>
-        <TextField
-          variant="standard"
-          disabled={!option.data[option.label]}
-          error={option.data[option.label] && option.isDuplicate}
-          helperText={option.isDuplicate ? 'duplicated value or label' : ''}
-          className={classes.answerOptionInput}
-          defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
-          onChange={(event) => { handleSpecialInputOption(option, event.target.value); }}
-        />
-      </Tooltip>
-      </Grid>
-      <Grid size={3} className={classes.answerOptionActions}>
-      {generateDescriptionIcon(option.data, index, true)}
-      <Tooltip title={option.switchTooltip} className={classes.answerOptionSwitch}>
-        <FormControlLabel
-          control={
-            <Switch
+      <Grid container
+        justifyContent="space-between"
+        alignItems="stretch"
+        className={classes.answerOption}
+        onClick={(event) => option.setter({ ...option.data, [option.label]: true })}
+      >
+        <Grid size={1}></Grid>
+        <Grid size={8}>
+          <Tooltip title="Selected by default">
+            <Checkbox
               color="secondary"
-              size="small"
-              checked={!!option.data[option.label]}
-              onChange={(event) => option.setter({ ...option.data, [option.label]: event.target.checked})}
-              />
+              checked={option.data.isDefault}
+              disabled={!option.data[option.label]} onChange={(event) => {
+                option.setter({
+                  ...option.data,
+                  "isDefault": !!(event?.target?.checked)
+                });
+              }}
+            />
+          </Tooltip>
+          <Tooltip title={option.tooltip}>
+            <TextField
+              variant="standard"
+              disabled={!option.data[option.label]}
+              error={option.data[option.label] && option.isDuplicate}
+              helperText={option.isDuplicate ? 'duplicated value or label' : ''}
+              className={classes.answerOptionInput}
+              defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
+              onChange={(event) => { handleSpecialInputOption(option, event.target.value); }}
+            />
+          </Tooltip>
+        </Grid>
+        <Grid size={3} className={classes.answerOptionActions}>
+          {generateDescriptionIcon(option.data, index, true)}
+          <Tooltip title={option.switchTooltip} className={classes.answerOptionSwitch}>
+            <FormControlLabel
+              control={
+                <Switch
+                  color="secondary"
+                  size="small"
+                  checked={!!option.data[option.label]}
+                  onChange={(event) => option.setter({ ...option.data, [option.label]: event.target.checked })}
+                />
+              }
+            />
+          </Tooltip>
+          { option.data[option.label]
+            ?
+            <>
+              <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value='cards:AnswerOption' />
+              <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
+              <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
+              <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
+              <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
+              <input type="hidden" name={`${option.data['@path']}/description`} value={option.data.description || ''} />
+              <input type="hidden" name={`${option.data['@path']}/isDefault`} value={option.data.isDefault || ''} />
+              <input type="hidden" name={`${option.data['@path']}/isDefault@TypeHint`} value="Boolean" />
+            </>
+            :
+            <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
           }
-        />
-      </Tooltip>
-      { option.data[option.label]
-        ?
-        <>
-          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value='cards:AnswerOption' />
-          <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
-          <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
-          <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
-          <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
-          <input type="hidden" name={`${option.data['@path']}/description`} value={option.data.description || ''} />
-          <input type="hidden" name={`${option.data['@path']}/isDefault`} value={option.data.isDefault || ''} />
-          <input type="hidden" name={`${option.data['@path']}/isDefault@TypeHint`} value="Boolean" />
-        </>
-        :
-        <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
-      }
+        </Grid>
       </Grid>
-    </Grid>
     )
   }
 
@@ -360,7 +360,7 @@ let AnswerOptions = (props) => {
   let updateOptionDescription = () => {
     // update corresponding option description
     if (isSpecialOption) {
-      specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data, "description": description});
+      specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data, "description": description });
     } else {
       setOptions(oldValue => {
         var value = oldValue.slice();
@@ -428,11 +428,11 @@ let AnswerOptions = (props) => {
         className={classes.descriptionPopover}
       >
         <Card>
-          <CardHeader title={`Description for "${descriptionLabel}"`} slotProps={{ title: {variant: "h6"}}}/>
+          <CardHeader title={`Description for "${descriptionLabel}"`} slotProps={{ title: { variant: "h6" } }}/>
           <CardContent>
-          { descriptionIndex != null &&
+            { descriptionIndex != null &&
             <MarkdownText value={description} onChange={setDescription} />
-          }
+            }
           </CardContent>
           <CardActions>
             <Button variant='outlined' onClick={handlePopoverClose}>Cancel</Button>
@@ -461,7 +461,7 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
 let AnswerOptionList = (props) => {
   let { data } = props;
   let answerOptions = Object.values(data ||{}).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
-                      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
+    .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
   return (
     answerOptions.map(item => <div key={item['jcr:uuid'] || item.value}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</div>)
   );

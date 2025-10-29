@@ -19,12 +19,12 @@
 import React, { useState } from 'react';
 
 import {
-    Checkbox,
-    FormControlLabel,
-    FormHelperText,
-    List,
-    ListItem,
-    TextField,
+  Checkbox,
+  FormControlLabel,
+  FormHelperText,
+  List,
+  ListItem,
+  TextField,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
@@ -64,14 +64,14 @@ function ToUConfiguration() {
     <AdminConfigScreen
       title="Patient Portal Terms of Use"
       configPath="/Survey/TermsOfUse"
-      configTemplate={{"acceptanceRequired" : false, "title" : "", "version" : "", "text" : ""}}
+      configTemplate={{ "acceptanceRequired" : false, "title" : "", "version" : "", "text" : "" }}
       onConfigFetched={readToUData}
       hasChanges={hasChanges}
       buildConfigData={buildConfigData}
       onConfigSaved={() => setHasChanges(false)}
-      >
-       { /* Wait for the text state to be set before displaying anything, as MDEditor sometimes gets stuck with an empty value */ }
-       { typeof(text) != 'undefined' &&
+    >
+      { /* Wait for the text state to be set before displaying anything, as MDEditor sometimes gets stuck with an empty value */ }
+      { typeof(text) != 'undefined' &&
           <List>
             <ListItem key="title">
               <TextField
@@ -104,7 +104,7 @@ function ToUConfiguration() {
                 label="Version"
                 value={version}
                 onChange={(event) => { setVersion(event.target.value); setHasChanges(true); }}
-                style={{width : '250px'}}
+                style={{ width : '250px' }}
               />
             </ListItem>
             <ListItem key="text" className={classes.text}>
@@ -128,7 +128,7 @@ function ToUConfiguration() {
               />
             </ListItem>
           </List>
-        }
+      }
     </AdminConfigScreen>
   );
 }

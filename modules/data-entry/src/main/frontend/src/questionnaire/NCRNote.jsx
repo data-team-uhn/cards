@@ -43,8 +43,8 @@ function ParsedNoteSection (props) {
 
     // The contained matter is the text inside the first match
     var containedMatches = matches.filter( (el) => (
-        el.start >= firstMatch.start && el.end <= firstMatch.end && !(el.start == firstMatch.start && el.end == firstMatch.end)
-      ));
+      el.start >= firstMatch.start && el.end <= firstMatch.end && !(el.start == firstMatch.start && el.end == firstMatch.end)
+    ));
     var containedMatter = text.substring(firstMatch.start-offset, firstMatch.end-offset);
 
     // The uncontained matter is the text after the first match, up until the end of the last match
@@ -79,7 +79,7 @@ function ParsedNoteSection (props) {
                 offset={firstMatch.start}
                 classes={classes}
                 onAddSuggestion={onAddSuggestion}
-                />
+              />
             }
           />
         </Tooltip>
@@ -89,7 +89,7 @@ function ParsedNoteSection (props) {
           offset={firstMatch.end}
           classes={classes}
           onAddSuggestion={onAddSuggestion}
-          />
+        />
         <Typography display="inline">{endMatter}</Typography>
       </React.Fragment>}
   </React.Fragment>)
@@ -146,7 +146,7 @@ function NCRNote (props) {
         offset={0}
         classes={classes}
         onAddSuggestion={onAddSuggestion}
-        />
+      />
     </div>)
   }
 
@@ -171,12 +171,12 @@ function NCRNote (props) {
       onBlur = {handleBlur}
       existingAnswer = {existingAnswer}
       {...rest}
-      >
+    >
       {isLoading && <CircularProgress className={classes.NCRLoadingIndicator} />}
       {parsedText}
       {error && <Typography color="error">{error}</Typography>}
     </Note>
-    );
+  );
 }
 
 export default withStyles(NCRNote, QuestionnaireStyle);

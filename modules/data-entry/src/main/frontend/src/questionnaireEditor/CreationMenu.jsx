@@ -61,32 +61,32 @@ let CreationMenu = (props) => {
   return (
     <>
       { isMainAction ?
-      <NewItemButton title="Add..." onClick={handleOpenMenu} />
-      :
-      <Button aria-controls={"simple-menu" + data['@name']} aria-haspopup="true" onClick={handleOpenMenu}>
+        <NewItemButton title="Add..." onClick={handleOpenMenu} />
+        :
+        <Button aria-controls={"simple-menu" + data['@name']} aria-haspopup="true" onClick={handleOpenMenu}>
         Add...
-      </Button>
+        </Button>
       }
       <Menu
-          id={"simple-menu" + data['@name']}
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleCloseMenu}
+        id={"simple-menu" + data['@name']}
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleCloseMenu}
       >
         { menuItems.map(type =>
-            <MenuItem key={type} onClick={() => { openDialog(type); handleCloseMenu(); }}>{type}</MenuItem>
+          <MenuItem key={type} onClick={() => { openDialog(type); handleCloseMenu(); }}>{type}</MenuItem>
         )}
       </Menu>
       { dialogOpen && <EditDialog
-                        targetExists={false}
-                        data={data}
-                        type={entityType}
-                        model={models?.[entityType]}
-                        isOpen={dialogOpen}
-                        onSaved={(newData) => { setDialogOpen(false); onCreated?.(newData); }}
-                        onCancel={() => { setDialogOpen(false); }}
-                      />
+        targetExists={false}
+        data={data}
+        type={entityType}
+        model={models?.[entityType]}
+        isOpen={dialogOpen}
+        onSaved={(newData) => { setDialogOpen(false); onCreated?.(newData); }}
+        onCancel={() => { setDialogOpen(false); }}
+      />
       }
     </>
   );

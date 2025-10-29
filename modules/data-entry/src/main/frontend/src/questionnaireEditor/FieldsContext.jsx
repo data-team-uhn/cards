@@ -31,13 +31,13 @@ const FieldsWriterContext = React.createContext();
  */
 export function FieldsProvider(props) {
   const [answers, setAnswers] = React.useState(DEFAULT_STATE);
-  const {additionalFieldData, ...rest} = props
+  const { additionalFieldData, ...rest } = props
 
   return (
-    <FieldsReaderContext.Provider value={{...answers, ...additionalFieldData}}>
+    <FieldsReaderContext.Provider value={{ ...answers, ...additionalFieldData }}>
       <FieldsWriterContext.Provider value={setAnswers} {...rest}/>
     </FieldsReaderContext.Provider>
-    );
+  );
 }
 
 /**

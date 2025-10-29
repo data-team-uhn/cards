@@ -95,7 +95,7 @@ function HeaderLinks (props) {
       <ListItemIcon {...props}>
         {props.children}
       </ListItemIcon>
-    : props.children
+      : props.children
   }
 
   const menuItems = <MenuList role="menu">
@@ -123,7 +123,7 @@ function HeaderLinks (props) {
         <SearchBar
           invertColors={!expand}
           onSelectFinish={expand ? undefined : closeSidebar}
-          className={classNames(classes.search, {[classes.buttonLink]: !expand})}
+          className={classNames(classes.search, { [classes.buttonLink]: !expand })}
           resultConstructor={QuickSearchIdentifier}
           onSelect={() => {}}
           showAllResultsLink={true}
@@ -132,13 +132,13 @@ function HeaderLinks (props) {
       {/* Avatar + sign out link */}
       {/* hide on screens sm and down */}
       <Tooltip title={username}>
-        <Box sx={{ display: { xs: 'none', md: 'inline-flex' }}}>
+        <Box sx={{ display: { xs: 'none', md: 'inline-flex' } }}>
           <IconButton
             className={classes.buttonLink + " " + classes.logout}
             onClick={() => setPopperOpen((open) => !open)}
             ref={avatarRef}
             size="large"
-            >
+          >
             <Avatar className={classes[color]}>{initials}</Avatar>
           </IconButton>
         </Box>
@@ -160,11 +160,11 @@ function HeaderLinks (props) {
         }]}
         placement = "bottom-end"
         transition
-        >
+      >
         {({ TransitionProps }) => (
           <Grow
             {...TransitionProps}
-            style={{transformOrigin: "top"}}
+            style={{ transformOrigin: "top" }}
           >
             <Paper square>
               <ClickAwayListener onClickAway={(event) => {
@@ -186,7 +186,7 @@ function HeaderLinks (props) {
         isOpen={passwordDialogOpen}
         name={username}
         requireOldPassword
-        />
+      />
       <Snackbar
         open={pwdResetSuccessSnackbarOpen}
         slotProps={{
@@ -203,7 +203,7 @@ function HeaderLinks (props) {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
-        />
+      />
     </div>
   );
 }

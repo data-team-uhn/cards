@@ -40,7 +40,7 @@ export function camelCaseToWords(str) {
 
 let LabeledField = (props) => {
   checkPropTypes(LabeledField, props);
-  let {name, condensed, children } = props;
+  let { name, condensed, children } = props;
 
   let { classes } = useStyles();
 

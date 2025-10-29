@@ -53,15 +53,15 @@ let Fields = (props) => {
     // This variable must start with an upper case letter so that React treats it as a component
     const FieldDisplay = QuestionComponentManager.getQuestionComponent(value);
     return (
-        <FieldDisplay
-          key={key}
-          objectKey={key}
-          value={value}
-          data={data}
-          hint={hints?.[key]}
-          hints={hints}
-          {...rest}
-          />
+      <FieldDisplay
+        key={key}
+        objectKey={key}
+        value={value}
+        data={data}
+        hint={hints?.[key]}
+        hints={hints}
+        {...rest}
+      />
     );
   };
 
@@ -83,20 +83,20 @@ let Fields = (props) => {
       </LabeledField>
       {
         typeof(value) == "object" && typeof(value[data[key]]) == "object"?
-        Object.entries(value[data[key]]).filter(([k, _]) => !k.startsWith("//"))
-                                        .map(([k, v]) => displayStaticField(k, v))
-        : ""
+          Object.entries(value[data[key]]).filter(([k, _]) => !k.startsWith("//"))
+            .map(([k, v]) => displayStaticField(k, v))
+          : ""
       }
     </React.Fragment>);
   };
 
   // Note that we remove the meta fields, starting with `//`, such as `//REQUIRED which indicates which fields are mandatory
   return <FieldsProvider>
-      {
-          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//"))
-                              .map(([key, value]) => edit ? displayEditField(key, value) : displayStaticField(key, value))
-      }
-    </FieldsProvider>;
+    {
+      Object.entries(JSON).filter(([key, _]) => !key.startsWith("//"))
+        .map(([key, value]) => edit ? displayEditField(key, value) : displayStaticField(key, value))
+    }
+  </FieldsProvider>;
 }
 
 Fields.propTypes = {

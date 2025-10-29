@@ -44,21 +44,21 @@ export default function PageStart(props) {
   };
 
   useEffect(() => {
-  if (!isInitialized) {
-    loadExtensions(extensionsName)
-      .then((resp) => {
-        if (resp.length > 0) {
-          setExtensionData(resp);
-          let zeros = [];
-          for (let i = 0; i < resp.length; i++) {
-            zeros.push(0);
+    if (!isInitialized) {
+      loadExtensions(extensionsName)
+        .then((resp) => {
+          if (resp.length > 0) {
+            setExtensionData(resp);
+            let zeros = [];
+            for (let i = 0; i < resp.length; i++) {
+              zeros.push(0);
+            }
+            setComponentHeights(zeros.slice());
+            setComponentPositions(zeros.slice());
           }
-          setComponentHeights(zeros.slice());
-          setComponentPositions(zeros.slice());
-        }
-        setIsInitialized(true);
-      });
-  }
+          setIsInitialized(true);
+        });
+    }
   }, [isInitialized]);
 
   if (!isInitialized) {
@@ -90,14 +90,14 @@ export default function PageStart(props) {
 
   return (
     <React.Fragment>
-    {
-      visualComponents.map((ThisComp, index) => {
-        return (
-          <ThisComp
-            {...props}
-            key={index}
-            style={{ top: (componentPositions[index]) + 'px' }}
-            onRender={(node) => {
+      {
+        visualComponents.map((ThisComp, index) => {
+          return (
+            <ThisComp
+              {...props}
+              key={index}
+              style={{ top: (componentPositions[index]) + 'px' }}
+              onRender={(node) => {
                 if (node != null) {
                   let n = node.getBoundingClientRect().height;
                   if (componentHeights[index] != n) {
@@ -107,11 +107,11 @@ export default function PageStart(props) {
                   }
                 }
               }
-            }
-          />
-        );
-      })
-    }
+              }
+            />
+          );
+        })
+      }
     </React.Fragment>
   );
 }

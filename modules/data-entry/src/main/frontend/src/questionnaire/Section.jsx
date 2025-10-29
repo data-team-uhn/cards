@@ -90,7 +90,7 @@ function Section(props) {
     // If we already exist from existingAnswer, our labels are the first element
     existingAnswer?.length > 0 ? existingAnswer.map(element => element[0])
     // Otherwise, create a new UUID
-    : [uuidv4()]);
+      : [uuidv4()]);
   // Keep a list of UUIDs whose contents we need to remove
   const [ UUIDsToRemove, setUUIDsToRemove ] = useState([]);
   // Keep a list of UUIDs whose contents we should hide
@@ -98,7 +98,7 @@ function Section(props) {
   const formContext = useFormReaderContext();
   const changeFormContext = useFormWriterContext();
   const [ selectedUUID, setSelectedUUID ] = useState();
-  const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
+  const [ removableAnswers, setRemovableAnswers ] = useState({ [ID_STATE_KEY]: 1 });
   const [ answersToDelete, setAnswersToDelete ] = useState([]);
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
@@ -120,11 +120,11 @@ function Section(props) {
       // Append the new list of answers to delete to the previous one
       setAnswersToDelete((oldValue) => oldValue.concat(delList));
       // Reset the list of existing answers
-      setRemovableAnswers({[ID_STATE_KEY]: 1});
+      setRemovableAnswers({ [ID_STATE_KEY]: 1 });
 
       changeFormContext((oldContext) => {
         // Remove the section answers from the context
-        let newData = {...oldContext};
+        let newData = { ...oldContext };
         keySet.forEach(key => { delete newData[key] });
         return newData;
       });
@@ -193,40 +193,40 @@ function Section(props) {
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
-  <React.Fragment>
-    {/* if conditional is true, the collapse component is rendered and displayed.
+    <React.Fragment>
+      {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
-    { isDisplayed
-      ? (<Collapse
-      in={isDisplayed}
-      component={Grid}
-      {...gridProps}
-      mountOnEnter
-      unmountOnExit
-      className={collapseClasses.join(" ")}
-      style={sectionPosition}
-      >
-      {instanceLabels.map( (uuid, idx) => {
-          const sectionPath = path + "/" + uuid;
-          const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
-          const hiddenSection = conditionIsMet && labelsToHide[uuid];
-          const classNames = [];
-          if (isRecurrent) classNames.push(classes.recurrentSectionInstance);
-          if (uuid == selectedUUID) classNames.push(classes.highlightedSection);
-          return <div
-            key={uuid}
-            className={classNames.join(" ")}
+      { isDisplayed
+        ? (<Collapse
+          in={isDisplayed}
+          component={Grid}
+          {...gridProps}
+          mountOnEnter
+          unmountOnExit
+          className={collapseClasses.join(" ")}
+          style={sectionPosition}
+        >
+          {instanceLabels.map( (uuid, idx) => {
+            const sectionPath = path + "/" + uuid;
+            const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
+            const hiddenSection = conditionIsMet && labelsToHide[uuid];
+            const classNames = [];
+            if (isRecurrent) classNames.push(classes.recurrentSectionInstance);
+            if (uuid == selectedUUID) classNames.push(classes.highlightedSection);
+            return <div
+              key={uuid}
+              className={classNames.join(" ")}
             >
-            <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
-            <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
-            <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
+              <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
+              <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
+              <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
 
-            <Grid
-              container
-              {...FORM_ENTRY_CONTAINER_PROPS}
+              <Grid
+                container
+                {...FORM_ENTRY_CONTAINER_PROPS}
               >
-              {/* Section header */
-                (hasHeader || isRecurrent) &&
+                {/* Section header */
+                  (hasHeader || isRecurrent) &&
                   <Grid className={classes.sectionHeader}>
                     {/* Delete this entry and expand this entry button */}
                     {isEdit && isRecurrent &&
@@ -252,10 +252,10 @@ function Section(props) {
                         <IconButton
                           className={classes.entryActionIcon}
                           onClick={() => {
-                            setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
+                            setLabelsToHide((toHide) => ({ ...toHide, [uuid]: !hiddenSection }));
                           }}
                           size="large"
-                          >
+                        >
                           {hiddenSection ?
                             <UnfoldMore fontSize="small" />
                             : <UnfoldLess fontSize="small" />
@@ -268,57 +268,57 @@ function Section(props) {
                     {titleEl?.(idx)}
                     {descEl?.()}
                   </Grid>
-              }
-              <Collapse
-                mountOnEnter
-                unmountOnExit
-                in={!hiddenSection}
-                component={Grid}
+                }
+                <Collapse
+                  mountOnEnter
+                  unmountOnExit
+                  in={!hiddenSection}
+                  component={Grid}
                 >
-                <Grid container
+                  <Grid container
                     {...FORM_ENTRY_CONTAINER_PROPS}
                     className={
                       isCompact && sectionEntries.length > 1 ?
                         [classes.horizontalSection, "cards-horizontal-section"].join(' ')
-                      : undefined
+                        : undefined
                     }
                   >
-                  {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
-                    sectionEntries.map(([key, definition]) =>
-                      <FormEntry
-                        instanceId={instanceId + "-" + idx}
-                        key={key}
-                        entryDefinition={definition}
-                        path={sectionPath}
-                        depth={depth+1}
-                        existingAnswers={existingSectionAnswer}
-                        keyProp={key}
-                        classes={classes}
-                        onChange={onChange}
-                        isEdit={isEdit}
-                        isSummary={isSummary}
-                        contentOffset={contentOffset}
-                        gridProps={isCompact && sectionEntries.length > 1 ? {size : {xs: 12, sm: 12, md: 6, lg: (sectionEntries.length == 2 ? 6 : 4)}} : undefined}
-                        pageActive={pageActive}
-                        sectionAnswersState={removableAnswers}
-                        onAddedAnswerPath={(newAnswers) => {
-                          newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;
-                          setRemovableAnswers(newAnswers);
-                        }}>
-                      </FormEntry>)
-                  }
-                  {
-                    answersToDelete.map((delPath) =>
-                      <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath}></input>
-                  )}
-                </Grid>
-              </Collapse>
-            </Grid>
-          </div>
+                    {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
+                      sectionEntries.map(([key, definition]) =>
+                        <FormEntry
+                          instanceId={instanceId + "-" + idx}
+                          key={key}
+                          entryDefinition={definition}
+                          path={sectionPath}
+                          depth={depth+1}
+                          existingAnswers={existingSectionAnswer}
+                          keyProp={key}
+                          classes={classes}
+                          onChange={onChange}
+                          isEdit={isEdit}
+                          isSummary={isSummary}
+                          contentOffset={contentOffset}
+                          gridProps={isCompact && sectionEntries.length > 1 ? { size : { xs: 12, sm: 12, md: 6, lg: (sectionEntries.length == 2 ? 6 : 4) } } : undefined}
+                          pageActive={pageActive}
+                          sectionAnswersState={removableAnswers}
+                          onAddedAnswerPath={(newAnswers) => {
+                            newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;
+                            setRemovableAnswers(newAnswers);
+                          }}>
+                        </FormEntry>)
+                    }
+                    {
+                      answersToDelete.map((delPath) =>
+                        <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath}></input>
+                      )}
+                  </Grid>
+                </Collapse>
+              </Grid>
+            </div>
           })
-        }
-        {isEdit && isRecurrent &&
-        <Grid sx={{bgcolor: "action.hover", px: 1, py: 2}}>
+          }
+          {isEdit && isRecurrent &&
+        <Grid sx={{ bgcolor: "action.hover", px: 1, py: 2 }}>
           <Button
             size="small"
             variant="contained"
@@ -327,18 +327,18 @@ function Section(props) {
             onClick={() => {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
             }}
-            >
+          >
             {removeMd(sectionDefinition["label"])}
           </Button>
         </Grid>}
-        {/* Remove any cards:AnswerSections that we have created by using an @Delete suffix */
-          UUIDsToRemove.map((uuid) =>
-            <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
-        )}
-      </Collapse>)
-      : instanceLabels.map((uuid) =>
-        <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
-      )
+          {/* Remove any cards:AnswerSections that we have created by using an @Delete suffix */
+            UUIDsToRemove.map((uuid) =>
+              <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+            )}
+        </Collapse>)
+        : instanceLabels.map((uuid) =>
+          <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
+        )
       }
     </React.Fragment>
     , [conditionIsMet, instanceLabels, labelsToHide, selectedUUID, removableAnswers[ID_STATE_KEY], pageActive, isEdit]);

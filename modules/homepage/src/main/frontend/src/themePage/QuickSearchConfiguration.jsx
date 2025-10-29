@@ -19,12 +19,12 @@
 import React, { useState } from 'react';
 
 import {
-    Checkbox,
-    TextField,
-    Typography,
-    FormControlLabel,
-    List,
-    ListItem,
+  Checkbox,
+  TextField,
+  Typography,
+  FormControlLabel,
+  List,
+  ListItem,
 } from '@mui/material';
 
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
@@ -66,65 +66,65 @@ function QuickSearchConfiguration(props) {
 
   return (
     <AdminConfigScreen
-        title="Quick Search Settings"
-        configPath="/apps/cards/config/QuickSearch"
-        configTemplate={{limit: "", showTotalRows: false, allowedResourceTypes: [""]}}
-        onConfigFetched={readQuickSearchSettings}
-        hasChanges={hasChanges}
-        buildConfigData={buildConfigData}
-        onConfigSaved={() => setHasChanges(false)}
-      >
-          <List>
-            <ListItem key="h1">
-              <Typography variant="h6">Search results controls:</Typography>
-            </ListItem>
-            <ListItem key="limit">
-              <TextField
-                variant="standard"
-                id="limit"
-                name="limit"
-                type="number"
-                label="Limit"
-                value={limit}
-                onChange={ event => { setLimit(event.target.value); setHasChanges(true); } }
-                style={{width : '250px'}}
-                helperText="How many results should be displayed"
+      title="Quick Search Settings"
+      configPath="/apps/cards/config/QuickSearch"
+      configTemplate={{ limit: "", showTotalRows: false, allowedResourceTypes: [""] }}
+      onConfigFetched={readQuickSearchSettings}
+      hasChanges={hasChanges}
+      buildConfigData={buildConfigData}
+      onConfigSaved={() => setHasChanges(false)}
+    >
+      <List>
+        <ListItem key="h1">
+          <Typography variant="h6">Search results controls:</Typography>
+        </ListItem>
+        <ListItem key="limit">
+          <TextField
+            variant="standard"
+            id="limit"
+            name="limit"
+            type="number"
+            label="Limit"
+            value={limit}
+            onChange={ event => { setLimit(event.target.value); setHasChanges(true); } }
+            style={{ width : '250px' }}
+            helperText="How many results should be displayed"
+          />
+        </ListItem>
+        <ListItem key="showTotalRows">
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showTotalRows}
+                onChange={ event => { setShowTotalRows(event.target.checked); setHasChanges(true); } }
+                name="showTotalRows"
               />
-            </ListItem>
-            <ListItem key="showTotalRows">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showTotalRows}
-                    onChange={ event => { setShowTotalRows(event.target.checked); setHasChanges(true); } }
-                    name="showTotalRows"
-                  />
-                }
-                label="Show the total number of results"
-              />
-            </ListItem>
-            <ListItem key="h2">
-              <Typography variant="h6">Types of resources allowed to be be queried:</Typography>
-            </ListItem>
-            {
-              resourceTypes.map((resourceName) => {
-                return (
-                  <ListItem key={resourceName}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={allowedResourceTypes.indexOf(resourceName) > -1}
-                          onChange={(event) => { onSourceTypeChange(event.target.checked, resourceName); }}
-                          name={resourceName}
-                        />
-                      }
-                      label={resourceName.replace('cards:', '') + 's'}
-                    />
-                  </ListItem>
-                )
-              })
             }
-          </List>
+            label="Show the total number of results"
+          />
+        </ListItem>
+        <ListItem key="h2">
+          <Typography variant="h6">Types of resources allowed to be be queried:</Typography>
+        </ListItem>
+        {
+          resourceTypes.map((resourceName) => {
+            return (
+              <ListItem key={resourceName}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={allowedResourceTypes.indexOf(resourceName) > -1}
+                      onChange={(event) => { onSourceTypeChange(event.target.checked, resourceName); }}
+                      name={resourceName}
+                    />
+                  }
+                  label={resourceName.replace('cards:', '') + 's'}
+                />
+              </ListItem>
+            )
+          })
+        }
+      </List>
     </AdminConfigScreen>
   );
 }

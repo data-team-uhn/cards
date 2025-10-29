@@ -85,13 +85,13 @@ function MainActionButton(props) {
 
   return (
     <>
-    { title ?
-      <Tooltip title={title}>
-        {button}
-      </Tooltip>
-      :
-      button
-    }
+      { title ?
+        <Tooltip title={title}>
+          {button}
+        </Tooltip>
+        :
+        button
+      }
     </>
   );
 }

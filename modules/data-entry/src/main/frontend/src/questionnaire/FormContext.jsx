@@ -31,13 +31,13 @@ const FormWriterContext = React.createContext();
  */
 export function FormProvider(props) {
   const [answers, setAnswers] = React.useState(DEFAULT_STATE);
-  const {additionalFormData, ...rest} = props
+  const { additionalFormData, ...rest } = props
 
   return (
-    <FormReaderContext.Provider value={{...answers, ...additionalFormData}}>
+    <FormReaderContext.Provider value={{ ...answers, ...additionalFormData }}>
       <FormWriterContext.Provider value={setAnswers} {...rest}/>
     </FormReaderContext.Provider>
-    );
+  );
 }
 
 /**

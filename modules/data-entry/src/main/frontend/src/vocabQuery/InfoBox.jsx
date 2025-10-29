@@ -67,12 +67,12 @@ function InfoBox(props) {
           rootBoundary: 'viewport',
           padding: 8,
           tether: true,
-          }
-        },
-        {
-          name: 'arrow',
-          enabled: true
         }
+      },
+      {
+        name: 'arrow',
+        enabled: true
+      }
       ]}
     >
       {({ TransitionProps }) => (
@@ -85,16 +85,16 @@ function InfoBox(props) {
         >
           <Card className={classes.infoCard}>
             <ClickAwayListener onClickAway={onClickAway}><div>
-               <CardHeader
-                 avatar={
+              <CardHeader
+                avatar={
                   <Link color="textSecondary"
                     href={vocabulary.url || ""}  target="_blank"
                     component={vocabulary.url ? 'a' : 'span'}
                     underline="none"
-                    >
+                  >
                     <Tooltip title={vocabulary.description || ""}>
                       <Avatar aria-label="source" className={classes.vocabularyAvatar}>
-                          {vocabulary.acronym}
+                        {vocabulary.acronym}
                       </Avatar>
                     </Tooltip>
                   </Link>
@@ -106,41 +106,41 @@ function InfoBox(props) {
                 }
                 title={term.name}
                 subheader={term.id}
-                slotProps={{ title: {variant: "h5"} }}
+                slotProps={{ title: { variant: "h5" } }}
               />
               <CardContent className={classes.infoPaper}>
                 <div className={classes.infoSection}>
                   <Typography className={classes.infoDefinition}>{term.definition}</Typography>
                 </div>
-                  {term.alsoKnownAs.length > 0 && (
-                    <div className={classes.infoSection}>
-                      <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>
-                      {term.alsoKnownAs.map((name, index) => {
-                        return (<Typography className={classes.infoAlsoKnownAs} key={index}>
-                                  {name}
-                                </Typography>
-                        );
-                      })}
-                    </div>
-                  )}
-                  {term.typeOf.length > 0 && (
-                    <div className={classes.infoSection}>
-                      <Typography variant="h6" className={classes.infoHeader}>Is a type of</Typography>
-                      {term.typeOf.map((name, index) => {
-                        return (<Typography className={classes.typeOf} key={index}>
-                                  {name}
-                                </Typography>
-                        );
-                      })}
-                    </div>
-                  )}
-                  </CardContent>
-                  { !(browserOpened && infoAboveBackground) &&
+                {term.alsoKnownAs.length > 0 && (
+                  <div className={classes.infoSection}>
+                    <Typography variant="h6" className={classes.infoHeader}>Also known as</Typography>
+                    {term.alsoKnownAs.map((name, index) => {
+                      return (<Typography className={classes.infoAlsoKnownAs} key={index}>
+                        {name}
+                      </Typography>
+                      );
+                    })}
+                  </div>
+                )}
+                {term.typeOf.length > 0 && (
+                  <div className={classes.infoSection}>
+                    <Typography variant="h6" className={classes.infoHeader}>Is a type of</Typography>
+                    {term.typeOf.map((name, index) => {
+                      return (<Typography className={classes.typeOf} key={index}>
+                        {name}
+                      </Typography>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+              { !(browserOpened && infoAboveBackground) &&
                     <CardActions className={classes.infoPaper}>
                       <Button onClick={onActionClick} variant='contained'>Learn more</Button>
                     </CardActions>
-                  }
-             </div></ClickAwayListener>
+              }
+            </div></ClickAwayListener>
           </Card>
         </Grow>
       )}

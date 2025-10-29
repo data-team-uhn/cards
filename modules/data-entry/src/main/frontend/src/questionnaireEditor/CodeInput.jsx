@@ -48,7 +48,7 @@ let CodeBlock = (props) => {
 };
 
 ValueComponentManager.registerValueComponent((definition) => {
-    if (definition == "code") {
-      return [CodeBlock, 50];
-    }
+  if (definition == "code") {
+    return [CodeBlock, 50];
+  }
 });

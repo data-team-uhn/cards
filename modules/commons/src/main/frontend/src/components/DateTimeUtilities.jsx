@@ -123,7 +123,7 @@ export default class DateTimeUtilities {
 
   static dateToFormattedString(date, textFieldType) {
     return (!date?.isValid) ? "" :
-    textFieldType === "date" ? date.toFormat(this.defaultDateFormat) : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
+      textFieldType === "date" ? date.toFormat(this.defaultDateFormat) : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
   // Format a DateAnswer given the given dateFormat
@@ -146,7 +146,7 @@ export default class DateTimeUtilities {
 
   static dateDifference = (startDateInput, endDateInput) => {
     // Compute the displayed difference
-    let result = {long:""}
+    let result = { long:"" }
     if (startDateInput && endDateInput) {
       let startDate = this.toPrecision(startDateInput, this.defaultDateFormat);
       let endDate = this.toPrecision(endDateInput, this.defaultDateFormat);
@@ -225,7 +225,7 @@ export default class DateTimeUtilities {
     if (relativeDate.startsWith("today")) {
       absoluteDate = DateTime.now();
       let differenceInDays = relativeDate.match(/^today(\s*([\+-])\s*(\d+))?$/)?.slice(2,4).join("");
-      absoluteDate = absoluteDate.plus({days: +differenceInDays});
+      absoluteDate = absoluteDate.plus({ days: +differenceInDays });
 
     } else {
 

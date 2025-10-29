@@ -46,9 +46,9 @@ function PatientPortalHomepage (props) {
     fetch(`${SURVEY_INSTRUCTIONS_PATH}.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        let instructions = {...json};
+        let instructions = { ...json };
         Object.entries(instructions).forEach(([k,v]) => !v && delete instructions[k]);
-        setSurveyInstructions({...DEFAULT_INSTRUCTIONS, ...instructions});
+        setSurveyInstructions({ ...DEFAULT_INSTRUCTIONS, ...instructions });
       })
       .catch((response) => {
         console.error(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
@@ -68,8 +68,8 @@ function PatientPortalHomepage (props) {
     surveyInstructions?.[key] ?
       Component ?
         <Component {...props}>{surveyInstructions[key]}</Component>
-      : surveyInstructions[key]
-    : null
+        : surveyInstructions[key]
+      : null
   );
 
   let onPatientIdentified = (p) => {
@@ -100,7 +100,7 @@ const cache = createCache({
 });
 
 const hist = createBrowserHistory();
-hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
+hist.listen(({ action, location }) => window.dispatchEvent(new Event("beforeunload")));
 const root = createRoot(document.querySelector('#patient-portal-container'));
 root.render(
   <CacheProvider value={cache}>

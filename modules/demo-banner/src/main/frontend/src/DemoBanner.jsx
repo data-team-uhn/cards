@@ -28,7 +28,7 @@ export default function DemoBanner(props) {
 
   return (
     <AppBar position="fixed" style={props.style} ref={props.onRender}>
-      <Alert variant="filled" square severity="warning" sx={{justifyContent: "center"}}>
+      <Alert variant="filled" square severity="warning" sx={{ justifyContent: "center" }}>
         This installation is for demo purposes only.
         Do not enter any real data / patient identifiable information.
       </Alert>

@@ -165,19 +165,19 @@ let EditDialog = (props) => {
         <Grid size={4}><Typography variant="subtitle2">{`${formattedType} id:` }</Typography></Grid>
         <Grid size={8}>{
           targetExists ?
-          <Typography>{data["@name"]}</Typography> :
-          <TextField
-            variant="standard"
-            name=''
-            value={targetId}
-            onChange={(event)=> { setTargetId(event.target.value); setVariableNameError(''); }}
-            onBlur={(event)=> { checkVariableName(event.target.value?.trim()); }}
-            error={!!variableNameError}
-            helperText={variableNameError}
-            required
-            multiline
-            fullWidth
-          />
+            <Typography>{data["@name"]}</Typography> :
+            <TextField
+              variant="standard"
+              name=''
+              value={targetId}
+              onChange={(event)=> { setTargetId(event.target.value); setVariableNameError(''); }}
+              onBlur={(event)=> { checkVariableName(event.target.value?.trim()); }}
+              error={!!variableNameError}
+              helperText={variableNameError}
+              required
+              multiline
+              fullWidth
+            />
         }</Grid>
       </Grid>
     )
@@ -194,44 +194,44 @@ let EditDialog = (props) => {
 
   return (
     <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
-       <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onCancel?.();} } fullWidth maxWidth='md'>
-          <DialogTitle>
-            { dialogTitle() }
-          </DialogTitle>
-          <DialogContent>
-            { error && <Typography color="error">{error}</Typography>}
-            <Grid container direction="column" spacing={2}>
-              <Grid>{targetIdField()}</Grid>
-              <Fields
-                data={dialogData}
-                hints={hints}
-                JSON={json[0]}
-                edit={true}
-                path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
-                saveButtontRef={saveButtonRef}
-               />
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant='outlined'
-              onClick={() => { setOpen(false); onCancel?.();}}
-            >
+      <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onCancel?.();} } fullWidth maxWidth='md'>
+        <DialogTitle>
+          { dialogTitle() }
+        </DialogTitle>
+        <DialogContent>
+          { error && <Typography color="error">{error}</Typography>}
+          <Grid container direction="column" spacing={2}>
+            <Grid>{targetIdField()}</Grid>
+            <Fields
+              data={dialogData}
+              hints={hints}
+              JSON={json[0]}
+              edit={true}
+              path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
+              saveButtontRef={saveButtonRef}
+            />
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant='outlined'
+            onClick={() => { setOpen(false); onCancel?.();}}
+          >
               Cancel
-            </Button>
-            <Button
-              ref={saveButtonRef}
-              type='submit'
-              variant='contained'
-              disabled={saveInProgress || !!variableNameError}
-            >
-              {saveInProgress ? 'Saving' :
+          </Button>
+          <Button
+            ref={saveButtonRef}
+            type='submit'
+            variant='contained'
+            disabled={saveInProgress || !!variableNameError}
+          >
+            {saveInProgress ? 'Saving' :
               lastSaveStatus === true ? 'Saved' :
-              lastSaveStatus === false ? 'Save failed, log in and try again?' :
-              'Save'}
-            </Button>
-          </DialogActions>
-       </Dialog>
+                lastSaveStatus === false ? 'Save failed, log in and try again?' :
+                  'Save'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </form>
   );
 };

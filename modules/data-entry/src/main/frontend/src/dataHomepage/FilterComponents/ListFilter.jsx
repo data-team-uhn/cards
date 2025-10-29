@@ -71,7 +71,7 @@ const ListFilter = forwardRef((props, ref) => {
       }}
       className={classes.answerField}
       ref={ref}
-      >
+    >
       {options.map((value) => (
         <MenuItem value={value} key={value}>{valueToLabel[value]}</MenuItem>
       ))

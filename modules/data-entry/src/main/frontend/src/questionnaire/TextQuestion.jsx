@@ -61,7 +61,7 @@ function TextQuestion(props) {
     displayMode,
     validationRegexp,
     validationErrorText = "Invalid input"
-  } = { ...props.questionDefinition, ...props};
+  } = { ...props.questionDefinition, ...props };
   const regexp = new RegExp(validationRegexp);
   const answerNodeType = "cards:" + dataType.charAt(0).toUpperCase() + dataType.slice(1) + "Answer";
 
@@ -84,7 +84,7 @@ function TextQuestion(props) {
           }
         </div>
       )
-    : undefined
+      : undefined
   );
 
   return (
@@ -92,7 +92,7 @@ function TextQuestion(props) {
       disableInstructions
       defaultDisplayFormatter={displayFormatter}
       {...props}
-      >
+    >
       <MultipleChoice
         input={displayMode === "input" || displayMode === "list+input"}
         textbox={displayMode === "textbox"}
@@ -100,7 +100,7 @@ function TextQuestion(props) {
         validate={validate}
         validationErrorText={validationErrorText}
         {...props}
-        />
+      />
     </Question>);
 }
 

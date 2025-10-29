@@ -45,7 +45,7 @@ fetch(APIKEY_SERVLET_URL)
   })
   .catch((error) => {
     console.error("Error fetching GoogleApiKey node: " + error);
-});
+  });
 let isValidApiKey = true;
 
 
@@ -53,34 +53,34 @@ let isValidApiKey = true;
 // Styling Google Map Autocomplete dropdown list
 // see details https://developers.google.com/maps/documentation/javascript/place-autocomplete#style-autocomplete
 const inputGlobalStyles = <GlobalStyles
-    styles={(theme) => ({
-      body: {
-        // to remove the "Powered by Google" logo from the bottom of the Google Map Autocomplete dropdown list
-        "& .pac-container:after": {
-          backgroundImage: "none !important",
-          height: 0,
-          padding: 0,
-          margin: 0,
-        },
-        "& .pac-item-query": {
-          // see https://mui.com/material-ui/customization/default-theme/?expand-path=$.typography
-          fontFamily: `${theme.typography.fontFamily}  !important`,
-          fontSize: theme.typography.htmlFontSize
-        },
-        "& .pac-matched": {
-          fontWeight: theme.typography.fontWeightRegular,
-        },
-        "& .pac-item": {
-          fontFamily: `${theme.typography.fontFamily} !important`,
-          fontSize: theme.typography.htmlFontSize,
-          lineHeight: `${theme.spacing(5)} !important`,
-        },
-        // remove the place pin icon from the dropdown list items
-        "& .pac-icon": {
-          display : "none",
-        }
+  styles={(theme) => ({
+    body: {
+      // to remove the "Powered by Google" logo from the bottom of the Google Map Autocomplete dropdown list
+      "& .pac-container:after": {
+        backgroundImage: "none !important",
+        height: 0,
+        padding: 0,
+        margin: 0,
+      },
+      "& .pac-item-query": {
+        // see https://mui.com/material-ui/customization/default-theme/?expand-path=$.typography
+        fontFamily: `${theme.typography.fontFamily}  !important`,
+        fontSize: theme.typography.htmlFontSize
+      },
+      "& .pac-matched": {
+        fontWeight: theme.typography.fontWeightRegular,
+      },
+      "& .pac-item": {
+        fontFamily: `${theme.typography.fontFamily} !important`,
+        fontSize: theme.typography.htmlFontSize,
+        lineHeight: `${theme.spacing(5)} !important`,
+      },
+      // remove the place pin icon from the dropdown list items
+      "& .pac-icon": {
+        display : "none",
       }
-    })}
+    }
+  })}
 />
 
 // Component that renders a postal address question with suggestions powered by the Goole API.
@@ -96,7 +96,7 @@ const inputGlobalStyles = <GlobalStyles
 //   />
 function AddressQuestion(props) {
   checkPropTypes(AddressQuestion, props);
-  const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
+  const { existingAnswer, classes, pageActive, questionDefinition, ...rest } = props;
 
   let currentStartValue = existingAnswer && existingAnswer[1].value || "";
   const [address, setAddress] = useState(currentStartValue);
@@ -140,7 +140,7 @@ function AddressQuestion(props) {
     <Question
       disableInstructions
       {...props}
-      >
+    >
       {inputGlobalStyles}
       <TextField
         className={classes.textField}
@@ -159,7 +159,7 @@ function AddressQuestion(props) {
         existingAnswer={existingAnswer}
         pageActive={pageActive}
         {...rest}
-        />
+      />
     </Question>);
 }
 

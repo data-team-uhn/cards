@@ -69,7 +69,7 @@ function Note (props) {
     <div className = {classes.notesContainer}>
       <Tooltip
         title = {visible ? "Hide notes" : (noteIsEmpty ? "Add notes" : "Show notes")}
-        >
+      >
         <Button
           variant = "text"
           className = {classes.toggleNotesButton}
@@ -80,7 +80,7 @@ function Note (props) {
             <UnfoldLess fontSize="small" />
             : (noteIsEmpty ? <AddIcon fontSize="small" /> : <UnfoldMore fontSize="small" />)
           }
-          >
+        >
           Notes
         </Button>
       </Tooltip>
@@ -88,7 +88,7 @@ function Note (props) {
     <Collapse
       in = {visible}
       onEntered = {() => inputRef?.current?.focus()}
-      >
+    >
       <Grid container spacing={2}>
         <Grid size={fullSize ? 12 : 6} className = {classes.noteSection}>
           <TextField
@@ -100,12 +100,12 @@ function Note (props) {
             placeholder = {placeholder}
             inputRef = {inputRef}
             {...rest}
-            />
-          </Grid>
-          <Grid size={fullSize ? 12 : 6}>
-            {children}
-          </Grid>
+          />
         </Grid>
+        <Grid size={fullSize ? 12 : 6}>
+          {children}
+        </Grid>
+      </Grid>
     </Collapse>
     {noteIsEmpty ?
       <input type="hidden" name={`${answerPath}/note@Delete`} value="0" />

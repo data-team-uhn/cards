@@ -104,7 +104,7 @@ function VocabularyQuery(props) {
       console.error("Cannot load answer suggestions from " + vocab);
     });
     if (!allRequestsFailed) {
-      onSuccess({rows: data.slice(0, MAX_RESULTS)});
+      onSuccess({ rows: data.slice(0, MAX_RESULTS) });
     } else {
       onFailure();
     }
@@ -132,40 +132,40 @@ function VocabularyQuery(props) {
     if (!QueryMatchingUtils.matches(query, name)) {
       suggestion.matchedFields = QueryMatchingUtils.getMatchingSubset(query, synonyms);
       if (!suggestion.matchedFields.length && QueryMatchingUtils.matches(query, definition)) {
-         suggestion.matchedFields.push(QueryMatchingUtils.getMatchingExcerpt(query, definition));
+        suggestion.matchedFields.push(QueryMatchingUtils.getMatchingExcerpt(query, definition));
       }
     }
     return suggestion;
   }
 
   return (
-      <ResourceQuery
-        questionDefinition={questionDefinition}
-        clearOnClick={clearOnClick}
-        focusAfterSelecting={focusAfterSelecting}
-        variant={variant}
-        {... rest}
-        infoDisplayer={questionDefinition?.enableVocabularyBrowser ? VocabularyBrowser : undefined}
-        fetchSuggestions={fetchSuggestions}
-        formatSuggestionData={formatSuggestionData}
-      />
-    );
+    <ResourceQuery
+      questionDefinition={questionDefinition}
+      clearOnClick={clearOnClick}
+      focusAfterSelecting={focusAfterSelecting}
+      variant={variant}
+      {... rest}
+      infoDisplayer={questionDefinition?.enableVocabularyBrowser ? VocabularyBrowser : undefined}
+      fetchSuggestions={fetchSuggestions}
+      formatSuggestionData={formatSuggestionData}
+    />
+  );
 }
 
 VocabularyQuery.propTypes = {
-    clearOnClick: PropTypes.bool.isRequired,
-    onClick: PropTypes.func.isRequired,
-    focusAfterSelecting: PropTypes.bool.isRequired,
-    disabled: PropTypes.bool,
-    variant: PropTypes.string,
-    isNested: PropTypes.bool,
-    placeholder: PropTypes.string,
-    value: PropTypes.string,
-    questionDefinition: PropTypes.object.isRequired,
-    onChange: PropTypes.func,
-    enableSelection: PropTypes.bool,
-    initialSelection: PropTypes.array,
-    onRemoveOption: PropTypes.func
+  clearOnClick: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+  focusAfterSelecting: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
+  variant: PropTypes.string,
+  isNested: PropTypes.bool,
+  placeholder: PropTypes.string,
+  value: PropTypes.string,
+  questionDefinition: PropTypes.object.isRequired,
+  onChange: PropTypes.func,
+  enableSelection: PropTypes.bool,
+  initialSelection: PropTypes.array,
+  onRemoveOption: PropTypes.func
 };
 
 export default VocabularyQuery;

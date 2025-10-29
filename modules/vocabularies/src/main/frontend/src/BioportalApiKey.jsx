@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, {useEffect, useContext} from "react";
+import React, { useEffect, useContext } from "react";
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import {
@@ -84,13 +84,13 @@ export function BioPortalApiKey(props) {
     fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
       .then((response) => response.ok ? response : Promise.reject(response))
       .then((data) => {
-          updateKey(customApiKey);
-          setDisplayPopup(false);
+        updateKey(customApiKey);
+        setDisplayPopup(false);
       })
       .catch((error) => {
         console.error("Error creating BioportalApiKey node: " + error)
       }
-    )
+      )
   }
 
   useEffect(() => {
@@ -100,24 +100,24 @@ export function BioPortalApiKey(props) {
         setCustomApiKey(apiKey);
       }, () => {
         updateKey(false);
-    });
+      });
   }, [bioPortalApiKey])
 
   let getBioportalKeyInfo = (enableEdit) => {
     return (
-        <TextField
-          slotProps={{
-            input: {
-              readOnly: !enableEdit,
-            },
-          }}
-          variant={enableEdit ? "outlined" : "filled" }
-          onChange={(evt) => {setCustomApiKey(evt.target.value)}}
-          value={customApiKey}
-          name="customApiKey"
-          label={ enableEdit ? "Enter new Bioportal API key:" : "Bioportal API key:" }
-          fullWidth={true}
-        />
+      <TextField
+        slotProps={{
+          input: {
+            readOnly: !enableEdit,
+          },
+        }}
+        variant={enableEdit ? "outlined" : "filled" }
+        onChange={(evt) => {setCustomApiKey(evt.target.value)}}
+        value={customApiKey}
+        name="customApiKey"
+        label={ enableEdit ? "Enter new Bioportal API key:" : "Bioportal API key:" }
+        fullWidth={true}
+      />
     );
   }
 
@@ -137,10 +137,10 @@ export function BioPortalApiKey(props) {
       </Grid>
 
       { !bioPortalApiKey && <>
-         <Grid className={classes.noKeyInfo}>
-           <Typography>Your system does not have a <a href="https://www.bioontology.org/wiki/BioPortal_Help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
-           <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
-         </Grid>
+        <Grid className={classes.noKeyInfo}>
+          <Typography>Your system does not have a <a href="https://www.bioontology.org/wiki/BioPortal_Help#Getting_an_API_key" target="_blank">Bioportal API Key</a> configured.</Typography>
+          <Typography>Without an API key, you cannot access Bioportal services such as listing and installing vocabularies.</Typography>
+        </Grid>
         <Grid>
           <Grid container
             alignItems="center"
@@ -159,16 +159,16 @@ export function BioPortalApiKey(props) {
       </> }
 
       <Dialog onClose={() => {setDisplayPopup(false)}} open={displayPopup} maxWidth="xs" fullWidth>
-         <DialogTitle>
+        <DialogTitle>
            Change BioPortal API key
-         </DialogTitle>
-         <DialogContent dividers>
-           { getBioportalKeyInfo(true) }
-          </DialogContent>
-          <DialogActions>
-            <Button variant="outlined" className={classes.vocabularyAction} onClick={() => {setDisplayPopup(false)}}>Cancel</Button>
-            <Button variant="contained" className={classes.vocabularyAction} onClick={() => {addNewKey()}}>Update</Button>
-          </DialogActions>
+        </DialogTitle>
+        <DialogContent dividers>
+          { getBioportalKeyInfo(true) }
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" className={classes.vocabularyAction} onClick={() => {setDisplayPopup(false)}}>Cancel</Button>
+          <Button variant="contained" className={classes.vocabularyAction} onClick={() => {addNewKey()}}>Update</Button>
+        </DialogActions>
       </Dialog>
     </React.Fragment>
   );

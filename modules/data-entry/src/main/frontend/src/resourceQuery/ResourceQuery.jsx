@@ -105,7 +105,7 @@ function ResourceQuery(props) {
   // Checks whether path is listed in the default answer options in the question definition
   let isDefaultOption = (path) => {
     return Object.values(props.questionDefinition)
-          .find(value => value['jcr:primaryType'] == 'cards:AnswerOption' && value.value === path)
+      .find(value => value['jcr:primaryType'] == 'cards:AnswerOption' && value.value === path)
   }
 
   const [inputValue, setInputValue] = useState(value);
@@ -164,10 +164,10 @@ function ResourceQuery(props) {
       multiline={true}
       endAdornment={(
         <InputAdornment position="end" ref={searchButtonRef} onClick={() => {
-              queryInput(anchorEl.current.value);
-            }
-          }
-          className = {classes.searchButton}>
+          queryInput(anchorEl.current.value);
+        }
+        }
+        className = {classes.searchButton}>
           <Search />
         </InputAdornment>
       )}
@@ -221,10 +221,10 @@ function ResourceQuery(props) {
     getSuggestions(
       input,
       showSuggestions,
-      () => showSuggestions({rows: [{
+      () => showSuggestions({ rows: [{
         error: true,
         message: "Answer suggestions cannot be loaded for this question."
-      }]})
+      }] })
     );
   }
 
@@ -279,32 +279,32 @@ function ResourceQuery(props) {
 
         suggestions.push(
           suggestion.error ?
-          <MenuItem
-            className={classes.dropdownMessage}
-            key={suggestion.message}
-            disabled={true}
-          >
-            <Typography
-              component="p"
-              variant="caption"
-              color="error"
+            <MenuItem
+              className={classes.dropdownMessage}
+              key={suggestion.message}
+              disabled={true}
             >
-            {suggestion.message}
-            </Typography>
-          </MenuItem>
-          :
-          <MenuItem
-            className={classes.dropdownItem}
-            key={suggestion["@path"]}
-            onClick={(e) => {
-              onClick(suggestion["@path"], suggestion.label);
-              setInputValue(clearOnClick || isDefaultOption(suggestion["@path"]) ? "" : suggestion.label);
-              closeSuggestions();
-            }}
-          >
-            <div>
-            { suggestion.label }
-            { infoDisplayer &&
+              <Typography
+                component="p"
+                variant="caption"
+                color="error"
+              >
+                {suggestion.message}
+              </Typography>
+            </MenuItem>
+            :
+            <MenuItem
+              className={classes.dropdownItem}
+              key={suggestion["@path"]}
+              onClick={(e) => {
+                onClick(suggestion["@path"], suggestion.label);
+                setInputValue(clearOnClick || isDefaultOption(suggestion["@path"]) ? "" : suggestion.label);
+                closeSuggestions();
+              }}
+            >
+              <div>
+                { suggestion.label }
+                { infoDisplayer &&
               <IconButton
                 size="small"
                 ref={node => {
@@ -313,22 +313,22 @@ function ResourceQuery(props) {
                 color="primary"
                 onClick={(e) => {setResourcePath(element["@path"]); e.preventDefault(); e.stopPropagation();}}
                 className={classes.infoButton}
-            >
-              <Info color="primary" />
-            </IconButton>
-            }
-            { suggestion.matchedFields?.map(f =>
-              <FormattedText
-                key={f}
-                component="div"
-                variant="caption"
-                color="textSecondary"
               >
-                {f}
-              </FormattedText>
-            )}
-            </div>
-          </MenuItem>
+                <Info color="primary" />
+              </IconButton>
+                }
+                { suggestion.matchedFields?.map(f =>
+                  <FormattedText
+                    key={f}
+                    component="div"
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    {f}
+                  </FormattedText>
+                )}
+              </div>
+            </MenuItem>
         );
       });
     }
@@ -356,12 +356,12 @@ function ResourceQuery(props) {
           className={classes.dropdownItem}
           key={anchorEl.current.value}
           onClick={(e) => {
-              if (e.target.localName === "li") {
-                onClick(anchorEl.current.value, anchorEl.current.value);
-                clearOnClick && setInputValue("");
-                closeSuggestions();
-              }}
-            }
+            if (e.target.localName === "li") {
+              onClick(anchorEl.current.value, anchorEl.current.value);
+              clearOnClick && setInputValue("");
+              closeSuggestions();
+            }}
+          }
         >
           {anchorEl.current.value}
         </MenuItem>
@@ -391,7 +391,7 @@ function ResourceQuery(props) {
 
   let InfoDisplayer = infoDisplayer;
 
-    // Register a button reference that the info box can use to align itself to
+  // Register a button reference that the info box can use to align itself to
   let registerInfoButton = (id, node) => {
     // List items getting deleted will overwrite new browser button refs, so
     // we must ignore deregistration events
@@ -442,11 +442,11 @@ function ResourceQuery(props) {
   }
 
   return (
-      <div>
-        {props.children}
+    <div>
+      {props.children}
 
-        <div className={variant == "labeled" ? classes.searchWrapper : ""}>
-          {variant == "labeled" ?
+      <div className={variant == "labeled" ? classes.searchWrapper : ""}>
+        {variant == "labeled" ?
           <FormControl variant="standard" className={isNested ? classes.nestedSearchInput : classes.search}>
             <InputLabel
               classes={{
@@ -460,61 +460,61 @@ function ResourceQuery(props) {
           </FormControl>
           :
           inputEl}
-          <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
-        </div>
-        {/* Suggestions list using Popper */}
-        <Popper
-          open={suggestionsVisible}
-          anchorEl={anchorEl.current}
-          transition
-          className={classNames(
-            {[classes.popperClose]: !open},
-            classes.popperNav,
-            classes.popperListOnTop
-          )}
-          placement = "bottom-start"
-          keepMounted
-          modifiers={[
-            {
-              name: 'flip',
-              enabled: true
-            },
-            {
-              name: 'preventOverflow',
-              enabled: true,
-              options: {
-                altAxis: true,
-                altBoundary: true,
-                tether: true,
-                rootBoundary: 'window',
-              }
-            },
-            {
-              name: 'hide',
-              enabled: true
+        <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
+      </div>
+      {/* Suggestions list using Popper */}
+      <Popper
+        open={suggestionsVisible}
+        anchorEl={anchorEl.current}
+        transition
+        className={classNames(
+          { [classes.popperClose]: !open },
+          classes.popperNav,
+          classes.popperListOnTop
+        )}
+        placement = "bottom-start"
+        keepMounted
+        modifiers={[
+          {
+            name: 'flip',
+            enabled: true
+          },
+          {
+            name: 'preventOverflow',
+            enabled: true,
+            options: {
+              altAxis: true,
+              altBoundary: true,
+              tether: true,
+              rootBoundary: 'window',
             }
-          ]}
-          ref={menuPopperRef}
-        >
-          {({ TransitionProps }) => (
-            <Grow
-              {...TransitionProps}
-              id="menu-list-grow"
-              style={{
-                transformOrigin: "left top"
-              }}
-            >
-              <Paper>
-                <ClickAwayListener onClickAway={closeAutocomplete}>
-                  <MenuList role="menu" ref={menuRef}>
-                    {suggestions}
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-        { infoDisplayer &&
+          },
+          {
+            name: 'hide',
+            enabled: true
+          }
+        ]}
+        ref={menuPopperRef}
+      >
+        {({ TransitionProps }) => (
+          <Grow
+            {...TransitionProps}
+            id="menu-list-grow"
+            style={{
+              transformOrigin: "left top"
+            }}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={closeAutocomplete}>
+                <MenuList role="menu" ref={menuRef}>
+                  {suggestions}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+      { infoDisplayer &&
             <InfoDisplayer
               infoPath={resourcePath}
               infoButtonRefs={buttonRefs}
@@ -525,10 +525,10 @@ function ResourceQuery(props) {
               onCloseBrowser={updateSelection}
               onCloseInfo={() => setResourcePath("")}
               questionDefinition={questionDefinition}
-           />
-        }
-      </div>
-    );
+            />
+      }
+    </div>
+  );
 }
 
 ResourceQuery.propTypes = {

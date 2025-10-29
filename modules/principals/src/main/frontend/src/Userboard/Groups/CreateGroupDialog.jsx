@@ -40,21 +40,21 @@ function CreateGroupDialog(props) {
     let url = "/system/userManager/group.create.json";
 
     fetchWithReLogin(globalLoginDisplay, url, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
+      method: 'POST',
+      credentials: 'include',
+      body: formData
     })
-    .then((response) => {
+      .then((response) => {
         if (!response.ok) {
           setError(response.statusText);
           return;
         }
         reload?.();
         handleClose?.();
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         setError(error?.statusText ?? error?.message ?? ("" + error));
-    });
+      });
   }
 
   return (

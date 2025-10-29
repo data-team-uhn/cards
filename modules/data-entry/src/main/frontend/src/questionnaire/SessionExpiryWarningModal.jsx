@@ -75,19 +75,19 @@ function SessionExpiryWarningModal(props) {
 
       // start a countdown recalculated every second
       let interval = setInterval(() => {
-          timeLeft = timeLeft - 1000;
-          if (timeLeft >= 0) {
-            setCountdown(timeLeft);
-            if (timeLeft < 1000) {
-              // Session expired
-              onExpired?.();
-              setExpired(true);
-              clearTimeout(warningTimer);
-              clearInterval(interval);
-            }
+        timeLeft = timeLeft - 1000;
+        if (timeLeft >= 0) {
+          setCountdown(timeLeft);
+          if (timeLeft < 1000) {
+            // Session expired
+            onExpired?.();
+            setExpired(true);
+            clearTimeout(warningTimer);
+            clearInterval(interval);
           }
-        }, 1000);
-        setCountdownTimer(interval);
+        }
+      }, 1000);
+      setCountdownTimer(interval);
     }, (activeLength - countdownLength));
 
     return () => {clearTimeout(warningTimer); countdownTimer && clearInterval(countdownTimer);}
@@ -115,49 +115,49 @@ function SessionExpiryWarningModal(props) {
 
   return (
     <>
-    <Backdrop
-      sx={{ backgroundColor: (theme) => theme.palette.background.paper, zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={expired}
-    />
-    <ResponsiveDialog
-      open={open}
-      title={ getExpiryMessage() }
+      <Backdrop
+        sx={{ backgroundColor: (theme) => theme.palette.background.paper, zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={expired}
+      />
+      <ResponsiveDialog
+        open={open}
+        title={ getExpiryMessage() }
       >
         <DialogContent dividers>
           <Typography component="p">
-          { expired ?
-            "Your session has expired. Please refresh this page to keep editing."
-            :
-            "You should save your answers now to keep your session active and prevent data loss."
-          }
+            { expired ?
+              "Your session has expired. Please refresh this page to keep editing."
+              :
+              "You should save your answers now to keep your session active and prevent data loss."
+            }
           </Typography>
         </DialogContent>
         <DialogActions>
-        { expired ?
-          <Button
-            onClick={() => location.reload()}
-            variant="contained"
-          >
-            Refresh
-          </Button>
-          :
-          <>
+          { expired ?
             <Button
-              onClick={onExit}
-              variant="outlined"
-            >
-              Save and exit
-            </Button>
-            <Button
-              onClick={() => {setOpen(false); onStay?.();}}
+              onClick={() => location.reload()}
               variant="contained"
             >
-              Save and stay on this page
+            Refresh
             </Button>
-          </>
-        }
+            :
+            <>
+              <Button
+                onClick={onExit}
+                variant="outlined"
+              >
+              Save and exit
+              </Button>
+              <Button
+                onClick={() => {setOpen(false); onStay?.();}}
+                variant="contained"
+              >
+              Save and stay on this page
+              </Button>
+            </>
+          }
         </DialogActions>
-    </ResponsiveDialog>
+      </ResponsiveDialog>
     </>
   );
 }

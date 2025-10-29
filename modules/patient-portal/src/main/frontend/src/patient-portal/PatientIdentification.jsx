@@ -67,19 +67,19 @@ const useStyles = makeStyles()(theme => ({
   },
   mrnInput : {
     '& input[type=number]': {
-        MozAppearance: 'textfield'
+      MozAppearance: 'textfield'
     },
     '& input[type=number]::-webkit-outer-spin-button': {
-        WebkitAppearance: 'none',
-        margin: 0
+      WebkitAppearance: 'none',
+      margin: 0
     },
     '& input[type=number]::-webkit-inner-spin-button': {
-        WebkitAppearance: 'none',
-        margin: 0
+      WebkitAppearance: 'none',
+      margin: 0
     }
   },
   dateLabel : {
-      paddingTop: theme.spacing(1),
+    paddingTop: theme.spacing(1),
   },
   mrnHelperImage: {
     maxWidth: '100%',
@@ -147,7 +147,7 @@ function PatientIdentification(props) {
     fetch("/Survey.validateCredentials", {
       "method": "POST",
       "body": requestData
-      })
+    })
       .then((response) => response.json())
       .then((json) => {
         if(json.status == "needsVisit") {
@@ -240,7 +240,7 @@ function PatientIdentification(props) {
   }, [visit, touCleared, !!patientDetails]);
 
   let authenticate = () => {
-    onSuccess && onSuccess(Object.assign({subject: visit}, patientDetails));
+    onSuccess && onSuccess(Object.assign({ subject: visit }, patientDetails));
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -253,7 +253,7 @@ function PatientIdentification(props) {
     let message = `${welcomeMessage || ""}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
     return (
       <ErrorPage
-        sx={{maxWidth: 500, margin: "0 auto"}}
+        sx={{ maxWidth: 500, margin: "0 auto" }}
         title=""
         message={message}
         messageColor="textPrimary"
@@ -304,161 +304,161 @@ function PatientIdentification(props) {
 
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} >
-         <Logo component={Grid} size={12}/>
+        <Logo component={Grid} size={12}/>
 
-         { /* If we don't have the authentication token yet or we don't need the identification form,
+        { /* If we don't have the authentication token yet or we don't need the identification form,
              display a circular progress while we wait for the next step */ }
 
-         { (typeof(canAuthenticate) == "undefined" || !showIdentificationForm) ?
+        { (typeof(canAuthenticate) == "undefined" || !showIdentificationForm) ?
 
-         <Grid size={12} className={classes.description}>
+          <Grid size={12} className={classes.description}>
             <CircularProgress />
-         </Grid>
+          </Grid>
 
-         : (!visitList || showTou || touCleared === false) ?
+          : (!visitList || showTou || touCleared === false) ?
 
-         /* If we haven't authenticated and retrieved the visit list for this patient yet,
+          /* If we haven't authenticated and retrieved the visit list for this patient yet,
              or if the Terms of Use were declined after identification,
              display the identification form */
-         <>
-         { welcomeMessage &&
+            <>
+              { welcomeMessage &&
            <Grid size={12} className={classes.description}>
              <FormattedText>{welcomeMessage}</FormattedText>
            </Grid>
-         }
-         <Grid size={12} className={classes.formFields}>
-            <div className={classes.description}>
-            { error ?
-              <Typography color="error">{error}</Typography>
-              :
-              <Typography variant="h6">Enter the following information for identification:</Typography>
-            }
-            </div>
-            <LocalizationProvider dateAdapter={AdapterLuxon}>
-              <DatePicker
-                views={views}
-                openTo="year"
-                format={dateFormat}
-                label="Date of birth"
-                value={dob}
-                onChange={(value) => {
-                  setError(false);
-                  setDob(value);
-                }}
-                slotProps={{ textField: {
-                               variant: 'standard',
-                               autoFocus: true,
-                               fullWidth: true,
-                               className: classes.textField,
-                               helperText: null,
-                               onBlur: (event) => {
-                                 if (dob?.invalid) {
-                                   setError(true);
-                                   setErrorMessage("Invalid date" + (dob.invalid.explanation ? ": " + dob.invalid.explanation : ""));
-                                 }
-                               },
-                               inputProps: {
-                                 placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`
-                               },
-                             },
-                             field: {
-                               clearable: true,
-                               onClear: () => setDob(null),
-                             },
-                }}
-              />
-            </LocalizationProvider>
-            <Grid container alignItems="flex-start" wrap="nowrap" spacing={2} justifyContent="space-between">
-              <Grid>
-                <FormControl variant="standard" margin="normal" fullWidth>
-                  <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
-                  <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
-                  <FormHelperText id="mrn_helper">
-                  <Link
-                    variant="caption"
-                    underline="hover"
-                    onClick={() => {setMrnHelperOpen(true)}}
-                    className={classes.mrnHelperLink}
-                    >
+              }
+              <Grid size={12} className={classes.formFields}>
+                <div className={classes.description}>
+                  { error ?
+                    <Typography color="error">{error}</Typography>
+                    :
+                    <Typography variant="h6">Enter the following information for identification:</Typography>
+                  }
+                </div>
+                <LocalizationProvider dateAdapter={AdapterLuxon}>
+                  <DatePicker
+                    views={views}
+                    openTo="year"
+                    format={dateFormat}
+                    label="Date of birth"
+                    value={dob}
+                    onChange={(value) => {
+                      setError(false);
+                      setDob(value);
+                    }}
+                    slotProps={{ textField: {
+                      variant: 'standard',
+                      autoFocus: true,
+                      fullWidth: true,
+                      className: classes.textField,
+                      helperText: null,
+                      onBlur: (event) => {
+                        if (dob?.invalid) {
+                          setError(true);
+                          setErrorMessage("Invalid date" + (dob.invalid.explanation ? ": " + dob.invalid.explanation : ""));
+                        }
+                      },
+                      inputProps: {
+                        placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`
+                      },
+                    },
+                    field: {
+                      clearable: true,
+                      onClear: () => setDob(null),
+                    },
+                    }}
+                  />
+                </LocalizationProvider>
+                <Grid container alignItems="flex-start" wrap="nowrap" spacing={2} justifyContent="space-between">
+                  <Grid>
+                    <FormControl variant="standard" margin="normal" fullWidth>
+                      <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
+                      <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
+                      <FormHelperText id="mrn_helper">
+                        <Link
+                          variant="caption"
+                          underline="hover"
+                          onClick={() => {setMrnHelperOpen(true)}}
+                          className={classes.mrnHelperLink}
+                        >
                     Where can I find my MRN?
-                    </Link>
-                  </FormHelperText>
-                 </FormControl>
+                        </Link>
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid alignSelf="center">or</Grid>
+                  <Grid>
+                    <FormControl variant="standard" margin="normal" fullWidth>
+                      <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
+                      <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid alignSelf="center">or</Grid>
               <Grid>
-                <FormControl variant="standard" margin="normal" fullWidth>
-                  <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
-                  <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
-                 </FormControl>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid>
-            <Button
-              type="submit"
-              variant="contained"
-              className={classes.submit}
-              >
+                <Button
+                  type="submit"
+                  variant="contained"
+                  className={classes.submit}
+                >
               Continue
-            </Button>
-          </Grid>
-          <Input id="j_visitSelection" name="j_visitSelection" autoComplete="off" style={{display: "none"}} value={visit || ""}/>
-          </>
-
-          :
-
-          <>
-
-          {/* If we retrieved the visit list and there's more than one option, display the options for the patient */}
-
-          { visitListShown ?
-            <>
-            <Grid className={classes.description}>
-              {displayText("eventSelectionMessage", Typography)}
-            </Grid>
-            <Grid>
-              <List>{ visitList.map((v,i) =>
-                <ListItem className={classes.appointmentEntry} key={`appointmentEntry-${i}`}>
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    onClick={() => setVisit(v.subject)}
-                    startIcon={<AppointmentIcon />}
-                  >
-                    { v.location }
-                  </Button>
-                </ListItem>
-              )}</List>
-            </Grid>
-            <Grid className={classes.description}>
-              <Typography variant="body2" color="textSecondary">
-                If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout" underline="hover">close this page</Link>.
-              </Typography>
-            </Grid>
+                </Button>
+              </Grid>
+              <Input id="j_visitSelection" name="j_visitSelection" autoComplete="off" style={{ display: "none" }} value={visit || ""}/>
             </>
 
             :
 
             <>
-            {/* Otherwise inform the user there are no known upcoming appointments that need survery responses */}
-            <Grid className={classes.description}>
-              {displayText("noEventsMessage", Typography, {variant: "h6", color: "textSecondary"})}
-            </Grid>
-            <Grid>
-              <Button
-                variant="contained"
-                className={classes.submit}
-                onClick={() => window.location = "/system/sling/logout"}
-              >
+
+              {/* If we retrieved the visit list and there's more than one option, display the options for the patient */}
+
+              { visitListShown ?
+                <>
+                  <Grid className={classes.description}>
+                    {displayText("eventSelectionMessage", Typography)}
+                  </Grid>
+                  <Grid>
+                    <List>{ visitList.map((v,i) =>
+                      <ListItem className={classes.appointmentEntry} key={`appointmentEntry-${i}`}>
+                        <Button
+                          fullWidth
+                          variant="outlined"
+                          onClick={() => setVisit(v.subject)}
+                          startIcon={<AppointmentIcon />}
+                        >
+                          { v.location }
+                        </Button>
+                      </ListItem>
+                    )}</List>
+                  </Grid>
+                  <Grid className={classes.description}>
+                    <Typography variant="body2" color="textSecondary">
+                If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout" underline="hover">close this page</Link>.
+                    </Typography>
+                  </Grid>
+                </>
+
+                :
+
+                <>
+                  {/* Otherwise inform the user there are no known upcoming appointments that need survery responses */}
+                  <Grid className={classes.description}>
+                    {displayText("noEventsMessage", Typography, { variant: "h6", color: "textSecondary" })}
+                  </Grid>
+                  <Grid>
+                    <Button
+                      variant="contained"
+                      className={classes.submit}
+                      onClick={() => window.location = "/system/sling/logout"}
+                    >
                 Close
-              </Button>
-            </Grid>
+                    </Button>
+                  </Grid>
+                </>
+              }
             </>
-          }
-          </>
         }
-       </Grid>
+      </Grid>
     </form>
   </>)
 }

@@ -36,10 +36,10 @@ function ClinicForms(props) {
   // At startup, load questionnaire
   useEffect(() => {
     if (data) {
-        setColumns(JSON.parse(data["view"] || "[]"));
-        setQuestionnaireId(data.questionnaire?.["jcr:uuid"] || "");
-        setTitle(data.questionnaire?.["title"]);
-        setAcronym(data.questionnaire?.["@name"]);
+      setColumns(JSON.parse(data["view"] || "[]"));
+      setQuestionnaireId(data.questionnaire?.["jcr:uuid"] || "");
+      setTitle(data.questionnaire?.["title"]);
+      setAcronym(data.questionnaire?.["@name"]);
     }
   }, [data["@path"]]);
 
@@ -48,7 +48,7 @@ function ClinicForms(props) {
   }
 
   let query = (
-"select distinct dataForm.* " +
+    "select distinct dataForm.* " +
   "from " +
     "[cards:Subject] as visitSubject " +
     "inner join [cards:Form] as visitInformation on visitSubject.[jcr:uuid] = visitInformation.subject " +

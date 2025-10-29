@@ -39,7 +39,7 @@ import Question from "./Question";
 //   />
 function PhoneQuestion(props) {
   checkPropTypes(PhoneQuestion, props);
-  const { existingAnswer, pageActive, questionDefinition, ...rest} = props;
+  const { existingAnswer, pageActive, questionDefinition, ...rest } = props;
 
   let initialValue = existingAnswer && existingAnswer[1].value || "";
   const [phone, changePhone] = useState(initialValue);
@@ -52,13 +52,13 @@ function PhoneQuestion(props) {
   return (
     <Question
       {...props}
-      >
+    >
       <PhoneInput
         enableSearch
         country={defaultCountry}
         onlyCountries={countries}
         regions={regions}
-        masks={{'ca': '...-...-....'}}
+        masks={{ 'ca': '...-...-....' }}
         disableDropdown={!!(countries?.length == 1)}
         placeholder=""
         value={phone}
@@ -72,7 +72,7 @@ function PhoneQuestion(props) {
         existingAnswer={existingAnswer}
         pageActive={pageActive}
         {...rest}
-        />
+      />
     </Question>);
 }
 

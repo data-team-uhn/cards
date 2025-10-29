@@ -24,7 +24,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
-import Answer, {VALUE_POS} from "./Answer";
+import Answer, { VALUE_POS } from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
@@ -53,8 +53,8 @@ import { MakeRequest } from "../vocabQuery/util.jsx";
 //  />
 let ComputedQuestion = (props) => {
   checkPropTypes(ComputedQuestion, props);
-  const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
-  const { text, expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = {...props.questionDefinition, ...props};
+  const { existingAnswer, classes, pageActive, questionDefinition, ...rest } = props;
+  const { text, expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = { ...props.questionDefinition, ...props };
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
 
@@ -73,7 +73,7 @@ let ComputedQuestion = (props) => {
   const endTagArrayVal = "]}";
   const optionalTag = "?";
   const defaultTag = ":-";
-  const booleanDefaultLabels = {"0": "No", "1": "Yes", "-1": "Unknown"}
+  const booleanDefaultLabels = { "0": "No", "1": "Yes", "-1": "Unknown" }
 
   let setError = (input) => {
     if (error !== input) changeError(input);
@@ -139,11 +139,11 @@ let ComputedQuestion = (props) => {
     // Discard labels, keep only values
     // Parse numbers from non-empty strings when possible
     let values = (
-        form[name] || (defaultValue !== null ? [[defaultValue, defaultValue]] : [])
-      ).map(e => e[VALUE_POS])
-       .map(v => (typeof(v) === "undefined" || v === "") && defaultValue != null ? defaultValue : v)
-       .filter(v => !(typeof(v) === "undefined" || v === ""))
-       .map(v => v && !isNaN(Number(v)) ? Number(v) : v);
+      form[name] || (defaultValue !== null ? [[defaultValue, defaultValue]] : [])
+    ).map(e => e[VALUE_POS])
+      .map(v => (typeof(v) === "undefined" || v === "") && defaultValue != null ? defaultValue : v)
+      .filter(v => !(typeof(v) === "undefined" || v === ""))
+      .map(v => v && !isNaN(Number(v)) ? Number(v) : v);
 
     // Record whether a value is absent
     missingValue = (values.length == 0);
@@ -205,8 +205,8 @@ let ComputedQuestion = (props) => {
       // Insert this question into the list of arguments
       if (!questions.has(questionName)) {
         questions.set(questionName,
-          {"argument": "arg" + (questions.size + 1),
-            "value": getQuestionValue(questionName, form, defaultValue, asArray)});
+          { "argument": "arg" + (questions.size + 1),
+            "value": getQuestionValue(questionName, form, defaultValue, asArray) });
       }
 
       missingValue &&= !isValueOptional;
@@ -262,9 +262,9 @@ let ComputedQuestion = (props) => {
 
   useEffect(() => {
     if (unitOfMeasurement) {
-      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>}));
+      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment> }));
     } else {
-      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined}));
+      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined }));
     }
   }, [unitOfMeasurement])
 
@@ -324,24 +324,24 @@ let ComputedQuestion = (props) => {
       defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : undefined}
       currentAnswers={typeof(displayValue) !== "undefined" && displayValue !== "" ? 1 : 0}
       {...props}
-      >
+    >
       {
         pageActive && <>
           {error && <Typography color='error'>{errorMessage}</Typography>}
           { isFormatted ? <FormattedText>
-              {displayValue + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
-            </FormattedText>
-          :
-          <TextField
-            variant="standard"
-            type={fieldType}
-            disabled={true}
-            className={classes.textField + " " + classes.answerField}
-            value={displayValue}
-            slotProps={{
-              input: muiInputProps
-            }}
-          />
+            {displayValue + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
+          </FormattedText>
+            :
+            <TextField
+              variant="standard"
+              type={fieldType}
+              disabled={true}
+              className={classes.textField + " " + classes.answerField}
+              value={displayValue}
+              slotProps={{
+                input: muiInputProps
+              }}
+            />
           }
         </>
       }
@@ -353,7 +353,7 @@ let ComputedQuestion = (props) => {
         valueType={answerType}
         pageActive={pageActive}
         {...rest}
-        />
+      />
     </Question>
   )
 }

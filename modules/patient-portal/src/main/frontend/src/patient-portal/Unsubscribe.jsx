@@ -62,7 +62,7 @@ function Unsubscribe (props) {
   const { classes } = useStyles();
 
   useEffect(() => {
-    fetch("/Survey.unsubscribe", {method: 'GET'})
+    fetch("/Survey.unsubscribe", { method: 'GET' })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
       .catch((response) => {
@@ -99,32 +99,32 @@ function Unsubscribe (props) {
 
   return (
     <Paper className={classes.paper} elevation={0}>
-        <Grid
-          container
-          direction="column"
-          alignItems="stretch"
-          spacing={7}
-        >
-          <Logo component={Grid} />
-          <Grid>
-            { error && <Alert severity="error">
-              <AlertTitle>An error occurred</AlertTitle>
-               {error}
-              </Alert>
-            }
-            { alreadyUnsubscribed ?
-              <>
-                <Alert icon={false} severity="info">{ `You are already unsubscribed from ${appName}.` }</Alert>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className={classes.submit}
-                  onClick={() => unsubscribe(0)}
-                  >
+      <Grid
+        container
+        direction="column"
+        alignItems="stretch"
+        spacing={7}
+      >
+        <Logo component={Grid} />
+        <Grid>
+          { error && <Alert severity="error">
+            <AlertTitle>An error occurred</AlertTitle>
+            {error}
+          </Alert>
+          }
+          { alreadyUnsubscribed ?
+            <>
+              <Alert icon={false} severity="info">{ `You are already unsubscribed from ${appName}.` }</Alert>
+              <Button
+                type="submit"
+                variant="contained"
+                className={classes.submit}
+                onClick={() => unsubscribe(0)}
+              >
                   Resubscribe
-                </Button>
-              </>
-              : confirmed !== null ?
+              </Button>
+            </>
+            : confirmed !== null ?
               <>
                 <Alert severity="success">
                   You have been {confirmed ? "unsubscribed from" : "resubscribed to"} {appName}.
@@ -134,7 +134,7 @@ function Unsubscribe (props) {
                   variant="contained"
                   className={classes.submit}
                   onClick={() => unsubscribe(1-confirmed)}
-                  >
+                >
                   {confirmed ? "Resubscribe" : "Unsubscribe"}
                 </Button>
               </>
@@ -146,13 +146,13 @@ function Unsubscribe (props) {
                   variant="contained"
                   className={classes.submit}
                   onClick={() => unsubscribe(1)}
-                  >
+                >
                   Unsubscribe
                 </Button>
               </>
-            }
-          </Grid>
+          }
         </Grid>
+      </Grid>
     </Paper>
   );
 }

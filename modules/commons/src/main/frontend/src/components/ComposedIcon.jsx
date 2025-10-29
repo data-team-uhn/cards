@@ -49,37 +49,37 @@ const ComposedIcon = (props) => {
   } = props;
 
   return (
-  <div style={{
-    position: 'relative',
-    cursor: 'default'
-  }}>
-    <div style={{ lineHeight: '0px', cursor: 'pointer' }}>
-      <MainIcon
+    <div style={{
+      position: 'relative',
+      cursor: 'default'
+    }}>
+      <div style={{ lineHeight: '0px', cursor: 'pointer' }}>
+        <MainIcon
+          style={{
+            fontSize: sizesMap[size].size,
+          }} />
+      </div>
+      <div
         style={{
-          fontSize: sizesMap[size].size,
-        }} />
+          lineHeight: '0px',
+          cursor: 'pointer',
+          position: 'absolute',
+          textShadow: `0.75px 0px 0.5px ${theme.palette.background.default}, 0px 0.75px 0.5px ${theme.palette.background.default}, -0.75px 0px 0.5px ${theme.palette.background.default}, 0px -0.75px 0.5px ${theme.palette.background.default}`,
+          bottom: position.includes('bottom') ? '-4px' : null,
+          top: position.includes('top') ? '-4px' : null,
+          left: position.includes('start') ? '-4px' : null,
+          right: position.includes('end') ? '-4px' : null,
+        }}>
+        { ExtraIcon && <ExtraIcon
+          color={color}
+          style={{
+            fontSize: sizesMap[size].extraSize,
+            color: disabled ? theme.palette.text.disabled : null,
+          }}
+        /> }
+      </div>
     </div>
-    <div
-      style={{
-        lineHeight: '0px',
-        cursor: 'pointer',
-        position: 'absolute',
-        textShadow: `0.75px 0px 0.5px ${theme.palette.background.default}, 0px 0.75px 0.5px ${theme.palette.background.default}, -0.75px 0px 0.5px ${theme.palette.background.default}, 0px -0.75px 0.5px ${theme.palette.background.default}`,
-        bottom: position.includes('bottom') ? '-4px' : null,
-        top: position.includes('top') ? '-4px' : null,
-        left: position.includes('start') ? '-4px' : null,
-        right: position.includes('end') ? '-4px' : null,
-      }}>
-      { ExtraIcon && <ExtraIcon
-        color={color}
-        style={{
-          fontSize: sizesMap[size].extraSize,
-          color: disabled ? theme.palette.text.disabled : null,
-        }}
-      /> }
-    </div>
-  </div>
-);}
+  );}
 
 ComposedIcon.propTypes = {
   MainIcon: PropTypes.elementType.isRequired,

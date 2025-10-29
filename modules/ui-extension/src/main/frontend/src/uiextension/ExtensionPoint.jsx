@@ -96,7 +96,7 @@ function ExtensionPoint(props) {
     } else if (contentType === 'text/html') {
       // html -- include it inline
       return(response.text().then((text) => {
-        setRenderedResponse((<div dangerouslySetInnerHTML={{__html: text}}/>));
+        setRenderedResponse((<div dangerouslySetInnerHTML={{ __html: text }}/>));
       }));
     } else {
       // Reject any other content type
@@ -117,8 +117,8 @@ function ExtensionPoint(props) {
 }
 
 ExtensionPoint.propTypes = {
-    path: PropTypes.string.isRequired,
-    callback: PropTypes.func
+  path: PropTypes.string.isRequired,
+  callback: PropTypes.func
 };
 
 export default ExtensionPoint;

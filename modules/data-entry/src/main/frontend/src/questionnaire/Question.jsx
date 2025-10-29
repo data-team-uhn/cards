@@ -63,7 +63,7 @@ function Question (props) {
       if (questionDefinition.displayMode === "matrix") {
         setDoHighlight(Array.of(existingAnswer?.[1]["displayedValue"]).flat().filter(answer => anchor == answer[1].question["@path"]).length > 0);
       } else {
-         setDoHighlight(anchor == questionDefinition["@path"]);
+        setDoHighlight(anchor == questionDefinition["@path"]);
       }
     }
   }, [anchor, questionDefinition]);
@@ -73,7 +73,7 @@ function Question (props) {
   // create a ref to store the question container DOM element
   useEffect(() => {
     const timer = setTimeout(() => {
-      questionRef?.current?.scrollIntoView({block: "center"});
+      questionRef?.current?.scrollIntoView({ block: "center" });
     }, 500);
     return () => clearTimeout(timer);
   }, [questionRef]);
@@ -102,7 +102,7 @@ function Question (props) {
       variant="outlined"
       ref={doHighlight ? questionRef : undefined}
       className={cardClasses.join(" ")}
-      >
+    >
       {
         // Note that we need to preserve the hierarchy in which we place children
         // so that pageActive changing does not cause children to lose state
@@ -110,7 +110,7 @@ function Question (props) {
           disableTypography
           title={<FormattedText component="h6" variant="h6">{text}</FormattedText>}
           subheader={<FormattedText component="div" variant="caption" color="textSecondary">{description}</FormattedText>}
-          />
+        />
       }
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
         <div className={compact ? classes.compactLayout : null}>
@@ -149,13 +149,13 @@ function Question (props) {
         </div>
       </CardContent>
     </Card>
-    )
+  )
 }
 
 Question.propTypes = {
-    text: PropTypes.string,
-    description: PropTypes.string,
-    disableInstructions: PropTypes.bool,
+  text: PropTypes.string,
+  description: PropTypes.string,
+  disableInstructions: PropTypes.bool,
 };
 
 export default withStyles(Question, QuestionnaireStyle);

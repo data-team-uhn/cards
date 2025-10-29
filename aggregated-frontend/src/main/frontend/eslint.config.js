@@ -63,8 +63,17 @@ const importOrderRule = [
   },
 ];
 
+const whitespaceRules = {
+  "indent": ["error", 2, { "SwitchCase": 1 }],
+  "no-tabs": "error",
+  "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+  "linebreak-style": "off",
+  "object-curly-spacing": ["error", "always"],
+};
+
 const commonRules = {
   "import/order": importOrderRule,
+  ...whitespaceRules,
 };
 
 const commonLinterOptions = {

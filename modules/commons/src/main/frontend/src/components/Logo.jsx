@@ -69,7 +69,7 @@ export default function Logo(props) {
   const withAffiliation = !disableAffiliation && !!affiliationLogo;
 
   const Component = component;
-  const style = typeof(maxWidth) != "undefined" ? {maxWidth: maxWidth} : {};
+  const style = typeof(maxWidth) != "undefined" ? { maxWidth: maxWidth } : {};
   let classNames = withAffiliation ? [classes.doubleLogo] : [classes.logo];
   if (className) classNames.push(className);
 

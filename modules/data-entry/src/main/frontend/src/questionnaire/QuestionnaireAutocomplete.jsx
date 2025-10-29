@@ -57,11 +57,11 @@ const useStyles = makeStyles()(theme => ({
   },
   optionText: {
     "& .MuiListItemText-secondary": {
-       wordBreak: "break-word",
-       "& > *": {
-         color: theme.palette.text.disabled,
-       },
-     },
+      wordBreak: "break-word",
+      "& > *": {
+        color: theme.palette.text.disabled,
+      },
+    },
   },
 }));
 
@@ -118,7 +118,7 @@ function QuestionnaireAutocomplete(props) {
       <ListItemAvatar>
         <Tooltip title={type}>
           <Avatar
-            style={{color: entitySpecs[type].color, backgroundColor: selected ? "transparent" : undefined}}
+            style={{ color: entitySpecs[type].color, backgroundColor: selected ? "transparent" : undefined }}
             className={classes.avatar}
           >
             { selected ?

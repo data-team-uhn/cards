@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect, useContext } from "react";
 
-import { CircularProgress} from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import PropTypes from "prop-types";
 
 import { checkPropTypes } from "../propTypes";
@@ -33,7 +33,7 @@ import ResourceQuery from "../resourceQuery/ResourceQuery";
 
 function ResourceQuestion(props) {
   checkPropTypes(ResourceQuestion, props);
-  const {primaryType, labelProperty, maxAnswers, displayMode} = { ...props.questionDefinition };
+  const { primaryType, labelProperty, maxAnswers, displayMode } = { ...props.questionDefinition };
   const [options, setOptions] = useState();
 
   // If the display mode is list or select, set a limit to how many entries can be displayed in
@@ -57,8 +57,8 @@ function ResourceQuestion(props) {
   useEffect(() => {
     const url = (
       primaryType
-      ? `/query?query=select * from [${primaryType}] as n order by n.'cards:defaultOrder', n.'${labelProperty}'&limit=${MAX_TO_DISPLAY}`
-      : undefined
+        ? `/query?query=select * from [${primaryType}] as n order by n.'cards:defaultOrder', n.'${labelProperty}'&limit=${MAX_TO_DISPLAY}`
+        : undefined
     );
     if (!enableUserEntry && !defaults?.length && url) {
       // NB: if there are too many matching resources, we default to a suggested input
@@ -79,7 +79,7 @@ function ResourceQuestion(props) {
     <Question
       disableInstructions
       {...props}
-      >
+    >
       { options ?
         <MultipleChoice
           customInput = {options.length == 0 ? ResourceQuery : undefined}
@@ -95,7 +95,7 @@ function ResourceQuestion(props) {
           valueType="String"
           defaults={props.defaults || (options.length > 0 ? options : undefined)}
           {...props}
-          />
+        />
         : <CircularProgress />
       }
     </Question>);

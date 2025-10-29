@@ -101,19 +101,19 @@ function SubjectTypes(props) {
   }
 
   let makeActions = ({ row }) => (
-            <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right'}}>
-              <EditButton
-                entryType={entryType}
-                onClick={() => {setIsEdit(true); setCurrentSubjectType(row.original); setDialogOpen(true);}}
-              />
-              <DeleteButton
-                entryPath={row.original["@path"]}
-                entryName={row.original.label}
-                onComplete={dialogSuccess}
-                entryType={entryType}
-              />
-            </Box>
-        )
+    <Box sx={{ display: 'flex', flexWrap: 'nowrap', float: 'right' }}>
+      <EditButton
+        entryType={entryType}
+        onClick={() => {setIsEdit(true); setCurrentSubjectType(row.original); setDialogOpen(true);}}
+      />
+      <DeleteButton
+        entryPath={row.original["@path"]}
+        entryName={row.original.label}
+        onComplete={dialogSuccess}
+        entryType={entryType}
+      />
+    </Box>
+  )
 
   let customFilterFn = (row, id, filterValue) => {
     let path = row.original['@path'] || "";
@@ -122,32 +122,32 @@ function SubjectTypes(props) {
   }
 
   return (
-  <>
-    <AdminResourceListing
-      title="Subject Types"
-      buttonProps={{
-        title: "New subject type",
-        onClick: () => setDialogOpen(true)
-      }}
-      columns={columns}
-      tableActions={makeActions}
-      entryType="SubjectType"
-      disableTopPagination={true}
-      updateData={updateData}
-      onDataReceived={setSubjectTypeData}
-      resourceSelectors=".instanceCount"
-      customFilter={customFilterFn}
-    />
+    <>
+      <AdminResourceListing
+        title="Subject Types"
+        buttonProps={{
+          title: "New subject type",
+          onClick: () => setDialogOpen(true)
+        }}
+        columns={columns}
+        tableActions={makeActions}
+        entryType="SubjectType"
+        disableTopPagination={true}
+        updateData={updateData}
+        onDataReceived={setSubjectTypeData}
+        resourceSelectors=".instanceCount"
+        customFilter={customFilterFn}
+      />
 
-    <SubjectTypeDialog
-      open={dialogOpen}
-      onClose={onClose}
-      onSuccess={dialogSuccess}
-      data={subjectTypeData}
-      isEdit={isEdit}
-      currentSubjectType={currentSubjectType}
-    />
-  </>
+      <SubjectTypeDialog
+        open={dialogOpen}
+        onClose={onClose}
+        onSuccess={dialogSuccess}
+        data={subjectTypeData}
+        isEdit={isEdit}
+        currentSubjectType={currentSubjectType}
+      />
+    </>
   );
 }
 

@@ -52,9 +52,9 @@ function FileQuestion(props) {
     // Check whether or not we have an initial value
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
     // The value can either be a single value or an array of values; force it into a dictionary
-    Array.of(existingAnswer[1].value).flat()
-    // Finally, split it into a series of [value, label]s
-    .map((element) => [/.+\/(.+?)$/.exec(element)?.[1], element]);
+      Array.of(existingAnswer[1].value).flat()
+      // Finally, split it into a series of [value, label]s
+        .map((element) => [/.+\/(.+?)$/.exec(element)?.[1], element]);
   let initialDict = {};
   initialValues.forEach((value) => {
     initialDict[value[0]] = value[1];
@@ -191,7 +191,7 @@ function FileQuestion(props) {
 
       // At this point, results contains each match, which all correspond to their respective entry in varNames
       writer((oldCommands) => {
-        let newCommands = {...oldCommands};
+        let newCommands = { ...oldCommands };
         for (let i = 0; i < varNames.length; i++) {
           if (results && results[i]) {
             if (varNames[i] in newCommands) {
@@ -206,7 +206,7 @@ function FileQuestion(props) {
 
       // Determine which fields we have parsed out
       setKnownAnswers((old) => {
-        let newAnswers = {...old};
+        let newAnswers = { ...old };
         newAnswers[file['name']] = results;
         return newAnswers;
       })
@@ -235,7 +235,7 @@ function FileQuestion(props) {
         // Guard against duplicates
         if (!(file["name"] in uploadedFiles)) {
           setUploadedFiles((old) => {
-            return {...old, [file["name"]]: fileURL};
+            return { ...old, [file["name"]]: fileURL };
           });
           setAnswers((old) => {
             let newAnswers = old.slice();
@@ -245,7 +245,7 @@ function FileQuestion(props) {
         }
       } else {
         // Change the new values
-        setUploadedFiles({[file["name"]]: fileURL});
+        setUploadedFiles({ [file["name"]]: fileURL });
         setAnswers([[file["name"], fileURL]]);
       }
       onChange?.();
@@ -267,9 +267,9 @@ function FileQuestion(props) {
     fetchWithReLogin(globalLoginDisplay, fixFileURL(uploadedFiles[answers[index][0]], answers[index][0]), {
       method: "POST",
       body: data
-      });
+    });
     setUploadedFiles((old) => {
-      let newUploadedFiles = {...old};
+      let newUploadedFiles = { ...old };
       delete newUploadedFiles[answers[index][0]];
       return newUploadedFiles;
     })
@@ -291,9 +291,9 @@ function FileQuestion(props) {
       <div>
         <Link href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download underline="hover">{label}</Link>
         { previewRenderer?.(
-            fixFileURL(hrefs[idx], label),
-            label,
-            idx
+          fixFileURL(hrefs[idx], label),
+          label,
+          idx
         )}
       </div>
     );
@@ -305,7 +305,7 @@ function FileQuestion(props) {
       currentAnswers={Object.keys(uploadedFiles || {}).length}
       defaultDisplayFormatter={defaultDisplayFormatter}
       {...props}
-      >
+    >
       {
         pageActive && <>
           { uploadInProgress && (
@@ -318,7 +318,7 @@ function FileQuestion(props) {
             multifile={maxAnswers != 1}
             error={error}
             disabled={disableUploads}
-            />
+          />
           { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
             {Object.keys(uploadedFiles).map((filepath, idx) =>
               <li key={idx}>
@@ -330,9 +330,9 @@ function FileQuestion(props) {
                   onComplete={() => deletePath(idx)}
                 />
                 { previewRenderer?.(
-                    fixFileURL(uploadedFiles[filepath], filepath),
-                    filepath,
-                    idx
+                  fixFileURL(uploadedFiles[filepath], filepath),
+                  filepath,
+                  idx
                 )}
                 { namePattern &&
                   <span>
@@ -363,7 +363,7 @@ function FileQuestion(props) {
         isMultivalued={maxAnswers != 1}
         pageActive={pageActive}
         {...rest}
-        />
+      />
     </Question>);
 }
 

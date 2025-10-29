@@ -59,7 +59,7 @@ var loadRemoteComponents = async function(extension) {
       .filter(([key, value]) => /^asset:/.test(value))
       .map(([key, value]) => loadAsset(value)
         .then(asset => extension[key.replace(/url$/i, '')] = asset))
-    )
+  )
     .then(() => extension);
 };
 

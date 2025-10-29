@@ -131,9 +131,9 @@ export default function DragAndDrop(props) {
   });
 
   return (
-    <div style={{display: 'inline-block', position: 'relative', opacity: disabled ? 0.5 : 1}}
-       onClick={handleClick.bind(this)}
-       ref={dropRef}
+    <div style={{ display: 'inline-block', position: 'relative', opacity: disabled ? 0.5 : 1 }}
+      onClick={handleClick.bind(this)}
+      ref={dropRef}
     >
       {/* NB: value="" is used to allow the same file to be re-uploaded multiple times */}
       <input id="file-input"
@@ -141,17 +141,17 @@ export default function DragAndDrop(props) {
         accept={accept}
         multiple={multifile}
         ref={inputRef}
-        style={{display: 'none'}}
+        style={{ display: 'none' }}
         onChange={onChangeFile.bind(this)}
         value=""
         disabled={disabled}
       />
       <div className={drag ? classes.active : classes.dropzone} >
-          <IconButton color="primary" component="span" size="large">
-            <AttachFile />
-          </IconButton>
-          { error && <Typography color='error'>{error}</Typography> }
-          { !error && <Typography>Drag & drop or browse files for upload</Typography> }
+        <IconButton color="primary" component="span" size="large">
+          <AttachFile />
+        </IconButton>
+        { error && <Typography color='error'>{error}</Typography> }
+        { !error && <Typography>Drag & drop or browse files for upload</Typography> }
       </div>
     </div>
   )

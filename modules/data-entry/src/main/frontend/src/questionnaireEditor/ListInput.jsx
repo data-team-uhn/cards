@@ -37,7 +37,7 @@ let ListInput = (props) => {
   const changeFieldsContext = useFieldsWriterContext();
 
   let changeValue = (val) => {
-    changeFieldsContext((oldContext) => ({...oldContext, [objectKey]: val}));
+    changeFieldsContext((oldContext) => ({ ...oldContext, [objectKey]: val }));
     setSelection(Array.of(val ?? []).flat().filter(v => v?.[type.identifierProperty] != ''));
   }
 
@@ -102,29 +102,29 @@ let ListInput = (props) => {
         selection.length == 0 && <input type="hidden" name={objectKey + "@Delete"} value="" />
       }
       <FormControl required={type.isRequired} >
-      <Select
-        variant="standard"
-        id={objectKey}
-        multiple={type.multiple}
-        value={type.multiple ? selection : (selection?.[0] ?? '')}
-        onChange={handleChange}
-        input={<Input id={objectKey} />}
-        renderValue={type.multiple ? () => (
-          <div>
-            {selection.map((val, index) => (
-              <Chip key={val[type.identifierProperty] + index} label={val[type.displayProperty]}/>
-            ))}
-          </div>
-        ) : undefined}
-      >
-      {options.map((option, index) => (
-        <MenuItem key={option[type.identifierProperty] + index} value={option}>
-          <Typography>{option[type.displayProperty]}</Typography>
-        </MenuItem>
-      ))}
-    </Select>
-    </FormControl>
-  </EditorInput>
+        <Select
+          variant="standard"
+          id={objectKey}
+          multiple={type.multiple}
+          value={type.multiple ? selection : (selection?.[0] ?? '')}
+          onChange={handleChange}
+          input={<Input id={objectKey} />}
+          renderValue={type.multiple ? () => (
+            <div>
+              {selection.map((val, index) => (
+                <Chip key={val[type.identifierProperty] + index} label={val[type.displayProperty]}/>
+              ))}
+            </div>
+          ) : undefined}
+        >
+          {options.map((option, index) => (
+            <MenuItem key={option[type.identifierProperty] + index} value={option}>
+              <Typography>{option[type.displayProperty]}</Typography>
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </EditorInput>
   )
 }
 

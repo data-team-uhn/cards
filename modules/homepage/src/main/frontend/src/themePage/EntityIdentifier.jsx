@@ -22,24 +22,24 @@ import { getTextHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
 
 // Get the identifier of the item wrt item primaryType
 export function getEntityIdentifier(row) {
-    switch (row["jcr:primaryType"]) {
-      // form identifier should be displayed as "123 / 1 : quesionaire title" as one solid link to the form
-      case "cards:Form":
-        let questionnaire = row.questionnaire?.title || row["@name"];
-        let subjectHierarchy = row.subject ? getTextHierarchy(row.subject).concat(' : ') : '';
-        return `${subjectHierarchy}${questionnaire}`;
-        // subject id should include all parents if any (e.g. "1003 / 1 / a")
-        // with one link on the whole id, leading to the last subject (e.g. a)
-      case "cards:Subject":
-        return getTextHierarchy(row);
-      case "cards:Questionnaire":
-        return row.title;
-      case "cards:SubjectType":
-        return row.label;
-      case "cards:Statistic":
-        return row.name;
+  switch (row["jcr:primaryType"]) {
+    // form identifier should be displayed as "123 / 1 : quesionaire title" as one solid link to the form
+    case "cards:Form":
+      let questionnaire = row.questionnaire?.title || row["@name"];
+      let subjectHierarchy = row.subject ? getTextHierarchy(row.subject).concat(' : ') : '';
+      return `${subjectHierarchy}${questionnaire}`;
+      // subject id should include all parents if any (e.g. "1003 / 1 / a")
+      // with one link on the whole id, leading to the last subject (e.g. a)
+    case "cards:Subject":
+      return getTextHierarchy(row);
+    case "cards:Questionnaire":
+      return row.title;
+    case "cards:SubjectType":
+      return row.label;
+    case "cards:Statistic":
+      return row.name;
       // default covers other cases
-      default:
-        return row.subject?.identifier || row["@name"] || anchor;
-    }
+    default:
+      return row.subject?.identifier || row["@name"] || anchor;
+  }
 }

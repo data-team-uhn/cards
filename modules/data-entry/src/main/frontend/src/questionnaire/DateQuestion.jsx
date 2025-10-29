@@ -63,13 +63,13 @@ import DateTimeUtilities from "../components/DateTimeUtilities";
 //  />
 function DateQuestion(props) {
   checkPropTypes(DateQuestion, props);
-  let {existingAnswer, classes, pageActive, ...rest} = props;
+  let { existingAnswer, classes, pageActive, ...rest } = props;
   let {
     dateFormat = DateTimeUtilities.defaultDateFormat,
     type = DateTimeUtilities.TIMESTAMP_TYPE,
     lowerLimit,
     upperLimit
-  } = {...props.questionDefinition, ...props};
+  } = { ...props.questionDefinition, ...props };
 
   const existingValues = existingAnswer && existingAnswer[1].value || "";
   const upperLimitLuxon = DateTimeUtilities.toPrecision(DateTimeUtilities.processRelativeDate(upperLimit));
@@ -177,35 +177,35 @@ function DateQuestion(props) {
 
   let getDateField = (isEnd, date, formatError) => {
     return (
-    <LocalizationProvider dateAdapter={AdapterLuxon}>
-      <PickerComponent
-        views={views}
-        format={dateFormat}
-        label={dateFormat.toLowerCase()}
-        minDate={lowerLimitLuxon || undefined}
-        maxDate={upperLimitLuxon || undefined}
-        value={date}
-        onChange={(value) => {
-          setDate(value, isEnd);
-          cleanErrorMessages(isEnd);
-          validateInput(null, value, isEnd);
-          handleFormDataChange?.();
-        }}
-        slotProps={{ textField: {
-                       variant: 'standard',
-                       error: formatError || minMaxError || rangeError,
-                       className: classes.textField,
-                       helperText: formatError || minMaxError || null,
-                       onBlur: (event) => validateInput(event, date, isEnd),
-                       onFocus: (event) => cleanErrorMessages(isEnd),
-                     },
-                     field: {
-                       clearable: true,
-                       onClear: () => setDate(null, isEnd),
-                     },
-        }}
-      />
-    </LocalizationProvider>);
+      <LocalizationProvider dateAdapter={AdapterLuxon}>
+        <PickerComponent
+          views={views}
+          format={dateFormat}
+          label={dateFormat.toLowerCase()}
+          minDate={lowerLimitLuxon || undefined}
+          maxDate={upperLimitLuxon || undefined}
+          value={date}
+          onChange={(value) => {
+            setDate(value, isEnd);
+            cleanErrorMessages(isEnd);
+            validateInput(null, value, isEnd);
+            handleFormDataChange?.();
+          }}
+          slotProps={{ textField: {
+            variant: 'standard',
+            error: formatError || minMaxError || rangeError,
+            className: classes.textField,
+            helperText: formatError || minMaxError || null,
+            onBlur: (event) => validateInput(event, date, isEnd),
+            onFocus: (event) => cleanErrorMessages(isEnd),
+          },
+          field: {
+            clearable: true,
+            onClear: () => setDate(null, isEnd),
+          },
+          }}
+        />
+      </LocalizationProvider>);
   }
 
   let rangeDisplayFormatter = function(label, idx) {
@@ -264,7 +264,7 @@ function DateQuestion(props) {
       compact={isRange}
       currentAnswers={isAnswerComplete() ? 1 : 0}
       {...props}
-      >
+    >
       { pageActive && instructions &&
         <Typography
           component="p"
@@ -276,19 +276,19 @@ function DateQuestion(props) {
         </Typography>
       }
       { isRange && rangeError && <Typography
-          component="p"
-          color="error"
-          className={classes.answerInstructions}
-          variant="caption"
-        >
-          { rangeError }
-        </Typography>
+        component="p"
+        color="error"
+        className={classes.answerInstructions}
+        variant="caption"
+      >
+        { rangeError }
+      </Typography>
       }
       { pageActive &&
         <div className={isRange ? classes.range : ''}>
           { getDateField(false, displayedDate, formatError) }
           { /* If this is an interval, allow the user to select a second date */
-          isRange &&
+            isRange &&
           <React.Fragment>
             <span className="separator">&mdash;</span>
             { getDateField(true, displayedEndDate, endFormatError) }

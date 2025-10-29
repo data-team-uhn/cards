@@ -75,7 +75,7 @@ const useStyles = makeStyles()(theme => ({
       marginBottom: theme.spacing(2),
     },
     "& .MuiCardHeader-content .MuiIconButton-root": {
-     display: "inline-flex",
+      display: "inline-flex",
     }
   },
   moreInfo: {
@@ -130,9 +130,9 @@ let QuestionnaireItemCard = (props) => {
   useEffect(() => {
     if (highlight) {
       const timer = setTimeout(() => {
-          itemRef?.current?.scrollIntoView({block: "center"});
-        }, 500);
-        return () => clearTimeout(timer);
+        itemRef?.current?.scrollIntoView({ block: "center" });
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [itemRef]);
 
@@ -160,7 +160,7 @@ let QuestionnaireItemCard = (props) => {
       <CardHeader
         disableTypography
         avatar={!plain && (avatar || type) ?
-          <Avatar style={{backgroundColor: avatarColor || "black"}}>
+          <Avatar style={{ backgroundColor: avatarColor || "black" }}>
             { avatar ? <Icon>{avatar}</Icon> : type?.charAt(0) }
           </Avatar>
           : null
@@ -177,20 +177,20 @@ let QuestionnaireItemCard = (props) => {
             }
             { moreInfo && moreInfoAnchor &&
               <Popover
-               className={classes.moreInfo}
-               open={Boolean(moreInfoAnchor)}
-               anchorEl={moreInfoAnchor}
-               onClose={() => setMoreInfoAnchor(null)}
-               anchorOrigin={{
-                 vertical: 'bottom',
-                 horizontal: 'left',
-               }}
-               transformOrigin={{
-                 vertical: 'top',
-                 horizontal: 'left',
-               }}
-             >
-               <Card><CardContent>{moreInfo}</CardContent></Card>
+                className={classes.moreInfo}
+                open={Boolean(moreInfoAnchor)}
+                anchorEl={moreInfoAnchor}
+                onClose={() => setMoreInfoAnchor(null)}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+              >
+                <Card><CardContent>{moreInfo}</CardContent></Card>
               </Popover>
             }
           </>
@@ -207,10 +207,10 @@ let QuestionnaireItemCard = (props) => {
             }
             {!disableDelete &&
             <DeleteButton
-               entryPath={data["@path"]}
-               entryName={title || data[titleField] || data["@name"]}
-               entryType={formattedType.toLowerCase()}
-               onComplete={onActionDone}
+              entryPath={data["@path"]}
+              entryName={title || data[titleField] || data["@name"]}
+              entryType={formattedType.toLowerCase()}
+              onComplete={onActionDone}
             />
             }
             {!disableCollapse &&
@@ -226,14 +226,14 @@ let QuestionnaireItemCard = (props) => {
       <CardContent className={!plain ? classes.withAvatar : undefined}>
         { children }
         { editDialogOpen && <EditDialog
-                              targetExists={true}
-                              data={data}
-                              type={type}
-                              model={model}
-                              isOpen={editDialogOpen}
-                              onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
-                              onCancel={() => { setEditDialogOpen(false); }}
-                            />
+          targetExists={true}
+          data={data}
+          type={type}
+          model={model}
+          isOpen={editDialogOpen}
+          onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
+          onCancel={() => { setEditDialogOpen(false); }}
+        />
         }
       </CardContent>
     </Card>

@@ -119,19 +119,19 @@ function PrintButton(props) {
       onClose={onCloseView}
     />
     { variant == "icon" ?
-        <Tooltip title={buttonText}>
-          <IconButton component="span" onClick={onOpenView} className={className} size={size}>
-            <PrintIcon fontSize={size == "small" ? size : undefined}/>
-          </IconButton>
-        </Tooltip>
-        :
-        <Button
-          onClick={onOpenView}
-          size={size}
-          startIcon={variant == "extended" ? <PrintIcon /> : undefined}
-        >
-          {buttonText}
-        </Button>
+      <Tooltip title={buttonText}>
+        <IconButton component="span" onClick={onOpenView} className={className} size={size}>
+          <PrintIcon fontSize={size == "small" ? size : undefined}/>
+        </IconButton>
+      </Tooltip>
+      :
+      <Button
+        onClick={onOpenView}
+        size={size}
+        startIcon={variant == "extended" ? <PrintIcon /> : undefined}
+      >
+        {buttonText}
+      </Button>
     }
   </>)
 }

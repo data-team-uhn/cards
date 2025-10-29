@@ -129,7 +129,7 @@ const useSliderStyles = makeStyles()(theme => ({
 //    />
 function NumberQuestion(props) {
   checkPropTypes(NumberQuestion, props);
-  const { existingAnswer, errorText = "", classes, pageActive, disableValueInstructions, ...rest} = props;
+  const { existingAnswer, errorText = "", classes, pageActive, disableValueInstructions, ...rest } = props;
   const {
     dataType,
     displayMode,
@@ -147,7 +147,7 @@ function NumberQuestion(props) {
     minValueLabel,
     maxValueLabel,
     decimalScale
-  } = {...props.questionDefinition, ...props};
+  } = { ...props.questionDefinition, ...props };
 
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
@@ -178,11 +178,11 @@ function NumberQuestion(props) {
   const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
   // Marks at the minimum and maximum, as well as user specified intervals if provided
-  let sliderMarks = [{value: minValue, label: minValue}, {value: maxValue, label: maxValue}];
+  let sliderMarks = [{ value: minValue, label: minValue }, { value: maxValue, label: maxValue }];
   if (typeof(sliderMarkStep) !== "undefined") {
     let i = minValue + sliderMarkStep;
     while (i <= maxValue - sliderMarkStep) {
-      sliderMarks.push({value: i, label: i});
+      sliderMarks.push({ value: i, label: i });
       i += sliderMarkStep;
     }
   }
@@ -242,7 +242,7 @@ function NumberQuestion(props) {
       getMinMaxValueError(upperLimit)
     );
     setRangeError(
-       typeof(lowerLimit) == 'undefined' && typeof(upperLimit) != 'undefined' ||
+      typeof(lowerLimit) == 'undefined' && typeof(upperLimit) != 'undefined' ||
        (Number(lowerLimit) > Number(upperLimit))
     );
   }, [lowerLimit, upperLimit]);
@@ -316,7 +316,7 @@ function NumberQuestion(props) {
           <Typography component="div" color="textSecondary" variant="caption">
             { messageForValuesOutsideMinMax }
           </Typography>
-        : (pageActive && (minMaxError || rangeError)) &&
+          : (pageActive && (minMaxError || rangeError)) &&
           <Typography component="div" color="error" variant="caption">
             { rangeError ? rangeErrorMessage : minMaxError }
           </Typography>
@@ -335,7 +335,7 @@ function NumberQuestion(props) {
           <Typography component="div" color="textSecondary" variant="caption">
             { messageForValuesOutsideMinMax }
           </Typography>
-        : (pageActive && minMaxError) &&
+          : (pageActive && minMaxError) &&
           <Typography component="div" color="error" variant="caption">
             { minMaxError }
           </Typography>
@@ -357,9 +357,9 @@ function NumberQuestion(props) {
   let makeSlider = (options) => {
     return (
       <div className={sliderClasses.classes[`${sliderOrientation}SliderContainer`]}>
-      { minValueLabel &&
+        { minValueLabel &&
         <Typography variant="caption" color="textSecondary">{minValueLabel}</Typography>
-      }
+        }
         <Slider
           style={customStyle}
           color="secondary"
@@ -375,9 +375,9 @@ function NumberQuestion(props) {
             handleFormDataChange?.();
           }}
         />
-      { maxValueLabel &&
+        { maxValueLabel &&
           <Typography variant="caption" color="textSecondary">{maxValueLabel}</Typography>
-      }
+        }
       </div>
     );
   }
@@ -387,7 +387,7 @@ function NumberQuestion(props) {
       defaultDisplayFormatter={isRange ? rangeDisplayFormatter : markdownFormatter }
       disableInstructions
       {...props}
-      >
+    >
       { pageActive && (minMaxError || rangeError) && errorText &&
         <Typography
           component="p"
@@ -410,95 +410,70 @@ function NumberQuestion(props) {
       }
       { isRange ?
         pageActive && <>
-        <AnswerInstructions
-          minAnswers={Math.min(1, minAnswers)}
-          maxAnswers={0}
-          currentAnswers={typeof(lowerLimit) != 'undefined' && typeof(upperLimit) != 'undefined' ? 1 : 0}
-          {...props}
+          <AnswerInstructions
+            minAnswers={Math.min(1, minAnswers)}
+            maxAnswers={0}
+            currentAnswers={typeof(lowerLimit) != 'undefined' && typeof(upperLimit) != 'undefined' ? 1 : 0}
+            {...props}
           />
-        { rangeError &&
+          { rangeError &&
           <Typography
             component="p"
             color="error"
             className="cards-answerInstructions"
             variant="caption"
           >
-          { rangeErrorMessage }
+            { rangeErrorMessage }
           </Typography>
-        }
-        { pageActive && (isSlider ?
+          }
+          { pageActive && (isSlider ?
             makeSlider({
               valueLabelDisplay: (isRangeSelected ? "on" : "off"),
               value: sliderValues,
               onChange: (event, value) => { setValue(setLowerLimit, value[0]); setValue(setUpperLimit, value[1]); }
             })
-          :
-          <div className={classes.range}>
-            <TextField
-              className="numberRangeLimit"
-              variant="standard"
-              helperText="Lower limit"
-              value={lowerLimit}
-              error={rangeError || !!minMaxError}
-              placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
-              onChange={event => {
-                setValue(setLowerLimit, event.target.value);
-                handleFormDataChange?.();
-              }}
-              slotProps={{
-                input: muiInputProps,
-                htmlInput: textFieldProps,
-                inputLabel: {
-                  shrink: true,
-                },
-              }}
+            :
+            <div className={classes.range}>
+              <TextField
+                className="numberRangeLimit"
+                variant="standard"
+                helperText="Lower limit"
+                value={lowerLimit}
+                error={rangeError || !!minMaxError}
+                placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
+                onChange={event => {
+                  setValue(setLowerLimit, event.target.value);
+                  handleFormDataChange?.();
+                }}
+                slotProps={{
+                  input: muiInputProps,
+                  htmlInput: textFieldProps,
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
               />
-            <span className="separator">&mdash;</span>
-            <TextField
-              className="numberRangeLimit"
-              variant="standard"
-              helperText="Upper limit"
-              value={upperLimit}
-              error={rangeError || !!minMaxError}
-              placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
-              onChange={event => {
-                setValue(setUpperLimit, event.target.value);
-                handleFormDataChange?.();
-              }}
-              slotProps={{
-                input: muiInputProps,
-                htmlInput: textFieldProps,
-                inputLabel: {
-                  shrink: true,
-                },
-              }}
+              <span className="separator">&mdash;</span>
+              <TextField
+                className="numberRangeLimit"
+                variant="standard"
+                helperText="Upper limit"
+                value={upperLimit}
+                error={rangeError || !!minMaxError}
+                placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
+                onChange={event => {
+                  setValue(setUpperLimit, event.target.value);
+                  handleFormDataChange?.();
+                }}
+                slotProps={{
+                  input: muiInputProps,
+                  htmlInput: textFieldProps,
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
               />
-          </div>)
-        }
-        <Answer
-          answers={answers}
-          existingAnswer={existingAnswer}
-          answerNodeType={answerNodeType}
-          valueType={valueType}
-          pageActive={pageActive}
-          {...rest}
-          />
-        </>
-        :
-        <>
-        { isSlider ?
-          (pageActive && <>
-          <AnswerInstructions
-            minAnswers={Math.min(1, minAnswers)}
-            maxAnswers={0}
-            currentAnswers={isSingleSliderSelected ?  1 : 0}
-            {...props}
-          />
-          { makeSlider({
-              valueLabelDisplay: (isSingleSliderSelected ? "on" : "off"),
-              value: isNaN(Number(sliderValue)) ? minValue : Number(sliderValue),
-              onChange: (event, value) => { setValue(setSliderValue, value); }
-            })
+            </div>)
           }
           <Answer
             answers={answers}
@@ -507,26 +482,51 @@ function NumberQuestion(props) {
             valueType={valueType}
             pageActive={pageActive}
             {...rest}
+          />
+        </>
+        :
+        <>
+          { isSlider ?
+            (pageActive && <>
+              <AnswerInstructions
+                minAnswers={Math.min(1, minAnswers)}
+                maxAnswers={0}
+                currentAnswers={isSingleSliderSelected ?  1 : 0}
+                {...props}
+              />
+              { makeSlider({
+                valueLabelDisplay: (isSingleSliderSelected ? "on" : "off"),
+                value: isNaN(Number(sliderValue)) ? minValue : Number(sliderValue),
+                onChange: (event, value) => { setValue(setSliderValue, value); }
+              })
+              }
+              <Answer
+                answers={answers}
+                existingAnswer={existingAnswer}
+                answerNodeType={answerNodeType}
+                valueType={valueType}
+                pageActive={pageActive}
+                {...rest}
+              />
+            </>)
+            :
+            <MultipleChoice
+              answerNodeType={answerNodeType}
+              valueType={valueType}
+              input={displayMode === "input" || displayMode === "list+input"}
+              textbox={displayMode === "textbox"}
+              onUpdate={text => setMinMaxError(getMinMaxValueError(text))}
+              additionalInputProps={textFieldProps}
+              muiInputProps={muiInputProps}
+              error={!disableMinMaxValueEnforcement && minMaxError}
+              existingAnswer={existingAnswer}
+              pageActive={pageActive}
+              validate={disableMinMaxValueEnforcement ? value => !getMinMaxValueError(value) : undefined}
+              validationErrorText={minMaxMessage}
+              softValidation={disableMinMaxValueEnforcement}
+              {...rest}
             />
-          </>)
-          :
-          <MultipleChoice
-            answerNodeType={answerNodeType}
-            valueType={valueType}
-            input={displayMode === "input" || displayMode === "list+input"}
-            textbox={displayMode === "textbox"}
-            onUpdate={text => setMinMaxError(getMinMaxValueError(text))}
-            additionalInputProps={textFieldProps}
-            muiInputProps={muiInputProps}
-            error={!disableMinMaxValueEnforcement && minMaxError}
-            existingAnswer={existingAnswer}
-            pageActive={pageActive}
-            validate={disableMinMaxValueEnforcement ? value => !getMinMaxValueError(value) : undefined}
-            validationErrorText={minMaxMessage}
-            softValidation={disableMinMaxValueEnforcement}
-            {...rest}
-            />
-        }
+          }
         </>
       }
     </Question>);

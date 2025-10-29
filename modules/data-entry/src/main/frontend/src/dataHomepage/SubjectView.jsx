@@ -125,26 +125,26 @@ function SubjectView(props) {
         avatar={!disableAvatar && <Avatar className={classes.subjectViewAvatar}><AssignmentIndIcon/></Avatar>}
         title={
           tabsLoading
-          ? <CircularProgress/>
-          : subjectTypes.length < 1 ?
-          <></>
-          : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
-              {subjectTypes.map((subject, index) => {
-                return <Tab
-                         label={
-                           <Typography variant="h6">
-                             {subject['subjectListLabel'] || subject['label'] || subject['@name']}
-                           </Typography>
-                         }
-                         key={"subject-" + index}
-                       />;
-              })}
-            </Tabs>
+            ? <CircularProgress/>
+            : subjectTypes.length < 1 ?
+              <></>
+              : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
+                {subjectTypes.map((subject, index) => {
+                  return <Tab
+                    label={
+                      <Typography variant="h6">
+                        {subject['subjectListLabel'] || subject['label'] || subject['@name']}
+                      </Typography>
+                    }
+                    key={"subject-" + index}
+                  />;
+                })}
+              </Tabs>
         }
         action={
           !expanded && isActionEnabled("expand") &&
           <Tooltip title="Expand">
-            <Link to={baseURL + "/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()} underline="hover">
+            <Link to={baseURL + "/Subjects#" + new URLSearchParams({ "subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || "" }).toString()} underline="hover">
               <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
@@ -155,9 +155,9 @@ function SubjectView(props) {
       }
       <Divider />
       <CardContent>
-      {
-        hasSubjects
-          ? <LiveTable
+        {
+          hasSubjects
+            ? <LiveTable
               columns={columns || defaultColumns}
               customUrl={'/Subjects.paginate?fieldnames=type&fieldcomparators=%3D&fieldvalues='+ encodeURIComponent(subjectTypes[activeTab]["jcr:uuid"])}
               defaultLimit={10}
@@ -169,14 +169,14 @@ function SubjectView(props) {
               filtersJsonString={filtersJsonString}
               extensionURL={extensionURL}
             />
-          : <Typography sx={{pl: 1}}>No results</Typography>
-      }
+            : <Typography sx={{ pl: 1 }}>No results</Typography>
+        }
       </CardContent>
       {expanded && isActionEnabled("create") &&
       <>
         <NewItemButton
-           onClick={() => {setNewSubjectPopperOpen(true)}}
-        />
+          onClick={() => {setNewSubjectPopperOpen(true)}}
+        />
         <NewSubjectDialog
           onClose={() => { setNewSubjectPopperOpen(false);}}
           onSubmit={() => { setNewSubjectPopperOpen(false);}}

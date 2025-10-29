@@ -262,8 +262,8 @@ function QuestionnaireSet(props) {
             "summaryScreen"
             :
             "reviewScreen"
-        : "incompleteScreen"
-      : ""
+          : "incompleteScreen"
+        : ""
     )
   }, [screenType, isComplete, isSubmitted]);
 
@@ -314,7 +314,7 @@ function QuestionnaireSet(props) {
   // Automatically log out the user at the end
   useEffect(() => {
     if (isSubmitted) {
-      window.addEventListener("beforeunload", (e) => { fetch('/system/sling/logout', {"redirect": "manual"}); }, true);
+      window.addEventListener("beforeunload", (e) => { fetch('/system/sling/logout', { "redirect": "manual" }); }, true);
     }
   }, [isSubmitted]);
 
@@ -408,7 +408,7 @@ function QuestionnaireSet(props) {
           'estimate': value.estimate,
           'questionnaireAddons': addons
         }
-       });
+      });
     setQuestionnaires(data);
 
     let qids = Object.values(json || {})
@@ -455,14 +455,14 @@ function QuestionnaireSet(props) {
 
   // Find out if a questionnaire has an interpretation for the patient, i.e. a "summary" section
   let hasInterpretation = (json) => {
-     if (json?.displayMode == "summary") {
-       return true;
-     }
-     let result = false;
-     Object.values(json || {})
-       .filter(value => value['jcr:primaryType'] == 'cards:Section')
-       .forEach(section => { result ||= hasInterpretation(section) });
-     return result;
+    if (json?.displayMode == "summary") {
+      return true;
+    }
+    let result = false;
+    Object.values(json || {})
+      .filter(value => value['jcr:primaryType'] == 'cards:Section')
+      .forEach(section => { result ||= hasInterpretation(section) });
+    return result;
   }
 
   // Find the next step : Skip questionnaires that have already been filled out
@@ -530,8 +530,8 @@ function QuestionnaireSet(props) {
   let stepIndicator = (step, withTotal) => {
     return (
       step >=0 && questionnaireIds?.length > 1 && step < questionnaireIds?.length ?
-      <Avatar className={classes.stepIndicator}>{step + 1}{withTotal ? ("/" + questionnaireIds?.length) : ""}</Avatar>
-      : <></>);
+        <Avatar className={classes.stepIndicator}>{step + 1}{withTotal ? ("/" + questionnaireIds?.length) : ""}</Avatar>
+        : <></>);
   }
 
   let displayEstimate = (questionnaireId) => {
@@ -605,7 +605,7 @@ function QuestionnaireSet(props) {
 
 
   const greet = (name) => {
-    let greeting = displayText("greeting", Typography, {variant: "h6", key: "welcome-greeting"});
+    let greeting = displayText("greeting", Typography, { variant: "h6", key: "welcome-greeting" });
     if (!greeting) {
       let hourOfDay = (new Date()).getHours();
       let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
@@ -649,7 +649,7 @@ function QuestionnaireSet(props) {
     let date = getVisitDate();
     if (date?.isValid) {
       // Compute the moment the token expired: the configured number of days after the visit, at midnight
-      date = date.plus({days: tokenLifetime ?? config?.daysRelativeToEventWhileSurveyIsValid ?? 0}).endOf('day');
+      date = date.plus({ days: tokenLifetime ?? config?.daysRelativeToEventWhileSurveyIsValid ?? 0 }).endOf('day');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0
@@ -691,49 +691,49 @@ function QuestionnaireSet(props) {
     displayText(
       isSubmitted ? "surveySubmittedMessage" : "noSurveysMessage",
       Typography,
-      {color: "textSecondary", variant: "subtitle1", key: "survey-info"}
+      { color: "textSecondary", variant: "subtitle1", key: "survey-info" }
     ),
   ] : [
     greet(username),
     appointmentAlert(),
     (introMessage
       ? <FormattedText key="intro-message">{introMessage}</FormattedText>
-      : displayText("surveyIntro", Typography, {key: "welcome-message"})
+      : displayText("surveyIntro", Typography, { key: "welcome-message" })
     ),
     <List key="welcome-surveys" disablePadding>
-    { (questionnaireIds || []).map((q, i) => (
-      <ListItem key={q+"Welcome"} disablePadding>
-        <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
-        <ListItemText
-          primary={questionnaires[q]?.title}
-          secondary={isFormSubmitted(q) ? "Submitted" :
-            !isFormComplete(q) && (displayEstimate(q)
+      { (questionnaireIds || []).map((q, i) => (
+        <ListItem key={q+"Welcome"} disablePadding>
+          <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
+          <ListItemText
+            primary={questionnaires[q]?.title}
+            secondary={isFormSubmitted(q) ? "Submitted" :
+              !isFormComplete(q) && (displayEstimate(q)
             + (["patient", "guest-patient"].includes(subjectData?.[q]?.["jcr:lastModifiedBy"]) ? " (in progress)" : ""))}
-        />
-      </ListItem>
-    ))}
+          />
+        </ListItem>
+      ))}
     </List>,
-    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action" sx={{px: 5}}>Begin</Fab>,
+    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action" sx={{ px: 5 }}>Begin</Fab>,
     <FormattedText key="expiry-message" color="textSecondary">
-        {expiryDate()}
+      {expiryDate()}
     </FormattedText>,
-    displayText("surveyDraftInfo", FormattedText, {key: "draft-info"}),
+    displayText("surveyDraftInfo", FormattedText, { key: "draft-info" }),
   ];
 
   let formScreen = [
-        <Form
-          key={crtStep}
-          id={crtFormId}
-          mode="edit"
-          requireCompletion={canSubmitIncomplete ? false : undefined}
-          disableHeader
-          questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
-          doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
-          doneLabel={nextQuestionnaire ? "Next survey" : enableReviewScreen ? "Review" : "Submit my answers"}
-          onDone={nextQuestionnaire ? launchNextForm : nextStep}
-          doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
-          contentOffset={formContentOffset}
-        />
+    <Form
+      key={crtStep}
+      id={crtFormId}
+      mode="edit"
+      requireCompletion={canSubmitIncomplete ? false : undefined}
+      disableHeader
+      questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
+      doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
+      doneLabel={nextQuestionnaire ? "Next survey" : enableReviewScreen ? "Review" : "Submit my answers"}
+      onDone={nextQuestionnaire ? launchNextForm : nextStep}
+      doneButtonStyle={{ position: "relative", right: 0, bottom: "unset", textAlign: "center" }}
+      contentOffset={formContentOffset}
+    />
   ];
 
   let submitButton = (label) => (
@@ -749,26 +749,26 @@ function QuestionnaireSet(props) {
     submitButton("Submit now"),
     <Grid container direction="column" spacing={8} key="review-list">
       {(questionnaireIds || []).filter(q => !isFormSubmitted(q)).map((q, i) => (
-      <Grid key={q+"Review"}>
-      { previews?.[subjectData?.[q]?.["@name"]] ?
-        <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
-          <Grid container direction="column" spacing={2}>
-            <Grid key="form-preview">
-              <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
-            </Grid>
-            <Grid alignSelf="center" key="change-button">
-              <Button
-                variant="outlined"
-                onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
+        <Grid key={q+"Review"}>
+          { previews?.[subjectData?.[q]?.["@name"]] ?
+            <Paper elevation={0} className={classes.surveyPreviewComponent + (!isFormComplete(q) ? " incomplete" : "")}>
+              <Grid container direction="column" spacing={2}>
+                <Grid key="form-preview">
+                  <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
+                </Grid>
+                <Grid alignSelf="center" key="change-button">
+                  <Button
+                    variant="outlined"
+                    onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
                   Change
-              </Button>
-            </Grid>
-          </Grid>
-        </Paper>
-        :
-        <CircularProgress />
-      }
-      </Grid>
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+            :
+            <CircularProgress />
+          }
+        </Grid>
       ))}
     </Grid>,
     submitButton("Submit survey")
@@ -781,25 +781,25 @@ function QuestionnaireSet(props) {
   let endingMessage = fillInVisitData(ending);
 
   let finalInstructions = (
-      endingMessage ? <FormattedText key="summary-instructions">{endingMessage}</FormattedText> :
-      displayText("summaryInstructions", FormattedText, {color: "textSecondary", key: "summary-instructions"})
+    endingMessage ? <FormattedText key="summary-instructions">{endingMessage}</FormattedText> :
+      displayText("summaryInstructions", FormattedText, { color: "textSecondary", key: "summary-instructions" })
   );
 
   let disclaimer = (
-      displayText("disclaimer", Alert, {severity: "warning", key: "disclaimer"})
+    displayText("disclaimer", Alert, { severity: "warning", key: "disclaimer" })
   );
 
   let summaryScreen = hasInterpretations ? [
-      <Typography variant="h4" key="summary-title">Thank you</Typography>,
-      finalInstructions,
-      disclaimer,
-      <Typography variant="h4" key="summary-intro">Interpreting your results</Typography>,
-      displayText("interpretationInstructions", Typography, {color: "textSecondary", key: "summary-interpretation-instructions"}),
-      <Grid container direction="column" spacing={3} key="summary-list">
+    <Typography variant="h4" key="summary-title">Thank you</Typography>,
+    finalInstructions,
+    disclaimer,
+    <Typography variant="h4" key="summary-intro">Interpreting your results</Typography>,
+    displayText("interpretationInstructions", Typography, { color: "textSecondary", key: "summary-interpretation-instructions" }),
+    <Grid container direction="column" spacing={3} key="summary-list">
       { (questionnaireIds || []).map((q, i) => (
         <Grid key={q+"Summary"}>
-        {
-          questionnaires?.[q]?.hasInterpretation ? <Form
+          {
+            questionnaires?.[q]?.hasInterpretation ? <Form
               id={subjectData?.[q]?.['@name']}
               mode="summary"
               questionnaireAddons={questionnaires?.[q]?.questionnaireAddons}
@@ -807,48 +807,48 @@ function QuestionnaireSet(props) {
               disableButton
               contentOffset={formContentOffset}
             />
-            :<></>
-        }
+              :<></>
+          }
         </Grid>
       ))}
-      </Grid>,
-    ] : [
-      <Typography variant="h4" key="summary-title">Thank you</Typography>,
-      finalInstructions,
-      disclaimer,
-    ];
+    </Grid>,
+  ] : [
+    <Typography variant="h4" key="summary-title">Thank you</Typography>,
+    finalInstructions,
+    disclaimer,
+  ];
 
   let loadingScreen = [ <CircularProgress key="exit-loading"/> ];
 
   let incompleteScreen = [
-        <List key="incomplete-list" disablePadding>
-        { (questionnaireIds || []).map((q, i) => (
-          <ListItem key={q+"Exit"} disablePadding>
-            <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
-            <ListItemText
-              primary={questionnaires[q]?.title}
-              secondary={!isFormComplete(q) && "Incomplete" || isFormSubmitted(q) && "Submitted"}
-            />
-          </ListItem>
-        ))}
-        </List>,
-        <Alert severity="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Alert>,
-        <Grid container spacing={2} justifyContent="flex-end" key="incomplete-actions">
-          { canSubmitIncomplete &&
+    <List key="incomplete-list" disablePadding>
+      { (questionnaireIds || []).map((q, i) => (
+        <ListItem key={q+"Exit"} disablePadding>
+          <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
+          <ListItemText
+            primary={questionnaires[q]?.title}
+            secondary={!isFormComplete(q) && "Incomplete" || isFormSubmitted(q) && "Submitted"}
+          />
+        </ListItem>
+      ))}
+    </List>,
+    <Alert severity="error" key="incomplete-message">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Alert>,
+    <Grid container spacing={2} justifyContent="flex-end" key="incomplete-actions">
+      { canSubmitIncomplete &&
             <Grid>
               <Button variant="outlined" onClick={() => setSubmittingIncomplete(true)}>Proceed anyway</Button>
             </Grid>
-          }
-          <Grid>
-            <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
-          </Grid>
-        </Grid>
+      }
+      <Grid>
+        <Button variant="contained" onClick={() => {setCrtStep(-1)}} key="incomplete-button">Update my answers</Button>
+      </Grid>
+    </Grid>
   ];
 
   let exitScreen = (
     typeof(isComplete) == 'undefined'
-    ? loadingScreen
-    : ( isComplete || submittingIncomplete
+      ? loadingScreen
+      : ( isComplete || submittingIncomplete
         ? (isSubmitted ? summaryScreen : reviewScreen)
         : incompleteScreen
       )
@@ -870,8 +870,8 @@ function QuestionnaireSet(props) {
       <QuestionnaireSetScreen className={classes[screenType] + (screenSubtype && classes[screenSubtype] ? (" " + classes[screenSubtype]) : "")} key="screen">
         {
           crtStep == -1 ? welcomeScreen :
-          crtStep < questionnaireIds.length ? formScreen :
-          exitScreen
+            crtStep < questionnaireIds.length ? formScreen :
+              exitScreen
         }
       </QuestionnaireSetScreen>
     </>
@@ -886,8 +886,8 @@ function QuestionnaireSet(props) {
   // vertically aligned to the middle.
   return (
     crtStep >= 0 && crtStep < questionnaireIds.length
-    ? <Paper elevation={0}>{ screenContent }</Paper>
-    : screenContent
+      ? <Paper elevation={0}>{ screenContent }</Paper>
+      : screenContent
   )
 }
 
@@ -901,9 +901,9 @@ function QuestionnaireSetScreen (props) {
   );
 
   return (
-  <Paper elevation={0} className={classes.mainContainer}>
-    <Grid container direction="column" spacing={4} {...rest}>
-      {Array.from(children || []).filter(c => c).map((c, i) =>
+    <Paper elevation={0} className={classes.mainContainer}>
+      <Grid container direction="column" spacing={4} {...rest}>
+        {Array.from(children || []).filter(c => c).map((c, i) =>
           <Grid
             key={i+"MainItem"}
             size={!isElementCentered(c.key) && 12}
@@ -912,9 +912,9 @@ function QuestionnaireSetScreen (props) {
           >
             {c}
           </Grid>)
-      }
-    </Grid>
-  </Paper>
+        }
+      </Grid>
+    </Paper>
   );
 }
 

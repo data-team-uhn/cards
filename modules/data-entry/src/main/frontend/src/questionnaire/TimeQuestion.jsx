@@ -54,7 +54,7 @@ import DateTimeUtilities from "../components/DateTimeUtilities";
 //  />
 function TimeQuestion(props) {
   checkPropTypes(TimeQuestion, props);
-  let {existingAnswer, classes, pageActive, ...rest} = props;
+  let { existingAnswer, classes, pageActive, ...rest } = props;
   let {
     text,
     lowerLimit,
@@ -107,7 +107,7 @@ function TimeQuestion(props) {
       currentAnswers={!!selectedTime?.toFormat(dateFormat) ? 1 : 0}
       {...props}
       existingAnswer={formattedAnswer}
-      >
+    >
       {
         pageActive && <>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -130,20 +130,20 @@ function TimeQuestion(props) {
               }}
               value={selectedTime}
               slotProps={{ textField: {
-                             variant: 'standard',
-                             className: classes.textField,
-                             error: error,
-                             helperText: error ? errorMessage : null,
-                             onBlur: (event) => { if (selectedTime?.invalid) {
-                                  setError(true);
-                                  setErrorMessage("Invalid time: "  + selectedTime.invalid.explanation);
-                               }
-                             },
-                           },
-                           field: {
-                             clearable: true,
-                             onClear: () => changeTime(null),
-                           },
+                variant: 'standard',
+                className: classes.textField,
+                error: error,
+                helperText: error ? errorMessage : null,
+                onBlur: (event) => { if (selectedTime?.invalid) {
+                  setError(true);
+                  setErrorMessage("Invalid time: "  + selectedTime.invalid.explanation);
+                }
+                },
+              },
+              field: {
+                clearable: true,
+                onClear: () => changeTime(null),
+              },
               }}
             />
           </LocalizationProvider>
@@ -157,7 +157,7 @@ function TimeQuestion(props) {
         valueType="Time"
         pageActive={pageActive}
         {...rest}
-        />
+      />
     </Question>);
 }
 

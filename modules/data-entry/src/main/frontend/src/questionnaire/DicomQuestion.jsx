@@ -75,58 +75,58 @@ function DicomQuestion(props) {
   let validateDicomFileTransferSyntax = (file) => {
     let FORBIDDEN_TRANSFER_SYNTAX_UID = ["1.2.840.10008.1.2.4.70"];
     return file.arrayBuffer()
-    .then((arrayBuf) => {
-      let dicomU8 = new Uint8Array(arrayBuf);
-      let dcmObject = dicomParser.parseDicom(dicomU8);
-      for (let dcmtag in dcmObject.elements) {
-        let tagName = getDicomTagName(dcmtag);
-        if (typeof(tagName) != "string") {
-          continue;
-        }
-        let tagValue = getDicomTagValue(dcmObject, dcmtag);
-        if (tagName === "TransferSyntaxUID") {
-          if (FORBIDDEN_TRANSFER_SYNTAX_UID.indexOf(tagValue) >= 0) {
-            return Promise.reject("Invalid TransferSyntaxUID");
+      .then((arrayBuf) => {
+        let dicomU8 = new Uint8Array(arrayBuf);
+        let dcmObject = dicomParser.parseDicom(dicomU8);
+        for (let dcmtag in dcmObject.elements) {
+          let tagName = getDicomTagName(dcmtag);
+          if (typeof(tagName) != "string") {
+            continue;
+          }
+          let tagValue = getDicomTagValue(dcmObject, dcmtag);
+          if (tagName === "TransferSyntaxUID") {
+            if (FORBIDDEN_TRANSFER_SYNTAX_UID.indexOf(tagValue) >= 0) {
+              return Promise.reject("Invalid TransferSyntaxUID");
+            }
           }
         }
-      }
-      return Promise.resolve(file);
-    })
-    .catch((err) => {
-      return Promise.reject(err);
-    });
+        return Promise.resolve(file);
+      })
+      .catch((err) => {
+        return Promise.reject(err);
+      });
   }
 
   let previewDicomFile = (file) => {
     return validateDicomFileTransferSyntax(file)
-    .then((file) => {
-      cornerstoneWADOImageLoader.wadouri.dataSetCacheManager.purge();
-      cornerstoneWADOImageLoader.wadouri.fileManager.purge();
-      let dicomPointer = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
-      return Promise.resolve(dicomPointer);
-    })
-    .then((dicomPointer) => cornerstone.loadImage(dicomPointer))
-    .then((dicomImage) => {
-      setDicomImagePreviewURL(dicomImageToDataURL(dicomImage));
-      return Promise.resolve();
-    })
-    .catch((err) => {
-      setDicomImagePreviewURL("error:" + err)
-      return Promise.reject(err);
-    });
+      .then((file) => {
+        cornerstoneWADOImageLoader.wadouri.dataSetCacheManager.purge();
+        cornerstoneWADOImageLoader.wadouri.fileManager.purge();
+        let dicomPointer = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+        return Promise.resolve(dicomPointer);
+      })
+      .then((dicomPointer) => cornerstone.loadImage(dicomPointer))
+      .then((dicomImage) => {
+        setDicomImagePreviewURL(dicomImageToDataURL(dicomImage));
+        return Promise.resolve();
+      })
+      .catch((err) => {
+        setDicomImagePreviewURL("error:" + err)
+        return Promise.reject(err);
+      });
   }
 
   let fetchDicomFile = () => {
     let dicomFilePath = existingAnswer?.[1]
-        .value?.split("/")
-        .map(s => encodeURIComponent(s))
-        .join("/");
+      .value?.split("/")
+      .map(s => encodeURIComponent(s))
+      .join("/");
     if (dicomFilePath) {
       fetch(dicomFilePath)
-      .then((resp) => resp.blob())
-      .then((blob) => Promise.resolve(new File([blob], "file.dcm")))
-      .then((file) => previewDicomFile(file))
-      .catch((err) => console.error(err));
+        .then((resp) => resp.blob())
+        .then((blob) => Promise.resolve(new File([blob], "file.dcm")))
+        .then((file) => previewDicomFile(file))
+        .catch((err) => console.error(err));
     }
   }
 
@@ -214,34 +214,34 @@ function DicomQuestion(props) {
 
   let populateNotesFromDicomFile = (file) => {
     return file.arrayBuffer()
-    .then((arrayBuf) => {
-      let dicomU8 = new Uint8Array(arrayBuf);
-      let dcmObject = dicomParser.parseDicom(dicomU8);
-      // Build a list of DICOM metadata keys --> values
-      let dicomMetadata = [];
-      for (let dcmtag in dcmObject.elements) {
-        let tagName = getDicomTagName(dcmtag);
-        if (typeof(tagName) != "string") {
-          continue;
+      .then((arrayBuf) => {
+        let dicomU8 = new Uint8Array(arrayBuf);
+        let dcmObject = dicomParser.parseDicom(dicomU8);
+        // Build a list of DICOM metadata keys --> values
+        let dicomMetadata = [];
+        for (let dcmtag in dcmObject.elements) {
+          let tagName = getDicomTagName(dcmtag);
+          if (typeof(tagName) != "string") {
+            continue;
+          }
+          let tagValue = getDicomTagValue(dcmObject, dcmtag);
+          dicomMetadata.push(tagName + ": " + tagValue);
         }
-        let tagValue = getDicomTagValue(dcmObject, dcmtag);
-        dicomMetadata.push(tagName + ": " + tagValue);
-      }
-      setDicomMetadataNote(dicomMetadata.join("\n"));
-      return Promise.resolve();
-    })
+        setDicomMetadataNote(dicomMetadata.join("\n"));
+        return Promise.resolve();
+      })
   }
 
   let processDicomFile = (file) => {
     // Parse the metadata locally, populate the Notes, then display an image preview
     populateNotesFromDicomFile(file)
-    .then(() => previewDicomFile(file))
-    .catch((err) => {
-      if (err != "Invalid TransferSyntaxUID") {
-        setErrorDialogText("Something went wrong when parsing the DICOM file");
-        setAdvancedErrorDialogText("You may be able to fix the DICOM file with: `gdcmconv -C file.dcm fixed_file.dcm`");
-      }
-    });
+      .then(() => previewDicomFile(file))
+      .catch((err) => {
+        if (err != "Invalid TransferSyntaxUID") {
+          setErrorDialogText("Something went wrong when parsing the DICOM file");
+          setAdvancedErrorDialogText("You may be able to fix the DICOM file with: `gdcmconv -C file.dcm fixed_file.dcm`");
+        }
+      });
   }
 
   let thumbnailStyle = {
@@ -303,7 +303,7 @@ function DicomQuestion(props) {
         </Accordion>
       </ResponsiveDialog>
       <FileQuestion
-        questionDefinition={{...questionDefinition, maxAnswers: 1, enableNotes: true}}
+        questionDefinition={{ ...questionDefinition, maxAnswers: 1, enableNotes: true }}
         existingAnswer={existingAnswer}
         {...rest}
         onBeforeUpload={processDicomFile}

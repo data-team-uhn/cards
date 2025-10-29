@@ -91,7 +91,7 @@ export default function VocabularyDetails(props) {
 
         <DialogContent dividers>
           <Typography variant="subtitle1" component="p">{vocabulary.version}</Typography>
-          <Typography><span dangerouslySetInnerHTML={{__html: vocabulary.description}} /></Typography>
+          <Typography><span dangerouslySetInnerHTML={{ __html: vocabulary.description }} /></Typography>
         </DialogContent>
 
         <DialogActions>
@@ -119,5 +119,5 @@ export default function VocabularyDetails(props) {
         />
       }
     </React.Fragment>
-    );
+  );
 }

@@ -54,7 +54,7 @@ import FormattedText from "../components/FormattedText.jsx";
 function SelectableAreaQuestion(props) {
   checkPropTypes(SelectableAreaQuestion, props);
   let { classes, errorText, existingAnswer, questionName, questionDefinition, pageActive, isEdit, ...rest } = props;
-  let { variant, maxAnswers } = {...props.questionDefinition, ...props};
+  let { variant, maxAnswers } = { ...props.questionDefinition, ...props };
 
   const [ map, setMap ] = useState(null);
   const [ initialized, setInitialized ] = useState(false);
@@ -78,9 +78,9 @@ function SelectableAreaQuestion(props) {
     // If there's no existing answer, there's no initial selection
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
     // The value can either be a single value or an array of values; force it into an array
-    Array.of(existingAnswer[1].value).flat()
-    // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
-    .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
+      Array.of(existingAnswer[1].value).flat()
+      // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
+        .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
 
   const [ selection, setSelection ] = useState(initialSelection);
 
@@ -181,7 +181,7 @@ function SelectableAreaQuestion(props) {
   // List out the selected areas in text
   useEffect(() => {
     setSelectionDisplay(
-      <ul style={{float: "left"}}>
+      <ul style={{ float: "left" }}>
         {selection.map(selection => {
           return <li key={selection[VALUE_POS]}>{selection[LABEL_POS]}</li>
         })}
@@ -299,7 +299,7 @@ function SelectableAreaQuestion(props) {
                   onMouseEnter={()=>{onMouseEnter(mapEntry, index)}}
                   onMouseLeave={()=>{onMouseLeave(mapEntry)}}
                   onClick={()=>{onAreaClicked(mapEntry)}}
-                  />
+                />
               } else if (mapEntry.shape == "poly") {
                 // Create the coordinate string in the format "x1,y1 x2,y2..."
                 let i = 1;
@@ -324,7 +324,7 @@ function SelectableAreaQuestion(props) {
           </>
         </svg>
         : <></>
-      )
+    )
   }, [map, initialized, currentWidth, hoveredIndex])
 
   // Track the current width of the question in order to ensure the image isn't too wide
@@ -343,13 +343,13 @@ function SelectableAreaQuestion(props) {
       currentAnswers={notApplicableChecked ? 1 : selection.length}
       {...props}
       preventDefaultView
-      >
+    >
       {notApplicableOption != null ?
         (isEdit ?
           <>
             <FormControlLabel
               control={
-              <Checkbox
+                <Checkbox
                   checked={notApplicableChecked}
                   onChange={() => {onNotApplicableClicked()}}
                   className={classes.checkbox}
@@ -375,7 +375,7 @@ function SelectableAreaQuestion(props) {
         (isEdit || notApplicableOption == null || !notApplicableChecked) ?
           <div ref={questionRef}>
             <Tooltip title={tooltipTitle} open={hoveredIndex >= 0} followCursor>
-              <div style={{position: 'relative', float:"left", cursor: (hoveredIndex >= 0 && isEdit ? "pointer" : "auto")}}>
+              <div style={{ position: 'relative', float:"left", cursor: (hoveredIndex >= 0 && isEdit ? "pointer" : "auto") }}>
                 {variant ?
                   imageMap
                   :
@@ -386,7 +386,7 @@ function SelectableAreaQuestion(props) {
               </div>
             </Tooltip>
             {selectionDisplay}
-            <div style={{clear: "both"}}></div>
+            <div style={{ clear: "both" }}></div>
           </div>
           : <></>
       }
@@ -399,7 +399,7 @@ function SelectableAreaQuestion(props) {
         answerNodeType="cards:SelectableAreaAnswer"
         pageActive={pageActive}
         {...rest}
-        />
+      />
       }
     </Question>);
 }

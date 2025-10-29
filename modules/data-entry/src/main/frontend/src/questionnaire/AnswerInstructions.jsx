@@ -67,20 +67,20 @@ function AnswerInstructions (props) {
     >
       {
         (isMandatory) ?
-        "This answer is required"
-        :
-        "Please provide " + range + " " + answerLabel + "s"
+          "This answer is required"
+          :
+          "Please provide " + range + " " + answerLabel + "s"
       }
     </Typography>
-    )
+  )
   );
 }
 
 AnswerInstructions.propTypes = {
-    minAnswers: PropTypes.number,
-    maxAnswers: PropTypes.number,
-    currentAnswers: PropTypes.number,
-    answerLabel: PropTypes.string,
+  minAnswers: PropTypes.number,
+  maxAnswers: PropTypes.number,
+  currentAnswers: PropTypes.number,
+  answerLabel: PropTypes.string,
 };
 
 export default AnswerInstructions;

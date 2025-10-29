@@ -109,52 +109,52 @@ function UserInputAssistant (props) {
   }, []);
 
   return (enabled ?
-  <ClickAwayListener onClickAway={onClickAway}>
-    <Popper
-      className={classes.userInputAssistant}
-      open={!!anchorEl}
-      anchorEl={anchorEl}
-      placement={placement}
-      transition
-      modifiers={[
-        {
-          name: 'flip',
-          enabled: true
-        }
-      ]}
+    <ClickAwayListener onClickAway={onClickAway}>
+      <Popper
+        className={classes.userInputAssistant}
+        open={!!anchorEl}
+        anchorEl={anchorEl}
+        placement={placement}
+        transition
+        modifiers={[
+          {
+            name: 'flip',
+            enabled: true
+          }
+        ]}
       >
-    {({ TransitionProps }) => (
-      <Fade {...TransitionProps} timeout={350}>
-        <Card className={`Uia-${variant} Uia-placement-${placement}`}>
-          <CardHeader
-            avatar={<Avatar>
-            {
-              ['warning', 'error'].includes(variant) ?
-              <WarningIcon/> : <EmojiObjectsIcon />
-            }
-            </Avatar>}
-            title={title}
-            slotProps={{ title: {variant: "h6"} }}
-            />
-          <CardContent>
-            { children }
-          </CardContent>
-          <CardActions>
-          { actionLabel && onAction &&
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Card className={`Uia-${variant} Uia-placement-${placement}`}>
+              <CardHeader
+                avatar={<Avatar>
+                  {
+                    ['warning', 'error'].includes(variant) ?
+                      <WarningIcon/> : <EmojiObjectsIcon />
+                  }
+                </Avatar>}
+                title={title}
+                slotProps={{ title: { variant: "h6" } }}
+              />
+              <CardContent>
+                { children }
+              </CardContent>
+              <CardActions>
+                { actionLabel && onAction &&
             <Button variant="outlined" onClick={onAction}>{actionLabel}</Button>
-          }
-          { onIgnore ?
-            <Button variant="outlined" onClick={() => {setEnabled(false); onIgnore();}}>Ignore for now</Button>
-            :
-            <Button variant="outlined" onClick={() => {setEnabled(false)}}>Got it!</Button>
-          }
-          </CardActions>
-        </Card>
-      </Fade>
-    )}
-    </Popper>
-  </ClickAwayListener>
-  : null);
+                }
+                { onIgnore ?
+                  <Button variant="outlined" onClick={() => {setEnabled(false); onIgnore();}}>Ignore for now</Button>
+                  :
+                  <Button variant="outlined" onClick={() => {setEnabled(false)}}>Got it!</Button>
+                }
+              </CardActions>
+            </Card>
+          </Fade>
+        )}
+      </Popper>
+    </ClickAwayListener>
+    : null);
 }
 UserInputAssistant.propTypes = {
   anchorEl: PropTypes.object,

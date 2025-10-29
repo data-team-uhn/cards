@@ -64,10 +64,10 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
         setQuestionnaires(response["rows"].map(questionnaire => questionnaire["jcr:uuid"]));
         // turn these questionnaires into options and populate our uuidToTitle
         setUuidToTitle(response["rows"].reduce( (result, questionnaire) => {
-            result[questionnaire["jcr:uuid"]] = questionnaire["title"] || questionnaire["@name"];
-            return result;
-          }
-          , {}
+          result[questionnaire["jcr:uuid"]] = questionnaire["title"] || questionnaire["@name"];
+          return result;
+        }
+        , {}
         ));
       })
       .catch(handleError);
@@ -107,7 +107,7 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
       }}
       className={classes.answerField}
       ref={ref}
-      >
+    >
       {questionnaires.map((uuid) => (
         <MenuItem value={uuid} key={uuid} selected={!!selection && selection == uuid}>{uuidToTitle[uuid]}</MenuItem>
       ))

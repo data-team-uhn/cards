@@ -86,8 +86,8 @@ function UnstyledNewSubjectDialog (props) {
   // If no regexp is provided, all inputs are valid
   let validateSubjectId = (type, text) => {
     if (!text || !type?.idPattern) {
-        setIsValid(true);
-        return;
+      setIsValid(true);
+      return;
     }
     let pattern = new RegExp(type.idPattern);
     setIsValid(pattern.test(text));
@@ -176,11 +176,11 @@ function UnstyledNewSubjectDialog (props) {
             }}
             initialState={{ showGlobalFilter: true }}
             columns={[
-                { accessorKey: 'label' }
+              { accessorKey: 'label' }
             ]}
             data={ allowedTypes?.length ? allowedTypes : data }
             renderTopToolbarCustomActions={() => {
-              return <Typography variant="h6" sx={{pl: 2}}>Select a type</Typography>;
+              return <Typography variant="h6" sx={{ pl: 2 }}>Select a type</Typography>;
             }}
             positionToolbarAlertBanner="none"
             muiTableHeadCellProps={{
@@ -208,14 +208,14 @@ function UnstyledNewSubjectDialog (props) {
             onClick={() => {setNewSubjectType(""); setIsValid(true); onClose();}}
             variant="outlined"
             disabled={disabled}
-            >
+          >
             Cancel
           </Button>
           <Button
             onClick={() => {setNewSubjectType(""); onSubmit()}}
             variant="contained"
             disabled={disabled || continueDisabled || !isValid}
-            >
+          >
             {requiresParents ? "Continue" : "Create"}
           </Button>
         </DialogActions>
@@ -335,7 +335,7 @@ function UnstyledSelectParentDialog (props) {
               }}
               initialState={{ showGlobalFilter: true }}
               columns={[
-                  { accessorKey: 'hierarchy' }
+                { accessorKey: 'hierarchy' }
               ]}
               data={data}
               getRowId={ (row) => row["jcr:uuid"] }
@@ -364,7 +364,7 @@ function UnstyledSelectParentDialog (props) {
             color="success"
             onClick={onCreateParent}
             className={classes.createNewSubjectButton}
-            >
+          >
             New subject
           </Button>
         }
@@ -372,21 +372,21 @@ function UnstyledSelectParentDialog (props) {
           onClick={onClose}
           variant="outlined"
           disabled={disabled}
-          >
+        >
           Cancel
         </Button>
         <Button
           onClick={onBack}
           variant="outlined"
           disabled={disabled}
-          >
+        >
           Back
         </Button>
         <Button
           onClick={onSubmit}
           variant="contained"
           disabled={disabled || continueDisabled}
-          >
+        >
           { isLast ? "Create" : "Continue" }
         </Button>
       </DialogActions>
@@ -698,7 +698,7 @@ export function NewSubjectDialog (props) {
         open={open && selectParentPopperOpen}
         parentType={newSubjectTypeParent}
         value={newSubjectParent[newSubjectIndex]}
-        /> }
+      /> }
     </React.Fragment>)
 }
 
@@ -781,7 +781,7 @@ function UnstyledSelectorDialog (props) {
       onSubmit={handleSubmitNew}
       open={open && newSubjectPopperOpen}
       disableRedirect={disableRedirect}
-      />
+    />
     <ResponsiveDialog title={title} open={open} onClose={onClose}>
       <DialogContent dividers className={classes.dialogContentWithTable}>
         {isPosting && <CircularProgress />}
@@ -797,7 +797,7 @@ function UnstyledSelectorDialog (props) {
           selectedQuestionnaire={selectedQuestionnaire}
           disableProgress={setDisableProgress}
           {...rest}
-          />
+        />
       </DialogContent>
       <DialogActions>
         <Button
@@ -806,21 +806,21 @@ function UnstyledSelectorDialog (props) {
           disabled={disabled_controls}
           onClick={() => { setNewSubjectPopperOpen(true); }}
           className={classes.createNewSubjectButton}
-          >
+        >
           New subject
         </Button>
         <Button
           onClick={onClose}
           variant="outlined"
           disabled={disabled_controls}
-          >
+        >
           Cancel
         </Button>
         <Button
           onClick={handleSubmitExisting}
           variant="contained"
           disabled={disabled_controls}
-          >
+        >
           Confirm
         </Button>
       </DialogActions>
@@ -886,7 +886,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
             error_msg += ` for ${parentType} ${id}.`;
           }
 
-          return Promise.reject({statusText: error_msg});
+          return Promise.reject({ statusText: error_msg });
         }
       });
 
@@ -1007,27 +1007,27 @@ function SubjectSelectorList(props) {
       }
 
       if (selectedQuestionnaire?.["maxPerSubject"] > 0 && querySubjectSubset.length > 0) {
-          let querySubjectSubsetClause = " and (" + querySubjectSubset + ") ";
-          // fetch the Subjects of each form of this questionnaire type for all listed subjects
-          url = `/query?rawResults=true&query=SELECT f.[subject] FROM [cards:Form] as f `
+        let querySubjectSubsetClause = " and (" + querySubjectSubset + ") ";
+        // fetch the Subjects of each form of this questionnaire type for all listed subjects
+        url = `/query?rawResults=true&query=SELECT f.[subject] FROM [cards:Form] as f `
               + `where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}`
               + `&limit=${selectedQuestionnaire?.["maxPerSubject"] * pagination.pageSize}`;
-          const responseSubject = await fetchWithReLogin(globalLoginDisplay, url);
-          const relatedSubjectsResp = await responseSubject.json();
+        const responseSubject = await fetchWithReLogin(globalLoginDisplay, url);
+        const relatedSubjectsResp = await responseSubject.json();
 
-          setRelatedSubjects(relatedSubjectsResp.rows);
-          let latestRelatedSubjects = relatedSubjectsResp.rows;
+        setRelatedSubjects(relatedSubjectsResp.rows);
+        let latestRelatedSubjects = relatedSubjectsResp.rows;
 
-          // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
-          let atMax = (filteredData.length === 1 && latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["f.subject"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
-          if (filteredData.length === 1 && !atMax) {
-            handleSelection(filteredData[0]) && onSelect(filteredData[0]);
-          }
+        // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
+        let atMax = (filteredData.length === 1 && latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["f.subject"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+        if (filteredData.length === 1 && !atMax) {
+          handleSelection(filteredData[0]) && onSelect(filteredData[0]);
+        }
       }
 
       setData(filteredData.map((row) => ({
         hierarchy: getHierarchy(row, React.Fragment, () => ({})),
-          ...row })));
+        ...row })));
       setRowCount(json.totalrows);
 
       setIsLoading(false);
@@ -1078,8 +1078,8 @@ function SubjectSelectorList(props) {
             fontSize: '1rem',
             // grey out subjects that have already reached maxPerSubject
             color: ((relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["f.subject"] == cell.row.original["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
-            ? theme.palette.text.disabled
-            : theme.palette.text.primary
+              ? theme.palette.text.disabled
+              : theme.palette.text.primary
             )
           }),
         })}

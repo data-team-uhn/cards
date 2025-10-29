@@ -144,22 +144,22 @@ function SubjectLockAction(props) {
           <>
             <TextField
               slotProps={{
-                htmlInput: {readOnly:true}
+                htmlInput: { readOnly:true }
               }}
               id="user"
               label="Signing User"
               defaultValue={json["userID"]}
-              sx={{mt: 3, mr: 3}}
-              />
+              sx={{ mt: 3, mr: 3 }}
+            />
             <TextField
               slotProps={{
-                htmlInput: {readOnly:true}
+                htmlInput: { readOnly:true }
               }}
               id="date"
               label="Date"
               defaultValue={new Date().toDateString()}
-              sx={{mt: 3}}
-              />
+              sx={{ mt: 3 }}
+            />
           </>
         )
         setRequestInProgress(false);
@@ -188,16 +188,16 @@ function SubjectLockAction(props) {
     let subjects = [subject["jcr:uuid"]]
     getChildSubjects(subject, subjects);
     fetchWithReLogin(globalLoginDisplay, `/query?limit=100&query=SELECT * FROM [cards:Form] as f where f.'subject' in ('${subjects.join("','")}') and f.'statusFlags'='INCOMPLETE'`)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then((response) => {
-      if (response.rows?.length > 0) {
-        handleIncompleteForms(response.rows);
-      } else {
-        handleContinue();
-      }
-      setRequestInProgress(false);
-    })
-    .catch(response => handleError(response.status, response));
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((response) => {
+        if (response.rows?.length > 0) {
+          handleIncompleteForms(response.rows);
+        } else {
+          handleContinue();
+        }
+        setRequestInProgress(false);
+      })
+      .catch(response => handleError(response.status, response));
   }
 
   let handleIncompleteForms = (rows) => {
@@ -213,18 +213,18 @@ function SubjectLockAction(props) {
             date = dateObj.toFormat("yyyy-MM-dd");
           }
           return <ListItem key={index}>
-              <ListItemAvatar>
-                <Avatar sx={theme => ({
-                  border: "1px solid " + theme.palette.action.disabled,
-                  background: "transparent",
-                  color: theme.palette.text.disabled,
-                  zoom: .75
-                })}>
-                  <AssignmentIcon/>
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={row.questionnaire.title}></ListItemText>
-            </ListItem>
+            <ListItemAvatar>
+              <Avatar sx={theme => ({
+                border: "1px solid " + theme.palette.action.disabled,
+                background: "transparent",
+                color: theme.palette.text.disabled,
+                zoom: .75
+              })}>
+                <AssignmentIcon/>
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={row.questionnaire.title}></ListItemText>
+          </ListItem>
         })}
       </List>
     );
@@ -324,7 +324,7 @@ function SubjectLockAction(props) {
         <DialogContent>
           {dialogContent}
         </DialogContent>
-        <DialogActions sx={{pl: 3}}>
+        <DialogActions sx={{ pl: 3 }}>
           {actionContent}
         </DialogActions>
         <DialogActions>
@@ -344,25 +344,25 @@ function SubjectLockAction(props) {
         </DialogActions>
       </Dialog>
       { variant == "icon" ?
-          <Tooltip title={buttonText}>
-            <IconButton component="span" onClick={openDialog} className={className} size={size}>
-              { isLocked
-                ? <LockOpenIcon fontSize={size == "small" ? size : undefined}/>
-                : <LockIcon fontSize={size == "small" ? size : undefined}/>
-              }
-            </IconButton>
-          </Tooltip>
-          :
-          <Button
-            onClick={openDialog}
-            size={size}
-            startIcon={variant == "extended" ? (isLocked ? <LockOpenIcon /> : <LockIcon />) : undefined}
-          >
-            {buttonText}
-          </Button>
+        <Tooltip title={buttonText}>
+          <IconButton component="span" onClick={openDialog} className={className} size={size}>
+            { isLocked
+              ? <LockOpenIcon fontSize={size == "small" ? size : undefined}/>
+              : <LockIcon fontSize={size == "small" ? size : undefined}/>
+            }
+          </IconButton>
+        </Tooltip>
+        :
+        <Button
+          onClick={openDialog}
+          size={size}
+          startIcon={variant == "extended" ? (isLocked ? <LockOpenIcon /> : <LockIcon />) : undefined}
+        >
+          {buttonText}
+        </Button>
       }
     </>)
-  : <></>
+    : <></>
 }
 
 SubjectLockAction.propTypes = {

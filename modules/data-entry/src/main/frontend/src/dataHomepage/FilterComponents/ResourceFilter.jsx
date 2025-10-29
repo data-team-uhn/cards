@@ -56,7 +56,7 @@ const ResourceFilter = forwardRef((props, ref) => {
       value={initial?.label}
       enableUserEntry={enableUserEntry}
       className={classes.answerField}
-      />
+    />
   )
 });
 

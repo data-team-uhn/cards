@@ -115,17 +115,17 @@ function VocabularyBranch(props) {
   let addPath = (evt) => {
     let path = evt.detail[VALUE_POS];
     setSelectedPaths(old => {
-        let newPaths = old.slice();
-        newPaths.push(path);
-        return newPaths;
+      let newPaths = old.slice();
+      newPaths.push(path);
+      return newPaths;
     });
   }
 
   let removePath = (evt) => {
     let path = evt.detail[VALUE_POS];
     setSelectedPaths(old => {
-        let newPaths = old.filter(item => item != path);
-        return newPaths;
+      let newPaths = old.filter(item => item != path);
+      return newPaths;
     });
   }
 
@@ -186,7 +186,7 @@ function VocabularyBranch(props) {
         maxAnswers={maxAnswers}
         parentId={data["identifier"]}
       />)
-      );
+    );
     setLoadedChildren(true);
     setChildren(children);
     setExpanded(true);
@@ -300,17 +300,17 @@ function VocabularyBranch(props) {
         )
       }
       {/* Browser term select tools */}
-        { SelectorComponent && <SelectorComponent
-          checked={selectedPaths.includes(path)}
-          color="secondary"
-          onChange={onSelectionChanged}
-          onClick={event => event.stopPropagation()}
-          className={classes.termSelector}
-        /> }
+      { SelectorComponent && <SelectorComponent
+        checked={selectedPaths.includes(path)}
+        color="secondary"
+        onChange={onSelectionChanged}
+        onClick={event => event.stopPropagation()}
+        className={classes.termSelector}
+      /> }
       {/* Term name */}
       <Typography onClick={() => loadTerm(id, path)}
-                  className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}
-                  component="div">
+        className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}
+        component="div">
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
           {name.split(" ").pop()}&nbsp;

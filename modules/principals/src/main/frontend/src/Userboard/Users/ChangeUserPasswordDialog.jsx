@@ -48,11 +48,11 @@ function FormFields(props) {
   };
 
   return (
-      <form
-        onSubmit={handleSubmit}
-        className={classes.form}
-      >
-        { requireOldPassword &&
+    <form
+      onSubmit={handleSubmit}
+      className={classes.form}
+    >
+      { requireOldPassword &&
           <TextField
             variant="standard"
             id="oldPwd"
@@ -67,70 +67,70 @@ function FormFields(props) {
             className={classes.form}
             required
           />
-        }
-        <TextField
-          variant="standard"
-          id="newPwd"
-          name="newPwd"
-          helperText={touched.newPwd ? errors.newPwd : ""}
-          error={touched.newPwd && Boolean(errors.newPwd)}
-          label="New Password"
-          fullWidth
-          type="password"
-          value={newPwd || ""}
-          onChange={change.bind(null, "newPwd")}
-          className={classes.form}
-          required
-        />
-        <TextField
-          variant="standard"
-          id="newPwdConfirm"
-          name="newPwdConfirm"
-          helperText={touched.newPwdConfirm ? errors.newPwdConfirm : ""}
-          error={touched.newPwdConfirm && Boolean(errors.newPwdConfirm)}
-          label="Confirm New Password"
-          fullWidth
-          type="password"
-          value={newPwdConfirm || ""}
-          onChange={change.bind(null, "newPwdConfirm")}
-          className={classes.form}
-          required
-        />
-        { !isValid ?
-          // Render hover over and button
-          <React.Fragment>
-            <Tooltip title="You must fill in all fields.">
-              <span>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className={classes.formAction}
-                  disabled={!isValid}
-                >
+      }
+      <TextField
+        variant="standard"
+        id="newPwd"
+        name="newPwd"
+        helperText={touched.newPwd ? errors.newPwd : ""}
+        error={touched.newPwd && Boolean(errors.newPwd)}
+        label="New Password"
+        fullWidth
+        type="password"
+        value={newPwd || ""}
+        onChange={change.bind(null, "newPwd")}
+        className={classes.form}
+        required
+      />
+      <TextField
+        variant="standard"
+        id="newPwdConfirm"
+        name="newPwdConfirm"
+        helperText={touched.newPwdConfirm ? errors.newPwdConfirm : ""}
+        error={touched.newPwdConfirm && Boolean(errors.newPwdConfirm)}
+        label="Confirm New Password"
+        fullWidth
+        type="password"
+        value={newPwdConfirm || ""}
+        onChange={change.bind(null, "newPwdConfirm")}
+        className={classes.form}
+        required
+      />
+      { !isValid ?
+      // Render hover over and button
+        <React.Fragment>
+          <Tooltip title="You must fill in all fields.">
+            <span>
+              <Button
+                type="submit"
+                variant="contained"
+                className={classes.formAction}
+                disabled={!isValid}
+              >
                   Change User Password
-                </Button>
-              </span>
-            </Tooltip>
-          </React.Fragment> :
-          // Else just render the button
-          <Button
-            type="submit"
-            variant="contained"
-            className={classes.formAction}
-            disabled={!isValid}
-          >
-            Change User Password
-          </Button>
-        }
+              </Button>
+            </span>
+          </Tooltip>
+        </React.Fragment> :
+      // Else just render the button
         <Button
-          variant="outlined"
+          type="submit"
+          variant="contained"
           className={classes.formAction}
-          onClick={handleReset}
+          disabled={!isValid}
         >
-          Cancel
+            Change User Password
         </Button>
-      </form>
-    );
+      }
+      <Button
+        variant="outlined"
+        className={classes.formAction}
+        onClick={handleReset}
+      >
+          Cancel
+      </Button>
+    </form>
+  );
 }
 
 const FormFieldsComponent = withStyles(FormFields, styles);
@@ -155,13 +155,13 @@ function ChangeUserPasswordDialog(props) {
     let url = "/system/userManager/user/" + name + ".changePassword.html";
 
     fetchWithReLogin(globalLoginDisplay, url, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
+      method: 'POST',
+      credentials: 'include',
+      body: formData
     })
-    .then(response => response.ok ? response : Promise.reject(response))
-    .then(() => handleCloseDialog(true))
-    .catch((error) => handleError(error));
+      .then(response => response.ok ? response : Promise.reject(response))
+      .then(() => handleCloseDialog(true))
+      .catch((error) => handleError(error));
   }
 
   let handleError = (error) => {
@@ -214,14 +214,14 @@ function ChangeUserPasswordDialog(props) {
       <DialogTitle>Change User Password for {name}</DialogTitle>
       <DialogContent>
         {error && <Alert severity="error">{error}</Alert>}
-          <Formik
-            initialValues={values}
-            validationSchema={validationSchemaObj}
-            onSubmit={handlePasswordChange}
-            onReset={() => handleCloseDialog(false)}
-            >
-            {props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
-          </Formik>
+        <Formik
+          initialValues={values}
+          validationSchema={validationSchemaObj}
+          onSubmit={handlePasswordChange}
+          onReset={() => handleCloseDialog(false)}
+        >
+          {props => <FormFieldsComponent {...props} requireOldPassword={requireOldPassword} />}
+        </Formik>
       </DialogContent>
     </Dialog>
   );

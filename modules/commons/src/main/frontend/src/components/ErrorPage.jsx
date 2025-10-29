@@ -53,26 +53,26 @@ export default function ErrorPage(props) {
   const { classes } = useStyles();
 
   return (
-      <Paper className={classes.paper} elevation={0} {...rest}>
-        <Grid
-          container
-          direction="column"
-          spacing={7}
-          textAlign={textAlign}
-        >
-          <Logo maxWidth="360px" component={Grid}/>
-          <Grid>
-            {errorCode && <Typography variant="h1" color={errorCodeColor || "primary"}>
-              {errorCode}
-            </Typography> }
-            {title && <Typography variant="h1" color={titleColor || "primary"} gutterBottom>
-              {title}
-            </Typography> }
-            {message && <FormattedText variant="subtitle1" color={messageColor || "textSecondary"}>
-              {message}
-            </FormattedText> }
-          </Grid>
-          { buttonLabel &&
+    <Paper className={classes.paper} elevation={0} {...rest}>
+      <Grid
+        container
+        direction="column"
+        spacing={7}
+        textAlign={textAlign}
+      >
+        <Logo maxWidth="360px" component={Grid}/>
+        <Grid>
+          {errorCode && <Typography variant="h1" color={errorCodeColor || "primary"}>
+            {errorCode}
+          </Typography> }
+          {title && <Typography variant="h1" color={titleColor || "primary"} gutterBottom>
+            {title}
+          </Typography> }
+          {message && <FormattedText variant="subtitle1" color={messageColor || "textSecondary"}>
+            {message}
+          </FormattedText> }
+        </Grid>
+        { buttonLabel &&
             <Grid>
               <Fab
                 variant="extended"
@@ -83,8 +83,8 @@ export default function ErrorPage(props) {
                 {buttonLabel}
               </Fab>
             </Grid>
-          }
-        </Grid>
-      </Paper>
+        }
+      </Grid>
+    </Paper>
   );
 }

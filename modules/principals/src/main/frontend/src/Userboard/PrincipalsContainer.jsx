@@ -38,14 +38,14 @@ export default function PrincipalsContainer(props) {
       {
         method: 'GET',
         credentials: 'include'
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?');
-      setUsers(data.rows);
-    })
-    .catch((error) => console.log(error?.statusText ?? error))
-    .finally(() => handleLoadGroups());
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        data.rows?.forEach((r) => r.initials = (r.firstname?.charAt(0) + r.lastname?.charAt(0)) || r.name?.charAt(0) || '?');
+        setUsers(data.rows);
+      })
+      .catch((error) => console.log(error?.statusText ?? error))
+      .finally(() => handleLoadGroups());
   }
 
   let handleLoadGroups = () => {
@@ -53,24 +53,24 @@ export default function PrincipalsContainer(props) {
       {
         method: 'GET',
         credentials: 'include'
-    })
-    .then((response) => response.json())
-    .then((data) => setGroups(data.rows))
-    .catch((error) => console.log(error?.statusText ?? error))
-    .finally(() => {
-     // This event is needed in cases we do not want to collapse details panel after reload
-      var reloadedEvent = new CustomEvent('principals-reloaded', {
+      })
+      .then((response) => response.json())
+      .then((data) => setGroups(data.rows))
+      .catch((error) => console.log(error?.statusText ?? error))
+      .finally(() => {
+        // This event is needed in cases we do not want to collapse details panel after reload
+        var reloadedEvent = new CustomEvent('principals-reloaded', {
           bubbles: true,
           cancelable: true
         });
-      document.dispatchEvent(reloadedEvent);
-    })
+        document.dispatchEvent(reloadedEvent);
+      })
   }
 
   return (
     <div>
       { props.isUserListPage ? <UsersManager users={users} groups={groups} reload={handleLoadUsers}/>
-                                 : <GroupsManager users={users} groups={groups} reload={handleLoadUsers}/> }
+        : <GroupsManager users={users} groups={groups} reload={handleLoadUsers}/> }
     </div>
   );
 }

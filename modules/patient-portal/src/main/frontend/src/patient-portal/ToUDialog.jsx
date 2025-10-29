@@ -178,35 +178,35 @@ function ToUDialog(props) {
         </DialogContent>
       }
       <DialogContent dividers={!actionRequired} className={classes.touText}>
-      { error ?
-        <Alert severity="error">
-          <AlertTitle>An error occurred</AlertTitle>
-          {error}
-        </Alert>
-        :
-        <FormattedText>{tou?.text}</FormattedText>
-      }
+        { error ?
+          <Alert severity="error">
+            <AlertTitle>An error occurred</AlertTitle>
+            {error}
+          </Alert>
+          :
+          <FormattedText>{tou?.text}</FormattedText>
+        }
       </DialogContent>
       <DialogActions>
-      { actionRequired && !error && !actionError ?
-        <>
-          <Button variant="outlined" onClick={() => setShowConfirmationTou(true)}>
+        { actionRequired && !error && !actionError ?
+          <>
+            <Button variant="outlined" onClick={() => setShowConfirmationTou(true)}>
             Decline
-          </Button>
-          <Button variant="contained" onClick={() => saveTouAccepted(tou.version)}>
+            </Button>
+            <Button variant="contained" onClick={() => saveTouAccepted(tou.version)}>
             Accept
-          </Button>
-        </>
-        :
-        <>
-          { actionError &&
+            </Button>
+          </>
+          :
+          <>
+            { actionError &&
             <FormattedText color="error" className={classes.actionErrorMessage}>{actionError}</FormattedText>
-          }
-          <Button onClick={() => onClose(!!actionError)} variant="outlined">
+            }
+            <Button onClick={() => onClose(!!actionError)} variant="outlined">
             Close
-          </Button>
-        </>
-      }
+            </Button>
+          </>
+        }
       </DialogActions>
     </ResponsiveDialog>
     { actionRequired &&

@@ -80,7 +80,7 @@ function LiveTable(props) {
   const urlBase = (
     customUrl ?
       new URL(customUrl, window.location.origin)
-    :
+      :
       new URL(
         ((s) => s.substring(s.lastIndexOf("/")))(window.location.pathname.replace(/\/$/, "")).concat(".paginate"),
         window.location.origin
@@ -200,7 +200,7 @@ function LiveTable(props) {
           (
             columns.map((column, index) => makeCell(entry, column, index))
           )
-        :
+          :
           (
             <TableCell><a href={entry["@path"]}>{entry.title}</a></TableCell>
           )
@@ -260,8 +260,8 @@ function LiveTable(props) {
     });
     return (
       <TableCell key={index}>
-        <Stack direction="row" sx={{justifyContent: "flex-end", my: .5}}>
-        { content }
+        <Stack direction="row" sx={{ justifyContent: "flex-end", my: .5 }}>
+          { content }
         </Stack>
       </TableCell>
     );
@@ -371,8 +371,8 @@ function LiveTable(props) {
       page={paginationData.page}
       onPageChange={handleChangePage}
       onRowsPerPageChange={handleChangeRowsPerPage}
-      labelDisplayedRows={({from, to, count}) =>
-          `${from}-${to} of ${paginationData.totalIsApproximate ? `more than ${paginationData.total}` : count}`
+      labelDisplayedRows={({ from, to, count }) =>
+        `${from}-${to} of ${paginationData.totalIsApproximate ? `more than ${paginationData.total}` : count}`
       }
     />
   )
@@ -397,24 +397,24 @@ function LiveTable(props) {
         <TableHead>
           {/* TODO: Move the whole header in a separate, smarter component that can do filtering and sorting. */}
           <TableRow>
-          { columns ?
-            (
-              columns.map((column, index) =>
-                <TableCell
-                  key={index}
-                  className={[classes.tableHeader, column.type == 'actions' ? classes.tableActionsHeader : ''].join(' ')}
-                  {...column.props}
-                >
-                  {column.label}
-                </TableCell>
+            { columns ?
+              (
+                columns.map((column, index) =>
+                  <TableCell
+                    key={index}
+                    className={[classes.tableHeader, column.type == 'actions' ? classes.tableActionsHeader : ''].join(' ')}
+                    {...column.props}
+                  >
+                    {column.label}
+                  </TableCell>
+                )
               )
-            )
-          :
-            (
-              <TableCell>Name</TableCell>
-            )
-          }
-          {actions ? <TableCell key={columns ? columns.count : 1} className={[classes.tableHeader, classes.tableActionsHeader].join(' ')}>Actions</TableCell> : null}
+              :
+              (
+                <TableCell>Name</TableCell>
+              )
+            }
+            {actions ? <TableCell key={columns ? columns.count : 1} className={[classes.tableHeader, classes.tableActionsHeader].join(' ')}>Actions</TableCell> : null}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -439,8 +439,8 @@ function LiveTable(props) {
               ( tableData.map(makeRow) )
               :
               ( <TableRow><TableCell colSpan={columns ? columns.length : 1}>
-                  <Typography>Please wait...</Typography>
-                </TableCell></TableRow> )
+                <Typography>Please wait...</Typography>
+              </TableCell></TableRow> )
           }
         </TableBody>
       </Table>

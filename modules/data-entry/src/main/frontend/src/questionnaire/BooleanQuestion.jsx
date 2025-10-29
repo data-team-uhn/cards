@@ -55,7 +55,7 @@ import Question from "./Question";
 //   />
 function BooleanQuestion(props) {
   checkPropTypes(BooleanQuestion, props);
-  const {yesLabel, noLabel, unknownLabel, enableUnknown} = { ...props.questionDefinition, ...props };
+  const { yesLabel, noLabel, unknownLabel, enableUnknown } = { ...props.questionDefinition, ...props };
 
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
   // override them, and the props to be able to override the questionDefinition
@@ -68,14 +68,14 @@ function BooleanQuestion(props) {
     <Question
       disableInstructions
       {...props}
-      >
+    >
       <MultipleChoice
         answerNodeType="cards:BooleanAnswer"
         valueType="Long" /* Notably not "Boolean", since we need it to be stored as a long in the backend */
         maxAnswers={1}
         defaults={options}
         {...props}
-        />
+      />
     </Question>);
 }
 

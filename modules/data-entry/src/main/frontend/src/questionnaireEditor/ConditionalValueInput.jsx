@@ -176,7 +176,7 @@ let ConditionalValue = (props) => {
   return (
     values.map(value => (
       <ListItemText
-        style={{marginTop: 0}}
+        style={{ marginTop: 0 }}
         key={value}
         primary={isReference ? variables?.find(v => v.name == value)?.text : value}
         secondary={isReference && value}

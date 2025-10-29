@@ -19,10 +19,10 @@
 import React, { useState, useEffect } from 'react';
 
 import {
-    Checkbox,
-    FormControlLabel,
-    List,
-    ListItem,
+  Checkbox,
+  FormControlLabel,
+  List,
+  ListItem,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -77,60 +77,60 @@ function DowntimeWarningConfiguration() {
 
   let getDateField = (label, value, onDateChange) => {
     return (
-    <LocalizationProvider dateAdapter={AdapterLuxon}>
-      <DateTimePicker
-        format={dateFormat}
-        ampm={false}
-        label={label}
-        value={value}
-        onChange={(newValue) => { onDateChange(newValue); setHasChanges(true); }}
-        slotProps={{ textField: {
-                       variant: 'standard',
-                       helperText: null,
-                       InputProps: {
-                         className: classes.textField
-                       },
-                     },
-                     field: {
-                       clearable: true,
-                       onClear: () => { onDateChange(""); setHasChanges(true); }
-                     },
-        }}
-      />
-    </LocalizationProvider>);
+      <LocalizationProvider dateAdapter={AdapterLuxon}>
+        <DateTimePicker
+          format={dateFormat}
+          ampm={false}
+          label={label}
+          value={value}
+          onChange={(newValue) => { onDateChange(newValue); setHasChanges(true); }}
+          slotProps={{ textField: {
+            variant: 'standard',
+            helperText: null,
+            InputProps: {
+              className: classes.textField
+            },
+          },
+          field: {
+            clearable: true,
+            onClear: () => { onDateChange(""); setHasChanges(true); }
+          },
+          }}
+        />
+      </LocalizationProvider>);
   }
 
   return (
     <AdminConfigScreen
-        title="Downtime Warning Banner Settings"
-        configPath="/apps/cards/config/DowntimeWarning"
-        configTemplate={{enabled: false, fromDate: "", toDate: ""}}
-        onConfigFetched={readDowntimeWarningSettings}
-        hasChanges={hasChanges}
-        configError={!!dateRangeIsInvalid ? "Invalid date range" : undefined}
-        buildConfigData={buildConfigData}
-        onConfigSaved={() => setHasChanges(false)}
-      >
-          <List>
-            <ListItem key="enabled">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={enabled}
-                    onChange={ event => { setEnabled(event.target.checked); setHasChanges(true); } }
-                    name="enabled"
-                  />
-                }
-                label="Show downtime warning banner"
+      title="Downtime Warning Banner Settings"
+      configPath="/apps/cards/config/DowntimeWarning"
+      configTemplate={{ enabled: false, fromDate: "", toDate: "" }}
+      onConfigFetched={readDowntimeWarningSettings}
+      hasChanges={hasChanges}
+      configError={!!dateRangeIsInvalid ? "Invalid date range" : undefined}
+      buildConfigData={buildConfigData}
+      onConfigSaved={() => setHasChanges(false)}
+    >
+      <List>
+        <ListItem key="enabled">
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={enabled}
+                onChange={ event => { setEnabled(event.target.checked); setHasChanges(true); } }
+                name="enabled"
               />
-            </ListItem>
-            <ListItem key="fromDate">
-              {getDateField("Start of maintenance", fromDate, setFromDate)}
-            </ListItem>
-            <ListItem key="toDate">
-              {getDateField("End of maintenance", toDate, setToDate)}
-            </ListItem>
-          </List>
+            }
+            label="Show downtime warning banner"
+          />
+        </ListItem>
+        <ListItem key="fromDate">
+          {getDateField("Start of maintenance", fromDate, setFromDate)}
+        </ListItem>
+        <ListItem key="toDate">
+          {getDateField("End of maintenance", toDate, setToDate)}
+        </ListItem>
+      </List>
     </AdminConfigScreen>
   );
 }

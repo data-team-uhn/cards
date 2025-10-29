@@ -41,16 +41,16 @@ export default function googleApiKeyAdminPage() {
 
   useEffect(() => {
     fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
-    .then((response) => response.ok ? response.json() : Promise.reject(response))
-    .then((keyJson) => {
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((keyJson) => {
         if (!keyJson.apikey) {
           console.log("No API key in APIKEY servlet response");
         }
         setGoogleApiKey(keyJson.apikey);
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         setError("Error fetching GoogleApiKey node: " + error);
-    });
+      });
   }, [])
 
   // function to create / edit node
@@ -61,13 +61,13 @@ export default function googleApiKeyAdminPage() {
     fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
       .then((response) => response.ok ? response : Promise.reject(response))
       .then((data) => {
-          // The AddressQuestion won't fetch new key untill the page is reloaded
-          location.reload();
+        // The AddressQuestion won't fetch new key untill the page is reloaded
+        location.reload();
       })
       .catch((error) => {
-          setError("Error creating GoogleApiKey node: " + error);
+        setError("Error creating GoogleApiKey node: " + error);
       }
-    )
+      )
   }
 
   return (
@@ -86,13 +86,13 @@ export default function googleApiKeyAdminPage() {
           >
             <Grid size={10}>
               <TextField
-                  size="small"
-                  variant="outlined"
-                  onChange={(evt) => {setGoogleApiKey(evt.target.value); setHasChanges(true); setError("");}}
-                  value={googleApiKey}
-                  label="Google API key"
-                  fullWidth
-                />
+                size="small"
+                variant="outlined"
+                onChange={(evt) => {setGoogleApiKey(evt.target.value); setHasChanges(true); setError("");}}
+                value={googleApiKey}
+                label="Google API key"
+                fullWidth
+              />
             </Grid>
             <Grid size={2}>
               <Button

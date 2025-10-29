@@ -85,11 +85,11 @@ function FormPagination (props) {
   useEffect(() => {
     setPagesCallback(null);
     Object.entries(questionnaireData)
-            .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-            .map(([key, entryDefinition]) => {
-              let pageResult = addPage(entryDefinition);
-              pagesResults[key] = pageResult;
-            });
+      .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+      .map(([key, entryDefinition]) => {
+        let pageResult = addPage(entryDefinition);
+        pagesResults[key] = pageResult;
+      });
     setPages(pagesArray);
     setPagesCallback(pagesResults);
   }, [questionnaireData, activePage, enabled]);
@@ -120,7 +120,7 @@ function FormPagination (props) {
       if (pagesArray.length === 0) {
         pagesArray.push(new Page(true));
       }
-      return {page: pagesArray[0], callback: ()=>{}}
+      return { page: pagesArray[0], callback: ()=>{} }
     }
   }
 
@@ -215,12 +215,12 @@ function FormPagination (props) {
       onClick={handleNext}
     >
       {
-      ((lastValidPage() === 0 || activePage === lastValidPage()) && saveInProgress) ? 'Saving' :
-      lastSaveStatus === false ? 'Save failed, log in and try again?' :
-      activePage < lastValidPage() ? "Next" :
-      !enableSave ? (doneLabel || "Close") :
-      lastSaveStatus && savedLastPage ? 'Saved' :
-      (doneLabel || 'Save')}
+        ((lastValidPage() === 0 || activePage === lastValidPage()) && saveInProgress) ? 'Saving' :
+          lastSaveStatus === false ? 'Save failed, log in and try again?' :
+            activePage < lastValidPage() ? "Next" :
+              !enableSave ? (doneLabel || "Close") :
+                lastSaveStatus && savedLastPage ? 'Saved' :
+                  (doneLabel || 'Save')}
     </Button>
 
   let backButton = navMode == "only_next" ? undefined : (
@@ -248,7 +248,7 @@ function FormPagination (props) {
 
   return (
     enabled
-    ?
+      ?
       variant == "navigable" && pages?.length > 0 ?
         <FormPageNavigation
           pages={pages}
@@ -258,34 +258,34 @@ function FormPagination (props) {
           isPageCompleted={isPageCompleted}
           navigateTo={handleNavigateTo}
         />
-      :
-      lastValidPage() > 0
-      ?
-        <MobileStepper
-          variant={variant}
-          // Offset back bar 1 to create a "current page" region.
-          // If the final page has been saved, progress the front bar to complete
-          activeStep={activePage + progressAdjustment(lastSaveStatus && savedLastPage)}
-          // Change the color of the back bar
-          slotProps={{
-            progress: {
-              classes: {
-                bar2Buffer: classes.formStepperBufferBar,
-                dashed: classes.formStepperBackgroundBar,
-              },
-              variant: "buffer",
-              valueBuffer: (activePage + 1) / (lastValidPage() + 1) * 100,
-            }
-          }}
-          className={stepperClasses}
-          // base 0 to base 1, plus 1 for the "current page" region when variant is "progress"
-          steps={lastValidPage() + 1 + progressAdjustment(true)}
-          nextButton={saveButton}
-          backButton={backButton}
-        />
-      :
-        saveButton
-    : null
+        :
+        lastValidPage() > 0
+          ?
+          <MobileStepper
+            variant={variant}
+            // Offset back bar 1 to create a "current page" region.
+            // If the final page has been saved, progress the front bar to complete
+            activeStep={activePage + progressAdjustment(lastSaveStatus && savedLastPage)}
+            // Change the color of the back bar
+            slotProps={{
+              progress: {
+                classes: {
+                  bar2Buffer: classes.formStepperBufferBar,
+                  dashed: classes.formStepperBackgroundBar,
+                },
+                variant: "buffer",
+                valueBuffer: (activePage + 1) / (lastValidPage() + 1) * 100,
+              }
+            }}
+            className={stepperClasses}
+            // base 0 to base 1, plus 1 for the "current page" region when variant is "progress"
+            steps={lastValidPage() + 1 + progressAdjustment(true)}
+            nextButton={saveButton}
+            backButton={backButton}
+          />
+          :
+          saveButton
+      : null
   );
 };
 

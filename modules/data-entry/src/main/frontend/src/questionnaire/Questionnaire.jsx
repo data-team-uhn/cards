@@ -123,95 +123,95 @@ let Questionnaire = (props) => {
   }, []);
 
   let dropdownList = (
-      <List>
-        <ListItem className={classes.actionsMenuItem}>
-          <ExportButton
-              entityData={data}
-              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-              entryName={questionnaireTitle || id}
-              entryType="Questionnaire"
-              size="medium"
-              variant="text"
-              onClose={() => { setActionsMenu(null); }}
-          />
-        </ListItem>
-        <ListItem className={classes.actionsMenuItem}>
-            <Button
-                size="medium"
-                component="a"
-                download={`${id}.json`}
-                href={`/Questionnaires/${id}.deep.-identify.importable.json`}
-                onClick={() => {
-                    setActionsMenu(null);
-                }}>
+    <List>
+      <ListItem className={classes.actionsMenuItem}>
+        <ExportButton
+          entityData={data}
+          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+          entryName={questionnaireTitle || id}
+          entryType="Questionnaire"
+          size="medium"
+          variant="text"
+          onClose={() => { setActionsMenu(null); }}
+        />
+      </ListItem>
+      <ListItem className={classes.actionsMenuItem}>
+        <Button
+          size="medium"
+          component="a"
+          download={`${id}.json`}
+          href={`/Questionnaires/${id}.deep.-identify.importable.json`}
+          onClick={() => {
+            setActionsMenu(null);
+          }}>
                     Export as JSON
-            </Button>
-        </ListItem>
-        <ListItem className={classes.actionsMenuItem}>
-          <DeleteButton
-              entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
-              entryName={questionnaireTitle}
-              entryType="Questionnaire"
-              onComplete={() => navigate(baseUrl, { replace: true })}
-              size="medium"
-              variant="text"
-              onClose={() => { setActionsMenu(null); }}
-          />
-        </ListItem>
-      </List>
+        </Button>
+      </ListItem>
+      <ListItem className={classes.actionsMenuItem}>
+        <DeleteButton
+          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+          entryName={questionnaireTitle}
+          entryType="Questionnaire"
+          onComplete={() => navigate(baseUrl, { replace: true })}
+          size="medium"
+          variant="text"
+          onClose={() => { setActionsMenu(null); }}
+        />
+      </ListItem>
+    </List>
   )
 
   let questionnaireMenu = (
-      <div className={classes.actionsMenu}>
-        { isEdit ?
-          <Tooltip title="Preview" onClick={() => navigate(questionnaireUrl)}>
-            <IconButton size="large">
-              <PreviewIcon />
-            </IconButton>
-          </Tooltip>
-          :
-          <Tooltip title="Edit" onClick={() => navigate(questionnaireUrl + ".edit")}>
-            <IconButton color="primary" size="large">
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-        }
-        <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+    <div className={classes.actionsMenu}>
+      { isEdit ?
+        <Tooltip title="Preview" onClick={() => navigate(questionnaireUrl)}>
           <IconButton size="large">
-            <MoreIcon fontSize="small" />
+            <PreviewIcon />
           </IconButton>
         </Tooltip>
-        <Popover
-            open={Boolean(actionsMenu)}
-            anchorEl={actionsMenu}
-            onClose={() => {setActionsMenu(null)}}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-        >
-          { dropdownList }
-        </Popover>
-      </div>
+        :
+        <Tooltip title="Edit" onClick={() => navigate(questionnaireUrl + ".edit")}>
+          <IconButton color="primary" size="large">
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+      }
+      <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+        <IconButton size="large">
+          <MoreIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Popover
+        open={Boolean(actionsMenu)}
+        anchorEl={actionsMenu}
+        onClose={() => {setActionsMenu(null)}}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        { dropdownList }
+      </Popover>
+    </div>
   )
 
   let questionnaireHeader = (
-        <ResourceHeader
-          title={questionnaireTitle || ""}
-          breadcrumbs={[<Link to={".." + baseUrl} underline="hover">Questionnaires</Link>]}
-          action={questionnaireMenu}
-          contentOffset={props.contentOffset}
-          >
-          { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
+    <ResourceHeader
+      title={questionnaireTitle || ""}
+      breadcrumbs={[<Link to={".." + baseUrl} underline="hover">Questionnaires</Link>]}
+      action={questionnaireMenu}
+      contentOffset={props.contentOffset}
+    >
+      { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
             <Typography variant="overline">
               Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
             </Typography>
-          }
-        </ResourceHeader>
+      }
+    </ResourceHeader>
   );
 
   return (
@@ -219,29 +219,29 @@ let Questionnaire = (props) => {
       <Typography variant="h2" color="error">
         Error obtaining questionnaire info: {error.status} {error.statusText}
       </Typography>
-    :
+      :
       ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
         <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
           { questionnaireHeader }
           { !isEdit ?
-              <QuestionnairePreview
+            <QuestionnairePreview
+              data={data}
+              key={id + data?.['jcr:lastModified']}
+              title={questionnaireTitle}
+              contentOffset={props.contentOffset}
+            />
+            :
+            <QuestionnaireProvider>
+              <QuestionnaireContents
+                disableDelete
                 data={data}
                 key={id + data?.['jcr:lastModified']}
-                title={questionnaireTitle}
-                contentOffset={props.contentOffset}
+                classes={classes}
+                onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                onActionDone={()=>{}}
+                menuProps={{ isMainAction: true }}
               />
-            :
-              <QuestionnaireProvider>
-                <QuestionnaireContents
-                  disableDelete
-                  data={data}
-                  key={id + data?.['jcr:lastModified']}
-                  classes={classes}
-                  onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-                  onActionDone={()=>{}}
-                  menuProps={{isMainAction: true}}
-                />
-              </QuestionnaireProvider>
+            </QuestionnaireProvider>
           }
         </Grid>
       )
@@ -280,7 +280,7 @@ let QuestionnaireItemSet = (props) => {
       // Sort by the specified order
       .sort((a, b) => a.defaultOrder - b.defaultOrder)
       // Record the sorted entries into the priority list
-      .forEach(v => prioritaryModels = {...prioritaryModels, ...v.entries});
+      .forEach(v => prioritaryModels = { ...prioritaryModels, ...v.entries });
 
     // If there are any entries with defaultOrder, we update the priorityEntryTypes
     if (Object.keys(prioritaryModels).length > 0) {
@@ -302,7 +302,7 @@ let QuestionnaireItemSet = (props) => {
       if ( typeof(v) == "object") {
         if (typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) == "undefined") {
           // Flatten groups with `entries` but without `defaultOrder` (the ones with defaultOrder are already in the "priority" list)
-          generalModels = {...generalModels, ...v.entries}
+          generalModels = { ...generalModels, ...v.entries }
         }
       } else {
         // also record groups without metadata
@@ -312,7 +312,7 @@ let QuestionnaireItemSet = (props) => {
     // If there are any entries without defaultOrder, we update the generalEntryTypes
     // Otherwise the original list is kept, i.e. ENTRY_TYPES
     if (Object.keys(generalModels).length > 0) {
-       generalEntryTypes = getEntryTypes(generalModels);
+      generalEntryTypes = getEntryTypes(generalModels);
     }
   }
 
@@ -336,20 +336,20 @@ let QuestionnaireItemSet = (props) => {
   //   the `typeModels` property restriction
   let listEntries = (typeModels, types) => (
     <>
-    { Object.entries(data)
-      .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
-      .map(([key, value]) => (
-        EntryType => <Grid key={key}>
-                       <EntryType
-                         data={value}
-                         model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
-                         onActionDone={onActionDone}
-                         classes={classes}
-                       />
-                     </Grid>
+      { Object.entries(data)
+        .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
+        .map(([key, value]) => (
+          EntryType => <Grid key={key}>
+            <EntryType
+              data={value}
+              model={typeModels?.[stripCardsNamespace(value['jcr:primaryType'])]}
+              onActionDone={onActionDone}
+              classes={classes}
+            />
+          </Grid>
         )(eval(stripCardsNamespace(value['jcr:primaryType'])))
-      )
-    }
+        )
+      }
     </>
   )
 
@@ -364,11 +364,11 @@ let QuestionnaireItemSet = (props) => {
       {children}
       {
         data ?
-        <>
-        { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
-        { listEntries(generalModels, generalEntryTypes) }
-        </>
-        : <Grid><Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid></Grid>
+          <>
+            { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
+            { listEntries(generalModels, generalEntryTypes) }
+          </>
+          : <Grid><Grid container justifyContent="center"><Grid><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
   );
@@ -395,13 +395,13 @@ let QuestionnaireContents = (props) => {
   }, []);
 
   return <QuestionnaireEntry
-           disableCollapse={false}
-           type="Questionnaire"
-           avatar="assignment"
-           avatarColor={blueGrey[700]}
-           titleField="title"
-           model="Questionnaire.json"
-           { ...props } />;
+    disableCollapse={false}
+    type="Questionnaire"
+    avatar="assignment"
+    avatarColor={blueGrey[700]}
+    titleField="title"
+    model="Questionnaire.json"
+    { ...props } />;
 };
 
 QuestionnaireContents.propTypes = {
@@ -418,11 +418,11 @@ QuestionnaireContents.propTypes = {
 
 // Details about an information block displayed in a questionnaire
 let Information = (props) => <QuestionnaireEntry
-                               type="Information"
-                               avatar="info"
-                               avatarColor={blue[600]}
-                               model="Information.json"
-                               {...props} />;
+  type="Information"
+  avatar="info"
+  avatarColor={blue[600]}
+  model="Information.json"
+  {...props} />;
 
 Information.propTypes = {
   onActionDone: PropTypes.func,
@@ -435,11 +435,11 @@ Information.propTypes = {
 
 // Details about an id mapping block displayed in a questionnaire
 let ExternalLink = (props) => <QuestionnaireEntry
-                                type="ExternalLink"
-                                avatar="link"
-                                avatarColor={purple[300]}
-                                model="ExternalLink.json"
-                                {...props} />;
+  type="ExternalLink"
+  avatar="link"
+  avatarColor={purple[300]}
+  model="ExternalLink.json"
+  {...props} />;
 
 ExternalLink.propTypes = {
   onActionDone: PropTypes.func,
@@ -453,11 +453,11 @@ ExternalLink.propTypes = {
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => <QuestionnaireEntry
-                            type="Question"
-                            avatarColor={deepPurple[700]}
-                            titleField="text"
-                            model="Question.json"
-                            {...props} />;
+  type="Question"
+  avatarColor={deepPurple[700]}
+  titleField="text"
+  model="Question.json"
+  {...props} />;
 
 Question.propTypes = {
   onActionDone: PropTypes.func,
@@ -472,12 +472,12 @@ Question.propTypes = {
 // Details about a particular section in a questionnaire.
 // Not to be confused with the public Section component responsible for rendering sections inside a Form.
 let Section = (props) => <QuestionnaireEntry
-                           type="Section"
-                           avatar="view_stream"
-                           avatarColor={orange[800]}
-                           titleField="label"
-                           model="Section.json"
-                           {...props} />
+  type="Section"
+  avatar="view_stream"
+  avatarColor={orange[800]}
+  titleField="label"
+  model="Section.json"
+  {...props} />
 
 Section.propTypes = {
   onActionDone: PropTypes.func,
@@ -492,10 +492,10 @@ Section.propTypes = {
 
 // Details about a simple condition for displaying a section
 let Conditional = (props) => <QuestionnaireEntry
-                               type="Conditional"
-                               avatarColor={cyan[800]}
-                               model="Conditional.json"
-                               {...props} />;
+  type="Conditional"
+  avatarColor={cyan[800]}
+  model="Conditional.json"
+  {...props} />;
 
 Conditional.propTypes = {
   onActionDone: PropTypes.func,
@@ -508,10 +508,10 @@ Conditional.propTypes = {
 
 // Details about a group pf conditions for displaying a section
 let ConditionalGroup = (props) => <QuestionnaireEntry
-                                    type="ConditionalGroup"
-                                    avatarColor={indigo[800]}
-                                    model="ConditionalGroup.json"
-                                    {...props} />;
+  type="ConditionalGroup"
+  avatarColor={indigo[800]}
+  model="ConditionalGroup.json"
+  {...props} />;
 
 ConditionalGroup.propTypes = {
   onActionDone: PropTypes.func,
@@ -537,18 +537,18 @@ let QuestionnaireEntry = (props) => {
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
   let updateContext = (data) => {
-    let vars = findQuestionnaireEntries({data: data}, QUESTION_TYPES);
+    let vars = findQuestionnaireEntries({ data: data }, QUESTION_TYPES);
     changeQuestionnaireContext((oldContext) => {
-       let newContext = oldContext || [];
-       vars.forEach(v => {
-         const index = newContext.findIndex(x => x.id == v.id);
-         if (index >= 0) {
-           newContext.splice(index, 1, v);
-         } else {
-           newContext.push(v);
-         }
-       });
-       return newContext;
+      let newContext = oldContext || [];
+      vars.forEach(v => {
+        const index = newContext.findIndex(x => x.id == v.id);
+        if (index >= 0) {
+          newContext.splice(index, 1, v);
+        } else {
+          newContext.push(v);
+        }
+      });
+      return newContext;
     });
   }
 
@@ -633,11 +633,11 @@ let QuestionnaireEntry = (props) => {
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(json => handleDataChange(json))
         .catch(() => {
-           // If it fails, it's because we deleted an item
-           // Update the context to remove the deleted item
-           removeFromContext(`${data['jcr:uuid']}`);
-           // Then pass it up to the parent
-           onActionDone();
+          // If it fails, it's because we deleted an item
+          // Update the context to remove the deleted item
+          removeFromContext(`${data['jcr:uuid']}`);
+          // Then pass it up to the parent
+          onActionDone();
         });
     }
   }
@@ -658,27 +658,27 @@ let QuestionnaireEntry = (props) => {
 
   return (
     <QuestionnaireItemCard
-        titleField={titleField}
-        moreInfo={renderFields({condensed: true})}
-        data={entryData}
-        type={type}
-        upperClasses={classes}
-        doHighlight={doHighlight}
-        action={
-            menuItems?.length > 0 ?
-            <CreationMenu
-              data={entryData}
-              onCreated={onCreated}
-              menuItems={menuItems}
-              models={childModels}
-              {...menuProps}
-            />
-            : undefined
-        }
-        onActionDone={handleDataChange}
-        model={model}
-        disableCollapse={true}
-        {...rest}
+      titleField={titleField}
+      moreInfo={renderFields({ condensed: true })}
+      data={entryData}
+      type={type}
+      upperClasses={classes}
+      doHighlight={doHighlight}
+      action={
+        menuItems?.length > 0 ?
+          <CreationMenu
+            data={entryData}
+            onCreated={onCreated}
+            menuItems={menuItems}
+            models={childModels}
+            {...menuProps}
+          />
+          : undefined
+      }
+      onActionDone={handleDataChange}
+      model={model}
+      disableCollapse={true}
+      {...rest}
     >
       { childModels ?
         <QuestionnaireItemSet

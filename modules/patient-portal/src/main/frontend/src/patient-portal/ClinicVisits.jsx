@@ -27,7 +27,7 @@ import ClinicFormList from "./ClinicFormList.jsx";
 const useStyles = makeStyles()((theme, props) => ({
   visitList : {
     "&.MuiCard-root" : {
-       border: "2px solid " + props.color,
+      border: "2px solid " + props.color,
     },
   },
   statusUnassigned : {
@@ -51,7 +51,7 @@ function ClinicVisits(props) {
   const { classes } = useStyles({ color: color });
 
   let query = (
-"select distinct visitInformation.* " +
+    "select distinct visitInformation.* " +
   "from " +
     "[cards:Form] as visitInformation " +
       "inner join [cards:ResourceAnswer] as visitClinic on visitClinic.form = visitInformation.[jcr:uuid] " +
@@ -63,7 +63,7 @@ function ClinicVisits(props) {
       `and visitClinic.question = '${visitInfo?.clinic?.["jcr:uuid"]}' and visitClinic.value = '/Survey/ClinicMapping/${clinicId}' ` +
       `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' and visitStatus.value <> 'entered-in-error' ` +
   "order by visitDate.value __SORT_ORDER_PLACEHOLDER__ option (index tag cards)"
-)
+  )
 
   let columns = [
     {
@@ -90,21 +90,21 @@ function ClinicVisits(props) {
       "key": "email_sent",
       "label": "Email sent",
       "format" : (row) => {
-         let email_date = row.reminder2_sent || row.reminder1_sent || row.invitation_sent;
-         let label = row.reminder2_sent || row.reminder1_sent ? "(reminder)" : row.invitation_sent ? "(initial)" : "";
-         return email_date ? `${email_date.substring(0, 10)} ${label}` : "N/A";
+        let email_date = row.reminder2_sent || row.reminder1_sent || row.invitation_sent;
+        let label = row.reminder2_sent || row.reminder1_sent ? "(reminder)" : row.invitation_sent ? "(initial)" : "";
+        return email_date ? `${email_date.substring(0, 10)} ${label}` : "N/A";
       }
     },
     {
       "key" : "status",
       "label" : "Survey completion",
       "format" : (row) => (
-         <Link
-           className={classes["status" + (!row.has_surveys ? "Unassigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Unreviewed" : "Completed")))]}
-           to={`../content.html${row.subject['@path']}`}
-           underline="hover">
-           { row.email_unsubscribed ? "Unsubscribed" : (!row.has_surveys ? "No surveys assigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed"))) }
-         </Link>
+        <Link
+          className={classes["status" + (!row.has_surveys ? "Unassigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Unreviewed" : "Completed")))]}
+          to={`../content.html${row.subject['@path']}`}
+          underline="hover">
+          { row.email_unsubscribed ? "Unsubscribed" : (!row.has_surveys ? "No surveys assigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed"))) }
+        </Link>
       )
     }
   ];

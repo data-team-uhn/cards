@@ -62,11 +62,11 @@ function ClinicFormList (props) {
   const { color, title, avatar, query, dateField, columns, questionnaireId, enableTimeTabs, className } = props;
 
   let toMidnight = (date) => {
-     date.setHours(0);
-     date.setMinutes(0);
-     date.setSeconds(0);
-     date.setMilliseconds(0);
-     return date;
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date;
   }
 
   let today = new Date(), tomorrow = new Date();
@@ -99,7 +99,7 @@ function ClinicFormList (props) {
   const [ activeTab, setActiveTab ] = useState(enableTimeTabs ? 1 : 0); // Today if time tabs enabled
 
   let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", timeFilter[tabs[activeTab]].dateFilter)
-                        .replaceAll("__SORT_ORDER_PLACEHOLDER__", timeFilter[tabs[activeTab]].order);
+    .replaceAll("__SORT_ORDER_PLACEHOLDER__", timeFilter[tabs[activeTab]].order);
 
   const { classes } = useStyles({ color: color });
 

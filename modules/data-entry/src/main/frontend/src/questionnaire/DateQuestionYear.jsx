@@ -46,7 +46,7 @@ import DateTimeUtilities from "../components/DateTimeUtilities";
 //  />
 function DateQuestionYear(props) {
   checkPropTypes(DateQuestionYear, props);
-  let {existingAnswer, ...rest} = props;
+  let { existingAnswer, ...rest } = props;
   let {
     text,
     dateFormat = "yyyy",
@@ -54,7 +54,7 @@ function DateQuestionYear(props) {
     type = DateTimeUtilities.TIMESTAMP_TYPE,
     lowerLimit,
     upperLimit
-  } = { ...props.questionDefinition, ...props};
+  } = { ...props.questionDefinition, ...props };
 
   return (
     <NumberQuestion
@@ -69,7 +69,7 @@ function DateQuestionYear(props) {
       minValue={+DateTimeUtilities.processRelativeDate(lowerLimit, false, DateTimeUtilities.yearTag) || 1000}
       disableValueInstructions={typeof(upperLimit) == 'undefined' && typeof(lowerLimit) == 'undefined'}
       {...rest}
-      />
+    />
   );
 }
 

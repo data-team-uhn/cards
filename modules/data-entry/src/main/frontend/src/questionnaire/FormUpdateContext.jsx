@@ -35,10 +35,10 @@ export function FormUpdateProvider(props) {
   const [answers, setAnswers] = React.useState(DEFAULT_STATE);
 
   return (
-    <FormUpdateReaderContext.Provider value={{...answers, ...extraFunctions}}>
+    <FormUpdateReaderContext.Provider value={{ ...answers, ...extraFunctions }}>
       <FormUpdateWriterContext.Provider value={setAnswers} {...rest}/>
     </FormUpdateReaderContext.Provider>
-    );
+  );
 }
 
 /**

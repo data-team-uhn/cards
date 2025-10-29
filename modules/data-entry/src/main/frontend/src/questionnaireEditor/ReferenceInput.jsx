@@ -54,7 +54,7 @@ let ReferenceInput = (props) => {
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let changeCurValue = (newVal) => {
-    fieldsWriter((oldContext) => ({...oldContext, [objectKey]: pathMap[newVal]}));
+    fieldsWriter((oldContext) => ({ ...oldContext, [objectKey]: pathMap[newVal] }));
     setCurValue(newVal);
   }
 
@@ -246,7 +246,7 @@ let ReferenceInput = (props) => {
   }
 
   useEffect(() => {
-    fieldsWriter((oldContext) => ({...oldContext, [objectKey]: curValue}));
+    fieldsWriter((oldContext) => ({ ...oldContext, [objectKey]: curValue }));
     if (value["primaryType"] == "cards:SubjectType") {
       grabData(SUBJECT_TYPE_URL, parseSubjectTypeData);
       if (allowOnlyApplicableFor) {

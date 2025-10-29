@@ -82,7 +82,7 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
 }
 
 function CustomTimelineConnector(props) {
-  let { classes, shortText, longText, className} = props;
+  let { classes, shortText, longText, className } = props;
 
   let divClasses = [classes.timelineConnectorGroup];
   if (className) {
@@ -90,13 +90,13 @@ function CustomTimelineConnector(props) {
   }
 
   return <div className={divClasses.join(",")}>
-      <Tooltip title={longText}>
-        <div className={classes.timelineCircle}>
-          <Typography variant="body2">{shortText}</Typography>
-        </div>
-      </Tooltip>
-      <TimelineConnector className={classes.timelineConnectorLine}/>
-    </div>
+    <Tooltip title={longText}>
+      <div className={classes.timelineCircle}>
+        <Typography variant="body2">{shortText}</Typography>
+      </div>
+    </Tooltip>
+    <TimelineConnector className={classes.timelineConnectorLine}/>
+  </div>
 }
 
 function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
@@ -119,31 +119,31 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
   }
 
   return <TimelineItem key={index}>
-      <TimelineOppositeContent className={classes.timelineContent}>
-        <Typography color="textSecondary" className={classes.timelineDate}>{dateText}</Typography>
-      </TimelineOppositeContent>
-      <TimelineSeparator className={separatorClasses.join(",")}>
-        <TimelineDot color={dateEntry.level == 0 ? "primary" : (dateEntry.level == 1 ? "secondary" : "grey")}/>
-        {index !== (length - 1)
-          ? (
-            diff.short
+    <TimelineOppositeContent className={classes.timelineContent}>
+      <Typography color="textSecondary" className={classes.timelineDate}>{dateText}</Typography>
+    </TimelineOppositeContent>
+    <TimelineSeparator className={separatorClasses.join(",")}>
+      <TimelineDot color={dateEntry.level == 0 ? "primary" : (dateEntry.level == 1 ? "secondary" : "grey")}/>
+      {index !== (length - 1)
+        ? (
+          diff.short
             ? <CustomTimelineConnector
               classes={classes}
               shortText={diff.short}
               longText={diff.long}
               className={connectorIsAncestor ? classes.timelineAncestor : null}/>
             : <TimelineConnector className={classes.timelineConnectorLine}/>)
-          : null
-        }
-      </TimelineSeparator>
-      <TimelineContent className={classes.timelineContent}>
-        <Paper elevation={3} className={paperClasses.join(",")}>
-          {dateEntry.questions.map((question, index) => {
-            return DateAnswerDisplay(classes, question, index, dateEntry.questions.length, dateEntry.level)
-          })}
-        </Paper>
-      </TimelineContent>
-    </TimelineItem>;
+        : null
+      }
+    </TimelineSeparator>
+    <TimelineContent className={classes.timelineContent}>
+      <Paper elevation={3} className={paperClasses.join(",")}>
+        {dateEntry.questions.map((question, index) => {
+          return DateAnswerDisplay(classes, question, index, dateEntry.questions.length, dateEntry.level)
+        })}
+      </Paper>
+    </TimelineContent>
+  </TimelineItem>;
 }
 
 /**
@@ -170,11 +170,11 @@ function SubjectTimeline(props) {
     // Fetch a subject with it's forms (.data) and those forms' answers (.deep)
     // Combining .data and .deep only fetches the current subject's forms, not children's forms.
     return Promise.resolve(fetchWithReLogin(globalLoginDisplay, subject["@path"] + ".deep.data.json")
-    .then(async (response) => {
-      let json = await response.json();
-      return response.ok ? {response: json, level: level, names: subjectNames} : Promise.reject(response)
-    })
-    .catch(handleError));
+      .then(async (response) => {
+        let json = await response.json();
+        return response.ok ? { response: json, level: level, names: subjectNames } : Promise.reject(response)
+      })
+      .catch(handleError));
   };
 
   // Recursively fetch all submitted forms for a subject and it's child subjects
@@ -229,7 +229,7 @@ function SubjectTimeline(props) {
     // Get all the form data into a single array
     results = results.filter(formData => !!formData).map(formData =>
       Object.values(formData.response).filter(entry => Array.isArray(entry)).flat().filter(entry => entry["jcr:primaryType"] == "cards:Form").map(entry => {
-        return {form: entry, level: formData.level, names: formData.names}
+        return { form: entry, level: formData.level, names: formData.names }
       })
     ).flat();
     return results;
@@ -244,24 +244,24 @@ function SubjectTimeline(props) {
           .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
             && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
 
-      if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
-        if (existingQuestionAnswer[1]["jcr:primaryType"] === "cards:DateAnswer") {
+        if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
+          if (existingQuestionAnswer[1]["jcr:primaryType"] === "cards:DateAnswer") {
           // Push a new date answer
-          currentSectionData.push({
-            "date": existingQuestionAnswer[1],
-            followup:[],
-            formTitle: formData.title,
-            level: formData.level,
-            names: formData.names
-          });
-        } else if (currentSectionData.length > 0
+            currentSectionData.push({
+              "date": existingQuestionAnswer[1],
+              followup:[],
+              formTitle: formData.title,
+              level: formData.level,
+              names: formData.names
+            });
+          } else if (currentSectionData.length > 0
           && currentSectionData[currentSectionData.length - 1].followup.length < NUM_QUESTIONS
-        ) {
+          ) {
           // Append the non-date answer to the previous date answer,
           // if a previous date answer exists and hasn't met the followup question limit.
-          currentSectionData[currentSectionData.length - 1].followup.push(displayQuestion(entryDefinition, data, key, classes));
+            currentSectionData[currentSectionData.length - 1].followup.push(displayQuestion(entryDefinition, data, key, classes));
+          }
         }
-      }
 
       } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
         // If a section is found, filter questions inside the section
@@ -301,7 +301,7 @@ function SubjectTimeline(props) {
             dateAnswerData: dateAnswerData,
             index: index
           }
-      ))
+        ))
     });
     return dateAnswerData.sort((a, b) => {
       return a.date.value > b.date.value ? 1 : (a.date.value === b.date.value ? 0 : -1)
@@ -352,7 +352,7 @@ function SubjectTimeline(props) {
   useEffect(() => {
     if (subject) {
       getForms().then(formData => getDateAnswers(formData))
-      .then(dateAnswers => getDateEntries(dateAnswers));
+        .then(dateAnswers => getDateEntries(dateAnswers));
     }
   }, [subject]);
 
@@ -369,12 +369,12 @@ function SubjectTimeline(props) {
 
   return ( dateEntries?.length ?
     <div className={classes.timelineContainer}><Timeline position="alternate" className={classes.timeline}>
-    {
-      dateEntries.map((dateEntry, index) => {
-        let nextEntry = (index + 1 < dateEntries.length) ? dateEntries[index + 1] : null;
-        return TimelineEntry(classes, dateEntry, index, dateEntries.length, nextEntry);
-      })
-    }
+      {
+        dateEntries.map((dateEntry, index) => {
+          let nextEntry = (index + 1 < dateEntries.length) ? dateEntries[index + 1] : null;
+          return TimelineEntry(classes, dateEntry, index, dateEntries.length, nextEntry);
+        })
+      }
     </Timeline></div>
     :
     <Typography color="textSecondary" variant="caption">No timeline data available</Typography>

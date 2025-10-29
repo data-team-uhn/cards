@@ -41,5 +41,5 @@ export default function FormView(props) {
 
   return (
     <Form id={id} mode={mode} key={id} {...props}/>
-    );
+  );
 }

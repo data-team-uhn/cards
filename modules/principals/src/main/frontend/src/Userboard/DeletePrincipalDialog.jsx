@@ -34,14 +34,14 @@ function DeletePrincipalDialog(props) {
     let path = url + name + ".delete.html";
 
     fetchWithReLogin(globalLoginDisplay, path, {
-        method: 'POST',
-        credentials: 'include'
+      method: 'POST',
+      credentials: 'include'
     })
-    .then(() => {
+      .then(() => {
         reload();
         handleClose();
-    })
-    .catch((error) => console.log(error?.statusText ?? error));
+      })
+      .catch((error) => console.log(error?.statusText ?? error));
   }
 
   return (

@@ -33,7 +33,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { withStyles } from 'tss-react/mui';
 import { v4 as uuidv4 } from 'uuid';
 
-import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
+import Answer, { LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_ANSWER_POS } from "./Answer";
 import { hasWarningFlags } from "./FormUtilities";
 import Question from "./Question";
 import QuestionnaireStyle from './QuestionnaireStyle';
@@ -62,8 +62,8 @@ const DATA_TO_NODE_TYPE = {
 // existingAnswer array of sub-question answers
 
 let QuestionMatrix = (props) => {
-  const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, pageActive, contentOffset, ...rest} = props;
-  const { maxAnswers, minAnswers, verticalLayout } = {...sectionDefinition, ...props};
+  const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, pageActive, contentOffset, ...rest } = props;
+  const { maxAnswers, minAnswers, verticalLayout } = { ...sectionDefinition, ...props };
 
   // Use existing existingAnswer, Otherwise, create a new UUID
   const isRadio = maxAnswers === 1;
@@ -81,7 +81,7 @@ let QuestionMatrix = (props) => {
   }, [existingSectionAnswer]);
 
   const subquestions = Object.entries(sectionDefinition)
-      .filter(([key, value]) => value['jcr:primaryType'] == 'cards:Question');
+    .filter(([key, value]) => value['jcr:primaryType'] == 'cards:Question');
 
   const defaults = Object.values(sectionDefinition)
     // Keep only answer options
@@ -100,14 +100,14 @@ let QuestionMatrix = (props) => {
   existingAnswers?.filter(answer => answer[1]["displayedValue"])
     // The value can either be a single value or an array of values; force it into an array
     .map(answer => { initialSelection[answer[1].question["@name"]] = Array.of(answer[1].value).flat()
-                                        .map( (item, index) => [Array.of(answer[1].displayedValue).flat()[index], item] );
-                   });
+      .map( (item, index) => [Array.of(answer[1].displayedValue).flat()[index], item] );
+    });
 
   // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
   // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
   if (!existingAnswers) {
     let defaultSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
-       // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
+    // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
       .slice(0, maxAnswers || defaults.length)
       .map(item => [item[LABEL_POS], item[VALUE_POS]]);
 
@@ -125,10 +125,10 @@ let QuestionMatrix = (props) => {
     let selectionState = {};
     subquestions.map(subquestion => {
       defaults.map( option => { let name = subquestion[0] + option[VALUE_POS];
-                                let isChecked = !!(selections[subquestion[0]]?.find( item => String(item[VALUE_POS]) === String(option[VALUE_POS])));
-                                selectionState[name] = isChecked;
-                               } )
-                           });
+        let isChecked = !!(selections[subquestion[0]]?.find( item => String(item[VALUE_POS]) === String(option[VALUE_POS])));
+        selectionState[name] = isChecked;
+      } )
+    });
     return selectionState;
   }
 
@@ -184,8 +184,8 @@ let QuestionMatrix = (props) => {
 
   // Adapt the section / answerSection info to pass to the Question component
 
-  let existingAnswerMock = [sectionAnswerPath, {displayedValue: existingAnswers, statusFlags: existingSectionAnswer?.[1]?.statusFlags || null}];
-  let questionMatrixDefinition = { ...sectionDefinition, text: sectionDefinition.label};
+  let existingAnswerMock = [sectionAnswerPath, { displayedValue: existingAnswers, statusFlags: existingSectionAnswer?.[1]?.statusFlags || null }];
+  let questionMatrixDefinition = { ...sectionDefinition, text: sectionDefinition.label };
   let currentAnswers = subquestions.reduce((min, item) => {return Math.min(min, selection[item[0]]?.length || 0);}, minAnswers);
 
 
@@ -193,18 +193,18 @@ let QuestionMatrix = (props) => {
 
   let renderTableHead = () => {
     return ((!isEdit || enableVerticalLayout) ? null :
-      <TableHead sx={{top: contentOffset}}>
+      <TableHead sx={{ top: contentOffset }}>
         <TableRow>
-        { [["",""]].concat(defaults).map( (option, index) => (
-          <TableCell key={index} align="center" component="th">
-            {option[LABEL_POS]}
-            {option[DESC_POS] &&
+          { [["",""]].concat(defaults).map( (option, index) => (
+            <TableCell key={index} align="center" component="th">
+              {option[LABEL_POS]}
+              {option[DESC_POS] &&
               <FormattedText variant="caption" color="textSecondary">
                 {option[DESC_POS]}
               </FormattedText>
-            }
-          </TableCell>
-        ) ) }
+              }
+            </TableCell>
+          ) ) }
         </TableRow>
       </TableHead>
     )
@@ -213,26 +213,26 @@ let QuestionMatrix = (props) => {
   let renderEditMode = () => {
     return (<>
       { selection && subquestions.map( (question, i) => (
-          <TableRow key={question[0] + i} className={enableVerticalLayout ? classes.questionMatrixFullEntry : ''}>
-            { renderQuestion(question[1]) }
-            { defaults.map( (option, index) => (
-              <TableCell
-                key={"o-" + question[0] + i + index}
-                align={enableVerticalLayout ? "left" :  "center"}
-              >
-                <FormControlLabel
-                  control={ renderControlElement(question[0], option) }
-                  label={option[LABEL_POS]}
-                />
-                { option[DESC_POS] &&
+        <TableRow key={question[0] + i} className={enableVerticalLayout ? classes.questionMatrixFullEntry : ''}>
+          { renderQuestion(question[1]) }
+          { defaults.map( (option, index) => (
+            <TableCell
+              key={"o-" + question[0] + i + index}
+              align={enableVerticalLayout ? "left" :  "center"}
+            >
+              <FormControlLabel
+                control={ renderControlElement(question[0], option) }
+                label={option[LABEL_POS]}
+              />
+              { option[DESC_POS] &&
                   <FormattedText className={classes.selectionDescription} variant="caption" color="textSecondary">
                     {option[DESC_POS]}
                   </FormattedText>
-                }
-              </TableCell>
-            )) }
-          </TableRow>
-        )
+              }
+            </TableCell>
+          )) }
+        </TableRow>
+      )
       )}
     </>);
   }
@@ -240,14 +240,14 @@ let QuestionMatrix = (props) => {
   let renderViewMode = () => {
     return (<>
       { subquestions.map( question => existingAnswers.find(answer  => answer[1]?.question?.["@path"] == question[1]?.["@path"]) )
-          .filter (answer => answer && (answer[1].displayedValue || hasWarningFlags(answer)))
-          .map( (answer, idx) => (
-            <TableRow key={answer[0] + idx} className={enableVerticalLayout ? classes.questionMatrixStackedAnswer : ''}>
-              { renderQuestion(answer[1].question, hasWarningFlags(answer)) }
-              { !enableVerticalLayout && <TableCell>—</TableCell> }
-              { renderAnswer(answer[1], (enableVerticalLayout ? '-' : '')) }
-            </TableRow>
-      ))}
+        .filter (answer => answer && (answer[1].displayedValue || hasWarningFlags(answer)))
+        .map( (answer, idx) => (
+          <TableRow key={answer[0] + idx} className={enableVerticalLayout ? classes.questionMatrixStackedAnswer : ''}>
+            { renderQuestion(answer[1].question, hasWarningFlags(answer)) }
+            { !enableVerticalLayout && <TableCell>—</TableCell> }
+            { renderAnswer(answer[1], (enableVerticalLayout ? '-' : '')) }
+          </TableRow>
+        ))}
     </>);
   };
 
@@ -280,7 +280,7 @@ let QuestionMatrix = (props) => {
   let renderAnswer = (answer, emptyMarker) => {
     return (
       <TableCell>
-      { Array.of(answer.displayedValue).flat().join(", ") || emptyMarker || '' }
+        { Array.of(answer.displayedValue).flat().join(", ") || emptyMarker || '' }
       </TableCell>
     );
   }
@@ -305,11 +305,11 @@ let QuestionMatrix = (props) => {
         </TableBody>
       </Table>
       { isEdit && <>
-      <input type="hidden" className="cards-answer-id" value={answerSectionID}></input>
-      <input type="hidden" name={`${sectionAnswerPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
-      <input type="hidden" name={`${sectionAnswerPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
-      <input type="hidden" name={`${sectionAnswerPath}/section@TypeHint`} value="Reference"></input>
-      { subquestions.map(question =>
+        <input type="hidden" className="cards-answer-id" value={answerSectionID}></input>
+        <input type="hidden" name={`${sectionAnswerPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
+        <input type="hidden" name={`${sectionAnswerPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
+        <input type="hidden" name={`${sectionAnswerPath}/section@TypeHint`} value="Reference"></input>
+        { subquestions.map(question =>
           <Answer
             key={question[1]["jcr:uuid"]}
             path={sectionAnswerPath}
@@ -323,7 +323,7 @@ let QuestionMatrix = (props) => {
             questionName={question[0]}
             {...rest}
           />
-      )}
+        )}
       </> }
     </Question>
   )
