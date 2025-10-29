@@ -52,6 +52,11 @@ Completing this survey is voluntary, and your name and contact information will 
         <type>String</type>
     </property>
     <property>
+        <name>surveySubmittedMessage</name>
+        <value></value>
+        <type>String</type>
+    </property>
+    <property>
         <name>enableStartScreen</name>
         <value>True</value>
         <type>Boolean</type>

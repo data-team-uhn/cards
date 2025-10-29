@@ -34,6 +34,7 @@ export const SURVEY_INSTRUCTIONS_PATH = "/Survey/SurveyInstructions";
 export const DEFAULT_INSTRUCTIONS = {
   noEventsMessage: "We could not find any pending surveys to fill out.",
   noSurveysMessage: "You have no pending surveys to fill out.",
+  surveySubmittedMessage: "You already answered this survey.",
   surveyDraftInfo: "If you close your browser window before finishing the survey, your answers will be automatically saved. You can return to the survey to complete and submit it by following the link you received in your invitation email."
 };
 
@@ -54,7 +55,7 @@ function SurveyInstructionsConfiguration() {
   const labels = {
     welcomeMessage: ["welcomeMessage"],
     eventSelectionScreen: ["noEventsMessage", "eventSelectionMessage"],
-    startScreen: [ "enableStartScreen", "greeting", "eventLabel", "noSurveysMessage", "surveyIntro", "surveyDraftInfo" ],
+    startScreen: [ "enableStartScreen", "greeting", "eventLabel", "noSurveysMessage", "surveySubmittedMessage", "surveyIntro", "surveyDraftInfo" ],
     reviewScreen: ["enableReviewScreen"],
     summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
   };

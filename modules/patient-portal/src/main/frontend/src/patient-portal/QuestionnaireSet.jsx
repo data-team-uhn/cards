@@ -689,7 +689,11 @@ function QuestionnaireSet(props) {
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     greet(username),
     appointmentAlert(),
-    displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "survey-info"}),
+    displayText(
+      isSubmitted ? "surveySubmittedMessage" : "noSurveysMessage",
+      Typography,
+      {color: "textSecondary", variant: "subtitle1", key: "survey-info"}
+    ),
   ] : [
     greet(username),
     appointmentAlert(),
