@@ -480,7 +480,9 @@ public class ClarityImportTask implements Runnable
     {
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
             // Get or create the subject
-            Resource newSubjectParent = getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent);
+            Resource newSubjectParent = shouldCreateSubjectIfAbsent(childSubjectMapping)
+                ? getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent)
+                : getSubject(resolver, row, childSubjectMapping);
             if (newSubjectParent == null) {
                 return;
             }
@@ -516,25 +518,41 @@ public class ClarityImportTask implements Runnable
         }
     }
 
+    /**
+     * Check if any of the subject mapping update policies allow creating new subjects.
+     *
+     * @param subjectMapping The mappings to search for any policies that enable creating new subjects
+     * @return {@code true} if any of the mappings enable creating subjects
+     */
+    private boolean shouldCreateSubjectIfAbsent(ClaritySubjectMapping subjectMapping)
+    {
+        // Check if new subjects should be created or if only existing subjects should be processed
+        for (ClarityQuestionnaireMapping questionnaireMapping : subjectMapping.questionnaires) {
+            if (questionnaireMapping.updatePolicy != UpdatePolicy.onlyExisting) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Methods for storing subjects
 
     /**
-     * Grab a subject of the specified type, or create it if it doesn't exist.
+     * Grab a subject of the specified type with an identifier matching the configured ID column and row data.
      *
-     * @param resolver ResourceResolver to use for reading and writing to the JCR
+     * @param resolver ResourceResolver to use for reading the JCR
      * @param row {@code Map<String, String>} object that maps column names to values for a SQL query result row
-     * @param subjectMapping ClaritySubjectMapping object describing how a CARDS Subject is to be created from a SQL row
-     * @param parent Resource if this is a child of that resource, or null (parent JCR node to defaults to /Subjects/)
-     * @return A Subject resource
+     * @param subjectMapping ClaritySubjectMapping object describing how a CARDS Subject is to be found from a SQL row
+     * @return A Subject resource, or {@code null} if no existing subject was found
      */
-    private Resource getOrCreateSubject(ResourceResolver resolver, Map<String, String> row,
-        ClaritySubjectMapping subjectMapping, Resource parent) throws RepositoryException, PersistenceException
+    private Resource getSubject(ResourceResolver resolver, Map<String, String> row,
+        ClaritySubjectMapping subjectMapping) throws RepositoryException
     {
-
-        final String subjectTypePath = subjectMapping.subjectType;
-        final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
-            ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
-        final String incrementMetricOnCreation = subjectMapping.incrementMetricOnCreation;
+        if ("".equals(subjectMapping.subjectIdColumn)) {
+            // No ID column to try to match an existing subject to
+            return null;
+        }
+        final String identifier = row.get(subjectMapping.subjectIdColumn);
 
         if (StringUtils.isEmpty(identifier)) {
             return null;
@@ -551,6 +569,33 @@ public class ClarityImportTask implements Runnable
             this.nodesToCheckin.get().add(subjectResource.getPath());
             return subjectResource;
         } else {
+            return null;
+        }
+    }
+
+    /**
+     * Grab a subject of the specified type, or create it if it doesn't exist.
+     *
+     * @param resolver ResourceResolver to use for reading and writing to the JCR
+     * @param row {@code Map<String, String>} object that maps column names to values for a SQL query result row
+     * @param subjectMapping ClaritySubjectMapping object describing how a CARDS Subject is to be created from a SQL row
+     * @param parent Resource if this is a child of that resource, or null (parent JCR node to defaults to /Subjects/)
+     * @return A Subject resource
+     */
+    private Resource getOrCreateSubject(ResourceResolver resolver, Map<String, String> row,
+        ClaritySubjectMapping subjectMapping, Resource parent) throws RepositoryException, PersistenceException
+    {
+        final Resource subject = getSubject(resolver, row, subjectMapping);
+
+        if (subject != null) {
+            return subject;
+        } else {
+            final String subjectTypePath = subjectMapping.subjectType;
+            final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
+                ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
+            final String incrementMetricOnCreation = subjectMapping.incrementMetricOnCreation;
+
+
             Resource parentResource = parent;
             if (parentResource == null) {
                 parentResource = resolver.getResource("/Subjects/");
