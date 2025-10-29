@@ -99,7 +99,8 @@
                 <exclude>**/node_modules/**</exclude>
                 <exclude>**/*.py</exclude>
                 <exclude>**/yarn.lock</exclude>
-                <exclude>**/*.json</exclude>
+                <exclude>**/package.json</exclude>
+                <exclude>**/tsconfig.json</exclude>
               </excludes>
             </fileset>
           </filesets>
