@@ -18,9 +18,10 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from 'react-router';
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
+
+import EditIcon from '@mui/icons-material/Edit';
+import PreviewIcon from '@mui/icons-material/FindInPage';
+import MoreIcon from '@mui/icons-material/MoreVert';
 import {
   Button,
   CircularProgress,
@@ -32,28 +33,26 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-
+import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
+import { DateTime } from "luxon";
+import PropTypes from "prop-types";
+import { Link, useNavigate, useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
-import { DateTime } from "luxon";
-
-import EditIcon from '@mui/icons-material/Edit';
-import MoreIcon from '@mui/icons-material/MoreVert';
-import PreviewIcon from '@mui/icons-material/FindInPage';
+import { ENTRY_TYPES, QUESTION_TYPES } from "./FormEntry";
+import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
+import QuestionnairePreview from "./QuestionnairePreview";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
+import ResourceHeader from "./ResourceHeader";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import ExportButton from "../dataHomepage/ExportButton";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
-import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
-import { ENTRY_TYPES, QUESTION_TYPES } from "./FormEntry";
+import { checkPropTypes } from "../propTypes";
+import CreationMenu from "../questionnaireEditor/CreationMenu";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
-import CreationMenu from "../questionnaireEditor/CreationMenu";
-import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
-import ResourceHeader from "./ResourceHeader";
-import QuestionnairePreview from "./QuestionnairePreview";
-import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
-import { findQuestionnaireEntries, stripCardsNamespace } from "./QuestionnaireUtilities";
+import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => stripCardsNamespace(type));
 

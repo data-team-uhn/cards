@@ -18,17 +18,17 @@
 //
 
 import React from 'react';
-import { makeStyles } from 'tss-react/mui';
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
+
+import Info from "@mui/icons-material/Info";
 import {
   Grid,
   Tooltip,
   Typography
 } from "@mui/material";
+import PropTypes from 'prop-types';
+import { makeStyles } from 'tss-react/mui';
 
-import Info from "@mui/icons-material/Info";
-
+import { checkPropTypes } from "../propTypes";
 import { camelCaseToWords } from "./LabeledField";
 import FormattedText from "../components/FormattedText.jsx";
 

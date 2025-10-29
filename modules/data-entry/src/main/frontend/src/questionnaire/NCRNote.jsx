@@ -20,11 +20,10 @@
 import React, { useState } from "react";
 
 import { CircularProgress, Chip, Tooltip, Typography } from "@mui/material";
-
 import { withStyles } from 'tss-react/mui';
 
-import QuestionnaireStyle from "./QuestionnaireStyle";
 import Note from "./Note.jsx";
+import QuestionnaireStyle from "./QuestionnaireStyle";
 
 const NCRURL = window.location.origin + "/ncr/annotate/";
 const ONTOLOGY_KEY = "hp_id";

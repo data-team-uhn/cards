@@ -16,8 +16,10 @@
 */
 
 import React from "react";
-import PropTypes from "prop-types";
+
 import { Grid, Dialog, DialogTitle, DialogContent } from "@mui/material";
+import PropTypes from "prop-types";
+
 import RegistrationForm from "../../login/RegistrationForm.js";
 import { checkPropTypes } from "../../propTypes";
 

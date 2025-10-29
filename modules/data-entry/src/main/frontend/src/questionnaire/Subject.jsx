@@ -18,21 +18,13 @@
 //
 
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from 'react-router';
-import PropTypes from "prop-types";
-import { DateTime } from "luxon";
-import { checkPropTypes } from "../propTypes";
 
-import FormattedText from "../components/FormattedText";
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
-import NewFormDialog from "../dataHomepage/NewFormDialog";
-import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
-import { usePageNameWriterContext } from "../themePage/Page.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy, getHomepageLink } from "./SubjectIdentifier";
-import { MaterialReactTable } from 'material-react-table';
+import SubjectIcon from "@mui/icons-material/AssignmentInd";
+import CollapsedIcon from "@mui/icons-material/ChevronRight";
+import FormIcon from "@mui/icons-material/Description";
+import ExpandedIcon from "@mui/icons-material/ExpandMore";
+import FileIcon from "@mui/icons-material/InsertDriveFile";
 import { Box } from '@mui/material';
-
 import {
   Avatar,
   CircularProgress,
@@ -46,19 +38,27 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
+import { DateTime } from "luxon";
+import { MaterialReactTable } from 'material-react-table';
+import PropTypes from "prop-types";
+import { Link, useLocation, useNavigate } from 'react-router';
 import { withStyles } from 'tss-react/mui';
-import FileIcon from "@mui/icons-material/InsertDriveFile";
-import CollapsedIcon from "@mui/icons-material/ChevronRight";
-import ExpandedIcon from "@mui/icons-material/ExpandMore";
-import FormIcon from "@mui/icons-material/Description";
-import SubjectIcon from "@mui/icons-material/AssignmentInd";
+
+import FormattedText from "../components/FormattedText";
+import { checkPropTypes } from "../propTypes";
+import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
+import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import ResourceHeader from "./ResourceHeader.jsx"
+import SubjectActions from "./SubjectActions.jsx";
+import { getSubjectIdFromPath, getHierarchyAsList, getTextHierarchy, getHomepageLink } from "./SubjectIdentifier";
+import SubjectTimeline from "./SubjectTimeline.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
+import NewFormDialog from "../dataHomepage/NewFormDialog";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
-import ResourceHeader from "./ResourceHeader.jsx"
-import SubjectTimeline from "./SubjectTimeline.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import SubjectActions from "./SubjectActions.jsx";
+import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 /***
  * Create a URL that checks for the existence of a subject

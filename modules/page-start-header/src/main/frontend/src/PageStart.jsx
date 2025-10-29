@@ -18,6 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
+
 import { loadExtensions } from "./uiextension/extensionManager";
 
 export default function PageStart(props) {

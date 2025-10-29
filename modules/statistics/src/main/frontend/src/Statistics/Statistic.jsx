@@ -17,6 +17,9 @@
 //  under the License.
 //
 import React from "react";
+
+import BarChartIcon from '@mui/icons-material/BarChart';
+import LineChartIcon from '@mui/icons-material/ShowChart';
 import {
   Avatar,
   Card,
@@ -25,17 +28,13 @@ import {
   Grid,
   Typography
 } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import LineChartIcon from '@mui/icons-material/ShowChart';
 import { deepPurple, indigo } from '@mui/material/colors';
-
-import { useNavigate } from 'react-router';
-
 import palette from "google-palette";
+import { useNavigate } from 'react-router';
 import {
    BarChart, Bar, CartesianGrid, Line, LineChart, Label, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from "recharts";
+import { withStyles } from 'tss-react/mui';
 
 import statisticsStyle from "./statisticsStyle.jsx";
 

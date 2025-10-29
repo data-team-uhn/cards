@@ -24,8 +24,10 @@
 // Inspired by https://github.com/rand0mC0d3r/material-ui-mix-icon/blob/master/src/components/ComposedIcon/ComposedIcon.js
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import { useTheme } from '@mui/material/styles';
+import PropTypes from 'prop-types';
+
 import { checkPropTypes } from "../propTypes";
 
 const sizesMap = {

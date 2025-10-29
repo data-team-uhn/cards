@@ -17,17 +17,16 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
-
-import { withStyles } from 'tss-react/mui';
-import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
 
 import Info from "@mui/icons-material/Info";
 import ArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import ArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import More from "@mui/icons-material/MoreHoriz";
+import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
 
+import { checkPropTypes } from "../propTypes";
 import BrowseTheme from "./browseStyle.jsx";
 import { MakeRequest } from "./util.jsx";
 import { VALUE_POS } from "../questionnaire/Answer";

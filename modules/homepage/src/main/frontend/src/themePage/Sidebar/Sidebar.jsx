@@ -10,15 +10,16 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 import React, { useState, useEffect } from "react";
-import classNames from "classnames";
-import { withStyles } from 'tss-react/mui';
-import { NavLink, useLocation } from "react-router";
-import { loadExtensions } from "../../uiextension/extensionManager";
-import { Drawer, List, ListItemButton, ListItemText } from "@mui/material";
 
-import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
-import sidebarStyle from "./sidebarStyle.jsx";
+import { Drawer, List, ListItemButton, ListItemText } from "@mui/material";
+import classNames from "classnames";
+import { NavLink, useLocation } from "react-router";
+import { withStyles } from 'tss-react/mui';
+
 import AppInfo from "./AppInfo.jsx";
+import sidebarStyle from "./sidebarStyle.jsx";
+import { loadExtensions } from "../../uiextension/extensionManager";
+import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 
 const Sidebar = ({ ...props }) => {
   let location = useLocation();

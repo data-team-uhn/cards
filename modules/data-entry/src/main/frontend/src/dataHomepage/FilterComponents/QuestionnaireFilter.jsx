@@ -18,14 +18,15 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Select, MenuItem, Card, CardHeader, CardContent, Typography } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-import ErrorIcon from "@mui/icons-material/Error";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
 
-import FilterComponentManager from "./FilterComponentManager.jsx";
+import ErrorIcon from "@mui/icons-material/Error";
+import { Select, MenuItem, Card, CardHeader, CardContent, Typography } from "@mui/material";
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
+import FilterComponentManager from "./FilterComponentManager.jsx";
+import { checkPropTypes } from "../../propTypes";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice();

@@ -18,15 +18,17 @@
 //
 
 import React, { useEffect, useState } from "react";
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
-import { v4 as uuidv4 } from 'uuid';
+
 import { List, ListItem } from "@mui/material";
+import PropTypes from 'prop-types';
+import { v4 as uuidv4 } from 'uuid';
+
+import { checkPropTypes } from "../propTypes";
 import AnswerComponentManager from "./AnswerComponentManager";
-import Question from "./Question";
-import Note from "./Note";
-import FormattedText from "../components/FormattedText";
 import { useFormWriterContext } from "./FormContext";
+import Note from "./Note";
+import Question from "./Question";
+import FormattedText from "../components/FormattedText";
 
 // Component that displays an autocreated question of any type.
 //

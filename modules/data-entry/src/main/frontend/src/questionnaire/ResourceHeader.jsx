@@ -18,8 +18,6 @@
 //
 
 import React from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
 import {
   Breadcrumbs,
@@ -28,11 +26,11 @@ import {
   Typography,
   useScrollTrigger
 } from "@mui/material";
-
+import { grey } from '@mui/material/colors';
+import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
-import { grey } from '@mui/material/colors';
-
+import { checkPropTypes } from "../propTypes";
 import { GRID_SPACE_UNIT } from "./QuestionnaireStyle";
 
 const useStyles = makeStyles()(theme => ({

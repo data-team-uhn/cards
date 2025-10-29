@@ -17,8 +17,6 @@
 //  under the License.
 //
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router";
-import { v4 as uuidv4 } from 'uuid';
 
 import {
   Button,
@@ -27,16 +25,18 @@ import {
   TablePagination,
   Typography
 } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import Alert from '@mui/material/Alert';
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
+import { useNavigate } from "react-router";
+import { withStyles } from 'tss-react/mui';
+import { v4 as uuidv4 } from 'uuid';
 
-import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
+import FormattedText from "../components/FormattedText.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import FormattedText from "../components/FormattedText.jsx";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;

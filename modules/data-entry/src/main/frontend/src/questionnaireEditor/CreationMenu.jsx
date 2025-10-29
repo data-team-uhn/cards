@@ -18,14 +18,15 @@
 //
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
+
 import {
   Button,
   Menu,
   MenuItem
 } from "@mui/material";
+import PropTypes from 'prop-types';
 
+import { checkPropTypes } from "../propTypes";
 import EditDialog from "./EditDialog";
 import NewItemButton from "../components/NewItemButton";
 

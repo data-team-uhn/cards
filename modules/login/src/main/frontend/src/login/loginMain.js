@@ -17,11 +17,13 @@
 //  under the License.
 //
 import React from 'react';
+
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { createRoot } from 'react-dom/client';
+
 import MainLoginContainer from './MainLoginContainer';
 import PageStart from '../PageStart';
 import { appTheme } from "../themePalette.jsx";
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 
 const root = createRoot(document.getElementById('main-login-container'));
 root.render(

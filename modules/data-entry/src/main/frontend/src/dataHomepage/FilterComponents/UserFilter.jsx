@@ -18,14 +18,16 @@
 //
 
 import React, { forwardRef, useState, useEffect, useContext } from "react";
+
 import { TextField } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
 
-import FilterComponentManager from "./FilterComponentManager.jsx";
+
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
+import FilterComponentManager from "./FilterComponentManager.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
+import { checkPropTypes } from "../../propTypes";
 
 const filterUserOptions =  createFilterOptions({
   stringify: (option) => `${option.name} ${option.principalName}`

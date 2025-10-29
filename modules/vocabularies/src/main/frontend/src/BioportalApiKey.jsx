@@ -19,6 +19,7 @@
 
 import React, {useEffect, useContext} from "react";
 
+import SettingsIcon from '@mui/icons-material/Settings';
 import {
   Button,
   Grid,
@@ -31,10 +32,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-
 import { makeStyles } from 'tss-react/mui';
-
-import SettingsIcon from '@mui/icons-material/Settings';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 

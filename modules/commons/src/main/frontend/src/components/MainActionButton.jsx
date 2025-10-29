@@ -16,12 +16,12 @@
 */
 
 import React from "react";
-import PropTypes from "prop-types";
-import { CircularProgress, Fab, Tooltip } from "@mui/material";
-import { checkPropTypes } from "../propTypes";
 
+import { CircularProgress, Fab, Tooltip } from "@mui/material";
+import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
+import { checkPropTypes } from "../propTypes";
 import style from './style.jsx';
 
 // Component that renders a floating action button (Fab) at the bottom right of the screen,

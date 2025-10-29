@@ -17,13 +17,14 @@
 //  under the License.
 //
 import React from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
-import VocabularyBrowser from "./VocabularyBrowser.jsx";
+import PropTypes from "prop-types";
+
+import { checkPropTypes } from "../propTypes";
 import { REST_URL, MakeRequest } from "./util.jsx";
-import ResourceQuery, { MAX_RESULTS } from "../resourceQuery/ResourceQuery";
+import VocabularyBrowser from "./VocabularyBrowser.jsx";
 import QueryMatchingUtils from "../resourceQuery/QueryMatchingUtils";
+import ResourceQuery, { MAX_RESULTS } from "../resourceQuery/ResourceQuery";
 
 
 // Component that renders a search bar for vocabulary terms.

@@ -18,10 +18,12 @@
 //
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import { Typography } from "@mui/material";
-import { makeStyles } from 'tss-react/mui';
 import MDEditor from '@uiw/react-md-editor';
+import PropTypes from 'prop-types';
+import { makeStyles } from 'tss-react/mui';
+
 import { checkPropTypes } from "../propTypes";
 
 const useStyles = makeStyles()(theme => ({

@@ -16,12 +16,12 @@
 */
 
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography } from "@mui/material";
 
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography } from "@mui/material";
+import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
+import { checkPropTypes } from "../propTypes";
 import userboardStyle from './userboardStyle.jsx';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 

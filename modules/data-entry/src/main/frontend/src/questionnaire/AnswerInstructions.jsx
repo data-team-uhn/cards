@@ -18,10 +18,11 @@
 //
 
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
 import { Typography } from "@mui/material";
+import PropTypes from "prop-types";
+
+import { checkPropTypes } from "../propTypes";
 import { hasWarningFlags } from "./FormUtilities";
 
 // Display instructions regarding how many answers must be provided to a question,

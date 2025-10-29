@@ -18,11 +18,12 @@
 //
 
 import React, { useState, useEffect } from "react";
+
+import BuildIcon from '@mui/icons-material/Build';
 import {
   Alert,
   AppBar,
 } from '@mui/material';
-import BuildIcon from '@mui/icons-material/Build';
 
 export default function DowntimeWarning(props) {
   // The the configuration values specified by the Administration

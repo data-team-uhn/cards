@@ -18,12 +18,13 @@
 //
 
 import React, { useEffect, useState, useRef } from "react";
+
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
-import { checkPropTypes } from "../propTypes";
 
-import Note from "./Note";
+import { checkPropTypes } from "../propTypes";
 import { useFormWriterContext } from "./FormContext";
+import Note from "./Note";
 
 export const LABEL_POS = 0;
 export const VALUE_POS = 1;

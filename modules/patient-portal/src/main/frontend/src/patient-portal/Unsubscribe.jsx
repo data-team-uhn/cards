@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useEffect, useState } from "react";
-import { createRoot } from 'react-dom/client';
+
 import {
   Alert,
   AlertTitle,
@@ -25,11 +25,13 @@ import {
   Grid,
   Paper
 } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { appTheme } from "../themePalette.jsx";
+import { createRoot } from 'react-dom/client';
+import { makeStyles } from 'tss-react/mui';
+
 import ErrorPage from "../components/ErrorPage.jsx";
 import Logo from "../components/Logo.jsx";
+import { appTheme } from "../themePalette.jsx";
 
 const useStyles = makeStyles()(theme => ({
   paper: {

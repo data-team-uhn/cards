@@ -18,13 +18,12 @@
 //
 import React from 'react';
 
+import NavigationIcon from '@mui/icons-material/Navigation';
 import { Fab, Grid, Paper, Typography } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
-import NavigationIcon from '@mui/icons-material/Navigation';
-
-import Logo from "./Logo";
 import FormattedText from "./FormattedText";
+import Logo from "./Logo";
 
 const useStyles = makeStyles()(theme => ({
   paper: {

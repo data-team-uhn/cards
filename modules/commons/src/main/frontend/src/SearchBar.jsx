@@ -16,18 +16,20 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import PropTypes from "prop-types";
 import React, { useState, useContext, useEffect } from "react";
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
-import { MenuList, Paper, Popper } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-import { Link, useNavigate } from "react-router";
-import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
+
 import DescriptionIcon from "@mui/icons-material/Description";
 import Search from "@mui/icons-material/Search";
+import { MenuList, Paper, Popper } from "@mui/material";
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
+import PropTypes from "prop-types";
+import { Link, useNavigate } from "react-router";
+import { withStyles } from 'tss-react/mui';
+
 import HeaderStyle from "./headerStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 import { checkPropTypes } from "./propTypes";
+import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 
 export const DEFAULT_QUERY_URL = "/query";
 export const DEFAULT_MAX_RESULTS = 5;

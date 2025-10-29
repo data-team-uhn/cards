@@ -17,13 +17,15 @@
 //  under the License.
 //
 import React from "react";
-import { Link } from "react-router";
-import { useTheme } from '@mui/material/styles';
-import { Avatar, ListItemButton, ListItemText, ListItemAvatar }  from "@mui/material";
-import DescriptionIcon from "@mui/icons-material/Description";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import DescriptionIcon from "@mui/icons-material/Description";
 import OtherIcon from '@mui/icons-material/Reorder';
+import { Avatar, ListItemButton, ListItemText, ListItemAvatar }  from "@mui/material";
+import { useTheme } from '@mui/material/styles';
+import { Link } from "react-router";
+
 import { getEntityIdentifier } from "../EntityIdentifier.jsx";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted

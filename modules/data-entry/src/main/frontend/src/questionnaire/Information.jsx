@@ -18,13 +18,12 @@
 //
 
 import React from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
 import { Alert, Card, CardContent } from "@mui/material";
-
+import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
+import { checkPropTypes } from "../propTypes";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import FormattedText from "../components/FormattedText.jsx";
 

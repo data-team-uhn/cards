@@ -18,8 +18,6 @@
 //
 import React, { useState } from "react";
 
-import LiveTable from "../dataHomepage/LiveTable.jsx";
-
 import {
   Avatar,
   Card,
@@ -30,9 +28,9 @@ import {
   Tabs,
   Typography
 } from "@mui/material";
-
-
 import { makeStyles } from 'tss-react/mui';
+
+import LiveTable from "../dataHomepage/LiveTable.jsx";
 
 
 const useStyles = makeStyles()((theme, props) => ({

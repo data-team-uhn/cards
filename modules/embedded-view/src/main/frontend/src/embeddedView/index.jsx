@@ -17,10 +17,12 @@
 //  under the License.
 //
 import React from "react";
-import { createRoot } from 'react-dom/client';
+
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { appTheme } from "../themePalette.jsx";
+import { createRoot } from 'react-dom/client';
+
 import PrintPreview from "../questionnaire/PrintPreview.jsx";
+import { appTheme } from "../themePalette.jsx";
 
 function EmbeddedView (props) {
   const resourcePath = window.location.pathname.split("embedded.html")[1];

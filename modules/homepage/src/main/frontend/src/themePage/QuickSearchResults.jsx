@@ -17,13 +17,14 @@
 //  under the License.
 //
 import React from "react";
+
+import { Card, CardContent, CardHeader, Typography } from "@mui/material";
+import { withStyles } from 'tss-react/mui';
+
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
 import { QuickSearchMatch, QuickSearchIdentifier } from "./Navbars/QuickSearchIdentifier.jsx";
 
-import { Card, CardContent, CardHeader, Typography } from "@mui/material";
-
-import { withStyles } from 'tss-react/mui';
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const CARDS_QUERY_MATCH_KEY = "cards:queryMatch";

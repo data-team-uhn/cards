@@ -18,13 +18,6 @@
 //
 
 import React, { useState, useContext, useEffect } from "react";
-import PropTypes from "prop-types";
-import {
-  CircularProgress,
-  Link,
-  Paper,
-  Tooltip
-} from "@mui/material";
 
 import {
   Timeline,
@@ -35,18 +28,23 @@ import {
   TimelineDot,
   TimelineOppositeContent
 } from "@mui/lab";
-
-import DateTimeUtilities from "../components/DateTimeUtilities";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
-import { displayQuestion } from "./Subject.jsx";
-import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
-
+import {
+  CircularProgress,
+  Link,
+  Paper,
+  Tooltip
+} from "@mui/material";
 import {
   Typography
 } from "@mui/material";
-
+import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
+
+import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
+import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
+import { displayQuestion } from "./Subject.jsx";
+import DateTimeUtilities from "../components/DateTimeUtilities";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { checkPropTypes } from "../propTypes";
 
 const NUM_QUESTIONS = 2;

@@ -18,8 +18,11 @@
 //
 
 import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
+
+import EditIcon from '@mui/icons-material/Edit';
+import MoreIcon from '@mui/icons-material/MoreHoriz';
+import CollapseIcon from '@mui/icons-material/UnfoldLess';
+import ExpandIcon from '@mui/icons-material/UnfoldMore';
 import {
   Avatar,
   Card,
@@ -30,20 +33,14 @@ import {
   Popover,
   Tooltip,
 } from "@mui/material";
-
+import PropTypes from 'prop-types';
 import { makeStyles } from 'tss-react/mui';
 
-import EditIcon from '@mui/icons-material/Edit';
-import ExpandIcon from '@mui/icons-material/UnfoldMore';
-import CollapseIcon from '@mui/icons-material/UnfoldLess';
-import MoreIcon from '@mui/icons-material/MoreHoriz';
-
+import { checkPropTypes } from "../propTypes";
 import EditDialog from "./EditDialog";
-import DeleteButton from "../dataHomepage/DeleteButton.jsx";
-
-import FormattedText from "../components/FormattedText.jsx";
-
 import { camelCaseToWords }  from "./LabeledField";
+import FormattedText from "../components/FormattedText.jsx";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 
 const useStyles = makeStyles()(theme => ({
   root : {

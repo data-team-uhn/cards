@@ -16,13 +16,14 @@
 */
 
 import React, { useState, useContext } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
+
 import { Alert, Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField } from "@mui/material";
+import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
-import userboardStyle from '../userboardStyle.jsx';
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
+import { checkPropTypes } from "../../propTypes";
+import userboardStyle from '../userboardStyle.jsx';
 
 function CreateGroupDialog(props) {
   checkPropTypes(CreateGroupDialog, props);

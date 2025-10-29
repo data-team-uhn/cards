@@ -18,22 +18,21 @@
 //
 
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
+
 
 import {
   Button,
   DialogActions,
   DialogContent
 } from "@mui/material";
-
-import { makeStyles } from 'tss-react/mui';
-
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import PropTypes from "prop-types";
+import { makeStyles } from 'tss-react/mui';
 
 import FormattedText from "../components/FormattedText.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog";
+import { checkPropTypes } from "../propTypes";
 
 const useStyles = makeStyles()(theme => ({
   touDialog : {

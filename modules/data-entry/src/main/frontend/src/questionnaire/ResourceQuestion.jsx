@@ -18,18 +18,16 @@
 //
 
 import React, { useState, useEffect, useContext } from "react";
+
 import { CircularProgress} from '@mui/material';
-
 import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
+import { checkPropTypes } from "../propTypes";
+import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
-import ResourceQuery from "../resourceQuery/ResourceQuery";
-
-import AnswerComponentManager from "./AnswerComponentManager";
-
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import ResourceQuery from "../resourceQuery/ResourceQuery";
 
 // Component that renders a question, where the answer options are children of a given JCR node
 

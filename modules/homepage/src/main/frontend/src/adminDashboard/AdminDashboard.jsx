@@ -17,9 +17,6 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import { loadExtensions } from "../uiextension/extensionManager";
-import { useNavigate } from "react-router";
-import AdminScreen from "./AdminScreen.jsx";
 
 import {
   CircularProgress,
@@ -28,6 +25,11 @@ import {
   ListItemIcon,
   ListItemText
 } from "@mui/material";
+import { useNavigate } from "react-router";
+
+import AdminScreen from "./AdminScreen.jsx";
+import { loadExtensions } from "../uiextension/extensionManager";
+
 
 // function to get the routes for the admin dashboard, also used in the navbar
 async function getAdminRoutes() {

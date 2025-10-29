@@ -18,14 +18,16 @@
 //
 
 import React, { useContext, useState } from "react";
+
 import {
   Grid,
   Typography
 } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-import statisticsStyle from "./statisticsStyle.jsx";
+
 import Statistic from "./Statistic.jsx";
+import statisticsStyle from "./statisticsStyle.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 // Dashboard of all of the statistics viewable by the user
 function UserStatistics(props) {

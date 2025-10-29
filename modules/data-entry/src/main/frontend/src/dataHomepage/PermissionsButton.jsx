@@ -18,9 +18,9 @@
 //
 import React from "react";
 
+import { Lock } from "@mui/icons-material"
 import { IconButton, Tooltip } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import { Lock } from "@mui/icons-material"
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 

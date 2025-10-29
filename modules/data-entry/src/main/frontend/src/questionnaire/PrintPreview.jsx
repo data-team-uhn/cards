@@ -24,9 +24,6 @@ import React, {
   useContext
 } from "react";
 
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
-
 import {
   Button,
   Card,
@@ -39,15 +36,16 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-
-import { makeStyles } from 'tss-react/mui';
-
 import { useTheme } from '@mui/material/styles';
+import PropTypes from "prop-types";
+import { useReactToPrint } from 'react-to-print';
+import { makeStyles } from 'tss-react/mui';
 
 import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { checkPropTypes } from "../propTypes";
 import { loadExtensions } from "../uiextension/extensionManager";
-import { useReactToPrint } from 'react-to-print';
+
 
 async function getHeaderExtensions() {
   return loadExtensions("PrintHeader")

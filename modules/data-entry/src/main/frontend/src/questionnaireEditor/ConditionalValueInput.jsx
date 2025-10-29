@@ -18,8 +18,7 @@
 //
 
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
+
 import {
   Autocomplete,
   ListItemText,
@@ -27,9 +26,10 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-
+import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
+import { checkPropTypes } from "../propTypes";
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";

@@ -17,8 +17,12 @@
 //  under the License.
 //
 import React, { useState, useEffect, useContext }  from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
+
+import SurveyIcon from '@mui/icons-material/Assignment';
+import NextStepIcon from '@mui/icons-material/ChevronRight';
+import DoneIcon from '@mui/icons-material/Done';
+import WarningIcon from '@mui/icons-material/Warning';
 import {
   Alert,
   AlertTitle,
@@ -34,21 +38,16 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import NextStepIcon from '@mui/icons-material/ChevronRight';
-import DoneIcon from '@mui/icons-material/Done';
-import WarningIcon from '@mui/icons-material/Warning';
-import SurveyIcon from '@mui/icons-material/Assignment';
-
 import { DateTime } from "luxon";
+import { makeStyles } from 'tss-react/mui';
+import { v4 as uuidv4 } from 'uuid';
 
-import Form from "../questionnaire/Form.jsx";
 import Header from "./Header.jsx";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 import FormattedText from "../components/FormattedText.jsx";
-import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
-
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import Form from "../questionnaire/Form.jsx";
+import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
 
 const useStyles = makeStyles()(theme => ({
   mainContainer: {

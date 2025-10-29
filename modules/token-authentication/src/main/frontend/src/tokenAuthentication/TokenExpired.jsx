@@ -17,12 +17,13 @@
 //  under the License.
 //
 import React from 'react';
-import { createRoot } from 'react-dom/client';;
 
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { appTheme } from "../themePalette.jsx";
+import { createRoot } from 'react-dom/client';
 
 import ErrorPage from "../components/ErrorPage.jsx";
+import { appTheme } from "../themePalette.jsx";
+
 
 export default function TokenExpired() {
   return (

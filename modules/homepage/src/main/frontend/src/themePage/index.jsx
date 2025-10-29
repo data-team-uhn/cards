@@ -18,21 +18,24 @@
 //
 import React, { Suspense } from "react";
 import { useState, useEffect } from "react";
-import { createRoot } from 'react-dom/client';
+
+import createCache from "@emotion/cache";
+import { CacheProvider } from "@emotion/react";
 import { ThemeProvider } from '@mui/material/styles';
-import { appTheme } from "../themePalette.jsx";
-import Sidebar from "./Sidebar/Sidebar.jsx"
-import { getRoutes } from '../routes';
-import { withStyles } from 'tss-react/mui';
-import { unstable_HistoryRouter as Router, Routes, Route, Navigate } from "react-router";
 import { createBrowserHistory } from "history";
+import { createRoot } from 'react-dom/client';
+import { unstable_HistoryRouter as Router, Routes, Route, Navigate } from "react-router";
+import { withStyles } from 'tss-react/mui';
+
+import PageStart from "../PageStart";
+import { getRoutes } from '../routes';
+import { appTheme } from "../themePalette.jsx";
+import IndexStyle from "./indexStyle.jsx";
 import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
-import PageStart from "../PageStart";
-import IndexStyle from "./indexStyle.jsx";
+import Sidebar from "./Sidebar/Sidebar.jsx"
 import ReLoginDialog, { GlobalLoginContext } from "../login/ReLoginDialog.js";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+
 
 function Main(props) {
   const { classes, ...rest } = props;

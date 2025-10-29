@@ -18,24 +18,20 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 
-import { useLocation } from 'react-router';
-
-import { loadExtensions } from "../uiextension/extensionManager";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
-
 import {
   CircularProgress,
   Grid,
   Typography,
   useMediaQuery
 } from "@mui/material";
-
-import { makeStyles } from 'tss-react/mui';
-
 import { useTheme } from '@mui/material/styles';
+import { useLocation } from 'react-router';
+import { makeStyles } from 'tss-react/mui';
 
 import ClinicForms from "./ClinicForms";
 import ClinicVisits from "./ClinicVisits";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { loadExtensions } from "../uiextension/extensionManager";
 
 async function getDashboardExtensions(name) {
   return loadExtensions("DashboardViews" + name)

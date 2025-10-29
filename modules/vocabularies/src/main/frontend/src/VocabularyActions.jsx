@@ -23,13 +23,13 @@ import {
   Typography
 } from "@mui/material";
 
-import VocabularyDetails from "./VocabularyDetails"
-import VocabularyAction from "./VocabularyAction"
 import ErrorDialog from "./components/ErrorDialog";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
+import VocabularyAction from "./VocabularyAction"
+import VocabularyDetails from "./VocabularyDetails"
 
-const vocabLinks = require('./vocabularyLinks.json');
 const Phase = require("./phaseCodes.json");
+const vocabLinks = require('./vocabularyLinks.json');
 
 
 /*

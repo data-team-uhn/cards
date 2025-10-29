@@ -25,21 +25,19 @@ import {
   TextField,
   Typography
 } from "@mui/material";
+import PropTypes from "prop-types";
+import { NumericFormat } from 'react-number-format';
 import { makeStyles, withStyles } from 'tss-react/mui';
 
-import { NumericFormat } from 'react-number-format';
-
-import PropTypes from "prop-types";
 import { checkPropTypes } from "../propTypes";
-
 import Answer from "./Answer";
+import AnswerComponentManager from "./AnswerComponentManager";
 import AnswerInstructions from "./AnswerInstructions";
+import { useFormReaderContext } from "./FormContext";
+import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import MultipleChoice from "./MultipleChoice";
 import FormattedText from "../components/FormattedText";
-import { useFormReaderContext } from "./FormContext";
-import AnswerComponentManager from "./AnswerComponentManager";
 
 /** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
 const DATA_TO_NODE_TYPE = {

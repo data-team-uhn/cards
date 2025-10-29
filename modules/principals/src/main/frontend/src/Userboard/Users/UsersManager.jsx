@@ -16,20 +16,22 @@
 */
 
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
-import { withStyles } from 'tss-react/mui';
+
+import CheckIcon from '@mui/icons-material/Check';
+import DeleteIcon from '@mui/icons-material/Delete';
+import LockIcon from '@mui/icons-material/Lock';
 import { Avatar, Box, Grid, IconButton, Tooltip } from "@mui/material";
+import { MaterialReactTable } from 'material-react-table';
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
+import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
+import { checkPropTypes } from "../../propTypes";
 import userboardStyle from '../userboardStyle.jsx';
 import CreateUserDialog from "./CreateUserDialog.jsx";
 import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
 import ChangeUserPasswordDialog from "./ChangeUserPasswordDialog.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx";
-import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
-import { MaterialReactTable } from 'material-react-table';
-import LockIcon from '@mui/icons-material/Lock';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckIcon from '@mui/icons-material/Check';
 
 
 const USER_URL = "/system/userManager/user/";

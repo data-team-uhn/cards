@@ -20,15 +20,13 @@
 import React from "react";
 
 import PropTypes from "prop-types";
+
 import { checkPropTypes } from "../propTypes";
-
-import Question from "./Question";
-
 import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
-import VocabularyQuery from "../vocabQuery/VocabularyQuery.jsx";
-
 import NCRNote from "./NCRNote.jsx";
+import Question from "./Question";
+import VocabularyQuery from "../vocabQuery/VocabularyQuery.jsx";
 
 // Component that renders a vocabulary question.
 //

@@ -18,6 +18,7 @@
 //
 import React, { useState, useEffect }  from 'react';
 
+import AppointmentIcon from '@mui/icons-material/Event';
 import {
   Button,
   CircularProgress,
@@ -32,21 +33,18 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
-import AppointmentIcon from '@mui/icons-material/Event';
-
-import Logo from "../components/Logo.jsx";
-import ErrorPage from "../components/ErrorPage.jsx";
-import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
-import ToUDialog from "./ToUDialog.jsx";
-
-import DateTimeUtilities from "../components/DateTimeUtilities";
-
-import { DateTime } from "luxon";
-import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTime } from "luxon";
+import { makeStyles } from 'tss-react/mui';
+
+import ToUDialog from "./ToUDialog.jsx";
+import DateTimeUtilities from "../components/DateTimeUtilities";
+import ErrorPage from "../components/ErrorPage.jsx";
 import FormattedText from "../components/FormattedText.jsx";
+import Logo from "../components/Logo.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 
 const useStyles = makeStyles()(theme => ({
   form : {

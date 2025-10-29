@@ -18,14 +18,15 @@
 //
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
 
+import PropTypes from 'prop-types';
+
+import { checkPropTypes } from "../propTypes";
 import EditorInput from "./EditorInput";
-import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
-import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 import MarkdownText from "./MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
+import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
+import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 
 // Markdown Text Input field used by Edit dialog component
 let MarkdownTextField = (props) => {

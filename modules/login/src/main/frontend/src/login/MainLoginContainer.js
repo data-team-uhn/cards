@@ -19,11 +19,11 @@
 import React, { useState } from 'react';
 
 import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
-
-import RegistrationForm from './RegistrationForm';
-import LoginForm from './LoginForm';
-import Logo from "../components/Logo";
 import { withStyles } from 'tss-react/mui';
+
+import LoginForm from './LoginForm';
+import RegistrationForm from './RegistrationForm';
+import Logo from "../components/Logo";
 import styles from "../styling/styles";
 
 function MainLoginContainer(props) {

@@ -18,15 +18,16 @@
 //
 
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { Chip, Input, MenuItem, Select, Typography } from "@mui/material";
-import { checkPropTypes } from "../propTypes";
 
+import { Chip, Input, MenuItem, Select, Typography } from "@mui/material";
+import FormControl from '@mui/material/FormControl';
+import PropTypes from 'prop-types';
+
+import { checkPropTypes } from "../propTypes";
 import EditorInput from "./EditorInput";
+import { useFieldsWriterContext } from "./FieldsContext";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
-import { useFieldsWriterContext } from "./FieldsContext";
-import FormControl from '@mui/material/FormControl';
 
 let ListInput = (props) => {
   checkPropTypes(ListInput, props);

@@ -17,16 +17,17 @@
 //  under the License.
 //
 import React, { useState, useContext } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
+
+import { Delete } from "@mui/icons-material";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { Tooltip, Typography } from "@mui/material";
+import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
-import { Delete } from "@mui/icons-material";
 
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import ErrorDialog from "../components/ErrorDialog.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { checkPropTypes } from "../propTypes";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 /**
  * A component that renders an icon to open a dialog to delete an entry.

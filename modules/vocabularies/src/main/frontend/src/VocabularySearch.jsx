@@ -19,6 +19,8 @@
 
 import React, { useContext } from "react";
 
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   CircularProgress,
   Grid,
@@ -26,11 +28,7 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-
 import { makeStyles } from 'tss-react/mui';
-
-import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
 
 import fetchBioPortalApiKey from "./BioportalApiKey.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";

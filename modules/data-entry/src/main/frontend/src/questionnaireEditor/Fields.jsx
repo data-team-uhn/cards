@@ -18,24 +18,25 @@
 //
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
-import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
-import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 
+import PropTypes from 'prop-types';
+
+import { checkPropTypes } from "../propTypes";
 // Unused imports required for the component manager
 import AnswerOptions from "./AnswerOptions";
 import BooleanInput from "./BooleanInput";
 import CodeInput from "./CodeInput";
 import ConditionalValueInput from "./ConditionalValueInput";
+import { FieldsProvider } from "./FieldsContext.jsx";
+import LabeledField from "./LabeledField";
 import ListInput from "./ListInput";
+import MarkdownTextField from "./MarkdownTextField";
 import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
-import TextInput from "./TextInput";
-import MarkdownTextField from "./MarkdownTextField";
 import ReferenceInput from "./ReferenceInput";
-import LabeledField from "./LabeledField";
-import { FieldsProvider } from "./FieldsContext.jsx";
+import TextInput from "./TextInput";
+import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
+import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 
 let Fields = (props) => {
   checkPropTypes(Fields, props);

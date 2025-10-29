@@ -18,13 +18,14 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { TextField } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
 
-import FilterComponentManager from "./FilterComponentManager.jsx";
+import { TextField } from "@mui/material";
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComparators.jsx";
+import FilterComponentManager from "./FilterComponentManager.jsx";
+import { checkPropTypes } from "../../propTypes";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(TEXT_COMPARATORS);

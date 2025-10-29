@@ -16,9 +16,11 @@
 */
 
 import React from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
+
 import AddIcon from "@mui/icons-material/Add";
+import PropTypes from "prop-types";
+
+import { checkPropTypes } from "../propTypes";
 import MainActionButton from './MainActionButton.jsx';
 
 // Component that renders a (+) button at the bottom right of the screen,

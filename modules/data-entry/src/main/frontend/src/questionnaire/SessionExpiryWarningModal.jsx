@@ -17,12 +17,11 @@
 
 import React, { useEffect, useState } from "react";
 
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
-
 import { Backdrop, Button, DialogActions, DialogContent, Typography } from "@mui/material";
+import PropTypes from "prop-types";
 
 import ResponsiveDialog from "../components/ResponsiveDialog";
+import { checkPropTypes } from "../propTypes";
 
 /**
  * Component that displays the session expiry info.

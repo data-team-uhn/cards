@@ -17,8 +17,7 @@
 //  under the License.
 //
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router";
-import { v4 as uuidv4 } from 'uuid';
+
 import {
   Box,
   Button,
@@ -28,13 +27,16 @@ import {
   Grid,
   Typography
 } from "@mui/material";
-import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
+import { Link } from "react-router";
+import { v4 as uuidv4 } from 'uuid';
+
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
-import EditButton from "../dataHomepage/EditButton.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
+import EditButton from "../dataHomepage/EditButton.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import Fields from "../questionnaireEditor/Fields.jsx";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 /**
  * Create the MaterialTable cell contents for a given node. This generates a link to the

@@ -29,11 +29,10 @@ import {
   Typography,
   Zoom,
 } from "@mui/material";
-
 import { makeStyles } from 'tss-react/mui';
 
-import VocabularyAction from "./VocabularyAction";
 import VocabularyBrowser from "./vocabQuery/VocabularyBrowser";
+import VocabularyAction from "./VocabularyAction";
 
 const Phase = require("./phaseCodes.json");
 

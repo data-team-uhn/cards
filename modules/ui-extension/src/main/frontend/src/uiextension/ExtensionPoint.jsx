@@ -17,7 +17,9 @@
 //  under the License.
 //
 import React, { useState } from "react";
+
 import PropTypes from "prop-types";
+
 import { checkPropTypes } from "../propTypes";
 
 const UIXP_FINDER_URL = "/uixp";

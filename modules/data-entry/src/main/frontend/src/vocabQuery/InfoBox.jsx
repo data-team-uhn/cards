@@ -17,13 +17,14 @@
 //  under the License.
 //
 import React from "react";
+
+import CloseIcon from '@mui/icons-material/Close';
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@mui/material";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
-import CloseIcon from '@mui/icons-material/Close';
-import { checkPropTypes } from "../propTypes";
 
+import { checkPropTypes } from "../propTypes";
 import BrowseTheme from "./browseStyle.jsx";
 
 // Component that renders a dialog with term info for a single vocabulary term.

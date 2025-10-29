@@ -19,9 +19,9 @@
 
 import React, { useRef, useEffect, useState } from "react";
 
+import AttachFile from '@mui/icons-material/AttachFile';
 import { IconButton, Typography } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
-import AttachFile from '@mui/icons-material/AttachFile';
 
 const useStyles = makeStyles()(theme => ({
   active: {

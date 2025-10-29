@@ -17,8 +17,9 @@
 //  under the License.
 //
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
+
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
   Alert,
   Button,
@@ -30,9 +31,10 @@ import {
   InputLabel,
   Tooltip,
 } from '@mui/material';
+import PropTypes from 'prop-types';
 import { withStyles } from 'tss-react/mui';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+
+import { checkPropTypes } from "../propTypes";
 import styles from "../styling/styles";
 
 function LoginForm(props) {

@@ -18,27 +18,28 @@
 //
 
 import React, { useCallback, useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Button, Collapse, Grid, IconButton, Tooltip } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
+
 import Add from "@mui/icons-material/Add";
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
 import UnfoldMore from '@mui/icons-material/UnfoldMore';
+import { Button, Collapse, Grid, IconButton, Tooltip } from "@mui/material";
+import PropTypes from "prop-types";
+import removeMd from 'remove-markdown';
+import { withStyles } from 'tss-react/mui';
+import { v4 as uuidv4 } from 'uuid';
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
-import DeleteButton from "../dataHomepage/DeleteButton";
-import FormEntry, { ENTRY_TYPES } from "./FormEntry";
-import { useFormReaderContext, useFormWriterContext } from "./FormContext";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
-import { hasWarningFlags } from "./FormUtilities";
-
 // FIXME In order for the conditionals to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
 import ConditionalGroup from "./ConditionalGroup";
 import ConditionalSingle from "./ConditionalSingle";
+import { useFormReaderContext, useFormWriterContext } from "./FormContext";
+import FormEntry, { ENTRY_TYPES } from "./FormEntry";
+import { hasWarningFlags } from "./FormUtilities";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormattedText from "../components/FormattedText.jsx";
-import { v4 as uuidv4 } from 'uuid';
+import DeleteButton from "../dataHomepage/DeleteButton";
 import { checkPropTypes } from "../propTypes";
-import removeMd from 'remove-markdown';
+
 
 const ID_STATE_KEY = ":AccessCount";
 

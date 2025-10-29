@@ -23,13 +23,11 @@ import {
   Button,
   MobileStepper
 } from "@mui/material";
-
+import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
-import PropTypes from "prop-types";
 import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import FormPageNavigation from "./FormPageNavigation";
-
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import { checkPropTypes } from "../propTypes";
 

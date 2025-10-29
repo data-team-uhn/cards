@@ -19,6 +19,7 @@
 
 import React, { useState, useEffect } from 'react';
 
+import Close from "@mui/icons-material/Close";
 import {
   Checkbox,
   Chip,
@@ -34,18 +35,17 @@ import {
   TextField,
   Typography
   } from "@mui/material";
-
-import { withStyles } from 'tss-react/mui';
-import Close from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
 import { checkPropTypes } from "../propTypes";
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
-import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
-import { useFormReaderContext } from "./FormContext";
-import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import AnswerInstructions from "./AnswerInstructions.jsx";
-import UserInputAssistant from "../components/UserInputAssistant.jsx";
+import { useFormReaderContext } from "./FormContext";
+import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
+import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import FormattedText from "../components/FormattedText.jsx";
+import UserInputAssistant from "../components/UserInputAssistant.jsx";
 
 // Sentinel value used for the user-controlled input
 const GHOST_SENTINEL = "custom-input";

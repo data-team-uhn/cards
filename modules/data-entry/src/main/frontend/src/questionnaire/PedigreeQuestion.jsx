@@ -20,19 +20,15 @@
 import React, { useEffect, useState } from "react";
 
 import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@mui/material";
-
+import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
-import PropTypes from "prop-types";
 import { checkPropTypes } from "../propTypes";
-
+import Answer from "./Answer";
+import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import DeleteButton from "../dataHomepage/DeleteButton";
-
-import Answer from "./Answer";
-import AnswerComponentManager from "./AnswerComponentManager";
-
 import PedigreeEditor from "../pedigree/pedigree";
 
 // Component that renders a pedigree, although answering these questions is not currently possible.

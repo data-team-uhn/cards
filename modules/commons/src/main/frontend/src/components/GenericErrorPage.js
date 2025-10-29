@@ -17,9 +17,11 @@
 //  under the License.
 //
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-import ErrorPage from './ErrorPage';
+
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import { createRoot } from 'react-dom/client';
+
+import ErrorPage from './ErrorPage';
 import { appTheme } from "../themePalette.jsx";
 
 const root = createRoot(document.getElementById('main-error-container'));

@@ -18,15 +18,16 @@
 //
 
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Snackbar, SnackbarContent } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-import { checkPropTypes } from "../propTypes";
 
-import VocabularyTree from "./VocabularyTree.jsx";
+import { Snackbar, SnackbarContent } from "@mui/material";
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
+import { checkPropTypes } from "../propTypes";
+import BrowseTheme from "./browseStyle.jsx";
 import InfoBox from "./InfoBox.jsx";
 import { MakeRequest } from "./util.jsx";
-import BrowseTheme from "./browseStyle.jsx";
+import VocabularyTree from "./VocabularyTree.jsx";
 
 // Component that renders a vocabulary info box and browser.
 //

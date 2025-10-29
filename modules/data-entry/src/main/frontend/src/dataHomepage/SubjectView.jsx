@@ -17,10 +17,9 @@
 //  under the License.
 //
 import React, { useState, useEffect, useContext } from "react";
-import LiveTable from "./LiveTable.jsx";
 
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import LaunchIcon from '@mui/icons-material/Launch';
 import {
   Avatar,
   Card,
@@ -34,15 +33,16 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
 import { Link } from 'react-router';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import LaunchIcon from '@mui/icons-material/Launch';
+import { withStyles } from 'tss-react/mui';
+
 import DeleteWithRefreshButton from "./DeleteWithRefreshButton.jsx";
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import LiveTable from "./LiveTable.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { NewSubjectDialog } from "../questionnaire/SubjectSelector.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function SubjectView(props) {
   const { expanded, actionSwitches, disableHeader, disableAvatar, topPagination, extension, classes } = props;

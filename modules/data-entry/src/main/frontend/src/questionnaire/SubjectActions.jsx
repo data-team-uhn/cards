@@ -18,9 +18,10 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { loadExtensions } from "../uiextension/extensionManager";
 
 import getActions from "./actionsManager";
+import { loadExtensions } from "../uiextension/extensionManager";
+
 
 export default function SubjectActions(props) {
   let { subject, reloadSubject, className, size, variant } = props;
