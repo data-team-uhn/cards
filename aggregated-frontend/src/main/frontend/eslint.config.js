@@ -18,13 +18,73 @@
  */
 
 import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import importPlugin from "eslint-plugin-import";
+import jsxA11y from "eslint-plugin-jsx-a11y";
+import globals from "globals";
 
-export default [
+// For ESLint rules specs see  https://eslint.org/docs/latest/rules/
+
+// for compiler to avoid build error for globals having heading or trailing whitespace
+const cleanGlobals = Object.fromEntries(
+  Object.entries({ ...globals.browser, ...globals.es2021 }).map(
+    ([key, value]) => [key.trim(), value]
+  )
+);
+
+// --- Shared parts defined here for maximum clarity and DRYness (Don’t Repeat Yourself) ---
+
+const commonGlobals = {
+  ...cleanGlobals,
+  process: "readonly",
+  module: "readonly"
+};
+
+const commonPlugins = {
+  react,
+  "react-hooks": reactHooks,
+  import: importPlugin,
+};
+
+const commonReactSettings = { react: { version: "detect" } };
+
+const importOrderRule = [
+  "warn",
+  {
+    groups: ["builtin", "external", "internal", ["parent", "sibling", "index"]],
+    pathGroups: [{ pattern: "react", group: "external", position: "before" }],
+    pathGroupsExcludedImportTypes: ["react"],
+    "newlines-between": "always",
+    alphabetize: { order: "asc", caseInsensitive: true },
+  },
+];
+
+const commonRules = {
+  "import/order": importOrderRule,
+};
+
+const commonLinterOptions = {
+  reportUnusedInlineConfigs: "error",
+};
+
+const commonParserOptions = {
+  ecmaVersion: "latest",
+  sourceType: "module",
+  ecmaFeatures: { jsx: true },
+};
+
+const commonConfigs = {
+  settings: commonReactSettings,
+  rules: commonRules,
+  linterOptions: commonLinterOptions,
+};
+
+// --- Main config ---
+export default defineConfig([
   // Ignore folders/files
   {
     ignores: [
@@ -33,98 +93,39 @@ export default [
       "node_modules/**",
       "webpack.config.js",
       "webpack.config-template.js",
-      "src/pedigree/**"
+      "src/pedigree/**",
     ],
   },
 
-  // Linting JS / JSX files (no type checking)
+  // JS / JSX
   {
     files: ["src/**/*.{js,jsx}"],
     languageOptions: {
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-        ecmaFeatures: { jsx: true },
-      },
-	  globals: {
-      window: "readonly",
-      document: "readonly",
-      navigator: "readonly",
-      fetch: "readonly",
-      Event: "readonly",
-      Node: "readonly",
-      HTMLElement: "readonly",
-    },
+      parserOptions: commonParserOptions,
+      globals: commonGlobals,
     },
     plugins: {
-      react,
-      "react-hooks": reactHooks,
-      import: importPlugin,
+      ...commonPlugins,
+      "jsx-a11y": jsxA11y,
     },
-    rules: {
-      /**"react/react-in-jsx-scope": "off",
-      "react/prop-types": "off",
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",**/
-      "import/order": [
-        "warn",
-        {
-          groups: ["builtin", "external", "internal", ["parent", "sibling", "index"]],
-          pathGroups: [{ pattern: "react", group: "external", position: "before" }],
-          pathGroupsExcludedImportTypes: ["react"],
-          "newlines-between": "always",
-          alphabetize: { order: "asc", caseInsensitive: true },
-        },
-      ],
-    },
+    ...commonConfigs,
   },
 
-  // Linting  TS / TSX files (with type checking)
+  // TS / TSX
   {
     files: ["src/**/*.{ts,tsx}"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
+        ...commonParserOptions,
         project: "./tsconfig.json",
-        ecmaVersion: "latest",
-        sourceType: "module",
-        ecmaFeatures: { jsx: true },
       },
-	  globals: {
-      window: "readonly",
-      document: "readonly",
-      navigator: "readonly",
-      fetch: "readonly",
-      Event: "readonly",
-      Node: "readonly",
-	  HTMLElement: "readonly",
-    },
+      globals: commonGlobals,
     },
     plugins: {
+      ...commonPlugins,
       "@typescript-eslint": tsPlugin,
-      react,
-      "react-hooks": reactHooks,
-      import: importPlugin,
     },
-    settings: { react: { version: "detect" } },
-    rules: {
-      /**...js.configs.recommended.rules,
-      ...tsPlugin.configs.recommended.rules,
-      ...react.configs.recommended.rules,
-      ...reactHooks.configs.recommended.rules,
-      "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off",
-      "@typescript-eslint/no-unused-vars": ["warn"],**/
-      "import/order": [
-        "warn",
-        {
-          groups: ["builtin", "external", "internal", ["parent", "sibling", "index"]],
-          pathGroups: [{ pattern: "react", group: "external", position: "before" }],
-          pathGroupsExcludedImportTypes: ["react"],
-          "newlines-between": "always",
-          alphabetize: { order: "asc", caseInsensitive: true },
-        },
-      ],
-    },
+    ...commonConfigs,
   },
-];
+]);
