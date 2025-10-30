@@ -440,7 +440,6 @@ def newListIfEmpty(yaml_object, *keys):
 OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
-yaml_obj['version'] = '3'
 yaml_obj['volumes'] = {}
 yaml_obj['services'] = {}
 
