@@ -82,45 +82,66 @@ CREATE TABLE [path].[V_PatientExperienceSurveySamplingTest] (
 )
 
 HOSPITALS_TO_DEPARTMENTS = {}
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'] = []
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-CANCER GENETICS")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-BMT ALLOGENEIC CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-CNS ONCOLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-GYNECOLOGICAL ONCOLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-ENDOCRINE ONCOLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-BREAST ONCOLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-ENT ONCOLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-GENITOURINARY ONCOLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-GASTROINTESTINAL ONCOLOGY CLINIC")
+
 HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'] = []
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-EMERGENCY")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-4MA Cardiovascular Surgery")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-4MB Cardiovascular Surgery")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-5MB Cardiology")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-6MA MOT/Nephrology")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-6MB Thoracic Surgery/Respirology")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-7MA Multi Organ Transplant Unit TG-7MB Multi Organ Transplant Unit")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES 10 Surgical Oncology")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES 6 General Medicine")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES 9 General Surgery")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES13 General Medicine")
-HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES14 General Medicine")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ADULT GENETICS CLINIC AGC")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-EDS CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-DIABETES EDUCATION")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-GENERAL HEMATOLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-LIVER CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ENDOCRINE")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-NEPHROLOGY")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-THORACIC SURGERY")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-PMCC CARDIAC CLINICS")
 
 HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'] = []
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-EMERGENCY")
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-3B Fell Pavilion")
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-4B Fell Pavilion")
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-5A Fell Pavilion")
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-5B Fell Pavilion")
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-6A Fell Pavilion")
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-8A Fell Pavilion")
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-8B Fell Pavilion")
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-9A Fell Pavilion")
-HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-9B Fell Pavilion")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-FRACTURE CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-ORTHOPAEDIC CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-RHEUMATOLOGY")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-UROLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-HAND CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-COMPREHENSIVE INTEGRATED PAIN PROGRAM - INTERVENTIONAL PAIN SERVICES")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-NEUROSURGERY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-GASTROENTEROLOGY")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-ENDOCRINOLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-GENERAL INTERNAL MEDICINE")
 
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'] = []
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-14A Leukemia/Lymphoma")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-14B Bone Marrow Transplant")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-15A Leukemia & Lymphoma Unit")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-15B BMT & Leukemia/Lymphoma")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-15C Auto Transplant Unit")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-17A Breast, Gyn, GI & GU")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-17B Head & Neck, Sarc & Lung")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-18B Short Term Care")
-# PMH-Acute Care
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-DAY ONCOLOGY/AWA")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-URGENT CARE")
-HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-RADIATION NURSING CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Ophthalmology'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Ophthalmology'].append("TW-OPHTHALMOLOGY")
+
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Bickle Centre'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Bickle Centre'].append("BC-THERAPEUTIC RECREATION-LOGIN")
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Bickle Centre'].append("BC-AAC CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Bickle Centre'].append("BC-PHYSIATRY CLINIC")
+
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Lyndhurst Centre'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Lyndhurst Centre'].append("LC-PHYSIATRY")
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Lyndhurst Centre'].append("LC-BONE DENSITY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Lyndhurst Centre'].append("LC-UROLOGY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Lyndhurst Centre'].append("LC-SEATING CLINIC")
+
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Rumsey Cardiac'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Rumsey Cardiac'].append("RC-CARDIAC REHAB")
+
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Rumsey Neuro'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Rumsey Neuro'].append("RN-MULTIPLE SCLEROSIS CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - Rumsey Neuro'].append("RN-LIFESPAN CLINIC")
+
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - University Centre'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - University Centre'].append("UC-EMG CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - University Centre'].append("UC-NEURO PHYSIATRY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - University Centre'].append("UC-MSK PHYSIATRY CLINIC")
+HOSPITALS_TO_DEPARTMENTS['Toronto Rehab - University Centre'].append("UC-NEUROPSYCHIATRY CLINIC")
 
 def convertToSqlType(insertion_values):
     converted_values = {}
