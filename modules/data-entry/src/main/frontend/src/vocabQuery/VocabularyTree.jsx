@@ -18,7 +18,15 @@
 //
 import React, { useState, useEffect } from "react";
 
-import { Button, Checkbox, DialogContent, DialogActions, Chip, Radio, Typography } from '@mui/material';
+import {
+  Button,
+  Checkbox,
+  DialogContent,
+  DialogActions,
+  Chip,
+  Radio,
+  Typography
+} from '@mui/material';
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 

@@ -19,7 +19,21 @@
 import React from "react";
 
 import CloseIcon from '@mui/icons-material/Close';
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  ClickAwayListener,
+  Grow,
+  IconButton,
+  Link,
+  Popper,
+  Tooltip,
+  Typography
+} from "@mui/material";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';

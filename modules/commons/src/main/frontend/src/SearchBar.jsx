@@ -21,7 +21,17 @@ import React, { useState, useContext, useEffect } from "react";
 import DescriptionIcon from "@mui/icons-material/Description";
 import Search from "@mui/icons-material/Search";
 import { MenuList, Paper, Popper } from "@mui/material";
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
+import {
+  ClickAwayListener,
+  Grow,
+  IconButton,
+  Input,
+  InputAdornment,
+  ListItemText,
+  MenuItem,
+  ListItemAvatar,
+  Avatar
+} from "@mui/material";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router";
 import { withStyles } from 'tss-react/mui';

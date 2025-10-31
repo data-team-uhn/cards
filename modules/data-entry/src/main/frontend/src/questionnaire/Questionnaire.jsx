@@ -33,7 +33,15 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
+import {
+  blue,
+  blueGrey,
+  cyan,
+  deepPurple,
+  indigo,
+  orange,
+  purple
+} from '@mui/material/colors';
 import { DateTime } from "luxon";
 import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation } from 'react-router';
