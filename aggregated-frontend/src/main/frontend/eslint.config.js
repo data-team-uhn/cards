@@ -26,6 +26,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import importPlugin from "eslint-plugin-import";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import globals from "globals";
+import unusedImports from "eslint-plugin-unused-imports";
 
 // For ESLint rules specs see  https://eslint.org/docs/latest/rules/
 
@@ -47,6 +48,7 @@ const commonGlobals = {
 const commonPlugins = {
   react,
   "react-hooks": reactHooks,
+  "unused-imports": unusedImports,
   import: importPlugin,
 };
 
@@ -74,6 +76,14 @@ const whitespaceRules = {
 const commonRules = {
   "import/order": importOrderRule,
   "react/jsx-no-undef": ["error", { allowGlobals: true }],
+  "react/jsx-uses-vars": "error",
+  "no-unused-vars": "off",
+  "unused-imports/no-unused-imports": [
+  "error",
+  {
+    "varsIgnorePattern": "^React"
+  }
+],
   ...whitespaceRules,
 };
 

@@ -30,8 +30,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
 // FIXME In order for the conditionals to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
+/* eslint-disable unused-imports/no-unused-imports */
 import ConditionalGroup from "./ConditionalGroup";
 import ConditionalSingle from "./ConditionalSingle";
+/* eslint-enable unused-imports/no-unused-imports */
 import { useFormReaderContext, useFormWriterContext } from "./FormContext";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { hasWarningFlags } from "./FormUtilities";

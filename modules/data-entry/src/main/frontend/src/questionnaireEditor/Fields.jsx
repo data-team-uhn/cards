@@ -21,20 +21,24 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
+/* eslint-disable import/order */
 import { checkPropTypes } from "../propTypes";
+import { FieldsProvider } from "./FieldsContext.jsx";
+import LabeledField from "./LabeledField";
 // Unused imports required for the component manager
+/* eslint-disable unused-imports/no-unused-imports */
 import AnswerOptions from "./AnswerOptions";
 import BooleanInput from "./BooleanInput";
 import CodeInput from "./CodeInput";
 import ConditionalValueInput from "./ConditionalValueInput";
-import { FieldsProvider } from "./FieldsContext.jsx";
-import LabeledField from "./LabeledField";
 import ListInput from "./ListInput";
 import MarkdownTextField from "./MarkdownTextField";
 import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
 import ReferenceInput from "./ReferenceInput";
 import TextInput from "./TextInput";
+/* eslint-enable unused-imports/no-unused-imports */
+/* eslint-enable import/order */
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 

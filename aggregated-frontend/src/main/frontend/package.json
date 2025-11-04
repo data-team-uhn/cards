@@ -70,6 +70,7 @@
 	"eslint-plugin-react-hooks": "7.0.0",
 	"eslint-plugin-import": "2.32.0",
 	"eslint-plugin-jsx-a11y": "6.10.2",
+	"eslint-plugin-unused-imports": "4.3.0",
     "eslint": "9.24.0",
 	"eslint-webpack-plugin": "5.0.2",
     "webpack": "5.99.5",
