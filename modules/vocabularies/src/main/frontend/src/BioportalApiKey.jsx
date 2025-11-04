@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import {
@@ -73,8 +73,8 @@ export function BioPortalApiKey(props) {
   const { classes } = useStyles();
 
   /* User input api key */
-  const [customApiKey, setCustomApiKey] = React.useState('');
-  const [displayPopup, setDisplayPopup] = React.useState(false);
+  const [customApiKey, setCustomApiKey] = useState('');
+  const [displayPopup, setDisplayPopup] = useState(false);
 
   // function to create / edit node
   function addNewKey() {
@@ -122,7 +122,7 @@ export function BioPortalApiKey(props) {
   }
 
   return(
-    <React.Fragment>
+    <>
       <Grid>
         <Typography variant="h6">
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
@@ -170,6 +170,6 @@ export function BioPortalApiKey(props) {
           <Button variant="contained" className={classes.vocabularyAction} onClick={() => {addNewKey()}}>Update</Button>
         </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 }

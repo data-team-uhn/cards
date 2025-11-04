@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { forwardRef, useState, useEffect, useContext } from "react";
+import { forwardRef, useState, useEffect, useContext } from "react";
 
 import { TextField } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { Alert, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { useTheme, alpha } from '@mui/material/styles';

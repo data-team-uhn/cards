@@ -15,8 +15,6 @@
   under the License.
 */
 
-import React from "react";
-
 import { Grid, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import PropTypes from "prop-types";
 

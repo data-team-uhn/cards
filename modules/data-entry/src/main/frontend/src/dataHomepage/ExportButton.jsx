@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 
 import DownloadIcon from '@mui/icons-material/FileDownload';
@@ -319,7 +319,7 @@ function ExportButton(props) {
   }
 
   return(
-    <React.Fragment>
+    <>
       <ResponsiveDialog
         title={`Export "${entryName}" Data`}
         open={open}
@@ -527,7 +527,7 @@ function ExportButton(props) {
           {entryLabel}
         </Button>
       }
-    </React.Fragment>
+    </>
   )
 }
 

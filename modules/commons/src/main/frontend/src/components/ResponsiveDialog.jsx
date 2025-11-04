@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 
 import CloseIcon from '@mui/icons-material/Close';
 import {

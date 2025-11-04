@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useRef, useState, useContext } from "react";
+import { useRef, useState, useContext } from "react";
 
 import Info from "@mui/icons-material/Info";
 import Search from "@mui/icons-material/Search";

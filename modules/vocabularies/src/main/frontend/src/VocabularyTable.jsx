@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Grid,
@@ -36,7 +36,7 @@ export default function VocabularyTable(props) {
   const [filterTable, setFilterTable] = useState(false);
   const [acronymFilterList, setAcronymFilterList] = useState([]);
   const [filteredVocabs, setFilteredVocabs] = useState([]);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (filterTable) {
@@ -49,7 +49,7 @@ export default function VocabularyTable(props) {
   }, [filterTable, acronymFilterList])
 
   return(
-    <React.Fragment>
+    <>
       {(type === "remote") &&
       <VocabularySearch
         setAcronymFilterList={setAcronymFilterList}
@@ -120,6 +120,6 @@ export default function VocabularyTable(props) {
         />
       </Grid>
       }
-    </React.Fragment>
+    </>
   );
 }

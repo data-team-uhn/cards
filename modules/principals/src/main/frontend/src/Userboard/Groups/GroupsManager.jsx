@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React, { useState, useContext, useMemo, useCallback } from "react";
+import { useState, useContext, useMemo, useCallback } from "react";
 
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';

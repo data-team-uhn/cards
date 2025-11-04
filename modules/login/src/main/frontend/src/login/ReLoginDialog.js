@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
+import { createContext } from "react";
 
 import { Dialog } from '@mui/material';
 import PropTypes from 'prop-types';
@@ -24,7 +24,7 @@ import PropTypes from 'prop-types';
 import MainLoginContainer from './MainLoginContainer';
 import { checkPropTypes } from "../propTypes";
 
-export const GlobalLoginContext = React.createContext();
+export const GlobalLoginContext = createContext();
 
 export function fetchWithReLogin(displayLoginCtx, url, fetchArgs, discardOnFailure) {
   return new Promise(function(resolve, reject) {

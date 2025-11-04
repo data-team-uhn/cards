@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import WarningIcon from "@mui/icons-material/Warning";

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Chip, Input, MenuItem, Select, Typography } from "@mui/material";
 import FormControl from '@mui/material/FormControl';

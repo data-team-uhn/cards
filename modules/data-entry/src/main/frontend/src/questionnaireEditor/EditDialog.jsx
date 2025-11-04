@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 
 import {
   Button,
@@ -67,7 +67,7 @@ let EditDialog = (props) => {
 
   let formattedType = camelCaseToWords(type);
 
-  let saveButtonRef = React.useRef();
+  let saveButtonRef = useRef();
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let saveData = (event) => {

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
@@ -118,7 +118,7 @@ function Answer (props) {
   }, [answers, questionName]);
 
   return (
-    <React.Fragment>
+    <>
       <input type="hidden" className="cards-answer-id" value={answerID}></input>
       <input type="hidden" name={`${answerPath}/jcr:primaryType`} value={answerNodeType}></input>
       <input type="hidden" name={`${answerPath}/question`} value={questionDefinition['jcr:uuid']}></input>
@@ -126,7 +126,7 @@ function Answer (props) {
 
       {/* Add the answers, if any exist, or otherwise delete them */}
       {answers?.length ?
-        (<React.Fragment>
+        (<>
           <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType + (isMultivalued ? '[]' : '')}></input>
           {answers.map( (element, index) => {
             return (
@@ -145,7 +145,7 @@ function Answer (props) {
                 );
               })
           }
-        </React.Fragment>)
+        </>)
         :
         <>
           <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
@@ -170,7 +170,7 @@ function Answer (props) {
           {...noteProps}
         />
       }
-    </React.Fragment>
+    </>
   );
 }
 

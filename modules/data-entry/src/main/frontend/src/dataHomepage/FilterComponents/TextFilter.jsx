@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { forwardRef, useState } from "react";
+import { forwardRef, useState } from "react";
 
 import { TextField } from "@mui/material";
 import PropTypes from "prop-types";

@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React, { useContext } from "react";
+import { useContext } from "react";
 
 import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography } from "@mui/material";
 import PropTypes from "prop-types";

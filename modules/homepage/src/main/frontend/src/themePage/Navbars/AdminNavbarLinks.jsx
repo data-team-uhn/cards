@@ -9,7 +9,7 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 // @mui/material components
 import CloseIcon from '@mui/icons-material/Close';

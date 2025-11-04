@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Backdrop, Button, DialogActions, DialogContent, Typography } from "@mui/material";
 import PropTypes from "prop-types";

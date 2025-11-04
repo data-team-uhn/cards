@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import {
   Button,
@@ -412,7 +412,7 @@ function NewFormDialog(props) {
   });
 
   return (
-    <React.Fragment>
+    <>
       <ResponsiveDialog
         title={progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
         open={withButton ? dialogOpen : open}
@@ -425,7 +425,7 @@ function NewFormDialog(props) {
         <DialogContent dividers className={classes.dialogContentWithTable}>
           {error && (!newSubjectPopperOpen) && <Alert severity="error">{error}</Alert>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
-            <React.Fragment>
+            <>
               {relatedForms && <>
                 <MaterialReactTable table={table}/>
                 <TablePagination
@@ -442,9 +442,9 @@ function NewFormDialog(props) {
                 />
               </>
               }
-            </React.Fragment>
+            </>
             :
-            <React.Fragment>
+            <>
               { /* We need selectedQuestionnaire to be filled out before this renders, or it will try grabbing the wrong subjects */
                 selectedQuestionnaire && <SubjectSelectorList
                   allowedTypes={parseToArray(selectedQuestionnaire?.["requiredSubjectTypes"])}
@@ -457,7 +457,7 @@ function NewFormDialog(props) {
                   selectedQuestionnaire={selectedQuestionnaire}
                   disableProgress={setDisableProgress}
                 />}
-            </React.Fragment>}
+            </>}
         </DialogContent>
         <DialogActions>
           {progress === PROGRESS_SELECT_SUBJECT &&
@@ -513,7 +513,7 @@ function NewFormDialog(props) {
             inProgress={!dialogOpen && isFetching}
           />
       }
-    </React.Fragment>
+    </>
   )
 }
 

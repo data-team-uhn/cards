@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import 'react-phone-input-2/lib/style.css';
 import PropTypes from "prop-types";

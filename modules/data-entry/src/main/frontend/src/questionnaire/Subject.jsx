@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useContext, useEffect, useRef } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 
 import SubjectIcon from "@mui/icons-material/AssignmentInd";
 import CollapsedIcon from "@mui/icons-material/ChevronRight";
@@ -126,7 +126,7 @@ function Subject(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       <NewFormDialog
         currentSubject={currentSubject}
         withButton
@@ -177,7 +177,7 @@ function Subject(props) {
           </CardContent></Card>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </>
   );
 }
 
@@ -243,7 +243,7 @@ function SubjectContainer(props) {
   }
 
   return (
-    subject && <React.Fragment>
+    subject && <>
       <SubjectMember
         classes={classes}
         id={id}
@@ -257,7 +257,7 @@ function SubjectContainer(props) {
         baseURL={baseURL}
         extensionURL={extensionURL}
       />
-    </React.Fragment>
+    </>
   );
 }
 

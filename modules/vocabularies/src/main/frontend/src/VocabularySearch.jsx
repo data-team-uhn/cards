@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useContext } from "react";
+import { useContext, useState } from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
@@ -61,9 +61,9 @@ const useStyles = makeStyles()(theme => ({
 }));
 
 export default function VocabularySearch(props) {
-  const [error, setError] = React.useState(false);
-  const [keywords, setKeywords] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = useState(false);
+  const [keywords, setKeywords] = useState("");
+  const [loading, setLoading] = useState(false);
   const { classes } = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -124,7 +124,7 @@ export default function VocabularySearch(props) {
   }
 
   return(
-    <React.Fragment>
+    <>
       <Grid>
         <TextField
           fullWidth
@@ -154,6 +154,6 @@ export default function VocabularySearch(props) {
           variant="outlined"
         />
       </Grid>
-    </React.Fragment>
+    </>
   );
 }

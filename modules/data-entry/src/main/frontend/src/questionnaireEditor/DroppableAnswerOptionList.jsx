@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash';
@@ -82,7 +82,7 @@ function DroppableAnswerOptionList(props) {
   }, [options]);
 
   return (
-    <React.Fragment>
+    <>
       {options && options.map((value, index) =>
         <DroppableAnswerOption
           key={value.value}
@@ -93,7 +93,7 @@ function DroppableAnswerOptionList(props) {
           classes={classes}
         />
       )}
-    </React.Fragment>
+    </>
   );
 }
 

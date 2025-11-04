@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 
 import {
   Typography
@@ -39,11 +39,11 @@ const vocabLinks = require('./vocabularyLinks.json');
 export default function VocabularyActions(props) {
   const { vocabulary, updateLocalList, initPhase } = props;
   // The following facilitates the usage of the same code to report errors for both installation and uninstallation
-  const [error, setError] = React.useState(false);
-  const [action, setAction] = React.useState("");
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const [error, setError] = useState(false);
+  const [action, setAction] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const [phase, setPhase] = React.useState(initPhase);
+  const [phase, setPhase] = useState(initPhase);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -105,10 +105,10 @@ export default function VocabularyActions(props) {
         });
       });
   }
-  React.useEffect(() => {props.addSetter(setPhase);},[0]);
+  useEffect(() => {props.addSetter(setPhase);},[0]);
 
   return(
-    <React.Fragment>
+    <>
       <VocabularyAction
         install={install}
         uninstall={uninstall}
@@ -127,6 +127,6 @@ export default function VocabularyActions(props) {
         <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
         <Typography component="p" color="error">{errorMessage}</Typography>
       </ErrorDialog>}
-    </React.Fragment>
+    </>
   );
 }

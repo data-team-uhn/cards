@@ -16,13 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-
-import React from "react";
+import { createContext, useContext, useState } from "react";
 
 const DEFAULT_STATE = [];
 
-const QuestionnaireReaderContext = React.createContext(DEFAULT_STATE);
-const QuestionnaireWriterContext = React.createContext();
+const QuestionnaireReaderContext = createContext(DEFAULT_STATE);
+const QuestionnaireWriterContext = createContext();
 
 /**
  * A context provider for a questionnaire, which contains questions data and a way to set them
@@ -30,7 +29,7 @@ const QuestionnaireWriterContext = React.createContext();
  * @returns {Object} a React component with the questionnaire provider
  */
 export function QuestionnaireProvider(props) {
-  const [questions, setQuestions] = React.useState(DEFAULT_STATE);
+  const [questions, setQuestions] = useState(DEFAULT_STATE);
 
   return (
     <QuestionnaireReaderContext.Provider value={questions}>
@@ -45,7 +44,7 @@ export function QuestionnaireProvider(props) {
  * @throws an error if it is not within a QuestionnaireProvider
  */
 export function useQuestionnaireReaderContext() {
-  const context = React.useContext(QuestionnaireReaderContext);
+  const context = useContext(QuestionnaireReaderContext);
 
   if (context == undefined) {
     throw new Error("useQuestionnaireReaderContext must be used within a QuestionnaireProvider")
@@ -60,7 +59,7 @@ export function useQuestionnaireReaderContext() {
  * @throws an error if it is not within a QuestionnaireProvider
  */
 export function useQuestionnaireWriterContext() {
-  const context = React.useContext(QuestionnaireWriterContext);
+  const context = useContext(QuestionnaireWriterContext);
 
   if (context == undefined) {
     throw new Error("useQuestionnaireWriterContext must be used within a QuestionnaireProvider")

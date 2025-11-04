@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import MDEditor, { commands } from '@uiw/react-md-editor';
 import PropTypes from 'prop-types';

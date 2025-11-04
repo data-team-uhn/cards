@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 
 import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';

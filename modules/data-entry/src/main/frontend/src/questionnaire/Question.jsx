@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
 import PropTypes from "prop-types";

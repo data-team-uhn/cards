@@ -15,7 +15,7 @@
   under the License.
 */
 
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 
 import {
   Alert,
@@ -106,7 +106,7 @@ function FormFields(props) {
       />
       { !isValid ?
       // Render hover over and button
-        <React.Fragment>
+        <>
           <Tooltip title="You must fill in all fields.">
             <span>
               <Button
@@ -119,7 +119,7 @@ function FormFields(props) {
               </Button>
             </span>
           </Tooltip>
-        </React.Fragment> :
+        </> :
       // Else just render the button
         <Button
           type="submit"

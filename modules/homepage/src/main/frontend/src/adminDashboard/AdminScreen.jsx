@@ -16,8 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
-
 import { Breadcrumbs, Card, CardContent, CardHeader, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { Link } from 'react-router';

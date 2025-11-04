@@ -16,13 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-
-import React from "react";
+import { createContext, useContext, useState } from "react";
 
 const DEFAULT_STATE = {};
 
-const FormUpdateReaderContext = React.createContext(DEFAULT_STATE);
-const FormUpdateWriterContext = React.createContext();
+const FormUpdateReaderContext = createContext(DEFAULT_STATE);
+const FormUpdateWriterContext = createContext();
 
 /**
  * A context provider for a form, which contains update requests to a form
@@ -32,7 +31,7 @@ const FormUpdateWriterContext = React.createContext();
  */
 export function FormUpdateProvider(props) {
   const { extraFunctions, ...rest } = props;
-  const [answers, setAnswers] = React.useState(DEFAULT_STATE);
+  const [answers, setAnswers] = useState(DEFAULT_STATE);
 
   return (
     <FormUpdateReaderContext.Provider value={{ ...answers, ...extraFunctions }}>
@@ -47,7 +46,7 @@ export function FormUpdateProvider(props) {
  * @throws an error if it is not within a FormProvider
  */
 export function useFormUpdateReaderContext() {
-  const context = React.useContext(FormUpdateReaderContext);
+  const context = useContext(FormUpdateReaderContext);
 
   if (context == undefined) {
     throw new Error("useFormUpdateReaderContext must be used within a FormUpdateProvider")
@@ -62,7 +61,7 @@ export function useFormUpdateReaderContext() {
  * @throws an error if it is not within a FormProvider
  */
 export function useFormUpdateWriterContext() {
-  const context = React.useContext(FormUpdateWriterContext);
+  const context = useContext(FormUpdateWriterContext);
 
   if (context == undefined) {
     throw new Error("useFormUpdateWriterContext must be used within a FormUpdateProvider")

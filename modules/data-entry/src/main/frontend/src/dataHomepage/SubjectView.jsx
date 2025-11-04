@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -50,7 +50,7 @@ function SubjectView(props) {
   const [ activeTab, setActiveTab ] = useState(0);
   const [ subjectTypes, setSubjectTypes] = useState([])
   const [ tabsLoading, setTabsLoading ] = useState(null);
-  const [ columns, setColumns ] = React.useState(props.columns || null);
+  const [ columns, setColumns ] = useState(props.columns || null);
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("subjects:filters"));
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
 

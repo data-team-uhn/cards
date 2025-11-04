@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import EditIcon from '@mui/icons-material/Edit';
 import MoreIcon from '@mui/icons-material/MoreHoriz';

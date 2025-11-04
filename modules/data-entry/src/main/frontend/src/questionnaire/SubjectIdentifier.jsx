@@ -17,8 +17,6 @@
 //  under the License.
 //
 
-import React from "react";
-
 import { Link } from 'react-router';
 
 function defaultCreator (node) {
@@ -47,10 +45,10 @@ export function getSubjectIdFromPath (path) {
 export function getHierarchy (node, RenderComponent, propsCreator, extensionURL="") {
   let HComponent = RenderComponent || Link;
   let props = propsCreator || extensionCreator(node, extensionURL);
-  let output = <React.Fragment>{node.type.label} <HComponent {...props}>{node.identifier}</HComponent></React.Fragment>;
+  let output = <>{node.type.label} <HComponent {...props}>{node.identifier}</HComponent></>;
   if (node["parents"]?.type) {
     let ancestors = getHierarchy(node["parents"], HComponent, propsCreator, extensionURL);
-    return <React.Fragment>{ancestors} / {output}</React.Fragment>
+    return <>{ancestors} / {output}</>
   } else {
     return output;
   }
@@ -63,7 +61,7 @@ export function getShortHierarchy (node, RenderComponent, propsCreator, extensio
   let output = <HComponent {...props}>{node.identifier}</HComponent>;
   if (node["parents"] && node["parents"].type) {
     let ancestors = getShortHierarchy(node["parents"], HComponent, propsCreator, extensionURL);
-    return <React.Fragment>{ancestors} / {output}</React.Fragment>
+    return <>{ancestors} / {output}</>
   } else {
     return output;
   }

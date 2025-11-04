@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, forwardRef } from "react";
+import { useState, forwardRef } from "react";
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";

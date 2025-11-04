@@ -16,8 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
-
 import { Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import { makeStyles } from 'tss-react/mui';

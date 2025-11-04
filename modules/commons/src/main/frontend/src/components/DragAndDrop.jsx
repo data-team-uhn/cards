@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 import AttachFile from '@mui/icons-material/AttachFile';
 import { IconButton, Typography } from "@mui/material";

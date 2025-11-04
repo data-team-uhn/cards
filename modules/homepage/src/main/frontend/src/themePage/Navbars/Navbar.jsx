@@ -9,8 +9,6 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import React from "react";
-
 import Menu from "@mui/icons-material/Menu";
 import { AppBar, Box, Toolbar, IconButton } from "@mui/material";
 import classNames from "classnames";

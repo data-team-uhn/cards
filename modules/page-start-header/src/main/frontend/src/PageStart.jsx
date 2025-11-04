@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { loadExtensions } from "./uiextension/extensionManager";
 
@@ -89,7 +89,7 @@ export default function PageStart(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       {
         visualComponents.map((ThisComp, index) => {
           return (
@@ -112,6 +112,6 @@ export default function PageStart(props) {
           );
         })
       }
-    </React.Fragment>
+    </>
   );
 }

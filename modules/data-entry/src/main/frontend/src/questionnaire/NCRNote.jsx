@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { CircularProgress, Chip, Tooltip, Typography } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
@@ -63,10 +63,10 @@ function ParsedNoteSection (props) {
     onAddSuggestion(firstMatch[ONTOLOGY_KEY].replace(/:/g, ""), firstMatch["names"][0])
   }
 
-  return (<React.Fragment>
+  return (<>
     <Typography display="inline">{frontMatter}</Typography>
     {hasMatch &&
-      <React.Fragment>
+      <>
         <Tooltip title={`Add ${matchName} (${matchID}) to selection`}>
           <Chip
             size="small"
@@ -91,8 +91,8 @@ function ParsedNoteSection (props) {
           onAddSuggestion={onAddSuggestion}
         />
         <Typography display="inline">{endMatter}</Typography>
-      </React.Fragment>}
-  </React.Fragment>)
+      </>}
+  </>)
 }
 
 function NCRNote (props) {

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
@@ -205,7 +205,7 @@ function DroppableAnswerOption(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       <div className={classes.optionsList}>
         {generateOption(false)}
         {draggableState?.type === 'dragging-over' && draggableState?.closestEdge &&
@@ -216,7 +216,7 @@ function DroppableAnswerOption(props) {
           generateOption(true),
           draggableState.container
         )}
-    </React.Fragment>
+    </>
   )
 }
 
