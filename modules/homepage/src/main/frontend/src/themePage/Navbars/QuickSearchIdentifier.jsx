@@ -20,7 +20,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import DescriptionIcon from "@mui/icons-material/Description";
 import OtherIcon from '@mui/icons-material/Reorder';
-import { Avatar, ListItemButton, ListItemText, ListItemAvatar }  from "@mui/material";
+import { Avatar, ListItemButton, ListItemText, ListItemAvatar } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { Link } from "react-router";
 

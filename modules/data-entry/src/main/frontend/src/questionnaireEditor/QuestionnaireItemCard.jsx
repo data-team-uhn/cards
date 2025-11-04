@@ -38,7 +38,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { checkPropTypes } from "../propTypes";
 import EditDialog from "./EditDialog";
-import { camelCaseToWords }  from "./LabeledField";
+import { camelCaseToWords } from "./LabeledField";
 import FormattedText from "../components/FormattedText.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 
