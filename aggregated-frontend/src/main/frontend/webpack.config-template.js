@@ -17,13 +17,11 @@
  * under the License.
  */
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import RuntimeGlobals from "webpack/lib/RuntimeGlobals.js";
-import { CleanWebpackPlugin } from "clean-webpack-plugin";
-import { WebpackAssetsManifest } from "webpack-assets-manifest";
-import TerserPlugin from "terser-webpack-plugin";
-import ESLintPlugin from "eslint-webpack-plugin";
+const RuntimeGlobals = require("webpack/lib/RuntimeGlobals");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { WebpackAssetsManifest } = require('webpack-assets-manifest');
+const TerserPlugin = require('terser-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 /*
  * Webpack 5.25.0 changed how the code is generated to no longer return the module by default when eval-ing it.
@@ -46,14 +44,11 @@ class ReturnModulePlugin {
   }
 }
 
-import packageJson from "./package.json" with { type: "json" };
+module_name = require("./package.json").name + ".";
 
-const module_name = packageJson.name + ".";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const isProduction = process.argv.find(arg => arg.startsWith("--mode"))?.substring(7) == 'production';
 
-export default {
+module.exports = {
   mode: 'development',
   devtool: 'eval-cheap-module-source-map',
   cache: {
