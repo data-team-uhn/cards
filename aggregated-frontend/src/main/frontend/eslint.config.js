@@ -46,6 +46,7 @@ const commonGlobals = {
 };
 
 const commonPlugins = {
+  js,
   react,
   "react-hooks": reactHooks,
   "unused-imports": unusedImports,
@@ -79,6 +80,8 @@ const commonRules = {
   "react/jsx-uses-vars": "error",
   "no-unused-vars": "off",
   "no-trailing-spaces": "error",
+  "no-undef": "off",
+  "no-extra-boolean-cast": "off",
   "unused-imports/no-unused-imports": "error",
   ...whitespaceRules,
   "max-len": ["error", { "code": 120, "ignoreUrls": true, "ignoreStrings": true, "ignoreComments": true }]
@@ -126,6 +129,7 @@ export default defineConfig([
       ...commonPlugins,
       "jsx-a11y": jsxA11y,
     },
+    extends: ["js/recommended"],
     ...commonConfigs,
   },
 
