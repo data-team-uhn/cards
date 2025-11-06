@@ -462,7 +462,7 @@ function ExportButton(props) {
           <Grid container alignItems='baseline' className={classes.container}>
             <Grid size={4}><Typography variant="subtitle2">Last modified between:</Typography></Grid>
             <Grid size={8}>
-              {/* eslint-disable-next-line max-len */}
+              {/* eslint-disable-next-line @stylistic/max-len */}
               { getDateRange(modifiedAfter, setModifiedAfter, modifiedBefore, setModifiedBefore, modifiedRangeIsInvalid) }
             </Grid>
           </Grid>
@@ -517,7 +517,7 @@ function ExportButton(props) {
             disabled={createdRangeIsInvalid || modifiedRangeIsInvalid}
             onClick={handleExport}
           >
-              Export
+            Export
           </Button>
         </DialogActions>
       </ResponsiveDialog>

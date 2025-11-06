@@ -115,7 +115,7 @@ function FormFields(props) {
                 className={classes.formAction}
                 disabled={!isValid}
               >
-                  Change User Password
+                Change User Password
               </Button>
             </span>
           </Tooltip>
@@ -127,7 +127,7 @@ function FormFields(props) {
           className={classes.formAction}
           disabled={!isValid}
         >
-            Change User Password
+          Change User Password
         </Button>
       }
       <Button
@@ -135,7 +135,7 @@ function FormFields(props) {
         className={classes.formAction}
         onClick={handleReset}
       >
-          Cancel
+        Cancel
       </Button>
     </form>
   );

@@ -194,7 +194,7 @@ export default function VocabulariesAdminPage() {
         {wrapSection(<>
           <Grid>
             <Typography variant="h6">
-          Installed
+              Installed
             </Typography>
           </Grid>
           { localLoaded && localVocabList.length == 0 &&

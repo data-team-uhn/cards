@@ -193,8 +193,9 @@ export default function VariantFilesContainer() {
     if (processedFile.tumor.existed && processedFile.tumor.id) {
       // query data about all of the already uploaded files
       let url = new URL("/query", window.location.origin);
-      {/* eslint-disable-next-line max-len */}
-      let sqlquery = `select f.* from [cards:Form] as n inner join [nt:file] as f on isdescendantnode(f, n) where n.questionnaire = '${somaticVariantsUUID}' and n.subject = '${processedFile.region?.uuid || processedFile.tumor.uuid}'`;
+      let sqlquery = `select f.* from [cards:Form] as n inner join [nt:file] as f on isdescendantnode(f, n)` +
+        ` where n.questionnaire = '${somaticVariantsUUID}'` +
+        ` and n.subject = '${processedFile.region?.uuid || processedFile.tumor.uuid}'`;
       url.searchParams.set("query", sqlquery);
 
       return fetchWithReLogin(globalLoginDisplay, url)
@@ -894,8 +895,8 @@ export default function VariantFilesContainer() {
                     setShowVersionsDialog(true);
                     setFileSelected(file);
                   }}>
-                    There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
-                    of this file
+                  There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
+                  of this file
                 </Link>
               }
             </Grid>

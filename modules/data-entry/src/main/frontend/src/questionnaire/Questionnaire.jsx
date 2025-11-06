@@ -151,8 +151,9 @@ let Questionnaire = (props) => {
           href={`/Questionnaires/${id}.deep.-identify.importable.json`}
           onClick={() => {
             setActionsMenu(null);
-          }}>
-                    Export as JSON
+          }}
+        >
+          Export as JSON
         </Button>
       </ListItem>
       <ListItem className={classes.actionsMenuItem}>

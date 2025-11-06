@@ -303,7 +303,7 @@ function VocabularyTree(props) {
             variant="contained"
             disabled={!selectionChanged || maxAnswers > 0 && selectedTerms.length > maxAnswers}
             className={classes.browseAction} >
-              Done
+            Done
           </Button>
           <Button onClick={onCancel}
             variant="outlined"
