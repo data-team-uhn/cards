@@ -784,7 +784,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
 
     let content = "";
     switch(entryDefinition["dataType"]) {
-      case "file":
+      case "file": {
         // The value can either be a single value or an array of values; force it into an array
         let paths = Array.of(existingQuestionAnswer[1]["value"]).flat();
         content = <>
@@ -805,6 +805,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
           })}
         </>
         break;
+      }
       case "pedigree":
         if (!prettyPrintedAnswers) {
           // Display absolutely nothing if the value does not exist
