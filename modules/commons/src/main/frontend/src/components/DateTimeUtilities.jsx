@@ -24,7 +24,7 @@ export default class DateTimeUtilities {
 
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
-  static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss.SSSZ";
+  static slingDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
   static defaultDateFormat = "yyyy-MM-dd";
   static VIEW_DATE_FORMAT = "yyyy/MM/dd";
 
@@ -123,7 +123,7 @@ export default class DateTimeUtilities {
 
   static dateToFormattedString(date, textFieldType) {
     return (!date?.isValid) ? "" :
-      textFieldType === "date" ? date.toFormat(this.defaultDateFormat) : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
+      textFieldType === "date" ? date.toFormat(this.defaultDateFormat) : date.toFormat("yyyy-MM-dd'T'HH:mm");
   }
 
   // Format a DateAnswer given the given dateFormat
@@ -224,7 +224,7 @@ export default class DateTimeUtilities {
 
     if (relativeDate.startsWith("today")) {
       absoluteDate = DateTime.now();
-      let differenceInDays = relativeDate.match(/^today(\s*([\+-])\s*(\d+))?$/)?.slice(2,4).join("");
+      let differenceInDays = relativeDate.match(/^today(\s*([+-])\s*(\d+))?$/)?.slice(2,4).join("");
       absoluteDate = absoluteDate.plus({ days: +differenceInDays });
 
     } else {

@@ -29,11 +29,11 @@ import Form from "./Form";
  */
 export default function FormView(props) {
   let location = useLocation();
-  let [ id, setId ] = useState(/Forms\/([^.\/]+)/.exec(location.pathname)[1]);
+  let [ id, setId ] = useState(/Forms\/([^./]+)/.exec(location.pathname)[1]);
   let [ mode, setMode ] = useState(location.pathname.lastIndexOf(".") > location.pathname.lastIndexOf("/") ? location.pathname.substring(location.pathname.lastIndexOf(".") + 1) : "view");
 
   useEffect(() => {
-    setId(/Forms\/([^.\/]+)/.exec(location.pathname)[1]);
+    setId(/Forms\/([^./]+)/.exec(location.pathname)[1]);
     let dotIndex = location.pathname.lastIndexOf(".");
     let pathIndex = location.pathname.lastIndexOf("/");
     setMode(dotIndex > pathIndex ? location.pathname.substring(dotIndex + 1) : "view");

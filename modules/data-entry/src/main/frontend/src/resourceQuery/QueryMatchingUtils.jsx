@@ -89,7 +89,7 @@ export default class QueryMatchingUtils {
   // query. Returns the excerpt padded with "..." left and/or right if applicable.
   static getMatchingExcerpt = (query, text) => {
     let word = QueryMatchingUtils.parseQuery(query)[0];
-    let sentences = text.split(/[\.;]\s+/);
+    let sentences = text.split(/[.;]\s+/);
     // Find the sentence containing the first word
     let result = sentences.filter(sentence => (sentence.toLowerCase().indexOf(word) >= 0))[0] || "";
     let MAX_CONTEXT = 25;

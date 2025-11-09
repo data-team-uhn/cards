@@ -55,7 +55,7 @@ function createTableCell(node) {
     let label = node.text;
     let path = node["@path"];
     try {
-      let questionnairePath = /^(.*\/Questionnaires\/[^\/]+)/.exec(path)[0];
+      let questionnairePath = /^(.*\/Questionnaires\/[^/]+)/.exec(path)[0];
       let link = `../content.html/admin${questionnairePath}#${path}`;
       return <Link to={link} underline="hover">{label}</Link>
     } catch {
