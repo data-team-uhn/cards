@@ -109,12 +109,13 @@ function VocabularyBrowser(props) {
   let getInfo = (path, parentId = "") => {
     // If we don't yet know anything about our vocabulary, fill it in
     var vocabPath = path.split("/").slice(0, -1).join("/");
+    var url = "";
     if (vocab.path != vocabPath) {
-      var url = new URL(vocabPath + ".json", window.location.origin);
+      url = new URL(vocabPath + ".json", window.location.origin);
       MakeRequest(url, parseVocabInfo);
     }
 
-    var url = new URL(path + ".info.json", window.location.origin);
+    url = new URL(path + ".info.json", window.location.origin);
     MakeRequest(url, showInfo, { parentInfoId : parentId });
   }
 
