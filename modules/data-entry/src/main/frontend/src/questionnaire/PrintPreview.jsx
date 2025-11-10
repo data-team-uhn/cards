@@ -151,7 +151,7 @@ function PrintPreview(props) {
   }, [open]);
 
   useEffect(() => {
-    if (disablePreview && typeof(content) != undefined) {
+    if (disablePreview && typeof content !== "undefined") {
       handlePrint();
       // onClose && onClose();
     }

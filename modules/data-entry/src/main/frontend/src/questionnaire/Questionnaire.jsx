@@ -586,7 +586,7 @@ let QuestionnaireEntry = (props) => {
       return true;
     }
     return (
-      typeof(entryData[key] != undefined) &&
+      typeof entryData[key] !== "undefined" &&
       typeof(value) == "object" &&
       typeof(value[entryData[key]]) == "object" &&
       Object.entries(value[entryData[key]]).find(([k, v]) => findChildrenSpec(k, v))
