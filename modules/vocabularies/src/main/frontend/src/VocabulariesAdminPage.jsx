@@ -90,7 +90,7 @@ export default function VocabulariesAdminPage() {
 
   function addSetter(acronym, setFunction, type) {
     var copy = acronymPhaseSettersObject;
-    if (copy.hasOwnProperty(acronym)) {
+    if (Object.hasOwn(copy, acronym)) {
       copy[acronym][type] = setFunction;
     } else {
       var temp = {};
@@ -102,11 +102,8 @@ export default function VocabulariesAdminPage() {
 
   function setPhase(acronym, phase) {
     const setters = acronymPhaseSettersObject[acronym];
-    if (setters.hasOwnProperty("local")) {
-      setters["local"](phase);
-    }
-    if (setters.hasOwnProperty("remote")) {
-      setters["remote"](phase);
+    for (const key of ['local', 'remote']) {
+      setters[key]?.(phase);
     }
     // update acronyms object
     let phases = acronymPhaseObject;

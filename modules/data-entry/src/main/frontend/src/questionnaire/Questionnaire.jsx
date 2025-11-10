@@ -617,7 +617,7 @@ let QuestionnaireEntry = (props) => {
       Object.values(childModels)
         .filter(v => {
           if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
-          if (!v.hasOwnProperty("max")) return true;
+          if (!Object.hasOwn(v, 'max')) return true;
           let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
           return (Object.values(entryData).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
         })
