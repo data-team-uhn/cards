@@ -212,7 +212,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>text</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -226,7 +226,7 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>0</name>
+				<name>in-person</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -235,7 +235,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>0</value>
+					<value>in-person</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -245,7 +245,7 @@
 				</property>
 			</node>
 			<node>
-				<name>1</name>
+				<name>phone</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -254,7 +254,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>1</value>
+					<value>phone</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -264,7 +264,7 @@
 				</property>
 			</node>
 			<node>
-				<name>2</name>
+				<name>virtual</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -273,7 +273,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>2</value>
+					<value>virtual</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -329,8 +329,8 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>1</value>
-						<value>2</value>
+						<value>phone</value>
+						<value>virtual</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -371,7 +371,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>1</value>
+							<value>phone</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -548,7 +548,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>2</value>
+							<value>virtual</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3193,7 +3193,7 @@ If you have a personal care concern or need help please speak directly to your c
 					<property>
 						<name>value</name>
 						<values>
-							<value>0</value>
+							<value>in-person</value>
 						</values>
 						<type>String</type>
 					</property>
