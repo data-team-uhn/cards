@@ -42,10 +42,10 @@ const ComposedIcon = (props) => {
     size = 'small',
     color = 'inherit',
     position = 'bottom-end',
-    theme = useTheme(),
     disabled,
   } = props;
 
+  const theme = useTheme();
   const bgDefault = theme.palette.background.default;
   const shadowOffsets = [
     `0.75px 0px 0.5px ${bgDefault}`,

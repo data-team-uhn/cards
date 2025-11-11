@@ -64,16 +64,11 @@ function Unsubscribe (props) {
   const params = new URLSearchParams(window.location.search);
   const patient = params.get("patient");
   const authToken = params.get("auth_token");
-  if (!(patient || authToken)) {
-    return (
-      <ErrorPage
-        title="Invalid access"
-        message="This page can only be accessed by opening an invitation to fill in a survey"
-      />
-    );
-  }
 
   useEffect(() => {
+    if (!(patient || authToken)) {
+      return;
+    }
     fetch("/Survey.unsubscribe" + (patient ? `?patient=${patient}` : ""), { method: 'GET' })
       .then(async (response) => {
         if (response.ok) {
@@ -102,7 +97,16 @@ function Unsubscribe (props) {
         let errMsg = "Cannot unsubscribe: ";
         setError(errMsg + (error.error || error));
       });
-  }, []);
+  }, [patient, authToken]);
+
+  if (!(patient || authToken)) {
+    return (
+      <ErrorPage
+        title="Invalid access"
+        message="This page can only be accessed by opening an invitation to fill in a survey"
+      />
+    );
+  }
 
   let unsubscribe = (value) => {
     let request_data = new FormData();

@@ -74,7 +74,7 @@ function SearchBar(props) {
     invertColors,
     onChange,
     onPopperClose,
-    onSelect = defaultRedirect,
+    onSelect,
     onSelectFinish,
     disableButton,
     queryConstructor = defaultQueryConstructor,
@@ -102,6 +102,7 @@ function SearchBar(props) {
   let input = useRef();
   let suggestionMenu = useRef();
   let searchBar = useRef();
+  let navigate = useNavigate();
 
   // Fetch saved admin config settings
   useEffect(() => {
@@ -193,6 +194,15 @@ function SearchBar(props) {
         className={classes.dropdownItem}
       />
     )
+  }
+
+  let defaultRedirect = (event, row, props) => {
+    // Redirect using React-router
+    const anchor = row[CARDS_QUERY_MATCH_KEY][CARDS_QUERY_MATCH_PATH_KEY];
+    const path = (row["jcr:primaryType"] == "cards:Questionnaire") ? "/content.html/admin" : "/content.html";
+    if (row["@path"]) {
+      navigate(path + row["@path"] + "#" + anchor);
+    }
   }
 
   return(
@@ -291,7 +301,7 @@ function SearchBar(props) {
                         disabled={result["disabled"]}
                         onClick={(e) => {
                           disableDropdownItemLink && setSearch(result.entityIdentifier);
-                          onSelect(e, result, props);
+                          onSelect ? onSelect(e, result, props) : defaultRedirect(e, result, props);
                           onSelectFinish?.();
                           setPopperOpen(false);
                         }}
@@ -341,16 +351,6 @@ let defaultResultConstructor = (props) => (
     />
   </>
 );
-
-let defaultRedirect = (event, row, props) => {
-  const navigate = useNavigate();
-  // Redirect using React-router
-  const anchor = row[CARDS_QUERY_MATCH_KEY][CARDS_QUERY_MATCH_PATH_KEY];
-  const path = (row["jcr:primaryType"] == "cards:Questionnaire") ? "/content.html/admin" : "/content.html";
-  if (row["@path"]) {
-    navigate(path + row["@path"] + "#" + anchor);
-  }
-}
 
 SearchBar.propTypes = {
   invertColors: PropTypes.bool,
