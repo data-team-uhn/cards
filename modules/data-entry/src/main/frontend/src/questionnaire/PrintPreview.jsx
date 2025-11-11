@@ -147,7 +147,8 @@ function PrintPreview(props) {
 
   const width = "sm";
   const theme = useTheme();
-  const isFullScreen = fullScreen || useMediaQuery(theme.breakpoints.down(width));
+  const isBelowSm = useMediaQuery(theme.breakpoints.down(width));
+  const isFullScreen = fullScreen || isBelowSm;
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 

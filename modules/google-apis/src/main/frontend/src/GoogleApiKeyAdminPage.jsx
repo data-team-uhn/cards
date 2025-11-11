@@ -32,7 +32,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
 
 const APIKEY_SERVLET_URL = "/.googleApiKey";
 
-export default function googleApiKeyAdminPage() {
+export default function GoogleApiKeyAdminPage() {
   const [ googleApiKey, setGoogleApiKey ] = useState("");
   const [ hasChanges, setHasChanges ] = useState(false);
   const [ error, setError ] = useState();

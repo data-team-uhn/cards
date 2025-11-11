@@ -165,13 +165,13 @@ let ConditionalValue = (props) => {
   let { objectKey, data } = props;
 
   let values = data[objectKey]?.value || [];
+  let variables = useQuestionnaireReaderContext();
 
   if (values.length == 0) {
     return null;
   }
 
   let isReference = data?.[objectKey]?.isReference;
-  let variables = useQuestionnaireReaderContext();
 
   return (
     values.map(value => (
