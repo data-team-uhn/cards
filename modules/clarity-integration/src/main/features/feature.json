@@ -22,7 +22,7 @@
         "start-order":"25"
       },
       {
-        "id":"com.microsoft.sqlserver:mssql-jdbc:11.2.1.jre11",
+        "id":"com.microsoft.sqlserver:mssql-jdbc:11.2.4.jre11",
         "start-order":"25"
       },
       {
