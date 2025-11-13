@@ -23,7 +23,7 @@ import ConditionalComponentManager from "./ConditionalComponentManager";
 let transform = (values, transformerFunc) => values.map(v => Array.isArray(v) ? v.map(e => transformerFunc(e)) : transformerFunc(v));
 
 const TRANSFORMATIONS = {
-  "text": (a, b) => [a, b],
+  "text": (a, b) => transform([a, b], v => String(v)),
   "date": (a, b) => transform([a, b], v => new Date(v).getTime()),
   "long": (a, b) => transform([a, b], parseInt),
   "decimal": (a, b) => transform([a, b], parseFloat),
