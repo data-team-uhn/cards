@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.jcr.ItemExistsException;
@@ -97,12 +98,13 @@ public final class OntologyIndexerUtils
                 String[] valuesArray = entry.getValue().toArray(ArrayUtils.EMPTY_STRING_ARRAY);
                 // Sometimes the source may contain more than one label or description, but we can't allow that.
                 // Always use one value for these special fields.
-                if (("label".equals(entry.getKey()) || "description".equals(entry.getKey())
-                    || "isRoot".equals(entry.getKey()))
-                        && valuesArray.length == 1) {
-                    vocabularyTermNode.setProperty(entry.getKey(), valuesArray[0]);
+                if (Set.of("label", "description", "isRoot").contains(entry.getKey())) {
+                    // the label can have more than one value in array, should be skipped in that case
+                    if (valuesArray.length == 1) {
+                        vocabularyTermNode.setProperty(entry.getKey(), valuesArray[0]);
+                    }
                 } else {
-                    vocabularyTermNode.setProperty(entry.getKey(), valuesArray);
+                    vocabularyTermNode.setProperty(entry.getKey().replace(":", "_"), valuesArray);
                 }
             }
         } catch (RepositoryException e) {
