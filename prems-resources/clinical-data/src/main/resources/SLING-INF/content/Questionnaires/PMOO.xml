@@ -730,7 +730,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>During this visit</value>
+			<value>During this visit (continued)</value>
 			<type>String</type>
 		</property>
 		<node>

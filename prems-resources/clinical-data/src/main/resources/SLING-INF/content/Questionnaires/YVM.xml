@@ -2532,7 +2532,7 @@ Note: If you had a telephone appointment, some of these options may not apply to
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>During your appointment</value>
+			<value>During your appointment (continued)</value>
 			<type>String</type>
 		</property>
 		<node>
