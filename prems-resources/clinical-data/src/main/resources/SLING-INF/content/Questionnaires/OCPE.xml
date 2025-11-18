@@ -3313,7 +3313,7 @@ If you have a personal care concern or need help please speak directly to your c
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Very good</value>
+					<value>Very good</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3389,7 +3389,7 @@ If you have a personal care concern or need help please speak directly to your c
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Very poor</value>
+					<value>Very poor</value>
 					<type>String</type>
 				</property>
 				<property>
