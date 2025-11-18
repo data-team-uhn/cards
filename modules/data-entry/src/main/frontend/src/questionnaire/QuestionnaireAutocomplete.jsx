@@ -190,13 +190,15 @@ function QuestionnaireAutocomplete(props) {
             variant="standard"
             placeholder={placeholderText}
             {...params}
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: !multiple && !!selection.length &&
-                <InputAdornment position="start">
-                  { getAvatar(entities.find(v => selection.includes(getOptionValue(v))).type) }
-                </InputAdornment>,
-            }}
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                startAdornment: !multiple && !!selection.length &&
+                  <InputAdornment position="start">
+                    { getAvatar(entities.find(v => selection.includes(getOptionValue(v))).type) }
+                  </InputAdornment>,
+              }}
+            }
           />
         }
         {...rest}
