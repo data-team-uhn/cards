@@ -18,23 +18,23 @@
 //
 import React, { useState } from 'react';
 import {
-    Checkbox,
-    FormControlLabel,
-    FormGroup,
-    FormLabel,
-    InputAdornment,
-    List,
-    ListItem,
-    TextField
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  InputAdornment,
+  List,
+  ListItem,
+  TextField
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from 'tss-react/mui';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
 export const DATA_RETENTION_CONFIG_PATH = "/apps/cards/config/DataRetention";
 export const DEFAULT_DATA_RETENTION_CONFIG = {
-    deleteUnneededPatientDetails: false,
-    deleteDraftAnswers: false,
-    draftLifetime: "-1"
+  deleteUnneededPatientDetails: false,
+  deleteDraftAnswers: false,
+  draftLifetime: "-1"
 };
 
 const useStyles = makeStyles(theme => ({
@@ -79,19 +79,19 @@ function DataRetentionConfiguration() {
   }
 
   let renderConfigCheckbox = (key) => (
-      <ListItem>
-        <FormControlLabel control={
-          <Checkbox
-            name={key}
-            checked={dataRetentionConfig?.[key] || DEFAULT_DATA_RETENTION_CONFIG[key]}
-            onChange={event => {
-              setDataRetentionConfig({...dataRetentionConfig, [key]: event.target.checked});
-              setHasChanges(true);
-            }}
-          />}
-          label={LABELS[key]}
-        />
-      </ListItem>
+    <ListItem>
+      <FormControlLabel control={
+        <Checkbox
+          name={key}
+          checked={dataRetentionConfig?.[key] || DEFAULT_DATA_RETENTION_CONFIG[key]}
+          onChange={event => {
+            setDataRetentionConfig({...dataRetentionConfig, [key]: event.target.checked});
+            setHasChanges(true);
+          }}
+        />}
+        label={LABELS[key]}
+      />
+    </ListItem>
   );
 
   let onInputValueChanged = (key, value) => {
@@ -101,43 +101,45 @@ function DataRetentionConfiguration() {
   }
 
   let renderConfigInput = (key, unit) => (
-      <ListItem>
-        <FormGroup className={classes.textField}>
-          <FormLabel>{LABELS[key][0]}</FormLabel>
-          <TextField
-            variant="standard"
-            type="number"
-            onChange={event => onInputValueChanged(key, event.target.value)}
-            onBlur={event => onInputValueChanged(key, event.target.value)}
-            placeholder={DEFAULT_DATA_RETENTION_CONFIG[key] || ""}
-            value={dataRetentionConfig?.[key]}
-            error={error[key]}
-            helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
-            InputProps={{
+    <ListItem>
+      <FormGroup className={classes.textField}>
+        <FormLabel>{LABELS[key][0]}</FormLabel>
+        <TextField
+          variant="standard"
+          type="number"
+          onChange={event => onInputValueChanged(key, event.target.value)}
+          onBlur={event => onInputValueChanged(key, event.target.value)}
+          placeholder={DEFAULT_DATA_RETENTION_CONFIG[key] || ""}
+          value={dataRetentionConfig?.[key]}
+          error={error[key]}
+          helperText={error[key] ? LABELS[key][2] : LABELS[key][1]}
+          slotProps={{
+            input: {
               endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
-            }}
-            inputProps={LIMITS[key]}
-          />
-        </FormGroup>
-      </ListItem>
-    );
+            },
+            htmlInput: LIMITS[key],
+          }}
+        />
+      </FormGroup>
+    </ListItem>
+  );
 
   return (
-      <AdminConfigScreen
-          title="Data Retention"
-          configPath={DATA_RETENTION_CONFIG_PATH}
-          configTemplate={Object.keys(DEFAULT_DATA_RETENTION_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
-          onConfigFetched={setDataRetentionConfig}
-          hasChanges={hasChanges}
-          buildConfigData={buildConfigData}
-          onConfigSaved={() => setHasChanges(false)}
-          >
-          <List>
-            { renderConfigCheckbox("deleteUnneededPatientDetails") }
-            { renderConfigCheckbox("deleteDraftAnswers") }
-            { renderConfigInput("draftLifetime", "days") }
-          </List>
-      </AdminConfigScreen>
+    <AdminConfigScreen
+      title="Data Retention"
+      configPath={DATA_RETENTION_CONFIG_PATH}
+      configTemplate={Object.keys(DEFAULT_DATA_RETENTION_CONFIG).reduce((t, k) => ({...t, [k] : ""}), {})}
+      onConfigFetched={setDataRetentionConfig}
+      hasChanges={hasChanges}
+      buildConfigData={buildConfigData}
+      onConfigSaved={() => setHasChanges(false)}
+      >
+      <List>
+        { renderConfigCheckbox("deleteUnneededPatientDetails") }
+        { renderConfigCheckbox("deleteDraftAnswers") }
+        { renderConfigInput("draftLifetime", "days") }
+      </List>
+    </AdminConfigScreen>
   );
 }
 
