@@ -38,6 +38,7 @@
         "//CHILDREN" : {"Question" : "QuestionMatrixEntry.json"},
         "minAnswers": "long",
         "maxAnswers": "long",
+        "verticalLayout" : "boolean",
         "dataType": {
           "text": {
             "answerOptions" : {

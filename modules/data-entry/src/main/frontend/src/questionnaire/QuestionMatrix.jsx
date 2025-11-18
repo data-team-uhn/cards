@@ -63,7 +63,7 @@ const DATA_TO_NODE_TYPE = {
 
 let QuestionMatrix = (props) => {
   const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, pageActive, contentOffset, ...rest} = props;
-  const { maxAnswers, minAnswers } = {...sectionDefinition, ...props};
+  const { maxAnswers, minAnswers, verticalLayout } = {...sectionDefinition, ...props};
 
   // Use existing existingAnswer, Otherwise, create a new UUID
   const isRadio = maxAnswers === 1;
@@ -72,7 +72,7 @@ let QuestionMatrix = (props) => {
   const answerSectionID = existingSectionAnswer ? existingSectionAnswer[0] : uuidv4();
   const [sectionAnswerPath, setSectionAnswerPath ] = useState(path + "/" + answerSectionID);
 
-  const enableVerticalLayout = useMediaQuery('(max-width:600px)');
+  const enableVerticalLayout = verticalLayout || useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
     if (existingSectionAnswer) {
