@@ -156,6 +156,22 @@ public class ClarityImportTask implements Runnable
             this.questionnaires.add(mapping);
         }
 
+        /**
+         * Check if any of this mapping's update policies allow creating new subjects.
+         *
+         * @return {@code true} if any of the mappings enable creating subjects
+         */
+        private boolean shouldCreateSubjectIfAbsent()
+        {
+            // Check if new subjects should be created or if only existing subjects should be processed
+            for (ClarityQuestionnaireMapping questionnaireMapping : this.questionnaires) {
+                if (questionnaireMapping.updatePolicy != UpdatePolicy.onlyExisting) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         @Override
         public String toString()
         {
@@ -480,7 +496,7 @@ public class ClarityImportTask implements Runnable
     {
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
             // Get or create the subject
-            Resource newSubjectParent = shouldCreateSubjectIfAbsent(childSubjectMapping)
+            Resource newSubjectParent = childSubjectMapping.shouldCreateSubjectIfAbsent()
                 ? getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent)
                 : getSubject(resolver, row, childSubjectMapping);
             if (newSubjectParent == null) {
@@ -516,23 +532,6 @@ public class ClarityImportTask implements Runnable
             }
             walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
         }
-    }
-
-    /**
-     * Check if any of the subject mapping update policies allow creating new subjects.
-     *
-     * @param subjectMapping The mappings to search for any policies that enable creating new subjects
-     * @return {@code true} if any of the mappings enable creating subjects
-     */
-    private boolean shouldCreateSubjectIfAbsent(ClaritySubjectMapping subjectMapping)
-    {
-        // Check if new subjects should be created or if only existing subjects should be processed
-        for (ClarityQuestionnaireMapping questionnaireMapping : subjectMapping.questionnaires) {
-            if (questionnaireMapping.updatePolicy != UpdatePolicy.onlyExisting) {
-                return true;
-            }
-        }
-        return false;
     }
 
     // Methods for storing subjects
