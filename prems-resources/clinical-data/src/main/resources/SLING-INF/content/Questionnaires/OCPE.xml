@@ -3510,6 +3510,25 @@ If you have a personal care concern or need help please speak directly to your c
 					<type>Long</type>
 				</property>
 			</node>
+			<node>
+				<name>4</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Not applicable</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
 		</node>
 
 		<!-- Question 22 -->
