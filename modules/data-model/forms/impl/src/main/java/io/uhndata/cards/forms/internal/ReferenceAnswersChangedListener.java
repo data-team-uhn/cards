@@ -214,7 +214,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     private Set<Node> searchComputedReferenceAnswers(String computedFromAnswerPath, Session session)
             throws RepositoryException
     {
-        final Node formNode = getParentFormNode(session.getNode(computedFromAnswerPath));
+        final Node formNode = this.formUtils.getForm(session.getNode(computedFromAnswerPath));
         final NodeIterator children = formNode.getNodes();
         return searchForComputedReferencesAnswers(children, computedFromAnswerPath);
     }
@@ -253,7 +253,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     {
         Set<String> checkoutPaths = new HashSet<>();
         for (Node node : nodesToBeDeleted) {
-            final String formPath = getParentFormNode(node).getPath();
+            final String formPath = this.formUtils.getForm(node).getPath();
             versionManager.checkout(formPath);
             checkoutPaths.add(formPath);
             node.remove();
@@ -346,24 +346,5 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     private String escape(final String value)
     {
         return value.replace("'", "''");
-    }
-
-    /**
-     * Gets the node of the parent Form for a given descendant node.
-     *
-     * @param child node for which the parent form is sought
-     * @return node of the parent form
-     */
-    private Node getParentFormNode(Node child) throws RepositoryException
-    {
-        Node parent = child.getParent();
-
-        if (parent == null) {
-            return null;
-        }
-        if (!parent.isNodeType("cards:Form")) {
-            return getParentFormNode(parent);
-        }
-        return parent;
     }
 }
