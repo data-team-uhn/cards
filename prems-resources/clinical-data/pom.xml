@@ -82,6 +82,7 @@
               SLING-INF/content/apps/cards/clinics/UHN-OC/mailTemplates;path:=/apps/cards/clinics/UHN-OC/mailTemplates;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/YourExperience.xml;path:=/apps/cards/clarityImport/YourExperience;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/YourExperienceBickleInpatients.xml;path:=/apps/cards/clarityImport/YourExperienceBickleInpatients;overwrite:=true,
+              SLING-INF/content/apps/cards/clarityImport/UHNOutpatient.xml;path:=/apps/cards/clarityImport/UHNOutpatient;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/PMH-YVM.xml;path:=/apps/cards/clarityImport/PMH-YVM;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/PMH-OO.xml;path:=/apps/cards/clarityImport/PMH-OO;overwrite:=true,
             </Sling-Initial-Content>
