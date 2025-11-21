@@ -114,7 +114,8 @@ public class ExpressionUtilsImplTest
         Mockito.when(engine.createBindings()).thenReturn(new SimpleBindings());
         Mockito.when(engine.eval(Mockito.eq("(function(){return (arg0 ? arg1 + arg2 : arg1)})()"),
             Mockito.any(Bindings.class))).thenReturn(300L);
-        Object computedAnswer = this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG);
+        Object computedAnswer = this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG, 
+            Collections.emptySet()).getResult();
         Assert.assertNotNull(computedAnswer);
         Assert.assertEquals(300L, computedAnswer);
     }
@@ -135,18 +136,23 @@ public class ExpressionUtilsImplTest
         filledBindings.put("arg0", String.valueOf(result));
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(filledBindings)))
                 .thenReturn(result);
-        Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE));
-        Assert.assertEquals(100L, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG));
+        Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE, 
+            Collections.emptySet()).getResult());
+        Assert.assertEquals(100L, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG, 
+            Collections.emptySet()).getResult());
         Assert.assertEquals(new BigDecimal("100.7"),
-            this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL));
-        Assert.assertEquals("100.7", this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING));
+            this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL, 
+                Collections.emptySet()).getResult());
+        Assert.assertEquals("100.7", this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING, 
+            Collections.emptySet()).getResult());
 
         question = session.getNode(
             "/Questionnaires/TestComputedQuestionnaire/from_double_to_computed_section/double_long_computed_question");
         filledBindings.put("arg0", "100.0");
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(filledBindings)))
             .thenReturn(100.0);
-        Assert.assertEquals("100", this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING));
+        Assert.assertEquals("100", this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING, 
+            Collections.emptySet()).getResult());
 
     }
 
@@ -165,7 +171,8 @@ public class ExpressionUtilsImplTest
         Bindings bindings = emptyBindings;
         bindings.put("arg0", String.valueOf(result));
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
-        Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG));
+        Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG, 
+            Collections.emptySet()).getResult());
     }
 
     @Test
@@ -183,7 +190,8 @@ public class ExpressionUtilsImplTest
         Bindings bindings = emptyBindings;
         bindings.put("arg0", String.valueOf(result));
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
-        Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL));
+        Assert.assertEquals(result, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL, 
+            Collections.emptySet()).getResult());
     }
 
     @Test
@@ -201,10 +209,13 @@ public class ExpressionUtilsImplTest
         Bindings bindings = emptyBindings;
         bindings.put("arg0", result);
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
-        Assert.assertEquals(100L, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG));
-        Assert.assertEquals(100.0, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE));
+        Assert.assertEquals(100L, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG, 
+            Collections.emptySet()).getResult());
+        Assert.assertEquals(100.0, this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE, 
+            Collections.emptySet()).getResult());
         Assert.assertEquals(new BigDecimal(result),
-            this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL));
+            this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL, 
+                Collections.emptySet()).getResult());
     }
 
     @Test
@@ -226,13 +237,15 @@ public class ExpressionUtilsImplTest
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(calendar);
         Assert.assertEquals(DateTimeFormatter.ISO_OFFSET_DATE_TIME
             .format(calendar.getTime().toInstant().atZone(ZoneId.systemDefault())),
-            this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING));
+            this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING, 
+                Collections.emptySet()).getResult());
 
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings)))
             .thenReturn(calendar.getTime());
         Assert.assertEquals(DateTimeFormatter.ISO_OFFSET_DATE_TIME
             .format(calendar.getTime().toInstant().atZone(ZoneId.systemDefault())),
-            this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING));
+            this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING, 
+                Collections.emptySet()).getResult());
 
     }
 
@@ -251,21 +264,26 @@ public class ExpressionUtilsImplTest
         Bindings bindings = emptyBindings;
         bindings.put("arg0", result);
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(result);
-        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG));
-        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE));
-        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL));
+        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.LONG, 
+            Collections.emptySet()).getResult());
+        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DOUBLE, 
+            Collections.emptySet()).getResult());
+        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.DECIMAL, 
+            Collections.emptySet()).getResult());
 
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings))).thenReturn(null);
-        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING));
+        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING, 
+            Collections.emptySet()).getResult());
 
         Mockito.when(engine.eval(Mockito.eq("(function(){return arg0})()"), Mockito.eq(bindings)))
             .thenThrow(new ScriptException("Evaluating the expression for question failed"));
-        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING));
+        Assert.assertNull(this.expressionUtils.evaluate(question, Collections.emptyMap(), Type.STRING, 
+            Collections.emptySet()).getResult());
 
     }
 
     @Before
-    public void setupRepo()
+    public void setupRepo() throws RepositoryException
     {
         this.context.build()
             .resource("/Questionnaires", NODE_TYPE, "cards:QuestionnairesHomepage")

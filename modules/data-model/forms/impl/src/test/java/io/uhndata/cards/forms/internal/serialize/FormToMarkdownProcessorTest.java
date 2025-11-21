@@ -68,7 +68,7 @@ public class FormToMarkdownProcessorTest
     private static final String FORM_TYPE = "cards:Form";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestSerializableQuestionnaire";
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
     private static final String TEST_FORM_PATH = "/Forms/f1";
@@ -293,7 +293,7 @@ public class FormToMarkdownProcessorTest
                 JsonObjectBuilder referenceJson = Json.createObjectBuilder(createPropertiesAndChildrenMap(reference));
                 propertiesAndChildrenMap.put(key, referenceJson.build());
             } else {
-                if (value.getClass().isArray()) {
+                if (value != null && value.getClass().isArray()) {
                     JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
                     for (Object valueUnit : (Object[]) value) {
                         if (valueUnit instanceof Resource) {
