@@ -66,7 +66,6 @@ public class ResourceOptionsLabelProcessorTest
     private static final String TEST_BRANCH_SUBJECT_PATH = "/Subjects/TestBranch";
     private static final String TEST_FORM_PATH = "/Forms/f1";
     private static final String QUESTIONNAIRE_PROPERTY = "questionnaire";
-    private static final String QUESTION_PROPERTY = "question";
     private static final String SUBJECT_PROPERTY = "subject";
     private static final String VALUE_PROPERTY = "value";
     private static final String LABEL_PROPERTY = "label";

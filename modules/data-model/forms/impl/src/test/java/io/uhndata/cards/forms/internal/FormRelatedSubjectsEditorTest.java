@@ -54,7 +54,7 @@ public class FormRelatedSubjectsEditorTest
     private static final String FORM_TYPE = "cards:Form";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
     private static final String TEST_COMPUTED_QUESTION_PATH =
             "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";

@@ -57,7 +57,7 @@ public class FormsQuickSearchEngineTest
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String FORM_TYPE = "cards:Form";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEXT_ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_SUBJECT_PATH = "/Subjects/Test";
     private static final String TEST_TEXT_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestTextComputedQuestionnaire";

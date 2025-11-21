@@ -55,7 +55,7 @@ public class AnswerOptionsLabelProcessorTest
     private static final String FORM_TYPE = "cards:Form";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String ANSWER_OPTION_TYPE = "cards:AnswerOption";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/question_7";
     private static final String TEST_QUESTION_OPTION_1_PATH = "/Questionnaires/TestQuestionnaire/question_7/o1";

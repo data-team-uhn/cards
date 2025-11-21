@@ -65,7 +65,7 @@ public class ComputedAnswersEditorTest
     private static final String FORM_TYPE = "cards:Form";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
     private static final String TEST_COMPUTED_QUESTION_PATH =
             "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
@@ -257,8 +257,9 @@ public class ComputedAnswersEditorTest
         //        final Map<String, Object> answersByQuestionName)
         when(this.expressionUtils.getDependencies(Mockito.any(Node.class)))
                 .thenReturn(new HashSet<>(Set.of("long_question")));
-        when(this.expressionUtils.evaluate(Mockito.any(Node.class), Mockito.anyMap(), Mockito.eq(Type.LONG)))
-            .thenReturn(200L);
+        when(this.expressionUtils.evaluate(Mockito.any(Node.class), Mockito.<String, Object>anyMap(), 
+                Mockito.eq(Type.LONG), Mockito.any(Set.class)))
+            .thenReturn(new ExpressionUtils.ExpressionResult(false, false, 200L, 1));
     }
 
     private void initializeEditorForFormNodeBuilder()

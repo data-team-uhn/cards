@@ -59,7 +59,7 @@ public class ReferenceAnswersEditorInSectionTest
     private static final String NODE_TYPE = "jcr:primaryType";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String FORM_TYPE = "cards:Form";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String REFERENCE_ANSWER_TYPE = "cards:ReferenceAnswer";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";

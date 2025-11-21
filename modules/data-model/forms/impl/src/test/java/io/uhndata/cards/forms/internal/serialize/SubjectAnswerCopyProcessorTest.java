@@ -57,7 +57,7 @@ public class SubjectAnswerCopyProcessorTest
     private static final String FORM_TYPE = "cards:Form";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_1";
     private static final String TEST_SECTION_PATH = "/Questionnaires/TestQuestionnaire/section_1";
@@ -135,7 +135,6 @@ public class SubjectAnswerCopyProcessorTest
     @Test
     public void getConfigurationPathCatchRepositoryExceptionAndReturnsNull() throws RepositoryException
     {
-        ResourceResolver resourceResolver = this.context.resourceResolver();
         Resource resource = mock(Resource.class);
         Node currentSubjectType = mock(Node.class);
         when(resource.adaptTo(Node.class)).thenReturn(mock(Node.class));

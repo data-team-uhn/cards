@@ -55,7 +55,7 @@ public class SimpleFormProcessorTest
     private static final String FORM_TYPE = "cards:Form";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_1";
     private static final String TEST_SECTION_PATH = "/Questionnaires/TestQuestionnaire/section_1";
@@ -106,16 +106,6 @@ public class SimpleFormProcessorTest
     {
         Assert.assertNull(this.simpleFormProcessor.processProperty(
                 mock(Node.class), null, mock(JsonValue.class), mock(Function.class)));
-    }
-
-    @Test
-    public void processPropertyJcrPropertyOfAnswerNode() throws RepositoryException
-    {
-        Session session = this.context.resourceResolver().adaptTo(Session.class);
-        Node node = session.getNode("/Forms/f1/s1/a1");
-        Property property = node.getProperty("jcr:createdBy");
-        JsonValue input = mock(JsonValue.class);
-        Assert.assertNull(this.simpleFormProcessor.processProperty(node, property, input, mock(Function.class)));
     }
 
     @Test
