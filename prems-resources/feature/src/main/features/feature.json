@@ -44,7 +44,7 @@
         // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
         "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes \n create path (cards:Homepage) /content",
         // Access rights for the special "patient" user: do not allow access to PII
-        "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,provider) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/provider) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Survey*events) \n end",
+        "create user patient \n set ACL for patient \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Survey*events) \n end",
         // Deny access to the patient's name to the validation servlet, which would otherwise return it to the patient portal
         "create service user patient-validation \n set ACL for patient-validation \n   deny jcr:all on /Questionnaires restriction(rep:itemNames,last_name,first_name) \n     deny jcr:all on /Forms restriction(cards:question,/Questionnaires/Patient*information/last_name,/Questionnaires/Patient*information/first_name) \n end"
       ]
@@ -323,6 +323,23 @@
       "daysToVisit": -14
     },
 
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-OC-InitialInvitationTask":{
+      "name": "UHN-OC-InitialInvitationsTask",
+      "notificationType": "Invitation",
+      "metricName": "{023} UHN-OC Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/OC",
+      "emailConfiguration": "/apps/cards/clinics/UHN-OC/mailTemplates/InitialInvitation",
+      "daysToVisit": -2
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-OC-Reminder1NotificationsTask":{
+      "name": "UHN-OC-Reminder1NotificationsTask",
+      "notificationType": "Reminder1",
+      "metricName": "{024} UHN-OC 1st Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/OC",
+      "emailConfiguration": "/apps/cards/clinics/UHN-OC/mailTemplates/ReminderNotification",
+      "daysToVisit": -4
+    },
+
     // Periodic CSV exports of all new and updated data
 
     "io.uhndata.cards.export.ExportConfig~UHN-Labeled-Forms":{
@@ -333,12 +350,13 @@
       "retrieverParameters": [
         "questionnaire=/Questionnaires/YVM",
         "questionnaire=/Questionnaires/PMOO",
+        "questionnaire=/Questionnaires/OCPE",
         "questionnaire=/Questionnaires/CPESIC",
         "questionnaire=/Questionnaires/IC",
         "questionnaire=/Questionnaires/OAIP",
         "questionnaire=/Questionnaires/OED",
         "questionnaire=/Questionnaires/Rehab",
-        "selectors=.labels.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvReplaceColumnIds:@=#.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter:exclude=/Questionnaires/OED/oed_module1/oed_visit_month.questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month.questionnaireFilter:exclude=/Questionnaires/Rehab/rs_module1/rs_visit_month"
+        "selectors=.labels.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvReplaceColumnIds:@=#.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter:exclude=/Questionnaires/OED/oed_module1/oed_visit_month.questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month.questionnaireFilter:exclude=/Questionnaires/Rehab/rs_module1/rs_visit_month.questionnaireFilter:exclude=/Questionnaires/OCPE/section_visit_type/ocpe_visit_month"
       ],
       "formatter": "csv",
       "fileNameFormat": "{resourcePath}_labels.csv",
@@ -353,12 +371,13 @@
       "retrieverParameters": [
         "questionnaire=/Questionnaires/YVM",
         "questionnaire=/Questionnaires/PMOO",
+        "questionnaire=/Questionnaires/OCPE",
         "questionnaire=/Questionnaires/CPESIC",
         "questionnaire=/Questionnaires/IC",
         "questionnaire=/Questionnaires/OAIP",
         "questionnaire=/Questionnaires/OED",
         "questionnaire=/Questionnaires/Rehab",
-        "selectors=.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvReplaceColumnIds:@=#.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter:exclude=/Questionnaires/OED/oed_module1/oed_visit_month.questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month.questionnaireFilter:exclude=/Questionnaires/Rehab/rs_module1/rs_visit_month"
+        "selectors=.formToSurveyLinks.dataFilter:status=SUBMITTED.csvIncludeFields:@survey=Survey.csvReplaceColumnIds:@=#.csvHeader:raw.questionnaireFilter.questionnaireFilter:exclude=/Questionnaires/CPESIC/OverallRatingofHospital/cpesic_hospital_overall.questionnaireFilter:exclude=/Questionnaires/OED/oed_module1/oed_visit_month.questionnaireFilter:exclude=/Questionnaires/OAIP/oaip_module1/oaip_visit_month.questionnaireFilter:exclude=/Questionnaires/Rehab/rs_module1/rs_visit_month.questionnaireFilter:exclude=/Questionnaires/OCPE/section_visit_type/ocpe_visit_month"
       ],
       "formatter": "csv",
       "fileNameFormat": "{resourcePath}.csv",
@@ -389,6 +408,7 @@
         "questionnaire=/Questionnaires/IC",
         "questionnaire=/Questionnaires/OAIP",
         "questionnaire=/Questionnaires/OED",
+        "questionnaire=/Questionnaires/OCPE",
         "questionnaire=/Questionnaires/PMOO",
         "questionnaire=/Questionnaires/Rehab",
         "questionnaire=/Questionnaires/YVM",
