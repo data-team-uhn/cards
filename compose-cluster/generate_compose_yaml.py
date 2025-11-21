@@ -994,8 +994,7 @@ if args.mssql:
   if args.cards_project == 'cards4prems':
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_TABLE=PatientActivity_data_for_PtExpSurveyApp')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_BICKLE_INPATIENT_SQL_TABLE=V_PatientActivity_data_for_PtExpSurveyApp_IPRehab_CCC')
-    # FIXME!
-    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_UHN_OUTPATIENT_SQL_TABLE=V_PatientExperienceSurveySamplingTest')
+    yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_UHN_OUTPATIENT_SQL_TABLE=V_PatientExperienceSurveySampling')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_YVM_SQL_TABLE=PatientActivity_Outpatient_PMCC_data_for_PtExpSurvey')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_PMH_OO_SQL_TABLE=PatientActivity_PMCC_Outpatient_Oncology_for_PtExpSurvey')
     yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_EVENT_TIME_COLUMN=HOSP_DISCHARGE_DTTM')
