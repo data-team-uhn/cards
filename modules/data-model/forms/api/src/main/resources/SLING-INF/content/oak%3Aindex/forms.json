@@ -575,12 +575,26 @@
                     "type": "Date",
                     "jcr:primaryType": "nt:unstructured"
                 },
+                "createdBy": {
+                    "name": "jcr:createdBy",
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "analyzed": false,
+                    "jcr:primaryType": "nt:unstructured"
+                },
                 "lastModified": {
                     "name": "jcr:lastModified",
                     "ordered": true,
                     "propertyIndex": true,
                     "nodeScopeIndex": false,
                     "type": "Date",
+                    "jcr:primaryType": "nt:unstructured"
+                },
+                "lastModifiedBy": {
+                    "name": "jcr:lastModifiedBy",
+                    "propertyIndex": true,
+                    "nodeScopeIndex": false,
+                    "analyzed": false,
                     "jcr:primaryType": "nt:unstructured"
                 },
                 "lastCheckedOut": {
