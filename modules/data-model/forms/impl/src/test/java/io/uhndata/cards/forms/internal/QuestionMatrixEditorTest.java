@@ -92,7 +92,7 @@ public class QuestionMatrixEditorTest
         PropertyState propertyState = new LongPropertyState(MAX_ANSWER_PROPERTY, 1);
         this.questionMatrixEditor.propertyChanged(Mockito.mock(PropertyState.class), propertyState);
         Assert.assertEquals(Long.valueOf(1),
-                this.currentNodeBuilder.getChildNode(session.getNode(TEST_QUESTION_1_PATH).getIdentifier())
+                this.currentNodeBuilder.getChildNode(uuidToNodeName(session.getNode(TEST_QUESTION_1_PATH).getIdentifier()))
                         .getProperty(MAX_ANSWER_PROPERTY).getValue(Type.LONG));
     }
 
@@ -104,7 +104,7 @@ public class QuestionMatrixEditorTest
         PropertyState propertyState = new LongPropertyState(MIN_ANSWER_PROPERTY, 1);
         this.questionMatrixEditor.propertyAdded(propertyState);
         Assert.assertEquals(Long.valueOf(1),
-                this.currentNodeBuilder.getChildNode(session.getNode(TEST_QUESTION_1_PATH).getIdentifier())
+                this.currentNodeBuilder.getChildNode(uuidToNodeName(session.getNode(TEST_QUESTION_1_PATH).getIdentifier()))
                 .getProperty(MIN_ANSWER_PROPERTY).getValue(Type.LONG));
     }
 
@@ -118,10 +118,10 @@ public class QuestionMatrixEditorTest
         this.currentNodeBuilder.setProperty(MIN_ANSWER_PROPERTY, 1);
         this.questionMatrixEditor = new QuestionMatrixEditor(this.currentNodeBuilder);
 
-        Editor editor = this.questionMatrixEditor.childNodeAdded(option3Uuid,
+        Editor editor = this.questionMatrixEditor.childNodeAdded(uuidToNodeName(option3Uuid),
                 Mockito.mock(NodeState.class));
         Assert.assertNull(editor);
-        Assert.assertTrue(this.currentNodeBuilder.getChildNode(questionUuid).hasChildNode(option3Uuid));
+        Assert.assertTrue(this.currentNodeBuilder.getChildNode(uuidToNodeName(questionUuid)).hasChildNode(uuidToNodeName(option3Uuid)));
     }
 
     @Test
@@ -132,10 +132,10 @@ public class QuestionMatrixEditorTest
         this.currentNodeBuilder.setProperty(MIN_ANSWER_PROPERTY, 1);
         this.questionMatrixEditor = new QuestionMatrixEditor(this.currentNodeBuilder);
 
-        Editor editor = this.questionMatrixEditor.childNodeAdded(question3Uuid, Mockito.mock(NodeState.class));
+        Editor editor = this.questionMatrixEditor.childNodeAdded(uuidToNodeName(question3Uuid), Mockito.mock(NodeState.class));
         Assert.assertNull(editor);
-        Assert.assertTrue(this.currentNodeBuilder.getChildNode(question3Uuid).hasProperty(MIN_ANSWER_PROPERTY));
-        Assert.assertEquals(Long.valueOf(1), this.currentNodeBuilder.getChildNode(question3Uuid)
+        Assert.assertTrue(this.currentNodeBuilder.getChildNode(uuidToNodeName(question3Uuid)).hasProperty(MIN_ANSWER_PROPERTY));
+        Assert.assertEquals(Long.valueOf(1), this.currentNodeBuilder.getChildNode(uuidToNodeName(question3Uuid))
                 .getProperty(MIN_ANSWER_PROPERTY).getValue(Type.LONG));
     }
 
@@ -145,10 +145,10 @@ public class QuestionMatrixEditorTest
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         String question3Uuid = session.getNode(TEST_QUESTION_3_PATH).getIdentifier();
         String option3Uuid = session.getNode(TEST_MATRIX_OPTION_3_PATH).getIdentifier();
-        this.currentNodeBuilder = this.currentNodeBuilder.getChildNode(question3Uuid);
+        this.currentNodeBuilder = this.currentNodeBuilder.getChildNode(uuidToNodeName(question3Uuid));
         this.questionMatrixEditor = new QuestionMatrixEditor(this.currentNodeBuilder);
 
-        Editor editor = this.questionMatrixEditor.childNodeAdded(option3Uuid, Mockito.mock(NodeState.class));
+        Editor editor = this.questionMatrixEditor.childNodeAdded(uuidToNodeName(option3Uuid), Mockito.mock(NodeState.class));
         Assert.assertNotNull(editor);
         Assert.assertTrue(editor instanceof QuestionMatrixEditor);
     }
@@ -159,13 +159,13 @@ public class QuestionMatrixEditorTest
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         String question1Uuid = session.getNode(TEST_QUESTION_1_PATH).getIdentifier();
         String option1Uuid = session.getNode(TEST_MATRIX_OPTION_1_PATH).getIdentifier();
-        this.currentNodeBuilder.getChildNode(option1Uuid).setProperty(VALUE_PROPERTY, 4L);
+        this.currentNodeBuilder.getChildNode(uuidToNodeName(option1Uuid)).setProperty(VALUE_PROPERTY, 4L);
 
-        Editor editor = this.questionMatrixEditor.childNodeChanged(option1Uuid, Mockito.mock(NodeState.class),
+        Editor editor = this.questionMatrixEditor.childNodeChanged(uuidToNodeName(option1Uuid), Mockito.mock(NodeState.class),
                 Mockito.mock(NodeState.class));
         Assert.assertNull(editor);
-        Assert.assertEquals(Long.valueOf(4), this.currentNodeBuilder.getChildNode(question1Uuid)
-                .getChildNode(option1Uuid).getProperty(VALUE_PROPERTY).getValue(Type.LONG));
+        Assert.assertEquals(Long.valueOf(4), this.currentNodeBuilder.getChildNode(uuidToNodeName(question1Uuid))
+                .getChildNode(uuidToNodeName(option1Uuid)).getProperty(VALUE_PROPERTY).getValue(Type.LONG));
     }
 
     @Test
@@ -174,11 +174,11 @@ public class QuestionMatrixEditorTest
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         String question1Uuid = session.getNode(TEST_QUESTION_1_PATH).getIdentifier();
         String option1Uuid = session.getNode(TEST_MATRIX_OPTION_1_PATH).getIdentifier();
-        this.currentNodeBuilder.getChildNode(option1Uuid).setProperty(VALUE_PROPERTY, 4L);
-        this.currentNodeBuilder = this.currentNodeBuilder.getChildNode(question1Uuid);
+        this.currentNodeBuilder.getChildNode(uuidToNodeName(option1Uuid)).setProperty(VALUE_PROPERTY, 4L);
+        this.currentNodeBuilder = this.currentNodeBuilder.getChildNode(uuidToNodeName(question1Uuid));
         this.questionMatrixEditor = new QuestionMatrixEditor(this.currentNodeBuilder);
 
-        Editor editor = this.questionMatrixEditor.childNodeChanged(option1Uuid, Mockito.mock(NodeState.class),
+        Editor editor = this.questionMatrixEditor.childNodeChanged(uuidToNodeName(option1Uuid), Mockito.mock(NodeState.class),
                 Mockito.mock(NodeState.class));
         Assert.assertNotNull(editor);
         Assert.assertTrue(editor instanceof QuestionMatrixEditor);
@@ -191,10 +191,10 @@ public class QuestionMatrixEditorTest
         String question1Uuid = session.getNode(TEST_QUESTION_1_PATH).getIdentifier();
         String option4Uuid = session.getNode(TEST_MATRIX_OPTION_4_PATH).getIdentifier();
 
-        Editor editor = this.questionMatrixEditor.childNodeDeleted(option4Uuid,
-                this.currentNodeBuilder.getChildNode(question1Uuid).getChildNode(option4Uuid).getNodeState());
+        Editor editor = this.questionMatrixEditor.childNodeDeleted(uuidToNodeName(option4Uuid),
+                this.currentNodeBuilder.getChildNode(uuidToNodeName(question1Uuid)).getChildNode(uuidToNodeName(option4Uuid)).getNodeState());
         Assert.assertNull(editor);
-        Assert.assertFalse(this.currentNodeBuilder.getChildNode(question1Uuid).hasChildNode(option4Uuid));
+        Assert.assertFalse(this.currentNodeBuilder.getChildNode(uuidToNodeName(question1Uuid)).hasChildNode(uuidToNodeName(option4Uuid)));
     }
 
     @Test
@@ -203,10 +203,10 @@ public class QuestionMatrixEditorTest
         final Session session = this.context.resourceResolver().adaptTo(Session.class);
         String question1Uuid = session.getNode(TEST_QUESTION_1_PATH).getIdentifier();
         String option1Uuid = session.getNode(TEST_MATRIX_OPTION_1_PATH).getIdentifier();
-        this.currentNodeBuilder = this.currentNodeBuilder.getChildNode(question1Uuid);
+        this.currentNodeBuilder = this.currentNodeBuilder.getChildNode(uuidToNodeName(question1Uuid));
         this.questionMatrixEditor = new QuestionMatrixEditor(this.currentNodeBuilder);
 
-        Editor editor = this.questionMatrixEditor.childNodeDeleted(option1Uuid, Mockito.mock(NodeState.class));
+        Editor editor = this.questionMatrixEditor.childNodeDeleted(uuidToNodeName(option1Uuid), Mockito.mock(NodeState.class));
         Assert.assertNotNull(editor);
         Assert.assertTrue(editor instanceof QuestionMatrixEditor);
     }
@@ -248,12 +248,12 @@ public class QuestionMatrixEditorTest
         Node question1Node = session.getNode(TEST_QUESTION_1_PATH);
         String question1Uuid = question1Node.getIdentifier();
         NodeBuilder question1Builder = createLongQuestion(question1Uuid,
-                Map.of(option1Uuid, option1Builder, option2Uuid, option2Builder, option4Uuid, option4Builder));
+                Map.of(uuidToNodeName(option1Uuid), option1Builder, uuidToNodeName(option2Uuid), option2Builder, uuidToNodeName(option4Uuid), option4Builder));
 
         Node question2Node = session.getNode(TEST_QUESTION_2_PATH);
         String question2Uuid = question2Node.getIdentifier();
         NodeBuilder question2Builder = createLongQuestion(question2Uuid,
-                Map.of(option1Uuid, option1Builder, option2Uuid, option2Builder));
+                Map.of(uuidToNodeName(option1Uuid), option1Builder, uuidToNodeName(option2Uuid), option2Builder));
 
         Node question3Node = session.getNode(TEST_QUESTION_3_PATH);
         String question3Uuid = question3Node.getIdentifier();
@@ -261,9 +261,9 @@ public class QuestionMatrixEditorTest
                 new HashMap<>());
 
         String matrixUuid = session.getNode(TEST_MATRIX_PATH).getIdentifier();
-        this.currentNodeBuilder = createMatrix(matrixUuid, Map.of(option1Uuid, option1Builder, option2Uuid,
-                option2Builder, option3Uuid, option3Builder, question1Uuid, question1Builder, question2Uuid,
-                question2Builder, question3Uuid, question3Builder));
+        this.currentNodeBuilder = createMatrix(matrixUuid, Map.of(uuidToNodeName(option1Uuid), option1Builder, uuidToNodeName(option2Uuid),
+                option2Builder, uuidToNodeName(option3Uuid), option3Builder, uuidToNodeName(question1Uuid), question1Builder, uuidToNodeName(question2Uuid),
+                question2Builder, uuidToNodeName(question3Uuid), question3Builder));
 
         this.questionMatrixEditor = new QuestionMatrixEditor(this.currentNodeBuilder);
     }
@@ -310,4 +310,17 @@ public class QuestionMatrixEditorTest
         return optionBuilder;
     }
 
+    /**
+     * Converts a UUID string to a valid JCR node name by removing hyphens.
+     * JCR node names cannot contain hyphens, so we remove them to create a valid name.
+     * Also ensures the name always starts with a letter to avoid JCR name validation issues.
+     */
+    private String uuidToNodeName(String uuid)
+    {
+        String name = uuid.replace("-", "");
+        name = name.replace("/", "");
+        // Always prefix with "n" to ensure the name starts with a letter and avoid any JCR validation issues
+        // This is safer than checking if it starts with a digit, as it ensures consistency
+        return "n" + name;
+    }
 }

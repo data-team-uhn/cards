@@ -27,6 +27,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
+import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.plugins.memory.EmptyNodeState;
 import org.apache.jackrabbit.oak.spi.commit.Validator;
@@ -61,7 +62,7 @@ public class MaxFormsOfTypePerSubjectValidatorTest
     private static final String FORM_TYPE = "cards:Form";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_COMPUTED_QUESTIONNAIRE_PATH = "/Questionnaires/TestComputedQuestionnaire";
     private static final String TEST_COMPUTED_QUESTION_PATH =
             "/Questionnaires/TestComputedQuestionnaire/from_long_to_computed_section/computed_question";
@@ -93,7 +94,9 @@ public class MaxFormsOfTypePerSubjectValidatorTest
     @Test
     public void childNodeAddedForSectionNodeReturnsThisValidator() throws CommitFailedException
     {
-        String name = this.form.getProperty(NODE_IDENTIFIER).getValue(Type.STRING);
+        PropertyState uuidProperty = this.form.getProperty(NODE_IDENTIFIER);
+        Assert.assertNotNull("Form should have UUID property", uuidProperty);
+        String name = uuidProperty.getValue(Type.STRING);
         Validator validator = this.maxFormsOfTypePerSubjectValidator.childNodeAdded(name, getFormSection());
         Assert.assertNotNull(validator);
         Assert.assertEquals(this.maxFormsOfTypePerSubjectValidator, validator);
@@ -107,7 +110,9 @@ public class MaxFormsOfTypePerSubjectValidatorTest
         Session session = resourceResolver.adaptTo(Session.class);
         Node questionnaire = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH);
         Node subject = session.getNode(TEST_SUBJECT_PATH);
-        String name = this.form.getProperty(NODE_IDENTIFIER).getValue(Type.STRING);
+        PropertyState uuidProperty = this.form.getProperty(NODE_IDENTIFIER);
+        Assert.assertNotNull("Form should have UUID property", uuidProperty);
+        String name = uuidProperty.getValue(Type.STRING);
 
         ResourceResolver serviceResolver = Mockito.mock(ResourceResolver.class);
         String getQuestionnaireQuery = "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='"
@@ -133,7 +138,9 @@ public class MaxFormsOfTypePerSubjectValidatorTest
     {
         Session session = this.context.resourceResolver().adaptTo(Session.class);
         Node questionnaire = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH);
-        String name = this.form.getProperty(NODE_IDENTIFIER).getValue(Type.STRING);
+        PropertyState uuidProperty = this.form.getProperty(NODE_IDENTIFIER);
+        Assert.assertNotNull("Form should have UUID property", uuidProperty);
+        String name = uuidProperty.getValue(Type.STRING);
 
         ResourceResolver serviceResolver = Mockito.mock(ResourceResolver.class);
         String getQuestionnaireQuery = "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='"
@@ -154,7 +161,9 @@ public class MaxFormsOfTypePerSubjectValidatorTest
         Session session = resourceResolver.adaptTo(Session.class);
         Node questionnaire = session.getNode(TEST_COMPUTED_QUESTIONNAIRE_PATH);
         Node subject = session.getNode(TEST_SUBJECT_PATH);
-        String name = this.form.getProperty(NODE_IDENTIFIER).getValue(Type.STRING);
+        PropertyState uuidProperty = this.form.getProperty(NODE_IDENTIFIER);
+        Assert.assertNotNull("Form should have UUID property", uuidProperty);
+        String name = uuidProperty.getValue(Type.STRING);
 
         this.context.build()
                 .resource("/Forms/f1",
@@ -182,7 +191,9 @@ public class MaxFormsOfTypePerSubjectValidatorTest
     @Test
     public void childNodeChangedReturnsThisValidator() throws CommitFailedException
     {
-        String name = this.form.getProperty(NODE_IDENTIFIER).getValue(Type.STRING);
+        PropertyState uuidProperty = this.form.getProperty(NODE_IDENTIFIER);
+        Assert.assertNotNull("Form should have UUID property", uuidProperty);
+        String name = uuidProperty.getValue(Type.STRING);
         Validator validator = this.maxFormsOfTypePerSubjectValidator.childNodeChanged(name,
                 Mockito.mock(NodeState.class), Mockito.mock(NodeState.class));
         Assert.assertNotNull(validator);

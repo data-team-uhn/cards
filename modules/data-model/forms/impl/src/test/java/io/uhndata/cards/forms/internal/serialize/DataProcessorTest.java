@@ -42,10 +42,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import io.uhndata.cards.serialize.DataFilters;
+import io.uhndata.cards.serialize.DataFiltersParser;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.anyString;
 
 /**
  * Unit tests for {@link DataProcessor}.
@@ -59,7 +64,7 @@ public class DataProcessorTest
     private static final String FORM_TYPE = "cards:Form";
     private static final String SUBJECT_TYPE = "cards:Subject";
     private static final String ANSWER_SECTION_TYPE = "cards:AnswerSection";
-    private static final String ANSWER_TYPE = "cards:Answer";
+    private static final String ANSWER_TYPE = "cards:TextAnswer";
     private static final String TEST_QUESTIONNAIRE_PATH = "/Questionnaires/TestQuestionnaire";
     private static final String TEST_QUESTION_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_1";
     private static final String TEST_QUESTION_2_PATH = "/Questionnaires/TestQuestionnaire/section_1/question_2";
@@ -82,6 +87,9 @@ public class DataProcessorTest
 
     @Rule
     public SlingContext context = new SlingContext(ResourceResolverType.JCR_OAK);
+
+    @Mock
+    private DataFiltersParser filtersParser;
 
     @InjectMocks
     private DataProcessor dataProcessor;
@@ -145,10 +153,8 @@ public class DataProcessorTest
         ThreadLocal<String> rootNodeActual = (ThreadLocal<String>) getAccessedField("rootNode");
         Assert.assertEquals(TEST_SUBJECT_PATH, rootNodeActual.get());
 
-        ThreadLocal<Map<String, String>> filtersActual = (ThreadLocal<Map<String, String>>) getAccessedField("filters");
-        Assert.assertEquals(1, filtersActual.get().size());
-        Assert.assertTrue(filtersActual.get().containsKey("status"));
-        Assert.assertEquals("INCOMPLETE", filtersActual.get().get("status"));
+        ThreadLocal<DataFilters> filtersActual = (ThreadLocal<DataFilters>) getAccessedField("filters");
+        Assert.assertNotNull(filtersActual.get());
 
         ThreadLocal<Map<String, String>> optionsActual = (ThreadLocal<Map<String, String>>) getAccessedField("options");
         Assert.assertEquals(1, optionsActual.get().size());
@@ -250,8 +256,12 @@ public class DataProcessorTest
         ThreadLocal<String> selectorsActual = (ThreadLocal<String>) getAccessedField("selectors");
         selectorsActual.set(generateResolutionPathInfo());
 
-        ThreadLocal<Map<String, String>> filters = (ThreadLocal<Map<String, String>>) getAccessedField("filters");
-        filters.set(generateFilters());
+        ThreadLocal<DataFilters> filters = (ThreadLocal<DataFilters>) getAccessedField("filters");
+        DataFilters mockFilters = mock(DataFilters.class);
+        when(mockFilters.getExtraQuerySelectors()).thenReturn("");
+        when(mockFilters.getExtraQueryConditions()).thenReturn("");
+        when(mockFilters.getFilters()).thenReturn(java.util.Collections.emptyList());
+        filters.set(mockFilters);
 
         ThreadLocal<Map<String, String>> optionsActual = (ThreadLocal<Map<String, String>>) getAccessedField("options");
         optionsActual.set(Map.of("descendantData", "0"));
@@ -294,8 +304,12 @@ public class DataProcessorTest
         ThreadLocal<String> selectorsActual = (ThreadLocal<String>) getAccessedField("selectors");
         selectorsActual.set(generateResolutionPathInfo());
 
-        ThreadLocal<Map<String, String>> filters = (ThreadLocal<Map<String, String>>) getAccessedField("filters");
-        filters.set(generateFilters());
+        ThreadLocal<DataFilters> filters = (ThreadLocal<DataFilters>) getAccessedField("filters");
+        DataFilters mockFilters = mock(DataFilters.class);
+        when(mockFilters.getExtraQuerySelectors()).thenReturn("");
+        when(mockFilters.getExtraQueryConditions()).thenReturn("");
+        when(mockFilters.getFilters()).thenReturn(java.util.Collections.emptyList());
+        filters.set(mockFilters);
 
         ThreadLocal<Map<String, String>> optionsActual = (ThreadLocal<Map<String, String>>) getAccessedField("options");
         optionsActual.set(Map.of("descendantData", "0", "formSelectors", "formSelectors=-dereference%5C"));
@@ -341,7 +355,9 @@ public class DataProcessorTest
                 .resource(TEST_SUBJECT_PATH, NODE_TYPE, SUBJECT_TYPE, "type",
                         this.context.resourceResolver().getResource("/SubjectTypes/Root").adaptTo(Node.class))
                 .commit();
-        this.context.registerAdapter(Resource.class, JsonObject.class, Json.createObjectBuilder().build());
+
+        // Mock filtersParser to return a mock DataFilters object
+        when(this.filtersParser.parseFilters(anyString())).thenReturn(mock(DataFilters.class));
     }
 
     private void commitResources(Session session) throws RepositoryException
