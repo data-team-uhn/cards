@@ -27,6 +27,8 @@ import Tooltip from "@mui/material/Tooltip";
 import PropTypes from "prop-types";
 import { checkPropTypes } from "../propTypes";
 
+import { useFormReaderContext } from "./FormContext";
+
 import Answer, { LABEL_POS, VALUE_POS } from "./Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -70,6 +72,9 @@ function SelectableAreaQuestion(props) {
   const [ notApplicableChecked, setNotApplicableChecked ] = useState(false);
 
   const questionRef = useRef(null);
+
+  const formContext = useFormReaderContext();
+  const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
   let initialSelection =
     // If there's no existing answer, there's no initial selection
@@ -223,7 +228,8 @@ function SelectableAreaQuestion(props) {
         }
         return newSelection;
       }
-    })
+    });
+    handleFormDataChange?.();
   }
 
   let onNotApplicableClicked = () => {
@@ -332,7 +338,7 @@ function SelectableAreaQuestion(props) {
       observer.observe(questionRef.current);
       return () => questionRef.current && observer.unobserve(questionRef.current);
     }
-  })
+  }, []);
 
   return (
     <Question

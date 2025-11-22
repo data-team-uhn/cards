@@ -41,6 +41,7 @@ import PropTypes from "prop-types";
 import { checkPropTypes } from "../propTypes";
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
+import { useFormReaderContext } from "./FormContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import AnswerInstructions from "./AnswerInstructions.jsx";
 import UserInputAssistant from "../components/UserInputAssistant.jsx";
@@ -136,6 +137,9 @@ function MultipleChoice(props) {
   const [assistantAnchor, setAssistantAnchor] = useState(null);
   const [tmpGhostSelection, setTmpGhostSelection] = useState(null);
   const [inputError, setInputError] = useState();
+
+  const formContext = useFormReaderContext();
+  const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
   useEffect(() => {
     // If liveValidation is on, run validation on every change of the input
@@ -332,6 +336,7 @@ function MultipleChoice(props) {
   let reader = useFormUpdateReaderContext();
   let writer = useFormUpdateWriterContext();
   let updatedOptions = reader[questionName];
+
   useEffect(() => {
     if (!updatedOptions) {
       return;
@@ -496,6 +501,7 @@ function MultipleChoice(props) {
                 } else {
                   setSelection(Array.of(event.target.value || []).flat().map(v => [v,v]));
                 }
+                handleFormDataChange?.();
               }}
               renderValue={
                 maxAnswers == 1 ? undefined
@@ -564,6 +570,7 @@ function MultipleChoice(props) {
                     onChange={() => {
                       selectOption(ghostValue, ghostName);
                       onUpdate?.(ghostSelected ? undefined : ghostName);
+                      handleFormDataChange?.();
                     }}
                     onClick={() => {inputEl && inputEl.select();}}
                     disabled={!ghostSelected && disabled}
@@ -646,6 +653,8 @@ var StyledResponseChild = withStyles(ResponseChild, QuestionnaireStyle);
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
   const {classes, checked, name, id, isDefaultOption, onClick, disabled, isRadio, isInvalid, onDelete, description} = props;
+  const formContext = useFormReaderContext();
+  const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
   return (
     <React.Fragment>
@@ -653,7 +662,11 @@ function ResponseChild(props) {
         key={name}
         className={isDefaultOption ? classes.selectionChild : undefined}
         sx={isDefaultOption ? undefined : {alignItems: "start", flexWrap: "nowrap"}}
-        onClick={evt => {evt.preventDefault(); onClick(id, name, checked);}}
+        onClick={evt => {
+          evt.preventDefault();
+          onClick(id, name, checked);
+          handleFormDataChange?.();
+        }}
       >
           { /* This is either a Checkbox/Radiobox if this is a default suggestion, or a delete button otherwise */
           isDefaultOption ?
@@ -664,7 +677,10 @@ function ResponseChild(props) {
                   (
                     <Radio
                       color="secondary"
-                      onChange={() => {onClick(id, name, checked);}}
+                      onChange={() => {
+                        onClick(id, name, checked);
+                        handleFormDataChange?.();
+                      }}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
                     />
@@ -672,7 +688,10 @@ function ResponseChild(props) {
                   (
                     <Checkbox
                       checked={checked}
-                      onChange={() => {onClick(id, name, checked)}}
+                      onChange={() => {
+                        onClick(id, name, checked);
+                        handleFormDataChange?.();
+                      }}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
                       color="secondary"
