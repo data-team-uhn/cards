@@ -86,7 +86,7 @@ public class ConfiguredGenericMapper extends AbstractConditionalClarityDataProce
 
     private final String id;
 
-    private final Boolean enableLogging;
+    private final boolean enableLogging;
 
     @Activate
     public ConfiguredGenericMapper(Config configuration) throws ConfigurationException
