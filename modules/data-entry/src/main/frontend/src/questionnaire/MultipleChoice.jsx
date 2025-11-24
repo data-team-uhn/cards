@@ -431,6 +431,7 @@ function MultipleChoice(props) {
                     event.preventDefault();
                     event.stopPropagation();
                     acceptEnteredOption(!softValidation);
+                    handleFormDataChange?.();
                   }
                 },
                 tabIndex: isRadio ? -1 : undefined
