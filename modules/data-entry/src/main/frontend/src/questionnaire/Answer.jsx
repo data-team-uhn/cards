@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
 import { checkPropTypes } from "../propTypes";
@@ -86,18 +86,10 @@ function Answer (props) {
   // Rename this variable to start with a capital letter so React knows it is a component
   const NoteComponent = noteComponent;
 
-  // Track previous answers to prevent unnecessary updates
-  const prevAnswersRef = useRef(answers);
-
   // When the answers change, we inform the FormContext
   useEffect(() => {
-    // Only update if answers actually changed (by value, not just reference)
-    const answersChanged = JSON.stringify(prevAnswersRef.current) !== JSON.stringify(answers);
-    if (answersChanged) {
-      prevAnswersRef.current = answers;
-      changeFormContext((oldContext) => ({...oldContext, [questionName]: answers}));
-    }
-  }, [answers, questionName, changeFormContext]);
+    changeFormContext((oldContext) => ({...oldContext, [questionName]: answers}));
+  }, [answers]);
 
   return (
     <React.Fragment>
