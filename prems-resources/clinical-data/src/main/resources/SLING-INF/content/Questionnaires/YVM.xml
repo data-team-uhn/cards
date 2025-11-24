@@ -2651,6 +2651,11 @@ Note: If you had a telephone appointment, some of these options may not apply to
 					<value><![CDATA[>=]]></value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
+					<type>String</type>
+				</property>
 				<node>
 					<name>operandA</name>
 					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
@@ -2885,6 +2890,11 @@ Note: If you had a telephone appointment, some of these options may not apply to
 				<property>
 					<name>comparator</name>
 					<value><![CDATA[>=]]></value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
 					<type>String</type>
 				</property>
 				<node>

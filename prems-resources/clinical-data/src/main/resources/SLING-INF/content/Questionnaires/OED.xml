@@ -2224,6 +2224,11 @@ If you have a personal care concern or need help please speak directly to your c
 				<value><![CDATA[<]]></value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
 			<node>
 				<name>operandA</name>
 				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
