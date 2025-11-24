@@ -74,6 +74,10 @@ public class ConfiguredGenericMapper extends AbstractConditionalClarityDataProce
 
         @AttributeDefinition
         String service_pid();
+
+        @AttributeDefinition(name = "Should any changes made by this mapper be logged",
+            required = false)
+        boolean enableLogging() default true;
     }
 
     private final String column;
@@ -81,6 +85,8 @@ public class ConfiguredGenericMapper extends AbstractConditionalClarityDataProce
     private final String value;
 
     private final String id;
+
+    private final boolean enableLogging;
 
     @Activate
     public ConfiguredGenericMapper(Config configuration) throws ConfigurationException
@@ -90,6 +96,7 @@ public class ConfiguredGenericMapper extends AbstractConditionalClarityDataProce
         this.value = configuration.value();
         String pid = configuration.service_pid();
         this.id = pid.substring(pid.lastIndexOf("~") + 1);
+        this.enableLogging = configuration.enableLogging();
     }
 
     @Override
@@ -100,8 +107,10 @@ public class ConfiguredGenericMapper extends AbstractConditionalClarityDataProce
             usedValue = input.get(usedValue.substring(2, usedValue.length() - 1));
         }
         input.put(this.column, usedValue);
-        LOGGER.warn("{} Updated visit {} value for column {} set to {} due to all conditions met", this.id,
-            input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"), this.column, usedValue);
+        if (this.enableLogging) {
+            LOGGER.warn("{} Updated visit {} value for column {} set to {} due to all conditions met", this.id,
+                input.getOrDefault("/SubjectTypes/Patient/Visit", "Unknown"), this.column, usedValue);
+        }
         return input;
     }
 

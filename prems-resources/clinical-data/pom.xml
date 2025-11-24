@@ -85,6 +85,7 @@
               SLING-INF/content/apps/cards/clarityImport/UHNOutpatient.xml;path:=/apps/cards/clarityImport/UHNOutpatient;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/PMH-YVM.xml;path:=/apps/cards/clarityImport/PMH-YVM;overwrite:=true,
               SLING-INF/content/apps/cards/clarityImport/PMH-OO.xml;path:=/apps/cards/clarityImport/PMH-OO;overwrite:=true,
+              SLING-INF/content/apps/cards/clarityImport/DeathStatus.xml;path:=/apps/cards/clarityImport/DeathStatus;overwrite:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

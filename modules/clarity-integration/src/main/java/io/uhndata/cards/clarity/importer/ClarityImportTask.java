@@ -156,6 +156,22 @@ public class ClarityImportTask implements Runnable
             this.questionnaires.add(mapping);
         }
 
+        /**
+         * Check if any of this mapping's update policies allow creating new subjects.
+         *
+         * @return {@code true} if any of the mappings enable creating subjects
+         */
+        private boolean shouldCreateSubjectIfAbsent()
+        {
+            // Check if new subjects should be created or if only existing subjects should be processed
+            for (ClarityQuestionnaireMapping questionnaireMapping : this.questionnaires) {
+                if (questionnaireMapping.updatePolicy != UpdatePolicy.onlyExisting) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         @Override
         public String toString()
         {
@@ -167,7 +183,8 @@ public class ClarityImportTask implements Runnable
     {
         createNew,
         updateExisting,
-        cancelImport
+        cancelImport,
+        onlyExisting,
     }
 
     private static final class ClarityQuestionnaireMapping
@@ -479,7 +496,9 @@ public class ClarityImportTask implements Runnable
     {
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
             // Get or create the subject
-            Resource newSubjectParent = getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent);
+            Resource newSubjectParent = childSubjectMapping.shouldCreateSubjectIfAbsent()
+                ? getOrCreateSubject(resolver, row, childSubjectMapping, subjectParent)
+                : getSubject(resolver, row, childSubjectMapping);
             if (newSubjectParent == null) {
                 return;
             }
@@ -490,23 +509,25 @@ public class ClarityImportTask implements Runnable
                     newSubjectParent);
 
                 if (formNode != null) {
-                    if (updatePolicy == UpdatePolicy.updateExisting) {
+                    if (updatePolicy == UpdatePolicy.updateExisting || updatePolicy == UpdatePolicy.onlyExisting) {
                         // Update the answers to an existing Form
                         updateExistingForm(resolver, formNode, questionnaireMapping, row);
                     }
                 } else {
-                    // Create a new Form
-                    formNode = createForm(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
-                        newSubjectParent);
+                    if (updatePolicy != UpdatePolicy.onlyExisting) {
+                        // Create a new Form
+                        formNode = createForm(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
+                            newSubjectParent);
 
-                    // Attach all the Answer nodes to it
-                    populateEmptyForm(resolver, formNode, questionnaireMapping, row);
+                        // Attach all the Answer nodes to it
+                        populateEmptyForm(resolver, formNode, questionnaireMapping, row);
 
-                    // Commit the changes to the JCR
-                    resolver.commit();
+                        // Commit the changes to the JCR
+                        resolver.commit();
 
-                    // Perform a JCR check-in to this cards:Form node once the import is completed
-                    this.nodesToCheckin.get().add(formNode.getPath());
+                        // Perform a JCR check-in to this cards:Form node once the import is completed
+                        this.nodesToCheckin.get().add(formNode.getPath());
+                    }
                 }
             }
             walkThroughLocalConfig(resolver, row, childSubjectMapping, newSubjectParent);
@@ -516,22 +537,21 @@ public class ClarityImportTask implements Runnable
     // Methods for storing subjects
 
     /**
-     * Grab a subject of the specified type, or create it if it doesn't exist.
+     * Grab a subject of the specified type with an identifier matching the configured ID column and row data.
      *
-     * @param resolver ResourceResolver to use for reading and writing to the JCR
+     * @param resolver ResourceResolver to use for reading the JCR
      * @param row {@code Map<String, String>} object that maps column names to values for a SQL query result row
-     * @param subjectMapping ClaritySubjectMapping object describing how a CARDS Subject is to be created from a SQL row
-     * @param parent Resource if this is a child of that resource, or null (parent JCR node to defaults to /Subjects/)
-     * @return A Subject resource
+     * @param subjectMapping ClaritySubjectMapping object describing how a CARDS Subject is to be found from a SQL row
+     * @return A Subject resource, or {@code null} if no existing subject was found
      */
-    private Resource getOrCreateSubject(ResourceResolver resolver, Map<String, String> row,
-        ClaritySubjectMapping subjectMapping, Resource parent) throws RepositoryException, PersistenceException
+    private Resource getSubject(ResourceResolver resolver, Map<String, String> row,
+        ClaritySubjectMapping subjectMapping) throws RepositoryException
     {
-
-        final String subjectTypePath = subjectMapping.subjectType;
-        final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
-            ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
-        final String incrementMetricOnCreation = subjectMapping.incrementMetricOnCreation;
+        if ("".equals(subjectMapping.subjectIdColumn)) {
+            // No ID column to try to match an existing subject to
+            return null;
+        }
+        final String identifier = row.get(subjectMapping.subjectIdColumn);
 
         if (StringUtils.isEmpty(identifier)) {
             return null;
@@ -548,6 +568,33 @@ public class ClarityImportTask implements Runnable
             this.nodesToCheckin.get().add(subjectResource.getPath());
             return subjectResource;
         } else {
+            return null;
+        }
+    }
+
+    /**
+     * Grab a subject of the specified type, or create it if it doesn't exist.
+     *
+     * @param resolver ResourceResolver to use for reading and writing to the JCR
+     * @param row {@code Map<String, String>} object that maps column names to values for a SQL query result row
+     * @param subjectMapping ClaritySubjectMapping object describing how a CARDS Subject is to be created from a SQL row
+     * @param parent Resource if this is a child of that resource, or null (parent JCR node to defaults to /Subjects/)
+     * @return A Subject resource
+     */
+    private Resource getOrCreateSubject(ResourceResolver resolver, Map<String, String> row,
+        ClaritySubjectMapping subjectMapping, Resource parent) throws RepositoryException, PersistenceException
+    {
+        final Resource subject = getSubject(resolver, row, subjectMapping);
+
+        if (subject != null) {
+            return subject;
+        } else {
+            final String subjectTypePath = subjectMapping.subjectType;
+            final String identifier = (!"".equals(subjectMapping.subjectIdColumn))
+                ? row.get(subjectMapping.subjectIdColumn) : UUID.randomUUID().toString();
+            final String incrementMetricOnCreation = subjectMapping.incrementMetricOnCreation;
+
+
             Resource parentResource = parent;
             if (parentResource == null) {
                 parentResource = resolver.getResource("/Subjects/");
@@ -609,6 +656,7 @@ public class ClarityImportTask implements Runnable
             }
             replaceFormAnswer(resolver, formNode,
                 generateAnswerNodeProperties(resolver, questionMapping, row));
+            LOGGER.info("{} Updated form {}", this.config.name(), formNode.getPath());
         }
         // Perform a JCR check-in to this cards:Form node once the import is completed
         this.nodesToCheckin.get().add(formNode.getPath());
