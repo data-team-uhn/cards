@@ -678,10 +678,6 @@ function ResponseChild(props) {
                   (
                     <Radio
                       color="secondary"
-                      onChange={() => {
-                        onClick(id, name, checked);
-                        handleFormDataChange?.();
-                      }}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
                     />
@@ -689,10 +685,6 @@ function ResponseChild(props) {
                   (
                     <Checkbox
                       checked={checked}
-                      onChange={() => {
-                        onClick(id, name, checked);
-                        handleFormDataChange?.();
-                      }}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
                       color="secondary"
