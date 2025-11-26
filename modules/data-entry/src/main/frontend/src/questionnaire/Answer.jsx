@@ -78,7 +78,7 @@ function Answer (props) {
         hasRegisteredPathRef.current = true;
       }
     }
-  }, [sectionAnswersState, questionName, answerPath, onAddedAnswerPath]);
+  }, [sectionAnswersState, questionName, answerPath]);
 
   // Update any listeners what our final output path will be
   useEffect(() => {
@@ -97,8 +97,7 @@ function Answer (props) {
   useEffect(() => {
     // Check if answers actually changed (reference or deep equality)
     const prevAnswers = prevAnswersRef.current;
-    const answersChanged = prevAnswers !== answers &&
-      (prevAnswers === undefined || JSON.stringify(prevAnswers) !== JSON.stringify(answers));
+    const answersChanged = prevAnswers === undefined || JSON.stringify(prevAnswers) !== JSON.stringify(answers);
 
     if (answersChanged) {
       changeFormContext((oldContext) => {
@@ -115,7 +114,7 @@ function Answer (props) {
       });
       prevAnswersRef.current = answers;
     }
-  }, [answers, changeFormContext, questionName]);
+  }, [answers, questionName]);
 
   return (
     <React.Fragment>
