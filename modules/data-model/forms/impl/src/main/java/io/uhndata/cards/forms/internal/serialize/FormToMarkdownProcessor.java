@@ -91,7 +91,7 @@ public class FormToMarkdownProcessor extends AbstractFormToStringSerializer impl
     @Override
     void formatQuestion(final String question, final StringBuilder result)
     {
-        result.append("\n**").append(question).append("**  ");
+        result.append("\n").append(question).append("  ");
     }
 
     @Override
@@ -103,7 +103,7 @@ public class FormToMarkdownProcessor extends AbstractFormToStringSerializer impl
     @Override
     void formatAnswer(final String answer, final StringBuilder result)
     {
-        result.append('\n').append(answer).append('\n');
+        result.append("\n**").append(answer).append("**\n");
     }
 
     @Override
