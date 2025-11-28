@@ -38,6 +38,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { DateTime } from "luxon";
 import DateTimeUtilities from "../components/DateTimeUtilities";
+import { useFormReaderContext } from "./FormContext";
 
 // Component that renders a time question
 // Selected answers are placed in a series of <input type="hidden"> tags for submission.
@@ -87,6 +88,9 @@ function TimeQuestion(props) {
   const maxTime = upperLimit ? DateTime.fromFormat(upperLimit, dateFormat) : null;
   const minTime = lowerLimit ? DateTime.fromFormat(lowerLimit, dateFormat) : null;
 
+  const formContext = useFormReaderContext();
+  const handleFormDataChange = formContext?.['/OnFormDataChanged'];
+
   // Error check existing answers when first loading the page
   useEffect(() => {
     if (existingAnswer?.[1]?.value && DateTime.fromFormat(existingAnswer[1].value, saveFormat).invalid) {
@@ -126,6 +130,7 @@ function TimeQuestion(props) {
               onChange={(newValue) => {
                 setError(false);
                 changeTime(newValue);
+                handleFormDataChange?.();
               }}
               value={selectedTime}
               slotProps={{ textField: {

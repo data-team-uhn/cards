@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
 import { checkPropTypes } from "../propTypes";
@@ -61,8 +61,11 @@ function Answer (props) {
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
 
+  // Track if we've already registered this answer path to avoid infinite loops
+  const hasRegisteredPathRef = useRef(false);
+
   useEffect(() => {
-    if (sectionAnswersState !== undefined) {
+    if (sectionAnswersState !== undefined && !hasRegisteredPathRef.current) {
       let idHistory = [];
       if (questionName in sectionAnswersState) {
         idHistory = sectionAnswersState[questionName];
@@ -72,9 +75,10 @@ function Answer (props) {
         idHistory.push(answerPath);
         sectionAnswersState[questionName] = idHistory;
         onAddedAnswerPath(sectionAnswersState);
+        hasRegisteredPathRef.current = true;
       }
     }
-  });
+  }, [sectionAnswersState, questionName, answerPath]);
 
   // Update any listeners what our final output path will be
   useEffect(() => {
@@ -86,10 +90,31 @@ function Answer (props) {
   // Rename this variable to start with a capital letter so React knows it is a component
   const NoteComponent = noteComponent;
 
+  // Track previous answers to avoid unnecessary context updates
+  const prevAnswersRef = useRef();
+
   // When the answers change, we inform the FormContext
   useEffect(() => {
-    changeFormContext((oldContext) => ({...oldContext, [questionName]: answers}));
-  }, [answers]);
+    // Check if answers actually changed (reference or deep equality)
+    const prevAnswers = prevAnswersRef.current;
+    const answersChanged = prevAnswers === undefined || JSON.stringify(prevAnswers) !== JSON.stringify(answers);
+
+    if (answersChanged) {
+      changeFormContext((oldContext) => {
+        // Only update if the value in context is different
+        const currentValue = oldContext[questionName];
+        if (currentValue === answers) {
+          return oldContext; // Return same reference if unchanged
+        }
+        // Deep comparison to avoid unnecessary updates
+        if (JSON.stringify(currentValue) === JSON.stringify(answers)) {
+          return oldContext; // Return same reference if values are equal
+        }
+        return {...oldContext, [questionName]: answers};
+      });
+      prevAnswersRef.current = answers;
+    }
+  }, [answers, questionName]);
 
   return (
     <React.Fragment>

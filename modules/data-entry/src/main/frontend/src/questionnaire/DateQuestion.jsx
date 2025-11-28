@@ -34,6 +34,7 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { useFormReaderContext } from "./FormContext";
 
 // Component that renders a date/time question
 // Selected answers are placed in a series of <input type="hidden"> tags for submission.
@@ -92,6 +93,9 @@ function DateQuestion(props) {
   const PickerComponent = hasTime ? DateTimePicker : DatePicker;
 
   const rangeErrorMessage = "Invalid date range: end date should be after the start date";
+
+  const formContext = useFormReaderContext();
+  const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
   useEffect(() => {
     validateInput(null, displayedDate, false);
@@ -187,6 +191,7 @@ function DateQuestion(props) {
           setDate(value, isEnd);
           cleanErrorMessages(isEnd);
           validateInput(null, value, isEnd);
+          handleFormDataChange?.();
         }}
         slotProps={{ textField: {
                        variant: 'standard',

@@ -38,7 +38,7 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import MultipleChoice from "./MultipleChoice";
 import FormattedText from "../components/FormattedText";
-
+import { useFormReaderContext } from "./FormContext";
 import AnswerComponentManager from "./AnswerComponentManager";
 
 /** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
@@ -176,6 +176,8 @@ function NumberQuestion(props) {
   const isRangeSelected = isRange && typeof(lowerLimit) != 'undefined' && !isNaN(+lowerLimit) && typeof(upperLimit) != 'undefined' && !isNaN(+upperLimit);
   const isSingleSliderSelected = isSlider && typeof(sliderValue) != 'undefined' && !isNaN(+sliderValue);
 
+  const formContext = useFormReaderContext();
+  const handleFormDataChange = formContext?.['/OnFormDataChanged'];
 
   // Marks at the minimum and maximum, as well as user specified intervals if provided
   let sliderMarks = [{value: minValue, label: minValue}, {value: maxValue, label: maxValue}];
@@ -370,7 +372,10 @@ function NumberQuestion(props) {
           marks={sliderMarks}
           valueLabelDisplay={options.valueLabelDisplay}
           value={options.value}
-          onChange={options.onChange}
+          onChange={(event, value) => {
+            options.onChange(event, value);
+            handleFormDataChange?.();
+          }}
         />
       { maxValueLabel &&
           <Typography variant="caption" color="textSecondary">{maxValueLabel}</Typography>
@@ -438,7 +443,10 @@ function NumberQuestion(props) {
               value={lowerLimit}
               error={rangeError || !!minMaxError}
               placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
-              onChange={event => setValue(setLowerLimit, event.target.value)}
+              onChange={event => {
+                setValue(setLowerLimit, event.target.value);
+                handleFormDataChange?.();
+              }}
               slotProps={{
                 input: muiInputProps,
                 htmlInput: textFieldProps,
@@ -455,7 +463,10 @@ function NumberQuestion(props) {
               value={upperLimit}
               error={rangeError || !!minMaxError}
               placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
-              onChange={event => setValue(setUpperLimit, event.target.value)}
+              onChange={event => {
+                setValue(setUpperLimit, event.target.value);
+                handleFormDataChange?.();
+              }}
               slotProps={{
                 input: muiInputProps,
                 htmlInput: textFieldProps,
