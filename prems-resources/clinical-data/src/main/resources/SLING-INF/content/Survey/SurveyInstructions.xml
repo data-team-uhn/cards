@@ -78,7 +78,7 @@ Completing this survey is voluntary, and your name and contact information will 
     </property>
     <property>
         <name>enableReviewScreen</name>
-        <value>True</value>
+        <value>False</value>
         <type>Boolean</type>
     </property>
     <property>

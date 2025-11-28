@@ -40,7 +40,7 @@ Do not include any other hospital stays in your answers.
     </property>
     <property>
         <name>enableReviewScreen</name>
-        <value>True</value>
+        <value>False</value>
         <type>Boolean</type>
     </property>
     <node>
