@@ -30,7 +30,7 @@
         "create path (cards:TokenExpired) /Expired \n set ACL for everyone \n   allow  jcr:read  on /Expired \n end "
       ]
     },
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-patient-auth":{
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-token-auth":{
       "user.mapping":[
         "io.uhndata.cards.token-authentication=[cards-token-manager]"
       ]

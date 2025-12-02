@@ -79,7 +79,7 @@
     }
   ],
   "configurations":{
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-export":{
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-webhook-backup":{
       "user.mapping":[
         "io.uhndata.cards.modules-webhook-backup=[sling-readall]"
       ]
