@@ -1,6 +1,6 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:ocpe_15": "/Questionnaires/OCPE/ocpe_15",
+  "jcr:reference:ocpe_15": "/Questionnaires/OCPE/section_care_experience/ocpe_15",
   "jcr:reference:time": "/Questionnaires/Visit information/time",
   "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
 }
