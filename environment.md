@@ -37,7 +37,7 @@ The following environment variables are read by the CARDS Docker container _entr
 
 | Environment Variable | Description | Sample |
 | ------------- | ----------- | -----: |
-| `CARDS_PROJECT` | The CARDS-based project to run (eg. CARDS4LFS, CARDS4HERACLES, etc...) | `cards4prems` |
+| `CARDS_PROJECT` | The CARDS-based project to run (eg. CARDS4LFS, CARDS4HERACLES, etc...) | `cards4yourexperience` |
 | `DEMO_BANNER` | If specified, enables the _demo banner_ on the CARDS web interface | `true` |
 | `DEMO` | If specified, enables the _complete_ set of CARDS demo features (_demo banner_, _upgrade marker_, _demo forms_) | `true` |
 | `DEV` | If specified, enables the _Composum_ JCR explorer. | `true` |

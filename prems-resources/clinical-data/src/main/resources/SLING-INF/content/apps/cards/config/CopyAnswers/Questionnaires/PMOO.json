@@ -1,6 +1,0 @@
-{
-  "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:pmoo_overall": "/Questionnaires/PMOO/pmoo_page_4/pmoo_11_yvm_14",
-  "jcr:reference:time": "/Questionnaires/Visit information/time",
-  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
-}

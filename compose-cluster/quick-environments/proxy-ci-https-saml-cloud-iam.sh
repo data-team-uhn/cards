@@ -25,7 +25,7 @@ python3 generate_compose_yaml.py \
   --server_address localhost \
   --web_port_admin 443 \
   --web_port_user 444 \
-  --cards_project cards4prems \
+  --cards_project cards4yourexperience \
   --saml \
   --saml_cloud_iam_demo \
   --ssl_proxy \
