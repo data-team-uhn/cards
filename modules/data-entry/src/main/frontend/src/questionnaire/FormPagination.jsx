@@ -77,9 +77,10 @@ function FormPagination (props) {
   let [ nextActivePage, setNextActivePage ] = useState();
   let [ progress, setProgress ] = useState(0);
   const DIRECTION_NEXT = 1, DIRECTION_PREV = -1;
-  // The amount of the progress bar that should be complete on page 1 and incomplete on an unsaved last page
-  // Expressed as a multiple of a normal page size
-  const PROGRESS_BAR_PADDING = 0.5;
+  // The amount of the progress bar that should be complete on page 1
+  // Expressed as a multiple of a normal page size.
+  // The remainder (1 - stub size) will be used as a completion buffer on the last page
+  const INITIAL_PROGRESS_STUB = 0.7;
 
   let previousEntryType;
   let questionIndex = 0;
@@ -211,14 +212,12 @@ function FormPagination (props) {
 
   useEffect(() => {
     if (activePage != null && pages != null) {
-      // The pagination should be divided into multiple sections:
-      // - lastValidPage() sections for page by page progress
-      // - 1 padding section for the initial progress on the first page
-      // - 1 padding section for when the last page has been saved
       // The MaterialUI progress bar expects progress to be out of 100
-      const pageSize = 100 / (lastValidPage() + (2 * PROGRESS_BAR_PADDING));
-      const paddingSize = pageSize * PROGRESS_BAR_PADDING;
-      setProgress(paddingSize + (pageSize * activePage) + (savedLastPage ? paddingSize : 0))
+      const pageSize = 100 / (lastValidPage() + 1);
+      // Use some of 1 "page" worth of progression for the initial stub on the first page
+      // The rest will be used for the completion buffer on the last page
+      const stubSize = pageSize * INITIAL_PROGRESS_STUB;
+      setProgress(stubSize + (pageSize * activePage) + (savedLastPage ? pageSize - stubSize : 0))
     }
   }, [activePage, pages, savedLastPage])
 
