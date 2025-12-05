@@ -18,10 +18,11 @@
 //
 
 import React, { useState } from "react";
-import PropTypes from 'prop-types';
-import { TextField } from "@mui/material";
-import { checkPropTypes } from "../propTypes";
 
+import { TextField } from "@mui/material";
+import PropTypes from 'prop-types';
+
+import { checkPropTypes } from "../propTypes";
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";

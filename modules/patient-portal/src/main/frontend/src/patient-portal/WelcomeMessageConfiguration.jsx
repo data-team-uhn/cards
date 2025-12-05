@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React from 'react';
+
 import {
     Alert,
     Box,
@@ -26,8 +27,9 @@ import {
     Grid,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
-import MarkdownText from "../questionnaireEditor/MarkdownText";
+
 import FormattedText from "../components/FormattedText.jsx";
+import MarkdownText from "../questionnaireEditor/MarkdownText";
 
 const useStyles = makeStyles()(theme => ({
   editorContainer: {

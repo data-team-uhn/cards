@@ -18,10 +18,11 @@
 //
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Switch } from "@mui/material";
-import { checkPropTypes } from "../propTypes";
 
+import { Switch } from "@mui/material";
+import PropTypes from 'prop-types';
+
+import { checkPropTypes } from "../propTypes";
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";

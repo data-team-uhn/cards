@@ -20,8 +20,8 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 
-import UsersManager from './Users/UsersManager.jsx';
 import GroupsManager from './Groups/GroupsManager.jsx';
+import UsersManager from './Users/UsersManager.jsx';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 export default function PrincipalsContainer(props) {

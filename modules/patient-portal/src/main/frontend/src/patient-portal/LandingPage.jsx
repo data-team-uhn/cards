@@ -28,7 +28,6 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-
 import { makeStyles } from 'tss-react/mui';
 
 import Logo from '../components/Logo';

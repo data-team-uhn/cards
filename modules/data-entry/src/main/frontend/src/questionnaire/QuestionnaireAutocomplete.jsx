@@ -17,12 +17,8 @@
 //  under the License.
 //
 import React from 'react';
-import PropTypes from "prop-types";
-import { makeStyles } from 'tss-react/mui';
-import { deepPurple, orange } from '@mui/material/colors';
-import { checkPropTypes } from "../propTypes";
 
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import ClearIcon from '@mui/icons-material/Clear';
 import {
   Avatar,
   Divider,
@@ -37,9 +33,13 @@ import {
   TextField,
   Tooltip
 } from "@mui/material";
-import ClearIcon from '@mui/icons-material/Clear';
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { deepPurple, orange } from '@mui/material/colors';
+import PropTypes from "prop-types";
+import { makeStyles } from 'tss-react/mui';
 
 import FormattedText from "../components/FormattedText";
+import { checkPropTypes } from "../propTypes";
 
 const useStyles = makeStyles()(theme => ({
   selectionList: {

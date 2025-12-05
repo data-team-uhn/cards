@@ -18,8 +18,7 @@
 //
 
 import React, { useState, useContext } from "react";
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
+
 import {
   Button,
   Dialog,
@@ -30,7 +29,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import PropTypes from 'prop-types';
 
+import { checkPropTypes } from "../propTypes";
 import Fields from './Fields';
 import { camelCaseToWords } from './LabeledField';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";

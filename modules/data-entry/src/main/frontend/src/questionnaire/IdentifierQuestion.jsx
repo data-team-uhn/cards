@@ -19,15 +19,14 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Button, Tooltip } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { Button, Tooltip } from "@mui/material";
+import PropTypes from "prop-types";
 import { v4 as uuidv4 } from 'uuid';
 
-import PropTypes from "prop-types";
-
 import Answer from "./Answer";
-import Question from "./Question";
 import AnswerComponentManager from "./AnswerComponentManager";
+import Question from "./Question";
 
 // Component that renders an identifier question as a plain, read-only string copyable on click, with an optional copy button.
 //

@@ -17,17 +17,18 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
+
+import createCache from "@emotion/cache";
+import { CacheProvider } from "@emotion/react";
+import { ThemeProvider } from '@mui/material/styles';
+import { createBrowserHistory } from "history";
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
-import { createBrowserHistory } from "history";
-import { ThemeProvider } from '@mui/material/styles';
+
+import Footer from "./Footer.jsx";
+import PatientIdentification from "./PatientIdentification.jsx";
 import { portalTheme } from "./portalTheme.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
-import PatientIdentification from "./PatientIdentification.jsx";
-import Footer from "./Footer.jsx";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
-
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
 const CONFIG = "/Survey/PatientAccess.json";

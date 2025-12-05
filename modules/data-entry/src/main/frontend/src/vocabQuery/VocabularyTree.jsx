@@ -17,17 +17,19 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
-import { Button, Checkbox, DialogContent, DialogActions, Chip, Radio, Typography } from '@mui/material';
-import { withStyles } from 'tss-react/mui';
-import ResponsiveDialog from "../components/ResponsiveDialog";
-import VocabularyBranch from "./VocabularyBranch.jsx";
-import AnswerInstructions from "../questionnaire/AnswerInstructions.jsx";
-import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
-import BrowseTheme from "./browseStyle.jsx";
 
+import { Button, Checkbox, DialogContent, DialogActions, Chip, Radio, Typography } from '@mui/material';
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
+
+import ResponsiveDialog from "../components/ResponsiveDialog";
+import { checkPropTypes } from "../propTypes";
+import BrowseTheme from "./browseStyle.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
+import VocabularyBranch from "./VocabularyBranch.jsx";
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
+import AnswerInstructions from "../questionnaire/AnswerInstructions.jsx";
 
 // Component that renders a modal dialog, to browse related terms of an input term.
 //

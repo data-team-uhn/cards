@@ -18,16 +18,18 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { InputAdornment, Tooltip } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
+
 import ErrorIcon from "@mui/icons-material/Error";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
+import { InputAdornment, Tooltip } from "@mui/material";
 import classNames from "classnames";
-import SearchBar from "../../SearchBar.jsx";
-import FilterComponentManager from "./FilterComponentManager.jsx";
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
 import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
+import FilterComponentManager from "./FilterComponentManager.jsx";
+import { checkPropTypes } from "../../propTypes";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
+import SearchBar from "../../SearchBar.jsx";
 import { QuickSearchIdentifier } from "../../themePage/Navbars/QuickSearchIdentifier.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice();

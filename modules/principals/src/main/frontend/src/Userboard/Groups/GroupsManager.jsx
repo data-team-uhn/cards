@@ -16,19 +16,21 @@
 */
 
 import React, { useState, useContext, useMemo, useCallback } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
-import { withStyles } from 'tss-react/mui'
+
+import CheckIcon from '@mui/icons-material/Check';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Alert, Avatar, Box, Button, Grid, IconButton, Tooltip } from "@mui/material";
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui'
+
+import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
+import { checkPropTypes } from "../../propTypes";
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialog from "./CreateGroupDialog.jsx";
 import DeletePrincipalDialog from "../DeletePrincipalDialog.jsx";
 import AddUserToGroupDialog from "./AddUserToGroupDialog.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx"
-import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckIcon from '@mui/icons-material/Check';
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
 
 const GROUP_URL = "/system/userManager/group/";

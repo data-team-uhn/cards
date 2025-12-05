@@ -18,6 +18,8 @@
 //
 
 import React, { useEffect, useState } from "react";
+
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
   AccordionDetails,
@@ -25,30 +27,21 @@ import {
   DialogContent,
   Typography,
 } from "@mui/material";
-import { makeStyles } from 'tss-react/mui';
-
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
 import cornerstone from "cornerstone-core";
-
 // Non dynamic loading version
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
-
 import dicomParser from "dicom-parser";
-
 cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
 cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
-
 import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
-
-import FileQuestion from "./FileQuestion";
-import ResponsiveDialog from "../components/ResponsiveDialog";
-import FormattedText from "../components/FormattedText";
+import { makeStyles } from 'tss-react/mui';
 
 import AnswerComponentManager from "./AnswerComponentManager";
-
+import FileQuestion from "./FileQuestion";
+import FormattedText from "../components/FormattedText";
+import ResponsiveDialog from "../components/ResponsiveDialog";
 import DICOM_TAG_DICT from "../dicom/dicomDataDictionary";
+import { checkPropTypes } from "../propTypes";
 
 const useStyles = makeStyles()(theme => ({
   advancedHelp : {

@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useState, useRef } from 'react';
+
 import {
   Button,
   Grid,
@@ -24,13 +25,13 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import { withStyles } from 'tss-react/mui';
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
 import { Formik } from "formik";
+import PropTypes from 'prop-types';
+import { withStyles } from 'tss-react/mui';
 import * as Yup from "yup";
 
 import ErrorDialog from "../components/ErrorDialog";
+import { checkPropTypes } from "../propTypes";
 import styles from "../styling/styles";
 
 function FormFields(props) {

@@ -17,11 +17,11 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
+
 import {
   Link,
   Toolbar,
 } from "@mui/material";
-
 import { makeStyles } from 'tss-react/mui';
 
 import { loadExtensions } from "../uiextension/extensionManager";

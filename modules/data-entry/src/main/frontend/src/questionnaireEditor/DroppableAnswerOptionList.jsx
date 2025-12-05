@@ -18,15 +18,17 @@
 //
 
 import React, { useEffect } from "react";
-import { flushSync } from 'react-dom';
+
+import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash';
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { reorderWithEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge';
 import PropTypes from "prop-types";
+import { flushSync } from 'react-dom';
+
 import { checkPropTypes } from "../propTypes";
 import DroppableAnswerOption, { isOptionData } from './DroppableAnswerOption.jsx';
 
-import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { reorderWithEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge';
-import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash';
 
 function DroppableAnswerOptionList(props) {
   checkPropTypes(DroppableAnswerOptionList, props);

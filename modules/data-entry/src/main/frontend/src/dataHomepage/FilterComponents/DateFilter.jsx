@@ -18,17 +18,18 @@
 //
 
 import React, { useState, forwardRef } from "react";
-import { withStyles } from 'tss-react/mui';
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
-import FilterComponentManager from "./FilterComponentManager.jsx";
-import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
-import DateTimeUtilities from "../../components/DateTimeUtilities.jsx";
-import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
-import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
+import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
+import FilterComponentManager from "./FilterComponentManager.jsx";
+import DateTimeUtilities from "../../components/DateTimeUtilities.jsx";
+import { checkPropTypes } from "../../propTypes";
+import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
 const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPARATORS);

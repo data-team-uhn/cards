@@ -29,15 +29,15 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { withStyles } from 'tss-react/mui';
+import { v4 as uuidv4 } from 'uuid';
 
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import { hasWarningFlags } from "./FormUtilities";
 import Question from "./Question";
-import FormattedText from "../components/FormattedText.jsx";
 import QuestionnaireStyle from './QuestionnaireStyle';
-import { v4 as uuidv4 } from 'uuid';
+import FormattedText from "../components/FormattedText.jsx";
 
 /** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
 const DATA_TO_NODE_TYPE = {

@@ -18,9 +18,16 @@
 //
 
 import React, { useEffect, useRef, useState } from "react";
-import { createPortal } from 'react-dom';
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
+
+
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
+import { draggable, dropTargetForElements, } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview';
+import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
+import { attachClosestEdge, extractClosestEdge, } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { DropIndicator } from "@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box";
+import CloseIcon from '@mui/icons-material/Close';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {
   Checkbox,
   Grid,
@@ -28,16 +35,11 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-
-import { draggable, dropTargetForElements, } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
-import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview';
-import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import { attachClosestEdge, extractClosestEdge, } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
-import { DropIndicator } from "@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box";
+import PropTypes from "prop-types";
+import { createPortal } from 'react-dom';
 import invariant from 'tiny-invariant';
+
+import { checkPropTypes } from "../propTypes";
 
 
 const valueKey = Symbol("value"); // creates a unique property keys

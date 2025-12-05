@@ -20,19 +20,17 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { Alert, Checkbox, FormControlLabel, Typography } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
 import { useTheme, alpha } from '@mui/material/styles';
 import Tooltip from "@mui/material/Tooltip";
-
 import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
 import { checkPropTypes } from "../propTypes";
-
-import { useFormReaderContext } from "./FormContext";
-
 import Answer, { LABEL_POS, VALUE_POS } from "./Answer";
+import AnswerComponentManager from "./AnswerComponentManager";
+import { useFormReaderContext } from "./FormContext";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import AnswerComponentManager from "./AnswerComponentManager";
 import FormattedText from "../components/FormattedText.jsx";
 
 // Component that renders an image with clickable areas based on the available

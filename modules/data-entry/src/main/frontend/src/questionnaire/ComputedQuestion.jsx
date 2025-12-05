@@ -18,20 +18,19 @@
 //
 
 import React, { useEffect, useState } from "react";
-import PropTypes from 'prop-types';
-import { InputAdornment, TextField, Typography } from "@mui/material";
-import { checkPropTypes } from "../propTypes";
 
+import { InputAdornment, TextField, Typography } from "@mui/material";
+import PropTypes from 'prop-types';
 import { withStyles } from 'tss-react/mui';
 
+import { checkPropTypes } from "../propTypes";
 import Answer, {VALUE_POS} from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateTimeUtilities from "../components/DateTimeUtilities";
-import Question from "./Question";
-
-import FormattedText from "../components/FormattedText";
-import QuestionnaireStyle from './QuestionnaireStyle';
 import { useFormReaderContext } from "./FormContext";
+import Question from "./Question";
+import QuestionnaireStyle from './QuestionnaireStyle';
+import DateTimeUtilities from "../components/DateTimeUtilities";
+import FormattedText from "../components/FormattedText";
 import { MakeRequest } from "../vocabQuery/util.jsx";
 
 

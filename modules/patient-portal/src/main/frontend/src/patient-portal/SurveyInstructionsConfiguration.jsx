@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useState } from 'react';
+
 import {
     Checkbox,
     FormControlLabel,
@@ -26,6 +27,7 @@ import {
     Typography
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
+
 import WelcomeMessageConfiguration from "./WelcomeMessageConfiguration.jsx";
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";

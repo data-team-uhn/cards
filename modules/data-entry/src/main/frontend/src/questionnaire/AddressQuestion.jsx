@@ -18,19 +18,19 @@
 //
 
 import React, { useState } from "react";
-import { withStyles } from 'tss-react/mui';
 
 import { TextField } from "@mui/material";
-
+import GlobalStyles from '@mui/material/GlobalStyles';
 import PropTypes from "prop-types";
+import { usePlacesWidget } from "react-google-autocomplete";
+import { withStyles } from 'tss-react/mui';
+
 import { checkPropTypes } from "../propTypes";
-import Question from "./Question";
-import QuestionnaireStyle from "./QuestionnaireStyle";
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
+import Question from "./Question";
+import QuestionnaireStyle from "./QuestionnaireStyle";
 import StyledTextQuestion from "./TextQuestion";
-import { usePlacesWidget } from "react-google-autocomplete";
-import GlobalStyles from '@mui/material/GlobalStyles';
 
 
 let googleApiKey;

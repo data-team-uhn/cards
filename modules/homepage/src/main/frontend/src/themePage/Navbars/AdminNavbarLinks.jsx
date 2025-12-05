@@ -9,10 +9,12 @@
 =========================================================
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import PropTypes from "prop-types";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { checkPropTypes } from "../../propTypes";
+
 // @mui/material components
+import CloseIcon from '@mui/icons-material/Close';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import {
   Avatar,
   Box,
@@ -28,18 +30,18 @@ import {
   Snackbar,
   Tooltip,
 } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-import { appTheme } from "../../themePalette.jsx";
-import CloseIcon from '@mui/icons-material/Close';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import classNames from "classnames";
+import PropTypes from "prop-types";
 import { useLocation } from 'react-router';
-import SearchBar from "../../SearchBar.jsx"; // In the commons module
+import { withStyles } from 'tss-react/mui';
+
 import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";
-import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
-import ChangeUserPasswordDialog from "../../Userboard/Users/ChangeUserPasswordDialog.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../../login/ReLoginDialog.js";
+import { checkPropTypes } from "../../propTypes";
+import SearchBar from "../../SearchBar.jsx"; // In the commons module
+import { appTheme } from "../../themePalette.jsx";
+import ChangeUserPasswordDialog from "../../Userboard/Users/ChangeUserPasswordDialog.jsx";
+import sidebarStyle from "../Sidebar/sidebarStyle.jsx";
 
 function HeaderLinks (props) {
   checkPropTypes(HeaderLinks, props);

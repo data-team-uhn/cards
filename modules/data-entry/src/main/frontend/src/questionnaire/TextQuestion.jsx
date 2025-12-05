@@ -20,13 +20,12 @@
 import React from "react";
 
 import { Typography } from "@mui/material";
-
 import PropTypes from "prop-types";
+
 import { checkPropTypes } from "../propTypes";
+import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
-
-import AnswerComponentManager from "./AnswerComponentManager";
 
 // Component that renders a multiple choice question, with optional text input.
 // Selected answers are placed in a series of <input type="hidden"> tags for

@@ -20,12 +20,11 @@
 import React from "react";
 
 import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
+import { checkPropTypes } from "../propTypes";
+import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
-
-import AnswerComponentManager from "./AnswerComponentManager";
 
 // Component that renders a multiple choice question, with the choices being
 // the set of chromosomes in an organism.

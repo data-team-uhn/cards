@@ -18,8 +18,12 @@
 //
 
 import React, { useEffect, useState, useContext } from "react";
-import { Link, useNavigate } from "react-router";
 
+
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DoneIcon from "@mui/icons-material/Done";
+import EditIcon from '@mui/icons-material/Edit';
+import MoreIcon from '@mui/icons-material/MoreVert';
 import {
   Backdrop,
   Breadcrumbs,
@@ -34,32 +38,29 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
 import { alpha } from '@mui/material/styles';
-import EditIcon from '@mui/icons-material/Edit';
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import DoneIcon from "@mui/icons-material/Done";
-import MoreIcon from '@mui/icons-material/MoreVert';
-
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
-import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { DateTime } from "luxon";
+import { Link, useNavigate } from "react-router";
+import { withStyles } from 'tss-react/mui';
+
+import { FormProvider } from "./FormContext";
+import FormEntry, { ENTRY_TYPES } from "./FormEntry";
+import FormPagination from "./FormPagination";
+import { FormUpdateProvider } from "./FormUpdateContext";
+import { getFirstIncompleteQuestionEl, hasWarningFlags } from "./FormUtilities.jsx";
+import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import ResourceHeader from "./ResourceHeader.jsx";
+import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
 import { getTextHierarchy, getHierarchyAsList } from "./SubjectIdentifier";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
-import { FormProvider } from "./FormContext";
-import { FormUpdateProvider } from "./FormUpdateContext";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import ErrorDialog from "../components/ErrorDialog";
+import FormattedText from "../components/FormattedText.jsx";
+import MainActionButton from "../components/MainActionButton.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
-import MainActionButton from "../components/MainActionButton.jsx";
-import FormPagination from "./FormPagination";
-import { usePageNameWriterContext } from "../themePage/Page.jsx";
-import FormattedText from "../components/FormattedText.jsx";
-import ResourceHeader from "./ResourceHeader.jsx";
-import { getFirstIncompleteQuestionEl, hasWarningFlags } from "./FormUtilities.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
-import SessionExpiryWarningModal from "./SessionExpiryWarningModal.jsx";
+import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 

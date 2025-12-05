@@ -18,20 +18,18 @@
 //
 
 import React from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   IconButton,
 } from "@mui/material";
-
+import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
-import CloseIcon from '@mui/icons-material/Close';
-
+import { checkPropTypes } from "../propTypes";
 
 const useStyles = makeStyles()(theme => ({
   titleBar: {

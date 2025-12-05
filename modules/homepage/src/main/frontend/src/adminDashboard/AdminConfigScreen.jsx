@@ -18,13 +18,12 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
-import { useNavigate } from 'react-router';
-
 import { Alert, Button, CardActions, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import PropTypes from "prop-types";
+import { useNavigate } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
 
+import { checkPropTypes } from "../propTypes";
 import AdminScreen from "./AdminScreen.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";

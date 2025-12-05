@@ -18,14 +18,14 @@
 //
 
 import React from "react";
-import PropTypes from 'prop-types';
-import { checkPropTypes } from "../propTypes";
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import { ListItemButton, ListItemText, Popper, TextField } from "@mui/material";
 
+import { ListItemButton, ListItemText, Popper, TextField } from "@mui/material";
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import PropTypes from 'prop-types';
 import { makeStyles } from 'tss-react/mui';
 
 import FormattedText from "../components/FormattedText";
+import { checkPropTypes } from "../propTypes";
 
 const useStyles = makeStyles()(theme => ({
   autocompleteRoot: {

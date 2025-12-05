@@ -17,9 +17,11 @@
 //  under the License.
 //
 import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
+
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {
   Avatar,
   Button,
@@ -37,13 +39,12 @@ import {
   Typography
 } from "@mui/material";
 import Alert from '@mui/material/Alert';
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import { DateTime } from "luxon";
+import PropTypes from "prop-types";
 
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import ErrorDialog from "../components/ErrorDialog.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { checkPropTypes } from "../propTypes";
 
 function SubjectLockAction(props) {
   checkPropTypes(SubjectLockAction, props);

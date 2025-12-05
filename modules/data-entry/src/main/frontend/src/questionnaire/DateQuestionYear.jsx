@@ -20,9 +20,8 @@
 import React from "react";
 
 import { checkPropTypes } from "../propTypes";
-import NumberQuestion from "./NumberQuestion";
-
 import AnswerComponentManager from "./AnswerComponentManager";
+import NumberQuestion from "./NumberQuestion";
 import DateTimeUtilities from "../components/DateTimeUtilities";
 
 // Component that renders a year only date question

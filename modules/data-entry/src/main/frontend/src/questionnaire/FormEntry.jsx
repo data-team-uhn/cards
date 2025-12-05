@@ -18,35 +18,33 @@
 //
 
 import React from "react";
+
 import { Grid } from "@mui/material";
 
+import AddressQuestion from "./AddressQuestion";
 import AnswerComponentManager from "./AnswerComponentManager";
-import Section from "./Section";
-import Information from "./Information";
-
 // FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
-
 import BooleanQuestion from "./BooleanQuestion";
+import ChromosomeQuestion from "./ChromosomeQuestion";
+import ComputedQuestion from "./ComputedQuestion";
 import DateQuestion from "./DateQuestion";
 import DateQuestionYear from "./DateQuestionYear";
-import NumberQuestion from "./NumberQuestion";
-import ChromosomeQuestion from "./ChromosomeQuestion";
-import PedigreeQuestion from "./PedigreeQuestion";
-import TimeQuestion from "./TimeQuestion";
-import TextQuestion from "./TextQuestion";
-import ComputedQuestion from "./ComputedQuestion";
-import VocabularyQuestion from "./VocabularyQuestion";
-import FileQuestion from "./FileQuestion";
-import QuestionMatrix from "./QuestionMatrix";
-import ResourceQuestion from "./ResourceQuestion";
 import DicomQuestion from "./DicomQuestion";
-import ReferenceQuestion from "./ReferenceQuestion";
-import PhoneQuestion from "./PhoneQuestion";
-import AddressQuestion from "./AddressQuestion";
-import SelectableArea from "./SelectableAreaQuestion";
-import IdentifierQuestion from "./IdentifierQuestion";
-
+import FileQuestion from "./FileQuestion";
 import { hasWarningFlags } from "./FormUtilities";
+import IdentifierQuestion from "./IdentifierQuestion";
+import Information from "./Information";
+import NumberQuestion from "./NumberQuestion";
+import PedigreeQuestion from "./PedigreeQuestion";
+import PhoneQuestion from "./PhoneQuestion";
+import QuestionMatrix from "./QuestionMatrix";
+import ReferenceQuestion from "./ReferenceQuestion";
+import ResourceQuestion from "./ResourceQuestion";
+import Section from "./Section";
+import SelectableArea from "./SelectableAreaQuestion";
+import TextQuestion from "./TextQuestion";
+import TimeQuestion from "./TimeQuestion";
+import VocabularyQuestion from "./VocabularyQuestion";
 
 export const QUESTION_TYPES = ["cards:Question"];
 export const SECTION_TYPES = ["cards:Section"];

@@ -16,23 +16,22 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import classNames from "classnames";
 import React, { useRef, useState, useContext } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@mui/material";
 
-import Search from "@mui/icons-material/Search";
 import Info from "@mui/icons-material/Info";
+import Search from "@mui/icons-material/Search";
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@mui/material";
+import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@mui/material";
+import classNames from "classnames";
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
 
-import QueryStyle from "./queryStyle.jsx";
-import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
+import { checkPropTypes } from "../propTypes";
 import QueryMatchingUtils from "./QueryMatchingUtils";
+import QueryStyle from "./queryStyle.jsx";
 import FormattedText from "../components/FormattedText";
-
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 
 const NO_RESULTS_TEXT = "No results, use:";
 const NONE_OF_ABOVE_TEXT = "None of the above, use:";

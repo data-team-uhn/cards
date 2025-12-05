@@ -17,12 +17,13 @@
 //  under the License.
 //
 import React from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
-import { Link } from 'react-router';
 import { Breadcrumbs, Card, CardContent, CardHeader, Typography } from "@mui/material";
+import PropTypes from "prop-types";
+import { Link } from 'react-router';
 import { makeStyles } from 'tss-react/mui';
+
+import { checkPropTypes } from "../propTypes";
 
 const useStyles = makeStyles()(theme => ({
   root: {

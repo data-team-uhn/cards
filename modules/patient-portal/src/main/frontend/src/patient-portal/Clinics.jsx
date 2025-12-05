@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useContext, useEffect, useState } from 'react';
+
 import {
   Button,
   DialogActions,
@@ -26,10 +27,10 @@ import {
   Typography
 } from "@mui/material";
 
-import Fields from "../questionnaireEditor/Fields.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import Fields from "../questionnaireEditor/Fields.jsx";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 function Clinics(props) {

@@ -17,9 +17,11 @@
 //  under the License.
 //
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-import PageNotFound from './PageNotFound';
+
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import { createRoot } from 'react-dom/client';
+
+import PageNotFound from './PageNotFound';
 import { appTheme } from "../themePalette.jsx";
 
 const root = createRoot(document.getElementById('main-404-container'));

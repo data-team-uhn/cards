@@ -18,15 +18,15 @@
 //
 
 import React, { useState, useRef, useEffect } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
 
-import { Button, Collapse, Grid, TextField, Tooltip } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
 import AddIcon from "@mui/icons-material/Add";
-import UnfoldMore from "@mui/icons-material/UnfoldMore";
 import UnfoldLess from "@mui/icons-material/UnfoldLess";
+import UnfoldMore from "@mui/icons-material/UnfoldMore";
+import { Button, Collapse, Grid, TextField, Tooltip } from "@mui/material";
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
 
+import { checkPropTypes } from "../propTypes";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {

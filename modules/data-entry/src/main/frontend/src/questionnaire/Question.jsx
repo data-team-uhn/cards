@@ -18,16 +18,15 @@
 //
 
 import React, { useRef, useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { useLocation } from 'react-router';
-import { checkPropTypes } from "../propTypes";
 
 import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
-
+import PropTypes from "prop-types";
+import { useLocation } from 'react-router';
 import { withStyles } from 'tss-react/mui';
 
-import QuestionnaireStyle from "./QuestionnaireStyle";
+import { checkPropTypes } from "../propTypes";
 import AnswerInstructions from "./AnswerInstructions";
+import QuestionnaireStyle from "./QuestionnaireStyle";
 import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers

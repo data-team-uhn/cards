@@ -17,10 +17,9 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import LiveTable from "./LiveTable.jsx";
 
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-
+import DescriptionIcon from '@mui/icons-material/Description';
+import LaunchIcon from '@mui/icons-material/Launch';
 import {
   Avatar,
   Card,
@@ -34,13 +33,14 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
 import { Link } from 'react-router';
-import DescriptionIcon from '@mui/icons-material/Description';
-import LaunchIcon from '@mui/icons-material/Launch';
+import { withStyles } from 'tss-react/mui';
+
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
+import LiveTable from "./LiveTable.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function FormView(props) {

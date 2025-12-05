@@ -17,17 +17,17 @@
 //  under the License.
 //
 
+import React, {useEffect} from "react";
+
 import {
   Grid,
   Typography
 } from "@mui/material";
 
-import React, {useEffect} from "react";
-
 import AdminScreen from "./adminDashboard/AdminScreen.jsx";
-import VocabularyDirectory from "./VocabularyDirectory.jsx";
-import OwlInstaller from "./OwlInstaller.jsx";
 import { BioPortalApiKey } from "./BioportalApiKey.jsx";
+import OwlInstaller from "./OwlInstaller.jsx";
+import VocabularyDirectory from "./VocabularyDirectory.jsx";
 
 const Phase = require("./phaseCodes.json");
 const vocabLinks = require("./vocabularyLinks.json");
@@ -218,7 +218,6 @@ export default function VocabulariesAdminPage() {
         loaded={localLoaded}
       />
       </>)}
-
 
       {wrapSection(
       <OwlInstaller updateLocalList={updateLocalList} reloadVocabList={() => {setLocalLoaded(false);}}/>

@@ -20,21 +20,19 @@
 import React, { useContext, useState } from "react";
 
 import { Grid, LinearProgress, Link, TextField } from "@mui/material";
+import PropTypes from "prop-types";
 import { withStyles } from 'tss-react/mui';
 
-import PropTypes from "prop-types";
 import { checkPropTypes } from "../propTypes";
 import Answer from "./Answer";
-import DragAndDrop from "../components/DragAndDrop";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
+import AnswerComponentManager from "./AnswerComponentManager";
 import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-
+import DragAndDrop from "../components/DragAndDrop";
 import DeleteButton from "../dataHomepage/DeleteButton";
-
-import AnswerComponentManager from "./AnswerComponentManager";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 
 // Component that renders a file upload question.
 // Filepaths are placed in a series of <input type="hidden"> tags for

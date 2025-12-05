@@ -18,6 +18,7 @@
 //
 
 import React from "react";
+
 import { Tooltip, Typography } from "@mui/material";
 
 function AppInfo (props) {

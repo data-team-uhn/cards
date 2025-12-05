@@ -18,8 +18,10 @@
 //
 
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
+
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import NotesIcon from '@mui/icons-material/Notes';
 import {
   Button,
   Card,
@@ -35,20 +37,18 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-
+import PropTypes from "prop-types";
 import { makeStyles } from 'tss-react/mui';
 
+import { checkPropTypes } from "../propTypes";
+import DroppableAnswerOptionList from "./DroppableAnswerOptionList.jsx";
 import EditorInput from "./EditorInput";
+import MarkdownText from "./MarkdownText";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
-import MarkdownText from "./MarkdownText";
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import NotesIcon from '@mui/icons-material/Notes';
+import ComposedIcon from "../components/ComposedIcon.jsx";
 import { stringToHash } from "../escape.jsx";
 
-import ComposedIcon from "../components/ComposedIcon.jsx";
-import DroppableAnswerOptionList from "./DroppableAnswerOptionList.jsx";
 
 let extractSortedOptions = (data) => {
   return Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption'

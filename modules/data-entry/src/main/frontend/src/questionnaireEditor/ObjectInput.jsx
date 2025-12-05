@@ -18,17 +18,18 @@
 //
 
 import React, { useState } from "react";
-import Fields from "./Fields"
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
+
 import {
   MenuItem,
   Select,
   Typography
 } from "@mui/material";
+import PropTypes from "prop-types";
 
-import EditorInput from "./EditorInput";
+import Fields from "./Fields"
+import { checkPropTypes } from "../propTypes";
 import BooleanInput from "./BooleanInput";
+import EditorInput from "./EditorInput";
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 
 // Object Input field used by Edit dialog component

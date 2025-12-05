@@ -18,6 +18,7 @@
 //
 
 import React from "react";
+
 import ErrorPage from "../components/ErrorPage.jsx";
 
 function PendingView() {

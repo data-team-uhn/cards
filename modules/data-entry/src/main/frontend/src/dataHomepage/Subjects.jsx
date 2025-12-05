@@ -17,13 +17,14 @@
 //  under the License.
 //
 import React from "react";
-import SubjectView from "./SubjectView.jsx";
-import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
-import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 import { Grid } from "@mui/material";
 import { withStyles } from 'tss-react/mui';
+
+import SubjectView from "./SubjectView.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import { getHierarchy } from "../questionnaire/SubjectIdentifier.jsx";
+import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Subjects(props) {
   const { extension, classes, actionSwitches, columns } = props;

@@ -19,6 +19,9 @@
 
 import React, { useState, useEffect } from "react";
 
+
+import CheckIcon from '@mui/icons-material/Check';
+import WarningIcon from '@mui/icons-material/Warning';
 import {
   Fab,
   Grid,
@@ -28,17 +31,13 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
-
-import CheckIcon from '@mui/icons-material/Check';
-import WarningIcon from '@mui/icons-material/Warning';
-
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
 import PropTypes from "prop-types";
-import { checkPropTypes } from "../propTypes";
+
 
 import FormattedText from "../components/FormattedText";
+import { checkPropTypes } from "../propTypes";
 
 /**
  * Component that enables the navigation between different pages of a Form. Used in FormPagination when the paginationVariant is "navigable".

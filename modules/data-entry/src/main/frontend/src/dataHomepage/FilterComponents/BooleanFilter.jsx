@@ -18,13 +18,14 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Select, MenuItem } from "@mui/material";
-import { withStyles } from 'tss-react/mui';
-import PropTypes from "prop-types";
-import { checkPropTypes } from "../../propTypes";
 
-import FilterComponentManager from "./FilterComponentManager.jsx";
+import { Select, MenuItem } from "@mui/material";
+import PropTypes from "prop-types";
+import { withStyles } from 'tss-react/mui';
+
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
+import FilterComponentManager from "./FilterComponentManager.jsx";
+import { checkPropTypes } from "../../propTypes";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
@@ -50,7 +51,6 @@ const BooleanFilter = forwardRef((props, ref) => {
   if (enableUnknown) {
     options.push([unknownLabel || "Unknown", "-1"]);
   }
-
 
   return (
     <Select

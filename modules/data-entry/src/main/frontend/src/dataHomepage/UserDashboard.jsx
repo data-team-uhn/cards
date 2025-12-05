@@ -18,13 +18,6 @@
 //
 import React, { useState, useEffect } from "react";
 
-import { MaterialReactTable } from "material-react-table";
-
-import { loadExtensions } from "../uiextension/extensionManager";
-import NewItemButton from "../components/NewItemButton.jsx";
-import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-
 import {
   Button,
   CircularProgress,
@@ -32,7 +25,13 @@ import {
   DialogContent,
   Grid,
 } from "@mui/material";
+import { MaterialReactTable } from "material-react-table";
 import { withStyles } from 'tss-react/mui';
+
+import NewItemButton from "../components/NewItemButton.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
+import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import { loadExtensions } from "../uiextension/extensionManager";
 
 async function getDashboardExtensions() {
   return loadExtensions("DashboardViews")

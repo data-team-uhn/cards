@@ -21,13 +21,12 @@ import React, { useState } from "react";
 
 import 'react-phone-input-2/lib/style.css';
 import PropTypes from "prop-types";
+import PhoneInput from 'react-phone-input-2';
+
 import { checkPropTypes } from "../propTypes";
-
-import Question from "./Question";
-
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import PhoneInput from 'react-phone-input-2';
+import Question from "./Question";
 
 // Component that renders a phone number question.
 //

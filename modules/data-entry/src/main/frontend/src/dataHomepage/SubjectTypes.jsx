@@ -17,13 +17,14 @@
 //  under the License.
 //
 import React, { useState } from "react";
+
 import { Box } from "@mui/material";
 import { Link } from 'react-router';
-import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
-import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
+
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
-
+import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
+import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 
 // Get a flat list of subject type parents as labels separated by " / "
 function getTextHierarchy (path, subjectTypes) {

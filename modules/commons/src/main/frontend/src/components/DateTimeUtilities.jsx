@@ -17,8 +17,8 @@
 //  under the License.
 //
 
-import PropTypes from "prop-types";
 import { DateTime } from "luxon";
+import PropTypes from "prop-types";
 
 export default class DateTimeUtilities {
 
