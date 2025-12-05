@@ -21,6 +21,8 @@ const RuntimeGlobals = require("webpack/lib/RuntimeGlobals");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { WebpackAssetsManifest } = require('webpack-assets-manifest');
 const TerserPlugin = require('terser-webpack-plugin');
+// Add a script to run TypeScript’s type checking (since Babel doesn’t do it)
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 /*
  * Webpack 5.25.0 changed how the code is generated to no longer return the module by default when eval-ing it.
@@ -61,12 +63,13 @@ ENTRY_CONTENT
     new CleanWebpackPlugin(),
     new WebpackAssetsManifest({
       output: "assets.json"
-    })
+    }),
+	new ForkTsCheckerWebpackPlugin()
   ],
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         exclude: /node_modules/,
         use: ['babel-loader']
       },
@@ -77,7 +80,7 @@ ENTRY_CONTENT
     ]
   },
   resolve: {
-    extensions: ['.*', '.js', '.jsx']
+    extensions: ['.*', '.js', '.jsx', '.ts', '.tsx']
   },
   optimization: {
     usedExports: false,
