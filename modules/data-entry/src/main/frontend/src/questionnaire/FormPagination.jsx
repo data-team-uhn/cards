@@ -92,20 +92,8 @@ function FormPagination (props) {
   let pagesArray = [];
 
   useEffect(() => {
-    let newNumberOfSteps = 0;
-    let newActiveStep = 0;
-    pages.forEach(page => {
-      if (page.canBeVisible) {
-        newNumberOfSteps++;
-      }
-    })
-    for (let i = 0; i < activePage; i++) {
-      if (pages[i].canBeVisible) {
-        newActiveStep++;
-      }
-    }
-    setNumberOfSteps(newNumberOfSteps);
-    setActiveStep(newActiveStep);
+    setNumberOfSteps(pages.filter(page => page.canBeVisible).length);
+    setActiveStep(pages.slice(0, activePage).filter(page => page.canBeVisible).length);
   }, [activePage, pages])
 
   useEffect(() => {
