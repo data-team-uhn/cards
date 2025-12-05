@@ -21,8 +21,7 @@ const RuntimeGlobals = require("webpack/lib/RuntimeGlobals");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { WebpackAssetsManifest } = require('webpack-assets-manifest');
 const TerserPlugin = require('terser-webpack-plugin');
-// Add a script to run TypeScript’s type checking (since Babel doesn’t do it)
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 /*
  * Webpack 5.25.0 changed how the code is generated to no longer return the module by default when eval-ing it.
@@ -64,13 +63,18 @@ ENTRY_CONTENT
     new WebpackAssetsManifest({
       output: "assets.json"
     }),
-	new ForkTsCheckerWebpackPlugin()
+	new ESLintPlugin({
+      extensions: ['js', 'jsx', 'ts', 'tsx'],
+      emitWarning: true,   // show warnings in console but don’t fail build
+      failOnError: false,  // set true if you want to break build on lint error
+    }),
   ],
   module: {
     rules: [
       {
         test: /\.(js|jsx|ts|tsx)$/,
         exclude: /node_modules/,
+        resolve: { fullySpecified: false }, // disable ESM fully specified
         use: ['babel-loader']
       },
       {

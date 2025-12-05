@@ -15,6 +15,10 @@
 	  "@babel/preset-typescript"
     ]
   },
+  "scripts": {
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix"
+  },
   "version": "0.1.0",
   "dependencies": {
     "@babel/runtime": "^7.27.1",
@@ -62,9 +66,12 @@
     "@babel/preset-typescript": "7.28.5", 
     "babel-loader": "10.0.0",
     "clean-webpack-plugin": "4.0.0",
-    "fork-ts-checker-webpack-plugin": "9.1.0",
     "eslint-plugin-react": "7.37.5",
+	"eslint-plugin-react-hooks": "7.0.0",
+	"eslint-plugin-import": "2.32.0",
+	"eslint-plugin-jsx-a11y": "6.10.2",
     "eslint": "9.24.0",
+	"eslint-webpack-plugin": "5.0.2",
     "webpack": "5.99.5",
     "webpack-cli": "6.0.1",
     "webpack-assets-manifest": "6.0.1",
@@ -73,7 +80,9 @@
     "style-loader": "4.0.0",
     "typescript": "5.9.3",
     "@types/react": "19.1.0",
-    "@types/react-dom": "19.1.0"
+    "@types/react-dom": "19.1.0",
+	"@typescript-eslint/parser": "8.46.2",
+	"@typescript-eslint/eslint-plugin": "8.46.2"
   },
   "resolutions": {
     "@babel/runtime": "^7.27.1",
