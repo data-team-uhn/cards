@@ -213,10 +213,10 @@ function FormPagination (props) {
   }, [saveInProgress, pendingSubmission, disableProgress, nextActivePage, direction, activePage]);
 
   useEffect(() => {
-    let numPages = lastValidPage();
-    if (activePage != null && pages != null && numPages >= 0) {
+    let lastPage = lastValidPage();
+    if (activePage != null && pages != null && lastPage >= 0) {
       // The MaterialUI progress bar expects progress to be out of 100
-      const pageSize = 100 / (numPages + 1);
+      const pageSize = 100 / (lastPage + 1);
       // Use some of 1 "page" worth of progression for the initial stub on the first page
       // The rest will be used for the completion buffer on the last page
       const stubSize = pageSize * INITIAL_PROGRESS_STUB;
