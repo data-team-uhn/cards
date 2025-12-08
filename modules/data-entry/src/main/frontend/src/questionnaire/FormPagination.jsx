@@ -77,6 +77,8 @@ function FormPagination (props) {
   let [ activePage, setActivePage ] = useState(0);
   let [ direction, setDirection ] = useState(1);
   let [ nextActivePage, setNextActivePage ] = useState();
+  let [ numberOfSteps, setNumberOfSteps ] = useState();
+  let [ activeStep, setActiveStep ] = useState();
   let [ progress, setProgress ] = useState(0);
   const DIRECTION_NEXT = 1, DIRECTION_PREV = -1;
   // The amount of the progress bar that should be complete on page 1
@@ -88,6 +90,11 @@ function FormPagination (props) {
   let questionIndex = 0;
   let pagesResults = {};
   let pagesArray = [];
+
+  useEffect(() => {
+    setNumberOfSteps(pages.filter(page => page.canBeVisible).length);
+    setActiveStep(pages.slice(0, activePage).filter(page => page.canBeVisible).length);
+  }, [activePage, pages])
 
   useEffect(() => {
     setPagesCallback(null);
@@ -213,16 +220,15 @@ function FormPagination (props) {
   }, [saveInProgress, pendingSubmission, disableProgress, nextActivePage, direction, activePage]);
 
   useEffect(() => {
-    let lastPage = lastValidPage();
-    if (activePage != null && pages != null && lastPage >= 0) {
+    if (activeStep != null && numberOfSteps != null) {
       // The MaterialUI progress bar expects progress to be out of 100
-      const pageSize = 100 / (lastPage + 1);
+      const pageSize = 100 / (numberOfSteps);
       // Use some of 1 "page" worth of progression for the initial stub on the first page
       // The rest will be used for the completion buffer on the last page
       const stubSize = pageSize * INITIAL_PROGRESS_STUB;
-      setProgress(stubSize + (pageSize * activePage) + (savedLastPage ? pageSize - stubSize : 0))
+      setProgress(stubSize + (pageSize * activeStep) + (savedLastPage ? pageSize - stubSize : 0))
     }
-  }, [activePage, pages, savedLastPage])
+  }, [activeStep, numberOfSteps, savedLastPage])
 
   let saveButton =
     <Button
@@ -280,7 +286,7 @@ function FormPagination (props) {
       ?
         <MobileStepper
           variant={variant}
-          activeStep={activePage}
+          activeStep={activeStep}
           slotProps={{
             progress: {
               // Manually control the progress bar value
@@ -288,8 +294,7 @@ function FormPagination (props) {
             }
           }}
           className={stepperClasses}
-
-          steps={lastValidPage() + 1}
+          steps={numberOfSteps}
           nextButton={saveButton}
           backButton={backButton}
         />
